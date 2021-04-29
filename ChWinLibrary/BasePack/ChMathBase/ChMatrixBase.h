@@ -21,44 +21,44 @@ namespace ChMath
 		template<unsigned long _ArrayCount>
 		operator VectorBase<T, _ArrayCount>()const
 		{
-			VectorBase<T, _ArrayCount> Out;
+			VectorBase<T, _ArrayCount> out;
 
-			unsigned long MaxVal = _ArrayCount > Array ? Array : _ArrayCount;
+			unsigned long maxVal = _ArrayCount > Array ? Array : _ArrayCount;
 			
-			for (unsigned long i = 0; i < MaxVal; i++)
+			for (unsigned long i = 0; i < maxVal; i++)
 			{
-				Out[i] = Val[i];
+				out[i] = val[i];
 			}
 
-			return Out;
+			return out;
 		}
 
 		template<typename _T>
 		operator VectorBase<_T,Array>()const
 		{
-			VectorBase<_T, Array> Out;
+			VectorBase<_T, Array> out;
 
 			for (unsigned long i = 0; i < Array; i++)
 			{
-				Out[i] = static_cast<_T>(Val[i]);
+				out[i] = static_cast<_T>(val[i]);
 			}
 
-			return Out;
+			return out;
 		}
 
-		T& operator [](const unsigned long _Val)
+		T& operator [](const unsigned long _val)
 		{
-			return Val[_Val % Array];
+			return val[_val % Array];
 		}
 
-		T operator [](const unsigned long _Val)const
+		T operator [](const unsigned long _val)const
 		{
-			return Val[_Val % Array];
+			return val[_val % Array];
 		}
 
 		explicit operator const T* const ()const
 		{
-			return Val;
+			return val;
 		}
 
 		VectorBase& operator =(const VectorBase& _Array)
@@ -67,9 +67,9 @@ namespace ChMath
 			return *this;
 		}
 
-		VectorBase& operator =(const T& _Val)
+		VectorBase& operator =(const T& _val)
 		{
-			Set(_Val);
+			Set(_val);
 			return *this;
 		}
 
@@ -96,100 +96,100 @@ namespace ChMath
 
 		VectorBase operator +(const VectorBase& _Array)const
 		{
-			VectorBase Out;
+			VectorBase out;
 
-			Out = *this;
-			Out.Add(_Array);
+			out = *this;
+			out.Add(_Array);
 
-			return Out;
+			return out;
 		}
 		VectorBase operator -(const VectorBase& _Array)const
 		{
-			VectorBase Out;
+			VectorBase out;
 
-			Out = *this;
-			Out.Sub(_Array);
+			out = *this;
+			out.Sub(_Array);
 
-			return Out;
+			return out;
 		}
 		VectorBase operator *(const VectorBase& _Array)const
 		{
-			VectorBase Out;
+			VectorBase out;
 
-			Out = *this;
-			Out.Mul(_Array);
+			out = *this;
+			out.Mul(_Array);
 
-			return Out;
+			return out;
 		}
 		VectorBase operator /(const VectorBase& _Array)const
 		{
-			VectorBase<T, Array> Out;
+			VectorBase<T, Array> out;
 
-			Out = *this;
-			Out.Div(_Array);
+			out = *this;
+			out.Div(_Array);
 
-			return Out;
+			return out;
 		}
 
-		VectorBase& operator +=(const T& _Val)
+		VectorBase& operator +=(const T& _val)
 		{
-			Add(_Val);
+			Add(_val);
 			return *this;
 		}
-		VectorBase& operator -=(const T& _Val)
+		VectorBase& operator -=(const T& _val)
 		{
-			Sub(_Val);
+			Sub(_val);
 			return *this;
 		}
-		VectorBase& operator *=(const T& _Val)
+		VectorBase& operator *=(const T& _val)
 		{
-			Mul(_Val);
+			Mul(_val);
 			return *this;
 		}
-		VectorBase& operator /=(const T& _Val)
+		VectorBase& operator /=(const T& _val)
 		{
-			Div(_Val);
+			Div(_val);
 			return *this;
 		}
 
-		VectorBase operator +(const T& _Val)const
+		VectorBase operator +(const T& _val)const
 		{
-			VectorBase<T, Array> Out;
-			Out = *this;
-			Out.Add(_Val);
+			VectorBase<T, Array> out;
+			out = *this;
+			out.Add(_val);
 
-			return Out;
+			return out;
 		}
-		VectorBase operator -(const T& _Val)const
+		VectorBase operator -(const T& _val)const
 		{
-			VectorBase<T, Array> Out;
-			Out = *this;
-			Out.Sub(_Val);
+			VectorBase<T, Array> out;
+			out = *this;
+			out.Sub(_val);
 
-			return Out;
+			return out;
 		}
-		VectorBase operator *(const T& _Val)const
+		VectorBase operator *(const T& _val)const
 		{
-			VectorBase<T, Array> Out;
-			Out = *this;
-			Out.Mul(_Val);
+			VectorBase<T, Array> out;
+			out = *this;
+			out.Mul(_val);
 
-			return Out;
+			return out;
 		}
-		VectorBase operator /(const T& _Val)const
+		VectorBase operator /(const T& _val)const
 		{
-			VectorBase<T, Array> Out;
-			Out = *this;
-			Out.Div(_Val);
+			VectorBase<T, Array> out;
+			out = *this;
+			out.Div(_val);
 
-			return Out;
+			return out;
 		}
 
 		bool operator ==(const VectorBase& _Array)const
 		{
 			for (unsigned long i = 0; i < Array; i++)
 			{
-				if (_Array.Val[i] == Val[i])continue;
+				if (_Array.val[i] == val[i])continue;
 				return false;
 			}
 			return true;
@@ -199,7 +199,7 @@ namespace ChMath
 		{
 			for (unsigned long i = 0; i < Array; i++)
 			{
-				if (_Array.Val[i] != Val[i])continue;
+				if (_Array.val[i] != val[i])continue;
 				return false;
 			}
 			return true;
@@ -210,16 +210,16 @@ namespace ChMath
 
 		VectorBase() = default;
 
-		VectorBase(const T(& _Val)[Array]):Val(_Val){}
+		VectorBase(const T(& _val)[Array]):val(_val){}
 
-		inline VectorBase(const T(&_Val)) 
+		inline VectorBase(const T(&_val)) 
 		{
-			Set(_Val);
+			Set(_val);
 		}
 
-		VectorBase(const VectorBase& _Val) 
+		VectorBase(const VectorBase& _val) 
 		{
-			Set(_Val);
+			Set(_val);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////////
@@ -228,92 +228,92 @@ namespace ChMath
 		///////////////////////////////////////////////////////////////////////////////////
 		//OperatorMathFunction//
 
-		void Set(const VectorBase& _Vec)
+		void Set(const VectorBase& _vec)
 		{
 			for (unsigned long i = 0; i < Array; i++)
 			{
-				Val[i] = _Vec.Val[i];
+				val[i] = _vec.val[i];
 			}
 		}
 
-		void Set(const T& _Val)
+		void Set(const T& _val)
 		{
 			for (unsigned long i = 0; i < Array; i++)
 			{
-				Val[i] = _Val;
+				val[i] = _val;
 			}
 		}
 		
-		void Set(const T (&_ArrayVal)[Array])
+		void Set(const T (&_arrayVal)[Array])
 		{
 
 			for (unsigned long i = 0; i < Array; i++)
 			{
-				Val[i] = _ArrayVal[i];
+				val[i] = _arrayVal[i];
 			}
 		}
 
-		void Add(const VectorBase& _Vec)
+		void Add(const VectorBase& _vec)
 		{
 			for (unsigned long i = 0; i < Array; i++)
 			{
-				Val[i] += _Vec.Val[i];
+				val[i] += _vec.val[i];
 			}
 		}
 
-		void Add(const T& _Val)
+		void Add(const T& _val)
 		{
 			for (unsigned long i = 0; i < Array; i++)
 			{
-				Val[i] += _Val;
+				val[i] += _val;
 			}
 		}
 
-		void Sub(const VectorBase& _Vec)
+		void Sub(const VectorBase& _vec)
 		{
 			for (unsigned long i = 0; i < Array; i++)
 			{
-				Val[i] -= _Vec.Val[i];
+				val[i] -= _vec.val[i];
 			}
 		}
 
-		void Sub(const T& _Val)
+		void Sub(const T& _val)
 		{
 			for (unsigned long i = 0; i < Array; i++)
 			{
-				Val[i] -= _Val;
+				val[i] -= _val;
 			}
 		}
 
-		void Mul(const VectorBase& _Vec)
+		void Mul(const VectorBase& _vec)
 		{
 			for (unsigned long i = 0; i < Array; i++)
 			{
-				Val[i] *= _Vec.Val[i];
+				val[i] *= _vec.val[i];
 			}
 		}
 
-		void Mul(const T& _Val)
+		void Mul(const T& _val)
 		{
 			for (unsigned long i = 0; i < Array; i++)
 			{
-				Val[i] *= _Val;
+				val[i] *= _val;
 			}
 		}
 
-		void Div(const VectorBase& _Vec)
+		void Div(const VectorBase& _vec)
 		{
 			for (unsigned long i = 0; i < Array; i++)
 			{
-				Val[i] /= _Vec.Val[i] != static_cast<T>(0.0f) ? _Vec.Val[i] : static_cast<T>(1.0f);
+				val[i] /= _vec.val[i] != static_cast<T>(0.0f) ? _vec.val[i] : static_cast<T>(1.0f);
 			}
 		}
 
-		void Div(const T& _Val)
+		void Div(const T& _val)
 		{
 			for (unsigned long i = 0; i < Array; i++)
 			{
-				Val[i] /= _Val != static_cast<T>(0.0f) ? _Val : static_cast<T>(1.0f);
+				val[i] /= _val != static_cast<T>(0.0f) ? _val : static_cast<T>(1.0f);
 			}
 		}
 
@@ -321,62 +321,62 @@ namespace ChMath
 		//SerializeDesirialize//
 
 		std::string Serialize(
-			const std::string& _CutChar = ","
-			, const std::string& _EndChar = ";")
+			const std::string& _cutChar = ","
+			, const std::string& _endChar = ";")
 		{
 
-			std::string Tmp = "";
+			std::string tmp = "";
 			for (unsigned char i = 0; i < Array; i++)
 			{
-				Tmp += std::to_string(Val[i]);
+				tmp += std::to_string(val[i]);
 				if (i == (Array - 1))break;
-				Tmp += _CutChar;
+				tmp += _cutChar;
 			}
 
-			Tmp += _EndChar;
+			tmp += _endChar;
 
-			return Tmp;
+			return tmp;
 		}
 
 		void Deserialize(
-			const std::string& _Str
-			, const size_t _FPos = 0
-			, const std::string& _CutChar = ","
-			, const std::string& _EndChar = ";"
-			, const unsigned int _Digit = 6)
+			const std::string& _str
+			, const size_t _fPos = 0
+			, const std::string& _cutChar = ","
+			, const std::string& _endChar = ";"
+			, const unsigned int _digit = 6)
 		{
 
-			std::string TmpStr = _Str;
+			std::string tmpStr = _str;
 
-			size_t TmpFPos = _FPos;
+			size_t tmpFPos = _fPos;
 
-			size_t EPos = TmpStr.find(_EndChar, TmpFPos);
+			size_t EPos = tmpStr.find(_endChar, tmpFPos);
 
-			if (EPos == TmpStr.npos)EPos = TmpStr.size();
+			if (EPos == tmpStr.npos)EPos = tmpStr.size();
 
-			TmpStr = TmpStr.substr(TmpFPos, EPos - TmpFPos);
+			tmpStr = tmpStr.substr(tmpFPos, EPos - tmpFPos);
 
-			TmpFPos = 0;
+			tmpFPos = 0;
 
-			EPos = TmpStr.length();
+			EPos = tmpStr.length();
 
-			size_t Tmp = TmpFPos;
+			size_t tmp = tmpFPos;
 
 			for (unsigned char i = 0; i < Array; i++)
 			{
-				size_t Test = TmpStr.find(_CutChar, Tmp);
+				size_t Test = tmpStr.find(_cutChar, tmp);
 				if (Test > EPos)Test = EPos;
 				{
-					TmpFPos = Test;
+					tmpFPos = Test;
 
-					std::string Num = TmpStr.substr(Tmp, TmpFPos - Tmp);
+					std::string Num = tmpStr.substr(tmp, tmpFPos - tmp);
 
-					Val[i] = static_cast<T>(ChStr::GetFloatingFromText<float>(Num));
+					val[i] = static_cast<T>(ChStr::GetFloatingFromText<float>(Num));
 
-//					Val[i] = ChMath::Round(Val[i], _Digit);
+//					val[i] = ChMath::Round(val[i], _digit);
 
-					Tmp += Num.length();
-					Tmp += 1;
+					tmp += Num.length();
+					tmp += 1;
 
 				}
 
@@ -397,7 +397,7 @@ namespace ChMath
 
 			for (unsigned long i = 0; i < Array; i++)
 			{
-				Len += std::abs(Val[i]);
+				Len += std::abs(val[i]);
 			}
 
 			return Len;
@@ -405,51 +405,51 @@ namespace ChMath
 		}
 
 		T GetCos(
-			const VectorBase& _Vec)const
+			const VectorBase& _vec)const
 		{
 
-			if (GetLen() <= 0.0f || _Vec.GetLen() <= 0.0f)return 0.0f;
+			if (GetLen() <= 0.0f || _vec.GetLen() <= 0.0f)return 0.0f;
 
-			VectorBase Tmp1, Tmp2;
+			VectorBase tmp1, tmp2;
 
-			Tmp1 = *this;
-			Tmp2 = _Vec;
+			tmp1 = *this;
+			tmp2 = _vec;
 
-			Tmp1.Normalize();
-			Tmp2.Normalize();
+			tmp1.Normalize();
+			tmp2.Normalize();
 
-			return Tmp1.GetDot(Tmp2);
+			return tmp1.GetDot(tmp2);
 		}
 
 		T GetRadian(
-			const VectorBase& _Vec)const
+			const VectorBase& _vec)const
 		{
 
-			if (GetLen() <= 0.0f || _Vec.GetLen() <= 0.0f)return 0.0f;
+			if (GetLen() <= 0.0f || _vec.GetLen() <= 0.0f)return 0.0f;
 
-			return static_cast<T>(std::acos(GetCos(_Vec)));
+			return static_cast<T>(std::acos(GetCos(_vec)));
 		}
 
 		T GetDot(
-			const VectorBase& _Vec)const
+			const VectorBase& _vec)const
 		{
 
-			if (GetLen() <= 0.0f || _Vec.GetLen() <= 0.0f)return 0.0f;
+			if (GetLen() <= 0.0f || _vec.GetLen() <= 0.0f)return 0.0f;
 
-			T TmpLen = 0.0f;
+			T tmpLen = 0.0f;
 
 			for (unsigned long i = 0; i < Array; i++)
 			{
-				TmpLen += Val[i] * _Vec.Val[i];
+				tmpLen += val[i] * _vec.val[i];
 			}
 
-			return TmpLen;
+			return tmpLen;
 
 		}
 
-		const T* const GetVal()const
+		const T* const Getval()const
 		{
-			return Val;
+			return val;
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -458,34 +458,34 @@ namespace ChMath
 		{
 			for (unsigned long i = 0; i < Array; i++)
 			{
-				Val[i] = Val[i] < 0.0f ? Val[i] * -1.0f : Val[i];
+				val[i] = val[i] < 0.0f ? val[i] * -1.0f : val[i];
 			}
 		}
 
-		inline void Abs(const VectorBase& _Vec)
+		inline void Abs(const VectorBase& _vec)
 		{
 
 			for (unsigned long i = 0; i < Array; i++)
 			{
-				Val[i] = _Vec.Val[i] < 0.0f ? _Vec.Val[i] * -1.0f : _Vec.Val[i];
+				val[i] = _vec.val[i] < 0.0f ? _vec.val[i] * -1.0f : _vec.val[i];
 			}
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		void Cross(
-			const VectorBase& _Vec)
+			const VectorBase& _vec)
 		{
 
-			VectorBase TmpVec;
+			VectorBase tmpVec;
 
-			TmpVec = *this;
+			tmpVec = *this;
 
 			for (unsigned char i = 0; i < Array; i++)
 			{
-				Val[i] =
-					(TmpVec.Val[(i + 1) % Array] * _Vec.Val[(i + 2) % Array])
-					- (TmpVec.Val[(i + 2) % Array] * _Vec.Val[(i + 1) % Array]);
+				val[i] =
+					(tmpVec.val[(i + 1) % Array] * _vec.val[(i + 2) % Array])
+					- (tmpVec.val[(i + 2) % Array] * _vec.val[(i + 1) % Array]);
 			}
 
 			Normalize();
@@ -495,14 +495,14 @@ namespace ChMath
 		}
 
 		void Cross(
-			const VectorBase& _Vec1, const VectorBase& _Vec2)
+			const VectorBase& _vec1, const VectorBase& _vec2)
 		{
 
 			for (unsigned char i = 0; i < Array; i++)
 			{
-				Val[i] =
-					(_Vec1.Val[(i + 1) % Array] * _Vec2.Val[(i + 2) % Array])
-					- (_Vec1.Val[(i + 2) % Array] * _Vec2.Val[(i + 1) % Array]);
+				val[i] =
+					(_vec1.val[(i + 1) % Array] * _vec2.val[(i + 2) % Array])
+					- (_vec1.val[(i + 2) % Array] * _vec2.val[(i + 1) % Array]);
 			}
 
 			Normalize();
@@ -514,7 +514,7 @@ namespace ChMath
 
 		//ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
 		void Correction(
-			const VectorBase& _Start, const VectorBase& _End, const float _Now)
+			const VectorBase& _start, const VectorBase& _end, const float _Now)
 		{
 			if (_Now <= 0.0f)
 			{
@@ -526,11 +526,11 @@ namespace ChMath
 				return;
 			}
 
-			VectorBase TmpVec;
+			VectorBase tmpVec;
 
-			TmpVec = _End - _Start;
+			tmpVec = _end - _start;
 
-			TmpVec = _Start + (TmpVec * _Now);
+			tmpVec = _start + (tmpVec * _Now);
 
 			
 		}
@@ -541,7 +541,7 @@ namespace ChMath
 		{
 			for (unsigned long i = 0; i < Array; i++)
 			{
-				Val[i] = static_cast<T>(i != 3 ? 0.0f : 1.0f);
+				val[i] = static_cast<T>(i != 3 ? 0.0f : 1.0f);
 			}
 		}
 
@@ -556,13 +556,13 @@ namespace ChMath
 
 			for (unsigned long i = 0; i < Array; i++)
 			{
-				Val[i] /= Len;
+				val[i] /= Len;
 			}
 		}
 
 	private:
 
-		VectorTest<T, Array> Val[Array];
+		VectorTest<T, Array> val[Array];
 
 	};
 
@@ -577,7 +577,7 @@ namespace ChMath
 		template<unsigned long _Row, unsigned long _Column>
 		operator MatrixBase<T, _Row, _Column>()const
 		{
-			MatrixBase<T, _Row, _Column> Out;
+			MatrixBase<T, _Row, _Column> out;
 
 			unsigned long MinRow = _Row > Row ? Row : _Row;
 			unsigned long MinColumn = _Column > Column ? Column : _Column;
@@ -586,21 +586,21 @@ namespace ChMath
 			{
 				for (unsigned long j = 0; j < MinRow; j++)
 				{
-					Out[Column][Row] = m[Column][Row];
+					out[Column][Row] = m[Column][Row];
 				}
 			}
 
-			return Out;
+			return out;
 		}
 
-		VectorBase<T, Row>& operator [](const unsigned long _Col)
+		VectorBase<T, Row>& operator [](const unsigned long _col)
 		{
-			return m[_Col % Column];
+			return m[_col % Column];
 		}
 
-		VectorBase<T, Row> operator [](const unsigned long _Col)const
+		VectorBase<T, Row> operator [](const unsigned long _col)const
 		{
-			return m[_Col % Column];
+			return m[_col % Column];
 		}
 
 		explicit operator const T** const ()const
@@ -640,12 +640,12 @@ namespace ChMath
 
 		MatrixBase operator +(const MatrixBase& _Array)const
 		{
-			MatrixBase Out;
+			MatrixBase out;
 
-			Out = *this;
-			Out += _Array;
+			out = *this;
+			out += _Array;
 
-			return Out;
+			return out;
 		}
 
 		MatrixBase& operator -=(const MatrixBase& _Mat)
@@ -664,12 +664,12 @@ namespace ChMath
 
 		MatrixBase operator -(const MatrixBase& _Array)const
 		{
-			MatrixBase Out;
+			MatrixBase out;
 
-			Out = *this;
-			Out -= _Array;
+			out = *this;
+			out -= _Array;
 
-			return Out;
+			return out;
 		}
 
 		MatrixBase& operator *=(const MatrixBase& _Mat)
@@ -688,12 +688,12 @@ namespace ChMath
 
 		MatrixBase operator *(const MatrixBase& _Mat)const
 		{
-			MatrixBase Out;
+			MatrixBase out;
 
-			Out = *this;
-			Out *= _Mat;
+			out = *this;
+			out *= _Mat;
 
-			return Out;
+			return out;
 		}
 
 		MatrixBase& operator /=(const MatrixBase& _Mat)
@@ -712,11 +712,11 @@ namespace ChMath
 
 		MatrixBase operator /(const MatrixBase& _Mat)const
 		{
-			MatrixBase Out;
-			Out = *this;
-			Out /= _Mat;
+			MatrixBase out;
+			out = *this;
+			out /= _Mat;
 
-			return Out;
+			return out;
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////////
@@ -746,13 +746,13 @@ namespace ChMath
 			}
 		}
 
-		void Set(const T& _Val)
+		void Set(const T& _val)
 		{
 			for (unsigned long i = 0; i < Column; i++)
 			{
 				for (unsigned long j = 0; j < Row; j++)
 				{
-					m[i][j] = _Val;
+					m[i][j] = _val;
 				}
 			}
 		}
@@ -783,19 +783,19 @@ namespace ChMath
 		{
 			for (unsigned long i = 0; i < Column; i++)
 			{
-				float Tmp[Column];
+				float tmp[Column];
 				for (unsigned char j = 0; j < Row; j++)
 				{
-					Tmp[j] = m[i][j];
+					tmp[j] = m[i][j];
 				}
 
 				for (unsigned char j = 0; j < Column; j++)
 				{
-					m[i][j] = Tmp[0] * _Mat.m[0][j];
+					m[i][j] = tmp[0] * _Mat.m[0][j];
 
 					for (unsigned char k = 1; k < Row; k++)
 					{
-						m[i][j] += Tmp[k] * _Mat.m[k][j];
+						m[i][j] += tmp[k] * _Mat.m[k][j];
 					}
 				}
 			}
@@ -804,63 +804,63 @@ namespace ChMath
 
 		//ècé≤ÇÃä|ÇØéZ//
 		template<unsigned long _Arrarys>
-		VectorBase<T, _Arrarys> VerticalMul(const VectorBase<T, _Arrarys> _Vec)const
+		VectorBase<T, _Arrarys> VerticalMul(const VectorBase<T, _Arrarys> _vec)const
 		{
 
-			unsigned long MaxSize = _Arrarys;
+			unsigned long maxSize = _Arrarys;
 
-			MaxSize = MaxSize >= Column ? Column : MaxSize;
-			MaxSize = MaxSize >= Row ? Row : MaxSize;
+			maxSize = maxSize >= Column ? Column : maxSize;
+			maxSize = maxSize >= Row ? Row : maxSize;
 
-			VectorBase<T, _Arrarys> Out;
+			VectorBase<T, _Arrarys> out;
 
-			Out.Set(static_cast<T>(0.0f));
+			out.Set(static_cast<T>(0.0f));
 
-			for (unsigned long i = 0; i < MaxSize; i++)
+			for (unsigned long i = 0; i < maxSize; i++)
 			{
-				for (unsigned long j = 0; j < MaxSize; j++)
+				for (unsigned long j = 0; j < maxSize; j++)
 				{
-					Out[j] += _Vec[i] * m[j][i];
+					out[j] += _vec[i] * m[j][i];
 				}
 			}
 
-			return Out;
+			return out;
 		}
 
 
 		//â°é≤ÇÃä|ÇØéZ//
 		template<unsigned long _Arrarys>
-		VectorBase<T, _Arrarys>HorizontalMul(const VectorBase<T, _Arrarys> _Vec)const
+		VectorBase<T, _Arrarys>HorizontalMul(const VectorBase<T, _Arrarys> _vec)const
 		{
-			unsigned long MaxSize = _Arrarys;
+			unsigned long maxSize = _Arrarys;
 
-			MaxSize = MaxSize >= Column ? Column : MaxSize;
-			MaxSize = MaxSize >= Row ? Row : MaxSize;
+			maxSize = maxSize >= Column ? Column : maxSize;
+			maxSize = maxSize >= Row ? Row : maxSize;
 
-			VectorBase<T, _Arrarys> Out;
+			VectorBase<T, _Arrarys> out;
 
-			Out.Set(static_cast<T>(0.0f));
+			out.Set(static_cast<T>(0.0f));
 
-			for (unsigned long i = 0; i < MaxSize; i++)
+			for (unsigned long i = 0; i < maxSize; i++)
 			{
-				for (unsigned long j = 0; j < MaxSize; j++)
+				for (unsigned long j = 0; j < maxSize; j++)
 				{
-					Out[j] += _Vec[i] * m[i][j];
+					out[j] += _vec[i] * m[i][j];
 				}
 			}
 
-			return Out;
+			return out;
 
 		}
 
 		void Div(const MatrixBase& _Mat)
 		{
-			MatrixBase TmpMat;
-			TmpMat = _Mat;
+			MatrixBase tmpMat;
+			tmpMat = _Mat;
 
-			TmpMat.Inverse();
+			tmpMat.Inverse();
 
-			Mul(TmpMat);
+			Mul(tmpMat);
 
 		}
 
@@ -868,91 +868,91 @@ namespace ChMath
 		//SerializeDesirialize//
 
 		std::string Serialize(
-			const std::string& _CutChar = ","
-			, const std::string& _EndChar = ";")
+			const std::string& _cutChar = ","
+			, const std::string& _endChar = ";")
 		{
-			std::string Tmp = "";
+			std::string tmp = "";
 			for (unsigned char i = 0; i < Column; i++)
 			{
 				for (unsigned char j = 0; j < Row; j++)
 				{
 					if (i == 3 && j == 3)break;
-					Tmp += std::to_string(m[i][j]);
-					Tmp += _CutChar;
+					tmp += std::to_string(m[i][j]);
+					tmp += _cutChar;
 				}
 			}
 
-			Tmp += std::to_string(m[3][3]);
-			Tmp += _EndChar;
+			tmp += std::to_string(m[3][3]);
+			tmp += _endChar;
 
-			return Tmp;
+			return tmp;
 		}
 
 		std::string SerializeUpper(
-			const std::string& _CutChar = ","
-			, const std::string& _EndChar = ";"
-			, const std::string& _CutTo4Char = "\n")
+			const std::string& _cutChar = ","
+			, const std::string& _endChar = ";"
+			, const std::string& _cutTo4Char = "\n")
 		{
-			std::string Tmp = "";
+			std::string tmp = "";
 			for (unsigned char i = 0; i < Column; i++)
 			{
 				for (unsigned char j = 0; j < Row; j++)
 				{
 					if (i == 3 && j == 3)break;
-					Tmp += std::to_string(m[i][j]);
-					Tmp += _CutChar;
+					tmp += std::to_string(m[i][j]);
+					tmp += _cutChar;
 
 					if (j < 3)continue;
-					Tmp += _CutTo4Char;
+					tmp += _cutTo4Char;
 				}
 			}
 
-			Tmp += std::to_string(m[3][3]);
-			Tmp += _EndChar;
+			tmp += std::to_string(m[3][3]);
+			tmp += _endChar;
 
-			return Tmp;
+			return tmp;
 		}
 
 		void Deserialize(
-			const std::string& _Str
-			, const size_t _FPos = 0
-			, const std::string& _CutChar = ","
-			, const std::string& _EndChar = ";"
-			, const unsigned int _Digit = 6)
+			const std::string& _str
+			, const size_t _fPos = 0
+			, const std::string& _cutChar = ","
+			, const std::string& _endChar = ";"
+			, const unsigned int _digit = 6)
 		{
 
-			std::string TmpStr = _Str;
+			std::string tmpStr = _str;
 
-			size_t TmpFPos = _FPos;
+			size_t tmpFPos = _fPos;
 
-			size_t EPos = TmpStr.find(_EndChar, TmpFPos);
+			size_t EPos = tmpStr.find(_endChar, tmpFPos);
 
-			if (EPos == TmpStr.npos)EPos = TmpStr.size() - 1;
+			if (EPos == tmpStr.npos)EPos = tmpStr.size() - 1;
 
-			TmpStr = TmpStr.substr(TmpFPos, EPos - TmpFPos);
+			tmpStr = tmpStr.substr(tmpFPos, EPos - tmpFPos);
 
-			TmpFPos = 0;
+			tmpFPos = 0;
 
-			EPos = TmpStr.length();
+			EPos = tmpStr.length();
 
-			size_t Tmp = TmpFPos;
+			size_t tmp = tmpFPos;
 
 			for (unsigned char i = 0; i < Column; i++)
 			{
 				for (unsigned char j = 0; j < Row; j++)
 				{
-					size_t Test = TmpStr.find(_CutChar, Tmp);
+					size_t Test = tmpStr.find(_cutChar, tmp);
 
 					if (Test > EPos)Test = EPos;
 
 					{
-						TmpFPos = Test;
+						tmpFPos = Test;
 
-						std::string Num = TmpStr.substr(Tmp, TmpFPos - Tmp);
+						std::string Num = tmpStr.substr(tmp, tmpFPos - tmp);
 
 						m[i][j] = static_cast<T>(ChStr::GetFloatingFromText<float>(Num));
 
-						Tmp = Test + 1;
+						tmp = Test + 1;
 
 					}
 
@@ -968,7 +968,7 @@ namespace ChMath
 
 		T GetLen()const
 		{
-			T Out = static_cast<T>(0.0f);
+			T out = static_cast<T>(0.0f);
 
 			for (unsigned long i = 0; i < Column; i++)
 			{
@@ -983,18 +983,18 @@ namespace ChMath
 					sub *= m[j % Column][std::abs(i - j) % Row];
 				}
 
-				Out = Out + add - sub;
+				out = out + add - sub;
 
 			}
 
-			return Out;
+			return out;
 		}
 
 		MatrixBase<T,Row,Column> GetCofactor(const unsigned long _Row, const unsigned long _Col)const
 		{
-			MatrixBase<T, Row - 1, Column - 1> Out;
+			MatrixBase<T, Row - 1, Column - 1> out;
 
-			if (_Row >= Row || _Col >= Column)return Out;
+			if (_Row >= Row || _Col >= Column)return out;
 
 			ChStd::Bool ColFlg = false;
 
@@ -1007,7 +1007,7 @@ namespace ChMath
 				for (unsigned long j = 0; j < Row - 1; j++)
 				{
 					if (j == _Row)RowFlg = true;
-					Out.m[i][j] = m[ColFlg ? i + 1 : i][RowFlg ? j + 1 : j];
+					out.m[i][j] = m[ColFlg ? i + 1 : i][RowFlg ? j + 1 : j];
 				}
 			}
 		}
@@ -1024,7 +1024,7 @@ namespace ChMath
 
 			if (GetLen() == static_cast<T>(0.0f))return;
 
-			MatrixBase<T, Row - 1, Column - 1> TmpDetMat[Row][Column];
+			MatrixBase<T, Row - 1, Column - 1> tmpDetMat[Row][Column];
 
 			for (unsigned long i = 0; i < Column; i++)
 			{
@@ -1041,16 +1041,16 @@ namespace ChMath
 			MatrixBase<T, Row, Column> LUMat;
 
 			{
-				unsigned long MaxNum = (Row > Column) ? Row : Column;
+				unsigned long maxNum = (Row > Column) ? Row : Column;
 
-				T Tmp = static_cast<T>(0.0f);
+				T tmp = static_cast<T>(0.0f);
 
-				for (unsigned long i = 0; i < MaxNum; i++)
+				for (unsigned long i = 0; i < maxNum; i++)
 				{
-					Tmp *= m[i % Column][i % Row];
+					tmp *= m[i % Column][i % Row];
 				}
 
-				if (Tmp == 0.0f)return LUMat;
+				if (tmp == 0.0f)return LUMat;
 			}
 
 			MatrixBase<T, Row, Column> LMat;
@@ -1086,7 +1086,7 @@ namespace ChMath
 		//ÉNÉâÉEÉgñ@è„éOäpçsóÒ//
 		MatrixBase<T, Row, Column> GetLUMatrix()const
 		{
-			MatrixBase<T, Row, Column> TmpDetMat;
+			MatrixBase<T, Row, Column> tmpDetMat;
 
 			for (unsigned long i = 0; i < Column; i++)
 			{
@@ -1132,7 +1132,7 @@ namespace ChMath
 
 			if (GetLen() == static_cast<T>(0.0f))return;
 
-			MatrixBase<T, Row - 1, Column - 1> TmpDetMat[Row][Column];
+			MatrixBase<T, Row - 1, Column - 1> tmpDetMat[Row][Column];
 
 			for (unsigned long i = 0; i < Column; i++)
 			{

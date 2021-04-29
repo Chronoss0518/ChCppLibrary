@@ -11,9 +11,9 @@ namespace ChFIO
 		inline File() {}
 
 		inline File(
-			const std::string& _FileName)
+			const std::string& _fileName)
 		{
-			FileOpen(_FileName);
+			FileOpen(_fileName);
 		}
 
 		inline ~File()
@@ -25,26 +25,22 @@ namespace ChFIO
 
 		//File‚ğŠJ‚­//
 		inline void FileOpen(
-			const std::string& _FileName
-			, unsigned int _OpenMode = std::ios::in | std::ios::out)
+			const std::string& _fileName
+			, unsigned int _openMode = std::ios::in | std::ios::out)
 		{
-			if (_FileName.length() <= 0)return;
+			if (_fileName.length() <= 0)return;
 
+			if (_openMode & std::ios::in)
 			{
 
-				if (_OpenMode & std::ios::in)
-				{
-
-					std::ofstream Tmp;
-					Tmp.open(_FileName, std::ios::app);
-					Tmp.close();
-				}
-
+				std::ofstream tmp;
+				tmp.open(_fileName, std::ios::app);
+				tmp.close();
 			}
 
-			Flg = _OpenMode;
-			OpenFileName = _FileName;
-			Stream.open(_FileName, static_cast<std::ios_base::openmode>(Flg));
+			flg = _openMode;
+			openFileName = _fileName;
+			stream.open(_fileName, flg);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////////
@@ -52,27 +48,29 @@ namespace ChFIO
 		//File‚ğ•Â‚¶‚é(Destructer‚Å‚à‹N“®‚·‚é)//
 		inline void FileClose()
 		{
-			if (!Stream.is_open())return;
-			Stream.close();
+			if (!stream.is_open())return;
+			stream.close();
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//File‚©‚ç“Ç‚İo‚·//
-		inline void FileRead(std::string& _Out)
+		inline std::string FileRead()
 		{
-			if (!Stream.is_open())return;
+			std::string out = "";
 
-			std::stringstream TmpSS;
+			if (!stream.is_open())return;
 
-			TmpSS << Stream.rdbuf();
+			std::stringstream tmpSS;
 
-			_Out = TmpSS.str();
+			tmpSS << stream.rdbuf();
 
-			Stream.clear();
-			Stream.seekp(std::ios::beg, static_cast<std::ios_base::seekdir>(0));
+			out = tmpSS.str();
 
-			return;
+			stream.clear();
+			stream.seekp(std::ios::beg, static_cast<std::ios_base::seekdir>(0));
+
+			return out;
 
 		}
 
@@ -81,31 +79,31 @@ namespace ChFIO
 		//File‚É‘‚«‚Ş//
 		template<class... _Types>
 		inline std::string FileWrite(
-			const std::string& _WriteStr
-			, _Types&&... _Args)
+			const std::string& _writeStr
+			, _Types&&... _args)
 		{
 
-			if (!Stream.is_open())return "";
+			if (!stream.is_open())return "";
 
-			if (Flg & std::ios::binary)return "";
+			if (flg & std::ios::binary)return "";
 
-			if (!(Flg & std::ios::app))
+			if (!(flg & std::ios::app))
 			{
-				Stream.close();
-				Stream.open(OpenFileName.c_str(), std::ios::out | std::ios::trunc);
-
-				Stream.close();
-				Stream.open(OpenFileName.c_str(), static_cast<std::ios_base::openmode>(Flg));
+				stream.close();
+				stream.open(openFileName.c_str(), std::ios::out | std::ios::trunc);
+				
+				stream.close();
+				stream.open(openFileName.c_str(), static_cast<std::ios_base::openmode>(Flg));
 			}
 
-			std::string TmpStr = _WriteStr;
+			std::string tmpStr = _writeStr;
 #ifdef _WIN32
-			::sscanf_s(&TmpStr[0], &TmpStr[0], _Args...);
+			::sscanf_s(&tmpStr[0], &tmpStr[0], _args...);
 #else
-			std::sscanf(TmpStr.c_str(), TmpStr.c_str(), _Args...);
+			std::sscanf(tmpStr.c_str(), tmpStr.c_str(), _Args...);
 #endif
 			
-			return Writer(TmpStr);
+			return Writer(tmpStr);
 
 		}
 
@@ -113,23 +111,23 @@ namespace ChFIO
 
 	private:
 
-		std::string Writer(const std::string& _Str)
+		std::string Writer(const std::string& _str)
 		{
 
-			std::ofstream TmpStream;
+			std::ofstream tmpStream;
 
-			TmpStream.set_rdbuf(Stream.rdbuf());
+			tmpStream.set_rdbuf(stream.rdbuf());
 
-			TmpStream << _Str.c_str();
+			tmpStream << _str.c_str();
 
-			return _Str;
+			return _str;
 		}
 
 	protected:
 
-		unsigned int Flg{ 0 };
-		std::string OpenFileName{ "" };
-		std::fstream Stream;
+		std::ios_base::openmode flg{ 0 };
+		std::string openFileName{ "" };
+		std::fstream stream;
 
 
 	};

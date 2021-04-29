@@ -48,7 +48,7 @@ namespace ChMath
 			{
 				T left, top, right, down;
 			};
-			VectorBase<T,4> Val;
+			VectorBase<T,4> val;
 		};
 	};
 
@@ -65,7 +65,7 @@ namespace ChMath
 			{
 				T r, g, b;
 			};
-			VectorBase<T, 3> Val;
+			VectorBase<T, 3> val;
 		};
 	};
 
@@ -82,7 +82,7 @@ namespace ChMath
 			{
 				T w, h;
 			};
-			VectorBase<T, 2> Val;
+			VectorBase<T, 2> val;
 		};
 	};
 	
@@ -94,7 +94,7 @@ namespace ChMath
 			{
 				float x, y, z, w;
 			};
-			float Val[4]{ 0, 0, 0, 0 };
+			float val[4]{ 0, 0, 0, 0 };
 		};
 	};
 
@@ -120,14 +120,6 @@ namespace ChMath
 			T m[2][2];
 		};
 
-		/*
-		T& GetValue(const unsigned long _Column, const unsigned long _Row) { return m[_Column][_Row]; };
-		T GetCValue(const unsigned long _Column, const unsigned long _Row)const { return m[_Column][_Row]; };
-
-		unsigned long GetColumn()const override { return 2; }
-		unsigned long GetRow()const override { return 2; };
-
-		*/
 	};
 
 	template<typename T>
@@ -153,17 +145,8 @@ namespace ChMath
 				T r_13, r_23, r_33;
 
 			};
-			T m[3][3];
+			MatrixBase<T, 3, 3> m;
 		};
-
-		/*
-		T& GetValue(const unsigned long _Column, const unsigned long _Row) { return m[_Column][_Row]; };
-		T GetCValue(const unsigned long _Column, const unsigned long _Row)const { return m[_Column][_Row]; };
-
-		unsigned long GetColumn()const override { return 3; }
-		unsigned long GetRow()const override { return 3; };
-
-		*/
 
 	};
 
@@ -190,7 +173,6 @@ namespace ChMath
 				T r_14, r_24, r_34, r_44;
 
 			};
-			//T m[4][4];
 			MatrixBase<T,4,4> m;
 		};
 
@@ -208,30 +190,30 @@ struct ChVector4 : public ChMath::ChVector4Base<float>
 	///////////////////////////////////////////////////////////////////////////////////
 	//Operator//
 
-	ChVector4& operator*=(const float& _Num);
-	ChVector4 operator*(const float& _Num) const;
-	ChVector4& operator/=(const float& _Num);
-	ChVector4 operator/(const float& _Num) const;
-	ChVector4& operator=(const float& _Num);
+	ChVector4& operator*=(const float& _num);
+	ChVector4 operator*(const float& _num) const;
+	ChVector4& operator/=(const float& _num);
+	ChVector4 operator/(const float& _num) const;
+	ChVector4& operator=(const float& _num);
 
-	ChVector4& operator=(const ChVector4& _Vec);
-	ChVector4& operator-=(const ChVector4& _Vec);
-	ChVector4 operator-(const ChVector4& _Vec) const;
-	ChVector4& operator+=(const ChVector4& _Vec);
-	ChVector4 operator+(const ChVector4& _Vec) const;
-	ChVector4& operator*=(const ChVector4& _Vec);
-	ChVector4 operator*(const ChVector4& _Vec) const;
-	ChVector4& operator/=(const ChVector4& _Vec);
-	ChVector4 operator/(const ChVector4& _Vec) const;
+	ChVector4& operator=(const ChVector4& _vec);
+	ChVector4& operator-=(const ChVector4& _vec);
+	ChVector4 operator-(const ChVector4& _vec) const;
+	ChVector4& operator+=(const ChVector4& _vec);
+	ChVector4 operator+(const ChVector4& _vec) const;
+	ChVector4& operator*=(const ChVector4& _vec);
+	ChVector4 operator*(const ChVector4& _vec) const;
+	ChVector4& operator/=(const ChVector4& _vec);
+	ChVector4 operator/(const ChVector4& _vec) const;
 
-	bool operator==(const ChVector4& _Vec)const
+	bool operator==(const ChVector4& _vec)const
 	{
-		return (x == _Vec.x && y == _Vec.y && z == _Vec.z && w == _Vec.w);
+		return (x == _vec.x && y == _vec.y && z == _vec.z && w == _vec.w);
 	}
 
-	bool operator!=(const ChVector4& _Vec)const
+	bool operator!=(const ChVector4& _vec)const
 	{
-		return (x != _Vec.x || y != _Vec.y || z != _Vec.z || w != _Vec.w);
+		return (x != _vec.x || y != _vec.y || z != _vec.z || w != _vec.w);
 	}
 
 	operator const ChVector3() const;
@@ -247,13 +229,13 @@ struct ChVector4 : public ChMath::ChVector4Base<float>
 
 	inline ChVector4()
 	{
-		Val.Identity();
+		val.Identity();
 	}
 
-	inline ChVector4(const float _Num)
+	inline ChVector4(const float _num)
 	{
 
-		Val.Set(_Num);
+		val.Set(_num);
 
 		if (w < -1.0f)
 			w = -1.0f;
@@ -274,56 +256,56 @@ struct ChVector4 : public ChMath::ChVector4Base<float>
 			w = 1.0f;
 	}
 
-	inline ChVector4(const ChVector4& _Vec) { *this = _Vec; }
+	inline ChVector4(const ChVector4& _vec) { *this = _vec; }
 
-	inline ChVector4(const D3DXVECTOR4& _Vec) { *this = _Vec; }
+	inline ChVector4(const D3DXVECTOR4& _vec) { *this = _vec; }
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//SerializeDeserialize//
 
 	std::string Serialize(
-		const std::string& _CutChar = ","
-		, const std::string& _EndChar = ";");
+		const std::string& _cutChar = ","
+		, const std::string& _endChar = ";");
 
 	std::string SerializeARGB(
-		const std::string& _CutChar = ","
-		, const std::string& _EndChar = ";");
+		const std::string& _cutChar = ","
+		, const std::string& _endChar = ";");
 
 	void Deserialize(
-		const std::string& _Str
-		, const size_t _FPos = 0
-		, const std::string& _CutChar = ","
-		, const std::string& _EndChar = ";"
-		, const unsigned int _Digit = 6);
+		const std::string& _str
+		, const size_t _fPos = 0
+		, const std::string& _cutChar = ","
+		, const std::string& _endChar = ";"
+		, const unsigned int _digit = 6);
 
 	void DeserializeARGB(
-		const std::string& _Str
-		, const size_t _FPos = 0
-		, const std::string& _CutChar = ","
-		, const std::string& _EndChar = ";"
-		, const unsigned int _Digit = 6);
+		const std::string& _str
+		, const size_t _fPos = 0
+		, const std::string& _cutChar = ","
+		, const std::string& _endChar = ";"
+		, const unsigned int _digit = 6);
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//GetFunction//
 
 	static ChVector4 GetCross(
-		const ChVector4& _Vec1, const ChVector4& _Vec2);
+		const ChVector4& _vec1, const ChVector4& _vec2);
 
 	static float GetCos(
-		const ChVector4& _Vec1, const ChVector4& _Vec2);
+		const ChVector4& _vec1, const ChVector4& _vec2);
 
 	static float GetRadian(
-		const ChVector4& _Vec1, const ChVector4& _Vec2);
+		const ChVector4& _vec1, const ChVector4& _vec2);
 
 	static float GetDot(
-		const ChVector4& _Vec1, const ChVector4& _Vec2);
+		const ChVector4& _vec1, const ChVector4& _vec2);
 
 	//ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
 	static ChVector4 GetCorrection(
-		const ChVector4& _Start, const ChVector4& _End, const float _Now);
+		const ChVector4& _start, const ChVector4& _end, const float _Now);
 
 	static float GetLen(
-		const ChVector4& _Vec1, const ChVector4& _Vec2);
+		const ChVector4& _vec1, const ChVector4& _vec2);
 
 	///////////////////////////////////////////////////////////////////////////////////
 
@@ -336,21 +318,21 @@ struct ChVector4 : public ChMath::ChVector4Base<float>
 
 	inline void Abs()
 	{
-		Val.Abs();
+		val.Abs();
 	}
 
-	inline void Abs(const ChVector4& _Vec)
+	inline void Abs(const ChVector4& _vec)
 	{
-		Val.Abs(_Vec.Val);
+		val.Abs(_vec.val);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
 
 	//ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
 	inline void Correction(
-		const ChVector4& _Start, const ChVector4& _End, const float _Now)
+		const ChVector4& _start, const ChVector4& _end, const float _Now)
 	{
-		*this = GetCorrection(_Start, _End, _Now);
+		*this = GetCorrection(_start, _end, _Now);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
@@ -359,7 +341,7 @@ struct ChVector4 : public ChMath::ChVector4Base<float>
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	void Cross(const ChVector4& _Vec1, const ChVector4& _Vec2);
+	void Cross(const ChVector4& _vec1, const ChVector4& _vec2);
 
 };
 
@@ -370,30 +352,30 @@ using ChVec4 = ChVector4;
 struct ChVector3 : public ChMath::ChVector3Base<float>
 {
 
-	ChVector3& operator*=(const float& _Num);
-	ChVector3 operator*(const float& _Num) const;
-	ChVector3& operator/=(const float& _Num);
-	ChVector3 operator/(const float& _Num) const;
-	ChVector3& operator=(const float& _Num);
+	ChVector3& operator*=(const float& _num);
+	ChVector3 operator*(const float& _num) const;
+	ChVector3& operator/=(const float& _num);
+	ChVector3 operator/(const float& _num) const;
+	ChVector3& operator=(const float& _num);
 
-	ChVector3& operator=(const ChVector3& _Vec);
-	ChVector3& operator-=(const ChVector3& _Vec);
-	ChVector3 operator-(const ChVector3& _Vec) const;
-	ChVector3& operator+=(const ChVector3& _Vec);
-	ChVector3 operator+(const ChVector3& _Vec) const;
-	ChVector3& operator*=(const ChVector3& _Vec);
-	ChVector3 operator*(const ChVector3& _Vec) const;
-	ChVector3& operator/=(const ChVector3& _Vec);
-	ChVector3 operator/(const ChVector3& _Vec) const;
+	ChVector3& operator=(const ChVector3& _vec);
+	ChVector3& operator-=(const ChVector3& _vec);
+	ChVector3 operator-(const ChVector3& _vec) const;
+	ChVector3& operator+=(const ChVector3& _vec);
+	ChVector3 operator+(const ChVector3& _vec) const;
+	ChVector3& operator*=(const ChVector3& _vec);
+	ChVector3 operator*(const ChVector3& _vec) const;
+	ChVector3& operator/=(const ChVector3& _vec);
+	ChVector3 operator/(const ChVector3& _vec) const;
 
-	bool operator==(const ChVector3& _Vec)const
+	bool operator==(const ChVector3& _vec)const
 	{
-		return (x == _Vec.x && y == _Vec.y && z == _Vec.z);
+		return (x == _vec.x && y == _vec.y && z == _vec.z);
 	}
 
-	bool operator!=(const ChVector3& _Vec)const
+	bool operator!=(const ChVector3& _vec)const
 	{
-		return (x != _Vec.x || y != _Vec.y || z != _Vec.z);
+		return (x != _vec.x || y != _vec.y || z != _vec.z);
 	}
 
 	operator const ChVector4() const;
@@ -419,12 +401,12 @@ struct ChVector3 : public ChMath::ChVector3Base<float>
 
 	inline ChVector3()
 	{
-		Val.Identity();
+		val.Identity();
 	}
 
-	inline ChVector3(const float _Num)
+	inline ChVector3(const float _num)
 	{
-		Val.Set(_Num);
+		val.Set(_num);
 	}
 
 	inline ChVector3(
@@ -435,52 +417,52 @@ struct ChVector3 : public ChMath::ChVector3Base<float>
 		z = _z;
 	}
 
-	inline ChVector3(const ChVector3& _Vec) { *this = _Vec; }
+	inline ChVector3(const ChVector3& _vec) { *this = _vec; }
 
-	inline ChVector3(const D3DXVECTOR3& _Vec) { *this = _Vec; }
-	inline ChVector3(const DirectX::XMFLOAT3& _Vec) { *this = _Vec; }
+	inline ChVector3(const D3DXVECTOR3& _vec) { *this = _vec; }
+	inline ChVector3(const DirectX::XMFLOAT3& _vec) { *this = _vec; }
 
 	inline ChVector3(const D3DXQUATERNION& _Qua) { *this = _Qua; }
 	inline ChVector3(const DirectX::XMFLOAT4& _Qua) { *this = _Qua; }
 
-	inline ChVector3(const D3DXMATRIX& _Mat) { *this = _Mat; }
-	inline ChVector3(const DirectX::XMFLOAT4X4& _Mat) { *this = _Mat; }
+	inline ChVector3(const D3DXMATRIX& _mat) { *this = _mat; }
+	inline ChVector3(const DirectX::XMFLOAT4X4& _mat) { *this = _mat; }
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//SerializeDeserialize//
 
 	std::string Serialize(
-		const std::string& _CutChar = ","
-		, const std::string& _EndChar = ";");
+		const std::string& _cutChar = ","
+		, const std::string& _endChar = ";");
 
 	void Deserialize(
-		const std::string& _Str
-		, const size_t _FPos = 0
-		, const std::string& _CutChar = ","
-		, const std::string& _EndChar = ";"
-		, const unsigned int _Digit = 6);
+		const std::string& _str
+		, const size_t _fPos = 0
+		, const std::string& _cutChar = ","
+		, const std::string& _endChar = ";"
+		, const unsigned int _digit = 6);
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//GetFunction//
 
 	static ChVector3 GetCross(
-		const ChVector3& _Vec1, const ChVector3& _Vec2);
+		const ChVector3& _vec1, const ChVector3& _vec2);
 
 	static float GetCos(
-		const ChVector3& _Vec1, const ChVector3& _Vec2);
+		const ChVector3& _vec1, const ChVector3& _vec2);
 
 	static float GetRadian(
-		const ChVector3& _Vec1, const ChVector3& _Vec2);
+		const ChVector3& _vec1, const ChVector3& _vec2);
 
 	static float GetDot(
-		const ChVector3& _Vec1, const ChVector3& _Vec2);
+		const ChVector3& _vec1, const ChVector3& _vec2);
 
 	//ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
 	static ChVector3 GetCorrection(
-		const ChVector3& _Start, const ChVector3& _End, const float _Now);
+		const ChVector3& _start, const ChVector3& _end, const float _Now);
 
 	static float GetLen(
-		const ChVector3& _Vec1, const ChVector3& _Vec2);
+		const ChVector3& _vec1, const ChVector3& _vec2);
 
 	///////////////////////////////////////////////////////////////////////////////////
 
@@ -493,21 +475,21 @@ struct ChVector3 : public ChMath::ChVector3Base<float>
 
 	inline void Abs()
 	{
-		Val.Abs();
+		val.Abs();
 	}
 
-	inline void Abs(const ChVector3& _Vec)
+	inline void Abs(const ChVector3& _vec)
 	{
-		Val.Abs(_Vec.Val);
+		val.Abs(_vec.val);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
 
 	//ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
 	inline void Correction(
-		const ChVector3& _Start, const ChVector3& _End, const float _Now)
+		const ChVector3& _start, const ChVector3& _end, const float _Now)
 	{
-		*this = GetCorrection(_Start, _End, _Now);
+		*this = GetCorrection(_start, _end, _Now);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
@@ -516,7 +498,7 @@ struct ChVector3 : public ChMath::ChVector3Base<float>
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	void Cross(const ChVector3& _Vec1, const ChVector3& _Vec2);
+	void Cross(const ChVector3& _vec1, const ChVector3& _vec2);
 
 };
 
@@ -527,30 +509,30 @@ using ChVec3 = ChVector3;
 struct ChVector2 : public ChMath::ChVector2Base<float>
 {
 
-	ChVector2& operator*=(const float& _Num);
-	ChVector2 operator*(const float& _Num) const;
-	ChVector2& operator/=(const float& _Num);
-	ChVector2 operator/(const float& _Num) const;
-	ChVector2& operator=(const float& _Num);
+	ChVector2& operator*=(const float& _num);
+	ChVector2 operator*(const float& _num) const;
+	ChVector2& operator/=(const float& _num);
+	ChVector2 operator/(const float& _num) const;
+	ChVector2& operator=(const float& _num);
 
-	ChVector2& operator=(const ChVector2& _Vec);
-	ChVector2& operator-=(const ChVector2& _Vec);
-	ChVector2 operator-(const ChVector2& _Vec) const;
-	ChVector2& operator+=(const ChVector2& _Vec);
-	ChVector2 operator+(const ChVector2& _Vec) const;
-	ChVector2& operator*=(const ChVector2& _Vec);
-	ChVector2 operator*(const ChVector2& _Vec) const;
-	ChVector2& operator/=(const ChVector2& _Vec);
-	ChVector2 operator/(const ChVector2& _Vec) const;
+	ChVector2& operator=(const ChVector2& _vec);
+	ChVector2& operator-=(const ChVector2& _vec);
+	ChVector2 operator-(const ChVector2& _vec) const;
+	ChVector2& operator+=(const ChVector2& _vec);
+	ChVector2 operator+(const ChVector2& _vec) const;
+	ChVector2& operator*=(const ChVector2& _vec);
+	ChVector2 operator*(const ChVector2& _vec) const;
+	ChVector2& operator/=(const ChVector2& _vec);
+	ChVector2 operator/(const ChVector2& _vec) const;
 
-	bool operator==(const ChVector2& _Vec)const
+	bool operator==(const ChVector2& _vec)const
 	{
-		return (x == _Vec.x && y == _Vec.y);
+		return (x == _vec.x && y == _vec.y);
 	}
 
-	bool operator!=(const ChVector2& _Vec)const
+	bool operator!=(const ChVector2& _vec)const
 	{
-		return (x != _Vec.x || y != _Vec.y);
+		return (x != _vec.x || y != _vec.y);
 	}
 
 	operator const ChVector4() const;
@@ -566,12 +548,12 @@ struct ChVector2 : public ChMath::ChVector2Base<float>
 
 	inline ChVector2()
 	{
-		Val.Identity();
+		val.Identity();
 	}
 
-	inline ChVector2(const float _Num)
+	inline ChVector2(const float _num)
 	{
-		Val.Set(_Num);
+		val.Set(_num);
 	}
 
 	inline ChVector2(
@@ -581,45 +563,45 @@ struct ChVector2 : public ChMath::ChVector2Base<float>
 		y = _y;
 	}
 
-	inline ChVector2(const ChVector2& _Vec) { *this = _Vec; }
+	inline ChVector2(const ChVector2& _vec) { *this = _vec; }
 
-	inline ChVector2(const D3DXVECTOR2& _Vec) { *this = _Vec; }
+	inline ChVector2(const D3DXVECTOR2& _vec) { *this = _vec; }
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//SerializeDeserialize//
 
 	std::string Serialize(
-		const std::string& _CutChar = ","
-		, const std::string& _EndChar = ";");
+		const std::string& _cutChar = ","
+		, const std::string& _endChar = ";");
 
 	void Deserialize(
-		const std::string& _Str
-		, const size_t _FPos = 0
-		, const std::string& _CutChar = ","
-		, const std::string& _EndChar = ";"
-		, const unsigned int _Digit = 6);
+		const std::string& _str
+		, const size_t _fPos = 0
+		, const std::string& _cutChar = ","
+		, const std::string& _endChar = ";"
+		, const unsigned int _digit = 6);
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//GetFunction//
 
 	static ChVector2 GetCross(
-		const ChVector2& _Vec1, const ChVector2& _Vec2);
+		const ChVector2& _vec1, const ChVector2& _vec2);
 
 	static float GetCos(
-		const ChVector2& _Vec1, const ChVector2& _Vec2);
+		const ChVector2& _vec1, const ChVector2& _vec2);
 
 	static float GetRadian(
-		const ChVector2& _Vec1, const ChVector2& _Vec2);
+		const ChVector2& _vec1, const ChVector2& _vec2);
 
 	static float GetDot(
-		const ChVector2& _Vec1, const ChVector2& _Vec2);
+		const ChVector2& _vec1, const ChVector2& _vec2);
 
 	//ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
 	static ChVector2 GetCorrection(
-		const ChVector2& _Start, const ChVector2& _End, const float _Now);
+		const ChVector2& _start, const ChVector2& _end, const float _Now);
 
 	static float GetLen(
-		const ChVector2& _Vec1, const ChVector2& _Vec2);
+		const ChVector2& _vec1, const ChVector2& _vec2);
 
 	///////////////////////////////////////////////////////////////////////////////////
 
@@ -632,21 +614,21 @@ struct ChVector2 : public ChMath::ChVector2Base<float>
 
 	inline void Abs()
 	{
-		Val.Abs();
+		val.Abs();
 	}
 
-	inline void Abs(const ChVector2& _Vec)
+	inline void Abs(const ChVector2& _vec)
 	{
-		Val.Abs(_Vec.Val);
+		val.Abs(_vec.val);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
 
 	//ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
 	inline void Correction(
-		const ChVector2& _Start, const ChVector2& _End, const float _Now)
+		const ChVector2& _start, const ChVector2& _end, const float _Now)
 	{
-		*this = GetCorrection(_Start, _End, _Now);
+		*this = GetCorrection(_start, _end, _Now);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
@@ -655,7 +637,7 @@ struct ChVector2 : public ChMath::ChVector2Base<float>
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	void Cross(const ChVector2& _Vec1, const ChVector2& _Vec2);
+	void Cross(const ChVector2& _vec1, const ChVector2& _vec2);
 
 };
 
@@ -691,11 +673,11 @@ struct ChQuaternion : public ChMath::ChQuaternionBase
 		z = 0.0f;
 	}
 
-	inline ChQuaternion(const float _Num)
+	inline ChQuaternion(const float _num)
 	{
-		x = _Num;
-		y = _Num;
-		z = _Num;
+		x = _num;
+		y = _num;
+		z = _num;
 	}
 
 	inline ChQuaternion(
@@ -708,28 +690,28 @@ struct ChQuaternion : public ChMath::ChQuaternionBase
 
 	inline ChQuaternion(const ChQuaternion& _Qua) { *this = _Qua; }
 
-	inline ChQuaternion(const D3DXVECTOR3& _Vec) { *this = _Vec; }
-	inline ChQuaternion(const DirectX::XMFLOAT3& _Vec) { *this = _Vec; }
+	inline ChQuaternion(const D3DXVECTOR3& _vec) { *this = _vec; }
+	inline ChQuaternion(const DirectX::XMFLOAT3& _vec) { *this = _vec; }
 
 	inline ChQuaternion(const D3DXQUATERNION& _Qua) { *this = _Qua; }
 	inline ChQuaternion(const DirectX::XMFLOAT4& _Qua) { *this = _Qua; }
 
-	inline ChQuaternion(const D3DXMATRIX& _Mat) { *this = _Mat; }
-	inline ChQuaternion(const DirectX::XMFLOAT4X4& _Mat) { *this = _Mat; }
+	inline ChQuaternion(const D3DXMATRIX& _mat) { *this = _mat; }
+	inline ChQuaternion(const DirectX::XMFLOAT4X4& _mat) { *this = _mat; }
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//SerializeDeserialize//
 
 	std::string Serialize(
-		const std::string& _CutChar = ","
-		, const std::string& _EndChar = ";");
+		const std::string& _cutChar = ","
+		, const std::string& _endChar = ";");
 
 	void Deserialize(
-		const std::string& _Str
-		, const size_t _FPos = 0,
-		const std::string& _CutChar = ","
-		, const std::string& _EndChar = ";"
-		, const unsigned int _Digit = 6);
+		const std::string& _str
+		, const size_t _fPos = 0,
+		const std::string& _cutChar = ","
+		, const std::string& _endChar = ";"
+		, const unsigned int _digit = 6);
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//GetFunction//
@@ -738,9 +720,9 @@ struct ChQuaternion : public ChMath::ChQuaternionBase
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	inline void RotYPR(const ChVec3& _Vec)
+	inline void RotYPR(const ChVec3& _vec)
 	{
-		RotYPR(_Vec.x, _Vec.y, _Vec.z);
+		RotYPR(_vec.x, _vec.y, _vec.z);
 	}
 
 	void RotYPR(
@@ -759,16 +741,16 @@ struct ChLMatrix : public ChMath::ChBaseMatrix4x4<float>
 	///////////////////////////////////////////////////////////////////////////////////
 	//Operator//
 
-	ChLMatrix& operator =(const ChLMatrix _Mat);
+	ChLMatrix& operator =(const ChLMatrix _mat);
 
-	ChLMatrix& operator *= (const ChLMatrix _Mat);
-	ChLMatrix const operator * (const ChLMatrix _Mat)const;
+	ChLMatrix& operator *= (const ChLMatrix _mat);
+	ChLMatrix const operator * (const ChLMatrix _mat)const;
 
-	ChLMatrix& operator += (const ChLMatrix _Mat);
-	ChLMatrix const operator + (const ChLMatrix _Mat)const;
+	ChLMatrix& operator += (const ChLMatrix _mat);
+	ChLMatrix const operator + (const ChLMatrix _mat)const;
 
-	ChLMatrix& operator -= (const ChLMatrix _Mat);
-	ChLMatrix const operator - (const ChLMatrix _Mat)const;
+	ChLMatrix& operator -= (const ChLMatrix _mat);
+	ChLMatrix const operator - (const ChLMatrix _mat)const;
 
 	operator const D3DXMATRIX() const;
 	operator const D3DXMATRIX* () const;
@@ -793,45 +775,45 @@ struct ChLMatrix : public ChMath::ChBaseMatrix4x4<float>
 		Identity();
 	}
 
-	inline ChLMatrix(const ChLMatrix& _Mat) { m.Set(_Mat.m); }
+	inline ChLMatrix(const ChLMatrix& _mat) { m.Set(_mat.m); }
 
-	inline ChLMatrix(const D3DXVECTOR3& _Vec) { *this = _Vec; }
-	inline ChLMatrix(const DirectX::XMFLOAT3& _Vec) { *this = _Vec; }
+	inline ChLMatrix(const D3DXVECTOR3& _vec) { *this = _vec; }
+	inline ChLMatrix(const DirectX::XMFLOAT3& _vec) { *this = _vec; }
 
 	inline ChLMatrix(const D3DXQUATERNION& _Qua) { *this = _Qua; }
 	inline ChLMatrix(const DirectX::XMFLOAT4& _Qua) { *this = _Qua; }
 
-	inline ChLMatrix(const D3DXMATRIX& _Mat) { *this = _Mat; }
-	inline ChLMatrix(const DirectX::XMFLOAT4X4& _Mat) { *this = _Mat; }
+	inline ChLMatrix(const D3DXMATRIX& _mat) { *this = _mat; }
+	inline ChLMatrix(const DirectX::XMFLOAT4X4& _mat) { *this = _mat; }
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//SerializeDeserialize//
 
 	std::string Serialize(
-		const std::string& _CutChar = ","
-		, const std::string& _EndChar = ";");
+		const std::string& _cutChar = ","
+		, const std::string& _endChar = ";");
 
 	std::string SerializeUpper(
-		const std::string& _CutChar = ","
-		, const std::string& _EndChar = ";"
-		, const std::string& _CutTo4Char = "\n");
+		const std::string& _cutChar = ","
+		, const std::string& _endChar = ";"
+		, const std::string& _cutTo4Char = "\n");
 
 	void Deserialize(
-		const std::string& _Str
-		, const size_t _FPos = 0
-		, const std::string& _CutChar = ","
-		, const std::string& _EndChar = ";"
-		, const unsigned int _Digit = 6);
+		const std::string& _str
+		, const size_t _fPos = 0
+		, const std::string& _cutChar = ","
+		, const std::string& _endChar = ";"
+		, const unsigned int _digit = 6);
 
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//SetFunction//
 
-	void SetPosition(const ChVec3& _Vec);
+	void SetPosition(const ChVec3& _vec);
 
 	void SetPosition(const float _x, const float _y, const float _z);
 
-	void SetRotation(const ChVec3& _Vec);
+	void SetRotation(const ChVec3& _vec);
 
 	void SetRotation(const float _x, const float _y, const float _z);
 
@@ -841,7 +823,7 @@ struct ChLMatrix : public ChMath::ChBaseMatrix4x4<float>
 
 	void SetRotationZAxis(const float _z);
 
-	void SetScalling(const ChVec3& _Vec);
+	void SetScalling(const ChVec3& _vec);
 
 	void SetScalling(const float _x, const float _y, const float _z);
 
@@ -945,7 +927,7 @@ struct ChLMatrix : public ChMath::ChBaseMatrix4x4<float>
 //RightHandAxisMatrix//
 struct ChRMatrix : public ChMath::ChBaseMatrix4x4<float>
 {
-	ChRMatrix& operator =(const ChRMatrix& _Mat);
+	ChRMatrix& operator =(const ChRMatrix& _mat);
 
 	//ChRMatrix& operator=(const D3DXVECTOR3&);
 	//ChRMatrix& operator=(const DirectX::XMFLOAT3&);
@@ -970,10 +952,10 @@ struct ChRMatrix : public ChMath::ChBaseMatrix4x4<float>
 		}
 	}
 
-	inline ChRMatrix(const ChRMatrix& _Mat) { *this = _Mat; }
+	inline ChRMatrix(const ChRMatrix& _mat) { *this = _mat; }
 
-	//inline ChRMatrix(const D3DXVECTOR3& _Vec) { *this = _Vec; }
-	//inline ChRMatrix(const DirectX::XMFLOAT3& _Vec) { *this = _Vec; }
+	//inline ChRMatrix(const D3DXVECTOR3& _vec) { *this = _vec; }
+	//inline ChRMatrix(const DirectX::XMFLOAT3& _vec) { *this = _vec; }
 
 	//inline ChRMatrix(const D3DXQUATERNION& _Qua) { *this = _Qua; }
 	//inline ChRMatrix(const DirectX::XMFLOAT4& _Qua) { *this = _Qua; }
@@ -982,20 +964,20 @@ struct ChRMatrix : public ChMath::ChBaseMatrix4x4<float>
 	//SerializeDeserialize//
 
 	std::string Serialize(
-		const std::string& _CutChar = ","
-		, const std::string& _EndChar = ";");
+		const std::string& _cutChar = ","
+		, const std::string& _endChar = ";");
 
 	std::string SerializeUpper(
-		const std::string& _CutChar = ","
-		, const std::string& _EndChar = ";"
-		, const std::string& _CutTo4Char = "\n");
+		const std::string& _cutChar = ","
+		, const std::string& _endChar = ";"
+		, const std::string& _cutTo4Char = "\n");
 
 	void Deserialize(
-		const std::string& _Str
-		, const size_t _FPos = 0
-		, const std::string& _CutChar = ","
-		, const std::string& _EndChar = ";"
-		, const unsigned int _Digit = 6);
+		const std::string& _str
+		, const size_t _fPos = 0
+		, const std::string& _cutChar = ","
+		, const std::string& _endChar = ";"
+		, const unsigned int _digit = 6);
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//GetFunction//
@@ -1019,7 +1001,7 @@ struct ChUIMatrix : public ChMath::ChBaseMatrix4x4<unsigned long>
 	///////////////////////////////////////////////////////////////////////////////////
 	//Operator//
 
-	ChUIMatrix& operator =(const ChUIMatrix _Mat);
+	ChUIMatrix& operator =(const ChUIMatrix _mat);
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//ConstructerDestructer//
@@ -1029,25 +1011,25 @@ struct ChUIMatrix : public ChMath::ChBaseMatrix4x4<unsigned long>
 		m.Set(0UL);
 	}
 
-	inline ChUIMatrix(const ChUIMatrix& _Mat) { m.Set(_Mat.m); }
+	inline ChUIMatrix(const ChUIMatrix& _mat) { m.Set(_mat.m); }
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//SerializeDeserialize//
 
 	std::string Serialize(
-		const std::string& _CutChar = ","
-		, const std::string& _EndChar = ";");
+		const std::string& _cutChar = ","
+		, const std::string& _endChar = ";");
 
 	std::string SerializeUpper(
-		const std::string& _CutChar = ","
-		, const std::string& _EndChar = ";"
-		, const std::string& _CutTo4Char = "\n");
+		const std::string& _cutChar = ","
+		, const std::string& _endChar = ";"
+		, const std::string& _cutTo4Char = "\n");
 
 	void Deserialize(
-		const std::string& _Str
-		, const size_t _FPos = 0
-		, const std::string& _CutChar = ","
-		, const std::string& _EndChar = ";");
+		const std::string& _str
+		, const size_t _fPos = 0
+		, const std::string& _cutChar = ","
+		, const std::string& _endChar = ";");
 
 	///////////////////////////////////////////////////////////////////////////////////
 
@@ -1058,13 +1040,13 @@ using ChUIMat = ChUIMatrix;
 namespace ChMath
 {
 
-	static inline std::string ConvertNum10to64(unsigned long _Num)
+	static inline std::string ConvertNum10to64(unsigned long _num)
 	{  
 		return "";
 	}
 
-	float Round(const float& _Val, const unsigned int _Digit);
-	double Round(const double& _Val, const unsigned int _Digit);
+	float Round(const float& _val, const unsigned int _digit);
+	double Round(const double& _val, const unsigned int _digit);
 
 
 	//â~é¸ó¶//
@@ -1082,26 +1064,26 @@ namespace ChMath
 		//operator
 		///////////////////////////////////////////////////////////////////////////////////
 
-		inline Degree& operator=(const Degree _Num)
+		inline Degree& operator=(const Degree _num)
 		{
-			Val = _Num;
+			val = _num;
 			return *this;
 		}
 
-		Degree& operator=(const float _Num);
-		Degree& operator=(const Radian _Num);
+		Degree& operator=(const float _num);
+		Degree& operator=(const Radian _num);
 
-		Degree& operator+=(const float _Num);
-		Degree operator+(const float _Num) const;
+		Degree& operator+=(const float _num);
+		Degree operator+(const float _num) const;
 
-		Degree& operator-=(const float _Num);
-		Degree operator-(const float _Num) const;
+		Degree& operator-=(const float _num);
+		Degree operator-(const float _num) const;
 
-		Degree& operator*=(const float _Num);
-		Degree operator*(const float _Num) const;
+		Degree& operator*=(const float _num);
+		Degree operator*(const float _num) const;
 
-		Degree& operator/=(const float _Num);
-		Degree operator/(const float _Num) const;
+		Degree& operator/=(const float _num);
+		Degree operator/(const float _num) const;
 
 		operator float() const;
 
@@ -1111,18 +1093,18 @@ namespace ChMath
 
 		Degree();
 
-		Degree(const float _Val);
+		Degree(const float _val);
 
-		Degree(const Degree& _Val);
+		Degree(const Degree& _val);
 
-		Degree(const Radian& _Val);
+		Degree(const Radian& _val);
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 	private:
 		void Math();
 
-		float Val;
+		float val;
 	};
 
 	//å ìxñ@(â~é¸ó¶)Ç≈Ç†ÇÁÇÌÇ≥ÇÍÇΩäpìxÇéÊÇËÇ‹Ç∆ÇﬂÇÈÉNÉâÉX//
@@ -1134,26 +1116,26 @@ namespace ChMath
 		//operator
 		///////////////////////////////////////////////////////////////////////////////////
 
-		inline Radian operator=(const Radian _Num)
+		inline Radian operator=(const Radian _num)
 		{
-			Val = _Num;
+			val = _num;
 			return *this;
 		}
 
-		Radian& operator=(const float _Num);
-		Radian& operator=(const Degree _Num);
+		Radian& operator=(const float _num);
+		Radian& operator=(const Degree _num);
 
-		Radian& operator+=(const float _Num);
-		Radian operator+(const float _Num) const;
+		Radian& operator+=(const float _num);
+		Radian operator+(const float _num) const;
 
-		Radian& operator-=(const float _Num);
-		Radian operator-(const float _Num) const;
+		Radian& operator-=(const float _num);
+		Radian operator-(const float _num) const;
 
-		Radian& operator*=(const float _Num);
-		Radian operator*(const float _Num) const;
+		Radian& operator*=(const float _num);
+		Radian operator*(const float _num) const;
 
-		Radian& operator/=(const float _Num);
-		Radian operator/(const float _Num) const;
+		Radian& operator/=(const float _num);
+		Radian operator/(const float _num) const;
 
 		operator float() const;
 
@@ -1163,18 +1145,18 @@ namespace ChMath
 
 		Radian();
 
-		Radian(const float _Val);
+		Radian(const float _val);
 
-		Radian(const Radian& _Val);
+		Radian(const Radian& _val);
 
-		Radian(const Degree& _Val);
+		Radian(const Degree& _val);
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 	private:
 		void Math();
 
-		float Val;
+		float val;
 	};
 
 	//éOäpñ Çç\ê¨Ç∑ÇÈ3í∏ì_ÇÇ‹Ç∆ÇﬂÇΩÇ‡ÇÃ//
@@ -1207,15 +1189,15 @@ namespace ChMath
 	static inline float ToDegree(const float _Radian) { return (_Radian * 180.0f / Pi); }
 
 	//DegreeäpÇ©ÇÁRadianäpÇ÷//
-	static inline float ToRadian(const float _Degree) { return (_Degree * Pi / 180.0f); }
+	static inline float ToRadian(const float _degree) { return (_degree * Pi / 180.0f); }
 
 	//ê≥ÇÃïÑçÜÇ©Ç«Ç§Ç©ÇämîFÇ∑ÇÈ//
-	static inline ChStd::Bool IsPSign(const int _Val) { return _Val >= 0.0f ? true : false; }
-	static inline ChStd::Bool IsPSign(const char _Val) { return _Val >= 0.0f ? true : false; }
-	static inline ChStd::Bool IsPSign(const short _Val) { return _Val >= 0.0f ? true : false; }
-	static inline ChStd::Bool IsPSign(const long _Val) { return _Val >= 0.0f ? true : false; }
-	static inline ChStd::Bool IsPSign(const float _Val) { return _Val >= 0.0f ? true : false; }
-	static inline ChStd::Bool IsPSign(const double _Val) { return _Val >= 0.0f ? true : false; }
+	static inline ChStd::Bool IsPSign(const int _val) { return _val >= 0.0f ? true : false; }
+	static inline ChStd::Bool IsPSign(const char _val) { return _val >= 0.0f ? true : false; }
+	static inline ChStd::Bool IsPSign(const short _val) { return _val >= 0.0f ? true : false; }
+	static inline ChStd::Bool IsPSign(const long _val) { return _val >= 0.0f ? true : false; }
+	static inline ChStd::Bool IsPSign(const float _val) { return _val >= 0.0f ? true : false; }
+	static inline ChStd::Bool IsPSign(const double _val) { return _val >= 0.0f ? true : false; }
 
 } // namespace ChMath
 

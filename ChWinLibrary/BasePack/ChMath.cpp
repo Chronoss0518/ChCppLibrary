@@ -4,10 +4,10 @@
 //ChVector4 Method//
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector4& ChVec4::operator*= (const float& _Num)
+ChVector4& ChVec4::operator*= (const float& _num)
 {
 
-	Val.Mul(_Num);
+	val.Mul(_num);
 
 	if (w < -1.0f)w = -1.0f;
 	if (w > 1.0f)w = 1.0f;
@@ -17,21 +17,21 @@ ChVector4& ChVec4::operator*= (const float& _Num)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector4 ChVec4::operator * (const float& _Num)const
+ChVector4 ChVec4::operator * (const float& _num)const
 {
 
-	ChVector4 TmpVec = *this;
+	ChVector4 tmpVec = *this;
 
-	TmpVec *= _Num;
+	tmpVec *= _num;
 
-	return TmpVec;
+	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector4& ChVec4::operator/= (const float& _Num)
+ChVector4& ChVec4::operator/= (const float& _num)
 {
-	Val.Div(_Num);
+	val.Div(_num);
 
 	if (w < -1.0f)w = -1.0f;
 	if (w > 1.0f)w = 1.0f;
@@ -40,22 +40,22 @@ ChVector4& ChVec4::operator/= (const float& _Num)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector4 ChVec4::operator / (const float& _Num)const
+ChVector4 ChVec4::operator / (const float& _num)const
 {
 
-	ChVector4 TmpVec = *this;
+	ChVector4 tmpVec = *this;
 
-	TmpVec /= _Num;
+	tmpVec /= _num;
 
-	return TmpVec;
+	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector4& ChVec4::operator= (const float& _Num)
+ChVector4& ChVec4::operator= (const float& _num)
 {
 
-	Val.Set(_Num);
+	val.Set(_num);
 
 	if (w < -1.0f)w = -1.0f;
 	if (w > 1.0f)w = 1.0f;
@@ -66,7 +66,7 @@ ChVector4& ChVec4::operator= (const float& _Num)
 
 ChVector4& ChVector4::operator=(const ChVector4& _Vec)
 {
-	Val.Set(_Vec.Val);
+	val.Set(_Vec.val);
 
 	return *this;
 }
@@ -75,7 +75,7 @@ ChVector4& ChVector4::operator=(const ChVector4& _Vec)
 
 ChVector4& ChVec4::operator *= (const ChVector4& _Vec)
 {
-	Val.Mul(_Vec.Val);
+	val.Mul(_Vec.val);
 
 	if (w < -1.0f)w = -1.0f;
 	if (w > 1.0f)w = 1.0f;
@@ -86,18 +86,18 @@ ChVector4& ChVec4::operator *= (const ChVector4& _Vec)
 
 ChVector4 ChVec4::operator * (const ChVector4& _Vec)const
 {
-	ChVector4 TmpVec = *this;
+	ChVector4 tmpVec = *this;
 
-	TmpVec *= _Vec;
+	tmpVec *= _Vec;
 
-	return TmpVec;
+	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 ChVector4& ChVec4::operator /= (const ChVector4& _Vec)
 {
-	Val.Div(_Vec.Val);
+	val.Div(_Vec.val);
 
 	if (w < -1.0f)w = -1.0f;
 	if (w > 1.0f)w = 1.0f;
@@ -108,11 +108,11 @@ ChVector4& ChVec4::operator /= (const ChVector4& _Vec)
 
 ChVector4 ChVec4::operator / (const ChVector4& _Vec)const
 {
-	ChVector4 TmpVec = *this;
+	ChVector4 tmpVec = *this;
 
-	TmpVec /= _Vec;
+	tmpVec /= _Vec;
 
-	return TmpVec;
+	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -120,7 +120,7 @@ ChVector4 ChVec4::operator / (const ChVector4& _Vec)const
 ChVector4& ChVec4::operator -= (const ChVector4& _Vec)
 {
 
-	Val.Sub(_Vec.Val);
+	val.Sub(_Vec.val);
 
 	if (w < -1.0f)w = -1.0f;
 	if (w > 1.0f)w = 1.0f;
@@ -131,11 +131,11 @@ ChVector4& ChVec4::operator -= (const ChVector4& _Vec)
 
 ChVector4 ChVec4::operator - (const ChVector4& _Vec)const
 {
-	ChVector4 TmpVec = *this;
+	ChVector4 tmpVec = *this;
 
-	TmpVec -= _Vec;
+	tmpVec -= _Vec;
 
-	return TmpVec;
+	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -143,7 +143,7 @@ ChVector4 ChVec4::operator - (const ChVector4& _Vec)const
 ChVector4& ChVec4::operator += (const ChVector4& _Vec)
 {
 
-	Val.Add(_Vec.Val);
+	val.Add(_Vec.val);
 
 	if (w < -1.0f)w = -1.0f;
 	if (w > 1.0f)w = 1.0f;
@@ -154,22 +154,22 @@ ChVector4& ChVec4::operator += (const ChVector4& _Vec)
 
 ChVector4 ChVec4::operator + (const ChVector4& _Vec)const
 {
-	ChVector4 TmpVec = *this;
+	ChVector4 tmpVec = *this;
 
-	TmpVec += _Vec;
+	tmpVec += _Vec;
 
-	return TmpVec;
+	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 ChVec4::operator const ChVector3() const
 {
-	ChVec3 Out;
+	ChVec3 out;
 
-	Out.Val = static_cast<ChMath::VectorBase<float,3>>(Val);
+	out.val = static_cast<ChMath::VectorBase<float,3>>(val);
 
-	return Out;
+	return out;
 
 }
 
@@ -178,67 +178,67 @@ ChVec4::operator const ChVector3() const
 ChVec4::operator const ChVector2() const
 {
 
-	ChVec2 Out;
+	ChVec2 out;
 
-	Out.Val = static_cast<ChMath::VectorBase<float, 2>>(Val);
+	out.val = static_cast<ChMath::VectorBase<float, 2>>(val);
 
-	return Out;
+	return out;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 std::string ChVec4::Serialize(
-	const std::string& _CutChar
-	, const std::string& _EndChar)
+	const std::string& _cutChar
+	, const std::string& _endChar)
 {
-	return Val.Serialize(_CutChar, _EndChar);
+	return val.Serialize(_cutChar, _endChar);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 std::string ChVec4::SerializeARGB(
-	const std::string& _CutChar
-	, const std::string& _EndChar)
+	const std::string& _cutChar
+	, const std::string& _endChar)
 {
-	ChVec4 TmpVec;
+	ChVec4 tmpVec;
 
 	for (unsigned char i = 0; i < 4; i++)
 	{
-		TmpVec.Val[(i + 1) % 4] = Val[i];
+		tmpVec.val[(i + 1) % 4] = val[i];
 	}
 
-	return TmpVec.Serialize(_CutChar, _EndChar);
+	return tmpVec.Serialize(_cutChar, _endChar);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChVec4::Deserialize(
-	const std::string& _Str
-	, const size_t _FPos
-	, const std::string& _CutChar
-	, const std::string& _EndChar
-	, const unsigned int _Digit)
+	const std::string& _str
+	, const size_t _fPos
+	, const std::string& _cutChar
+	, const std::string& _endChar
+	, const unsigned int _digit)
 {
-	Val.Deserialize(_Str, _FPos, _CutChar, _EndChar, _Digit);
+	val.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChVec4::DeserializeARGB(
-	const std::string& _Str
-	, const size_t _FPos
-	, const std::string& _CutChar
-	, const std::string& _EndChar
-	, const unsigned int _Digit)
+	const std::string& _str
+	, const size_t _fPos
+	, const std::string& _cutChar
+	, const std::string& _endChar
+	, const unsigned int _digit)
 {
 
-	ChVec4 TmpVec;
-	TmpVec.Deserialize(_Str, _FPos, _CutChar, _EndChar, _Digit);
+	ChVec4 tmpVec;
+	tmpVec.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
 
 	for (unsigned char i = 0; i < 4; i++)
 	{
-		Val[i] = TmpVec.Val[(i + 1) % 4];
+		val[i] = tmpVec.val[(i + 1) % 4];
 	}
 
 }
@@ -247,11 +247,11 @@ void ChVec4::DeserializeARGB(
 
 ChVector4 ChVec4::GetCross(const ChVector4& _Vec1, const ChVector4& _Vec2)
 {
-	ChVector4 TmpVec;
+	ChVector4 tmpVec;
 
-	TmpVec.Val.Cross(_Vec1.Val, _Vec2.Val);
+	tmpVec.val.Cross(_Vec1.val, _Vec2.val);
 
-	return TmpVec;
+	return tmpVec;
 
 }
 
@@ -259,37 +259,37 @@ ChVector4 ChVec4::GetCross(const ChVector4& _Vec1, const ChVector4& _Vec2)
 
 float ChVec4::GetCos(const ChVector4& _Vec1, const ChVector4& _Vec2)
 {
-	return _Vec1.Val.GetCos(_Vec2.Val);
+	return _Vec1.val.GetCos(_Vec2.val);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 float ChVec4::GetRadian(const ChVector4& _Vec1, const ChVector4& _Vec2)
 {
-	return _Vec1.Val.GetRadian(_Vec2.Val);
+	return _Vec1.val.GetRadian(_Vec2.val);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 float ChVec4::GetDot(const ChVector4& _Vec1, const ChVector4& _Vec2)
 {
-	return _Vec1.Val.GetDot(_Vec2.Val);
+	return _Vec1.val.GetDot(_Vec2.val);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 //ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
-ChVector4 ChVec4::GetCorrection(const ChVector4& _Start, const ChVector4& _End, const float _Now)
+ChVector4 ChVec4::GetCorrection(const ChVector4& _start, const ChVector4& _end, const float _Now)
 {
-	if (_Now <= 0.0f)return _Start;
-	if (_Now >= 1.0f)return _End;
-	ChVector4 TmpVec;
+	if (_Now <= 0.0f)return _start;
+	if (_Now >= 1.0f)return _end;
+	ChVector4 tmpVec;
 
-	TmpVec = _End - _Start;
+	tmpVec = _end - _start;
 
-	TmpVec = _Start + (TmpVec * _Now);
+	tmpVec = _start + (tmpVec * _Now);
 
-	return TmpVec;
+	return tmpVec;
 
 }
 
@@ -300,9 +300,9 @@ float ChVec4::GetLen(
 	, const ChVector4& _Vec2)
 {
 
-	ChVec4 TmpVec = _Vec1 - _Vec2;
+	ChVec4 tmpVec = _Vec1 - _Vec2;
 
-	return  TmpVec.Val.GetLen();
+	return  tmpVec.val.GetLen();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -311,7 +311,7 @@ void ChVec4::Normalize()
 {
 	if (Len() == 1.0f)return;
 
-	Val.Normalize();
+	val.Normalize();
 
 }
 
@@ -321,60 +321,60 @@ void ChVec4::Cross(
 	const ChVector4& _Vec1
 	, const ChVector4& _Vec2)
 {
-	Val.Cross(_Vec1.Val, _Vec2.Val);
+	val.Cross(_Vec1.val, _Vec2.val);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 //ChVector3 Method//
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector3& ChVec3::operator*= (const float& _Num)
+ChVector3& ChVec3::operator*= (const float& _num)
 {
 
-	Val.Mul(_Num);
+	val.Mul(_num);
 
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector3 ChVec3::operator * (const float& _Num)const
+ChVector3 ChVec3::operator * (const float& _num)const
 {
 
-	ChVector3 TmpVec = *this;
+	ChVector3 tmpVec = *this;
 
-	TmpVec *= _Num;
+	tmpVec *= _num;
 
-	return TmpVec;
+	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector3& ChVec3::operator/= (const float& _Num)
+ChVector3& ChVec3::operator/= (const float& _num)
 {
-	Val.Div(_Num);
+	val.Div(_num);
 
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector3 ChVec3::operator / (const float& _Num)const
+ChVector3 ChVec3::operator / (const float& _num)const
 {
 
-	ChVector3 TmpVec = *this;
+	ChVector3 tmpVec = *this;
 
-	TmpVec /= _Num;
+	tmpVec /= _num;
 
-	return TmpVec;
+	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector3& ChVec3::operator= (const float& _Num)
+ChVector3& ChVec3::operator= (const float& _num)
 {
 
-	Val.Set(_Num);
+	val.Set(_num);
 
 	return *this;
 }
@@ -383,7 +383,7 @@ ChVector3& ChVec3::operator= (const float& _Num)
 
 ChVector3& ChVector3::operator=(const ChVector3& _Vec)
 {
-	Val.Set(_Vec.Val);
+	val.Set(_Vec.val);
 
 	return *this;
 }
@@ -392,7 +392,7 @@ ChVector3& ChVector3::operator=(const ChVector3& _Vec)
 
 ChVector3& ChVec3::operator *= (const ChVector3& _Vec)
 {
-	Val.Mul(_Vec.Val);
+	val.Mul(_Vec.val);
 
 	return *this;
 }
@@ -401,18 +401,18 @@ ChVector3& ChVec3::operator *= (const ChVector3& _Vec)
 
 ChVector3 ChVec3::operator * (const ChVector3& _Vec)const
 {
-	ChVector3 TmpVec = *this;
+	ChVector3 tmpVec = *this;
 
-	TmpVec *= _Vec;
+	tmpVec *= _Vec;
 
-	return TmpVec;
+	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 ChVector3& ChVec3::operator /= (const ChVector3& _Vec)
 {
-	Val.Div(_Vec.Val);
+	val.Div(_Vec.val);
 
 	return *this;
 }
@@ -421,18 +421,18 @@ ChVector3& ChVec3::operator /= (const ChVector3& _Vec)
 
 ChVector3 ChVec3::operator / (const ChVector3& _Vec)const
 {
-	ChVector3 TmpVec = *this;
+	ChVector3 tmpVec = *this;
 
-	TmpVec /= _Vec;
+	tmpVec /= _Vec;
 
-	return TmpVec;
+	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 ChVector3& ChVec3::operator -= (const ChVector3& _Vec)
 {
-	Val.Sub(_Vec.Val);
+	val.Sub(_Vec.val);
 
 	return *this;
 }
@@ -441,18 +441,18 @@ ChVector3& ChVec3::operator -= (const ChVector3& _Vec)
 
 ChVector3 ChVec3::operator - (const ChVector3& _Vec)const
 {
-	ChVector3 TmpVec = *this;
+	ChVector3 tmpVec = *this;
 
-	TmpVec -= _Vec;
+	tmpVec -= _Vec;
 
-	return TmpVec;
+	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 ChVector3& ChVec3::operator += (const ChVector3& _Vec)
 {
-	Val.Add(_Vec.Val);
+	val.Add(_Vec.val);
 
 	return *this;
 }
@@ -461,22 +461,22 @@ ChVector3& ChVec3::operator += (const ChVector3& _Vec)
 
 ChVector3 ChVec3::operator + (const ChVector3& _Vec)const
 {
-	ChVector3 TmpVec = *this;
+	ChVector3 tmpVec = *this;
 
-	TmpVec += _Vec;
+	tmpVec += _Vec;
 
-	return TmpVec;
+	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 ChVec3::operator const ChVector4() const
 {
-	ChVec4 Out;
+	ChVec4 out;
 
-	Out.Val = static_cast<ChMath::VectorBase<float, 4>>(Val);
+	out.val = static_cast<ChMath::VectorBase<float, 4>>(val);
 
-	return Out;
+	return out;
 
 }
 
@@ -485,43 +485,43 @@ ChVec3::operator const ChVector4() const
 ChVec3::operator const ChVector2() const
 {
 
-	ChVec2 Out;
+	ChVec2 out;
 
-	Out.Val = static_cast<ChMath::VectorBase<float, 2>>(Val);
+	out.val = static_cast<ChMath::VectorBase<float, 2>>(val);
 
-	return Out;
+	return out;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 std::string ChVec3::Serialize(
-	const std::string& _CutChar
-	, const std::string& _EndChar)
+	const std::string& _cutChar
+	, const std::string& _endChar)
 {
-	return Val.Serialize(_CutChar, _EndChar);
+	return val.Serialize(_cutChar, _endChar);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChVec3::Deserialize(
-	const std::string& _Str
-	, const size_t _FPos
-	, const std::string& _CutChar
-	, const std::string& _EndChar
-	, const unsigned int _Digit)
+	const std::string& _str
+	, const size_t _fPos
+	, const std::string& _cutChar
+	, const std::string& _endChar
+	, const unsigned int _digit)
 {
-	Val.Deserialize(_Str, _FPos, _CutChar, _EndChar, _Digit);
+	val.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 ChVector3 ChVec3::GetCross(const ChVector3& _Vec1, const ChVector3& _Vec2)
 {
-	ChVector3 TmpVec;
+	ChVector3 tmpVec;
 
-	TmpVec.Val.Cross(_Vec1.Val, _Vec2.Val);
+	tmpVec.val.Cross(_Vec1.val, _Vec2.val);
 
-	return TmpVec;
+	return tmpVec;
 
 }
 
@@ -529,37 +529,37 @@ ChVector3 ChVec3::GetCross(const ChVector3& _Vec1, const ChVector3& _Vec2)
 
 float ChVec3::GetCos(const ChVector3& _Vec1, const ChVector3& _Vec2)
 {
-	return _Vec1.Val.GetCos(_Vec2.Val);
+	return _Vec1.val.GetCos(_Vec2.val);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 float ChVec3::GetRadian(const ChVector3& _Vec1, const ChVector3& _Vec2)
 {
-	return _Vec1.Val.GetRadian(_Vec2.Val);
+	return _Vec1.val.GetRadian(_Vec2.val);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 float ChVec3::GetDot(const ChVector3& _Vec1, const ChVector3& _Vec2)
 {
-	return _Vec1.Val.GetDot(_Vec2.Val);
+	return _Vec1.val.GetDot(_Vec2.val);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 //ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
-ChVector3 ChVec3::GetCorrection(const ChVector3& _Start, const ChVector3& _End, const float _Now)
+ChVector3 ChVec3::GetCorrection(const ChVector3& _start, const ChVector3& _end, const float _Now)
 {
-	if (_Now <= 0.0f)return _Start;
-	if (_Now >= 1.0f)return _End;
-	ChVector3 TmpVec;
+	if (_Now <= 0.0f)return _start;
+	if (_Now >= 1.0f)return _end;
+	ChVector3 tmpVec;
 
-	TmpVec = _End - _Start;
+	tmpVec = _end - _start;
 
-	TmpVec = _Start + (TmpVec * _Now);
+	tmpVec = _start + (tmpVec * _Now);
 
-	return TmpVec;
+	return tmpVec;
 
 }
 
@@ -570,16 +570,16 @@ float ChVec3::GetLen(
 	, const ChVector3& _Vec2)
 {
 
-	ChVec3 TmpVec = _Vec1 - _Vec2;
+	ChVec3 tmpVec = _Vec1 - _Vec2;
 
-	return  TmpVec.Val.GetLen();
+	return  tmpVec.val.GetLen();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChVec3::Normalize()
 {
-	Val.Normalize();
+	val.Normalize();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -597,59 +597,59 @@ void ChVec3::Cross(
 
 ChVector2& ChVector2::operator=(const ChVector2& _Vec)
 {
-	Val.Set(_Vec.Val);
+	val.Set(_Vec.val);
 
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector2& ChVec2::operator*= (const float& _Num)
+ChVector2& ChVec2::operator*= (const float& _num)
 {
-	Val.Mul(_Num);
+	val.Mul(_num);
 
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector2 ChVec2::operator * (const float& _Num)const
+ChVector2 ChVec2::operator * (const float& _num)const
 {
 
-	ChVector2 TmpVec = *this;
+	ChVector2 tmpVec = *this;
 
-	TmpVec *= _Num;
+	tmpVec *= _num;
 
-	return TmpVec;
+	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector2& ChVec2::operator/= (const float& _Num)
+ChVector2& ChVec2::operator/= (const float& _num)
 {
-	Val.Div(_Num);
+	val.Div(_num);
 
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector2 ChVec2::operator / (const float& _Num)const
+ChVector2 ChVec2::operator / (const float& _num)const
 {
 
-	ChVector2 TmpVec = *this;
+	ChVector2 tmpVec = *this;
 
-	TmpVec /= _Num;
+	tmpVec /= _num;
 
-	return TmpVec;
+	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector2& ChVec2::operator= (const float& _Num)
+ChVector2& ChVec2::operator= (const float& _num)
 {
 
-	Val.Set(_Num);
+	val.Set(_num);
 
 	return *this;
 }
@@ -658,7 +658,7 @@ ChVector2& ChVec2::operator= (const float& _Num)
 
 ChVector2& ChVec2::operator *= (const ChVector2& _Vec)
 {
-	Val.Mul(_Vec.Val);
+	val.Mul(_Vec.val);
 
 	return *this;
 }
@@ -667,18 +667,18 @@ ChVector2& ChVec2::operator *= (const ChVector2& _Vec)
 
 ChVector2 ChVec2::operator * (const ChVector2& _Vec)const
 {
-	ChVector2 TmpVec = *this;
+	ChVector2 tmpVec = *this;
 
-	TmpVec *= _Vec;
+	tmpVec *= _Vec;
 
-	return TmpVec;
+	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 ChVector2& ChVec2::operator -= (const ChVector2& _Vec)
 {
-	Val.Sub(_Vec.Val);
+	val.Sub(_Vec.val);
 
 	return *this;
 }
@@ -687,18 +687,18 @@ ChVector2& ChVec2::operator -= (const ChVector2& _Vec)
 
 ChVector2 ChVec2::operator - (const ChVector2& _Vec)const
 {
-	ChVector2 TmpVec = *this;
+	ChVector2 tmpVec = *this;
 
-	TmpVec -= _Vec;
+	tmpVec -= _Vec;
 
-	return TmpVec;
+	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 ChVector2& ChVec2::operator += (const ChVector2& _Vec)
 {
-	Val.Add(_Vec.Val);
+	val.Add(_Vec.val);
 
 	return *this;
 }
@@ -707,22 +707,22 @@ ChVector2& ChVec2::operator += (const ChVector2& _Vec)
 
 ChVector2 ChVec2::operator + (const ChVector2& _Vec)const
 {
-	ChVector2 TmpVec = *this;
+	ChVector2 tmpVec = *this;
 
-	TmpVec += _Vec;
+	tmpVec += _Vec;
 
-	return TmpVec;
+	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 ChVec2::operator const ChVector4() const
 {
-	ChVec4 Out;
+	ChVec4 out;
 
-	Out.Val = static_cast<ChMath::VectorBase<float, 4>>(Val);
+	out.val = static_cast<ChMath::VectorBase<float, 4>>(val);
 
-	return Out;
+	return out;
 
 }
 
@@ -731,43 +731,43 @@ ChVec2::operator const ChVector4() const
 ChVec2::operator const ChVector3() const
 {
 
-	ChVec3 Out;
+	ChVec3 out;
 
-	Out.Val = static_cast<ChMath::VectorBase<float, 3>>(Val);
+	out.val = static_cast<ChMath::VectorBase<float, 3>>(val);
 
-	return Out;
+	return out;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 std::string ChVec2::Serialize(
-	const std::string& _CutChar
-	, const std::string& _EndChar)
+	const std::string& _cutChar
+	, const std::string& _endChar)
 {
-	return Val.Serialize(_CutChar,_EndChar);
+	return val.Serialize(_cutChar,_endChar);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChVec2::Deserialize(
-	const std::string& _Str
-	, const size_t _FPos
-	, const std::string& _CutChar
-	, const std::string& _EndChar
-	, const unsigned int _Digit)
+	const std::string& _str
+	, const size_t _fPos
+	, const std::string& _cutChar
+	, const std::string& _endChar
+	, const unsigned int _digit)
 {
-	Val.Deserialize(_Str, _FPos, _CutChar, _EndChar, _Digit);
+	val.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 ChVector2 ChVec2::GetCross(const ChVector2& _Vec1, const ChVector2& _Vec2)
 {
-	ChVector2 TmpVec;
+	ChVector2 tmpVec;
 
-	TmpVec.Val.Cross(_Vec1.Val, _Vec2.Val);
+	tmpVec.val.Cross(_Vec1.val, _Vec2.val);
 
-	return TmpVec;
+	return tmpVec;
 
 }
 
@@ -776,7 +776,7 @@ ChVector2 ChVec2::GetCross(const ChVector2& _Vec1, const ChVector2& _Vec2)
 float ChVec2::GetCos(const ChVector2& _Vec1, const ChVector2& _Vec2)
 {
 
-	return _Vec1.Val.GetCos(_Vec2.Val);
+	return _Vec1.val.GetCos(_Vec2.val);
 
 }
 
@@ -785,7 +785,7 @@ float ChVec2::GetCos(const ChVector2& _Vec1, const ChVector2& _Vec2)
 float ChVec2::GetRadian(const ChVector2& _Vec1, const ChVector2& _Vec2)
 {
 
-	return _Vec1.Val.GetRadian(_Vec2.Val);
+	return _Vec1.val.GetRadian(_Vec2.val);
 
 }
 
@@ -793,23 +793,23 @@ float ChVec2::GetRadian(const ChVector2& _Vec1, const ChVector2& _Vec2)
 
 float ChVec2::GetDot(const ChVector2& _Vec1, const ChVector2& _Vec2)
 {
-	return _Vec1.Val.GetDot(_Vec2.Val);
+	return _Vec1.val.GetDot(_Vec2.val);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 //ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
-ChVector2 ChVec2::GetCorrection(const ChVector2& _Start, const ChVector2& _End, const float _Now)
+ChVector2 ChVec2::GetCorrection(const ChVector2& _start, const ChVector2& _end, const float _Now)
 {
-	if (_Now <= 0.0f)return _Start;
-	if (_Now >= 1.0f)return _End;
-	ChVector2 TmpVec;
+	if (_Now <= 0.0f)return _start;
+	if (_Now >= 1.0f)return _end;
+	ChVector2 tmpVec;
 
-	TmpVec = _End - _Start;
+	tmpVec = _end - _start;
 
-	TmpVec = _Start + (TmpVec * _Now);
+	tmpVec = _start + (tmpVec * _Now);
 
-	return TmpVec;
+	return tmpVec;
 
 }
 
@@ -820,16 +820,16 @@ float ChVec2::GetLen(
 	, const ChVector2& _Vec2)
 {
 
-	ChVec2 TmpVec = _Vec1 - _Vec2;
+	ChVec2 tmpVec = _Vec1 - _Vec2;
 
-	return  TmpVec.Val.GetLen();
+	return  tmpVec.val.GetLen();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChVec2::Normalize()
 {
-	Val.Normalize();
+	val.Normalize();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -847,66 +847,66 @@ void ChVec2::Cross(
 ///////////////////////////////////////////////////////////////////////////////////
 
 std::string ChQua::Serialize(
-	const std::string& _CutChar
-	, const std::string& _EndChar)
+	const std::string& _cutChar
+	, const std::string& _endChar)
 {
-	std::string Tmp = "";
+	std::string tmp = "";
 	for (unsigned char i = 0; i < 4; i++)
 	{
 		if (i == 3)break;
-		Tmp += std::to_string(Val[i]);
-		Tmp += _CutChar;
+		tmp += std::to_string(val[i]);
+		tmp += _cutChar;
 	}
 
-	Tmp += std::to_string(Val[3]);
-	Tmp += _EndChar;
+	tmp += std::to_string(val[3]);
+	tmp += _endChar;
 
-	return Tmp;
+	return tmp;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChQua::Deserialize(
-	const std::string& _Str
-	, const size_t _FPos
-	, const std::string& _CutChar
-	, const std::string& _EndChar
-	, const unsigned int _Digit)
+	const std::string& _str
+	, const size_t _fPos
+	, const std::string& _cutChar
+	, const std::string& _endChar
+	, const unsigned int _digit)
 {
 
-	std::string TmpStr = _Str;
+	std::string tmpStr = _str;
 
-	size_t TmpFPos = _FPos;
+	size_t tmpFPos = _fPos;
 
-	size_t EPos = TmpStr.find(_EndChar, TmpFPos);
+	size_t EPos = tmpStr.find(_endChar, tmpFPos);
 
-	if (EPos == TmpStr.npos)EPos = TmpStr.size();
+	if (EPos == tmpStr.npos)EPos = tmpStr.size();
 
-	TmpStr = TmpStr.substr(TmpFPos, EPos - TmpFPos);
+	tmpStr = tmpStr.substr(tmpFPos, EPos - tmpFPos);
 
-	TmpStr = ChStr::RemoveToWhiteSpaceChars(TmpStr);
+	tmpStr = ChStr::RemoveToWhiteSpaceChars(tmpStr);
 
-	TmpFPos = 0;
+	tmpFPos = 0;
 
-	EPos = TmpStr.length();
+	EPos = tmpStr.length();
 
-	size_t Tmp = TmpFPos;
+	size_t tmp = tmpFPos;
 
 	for (unsigned char i = 0; i < 4; i++)
 	{
-		size_t Test = TmpStr.find(_CutChar, Tmp);
+		size_t Test = tmpStr.find(_cutChar, tmp);
 		if (Test > EPos)Test = EPos;
 		{
-			TmpFPos = Test;
+			tmpFPos = Test;
 
-			std::string Num = TmpStr.substr(Tmp, TmpFPos - Tmp);
+			std::string num = tmpStr.substr(tmp, tmpFPos - tmp);
 
-			Val[i] = (float)std::atof(Num.c_str());
+			val[i] = (float)std::atof(num.c_str());
 
-			Val[i] = ChMath::Round(Val[i], _Digit);
+			val[i] = ChMath::Round(val[i], _digit);
 
-			Tmp += Num.length();
-			Tmp += 1;
+			tmp += num.length();
+			tmp += 1;
 
 		}
 
@@ -932,13 +932,13 @@ ChVec3 ChQua::GetEulerAngleForVec3()const
 	float zw = z * w;
 	float ww = w * w;
 
-	ChVec3 Out;
+	ChVec3 out;
 
-	Out.x = std::asin(2.0f * (xz - yw));
-	Out.y = std::atan2(2.0f * (yz + xw), xx + yy - zz - ww);
-	Out.z = std::atan2(2.0f * (zw + xy), xx - yy - zz + ww);
+	out.x = std::asin(2.0f * (xz - yw));
+	out.y = std::atan2(2.0f * (yz + xw), xx + yy - zz - ww);
+	out.z = std::atan2(2.0f * (zw + xy), xx - yy - zz + ww);
 
-	return Out;
+	return out;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -993,11 +993,11 @@ ChLMatrix& ChLMatrix::operator *= (const ChLMatrix _Mat)
 
 ChLMatrix const ChLMatrix::operator * (const ChLMatrix _Mat)const
 {
-	ChLMatrix Out = *this;
+	ChLMatrix out = *this;
 
-	Out *= _Mat;
+	out *= _Mat;
 
-	return Out;
+	return out;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -1015,11 +1015,11 @@ ChLMatrix& ChLMatrix::operator += (const ChLMatrix _Mat)
 ChLMatrix const ChLMatrix::operator + (const ChLMatrix _Mat)const
 {
 
-	ChLMatrix Out = *this;
+	ChLMatrix out = *this;
 
-	Out += _Mat;
+	out += _Mat;
 
-	return Out;
+	return out;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -1037,42 +1037,42 @@ ChLMatrix& ChLMatrix::operator -= (const ChLMatrix _Mat)
 ChLMatrix const ChLMatrix::operator - (const ChLMatrix _Mat)const
 {
 
-	ChLMatrix Out = *this;
+	ChLMatrix out = *this;
 
-	Out -= _Mat;
+	out -= _Mat;
 
-	return Out;
+	return out;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 std::string ChLMatrix::Serialize(
-	const std::string& _CutChar
-	, const std::string& _EndChar)
+	const std::string& _cutChar
+	, const std::string& _endChar)
 {
-	return m.Serialize(_CutChar);
+	return m.Serialize(_cutChar);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 std::string ChLMatrix::SerializeUpper(
-	const std::string& _CutChar
-	, const std::string& _EndChar
-	, const std::string& _CutTo4Char)
+	const std::string& _cutChar
+	, const std::string& _endChar
+	, const std::string& _cutTo4Char)
 {
-	return m.SerializeUpper(_CutChar, _EndChar, _CutTo4Char);
+	return m.SerializeUpper(_cutChar, _endChar, _cutTo4Char);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChLMatrix::Deserialize(
-	const std::string& _Str
-	, const size_t _FPos
-	, const std::string& _CutChar
-	, const std::string& _EndChar
-	, const unsigned int _Digit)
+	const std::string& _str
+	, const size_t _fPos
+	, const std::string& _cutChar
+	, const std::string& _endChar
+	, const unsigned int _digit)
 {
-	m.Deserialize(_Str, _FPos, _CutChar, _EndChar, _Digit);
+	m.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -1190,31 +1190,31 @@ ChVec3 ChLMatrix::GetPosition()const
 
 ChVec3 ChLMatrix::GetRotation()const
 {
-	ChVec3 TmpScl = GetScalling();
+	ChVec3 tmpScl = GetScalling();
 
-	float OutM[4][4];
+	float outM[4][4];
 
 	for (unsigned char i = 0; i < 3; i++)
 	{
 		for (unsigned char j = 0; j < 3; j++)
 		{
-			OutM[i][j] = m[i][j];
-			OutM[i][j] /= TmpScl.Val[i] != 0.0f ? TmpScl.Val[i] : 1.0f;
+			outM[i][j] = m[i][j];
+			outM[i][j] /= tmpScl.val[i] != 0.0f ? tmpScl.val[i] : 1.0f;
 		}
 	}
 
-	ChVec3 Out = ChVec3(
-		(std::atan2f(OutM[2][1], OutM[2][2])),
-		(std::asinf(-OutM[2][0])),
-		(std::atan2f(OutM[1][0], OutM[0][0])));
+	ChVec3 out = ChVec3(
+		(std::atan2f(outM[2][1], outM[2][2])),
+		(std::asinf(-outM[2][0])),
+		(std::atan2f(outM[1][0], outM[0][0])));
 
-	//ChVec3 Out = ChVec3(
+	//ChVec3 out = ChVec3(
 	//	(std::atan2f(_32,_33)),
 	//	(std::asinf(_31)),
 	//	(std::atan2f(_21,_11)));
 
 
-	return Out;
+	return out;
 
 }
 
@@ -1229,17 +1229,17 @@ ChVec3 ChLMatrix::GetScalling()const
 //
 //ChMath::MatrixBase3x3 ChLMatrix::GetRotMatrix()const
 //{
-//	ChMath::MatrixBase3x3 Out;
+//	ChMath::MatrixBase3x3 out;
 //
 //	for (unsigned char i = 0; i < 3; i++)
 //	{
 //		for (unsigned char j = 0; j < 3; j++)
 //		{
-//			Out[i][j] = m[i][j];
+//			out[i][j] = m[i][j];
 //		}
 //	}
 //
-//	return Out;
+//	return out;
 //
 //}
 
@@ -1247,37 +1247,37 @@ ChVec3 ChLMatrix::GetScalling()const
 
 ChVec4 ChLMatrix::Transform(const ChVec4 _Base)const
 {
-	ChVec4 Out;
+	ChVec4 out;
 
-	Out = _Base;
+	out = _Base;
 
-	Out.w = 1.0f;
+	out.w = 1.0f;
 
-	Out.Val = m.HorizontalMul(Out.Val);
+	out.val = m.HorizontalMul(out.val);
 
-	return Out;
+	return out;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 ChVec4 ChLMatrix::TransformCoord(const ChVec4 _Base)const
 {
-	ChLMatrix Tmp = *this;
+	ChLMatrix tmp = *this;
 
-	Tmp.l_41 = 0.0f;
-	Tmp.l_42 = 0.0f;
-	Tmp.l_43 = 0.0f;
+	tmp.l_41 = 0.0f;
+	tmp.l_42 = 0.0f;
+	tmp.l_43 = 0.0f;
 
-	return Tmp.Transform(_Base);
+	return tmp.Transform(_Base);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 ChRMatrix ChLMatrix::ConvertAxis()
 {
-	ChRMatrix Tmp;
+	ChRMatrix tmp;
 
-	return Tmp;
+	return tmp;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -1305,56 +1305,56 @@ ChUIMatrix& ChUIMatrix::operator =(const ChUIMatrix _Mat)
 ///////////////////////////////////////////////////////////////////////////////////
 
 std::string ChUIMatrix::Serialize(
-	const std::string& _CutChar
-	, const std::string& _EndChar)
+	const std::string& _cutChar
+	, const std::string& _endChar)
 {
-	return m.Serialize(_CutChar, _EndChar);
+	return m.Serialize(_cutChar, _endChar);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 std::string ChUIMatrix::SerializeUpper(
-	const std::string& _CutChar
-	, const std::string& _EndChar
-	, const std::string& _CutTo4Char)
+	const std::string& _cutChar
+	, const std::string& _endChar
+	, const std::string& _cutTo4Char)
 {
-	return m.SerializeUpper(_CutChar, _EndChar, _CutTo4Char);
+	return m.SerializeUpper(_cutChar, _endChar, _cutTo4Char);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChUIMatrix::Deserialize(
-	const std::string& _Str
-	, const size_t _FPos
-	, const std::string& _CutChar
-	, const std::string& _EndChar)
+	const std::string& _str
+	, const size_t _fPos
+	, const std::string& _cutChar
+	, const std::string& _endChar)
 {
-	m.Deserialize(_Str, _FPos, _CutChar, _EndChar);
+	m.Deserialize(_str, _fPos, _cutChar, _endChar);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 //Math Function//
 ///////////////////////////////////////////////////////////////////////////////////
 
-float ChMath::Round(const float& _Val, const unsigned int _Digit)
+float ChMath::Round(const float& _val, const unsigned int _digit)
 {
-	float Out = _Val * std::powf(10.0f, static_cast<float>(_Digit - 1));
-	Out = std::round(Out);
-	Out = Out * std::powf(0.1f, static_cast<float>(_Digit - 1));
+	float out = _val * std::powf(10.0f, static_cast<float>(_digit - 1));
+	out = std::round(out);
+	out = out * std::powf(0.1f, static_cast<float>(_digit - 1));
 
-	return Out;
+	return out;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-double ChMath::Round(const double& _Val, const unsigned int _Digit)
+double ChMath::Round(const double& _val, const unsigned int _digit)
 {
-	double Out = _Val * std::powl(10, static_cast<double>(_Digit - 1));
-	Out = std::round(Out);
-	Out = Out * std::powl(0.1, static_cast<double>(_Digit - 1));
+	double out = _val * std::powl(10, static_cast<double>(_digit - 1));
+	out = std::round(out);
+	out = out * std::powl(0.1, static_cast<double>(_digit - 1));
 
 
-	return Out;
+	return out;
 
 }
 
@@ -1362,103 +1362,103 @@ double ChMath::Round(const double& _Val, const unsigned int _Digit)
 //Degree Method//
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChMath::Degree& ChMath::Degree::operator=(const float _Num)
+ChMath::Degree& ChMath::Degree::operator=(const float _num)
 {
-	Val = _Num;
+	val = _num;
 	Math();
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChMath::Degree& ChMath::Degree::operator+=(const float _Num)
+ChMath::Degree& ChMath::Degree::operator+=(const float _num)
 {
 
-	Val += _Num;
+	val += _num;
 	Math();
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChMath::Degree ChMath::Degree::operator+(const float _Num)const
+ChMath::Degree ChMath::Degree::operator+(const float _num)const
 {
-	Degree Tmp = *this;
-	Tmp += _Num;
-	return Tmp;
+	Degree tmp = *this;
+	tmp += _num;
+	return tmp;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChMath::Degree& ChMath::Degree::operator-=(const float _Num)
+ChMath::Degree& ChMath::Degree::operator-=(const float _num)
 {
-	Val -= _Num;
+	val -= _num;
 	Math();
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChMath::Degree ChMath::Degree::operator-(const float _Num)const
+ChMath::Degree ChMath::Degree::operator-(const float _num)const
 {
 
-	Degree Tmp = *this;
-	Tmp -= _Num;
-	return Tmp;
+	Degree tmp = *this;
+	tmp -= _num;
+	return tmp;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChMath::Degree& ChMath::Degree::operator*=(const float _Num)
+ChMath::Degree& ChMath::Degree::operator*=(const float _num)
 {
-	Val *= _Num;
+	val *= _num;
 	Math();
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChMath::Degree ChMath::Degree::operator*(const float _Num)const
+ChMath::Degree ChMath::Degree::operator*(const float _num)const
 {
 
-	Degree Tmp = *this;
-	Tmp *= _Num;
-	return Tmp;
+	Degree tmp = *this;
+	tmp *= _num;
+	return tmp;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChMath::Degree& ChMath::Degree::operator/=(const float _Num)
+ChMath::Degree& ChMath::Degree::operator/=(const float _num)
 {
-	Val /= _Num;
+	val /= _num;
 	Math();
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChMath::Degree ChMath::Degree::operator/(const float _Num)const
+ChMath::Degree ChMath::Degree::operator/(const float _num)const
 {
 
-	Degree Tmp = *this;
-	Tmp /= _Num;
-	return Tmp;
+	Degree tmp = *this;
+	tmp /= _num;
+	return tmp;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 ChMath::Degree::operator float()const
 {
-	float Tmp;
-	Tmp = Val;
-	return Tmp;
+	float tmp;
+	tmp = val;
+	return tmp;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChMath::Degree& ChMath::Degree::operator=(const ChMath::Radian _Num)
+ChMath::Degree& ChMath::Degree::operator=(const ChMath::Radian _num)
 {
-	*this = ToDegree(_Num);
+	*this = ToDegree(_num);
 	return *this;
 }
 
@@ -1466,47 +1466,47 @@ ChMath::Degree& ChMath::Degree::operator=(const ChMath::Radian _Num)
 
 ChMath::Degree::Degree()
 {
-	Val = 0.0f;
+	val = 0.0f;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChMath::Degree::Degree(const float _Val)
+ChMath::Degree::Degree(const float _val)
 {
-	*this = _Val;
+	*this = _val;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChMath::Degree::Degree(const Degree& _Val)
+ChMath::Degree::Degree(const Degree& _val)
 {
-	Val = _Val;
+	val = _val;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChMath::Degree::Degree(const Radian& _Val)
+ChMath::Degree::Degree(const Radian& _val)
 {
-	*this = _Val;
+	*this = _val;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChMath::Degree::Math()
 {
-	if (Val < 0.0f)
+	if (val < 0.0f)
 	{
-		unsigned int Tmp;
-		Tmp = static_cast<unsigned int>(std::floor((Val / -360.0f)));
-		Val += (Tmp + 1) * 360.0f;
+		unsigned int tmp;
+		tmp = static_cast<unsigned int>(std::floor((val / -360.0f)));
+		val += (tmp + 1) * 360.0f;
 		return;
 	}
 
-	if (Val >= 360.0f)
+	if (val >= 360.0f)
 	{
-		unsigned int Tmp;
-		Tmp = static_cast<unsigned int>(std::floor((Val / 360.0f)));
-		Val -= (Tmp) * 360.0f;
+		unsigned int tmp;
+		tmp = static_cast<unsigned int>(std::floor((val / 360.0f)));
+		val -= (tmp) * 360.0f;
 		return;
 	}
 
@@ -1516,104 +1516,104 @@ void ChMath::Degree::Math()
 //Radian Method//
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChMath::Radian& ChMath::Radian::operator=(const float _Num)
+ChMath::Radian& ChMath::Radian::operator=(const float _num)
 {
-	Val = _Num;
+	val = _num;
 	Math();
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChMath::Radian& ChMath::Radian::operator+=(const float _Num)
+ChMath::Radian& ChMath::Radian::operator+=(const float _num)
 {
 
-	Val += _Num;
+	val += _num;
 	Math();
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChMath::Radian ChMath::Radian::operator+(const float _Num)const
+ChMath::Radian ChMath::Radian::operator+(const float _num)const
 {
-	Radian Tmp = *this;
-	Tmp += _Num;
-	return Tmp;
+	Radian tmp = *this;
+	tmp += _num;
+	return tmp;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChMath::Radian& ChMath::Radian::operator-=(const float _Num)
+ChMath::Radian& ChMath::Radian::operator-=(const float _num)
 {
-	Val -= _Num;
+	val -= _num;
 	Math();
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChMath::Radian ChMath::Radian::operator-(const float _Num)const
+ChMath::Radian ChMath::Radian::operator-(const float _num)const
 {
 
-	Radian Tmp = *this;
-	Tmp -= _Num;
-	return Tmp;
+	Radian tmp = *this;
+	tmp -= _num;
+	return tmp;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChMath::Radian& ChMath::Radian::operator*=(const float _Num)
+ChMath::Radian& ChMath::Radian::operator*=(const float _num)
 {
-	Val *= _Num;
+	val *= _num;
 	Math();
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChMath::Radian ChMath::Radian::operator*(const float _Num)const
+ChMath::Radian ChMath::Radian::operator*(const float _num)const
 {
 
-	Radian Tmp = *this;
-	Tmp *= _Num;
-	return Tmp;
+	Radian tmp = *this;
+	tmp *= _num;
+	return tmp;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChMath::Radian& ChMath::Radian::operator/=(const float _Num)
+ChMath::Radian& ChMath::Radian::operator/=(const float _num)
 {
-	Val /= _Num;
+	val /= _num;
 	Math();
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChMath::Radian ChMath::Radian::operator/(const float _Num)const
+ChMath::Radian ChMath::Radian::operator/(const float _num)const
 {
 
-	Radian Tmp = *this;
-	Tmp /= _Num;
-	return Tmp;
+	Radian tmp = *this;
+	tmp /= _num;
+	return tmp;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 ChMath::Radian::operator float()const
 {
-	float Tmp;
-	Tmp = Val;
-	return Tmp;
+	float tmp;
+	tmp = val;
+	return tmp;
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChMath::Radian& ChMath::Radian::operator=(const Degree _Num)
+ChMath::Radian& ChMath::Radian::operator=(const Degree _num)
 {
-	*this = ToRadian(_Num);
+	*this = ToRadian(_num);
 	return *this;
 }
 
@@ -1621,49 +1621,49 @@ ChMath::Radian& ChMath::Radian::operator=(const Degree _Num)
 
 ChMath::Radian::Radian()
 {
-	Val = 0.0f;
+	val = 0.0f;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChMath::Radian::Radian(const float _Val)
+ChMath::Radian::Radian(const float _val)
 {
-	*this = _Val;
+	*this = _val;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChMath::Radian::Radian(const Radian& _Val)
+ChMath::Radian::Radian(const Radian& _val)
 {
-	Val = _Val;
+	val = _val;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChMath::Radian::Radian(const Degree& _Val)
+ChMath::Radian::Radian(const Degree& _val)
 {
-	*this = _Val;
+	*this = _val;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChMath::Radian::Math()
 {
-	float TmpVal;
-	TmpVal = (Val / Pi);
-	if (TmpVal < 0.0f)
+	float tmpVal;
+	tmpVal = (val / Pi);
+	if (tmpVal < 0.0f)
 	{
-		unsigned int Tmp;
-		Tmp = static_cast<unsigned int>(std::floor((TmpVal / -2.0f)));
-		Val += (Tmp + 1) * 2.0f * Pi;
+		unsigned int tmp;
+		tmp = static_cast<unsigned int>(std::floor((tmpVal / -2.0f)));
+		val += (tmp + 1) * 2.0f * Pi;
 		return;
 	}
 
-	if (TmpVal >= 360.0f)
+	if (tmpVal >= 360.0f)
 	{
-		unsigned int Tmp;
-		Tmp = static_cast<unsigned int>(std::floor((TmpVal / 2.0f)));
-		Val -= (Tmp) * 2.0f * Pi;
+		unsigned int tmp;
+		tmp = static_cast<unsigned int>(std::floor((tmpVal / 2.0f)));
+		val -= (tmp) * 2.0f * Pi;
 		return;
 	}
 
@@ -1679,16 +1679,16 @@ ChVector3 ChMath::GetFaceNormal(
 	, const ChVec3& _Pos3)
 {
 
-	ChVec3 TmpVec, TmpVec2;
+	ChVec3 tmpVec, tmpVec2;
 
-	TmpVec = _Pos1 - _Pos2;
-	TmpVec2 = _Pos2 - _Pos3;
+	tmpVec = _Pos1 - _Pos2;
+	tmpVec2 = _Pos2 - _Pos3;
 
-	TmpVec.Cross(TmpVec, TmpVec2);
+	tmpVec.Cross(tmpVec, tmpVec2);
 
-	TmpVec.Normalize();
+	tmpVec.Normalize();
 
-	return TmpVec;
+	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

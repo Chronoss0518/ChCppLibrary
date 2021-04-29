@@ -21,8 +21,8 @@ void ChWin::MouseController::Init(
 	WindWidth = _WindWidth;
 	WindHeight = _WindHeight;
 
-	CenterPos.x = WindWidth / 2.0f;
-	CenterPos.y = WindWidth / 2.0f;
+	CenterPos.x = WindWidth / 2;
+	CenterPos.y = WindWidth / 2;
 
 	ScreenToClient(_hWnd, &CenterPos);
 

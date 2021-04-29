@@ -27,38 +27,36 @@ namespace ChPtr
 
 	//SharedPtr用ダウンキャスト//
 	template<class C, class C2>
-	static inline Shared<C> SharedSafeCast(Shared<C2> _SPtr)
+	static inline Shared<C> SharedSafeCast(Shared<C2> _sPtr)
 	{
-		return std::dynamic_pointer_cast<C, C2>(_SPtr);
+		return std::dynamic_pointer_cast<C, C2>(_sPtr);
 	}
 
 	//*Ptr用ダウンキャスト//
 	template<class C, class C2>
-	static inline C* SafeCast(C2*_Ptr)
+	static inline C* SafeCast(C2*_ptr)
 	{
-		auto Ptr = const_cast<C2*>(_Ptr);
-
-		return dynamic_cast<C*>(Ptr);
+		return dynamic_cast<C*>(_ptr);
 	}
 
 	//クラスがNULLまたはnullptrかをチェックする関数//
 	template<class C>
-	static inline auto NullCheck(const C _Class)->typename
+	static inline auto NullCheck(const C _class)->typename
 		std::enable_if<std::is_pointer<C>::value, ChStd::Bool>::type
 	{
-		if (_Class == NULL) return true;
-		if (_Class == nullptr)return true;
+		if (_class == NULL) return true;
+		if (_class == nullptr)return true;
 		return false;
 	}
 
 	//クラスがNULLとnullptrのどちらでもないかをチェックする関数//
 	template<class C>
-	static inline auto NotNullCheck(const C _Class)->typename
+	static inline auto NotNullCheck(const C _class)->typename
 		std::enable_if<std::is_pointer<C>::value, ChStd::Bool>::type
 	{
-		if (_Class != NULL)
+		if (_class != NULL)
 		{
-			if (_Class != nullptr)return true;
+			if (_class != nullptr)return true;
 		}
 
 		return false;
@@ -66,43 +64,23 @@ namespace ChPtr
 
 	//make_sharedを短縮するための関数//
 	template<class T, class... _Types>
-	static inline Shared<T> Make_S(_Types&&... _Args)
+	static inline Shared<T> Make_S(_Types&&... _args)
 	{
-		return std::make_shared<T>(_Args...);
+		return std::make_shared<T>(_args...);
 	}
 
 	//make_uniqueを短縮するための関数//
 	template<class T, class... _Types>
-	static inline Unique<T> Make_U(_Types&&... _Args)
+	static inline Unique<T> Make_U(_Types&&... _args)
 	{
-		return std::make_unique<T>(_Args...);
+		return std::make_unique<T>(_args...);
 	}
 
 	//move_ptrを短縮するための関数//
 	template<class T>
-	static inline T Move(T _Obj)
+	static inline T Move(T _obj)
 	{
-		return std::move<T>(_Obj);
-	}
-
-	//メモリを安全に解放する関数//
-	//
-	template<class T>
-	static inline void MemoryRelease(
-		T* _ReleaseMemory 
-		, const unsigned long _Num = 1)
-	{
-		if (_Num <= 0)return;
-
-		if (_Num <= 1)
-		{
-			delete _ReleaseMemory;
-		}
-		else
-		{
-			delete[] _ReleaseMemory;
-		}
-		_ReleaseMemory = nullptr;
+		return std::move<T>(_obj);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -117,22 +95,22 @@ namespace ChPtr
 
 		inline T& operator *()
 		{
-			return *Instance;
+			return *instance;
 		}
 
 		inline T* const operator ->()
 		{
-			return Instance;
+			return instance;
 		}
 
 		inline T const * const operator ->()const
 		{
-			return Instance;
+			return instance;
 		}
 
 		inline operator bool()const
 		{
-			return ChPtr::NotNullCheck(Instance);
+			return ChPtr::NotNullCheck(instance);
 		}
 
 		template<class CC>
@@ -140,12 +118,12 @@ namespace ChPtr
 		{
 			Release();
 
-			Instance = _Obj->Instance;
-			LookCnt = _Obj->LookCnt;
+			instance = _Obj->instance;
+			lookCnt = _Obj->lookCnt;
 
 			if (!*this)return *this;
 
-			LookCnt++;
+			lookCnt++;
 
 			return *this;
 		}
@@ -153,18 +131,18 @@ namespace ChPtr
 		inline CPtr<T> operator=(const std::nullptr_t _Nulls)
 		{
 			if (!*this)return *this;
-			*LookCnt -= 1;
-			if (*LookCnt > 0)
+			*lookCnt -= 1;
+			if (*lookCnt > 0)
 			{
-				Instance = nullptr;
+				instance = nullptr;
 				return nullptr;
 			}
 
-			delete Instance;
-			Instance = nullptr;
+			delete instance;
+			instance = nullptr;
 
-			delete LookCnt;
-			LookCnt = nullptr;
+			delete lookCnt;
+			lookCnt = nullptr;
 
 			return *this;
 		}
@@ -188,11 +166,11 @@ namespace ChPtr
 		{
 			Release();
 
-			Instance = nullptr;
-			LookCnt = nullptr;
+			instance = nullptr;
+			lookCnt = nullptr;
 
-			Instance = new CC(_Args...);
-			LookCnt = new unsigned long(1);
+			instance = new CC(_Args...);
+			lookCnt = new unsigned long(1);
 		}
 
 		inline CPtr<T>(const  CPtr<T>& _Null) { *this = _Null; }
@@ -223,17 +201,17 @@ namespace ChPtr
 		{
 			Release();
 
-			Instance = nullptr;
-			LookCnt = nullptr;
+			instance = nullptr;
+			lookCnt = nullptr;
 
-			Instance = new CC(_Args...);
-			LookCnt = new unsigned long(1);
+			instance = new CC(_Args...);
+			lookCnt = new unsigned long(1);
 		}
 
 	private:
 
-		T* Instance = nullptr;
-		unsigned long* LookCnt = nullptr;
+		T* instance = nullptr;
+		unsigned long* lookCnt = nullptr;
 
 	};
 

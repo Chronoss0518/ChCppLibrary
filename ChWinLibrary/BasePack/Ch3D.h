@@ -3,11 +3,6 @@
 
 #include"../BaseIncluder/ChBase.h"
 
-namespace ChCpp
-{
-	class String;
-}
-
 namespace Ch3D
 {
 
@@ -50,19 +45,19 @@ namespace Ch3D
 
 	struct MaterialStatus
 	{
-		Material Mate;
+		Material mate;
 
-		ChStr::String texture;
-		ChStr::String normalMap;
-		ChStr::String damegeMap;
+		std::string texture;
+		std::string normalMap;
+		std::string damegeMap;
 	};
 
 	//Material‚É‘Î‰‚·‚é–Ê‚ğŠÇ—‚·‚é//
 	template<class vertex = Vertex>
 	struct Primitive
 	{
-		std::vector<ChPtr::Shared<TriPolygon<Vertex>>> TriPolygons = nullptr;
-		Vertex* VertexList = nullptr;
+		std::vector<ChPtr::Shared<TriPolygon<Vertex>>> triPolygons = nullptr;
+		Vertex* vertexList = nullptr;
 
 		ChPtr::Shared<MaterialStatus>mate = nullptr;
 

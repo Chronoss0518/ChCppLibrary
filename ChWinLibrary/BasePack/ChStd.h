@@ -10,6 +10,7 @@ namespace ChStd
 
 	//通常のbool型より1～3Byte軽くしたもの//
 	//現在ではbool = 1Byte//
+	//ビット演算子も利用できるためこちらは残しておく//
 	using Bool = unsigned char;
 
 #ifdef _WIN32
@@ -35,31 +36,44 @@ namespace ChStd
 #endif
 
 	//開始時に使用し、ランダムな値をセットする//
-	static inline void SetRand(const unsigned long _UseNo) { srand(_UseNo); }
+	static inline void SetRand(const unsigned long _useNo) { srand(_useNo); }
 
 	//SetRand使用後rand関数から値を取り出す//
-	static inline unsigned short GetRand(const unsigned short _Max)
+	static inline unsigned short GetRand(const unsigned short _useNumCount)
 	{
-		return rand() % _Max;
+		return rand() % _useNumCount;
 	}
 
 	//EnumClassを基底型へキャストするためのクラス//
 	template<typename Enum>
-	static inline auto EnumCast(Enum _Enum)->typename std::enable_if
+	static inline auto EnumCast(Enum _enum)->typename std::enable_if
 		<std::is_enum<Enum>::value, typename std::underlying_type< Enum >::type>::type
 	{
-		return static_cast<typename std::underlying_type<Enum>::type>(_Enum);
+		return static_cast<typename std::underlying_type<Enum>::type>(_enum);
 	}
 
 	//指定したアドレス先を値0で初期化する//
 	template<class T>
-	static inline void ChZeroMemory(T* _Val)
+	static inline void MZero(T* _val)
 	{
-		void* Tmp = static_cast<void*>(_Val);
+		void* tmp = static_cast<void*>(_val);
 
 		for (unsigned long i = 0; i < sizeof(T); i++)
 		{
-			*(static_cast<char*>(Tmp) + i) = 0;
+			*(static_cast<char*>(tmp) + i) = 0;
+		}
+	}
+
+	//指定したアドレス先を値0で初期化する//
+	template<class T>
+	static inline void MCopy(T* _copy, const T* _base)
+	{
+		void* tmpCopy = static_cast<void*>(_copy);
+		const void* tmpBase = static_cast<const void*>(_base);
+
+		for (unsigned long i = 0; i < sizeof(T); i++)
+		{
+			*(static_cast<char*>(tmpCopy) + i) = *(static_cast<char*>(tmpBase) + i);
 		}
 	}
 
