@@ -37,6 +37,7 @@
 #include"../BasePack/ChFIO.h"
 
 #include"../BasePack/ChMath.h"
+#include"../BasePack/ChMath3D.h"
 #include"../BasePack/Ch3D.h"
 
 #include"../CPP/ChClassParts/ChCPInitializer.h"
