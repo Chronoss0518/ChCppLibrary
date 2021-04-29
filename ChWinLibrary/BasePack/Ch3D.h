@@ -68,7 +68,7 @@ namespace Ch3D
 	{
 
 		std::vector<ChPtr::Shared<primitive>> polyDatas = nullptr;
-		std::map<ChStr::String, unsigned long>mateNames;
+		std::map<std::string, unsigned long>mateNames;
 
 		std::vector<ChPtr::Shared<Frame<Vertex>>> parent;
 

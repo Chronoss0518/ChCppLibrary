@@ -267,7 +267,7 @@ float ChObjectController9::GetLenToPosTri(
 
 			for (unsigned char j = 0; j < 3; j++)
 			{
-				if (ChMath::IsPSign(TTmpVec.Val[j]))continue;
+				if (ChMath::IsPSign(TTmpVec.val[j]))continue;
 
 				if(TmpNum <= 0)TmpNum = i;
 				TmpCnt++;

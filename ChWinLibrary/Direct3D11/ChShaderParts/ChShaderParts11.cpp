@@ -78,7 +78,7 @@ void DrawWindow::ClearView(ID3D11DeviceContext* _DC,const ChVec4& _Color)
 	if (ChPtr::NullCheck(_DC))return;
 	if (!*this)return;
 
-	_DC->ClearRenderTargetView(BBTargetView, _Color.Val.GetVal());
+	_DC->ClearRenderTargetView(BBTargetView, _Color.val.GetVal());
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

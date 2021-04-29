@@ -447,7 +447,7 @@ namespace ChMath
 
 		}
 
-		const T* const Getval()const
+		const T* const GetVal()const
 		{
 			return val;
 		}

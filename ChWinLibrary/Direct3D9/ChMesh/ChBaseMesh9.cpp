@@ -95,7 +95,7 @@ void BaseMesh9::SetMaterialName(const std::string& _FileName)
 	File.FileOpen(_FileName);
 
 	std::string TmpStr;
-	File.FileRead(TmpStr);
+	TmpStr = File.FileRead();
 
 	std::string TmpMateName = "Material ";
 
@@ -581,7 +581,7 @@ void SXFileMesh9::OpenFile(
 
 			ChFIO::File File;
 			File.FileOpen(_PathName + _FileName);
-			File.FileRead(FStr);
+			FStr = File.FileRead();
 			File.FileClose();
 
 		}

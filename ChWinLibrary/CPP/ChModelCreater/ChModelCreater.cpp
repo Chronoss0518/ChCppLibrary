@@ -49,7 +49,7 @@ void ChCpp::CMXFile::CreateModel(const std::string& _FilePath)
 
 		Files.FileOpen(_FilePath);
 
-		Files.FileRead(Text);
+		Text = Files.FileRead();
 
 		Files.FileClose();
 
@@ -920,7 +920,7 @@ void ChCpp::CMObjFile::CreateModel(const std::string& _FilePath)
 
 		Files.FileOpen(_FilePath);
 
-		Files.FileRead(Tmp);
+		Tmp = Files.FileRead();
 
 		Files.FileClose();
 
@@ -1013,7 +1013,7 @@ void ChCpp::CMObjFile::CreateMaterials(const std::string& _FileName)
 
 		Files.FileOpen(FolderPath + FileName);
 
-		Files.FileRead(Tmp);
+		Tmp = Files.FileRead();
 
 		Files.FileClose();
 

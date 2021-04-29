@@ -338,7 +338,7 @@ void ShaderController11::DrawStart()
 	{
 		TmpView = &RenderTargets[0];
 		DC->OMSetRenderTargets(RenderTargets.size(), TmpView, nullptr);
-		DC->ClearRenderTargetView(RenderTargets[0], BackColor.Val.GetVal());
+		DC->ClearRenderTargetView(RenderTargets[0], BackColor.val.GetVal());
 		RTDrawFlg = true;
 	}
 	else
@@ -351,8 +351,8 @@ void ShaderController11::DrawStart()
 
 		ChVec4 TmpCol = ChVec4(0.0f, 0.0f, 0.0f,0.0f);
 
-		DC->ClearRenderTargetView(Out3D.GetRTView(), BackColor.Val.GetVal());
-		DC->ClearRenderTargetView(Out2D.GetRTView(), TmpCol.Val.GetVal());
+		DC->ClearRenderTargetView(Out3D.GetRTView(), BackColor.val.GetVal());
+		DC->ClearRenderTargetView(Out2D.GetRTView(), TmpCol.val.GetVal());
 
 		Out3D.SetDrawData(DC, 12);
 

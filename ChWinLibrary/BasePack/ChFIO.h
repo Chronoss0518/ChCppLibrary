@@ -59,7 +59,7 @@ namespace ChFIO
 		{
 			std::string out = "";
 
-			if (!stream.is_open())return;
+			if (!stream.is_open())return out;
 
 			std::stringstream tmpSS;
 
@@ -93,7 +93,7 @@ namespace ChFIO
 				stream.open(openFileName.c_str(), std::ios::out | std::ios::trunc);
 				
 				stream.close();
-				stream.open(openFileName.c_str(), static_cast<std::ios_base::openmode>(Flg));
+				stream.open(openFileName.c_str(),flg);
 			}
 
 			std::string tmpStr = _writeStr;
@@ -141,36 +141,36 @@ namespace ChFIO
 
 	//専用エラーファイルを出力する//
 	inline static void OutToErrorText(
-		const std::string& _ErrorName
-		, const std::string& _ErrorDitails
-		, const OTEAddType _AddFlg = OTEAddType::None)
+		const std::string& _errorName
+		, const std::string& _errorDitails
+		, const OTEAddType _addFlg = OTEAddType::None)
 	{
-		File OutFiles;
-		std::string OutData = "";
-		std::string OutFileName = "";
-		OutFileName = _ErrorName + ".txt";
-		OutFiles.FileOpen(OutFileName);
+		File outFiles;
+		std::string outData = "";
+		std::string outFileName = "";
+		outFileName = _errorName + ".txt";
+		outFiles.FileOpen(outFileName);
 
-		if (_AddFlg == OTEAddType::All)
+		if (_addFlg == OTEAddType::All)
 		{
-			OutFiles.FileRead(OutData);
-			OutData = OutData + "\n";
+			outData = outFiles.FileRead();
+			outData = outData + "\n";
 		}
 
-		if (_AddFlg == OTEAddType::AfterFirst)
+		if (_addFlg == OTEAddType::AfterFirst)
 		{
 			static ChStd::Bool Flgs = false;
 			if (Flgs)
 			{
-				OutFiles.FileRead(OutData);
-				OutData = OutData + "\n";
+				outData = outFiles.FileRead();
+				outData = outData + "\n";
 			}
 			Flgs = true;
 		}
 
-		OutData = OutData + _ErrorDitails;
+		outData = outData + _errorDitails;
 
-		OutFiles.FileWrite(OutData);
+		outFiles.FileWrite(outData);
 
 		return;
 
