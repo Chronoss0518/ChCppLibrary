@@ -33,11 +33,11 @@ ChQuaternion_11& ChQuaternion_11::operator+=(const DirectX::XMFLOAT4& _cm)
 ChQuaternion_11 ChQuaternion_11::operator+(const DirectX::XMFLOAT4& _cm)const
 {
 
-	ChQuaternion_11 Tmp;
-	Tmp = *this;
-	Tmp += _cm;
+	ChQuaternion_11 tmp;
+	tmp = *this;
+	tmp += _cm;
 
-	return Tmp;
+	return tmp;
 }
 
 ChQuaternion_11& ChQuaternion_11::operator-=(const DirectX::XMFLOAT4& _cm)
@@ -50,11 +50,11 @@ ChQuaternion_11& ChQuaternion_11::operator-=(const DirectX::XMFLOAT4& _cm)
 
 ChQuaternion_11 ChQuaternion_11::operator-(const DirectX::XMFLOAT4& _cm)const
 {
-	ChQuaternion_11 Tmp;
-	Tmp = *this;
-	Tmp -= _cm;
+	ChQuaternion_11 tmp;
+	tmp = *this;
+	tmp -= _cm;
 
-	return Tmp;
+	return tmp;
 }
 
 ChQuaternion_11& ChQuaternion_11::operator*=(const DirectX::XMFLOAT4& _cm)
@@ -65,16 +65,16 @@ ChQuaternion_11& ChQuaternion_11::operator*=(const DirectX::XMFLOAT4& _cm)
 
 ChQuaternion_11 ChQuaternion_11::operator*(const DirectX::XMFLOAT4& _cm)const
 {
-	DirectX::XMVECTOR TmpVec;
-	ChQuaternion_11 TmpQua;
+	DirectX::XMVECTOR tmpVec;
+	ChQuaternion_11 tmpQua;
 
-	TmpVec = DirectX::XMLoadFloat4(&_cm);
+	tmpVec = DirectX::XMLoadFloat4(&_cm);
 
-	TmpVec = TmpVec * (DirectX::XMVECTOR)*this;
+	tmpVec = tmpVec * (DirectX::XMVECTOR)*this;
 
-	TmpQua = TmpVec;
+	tmpQua = tmpVec;
 
-	return TmpQua;
+	return tmpQua;
 }
 
 ChQuaternion_11& ChQuaternion_11::operator/=(const DirectX::XMFLOAT4& _cm)
@@ -88,18 +88,18 @@ ChQuaternion_11& ChQuaternion_11::operator/=(const DirectX::XMFLOAT4& _cm)
 ChQuaternion_11 ChQuaternion_11::operator/(const DirectX::XMFLOAT4& _cm)const
 {
 
-	DirectX::XMVECTOR TmpVec;
-	ChQuaternion_11 TmpQua;
+	DirectX::XMVECTOR tmpVec;
+	ChQuaternion_11 tmpQua;
 
-	TmpVec = DirectX::XMLoadFloat4(&_cm);
+	tmpVec = DirectX::XMLoadFloat4(&_cm);
 
-	TmpVec = DirectX::XMQuaternionInverse(TmpVec);
+	tmpVec = DirectX::XMQuaternionInverse(tmpVec);
 
-	TmpVec = TmpVec * (DirectX::XMVECTOR)*this;
+	tmpVec = tmpVec * (DirectX::XMVECTOR)*this;
 
-	TmpQua = TmpVec;
+	tmpQua = tmpVec;
 
-	return TmpQua;
+	return tmpQua;
 }
 
 ChQuaternion_11& ChQuaternion_11::operator=(const float& _cm)
@@ -122,11 +122,11 @@ ChQuaternion_11& ChQuaternion_11::operator+=(const float& _cm)
 
 ChQuaternion_11 ChQuaternion_11::operator+(const float& _cm)const
 {
-	ChQuaternion_11 Tmp;
+	ChQuaternion_11 tmp;
 
-	Tmp = *this;
-	Tmp += _cm;
-	return Tmp;
+	tmp = *this;
+	tmp += _cm;
+	return tmp;
 
 }
 
@@ -142,11 +142,11 @@ ChQuaternion_11& ChQuaternion_11::operator-=(const float& _cm)
 ChQuaternion_11 ChQuaternion_11::operator-(const float& _cm)const
 {
 
-	ChQuaternion_11 Tmp;
+	ChQuaternion_11 tmp;
 
-	Tmp = *this;
-	Tmp -= _cm;
-	return Tmp;
+	tmp = *this;
+	tmp -= _cm;
+	return tmp;
 
 }
 
@@ -162,11 +162,11 @@ ChQuaternion_11& ChQuaternion_11::operator*=(const float& _cm)
 ChQuaternion_11 ChQuaternion_11::operator*(const float& _cm)const
 {
 
-	ChQuaternion_11 Tmp;
+	ChQuaternion_11 tmp;
 
-	Tmp = *this;
-	Tmp *= _cm;
-	return Tmp;
+	tmp = *this;
+	tmp *= _cm;
+	return tmp;
 
 }
 
@@ -182,11 +182,11 @@ ChQuaternion_11& ChQuaternion_11::operator/=(const float& _cm)
 ChQuaternion_11 ChQuaternion_11::operator/(const float& _cm)const
 {
 
-	ChQuaternion_11 Tmp;
+	ChQuaternion_11 tmp;
 
-	Tmp = *this;
-	Tmp /= _cm;
-	return Tmp;
+	tmp = *this;
+	tmp /= _cm;
+	return tmp;
 
 }
 
@@ -198,73 +198,73 @@ ChQuaternion_11& ChQuaternion_11::operator=(const DirectX::XMVECTOR& _cm)
 
 ChQuaternion_11::operator DirectX::XMVECTOR()const
 {
-	DirectX::XMVECTOR Tmp;
+	DirectX::XMVECTOR tmp;
 
-	Tmp = DirectX::XMLoadFloat4(this);
+	tmp = DirectX::XMLoadFloat4(this);
 
-	return Tmp;
+	return tmp;
 }
 
 ChQuaternion_11::operator DirectX::XMFLOAT4()const
 {
 
-	DirectX::XMFLOAT4 TmpVec;
+	DirectX::XMFLOAT4 tmpVec;
 
-	TmpVec.x = x;
-	TmpVec.y = y;
-	TmpVec.z = z;
+	tmpVec.x = x;
+	tmpVec.y = y;
+	tmpVec.z = z;
 
-	return TmpVec;
+	return tmpVec;
 
 }
 
-ChQuaternion_11& ChQuaternion_11::operator = (const DirectX::XMFLOAT3&  _Vec)
+ChQuaternion_11& ChQuaternion_11::operator = (const DirectX::XMFLOAT3&  _vec)
 {
 
-	DirectX::XMVECTOR TmpVec,TmpVec2;
+	DirectX::XMVECTOR tmpVec,tmpVec2;
 	DirectX::XMVECTOR dot;
 
 	{
-		auto Tmp = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
-		TmpVec2 = DirectX::XMLoadFloat3(&Tmp);
+		auto tmp = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
+		tmpVec2 = DirectX::XMLoadFloat3(&tmp);
 	}
 
 
-	TmpVec = DirectX::XMLoadFloat3(&_Vec);
+	tmpVec = DirectX::XMLoadFloat3(&_vec);
 
-	TmpVec = DirectX::XMVector3Normalize(TmpVec);
+	tmpVec = DirectX::XMVector3Normalize(tmpVec);
 
-	dot = DirectX::XMVector3Dot(TmpVec, TmpVec2);
+	dot = DirectX::XMVector3Dot(tmpVec, tmpVec2);
 
-	TmpVec = DirectX::XMVector3Cross(TmpVec, TmpVec2);
+	tmpVec = DirectX::XMVector3Cross(tmpVec, tmpVec2);
 
-	TmpVec = DirectX::XMVector3Normalize(TmpVec);
+	tmpVec = DirectX::XMVector3Normalize(tmpVec);
 
 	{
-		float TmpDot;
-		DirectX::XMStoreFloat(&TmpDot, dot);
-		TmpVec = DirectX::XMQuaternionRotationAxis(TmpVec, TmpDot);
+		float tmpDot;
+		DirectX::XMStoreFloat(&tmpDot, dot);
+		tmpVec = DirectX::XMQuaternionRotationAxis(tmpVec, tmpDot);
 
 	}
 
-	*this = TmpVec;
+	*this = tmpVec;
 
 	return *this;
 }
 
-ChQuaternion_11& ChQuaternion_11::operator =(const DirectX::XMFLOAT4X4& _Mat)
+ChQuaternion_11& ChQuaternion_11::operator =(const DirectX::XMFLOAT4X4& _mat)
 {
 	
 
-	DirectX::XMVECTOR TmpVec;
-	DirectX::XMMATRIX TmpMat;
+	DirectX::XMVECTOR tmpVec;
+	DirectX::XMMATRIX tmpMat;
 
 
-	TmpMat = DirectX::XMLoadFloat4x4(&_Mat);
+	tmpMat = DirectX::XMLoadFloat4x4(&_mat);
 
-	TmpVec = DirectX::XMQuaternionRotationMatrix(TmpMat);
+	tmpVec = DirectX::XMQuaternionRotationMatrix(tmpMat);
 
-	*this = TmpVec;
+	*this = tmpVec;
 
 	return *this;
 }
@@ -277,11 +277,11 @@ void ChQuaternion_11::RotYPR(const float _x, const float _y, const float _z)
 {
 
 
-	DirectX::XMVECTOR TmpVec;
+	DirectX::XMVECTOR tmpVec;
 
-	TmpVec = DirectX::XMQuaternionRotationRollPitchYaw(y, _x, _z);
+	tmpVec = DirectX::XMQuaternionRotationRollPitchYaw(y, _x, _z);
 
-	*this = TmpVec;
+	*this = tmpVec;
 
 
 }
@@ -292,61 +292,61 @@ void ChQuaternion_11::RotLookAt(
 	const DirectX::XMFLOAT3& _Pos
 	, const DirectX::XMFLOAT3& _BasePos)
 {
-	ChVec3 Tmp = _Pos;
+	ChVec3 tmp = _Pos;
 
-	Tmp -= _BasePos;
+	tmp -= _BasePos;
 
-	*this = (DirectX::XMFLOAT3)(Tmp);
+	*this = (DirectX::XMFLOAT3)(tmp);
 
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChQuaternion_11::RotAxis(const DirectX::XMFLOAT3& _Vec, const float _Ang)
+void ChQuaternion_11::RotAxis(const DirectX::XMFLOAT3& _vec, const float _ang)
 {
 
-	DirectX::XMVECTOR TmpVec;
+	DirectX::XMVECTOR tmpVec;
 
-	TmpVec = DirectX::XMLoadFloat3(&_Vec);
+	tmpVec = DirectX::XMLoadFloat3(&_vec);
 
 
-	TmpVec = DirectX::XMQuaternionRotationAxis(TmpVec, _Ang);
+	tmpVec = DirectX::XMQuaternionRotationAxis(tmpVec, _ang);
 
-	*this = TmpVec;
+	*this = tmpVec;
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChQuaternion_11::RotMat(const DirectX::XMFLOAT4X4& _Mat)
+void ChQuaternion_11::RotMat(const DirectX::XMFLOAT4X4& _mat)
 {
 
-	DirectX::XMVECTOR TmpVec;
-	DirectX::XMMATRIX TmpMat;
+	DirectX::XMVECTOR tmpVec;
+	DirectX::XMMATRIX tmpMat;
 
-	TmpMat = DirectX::XMLoadFloat4x4(&_Mat);
+	tmpMat = DirectX::XMLoadFloat4x4(&_mat);
 
-	TmpVec = DirectX::XMQuaternionRotationMatrix(TmpMat);
+	tmpVec = DirectX::XMQuaternionRotationMatrix(tmpMat);
 
-	*this = TmpVec;
+	*this = tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChQuaternion_11::Lerp(
-	const ChQuaternion_11& _SVec
-	, const ChQuaternion_11& _EVec
-	, const float _NowTime)
+	const ChQuaternion_11& _sVec
+	, const ChQuaternion_11& _eVec
+	, const float _nowTime)
 {
-	ChQuaternion_11 Tmp;
-	Tmp = _EVec - _SVec;
+	ChQuaternion_11 tmp;
+	tmp = _eVec - _sVec;
 
-	Tmp *= _NowTime;
+	tmp *= _nowTime;
 
-	Tmp = _EVec + Tmp;
+	tmp = _eVec + tmp;
 
-	*this = Tmp;
+	*this = tmp;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -358,9 +358,9 @@ void ChQuaternion_11::Identity()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChQuaternion_11::Inverse(const ChQuaternion_11& _Qua)
+void ChQuaternion_11::Inverse(const ChQuaternion_11& _qua)
 {
-	*this = DirectX::XMQuaternionInverse(_Qua);
+	*this = DirectX::XMQuaternionInverse(_qua);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -369,13 +369,13 @@ void ChQuaternion_11::Inverse(const ChQuaternion_11& _Qua)
 
 ChQua::operator const DirectX::XMFLOAT4()const
 {
-	DirectX::XMFLOAT4 TmpVec;
-	TmpVec.x = x;
-	TmpVec.y = y;
-	TmpVec.z = z;
-	TmpVec.w = w;
+	DirectX::XMFLOAT4 tmpVec;
+	tmpVec.x = x;
+	tmpVec.y = y;
+	tmpVec.z = z;
+	tmpVec.w = w;
 
-	return TmpVec;
+	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -387,36 +387,36 @@ ChQua::operator const DirectX::XMFLOAT4*()const
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChQua& ChQua::operator= (const DirectX::XMFLOAT4& _Qua)
+ChQua& ChQua::operator= (const DirectX::XMFLOAT4& _qua)
 {
-	x = _Qua.x;
-	y = _Qua.y;
-	z = _Qua.z;
-	w = _Qua.w;
+	x = _qua.x;
+	y = _qua.y;
+	z = _qua.z;
+	w = _qua.w;
 
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChQua& ChQua::operator= (const DirectX::XMFLOAT3& _Vec)
+ChQua& ChQua::operator= (const DirectX::XMFLOAT3& _vec)
 {
-	ChQuaternion_11 Tmp;
-	Tmp = _Vec;
+	ChQuaternion_11 tmp;
+	tmp = _vec;
 
-	*this = Tmp;
+	*this = tmp;
 
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChQua& ChQua::operator= (const DirectX::XMFLOAT4X4& _Mat)
+ChQua& ChQua::operator= (const DirectX::XMFLOAT4X4& _mat)
 {
-	ChQuaternion_11 Tmp;
-	Tmp = _Mat;
+	ChQuaternion_11 tmp;
+	tmp = _mat;
 
-	*this = Tmp;
+	*this = tmp;
 
 	return *this;
 

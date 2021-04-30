@@ -16,15 +16,15 @@ namespace ChD3D11
 
 	public:
 
-		Sprite11& operator=(const Sprite11& _Sp)
+		Sprite11& operator=(const Sprite11& _sp)
 		{
 			for (unsigned char i = 0; i < 4; i++)
 			{
-				Position[i] = _Sp.Position[i];
-				UVPoss[i] = _Sp.UVPoss[i];
+				poss[i] = _sp.poss[i];
+				uvPoss[i] = _sp.uvPoss[i];
 			}
 
-			UpdateFlg = true;
+			updateFlg = true;
 
 			return *this;
 
@@ -35,58 +35,58 @@ namespace ChD3D11
 
 		void Init();
 
-		void Init(const ID3D11Device* _Device);
+		void Init(const ID3D11Device* _device);
 
 		void Release()override;
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		inline void SetPos(const SpritePositionName _PosNames, const  ChVec2& _PosData)
+		inline void SetPos(const SpritePositionName _posNames, const  ChVec2& _posData)
 		{
-			SetPos(ChStd::EnumCast(_PosNames), _PosData);
+			SetPos(ChStd::EnumCast(_posNames), _posData);
 		}
 
-		void SetPos(const unsigned char _PosNames, const  ChVec2& _PosData);
+		void SetPos(const unsigned char _posNames, const  ChVec2& _posData);
 
-		inline void SetUVPos(const SpritePositionName _PosNames, const ChVec2& _PosData)
+		inline void SetUVPos(const SpritePositionName _posNames, const ChVec2& _posData)
 		{
-			SetUVPos(ChStd::EnumCast(_PosNames), _PosData);
+			SetUVPos(ChStd::EnumCast(_posNames), _posData);
 		}
 
-		void SetUVPos(const unsigned char _PosNames, const  ChVec2& _PosData);
+		void SetUVPos(const unsigned char _posNames, const  ChVec2& _posData);
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
 
-		inline ChVec2 GetPos(const SpritePositionName _PosNames)
+		inline ChVec2 GetPos(const SpritePositionName _posNames)
 		{
-			return Position[ChStd::EnumCast(_PosNames)];
+			return poss[ChStd::EnumCast(_posNames)];
 		}
 
-		inline ChVec2 GetPos(const unsigned char _Num)
+		inline ChVec2 GetPos(const unsigned char _num)
 		{
-			if (_Num >= 4)return ChVec2();
+			if (_num >= 4)return ChVec2();
 
-			return Position[_Num];
+			return poss[_num];
 		}
 
-		inline ChVec2 GetPosUVPos(const SpritePositionName _PosNames)
+		inline ChVec2 GetPosUVPos(const SpritePositionName _posNames)
 		{
-			return UVPoss[ChStd::EnumCast(_PosNames)];
+			return uvPoss[ChStd::EnumCast(_posNames)];
 		}
 
-		ChVec2 GetPosUVPos(const unsigned char _Num)
+		ChVec2 GetPosUVPos(const unsigned char _num)
 		{
-			if (_Num >= 4)return ChVec2();
+			if (_num >= 4)return ChVec2();
 
-			return UVPoss[_Num];
+			return uvPoss[_num];
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 		
-		inline void Move(const ChVec2& _Vec) { Move(_Vec.x, _Vec.y); }
+		inline void Move(const ChVec2& _vec) { Move(_vec.x, _vec.y); }
 
 		void Move(const float _x,const float _y);
 
@@ -96,7 +96,7 @@ namespace ChD3D11
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		void SetDrawData(ID3D11DeviceContext* _DC)override;
+		void SetDrawData(ID3D11DeviceContext* _dc)override;
 
 		///////////////////////////////////////////////////////////////////////////////////
 
@@ -114,7 +114,7 @@ namespace ChD3D11
 		//	,ChVec2(-1.0f,1.0f)	//LeftDown//
 		//};
 
-		ChVec2 Position[4] =
+		ChVec2 poss[4] =
 		{
 			ChVec2(-1.0f,1.0f)	//LeftTop//
 			,ChVec2(1.0f,1.0f)	//RightTop//
@@ -122,7 +122,7 @@ namespace ChD3D11
 			,ChVec2(-1.0f,-1.0f)	//LeftDown//
 		};
 
-		ChVec2 UVPoss[4] =
+		ChVec2 uvPoss[4] =
 		{
 			ChVec2(0.0f,0.0f)	//LeftTop//
 			,ChVec2(1.0f,0.0f)	//RightTop//
@@ -130,9 +130,9 @@ namespace ChD3D11
 			,ChVec2(0.0f,1.0f)	//LeftDown//
 		};
 
-		ChStd::Bool UpdateFlg = true;
+		ChStd::Bool updateFlg = true;
 
-		PrimitiveData11<Vertex11> Primitives;
+		PrimitiveData11<Vertex11> primitives;
 
 	};
 

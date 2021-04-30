@@ -17,33 +17,33 @@ namespace ChD3D11
 
 			void Init();
 
-			void Init(ID3D11Device* _Device);
+			void Init(ID3D11Device* _device);
 
 			void Release()override;
 
 			///////////////////////////////////////////////////////////////////////////////////
 			//SetFunction//
 
-			void SetPos(const unsigned char _PosNo, const ChVec3& _PosData);
+			void SetPos(const unsigned char _posNo, const ChVec3& _posData);
 
-			void SetUVPos(const unsigned char _PosNo, const ChVec2& _PosData);
+			void SetUVPos(const unsigned char _posNo, const ChVec2& _posData);
 
 			///////////////////////////////////////////////////////////////////////////////////
 			//GetFunction//
 
-			inline ChVec3 GetPos(const unsigned char _Num)
+			inline ChVec3 GetPos(const unsigned char _num)
 			{
-				if (_Num >= 4)return ChVec3();
+				if (_num >= 4)return ChVec3();
 
-				return Primitives.VertexArray[_Num].Pos;
+				return primitives.vertexArray[_num].pos;
 
 			}
 
-			inline ChVec2 GetUVPos(const unsigned char _Num)
+			inline ChVec2 GetUVPos(const unsigned char _num)
 			{
-				if (_Num >= 4)return ChVec2();
+				if (_num >= 4)return ChVec2();
 
-				return Primitives.VertexArray[_Num].UVPos;
+				return primitives.vertexArray[_num].uvPos;
 
 			}
 
@@ -60,9 +60,9 @@ namespace ChD3D11
 
 			///////////////////////////////////////////////////////////////////////////////////
 
-			ChStd::Bool UpdateFlg = true;
+			ChStd::Bool updateFlg = true;
 
-			PrimitiveData11<MeshVertex11> Primitives;
+			PrimitiveData11<MeshVertex11> primitives;
 	};
 }
 

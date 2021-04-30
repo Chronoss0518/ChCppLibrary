@@ -16,10 +16,10 @@ void ShaderObject11::Release()
 
 	if (!*this)return;
 
-	if (ChPtr::NotNullCheck(Shader))
+	if (ChPtr::NotNullCheck(shader))
 	{
-		Shader->Release();
-		Shader = nullptr;
+		shader->Release();
+		shader = nullptr;
 	}
 
 	SetInitFlg(false);
@@ -29,26 +29,26 @@ void ShaderObject11::Release()
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ShaderObject11::CreateVertexShader(
-	ID3D11Device* _Device
-	, ID3D11InputLayout** _LInput
-	, const D3D11_INPUT_ELEMENT_DESC* _Desc
-	, const unsigned long _DescNum
-	, const void* _Binary
-	, const unsigned long _BinarySize
+	ID3D11Device* _device
+	, ID3D11InputLayout** _lInput
+	, const D3D11_INPUT_ELEMENT_DESC* _desc
+	, const unsigned long _descNum
+	, const void* _binary
+	, const unsigned long _binarySize
 )
 {
-	if (ChPtr::NullCheck(_Device))return;
-	if (ChPtr::NullCheck(_Binary))return;
+	if (ChPtr::NullCheck(_device))return;
+	if (ChPtr::NullCheck(_binary))return;
 
 	Release();
 
-	ID3D11VertexShader* Tmp;
+	ID3D11VertexShader* tmp;
 
-	_Device->CreateVertexShader(_Binary, _BinarySize, nullptr, &Tmp);
+	_device->CreateVertexShader(_binary, _binarySize, nullptr, &tmp);
 
-	Shader = Tmp;
+	shader = tmp;
 
-	_Device->CreateInputLayout(_Desc, _DescNum, _Binary, _BinarySize, _LInput);
+	_device->CreateInputLayout(_desc, _descNum, _binary, _binarySize, _lInput);
 
 	SetInitFlg(true);
 }
@@ -56,21 +56,21 @@ void ShaderObject11::CreateVertexShader(
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ShaderObject11::CreatePixelShader(
-	ID3D11Device* _Device
-	, const void* _Binary
-	, const unsigned long _BinarySize
+	ID3D11Device* _device
+	, const void* _binary
+	, const unsigned long _binarySize
 )
 {
-	if (ChPtr::NullCheck(_Device))return;
-	if (ChPtr::NullCheck(_Binary))return;
+	if (ChPtr::NullCheck(_device))return;
+	if (ChPtr::NullCheck(_binary))return;
 
 	Release();
 
-	ID3D11PixelShader* Tmp;
+	ID3D11PixelShader* tmp;
 
-	_Device->CreatePixelShader(_Binary, _BinarySize, nullptr, &Tmp);
+	_device->CreatePixelShader(_binary, _binarySize, nullptr, &tmp);
 
-	Shader = Tmp;
+	shader = tmp;
 
 	SetInitFlg(true);
 }
@@ -78,21 +78,21 @@ void ShaderObject11::CreatePixelShader(
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ShaderObject11::CreateGeometryShader(
-	ID3D11Device* _Device
-	, const void* _Binary
-	, const unsigned long _BinarySize
+	ID3D11Device* _device
+	, const void* _binary
+	, const unsigned long _binarySize
 )
 {
-	if (ChPtr::NullCheck(_Device))return;
-	if (ChPtr::NullCheck(_Binary))return;
+	if (ChPtr::NullCheck(_device))return;
+	if (ChPtr::NullCheck(_binary))return;
 
 	Release();
 
-	ID3D11GeometryShader* Tmp;
+	ID3D11GeometryShader* tmp;
 
-	_Device->CreateGeometryShader(_Binary, _BinarySize, nullptr, &Tmp);
+	_device->CreateGeometryShader(_binary, _binarySize, nullptr, &tmp);
 
-	Shader = Tmp;
+	shader = tmp;
 
 	SetInitFlg(true);
 }
@@ -100,21 +100,21 @@ void ShaderObject11::CreateGeometryShader(
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ShaderObject11::CreateComputeShader(
-	ID3D11Device* _Device
-	, const void* _Binary
-	, const unsigned long _BinarySize
+	ID3D11Device* _device
+	, const void* _binary
+	, const unsigned long _binarySize
 )
 {
-	if (ChPtr::NullCheck(_Device))return;
-	if (ChPtr::NullCheck(_Binary))return;
+	if (ChPtr::NullCheck(_device))return;
+	if (ChPtr::NullCheck(_binary))return;
 
 	Release();
 
-	ID3D11ComputeShader* Tmp;
+	ID3D11ComputeShader* tmp;
 
-	_Device->CreateComputeShader(_Binary, _BinarySize, nullptr, &Tmp);
+	_device->CreateComputeShader(_binary, _binarySize, nullptr, &tmp);
 
-	Shader = Tmp;
+	shader = tmp;
 
 	SetInitFlg(true);
 }
@@ -122,22 +122,22 @@ void ShaderObject11::CreateComputeShader(
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ShaderObject11::CreateDomainShader(
-	ID3D11Device* _Device
-	, const void* _Binary
-	, const unsigned long _BinarySize
+	ID3D11Device* _device
+	, const void* _binary
+	, const unsigned long _binarySize
 )
 {
 
-	if (ChPtr::NullCheck(_Device))return;
-	if (ChPtr::NullCheck(_Binary))return;
+	if (ChPtr::NullCheck(_device))return;
+	if (ChPtr::NullCheck(_binary))return;
 
 	Release();
 
-	ID3D11DomainShader* Tmp;
+	ID3D11DomainShader* tmp;
 
-	_Device->CreateDomainShader(_Binary, _BinarySize, nullptr, &Tmp);
+	_device->CreateDomainShader(_binary, _binarySize, nullptr, &tmp);
 
-	Shader = Tmp;
+	shader = tmp;
 
 	SetInitFlg(true);
 }
@@ -146,15 +146,15 @@ void ShaderObject11::CreateDomainShader(
 
 void ShaderObject11::SetVertexShader(
 	ID3D11DeviceContext* _DC
-	, ID3D11InputLayout* _LInput)
+	, ID3D11InputLayout* _lInput)
 {
 	if (!*this)return;
 
-	auto Tmp = static_cast<ID3D11VertexShader*>(Shader);
+	auto tmp = static_cast<ID3D11VertexShader*>(shader);
 
-	_DC->VSSetShader(Tmp, nullptr, 0);
+	_DC->VSSetShader(tmp, nullptr, 0);
 
-	_DC->IASetInputLayout(_LInput);
+	_DC->IASetInputLayout(_lInput);
 
 }
 
@@ -165,9 +165,9 @@ void ShaderObject11::SetPixelShader(
 {
 	if (!*this)return;
 
-	auto Tmp = static_cast<ID3D11PixelShader*>(Shader);
+	auto tmp = static_cast<ID3D11PixelShader*>(shader);
 
-	_DC->PSSetShader(Tmp, nullptr, 0);
+	_DC->PSSetShader(tmp, nullptr, 0);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -177,9 +177,9 @@ void ShaderObject11::SetGeometryShader(
 {
 	if (!*this)return;
 
-	auto Tmp = static_cast<ID3D11GeometryShader*>(Shader);
+	auto tmp = static_cast<ID3D11GeometryShader*>(shader);
 
-	_DC->GSSetShader(Tmp, nullptr, 0);
+	_DC->GSSetShader(tmp, nullptr, 0);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -189,9 +189,9 @@ void ShaderObject11::SetComputeShader(
 {
 	if (!*this)return;
 
-	auto Tmp = static_cast<ID3D11ComputeShader*>(Shader);
+	auto tmp = static_cast<ID3D11ComputeShader*>(shader);
 
-	_DC->CSSetShader(Tmp, nullptr, 0);
+	_DC->CSSetShader(tmp, nullptr, 0);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -201,9 +201,9 @@ void ShaderObject11::SetDomainShader(
 {
 	if (!*this)return;
 
-	auto Tmp = static_cast<ID3D11DomainShader*>(Shader);
+	auto tmp = static_cast<ID3D11DomainShader*>(shader);
 
-	_DC->DSSetShader(Tmp, nullptr, 0);
+	_DC->DSSetShader(tmp, nullptr, 0);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -211,14 +211,14 @@ void ShaderObject11::SetDomainShader(
 ///////////////////////////////////////////////////////////////////////////////////////
 
 void VertexShader11::Init(
-	ID3D11Device* _Device
-	, const D3D11_INPUT_ELEMENT_DESC* _Desc
-	, const unsigned long _DescNum
-	, const void* _Binary
-	, const unsigned long _BinarySize)
+	ID3D11Device* _device
+	, const D3D11_INPUT_ELEMENT_DESC* _desc
+	, const unsigned long _descNum
+	, const void* _binary
+	, const unsigned long _binarySize)
 {
 
-	CreateVertexShader(_Device, &LInput, _Desc, _DescNum, _Binary, _BinarySize);
+	CreateVertexShader(_device, &lInput, _desc, _descNum, _binary, _binarySize);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -227,10 +227,10 @@ void VertexShader11::Release()
 {
 	ShaderObject11::Release();
 
-	if (ChPtr::NotNullCheck(LInput))
+	if (ChPtr::NotNullCheck(lInput))
 	{
-		LInput->Release();
-		LInput = nullptr;
+		lInput->Release();
+		lInput = nullptr;
 	}
 
 }

@@ -33,16 +33,16 @@ ChMatrix_11&ChMatrix_11::operator+=(const DirectX::XMFLOAT4X4& _cm)
 
 ChMatrix_11 ChMatrix_11::operator+(const DirectX::XMFLOAT4X4& _cm)const
 {
-	DirectX::XMFLOAT4X4 TmpMat;
+	DirectX::XMFLOAT4X4 tmpMat;
 	for (unsigned char i = 0; i < 4; i++)
 	{
 		for (unsigned char j = 0; j < 4; j++)
 		{
-			TmpMat.m[i][j] += _cm.m[i][j];
+			tmpMat.m[i][j] += _cm.m[i][j];
 		}
 	}
 
-	return TmpMat;
+	return tmpMat;
 }
 
 ChMatrix_11&ChMatrix_11::operator-=(const DirectX::XMFLOAT4X4& _cm)
@@ -55,16 +55,16 @@ ChMatrix_11&ChMatrix_11::operator-=(const DirectX::XMFLOAT4X4& _cm)
 
 ChMatrix_11 ChMatrix_11::operator-(const DirectX::XMFLOAT4X4& _cm)const
 {
-	ChMatrix_11 TmpMat;
+	ChMatrix_11 tmpMat;
 	for (unsigned char i = 0; i < 4; i++)
 	{
 		for (unsigned char j = 0; j < 4; j++)
 		{
-			TmpMat.m[i][j] += _cm.m[i][j];
+			tmpMat.m[i][j] += _cm.m[i][j];
 		}
 	}
 
-	return TmpMat;
+	return tmpMat;
 }
 
 ChMatrix_11&ChMatrix_11::operator*=(const DirectX::XMFLOAT4X4& _cm)
@@ -76,17 +76,17 @@ ChMatrix_11&ChMatrix_11::operator*=(const DirectX::XMFLOAT4X4& _cm)
 ChMatrix_11 ChMatrix_11::operator*(const DirectX::XMFLOAT4X4& _cm)const
 {
 
-	ChMatrix_11 TmpMat;
-	DirectX::XMMATRIX TmpMat1, TmpMat2;
+	ChMatrix_11 tmpMat;
+	DirectX::XMMATRIX tmpMat1, tmpMat2;
 
-	TmpMat1 = DirectX::XMLoadFloat4x4(&_cm);
-	TmpMat2 = *this;
+	tmpMat1 = DirectX::XMLoadFloat4x4(&_cm);
+	tmpMat2 = *this;
 
-	TmpMat = DirectX::XMMatrixMultiply(TmpMat1, TmpMat2);
+	tmpMat = DirectX::XMMatrixMultiply(tmpMat1, tmpMat2);
 
 	
 
-	return TmpMat;
+	return tmpMat;
 
 }
 
@@ -99,17 +99,17 @@ ChMatrix_11&ChMatrix_11::operator/=(const DirectX::XMFLOAT4X4& _cm)
 ChMatrix_11 ChMatrix_11::operator/(const DirectX::XMFLOAT4X4& _cm)const
 {
 
-	ChMatrix_11 TmpMat;
-	DirectX::XMMATRIX TmpMat1, TmpMat2;
+	ChMatrix_11 tmpMat;
+	DirectX::XMMATRIX tmpMat1, tmpMat2;
 
-	TmpMat1 = DirectX::XMLoadFloat4x4(&_cm);
-	TmpMat2 = *this;
+	tmpMat1 = DirectX::XMLoadFloat4x4(&_cm);
+	tmpMat2 = *this;
 
-	TmpMat2 = DirectX::XMMatrixInverse(nullptr, TmpMat2);
+	tmpMat2 = DirectX::XMMatrixInverse(nullptr, tmpMat2);
 
-	TmpMat = TmpMat2 * TmpMat1;
+	tmpMat = tmpMat2 * tmpMat1;
 
-	return TmpMat;
+	return tmpMat;
 
 }
 
@@ -135,16 +135,16 @@ ChMatrix_11&ChMatrix_11::ChMatrix_11::operator*=(const float& _cm)
 ChMatrix_11 ChMatrix_11::ChMatrix_11::operator*(const float& _cm)const
 {
 
-	ChMatrix_11 TmpMat;
+	ChMatrix_11 tmpMat;
 	for (unsigned char i = 0; i < 4; i++)
 	{
 		for (unsigned char j = 0; j < 4; j++)
 		{
-			TmpMat.m[i][j] *= _cm;
+			tmpMat.m[i][j] *= _cm;
 		}
 	}
 
-	return TmpMat;
+	return tmpMat;
 }
 
 ChMatrix_11&ChMatrix_11::ChMatrix_11::operator/=(const float& _cm)
@@ -157,17 +157,17 @@ ChMatrix_11&ChMatrix_11::ChMatrix_11::operator/=(const float& _cm)
 ChMatrix_11 ChMatrix_11::ChMatrix_11::operator/(const float& _cm)const
 {
 
-	ChMatrix_11 TmpMat;
+	ChMatrix_11 tmpMat;
 	for (unsigned char i = 0; i < 4; i++)
 	{
 		for (unsigned char j = 0; j < 4; j++)
 		{
 			if (_cm == 0.0f)continue;
-			TmpMat.m[i][j] /= _cm;
+			tmpMat.m[i][j] /= _cm;
 		}
 	}
 
-	return TmpMat;
+	return tmpMat;
 }
 
 ChMatrix_11&ChMatrix_11::operator=(const DirectX::XMMATRIX& _cm)
@@ -179,40 +179,40 @@ ChMatrix_11&ChMatrix_11::operator=(const DirectX::XMMATRIX& _cm)
 
 ChMatrix_11::operator DirectX::XMMATRIX()const
 {
-	DirectX::XMMATRIX TmpMat;
-	TmpMat = DirectX::XMLoadFloat4x4(this);
+	DirectX::XMMATRIX tmpMat;
+	tmpMat = DirectX::XMLoadFloat4x4(this);
 
-	return TmpMat;
+	return tmpMat;
 }
 
 ChMatrix_11::operator DirectX::XMFLOAT4X4()const
 {
 
-	DirectX::XMFLOAT4X4 TmpMat;
+	DirectX::XMFLOAT4X4 tmpMat;
 	for (unsigned char i = 0; i < 4; i++)
 	{
 		for (unsigned char j = 0; j < 4; j++)
 		{
-			TmpMat.m[i][j] = m[i][j];
+			tmpMat.m[i][j] = m[i][j];
 		}
 	}
-	return TmpMat;
+	return tmpMat;
 }
 
-ChMatrix_11&ChMatrix_11::operator = (const DirectX::XMFLOAT3& _Vec)
+ChMatrix_11&ChMatrix_11::operator = (const DirectX::XMFLOAT3& _vec)
 {
-	*this = DirectX::XMMatrixTranslation(_Vec.x, _Vec.y, _Vec.z);
+	*this = DirectX::XMMatrixTranslation(_vec.x, _vec.y, _vec.z);
 
 	return *this;
 }
 
-ChMatrix_11&ChMatrix_11::operator =(const DirectX::XMFLOAT4& _Qua)
+ChMatrix_11&ChMatrix_11::operator =(const DirectX::XMFLOAT4& _qua)
 {
 
 
-	DirectX::XMVECTOR TmpVec;
-	TmpVec = DirectX::XMLoadFloat4(&_Qua);
-	*this = DirectX::XMMatrixRotationQuaternion(TmpVec);
+	DirectX::XMVECTOR tmpVec;
+	tmpVec = DirectX::XMLoadFloat4(&_qua);
+	*this = DirectX::XMMatrixRotationQuaternion(tmpVec);
 
 	return *this;
 }
@@ -222,53 +222,53 @@ ChMatrix_11&ChMatrix_11::operator =(const DirectX::XMFLOAT4& _Qua)
 ///////////////////////////////////////////////////////////////////////////////////
 
 
-void ChMatrix_11::SetPosition(const DirectX::XMFLOAT3& _Pos)
+void ChMatrix_11::SetPosition(const DirectX::XMFLOAT3& _pos)
 {
-	_41 = _Pos.x;
-	_42 = _Pos.y;
-	_43 = _Pos.z;
+	_41 = _pos.x;
+	_42 = _pos.y;
+	_43 = _pos.z;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChMatrix_11::SetRotation(const DirectX::XMFLOAT3& _Rot)
+void ChMatrix_11::SetRotation(const DirectX::XMFLOAT3& _rot)
 {
 
-	RotYPR(_Rot);
+	RotYPR(_rot);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChMatrix_11::SetScaleSize(const DirectX::XMFLOAT3& _Sca)
+void ChMatrix_11::SetScaleSize(const DirectX::XMFLOAT3& _sca)
 {
-	Scaling(_Sca);
+	Scaling(_sca);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 DirectX::XMFLOAT3 ChMatrix_11::GetPosition()const
 {
-	DirectX::XMFLOAT3 TmpVec;
-	TmpVec.x = _41;
-	TmpVec.y = _42;
-	TmpVec.z = _43;
-	return TmpVec;
+	DirectX::XMFLOAT3 tmpVec;
+	tmpVec.x = _41;
+	tmpVec.y = _42;
+	tmpVec.z = _43;
+	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 DirectX::XMFLOAT4 ChMatrix_11::GetRotation()const
 {
-	DirectX::XMFLOAT4 TmpQua;
+	DirectX::XMFLOAT4 tmpQua;
 	
-	DirectX::XMVECTOR TmpVec;
+	DirectX::XMVECTOR tmpVec;
 
-	TmpVec = DirectX::XMQuaternionRotationMatrix(*this);
+	tmpVec = DirectX::XMQuaternionRotationMatrix(*this);
 
 
-	DirectX::XMStoreFloat4(&TmpQua, TmpVec);
+	DirectX::XMStoreFloat4(&tmpQua, tmpVec);
 
-	return TmpQua;
+	return tmpQua;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -276,33 +276,33 @@ DirectX::XMFLOAT4 ChMatrix_11::GetRotation()const
 DirectX::XMFLOAT3 ChMatrix_11::GetScaleSize()const
 {
 
-	ChMatrix_11 TmpMat;
+	ChMatrix_11 tmpMat;
 
 	{
-		DirectX::XMVECTOR TmpQua;
+		DirectX::XMVECTOR tmpQua;
 
-		TmpQua = DirectX::XMQuaternionRotationMatrix(*this);
+		tmpQua = DirectX::XMQuaternionRotationMatrix(*this);
 
-		TmpMat = DirectX::XMMatrixRotationQuaternion(TmpQua);
+		tmpMat = DirectX::XMMatrixRotationQuaternion(tmpQua);
 
 	}
 
-	TmpMat.Inverse();
+	tmpMat.Inverse();
 
-	TmpMat = TmpMat * *this;
+	tmpMat = tmpMat * *this;
 
-	return DirectX::XMFLOAT3(TmpMat._11, TmpMat._22, TmpMat._33);
+	return DirectX::XMFLOAT3(tmpMat._11, tmpMat._22, tmpMat._33);
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChMatrix_11::Inverse(const DirectX::XMFLOAT4X4& _Mat)
+void ChMatrix_11::Inverse(const DirectX::XMFLOAT4X4& _mat)
 {
-	DirectX::XMMATRIX TmpMat;
-	TmpMat = DirectX::XMLoadFloat4x4(&_Mat);
+	DirectX::XMMATRIX tmpMat;
+	tmpMat = DirectX::XMLoadFloat4x4(&_mat);
 
-	*this = DirectX::XMMatrixInverse(nullptr, TmpMat);
+	*this = DirectX::XMMatrixInverse(nullptr, tmpMat);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -312,41 +312,41 @@ void ChMatrix_11::RotYPR(
 	, const float _y
 	, const float _z)
 {
-	ChMatrix_11 TmpMat;
+	ChMatrix_11 tmpMat;
 	
-	TmpMat = DirectX::XMMatrixRotationRollPitchYaw(
+	tmpMat = DirectX::XMMatrixRotationRollPitchYaw(
 		ChMath::ToRadian(_y)
 		, ChMath::ToRadian(_x)
 		, ChMath::ToRadian(_z));
 
-	*this = TmpMat * *this;
+	*this = tmpMat * *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChMatrix_11::RotYPR(const DirectX::XMFLOAT3& _Vec)
+void ChMatrix_11::RotYPR(const DirectX::XMFLOAT3& _vec)
 {
-	ChMatrix_11 TmpMat;
+	ChMatrix_11 tmpMat;
 
-	TmpMat = DirectX::XMMatrixRotationRollPitchYaw(
-		ChMath::ToRadian(_Vec.x)
-		, ChMath::ToRadian(_Vec.y)
-		, ChMath::ToRadian(_Vec.z));
+	tmpMat = DirectX::XMMatrixRotationRollPitchYaw(
+		ChMath::ToRadian(_vec.x)
+		, ChMath::ToRadian(_vec.y)
+		, ChMath::ToRadian(_vec.z));
 
-	*this = TmpMat * *this;
+	*this = tmpMat * *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChMatrix_11::RotQua(const DirectX::XMFLOAT4& _Qua)
+void ChMatrix_11::RotQua(const DirectX::XMFLOAT4& _qua)
 {
-	ChMatrix_11 TmpMat;
+	ChMatrix_11 tmpMat;
 	{
-		DirectX::XMVECTOR TmpVec;
-		TmpVec = DirectX::XMLoadFloat4(&_Qua);
-		TmpMat = DirectX::XMMatrixRotationQuaternion(TmpVec);
+		DirectX::XMVECTOR tmpVec;
+		tmpVec = DirectX::XMLoadFloat4(&_qua);
+		tmpMat = DirectX::XMMatrixRotationQuaternion(tmpVec);
 	}
-	*this = TmpMat * *this;
+	*this = tmpMat * *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -356,56 +356,56 @@ void ChMatrix_11::RotQua(
 	, const float _y
 	, const float _z)
 {
-	ChMatrix_11 TmpMat;
+	ChMatrix_11 tmpMat;
 	{
-		DirectX::XMVECTOR TmpVec;
-		TmpVec = DirectX::XMQuaternionRotationRollPitchYaw(_x, _y, _z);
-		TmpMat = DirectX::XMMatrixRotationQuaternion(TmpVec);
+		DirectX::XMVECTOR tmpVec;
+		tmpVec = DirectX::XMQuaternionRotationRollPitchYaw(_x, _y, _z);
+		tmpMat = DirectX::XMMatrixRotationQuaternion(tmpVec);
 	}
-	*this = TmpMat * *this;
+	*this = tmpMat * *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChMatrix_11::RotVec(const DirectX::XMFLOAT3& _Vec)
+void ChMatrix_11::RotVec(const DirectX::XMFLOAT3& _vec)
 {
-	DirectX::XMVECTOR TmpVec,TmpBase;
-	TmpVec = DirectX::XMLoadFloat3(&_Vec);
-	float TmpRot;
+	DirectX::XMVECTOR tmpVec,tmpBase;
+	tmpVec = DirectX::XMLoadFloat3(&_vec);
+	float tmpRot;
 	{
-		auto Tmp = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
-		TmpBase = DirectX::XMLoadFloat3(&Tmp);
+		auto tmp = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
+		tmpBase = DirectX::XMLoadFloat3(&tmp);
 	}
 
-	TmpVec = DirectX::XMVector3Normalize(TmpVec);
+	tmpVec = DirectX::XMVector3Normalize(tmpVec);
 	{
-		DirectX::XMVECTOR TmpDot;
-		TmpDot = DirectX::XMVector3Dot(TmpVec, TmpBase);
-		DirectX::XMStoreFloat(&TmpRot, TmpDot);
+		DirectX::XMVECTOR tmpDot;
+		tmpDot = DirectX::XMVector3Dot(tmpVec, tmpBase);
+		DirectX::XMStoreFloat(&tmpRot, tmpDot);
 	}
 
-	TmpVec = DirectX::XMVector3Cross(TmpVec,TmpBase);
+	tmpVec = DirectX::XMVector3Cross(tmpVec,tmpBase);
 
-	DirectX::XMFLOAT3 Tmp;
-	DirectX::XMStoreFloat3(&Tmp, TmpVec);
+	DirectX::XMFLOAT3 tmp;
+	DirectX::XMStoreFloat3(&tmp, tmpVec);
 
-	RotAxis(Tmp, TmpRot);
+	RotAxis(tmp, tmpRot);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChMatrix_11::RotAxis(
-	const DirectX::XMFLOAT3& _Vec
-	, const float _Ang)
+	const DirectX::XMFLOAT3& _vec
+	, const float _ang)
 {
-	ChMatrix_11 TmpMat;
+	ChMatrix_11 tmpMat;
 
 	{
-		DirectX::XMVECTOR TmpVec;
-		TmpVec = DirectX::XMLoadFloat3(&_Vec);
-		TmpMat = DirectX::XMMatrixRotationAxis(TmpVec, (ChMath::ToRadian(_Ang)));
+		DirectX::XMVECTOR tmpVec;
+		tmpVec = DirectX::XMLoadFloat3(&_vec);
+		tmpMat = DirectX::XMMatrixRotationAxis(tmpVec, (ChMath::ToRadian(_ang)));
 	}
-	*this = TmpMat * *this;
+	*this = tmpMat * *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -416,47 +416,47 @@ void ChMatrix_11::Scaling(
 	, const float _z)
 {
 
-	ChMatrix_11 TmpMat;
-	TmpMat = DirectX::XMMatrixScaling(_x, _y, _z);
-	*this = TmpMat * *this;
+	ChMatrix_11 tmpMat;
+	tmpMat = DirectX::XMMatrixScaling(_x, _y, _z);
+	*this = tmpMat * *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChMatrix_11::CreateViewMat(const ChVec3& _Pos, const ChVec3& _Dir, const ChVec3& _Up)
+void ChMatrix_11::CreateViewMat(const ChVec3& _pos, const ChVec3& _dir, const ChVec3& _up)
 {
 
-	ChVec3_11 Pos;
-	Pos = _Pos;
+	ChVec3_11 pos;
+	pos = _pos;
 
-	ChVec3_11 Up;
-	Up = _Up;
+	ChVec3_11 up;
+	up = _up;
 
-	ChVec3_11 Dir;
-	Dir = _Dir;
+	ChVec3_11 dir;
+	dir = _dir;
 
-	*this = DirectX::XMMatrixLookAtLH(Pos, (Dir + Pos), Up);
+	*this = DirectX::XMMatrixLookAtLH(pos, (dir + pos), up);
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChMatrix_11::CreateViewMatLookTarget(
-	const ChVec3& _Pos
-	, const ChVec3& _TargetPos
-	, const ChVec3& _Up)
+	const ChVec3& _pos
+	, const ChVec3& _targetPos
+	, const ChVec3& _up)
 {
 
-	ChVec3_11 Pos;
-	Pos = _Pos;
+	ChVec3_11 pos;
+	pos = _pos;
 
-	ChVec3_11 Up;
-	Up = _Up;
+	ChVec3_11 up;
+	up = _up;
 
-	ChVec3_11 TargetPos;
-	TargetPos = _TargetPos;
+	ChVec3_11 targetPos;
+	targetPos = _targetPos;
 
-	*this = DirectX::XMMatrixLookAtLH(Pos, TargetPos, Up);
+	*this = DirectX::XMMatrixLookAtLH(pos, targetPos, up);
 
 }
 
@@ -466,18 +466,18 @@ void ChMatrix_11::CreateViewMatLookTarget(
 
 ChLMatrix::operator const DirectX::XMFLOAT4X4()const
 {
-	ChMatrix_11 TmpMat;
+	ChMatrix_11 tmpMat;
 	
 
 	for (unsigned char i = 0; i < 4; i++)
 	{
 		for (unsigned char j = 0; j < 4; j++)
 		{
-			TmpMat.m[i][j] = m[i][j];
+			tmpMat.m[i][j] = m[i][j];
 		}
 	}
 
-	return TmpMat;
+	return tmpMat;
 }
 
 ChLMatrix::operator const DirectX::XMFLOAT4X4*()const
@@ -486,36 +486,36 @@ ChLMatrix::operator const DirectX::XMFLOAT4X4*()const
 	return reinterpret_cast<DirectX::XMFLOAT4X4*>(const_cast<ChLMat*>(this));
 }
 
-ChLMatrix& ChLMatrix::operator= (const DirectX::XMFLOAT3& _Vec)
+ChLMatrix& ChLMatrix::operator= (const DirectX::XMFLOAT3& _vec)
 {
 
-	ChMat_11 TmpMat;
+	ChMat_11 tmpMat;
 
-	TmpMat = _Vec;
+	tmpMat = _vec;
 
-	*this = TmpMat;
+	*this = tmpMat;
 
 	return *this;
 }
 
-ChLMatrix& ChLMatrix::operator= (const DirectX::XMFLOAT4& _Qua)
+ChLMatrix& ChLMatrix::operator= (const DirectX::XMFLOAT4& _qua)
 {
-	ChMat_11 TmpMat;
+	ChMat_11 tmpMat;
 
-	TmpMat = _Qua;
+	tmpMat = _qua;
 
-	*this = TmpMat;
+	*this = tmpMat;
 
 	return *this;
 }
 
-ChLMatrix& ChLMatrix::operator= (const DirectX::XMFLOAT4X4& _Mat)
+ChLMatrix& ChLMatrix::operator= (const DirectX::XMFLOAT4X4& _mat)
 {
 	for (unsigned char i = 0; i < 4; i++)
 	{
 		for (unsigned char j = 0; j < 4; j++)
 		{
-			m[i][j] = _Mat.m[i][j];
+			m[i][j] = _mat.m[i][j];
 		}
 	}
 

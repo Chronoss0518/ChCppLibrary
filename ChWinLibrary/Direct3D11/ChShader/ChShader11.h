@@ -27,24 +27,24 @@ namespace ChD3D11
 
 
 		void Init(
-			DirectX3D11& _ChDevice
-			, const ChVec2& _WindSize);
+			DirectX3D11& _chDevice
+			, const ChVec2& _windSize);
 
 		void Init(
-			DirectX3D11& _ChDevice
-			, const float& _WindWitdh
-			, const float& _WindHeight);
+			DirectX3D11& _chDevice
+			, const float& _windWitdh
+			, const float& _windHeight);
 
 		void Init(ID3D11Device* _d
-			, ID3D11DeviceContext* _DC
-			, IDXGISwapChain* _SC
-			, const ChVec2& _WindSize);
+			, ID3D11DeviceContext* _dc
+			, IDXGISwapChain* _sc
+			, const ChVec2& _windSize);
 
 		void Init(ID3D11Device* _d
-			, ID3D11DeviceContext* _DC
-			, IDXGISwapChain* _SC
-			, const float& _WindWitdh
-			, const float& _WindHeight);
+			, ID3D11DeviceContext* _dc
+			, IDXGISwapChain* _sc
+			, const float& _windWitdh
+			, const float& _windHeight);
 
 	protected:
 
@@ -58,210 +58,210 @@ namespace ChD3D11
 		//SetFunction//
 
 		//描画させるレンダーターゲットを登録する//
-		void SetRenderTarget(Texture11& _Tex);
+		void SetRenderTarget(Texture11& _tex);
 
-		inline void SetBackColor(const ChVec4& _Color)
+		inline void SetBackColor(const ChVec4& _color)
 		{
 			if (!*this)return;
-			if (DrawFlg)return;
+			if (drawFlg)return;
 
-			BackColor = _Color;
+			backColor = _color;
 		}
 
 		//描画対象をバックバッファにする//
 		inline void SetBackBuffer()
 		{
 			if (!*this)return;
-			if (DrawFlg)return;
+			if (drawFlg)return;
 
-			RenderTargets.clear();
+			renderTargets.clear();
 		}
 
 		//描画をする際に利用するカリングタイプをセット//
-		inline void SetCullMode(const D3D11_CULL_MODE _CULL)
+		inline void SetCullMode(const D3D11_CULL_MODE _cull)
 		{
 			if (!*this)return;
-			if (DrawFlg)return;
+			if (drawFlg)return;
 
-			Cull = _CULL;
+			cull = _cull;
 
-			RasteriserUpdate = true;
+			rasteriserUpdate = true;
 		}
 
 		//描画をする際に利用するフィルタイプをセット//
-		inline void SetFilMode(const D3D11_FILL_MODE _Fill)
+		inline void SetFilMode(const D3D11_FILL_MODE _fill)
 		{
 			if (!*this)return;
-			if (DrawFlg)return;
+			if (drawFlg)return;
 
-			Fill = _Fill;
+			fill = _fill;
 
-			RasteriserUpdate = true;
+			rasteriserUpdate = true;
 		}
 
 		//霧効果を使用するか否かのフラグ//
-		inline void SetFogFlg(ChStd::Bool _Flg)
+		inline void SetFogFlg(ChStd::Bool _flg)
 		{
 			if (!*this)return;
-			if (DrawFlg)return;
+			if (drawFlg)return;
 
-			FogFlg = _Flg;
+			fogFlg = _flg;
 		}
 
-		inline void SetViewMat(const ChMat_11& _ViewMat)
+		inline void SetViewMat(const ChMat_11& _viewMat)
 		{
 
 			if (!*this)return;
-			if (DrawFlg)return;
+			if (drawFlg)return;
 
-			BDObject.ViewMat = _ViewMat;
+			bdObject.viewMat = _viewMat;
 
-			BDUpdateFlg = true;
-
-		}
-
-		inline void SetProjMat(const ChMat_11& _ProjMat)
-		{
-
-			if (!*this)return;
-			if (DrawFlg)return;
-
-			BDObject.ProjMat = _ProjMat;
-
-			BDUpdateFlg = true;
+			bdUpdateFlg = true;
 
 		}
 
-		inline void SetWindPos(const ChVec2& _Pos)
+		inline void SetProjMat(const ChMat_11& _projMat)
 		{
 
 			if (!*this)return;
-			if (DrawFlg)return;
+			if (drawFlg)return;
 
-			View.SetWindPos(_Pos);
+			bdObject.projMat = _projMat;
+
+			bdUpdateFlg = true;
 
 		}
 
-		inline void SetWindSize(const ChVec2& _Size)
+		inline void SetWindPos(const ChVec2& _pos)
 		{
 
 			if (!*this)return;
-			if (DrawFlg)return;
+			if (drawFlg)return;
 
-			View.SetWindSize(_Size);
+			view.SetWindPos(_pos);
+
 		}
 
-		inline void SetLightDiffuse(const ChVec3& _Dif)
+		inline void SetWindSize(const ChVec2& _size)
 		{
-			if (!*this)return;
-			if (DrawFlg)return;
 
-			LightDatas.SetLightDiffuse(_Dif);
+			if (!*this)return;
+			if (drawFlg)return;
+
+			view.SetWindSize(_size);
 		}
 
-		inline void SetUseLightFlg(const ChStd::Bool& _Flg)
+		inline void SetLightDiffuse(const ChVec3& _dif)
 		{
 			if (!*this)return;
-			if (DrawFlg)return;
+			if (drawFlg)return;
 
-			LightDatas.SetUseLightFlg(_Flg);
+			lightDatas.SetLightDiffuse(_dif);
 		}
 
-		inline void SetLightDir(const ChVec3& _Dir)
+		inline void SetUseLightFlg(const ChStd::Bool& _flg)
 		{
 			if (!*this)return;
-			if (DrawFlg)return;
+			if (drawFlg)return;
 
-			LightDatas.SetLightDir(_Dir);
+			lightDatas.SetUseLightFlg(_flg);
 		}
 
-		inline void SetLightAmbientPow(const float _Amb)
+		inline void SetLightDir(const ChVec3& _dir)
 		{
 			if (!*this)return;
-			if (DrawFlg)return;
+			if (drawFlg)return;
 
-			LightDatas.SetLightAmbientPow(_Amb);
+			lightDatas.SetLightDir(_dir);
 		}
 
-		inline void SetPLightPos(const ChVec3& _Pos, const unsigned long _No = 0)
+		inline void SetLightAmbientPow(const float _amb)
 		{
 			if (!*this)return;
-			if (DrawFlg)return;
+			if (drawFlg)return;
 
-			LightDatas.SetPLightPos(_Pos, _No);
+			lightDatas.SetLightAmbientPow(_amb);
 		}
 
-		inline void SetPLightLen(const float _Len, const unsigned long _No = 0)
+		inline void SetPLightPos(const ChVec3& _pos, const unsigned long _no = 0)
 		{
 			if (!*this)return;
-			if (DrawFlg)return;
+			if (drawFlg)return;
 
-			LightDatas.SetPLightLen(_Len, _No);
+			lightDatas.SetPLightPos(_pos, _no);
 		}
 
-		inline void SetPLightDiffuse(const ChVec3& _Dif, const unsigned long _No = 0)
+		inline void SetPLightLen(const float _len, const unsigned long _no = 0)
 		{
 			if (!*this)return;
-			if (DrawFlg)return;
+			if (drawFlg)return;
 
-			LightDatas.SetPLightDiffuse(_Dif, _No);
+			lightDatas.SetPLightLen(_len, _no);
 		}
 
-		inline void SetPLightUseFlg(const ChStd::Bool& _Flg, const unsigned long _No = 0)
+		inline void SetPLightDiffuse(const ChVec3& _dif, const unsigned long _no = 0)
 		{
 			if (!*this)return;
-			if (DrawFlg)return;
+			if (drawFlg)return;
 
-			LightDatas.SetPLightUseFlg(_Flg, _No);
+			lightDatas.SetPLightDiffuse(_dif, _no);
 		}
 
-		inline void SetCamPos(const ChVec3& _CamPos)
+		inline void SetPLightUseFlg(const ChStd::Bool& _flg, const unsigned long _no = 0)
 		{
 			if (!*this)return;
-			if (DrawFlg)return;
+			if (drawFlg)return;
 
-			LightDatas.SetCamPos(_CamPos);
+			lightDatas.SetPLightUseFlg(_flg, _no);
 		}
 
-		inline void SetLightData(const ShaderParts::ChLightHeader::LightData& _LD)
+		inline void SetCamPos(const ChVec3& _camPos)
 		{
 			if (!*this)return;
-			if (DrawFlg)return;
+			if (drawFlg)return;
 
-			LightDatas.SetLightData(_LD);
+			lightDatas.SetCamPos(_camPos);
 		}
 
-		inline void SetImportLightPowMap(ChPtr::Shared<Texture11>& _LightPowMap)
+		inline void SetLightData(const ShaderParts::ChLightHeader::LightData& _ld)
 		{
 			if (!*this)return;
-			if (DrawFlg)return;
+			if (drawFlg)return;
 
-			LightDatas.SetImportLightPowMap(_LightPowMap);
+			lightDatas.SetLightData(_ld);
+		}
+
+		inline void SetImportLightPowMap(ChPtr::Shared<Texture11>& _lightPowMap)
+		{
+			if (!*this)return;
+			if (drawFlg)return;
+
+			lightDatas.SetImportLightPowMap(_lightPowMap);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
-		inline D3D11_CULL_MODE GetCullMode() { return Cull; }
+		inline D3D11_CULL_MODE GetCullMode() { return cull; }
 
-		inline D3D11_FILL_MODE GetFillMode() { return Fill; }
+		inline D3D11_FILL_MODE GetFillMode() { return fill; }
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
 
-		void IsLight(const ChStd::Bool _Flg);
+		void IsLight(const ChStd::Bool _flg);
 
 		//描画可能確認関数//
-		inline ChStd::Bool IsDraw() { return DrawFlg; }
+		inline ChStd::Bool IsDraw() { return drawFlg; }
 
-		inline ChStd::Bool IsRTDraw() { return RTDrawFlg; }
+		inline ChStd::Bool IsRTDraw() { return rtDrawFlg; }
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//描画対象となる画像群の登録を解除する//
 		inline void ClearRenderTargets()
 		{
-			RenderTargets.clear();
+			renderTargets.clear();
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -278,71 +278,71 @@ namespace ChD3D11
 		//Mesh描画群//
 
 		void Draw(
-			Mesh11& _Mesh
-			, const ChMat_11& _Mat = ChMat_11());
+			Mesh11& _mesh
+			, const ChMat_11& _mat = ChMat_11());
 
 		//OutLine描画//
 		void DrawOutLine(
-			Mesh11& _Mesh
-			, const ChVec4& _Color
-			, const ChMat_11& _Mat = ChMat_11()
-			, const float _Size = 1.0f);
+			Mesh11& _mesh
+			, const ChVec4& _color
+			, const ChMat_11& _mat = ChMat_11()
+			, const float _size = 1.0f);
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//板ポリゴン描画群//
 
 		void Draw(
-			Texture11& _Tex
-			, PolygonBoard11& _Polygon
-			, const ChMat_11& _Mat = ChMat_11());
+			Texture11& _tex
+			, PolygonBoard11& _polygon
+			, const ChMat_11& _mat = ChMat_11());
 
 		//円形で指定範囲を描画//
 		void DrawToCircleParsec(
-			Texture11& _Tex
-			, PolygonBoard11& _Polygon
-			, const ChVec2& _StartLine
-			, const float _DrawDot
-			, const ChMat_11& _Mat = ChMat_11());
+			Texture11& _tex
+			, PolygonBoard11& _polygon
+			, const ChVec2& _startLine
+			, const float _drawRad
+			, const ChMat_11& _mat = ChMat_11());
 
 		//四角形で指定範囲を描画//
 		void DrawSquareParsec(
-			Texture11& _Tex
-			, PolygonBoard11& _Polygon
-			, const ChVec2& _StartLine
-			, const float _DrawDot
-			, const ChMat_11& _Mat = ChMat_11());
+			Texture11& _tex
+			, PolygonBoard11& _polygon
+			, const ChVec2& _startLine
+			, const float _drawRad
+			, const ChMat_11& _mat = ChMat_11());
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//Sprite描画群//
 
 		//通常描画//
 		void Draw(
-			Texture11& _Tex
-			, Sprite11& _Sprite
-			, const ChMat_11& _Mat = ChMat_11());
+			Texture11& _tex
+			, Sprite11& _sprite
+			, const ChMat_11& _mat = ChMat_11());
 
 		//円形で指定範囲を描画//
 		void DrawToCircleParsec(
-			Texture11& _Tex
-			, Sprite11& _Sprite
-			, const ChVec2& _StartLine
-			, const float _DrawDot
-			, const ChMat_11& _Mat = ChMat_11());
+			Texture11& _tex
+			, Sprite11& _sprite
+			, const ChVec2& _startLine
+			, const float _drawRad
+			, const ChMat_11& _mat = ChMat_11());
 
 		//四角形で指定範囲を描画//
 		void DrawSquareParsec(
-			Texture11& _Tex
-			, Sprite11& _Sprite
-			, const ChVec2& _StartLine
-			, const float _DrawDot
-			, const ChMat_11& _Mat = ChMat_11());
+			Texture11& _tex
+			, Sprite11& _sprite
+			, const ChVec2& _startLine
+			, const float _drawRad
+			, const ChMat_11& _mat = ChMat_11());
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 	protected:
 
 		//レンダーターゲット用フラグ//
-		inline void SetRTDraw(const ChStd::Bool _Flg) { RTDrawFlg = _Flg; }
+		inline void SetRTDraw(const ChStd::Bool _Flg) { rtDrawFlg = _Flg; }
 
 		///////////////////////////////////////////////////////////////////////////////////
 
@@ -356,118 +356,118 @@ namespace ChD3D11
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//3Dモデル描画用シェーダー//
-		VertexShader11 BVModel;
-		PixelShader11 BPModel;
-		VertexShader11 PoVTex;
+		VertexShader11 bvModel;
+		PixelShader11 bpModel;
+		VertexShader11 pvTex;
 
 
 		//板ポリゴンなどテクスチャ単体描画用シェーダー//
-		VertexShader11 SpVTex;
-		PixelShader11 BPTex;
+		VertexShader11 spvTex;
+		PixelShader11 bpTex;
 
 		//ShadowMap生成用//
-		Texture11 DepthShadowTex;
+		Texture11 depthShadowTex;
 
 		//モデルの画像がない場合にセットする//
-		Texture11 WhiteTex;
+		Texture11 whiteTex;
 
 		//モデルの法線マップがない場合に使用する画像//
-		Texture11 NormalTex;
+		Texture11 normalTex;
 
 		//描画対象に設定する画像群//
-		std::vector<ID3D11RenderTargetView*>RenderTargets;
-		ID3D11RenderTargetView** TmpView = nullptr;
+		std::vector<ID3D11RenderTargetView*>renderTargets;
+		ID3D11RenderTargetView** tmpView = nullptr;
 
-		ID3D11Device* Device = nullptr;
-		ID3D11DeviceContext* DC = nullptr;
+		ID3D11Device* device = nullptr;
+		ID3D11DeviceContext* dc = nullptr;
 
 		//DepthStencilBuffer用//
-		Texture11 DSBuffer;
+		Texture11 dsBuffer;
 
-		ShaderParts::DrawWindow Window;
+		ShaderParts::DrawWindow window;
 
-		ShaderParts::ViewPort View;
+		ShaderParts::ViewPort view;
 		
-		ShaderParts::ChLightHeader LightDatas;
+		ShaderParts::ChLightHeader lightDatas;
 
 		//描画可能フラグ//
-		ChStd::Bool DrawFlg = false;
-		ChStd::Bool RTDrawFlg = false;
+		ChStd::Bool drawFlg = false;
+		ChStd::Bool rtDrawFlg = false;
 
 		//フォグ描画フラグ//
-		ChStd::Bool FogFlg = false;
+		ChStd::Bool fogFlg = false;
 
 		//カリングタイプ//
-		D3D11_CULL_MODE Cull = D3D11_CULL_MODE::D3D11_CULL_NONE;
+		D3D11_CULL_MODE cull = D3D11_CULL_MODE::D3D11_CULL_NONE;
 
 		//面描画タイプ//
-		D3D11_FILL_MODE Fill = D3D11_FILL_MODE::D3D11_FILL_SOLID;
+		D3D11_FILL_MODE fill = D3D11_FILL_MODE::D3D11_FILL_SOLID;
 
-		ID3D11RasterizerState* Rasteriser = nullptr;
+		ID3D11RasterizerState* rasteriser = nullptr;
 
-		ChStd::Bool RasteriserUpdate = false;
+		ChStd::Bool rasteriserUpdate = false;
 
 		//背景色//
-		ChVec4 BackColor = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
+		ChVec4 backColor = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 		struct BaseDatas
 		{
 			//ビュー変換行列//
-			ChMat_11 ViewMat;
+			ChMat_11 viewMat;
 			//射影変換行列//
-			ChMat_11 ProjMat;
+			ChMat_11 projMat;
 			//画面サイズ//
-			ChVec4 WindSize;
+			ChVec4 windSize;
 		};
 
 		struct CharaDatas
 		{
 			//モデル行列//
-			ChMat_11 ModelMat;
+			ChMat_11 modelMat;
 
 		};
 
 		struct PolygonDatas
 		{
 			//モデル行列//
-			ChMat_11 ModelMat;
+			ChMat_11 modelMat;
 			//スプライトベース色//
-			ChVec4 BaseColor = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
+			ChVec4 baseColor = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
 		};
 
 		struct BoneDatas
 		{
 			//スキンメッシュ用行列//
-			ChMat_11 SkinWeightMat[1000];
+			ChMat_11 skinWeightMat[1000];
 		};
 
-		ChStd::Bool BDUpdateFlg = true;
+		ChStd::Bool bdUpdateFlg = true;
 
-		BaseDatas BDObject;
-		ConstantBuffer BaseData = nullptr;
+		BaseDatas bdObject;
+		ConstantBuffer baseData = nullptr;
 
-		CharaDatas CDObject;
-		ConstantBuffer CharaData = nullptr;
+		CharaDatas cdObject;
+		ConstantBuffer charaData = nullptr;
 
-		PolygonDatas PDObject;
-		ConstantBuffer PolygonData = nullptr;
+		PolygonDatas pdObject;
+		ConstantBuffer polygonData = nullptr;
 
-		BoneDatas BoDObject;
-		ConstantBuffer BoneData = nullptr;
+		BoneDatas bodObject;
+		ConstantBuffer boneData = nullptr;
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		Texture11 Out3D;
-		Texture11 Out2D;
+		Texture11 out3D;
+		Texture11 out2D;
 
-		Sprite11 OutSprite;
+		Sprite11 outSprite;
 
 	public:
 
 		static inline ShaderController11& GetIns()
 		{
-			static ShaderController11 Ins;
-			return Ins;
+			static ShaderController11 ins;
+			return ins;
 		}
 
 	private:

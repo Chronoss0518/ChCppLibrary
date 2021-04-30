@@ -30,9 +30,9 @@ public:
 
 	operator DirectX::XMFLOAT4X4()const;
 
-	ChMatrix_11&operator = (const DirectX::XMFLOAT3& _Vec);
+	ChMatrix_11&operator = (const DirectX::XMFLOAT3& _vec);
 
-	ChMatrix_11&operator =(const DirectX::XMFLOAT4& _Qua);
+	ChMatrix_11&operator =(const DirectX::XMFLOAT4& _qua);
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//ConstructerDestructer//
@@ -52,24 +52,24 @@ public:
 		Identity();
 	}
 
-	inline ChMatrix_11(const DirectX::XMFLOAT3& _Vec)
+	inline ChMatrix_11(const DirectX::XMFLOAT3& _vec)
 	{
-		*this = _Vec;
+		*this = _vec;
 	}
 
-	inline ChMatrix_11(const DirectX::XMFLOAT4& _Qua)
+	inline ChMatrix_11(const DirectX::XMFLOAT4& _qua)
 	{
-		*this = _Qua;
+		*this = _qua;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//SetFunction//
 
-	void SetPosition(const DirectX::XMFLOAT3& _Pos);
+	void SetPosition(const DirectX::XMFLOAT3& _pos);
 	
-	void SetRotation(const DirectX::XMFLOAT3& _Rot);
+	void SetRotation(const DirectX::XMFLOAT3& _rot);
 	
-	void SetScaleSize(const DirectX::XMFLOAT3& _Sca);
+	void SetScaleSize(const DirectX::XMFLOAT3& _sca);
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//GetFunction//
@@ -96,7 +96,7 @@ public:
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	void Inverse(const DirectX::XMFLOAT4X4& _Mat);
+	void Inverse(const DirectX::XMFLOAT4X4& _mat);
 
 	///////////////////////////////////////////////////////////////////////////////////
 
@@ -104,11 +104,11 @@ public:
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	void RotYPR(const DirectX::XMFLOAT3& _Vec);
+	void RotYPR(const DirectX::XMFLOAT3& _vec);
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	void RotQua(const DirectX::XMFLOAT4& _Qua);
+	void RotQua(const DirectX::XMFLOAT4& _qua);
 
 	///////////////////////////////////////////////////////////////////////////////////
 
@@ -116,11 +116,11 @@ public:
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	void RotVec(const DirectX::XMFLOAT3& _Vec);
+	void RotVec(const DirectX::XMFLOAT3& _vec);
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	void RotAxis(const DirectX::XMFLOAT3& _Vec, const float _Ang);
+	void RotAxis(const DirectX::XMFLOAT3& _vec, const float _Ang);
 
 	///////////////////////////////////////////////////////////////////////////////////
 
@@ -131,27 +131,27 @@ public:
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	inline void Trans(const DirectX::XMFLOAT3& _Vec)
+	inline void Trans(const DirectX::XMFLOAT3& _vec)
 	{
-		*this = DirectX::XMMatrixTranslation(_Vec.x, _Vec.y, _Vec.z);
+		*this = DirectX::XMMatrixTranslation(_vec.x, _vec.y, _vec.z);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	inline void VectorMove(const DirectX::XMFLOAT3& _Vec)
+	inline void VectorMove(const DirectX::XMFLOAT3& _vec)
 	{
-		this->_41 += _Vec.x;
-		this->_42 += _Vec.y;
-		this->_43 += _Vec.z;
+		this->_41 += _vec.x;
+		this->_42 += _vec.y;
+		this->_43 += _vec.z;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
 
 	inline void Move(const float _x, const float _y, const float _z)
 	{
-		ChMatrix_11 TmpMat;
-		TmpMat.Trans(_x, _y, _z);
-		*this = TmpMat * *this;
+		ChMatrix_11 tmpMat;
+		tmpMat.Trans(_x, _y, _z);
+		*this = tmpMat * *this;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
@@ -163,41 +163,41 @@ public:
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	inline void Scaling(const DirectX::XMFLOAT3& _TmpVec)
+	inline void Scaling(const DirectX::XMFLOAT3& _tmpVec)
 	{
-		Scaling(_TmpVec.x, _TmpVec.y, _TmpVec.z);
+		Scaling(_tmpVec.x, _tmpVec.y, _tmpVec.z);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	inline void Scaling(const float _Scl)
+	inline void Scaling(const float _scl)
 	{
 
-		Scaling(_Scl, _Scl, _Scl);
+		Scaling(_scl, _scl, _scl);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	void CreateViewMat(const ChVec3& _Pos,const ChVec3& _Dir,const ChVec3& _Up);
+	void CreateViewMat(const ChVec3& _pos,const ChVec3& _dir,const ChVec3& _up);
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	void CreateViewMatLookTarget(const ChVec3& _Pos, const ChVec3& _TargetPos, const ChVec3& _Up);
+	void CreateViewMatLookTarget(const ChVec3& _pos, const ChVec3& _targetPos, const ChVec3& _up);
 
 	///////////////////////////////////////////////////////////////////////////////////
 
 	inline void CreateProjectionMat(
-		const float _LookAngleRadian
-		, const float _WindWidth
-		, const float _WindHeight
-		, const float _NearZ
-		, const float _FarZ)
+		const float _lookAngleRadian
+		, const float _windWidth
+		, const float _windHeight
+		, const float _nearZ
+		, const float _farZ)
 	{
 		*this = DirectX::XMMatrixPerspectiveFovLH(
-			_LookAngleRadian
-			, _WindWidth/ _WindHeight
-			, _NearZ
-			, _FarZ);
+			_lookAngleRadian
+			, _windWidth/ _windHeight
+			, _nearZ
+			, _farZ);
 
 
 	}
@@ -207,11 +207,11 @@ public:
 	//ç¿ïWånïœä∑//
 	inline ChMatrix_11 Transpose() const
 	{
-		ChMatrix_11 Tmp;
+		ChMatrix_11 tmp;
 
-		Tmp = DirectX::XMMatrixTranspose(*this);
+		tmp = DirectX::XMMatrixTranspose(*this);
 
-		return Tmp;
+		return tmp;
 	}
 
 private:

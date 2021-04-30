@@ -26,58 +26,58 @@ void PolygonBoard11::Init(ID3D11Device* _Device)
 
 	SetDevice((_Device));
 
-	Primitives.VertexNum = 4;
+	primitives.vertexNum = 4;
 
-	Primitives.VertexArray = new MeshVertex11[Primitives.VertexNum];
+	primitives.vertexArray = new MeshVertex11[primitives.vertexNum];
 	
 	{
-		auto& Vertex = (Primitives.VertexArray[0]);
-		Vertex.Pos = ChVec3(-0.5f, 0.5f, 0.0f);
-		Vertex.UVPos = ChVec2(0.0f, 0.0f);
-		Vertex.Color = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
+		auto& vertex = (primitives.vertexArray[0]);
+		vertex.pos = ChVec3(-0.5f, 0.5f, 0.0f);
+		vertex.uvPos = ChVec2(0.0f, 0.0f);
+		vertex.color = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
 	{
-		auto& Vertex = (Primitives.VertexArray[1]);
-		Vertex.Pos = ChVec3(0.5f, 0.5f, 0.0f);
-		Vertex.UVPos = ChVec2(1.0f, 0.0f);
-		Vertex.Color = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
+		auto& vertex = (primitives.vertexArray[1]);
+		vertex.pos = ChVec3(0.5f, 0.5f, 0.0f);
+		vertex.uvPos = ChVec2(1.0f, 0.0f);
+		vertex.color = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
 	{
-		auto& Vertex = (Primitives.VertexArray[2]);
-		Vertex.Pos = ChVec3(0.5f, -0.5f, 0.0f);
-		Vertex.UVPos = ChVec2(1.0f, 1.0f);
-		Vertex.Color = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
+		auto& vertex = (primitives.vertexArray[2]);
+		vertex.pos = ChVec3(0.5f, -0.5f, 0.0f);
+		vertex.uvPos = ChVec2(1.0f, 1.0f);
+		vertex.color = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
 	{
-		auto& Vertex = (Primitives.VertexArray[3]);
-		Vertex.Pos = ChVec3(-0.5f, -0.5f, 0.0f);
-		Vertex.UVPos = ChVec2(0.0f, 1.0f);
-		Vertex.Color = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
+		auto& vertex = (primitives.vertexArray[3]);
+		vertex.pos = ChVec3(-0.5f, -0.5f, 0.0f);
+		vertex.uvPos = ChVec2(0.0f, 1.0f);
+		vertex.color = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
 
-	Primitives.IndexNum = 6;
+	primitives.indexNum = 6;
 
-	Primitives.IndexArray = new unsigned long[Primitives.IndexNum];
+	primitives.indexArray = new unsigned long[primitives.indexNum];
 
-	Primitives.IndexArray[0] = (0);
-	Primitives.IndexArray[1] = (1);
-	Primitives.IndexArray[2] = (2);
-	Primitives.IndexArray[3] = (0);
-	Primitives.IndexArray[4] = (2);
-	Primitives.IndexArray[5] = (3);
+	primitives.indexArray[0] = (0);
+	primitives.indexArray[1] = (1);
+	primitives.indexArray[2] = (2);
+	primitives.indexArray[3] = (0);
+	primitives.indexArray[4] = (2);
+	primitives.indexArray[5] = (3);
 
 
 	for (unsigned char i = 0; i < 4; i++)
 	{
 
-		auto Vertex = reinterpret_cast<MeshVertex11*>(&Primitives.VertexArray[i]);
+		auto vertex = reinterpret_cast<MeshVertex11*>(&primitives.vertexArray[i]);
 
-		int Tmp;
-		Tmp = 0;
+		int tmp;
+		tmp = 0;
 	}
 
 
@@ -94,34 +94,34 @@ void PolygonBoard11::Release()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void PolygonBoard11::SetPos(const unsigned char  _PosNames, const  ChVec3& _PosData)
+void PolygonBoard11::SetPos(const unsigned char  _posNames, const  ChVec3& _posData)
 {
 
-	if (_PosNames >= 4)return;
+	if (_posNames >= 4)return;
 
-	ChVec3 TmpVec;
+	ChVec3 tmpVec;
 
-	TmpVec = _PosData - Primitives.VertexArray[_PosNames].Pos;
+	tmpVec = _posData - primitives.vertexArray[_posNames].pos;
 
-	if(TmpVec.Len() > 0.0f)UpdateFlg = true;
+	if(tmpVec.Len() > 0.0f)updateFlg = true;
 
-	Primitives.VertexArray[_PosNames].Pos = _PosData;
+	primitives.vertexArray[_posNames].pos = _posData;
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void PolygonBoard11::SetUVPos(const unsigned char _PosNames, const ChVec2& _PosData)
+void PolygonBoard11::SetUVPos(const unsigned char _posNames, const ChVec2& _posData)
 {
-	if (_PosNames >= 4)return;
+	if (_posNames >= 4)return;
 
-	ChVec2 TmpVec;
+	ChVec2 tmpVec;
 
-	TmpVec = _PosData - Primitives.VertexArray[_PosNames].UVPos;
+	tmpVec = _posData - primitives.vertexArray[_posNames].uvPos;
 
-	if (TmpVec.Len() > 0.0f)UpdateFlg = true;
+	if (tmpVec.Len() > 0.0f)updateFlg = true;
 
-	Primitives.VertexArray[_PosNames].UVPos = _PosData;
+	primitives.vertexArray[_posNames].uvPos = _posData;
 
 }
 
@@ -130,31 +130,31 @@ void PolygonBoard11::SetUVPos(const unsigned char _PosNames, const ChVec2& _PosD
 void PolygonBoard11::UpdateVertex()
 {
 
-	if (!UpdateFlg)return;
+	if (!updateFlg)return;
 
-	CreateVertexBuffer(Primitives);
+	CreateVertexBuffer(primitives);
 
-	CreateIndexBuffer(Primitives);
+	CreateIndexBuffer(primitives);
 
-	UpdateFlg = false;
+	updateFlg = false;
 
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void PolygonBoard11::SetDrawData(ID3D11DeviceContext* _DC)
+void PolygonBoard11::SetDrawData(ID3D11DeviceContext* _dc)
 {
 	UpdateVertex();
 
 	unsigned int Strides = sizeof(MeshVertex11);
 	unsigned int Offsets = 0;
 
-	_DC->IASetVertexBuffers(0, 1, &Primitives.Vertexs, &Strides, &Offsets);
-	_DC->IASetIndexBuffer(Primitives.Indexs, DXGI_FORMAT_R32_UINT, 0);
+	_dc->IASetVertexBuffers(0, 1, &primitives.vertexs, &Strides, &Offsets);
+	_dc->IASetIndexBuffer(primitives.indexs, DXGI_FORMAT_R32_UINT, 0);
 
 
-	_DC->DrawIndexed(Primitives.IndexNum, 0, 0);
+	_dc->DrawIndexed(primitives.indexNum, 0, 0);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

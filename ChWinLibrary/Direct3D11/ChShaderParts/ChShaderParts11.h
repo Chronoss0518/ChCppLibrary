@@ -38,21 +38,21 @@ namespace ChD3D11
 			//InitAndRelease//
 
 			void Init(
-				ID3D11Device* _Device
-				,IDXGISwapChain* _SC);
+				ID3D11Device* _device
+				,IDXGISwapChain* _sc);
 
 			void Release();
 
 			///////////////////////////////////////////////////////////////////////////////////
 			//SetFunction//
 
-			void SetSwapEffect(const DXGI_SWAP_EFFECT& _Effect) { SEffect = _Effect; }
+			void SetSwapEffect(const DXGI_SWAP_EFFECT& _effect) { sEffect = _effect; }
 
-			void SetDrawData(ID3D11DeviceContext* _DC, ID3D11DepthStencilView* _DSView = nullptr);
+			void SetDrawData(ID3D11DeviceContext* _dc, ID3D11DepthStencilView* _dsView = nullptr);
 
 			///////////////////////////////////////////////////////////////////////////////////
 
-			void ClearView(ID3D11DeviceContext* _DC,const ChVec4& _Color);
+			void ClearView(ID3D11DeviceContext* _dc,const ChVec4& _color);
 
 			///////////////////////////////////////////////////////////////////////////////////
 
@@ -63,13 +63,13 @@ namespace ChD3D11
 
 		private:
 
-			IDXGISwapChain* Window = nullptr;
+			IDXGISwapChain* window = nullptr;
 
 			//描画後にバックバッファを消去する等のフラグメント//
-			DXGI_SWAP_EFFECT SEffect = DXGI_SWAP_EFFECT_DISCARD;
+			DXGI_SWAP_EFFECT sEffect = DXGI_SWAP_EFFECT_DISCARD;
 
 			//描画用//
-			ID3D11RenderTargetView* BBTargetView = nullptr;
+			ID3D11RenderTargetView* bbTargetView = nullptr;
 		};
 
 		class ChLightHeader final :public ChCpp::ClassPerts::Initializer,public ChCpp::ClassPerts::Releaser
@@ -80,64 +80,64 @@ namespace ChD3D11
 			//Structures//
 			struct DirectionalLight
 			{
-				ChVec3 Dif;
-				bool UseLightFlg = false;
-				ChVec3 Dir;
-				float AmbPow = 0.0f;
+				ChVec3 dif;
+				bool useLightFlg = false;
+				ChVec3 dir;
+				float ambPow = 0.0f;
 			};
 
 			struct PointLight
 			{
-				ChVec3 Pos;
-				float Len = 10.0f;
-				ChVec3 Dif;
-				bool UseFlg = false;
+				ChVec3 pos;
+				float len = 10.0f;
+				ChVec3 dif;
+				bool useFlg = false;
 			};
 
 			struct LightData
 			{
-				ChVec3 CamPos;
-				DirectionalLight Light;
-				PointLight PLight[10];
+				ChVec3 camPos;
+				DirectionalLight light;
+				PointLight pLight[10];
 			};
 
 			///////////////////////////////////////////////////////////////////////////////////
 			//InitAndRelease//
 
-			void Init(ID3D11Device* _Device);
+			void Init(ID3D11Device* _device);
 
 			void Release()override;
 
 			///////////////////////////////////////////////////////////////////////////////////
 			//SetFunction//
 
-			void SetLightDiffuse(const ChVec3& _Dif);
+			void SetLightDiffuse(const ChVec3& _dif);
 
-			void SetUseLightFlg(const ChStd::Bool& _Flg);
+			void SetUseLightFlg(const ChStd::Bool& _flg);
 
-			void SetLightDir(const ChVec3& _Dir);
+			void SetLightDir(const ChVec3& _dir);
 
-			void SetLightAmbientPow(const float _Amb);
+			void SetLightAmbientPow(const float _amb);
 
-			void SetPLightPos(const ChVec3& _Pos,const unsigned long _No = 0);
+			void SetPLightPos(const ChVec3& _pos,const unsigned long _no = 0);
 
-			void SetPLightLen(const float _Len, const unsigned long _No = 0);
+			void SetPLightLen(const float _len, const unsigned long _no = 0);
 
-			void SetPLightDiffuse(const ChVec3& _Dif, const unsigned long _No = 0);
+			void SetPLightDiffuse(const ChVec3& _dif, const unsigned long _no = 0);
 
-			void SetPLightUseFlg(const ChStd::Bool& _Flg, const unsigned long _No = 0);
+			void SetPLightUseFlg(const ChStd::Bool& _flg, const unsigned long _no = 0);
 
-			void SetCamPos(const ChVec3& _CamPos);
+			void SetCamPos(const ChVec3& _camPos);
 
-			void SetLightData(const LightData& _LD);
+			void SetLightData(const LightData& _ld);
 
-			void SetPSDrawData(ID3D11DeviceContext* _DC);
+			void SetPSDrawData(ID3D11DeviceContext* _dc);
 
-			void SetVSDrawData(ID3D11DeviceContext* _DC);
+			void SetVSDrawData(ID3D11DeviceContext* _dc);
 
-			void SetDrawData(ID3D11DeviceContext* _DC);
+			void SetDrawData(ID3D11DeviceContext* _dc);
 
-			void SetImportLightPowMap(ChPtr::Shared<Texture11>& _LightPowMap);
+			void SetImportLightPowMap(ChPtr::Shared<Texture11>& _lightPowMap);
 
 			///////////////////////////////////////////////////////////////////////////////////
 			//GetFunction//
@@ -150,25 +150,25 @@ namespace ChD3D11
 
 		private:
 
-			void SetTexture(ID3D11DeviceContext* _DC);
+			void SetTexture(ID3D11DeviceContext* _dc);
 
-			void Update(ID3D11DeviceContext* _DC);
+			void Update(ID3D11DeviceContext* _dc);
 
 			struct UseLightData
 			{
-				ChVec3 CamPos;
-				int PLightCount = 10;
-				DirectionalLight Light;
-				PointLight PLight[10];
+				ChVec3 camPos;
+				int pLightCount = 10;
+				DirectionalLight light;
+				PointLight pLight[10];
 			};
 
-			UseLightData LightDatas;
-			ID3D11Device* Device = nullptr;
-			ConstantBuffer Buf = nullptr;
-			ChStd::Bool UpdateFlg = true;
+			UseLightData lightDatas;
+			ID3D11Device* device = nullptr;
+			ConstantBuffer buf = nullptr;
+			ChStd::Bool updateFlg = true;
 
-			Texture11 LightPow;
-			ChPtr::Shared<Texture11>ImportLightPowMap;
+			Texture11 lightPow;
+			ChPtr::Shared<Texture11>importLightPowMap;
 		};
 
 	}

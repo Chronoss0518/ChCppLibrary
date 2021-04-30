@@ -28,13 +28,13 @@ ChVector3_11& ChVector3_11::operator+=(const DirectX::XMFLOAT3& _cm)
 ChVector3_11 ChVector3_11::operator+(const DirectX::XMFLOAT3& _cm)const
 {
 
-	ChVector3_11 Tmp;
-	Tmp = *this;
-	Tmp.x += _cm.x;
-	Tmp.y += _cm.y;
-	Tmp.z += _cm.z;
+	ChVector3_11 tmp;
+	tmp = *this;
+	tmp.x += _cm.x;
+	tmp.y += _cm.y;
+	tmp.z += _cm.z;
 
-	return Tmp;
+	return tmp;
 }
 
 ChVector3_11& ChVector3_11::operator-=(const DirectX::XMFLOAT3& _cm)
@@ -46,13 +46,13 @@ ChVector3_11& ChVector3_11::operator-=(const DirectX::XMFLOAT3& _cm)
 
 ChVector3_11 ChVector3_11::operator-(const DirectX::XMFLOAT3& _cm)const
 {
-	ChVector3_11 Tmp;
-	Tmp = *this;
-	Tmp.x -= _cm.x;
-	Tmp.y -= _cm.y;
-	Tmp.z -= _cm.z;
+	ChVector3_11 tmp;
+	tmp = *this;
+	tmp.x -= _cm.x;
+	tmp.y -= _cm.y;
+	tmp.z -= _cm.z;
 
-	return Tmp;
+	return tmp;
 }
 
 ChVector3_11& ChVector3_11::operator*=(const DirectX::XMFLOAT3& _cm)
@@ -65,13 +65,13 @@ ChVector3_11& ChVector3_11::operator*=(const DirectX::XMFLOAT3& _cm)
 
 ChVector3_11 ChVector3_11::operator*(const DirectX::XMFLOAT3& _cm)const
 {
-	ChVector3_11 Tmp;
-	Tmp = *this;
-	Tmp.x *= _cm.x;
-	Tmp.y *= _cm.y;
-	Tmp.z *= _cm.z;
+	ChVector3_11 tmp;
+	tmp = *this;
+	tmp.x *= _cm.x;
+	tmp.y *= _cm.y;
+	tmp.z *= _cm.z;
 
-	return Tmp;
+	return tmp;
 }
 
 ChVector3_11& ChVector3_11::operator/=(const DirectX::XMFLOAT3& _cm)
@@ -84,13 +84,13 @@ ChVector3_11& ChVector3_11::operator/=(const DirectX::XMFLOAT3& _cm)
 ChVector3_11 ChVector3_11::operator/(const DirectX::XMFLOAT3& _cm)const
 {
 
-	ChVector3_11 Tmp;
-	Tmp = *this;
+	ChVector3_11 tmp;
+	tmp = *this;
 
-	if (_cm.x != 0.0f)Tmp.x /= _cm.x;
-	if (_cm.y != 0.0f)Tmp.y /= _cm.y;
-	if (_cm.z != 0.0f)Tmp.z /= _cm.z;
-	return Tmp;
+	if (_cm.x != 0.0f)tmp.x /= _cm.x;
+	if (_cm.y != 0.0f)tmp.y /= _cm.y;
+	if (_cm.z != 0.0f)tmp.z /= _cm.z;
+	return tmp;
 }
 
 ChVector3_11& ChVector3_11::operator=(const float& _cm)
@@ -111,11 +111,11 @@ ChVector3_11& ChVector3_11::operator+=(const float& _cm)
 
 ChVector3_11 ChVector3_11::operator+(const float& _cm)const
 {
-	ChVector3_11 Tmp;
+	ChVector3_11 tmp;
 
-	Tmp = *this;
-	Tmp += _cm;
-	return Tmp;
+	tmp = *this;
+	tmp += _cm;
+	return tmp;
 
 }
 
@@ -128,13 +128,13 @@ ChVector3_11& ChVector3_11::operator-=(const float& _cm)
 ChVector3_11 ChVector3_11::operator-(const float& _cm)const
 {
 
-	ChVector3_11 Tmp;
+	ChVector3_11 tmp;
 
-	Tmp = *this;
-	Tmp.x -= _cm;
-	Tmp.y -= _cm;
-	Tmp.z -= _cm;
-	return Tmp;
+	tmp = *this;
+	tmp.x -= _cm;
+	tmp.y -= _cm;
+	tmp.z -= _cm;
+	return tmp;
 
 }
 
@@ -148,13 +148,13 @@ ChVector3_11& ChVector3_11::operator*=(const float& _cm)
 ChVector3_11 ChVector3_11::operator*(const float& _cm)const
 {
 
-	ChVector3_11 Tmp;
+	ChVector3_11 tmp;
 
-	Tmp = *this;
-	Tmp.x *= _cm;
-	Tmp.y *= _cm;
-	Tmp.z *= _cm;
-	return Tmp;
+	tmp = *this;
+	tmp.x *= _cm;
+	tmp.y *= _cm;
+	tmp.z *= _cm;
+	return tmp;
 
 }
 
@@ -168,13 +168,13 @@ ChVector3_11& ChVector3_11::operator/=(const float& _cm)
 ChVector3_11 ChVector3_11::operator/(const float& _cm)const
 {
 
-	ChVector3_11 Tmp;
+	ChVector3_11 tmp;
 
-	Tmp = *this;
-	Tmp.x /= _cm != 0.0f ?_cm : 1.0f;
-	Tmp.y /= _cm != 0.0f ?_cm : 1.0f;
-	Tmp.z /= _cm != 0.0f ?_cm : 1.0f;
-	return Tmp;
+	tmp = *this;
+	tmp.x /= _cm != 0.0f ?_cm : 1.0f;
+	tmp.y /= _cm != 0.0f ?_cm : 1.0f;
+	tmp.z /= _cm != 0.0f ?_cm : 1.0f;
+	return tmp;
 
 }
 
@@ -186,46 +186,46 @@ ChVector3_11& ChVector3_11::operator=(const DirectX::XMVECTOR& _cm)
 
 ChVector3_11::operator DirectX::XMVECTOR()const
 {
-	DirectX::XMVECTOR Tmp;
+	DirectX::XMVECTOR tmp;
 
-	Tmp = DirectX::XMLoadFloat3(this);
+	tmp = DirectX::XMLoadFloat3(this);
 
-	return Tmp;
+	return tmp;
 }
 
 ChVector3_11::operator DirectX::XMFLOAT3()const
 {
 
-	DirectX::XMFLOAT3 TmpVec;
+	DirectX::XMFLOAT3 tmpVec;
 
-	TmpVec.x = x;
-	TmpVec.y = y;
-	TmpVec.z = z;
+	tmpVec.x = x;
+	tmpVec.y = y;
+	tmpVec.z = z;
 
-	return TmpVec;
+	return tmpVec;
 
 }
 
-ChVector3_11& ChVector3_11::operator = (const DirectX::XMFLOAT4&  _Qua)
+ChVector3_11& ChVector3_11::operator = (const DirectX::XMFLOAT4&  _qua)
 {
-	DirectX::XMMATRIX TmpMat;
+	DirectX::XMMATRIX tmpMat;
 
-	DirectX::XMVECTOR TmpVec;
+	DirectX::XMVECTOR tmpVec;
 
-	TmpVec = DirectX::XMLoadFloat4(&_Qua);
+	tmpVec = DirectX::XMLoadFloat4(&_qua);
 
-	TmpMat = DirectX::XMMatrixRotationQuaternion(TmpVec);
+	tmpMat = DirectX::XMMatrixRotationQuaternion(tmpVec);
 
-	*this = DirectX::XMVector3TransformNormal(ChVector3_11(0.0f, 0.0f, 1.0f), TmpMat);
+	*this = DirectX::XMVector3TransformNormal(ChVector3_11(0.0f, 0.0f, 1.0f), tmpMat);
 
 	return *this;
 }
 
-ChVector3_11& ChVector3_11::operator =(const DirectX::XMFLOAT4X4& _Mat)
+ChVector3_11& ChVector3_11::operator =(const DirectX::XMFLOAT4X4& _mat)
 {
-	x = _Mat._41;
-	y = _Mat._42;
-	z = _Mat._43;
+	x = _mat._41;
+	y = _mat._42;
+	z = _mat._43;
 	return *this;
 }
 
@@ -234,49 +234,49 @@ ChVector3_11& ChVector3_11::operator =(const DirectX::XMFLOAT4X4& _Mat)
 ///////////////////////////////////////////////////////////////////////////////////
 
 float ChVector3_11::GetLen(
-	const DirectX::XMFLOAT3& _Vec
+	const DirectX::XMFLOAT3& _vec
 )const
 {
-	DirectX::XMVECTOR TmpVec;
-	TmpVec = *this - _Vec;
+	DirectX::XMVECTOR tmpVec;
+	tmpVec = *this - _vec;
 
-	float Tmp;
-	TmpVec = DirectX::XMVector3Length(TmpVec);
-	DirectX::XMStoreFloat(&Tmp, DirectX::XMVector3Length(TmpVec));
+	float tmp;
+	tmpVec = DirectX::XMVector3Length(tmpVec);
+	DirectX::XMStoreFloat(&tmp, DirectX::XMVector3Length(tmpVec));
 
-	return Tmp;
+	return tmp;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 float ChVector3_11::GetRadian(
-	const ChVector3_11& _Vec1
-	, const ChVector3_11& _Vec2)const
+	const ChVector3_11& _vec1
+	, const ChVector3_11& _vec2)const
 {
-	ChVector3_11 TmpVec1, TmpVec2;
-	TmpVec1 = _Vec1;
-	TmpVec2 = _Vec2;
+	ChVector3_11 tmpVec1, tmpVec2;
+	tmpVec1 = _vec1;
+	tmpVec2 = _vec2;
 
-	TmpVec1 = DirectX::XMVector3Normalize(TmpVec1);
-	TmpVec2 = DirectX::XMVector3Normalize(TmpVec2);
+	tmpVec1 = DirectX::XMVector3Normalize(tmpVec1);
+	tmpVec2 = DirectX::XMVector3Normalize(tmpVec2);
 
-	return acosf(Dot(TmpVec1, TmpVec2));
+	return acosf(Dot(tmpVec1, tmpVec2));
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 float ChVector3_11::GetDegree(
-	const ChVector3_11& _Vec1
-	, const ChVector3_11& _Vec2)const
+	const ChVector3_11& _vec1
+	, const ChVector3_11& _vec2)const
 {
-	ChVector3_11 TmpVec1, TmpVec2;
-	TmpVec1 = _Vec1;
-	TmpVec2 = _Vec2;
+	ChVector3_11 tmpVec1, tmpVec2;
+	tmpVec1 = _vec1;
+	tmpVec2 = _vec2;
 
-	TmpVec1 = DirectX::XMVector3Normalize(TmpVec1);
-	TmpVec2 = DirectX::XMVector3Normalize(TmpVec2);
+	tmpVec1 = DirectX::XMVector3Normalize(tmpVec1);
+	tmpVec2 = DirectX::XMVector3Normalize(tmpVec2);
 
-	return ChMath::ToDegree(acosf(Dot(TmpVec1, TmpVec2)));
+	return ChMath::ToDegree(acosf(Dot(tmpVec1, tmpVec2)));
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -305,78 +305,78 @@ ChStd::Bool ChVector3_11::IsAll0()const {
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChVector3_11::MatPos
-(const DirectX::XMMATRIX& _Mat
-	, const ChVector3_11&  _Vec)
+(const DirectX::XMMATRIX& _mat
+	, const ChVector3_11&  _vec)
 {
-	DirectX::XMVECTOR TmpVec;
-	TmpVec = _Vec;
-	auto Tmp = DirectX::XMVector3TransformCoord(TmpVec, _Mat);
+	DirectX::XMVECTOR tmpVec;
+	tmpVec = _vec;
+	auto tmp = DirectX::XMVector3TransformCoord(tmpVec, _mat);
 
-	*this = Tmp;
+	*this = tmp;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChVector3_11::MatNormal(
-	const DirectX::XMMATRIX& _Mat
-	, const ChVector3_11&  _Vec
+	const DirectX::XMMATRIX& _mat
+	, const ChVector3_11&  _vec
 )
 {
-	DirectX::XMVECTOR TmpVec;
-	TmpVec = _Vec;
-	auto Tmp = DirectX::XMVector3TransformNormal(TmpVec, _Mat);
+	DirectX::XMVECTOR tmpVec;
+	tmpVec = _vec;
+	auto tmp = DirectX::XMVector3TransformNormal(tmpVec, _mat);
 
-	*this = Tmp;
+	*this = tmp;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChVector3_11::Normalize()
 {
-	float TmpLen = fabsf(this->x) + fabsf(this->y) + fabsf(this->z);
+	float tmpLen = fabsf(this->x) + fabsf(this->y) + fabsf(this->z);
 
-	if (TmpLen <= 0.0f) {
+	if (tmpLen <= 0.0f) {
 		*this = ChVector3_11(0.0f, 0.0f, 1.0f);
 		return;
 	}
 
 	if (IsNormals())return;
 
-	DirectX::XMVECTOR TmpVec;
-	TmpVec = *this;
+	DirectX::XMVECTOR tmpVec;
+	tmpVec = *this;
 
-	*this = DirectX::XMVector3Normalize(TmpVec);
+	*this = DirectX::XMVector3Normalize(tmpVec);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChVector3_11::Lerp(
-	const ChVector3_11& _SVec
-	, const ChVector3_11& _EVec
-	, const float _NowTime)
+	const ChVector3_11& _sVec
+	, const ChVector3_11& _eVec
+	, const float _nowTime)
 {
-	ChVector3_11 Tmp;
-	Tmp = _EVec - _SVec;
+	ChVector3_11 tmp;
+	tmp = _eVec - _sVec;
 
-	Tmp *= _NowTime;
+	tmp *= _nowTime;
 
-	Tmp = _EVec + Tmp;
+	tmp = _eVec + tmp;
 
-	*this = Tmp;
+	*this = tmp;
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChVector3_11::CrossVec(const ChVector3_11& _Vec1, const ChVector3_11& _Vec2)
+void ChVector3_11::CrossVec(const ChVector3_11& _vec1, const ChVector3_11& _vec2)
 {
-	DirectX::XMVECTOR TmpVec1, TmpVec2;
-	TmpVec1 = _Vec1;
-	TmpVec2 = _Vec2;
+	DirectX::XMVECTOR tmpVec1, tmpVec2;
+	tmpVec1 = _vec1;
+	tmpVec2 = _vec2;
 
-	auto Tmp = DirectX::XMVector3Cross(TmpVec1, TmpVec2);
+	auto tmp = DirectX::XMVector3Cross(tmpVec1, tmpVec2);
 
-	*this = Tmp;
+	*this = tmp;
 
 
 }
@@ -384,17 +384,17 @@ void ChVector3_11::CrossVec(const ChVector3_11& _Vec1, const ChVector3_11& _Vec2
 ///////////////////////////////////////////////////////////////////////////////////
 
 float ChVector3_11::Dot(
-	const ChVector3_11& _Vec1
-	, const ChVector3_11&  _Vec2)const
+	const ChVector3_11& _vec1
+	, const ChVector3_11&  _vec2)const
 {
-	DirectX::XMVECTOR TmpVec1, TmpVec2;
-	TmpVec1 = _Vec1;
-	TmpVec2 = _Vec2;
+	DirectX::XMVECTOR tmpVec1, tmpVec2;
+	tmpVec1 = _vec1;
+	tmpVec2 = _vec2;
 
-	float Tmp;
-	DirectX::XMStoreFloat(&Tmp, DirectX::XMVector3Dot(TmpVec1, TmpVec2));
+	float tmp;
+	DirectX::XMStoreFloat(&tmp, DirectX::XMVector3Dot(tmpVec1, tmpVec2));
 
-	return Tmp;
+	return tmp;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -403,12 +403,12 @@ float ChVector3_11::Dot(
 
 ChVec3::operator const DirectX::XMFLOAT3()const
 {
-	DirectX::XMFLOAT3 TmpVec;
-	TmpVec.x = x;
-	TmpVec.y = y;
-	TmpVec.z = z;
+	DirectX::XMFLOAT3 tmpVec;
+	tmpVec.x = x;
+	tmpVec.y = y;
+	tmpVec.z = z;
 
-	return TmpVec;
+	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -420,35 +420,35 @@ ChVec3::operator const DirectX::XMFLOAT3*()const
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVec3& ChVec3::operator= (const DirectX::XMFLOAT3& _Vec)
+ChVec3& ChVec3::operator= (const DirectX::XMFLOAT3& _vec)
 {
-	x = _Vec.x;
-	y = _Vec.y;
-	z = _Vec.z;
+	x = _vec.x;
+	y = _vec.y;
+	z = _vec.z;
 
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVec3& ChVec3::operator= (const DirectX::XMFLOAT4& _Qua)
+ChVec3& ChVec3::operator= (const DirectX::XMFLOAT4& _qua)
 {
-	ChVector3_11 Tmp;
-	Tmp = _Qua;
+	ChVector3_11 tmp;
+	tmp = _qua;
 
-	*this = Tmp;
+	*this = tmp;
 
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVec3& ChVec3::operator= (const DirectX::XMFLOAT4X4& _Mat)
+ChVec3& ChVec3::operator= (const DirectX::XMFLOAT4X4& _mat)
 {
-	ChVector3_11 Tmp;
-	Tmp = _Mat;
+	ChVector3_11 tmp;
+	tmp = _mat;
 
-	*this = Tmp;
+	*this = tmp;
 
 	return *this;
 

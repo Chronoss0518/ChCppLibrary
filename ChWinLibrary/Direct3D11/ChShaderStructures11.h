@@ -9,99 +9,91 @@ namespace ChD3D11
 
 	struct ShaderUseMaterial11
 	{
-		ChVec4 Diffuse = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
-		ChVec4 Specular = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
-		ChVec4 Ambient = ChVec4(0.3f, 0.3f, 0.3f, 1.0f);
-		ChMat_11 FrameMatrix;
+		ChVec4 diffuse = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
+		ChVec4 specular = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
+		ChVec4 ambient = ChVec4(0.3f, 0.3f, 0.3f, 1.0f);
+		ChMat_11 frameMatrix;
 	};
 
 	struct Material11
 	{
-		ShaderUseMaterial11 Material;
+		ShaderUseMaterial11 material;
 
 
-		ConstantBuffer MBuffer = nullptr;
-		std::string MaterialName;
-		std::vector<ChPtr::Shared<Texture11>>TextureList;
+		ConstantBuffer mBuffer = nullptr;
+		std::string materialName;
+		std::vector<ChPtr::Shared<Texture11>>textureList;
 	};
 
 	struct Vertex11
 	{
-		ChVec3 Pos;
-		ChVec2 UVPos;
-		ChVec4 Color = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
+		ChVec3 pos;
+		ChVec2 uvPos;
+		ChVec4 color = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
 	};
 
 	struct MeshVertex11: public Vertex11
 	{
-		ChVec3 Normal = ChVec3(0.0f, 0.0f, -1.0f);
+		ChVec3 normal = ChVec3(0.0f, 0.0f, -1.0f);
 	};
 
 	struct PrimitiveVertex11 : public MeshVertex11
 	{
-		ChVec3 FaceNormal = ChVec3(0.0f,0.0f,-1.0f);
-		ChUIMat BlendIndex;
-		ChLMat BlendPow;
-		unsigned long BlendNum = 0;
+		ChVec3 faceNormal = ChVec3(0.0f,0.0f,-1.0f);
+		ChUIMat blendIndex;
+		ChLMat blendPow;
+		unsigned long blendNum = 0;
 	};
-
-	//struct MeshVertex11: public Vertex11
-	//{
-	//	ChVec3 Normal;
-	//	float Temperature;//ëŒè€ÉÅÉbÉVÉÖÇÃîMó 
-	//	UINT4 Blend;
-	//	ChVec4 BlendPow;
-	//};
 
 	template<class Vertex = Vertex11>
 	struct PrimitiveData11
 	{
-		IndexBuffer Indexs = nullptr;
-		VertexBuffer Vertexs = nullptr;
+		IndexBuffer indexs = nullptr;
+		VertexBuffer vertexs = nullptr;
 
 
-		typename std::enable_if<std::is_base_of<Vertex11, Vertex>::value, Vertex*>::type VertexArray = nullptr;
-		unsigned long* IndexArray = nullptr;
+		typename std::enable_if<std::is_base_of<Vertex11, Vertex>::value, Vertex*>::type vertexArray = nullptr;
+		unsigned long* indexArray = nullptr;
 
-		unsigned long VertexNum = 0;
-		unsigned long IndexNum = 0;
+		unsigned long vertexNum = 0;
+		unsigned long indexNum = 0;
 
-		ChPtr::Shared<Material11> Mate;
+		ChPtr::Shared<Material11> mate;
 
 		inline void Release()
 		{
 
-			if (ChPtr::NotNullCheck(Indexs))
+			if (ChPtr::NotNullCheck(indexs))
 			{
-				Indexs->Release();
-				Indexs = nullptr;
+				indexs->Release();
+				indexs = nullptr;
 			}
 
-			if (ChPtr::NotNullCheck(Vertexs))
+			if (ChPtr::NotNullCheck(vertexs))
 			{
-				Vertexs->Release();
-				Vertexs = nullptr;
+				vertexs->Release();
+				vertexs = nullptr;
 			}
 
-			if (ChPtr::NotNullCheck(VertexArray))
+			if (ChPtr::NotNullCheck(vertexArray))
 			{
-				delete[] VertexArray;
-				VertexArray = nullptr;
+				delete[] vertexArray;
+				vertexArray = nullptr;
 			}
 
-			if (ChPtr::NotNullCheck(IndexArray))
+			if (ChPtr::NotNullCheck(indexArray))
 			{
-				delete[] IndexArray;
-				IndexArray = nullptr;
+				delete[] indexArray;
+				indexArray = nullptr;
 			}
 
-			if (Mate != nullptr)
+			if (mate != nullptr)
 			{
 
-				if (ChPtr::NotNullCheck(Mate->MBuffer))
+				if (ChPtr::NotNullCheck(mate->mBuffer))
 				{
-					Mate->MBuffer->Release();
-					Mate->MBuffer = nullptr;
+					mate->mBuffer->Release();
+					mate->mBuffer = nullptr;
 				}
 			}
 
@@ -126,88 +118,88 @@ namespace ChD3D11
 		///////////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		virtual void SetDrawData(ID3D11DeviceContext* _CD) = 0;
+		virtual void SetDrawData(ID3D11DeviceContext* _cd) = 0;
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
-		auto CreateVertexBuffer(PrimitiveData11<Vertex>& _Prim)
+		auto CreateVertexBuffer(PrimitiveData11<Vertex>& _prim)
 			->typename std::enable_if<std::is_base_of<Vertex11, Vertex>::value, void>::type
 		{
 
-			D3D11_BUFFER_DESC Desc;
+			D3D11_BUFFER_DESC desc;
 
-			Desc.ByteWidth = sizeof(Vertex) * _Prim.VertexNum;
-			Desc.Usage = D3D11_USAGE_DEFAULT;
-			Desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			Desc.CPUAccessFlags = 0;
-			Desc.MiscFlags = 0;
-			Desc.StructureByteStride = 0;
+			desc.ByteWidth = sizeof(Vertex) * _prim.vertexNum;
+			desc.Usage = D3D11_USAGE_DEFAULT;
+			desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+			desc.CPUAccessFlags = 0;
+			desc.MiscFlags = 0;
+			desc.StructureByteStride = 0;
 
-			D3D11_SUBRESOURCE_DATA Data;
-			Data.pSysMem = _Prim.VertexArray;
-			Data.SysMemPitch = 0;
-			Data.SysMemSlicePitch = 0;
+			D3D11_SUBRESOURCE_DATA data;
+			data.pSysMem = _prim.vertexArray;
+			data.SysMemPitch = 0;
+			data.SysMemSlicePitch = 0;
 
-			Device->CreateBuffer(&Desc, &Data, &_Prim.Vertexs);
+			device->CreateBuffer(&desc, &data, &_prim.vertexs);
 
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		auto CreateIndexBuffer(PrimitiveData11<Vertex>& _Prim)
+		auto CreateIndexBuffer(PrimitiveData11<Vertex>& _prim)
 			->typename std::enable_if<std::is_base_of<Vertex11, Vertex>::value, void>::type
 		{
 
-			D3D11_BUFFER_DESC Desc;
-			Desc.ByteWidth = sizeof(unsigned long) * _Prim.IndexNum;
-			Desc.Usage = D3D11_USAGE_DEFAULT;
-			Desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-			Desc.CPUAccessFlags = 0;
-			Desc.MiscFlags = 0;
-			Desc.StructureByteStride = 0;
+			D3D11_BUFFER_DESC desc;
+			desc.ByteWidth = sizeof(unsigned long) * _prim.indexNum;
+			desc.Usage = D3D11_USAGE_DEFAULT;
+			desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+			desc.CPUAccessFlags = 0;
+			desc.MiscFlags = 0;
+			desc.StructureByteStride = 0;
 
-			D3D11_SUBRESOURCE_DATA Data;
-			Data.pSysMem = _Prim.IndexArray;
-			Data.SysMemPitch = 0;
-			Data.SysMemSlicePitch = 0;
+			D3D11_SUBRESOURCE_DATA data;
+			data.pSysMem = _prim.indexArray;
+			data.SysMemPitch = 0;
+			data.SysMemSlicePitch = 0;
 
-			Device->CreateBuffer(&Desc, &Data, &_Prim.Indexs);
+			device->CreateBuffer(&desc, &data, &_prim.indexs);
 
 		}
 
 		template<class T>
-		void CreateContentBuffer(ConstantBuffer* _Buffer)
+		void CreateContentBuffer(ConstantBuffer* _buffer)
 		{
 
-			D3D11_BUFFER_DESC Desc;
-			ZeroMemory(&Desc, sizeof(D3D11_BUFFER_DESC));
+			D3D11_BUFFER_DESC desc;
+			ZeroMemory(&desc, sizeof(D3D11_BUFFER_DESC));
 
-			Desc.ByteWidth = sizeof(T);
-			Desc.Usage = D3D11_USAGE_DEFAULT;
-			Desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-			Desc.CPUAccessFlags = 0;
-			Desc.MiscFlags = 0;
-			Desc.StructureByteStride = 0;
+			desc.ByteWidth = sizeof(T);
+			desc.Usage = D3D11_USAGE_DEFAULT;
+			desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+			desc.CPUAccessFlags = 0;
+			desc.MiscFlags = 0;
+			desc.StructureByteStride = 0;
 
-			Device->CreateBuffer(&Desc, nullptr, _Buffer);
+			device->CreateBuffer(&desc, nullptr, _buffer);
 		}
 
 	protected:
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		ID3D11Device* GetDevice() { return Device; }
+		ID3D11Device* GetDevice() { return device; }
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		void SetDevice(ID3D11Device* _Device) { Device = _Device; }
+		void SetDevice(ID3D11Device* _device) { device = _device; }
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 	private:
 
 
-		ID3D11Device* Device = nullptr;
+		ID3D11Device* device = nullptr;
 
 
 

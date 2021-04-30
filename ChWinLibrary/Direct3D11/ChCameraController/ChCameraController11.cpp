@@ -9,64 +9,64 @@ using namespace ChD3D11;
 
 
 ChMat_11 CameraController11::GetViewMat(
-	const ChVec3_11& _Pos
-	, const ChVec3_11& _Dir
-	,const ChVec3_11& _Up)
+	const ChVec3_11& _pos
+	, const ChVec3_11& _dir
+	,const ChVec3_11& _up)
 {
 
-	ChVec3_11 Dir = _Dir;
+	ChVec3_11 dir = _dir;
 
-	ChVec3_11 Up = _Up;
+	ChVec3_11 up = _up;
 
-	Dir.Normalize();
-	Up.Normalize();
+	dir.Normalize();
+	up.Normalize();
 
-	ChMat_11 TmpMat;
+	ChMat_11 tmpMat;
 
-	TmpMat.CreateViewMat(_Pos, Dir, Up);
+	tmpMat.CreateViewMat(_pos, dir, up);
 
-	CamMat = TmpMat;
+	camMat = tmpMat;
 
-	return TmpMat;
+	return tmpMat;
 }
 
 ChMat_11 CameraController11::GetViewMat(
-	const ChVec3_11& _Pos
-	, const ChVec3_11& _Dir)
+	const ChVec3_11& _pos
+	, const ChVec3_11& _dir)
 {
 
-	ChVec3_11 Dir = _Dir;
+	ChVec3_11 dir = _dir;
 
-	ChQua_11 TmpQua;
+	ChQua_11 tmpQua;
 
-	TmpQua.RotLookAt((Dir + _Pos), _Pos);
+	tmpQua.RotLookAt((dir + _pos), _pos);
 
-	ChMat_11 TmpMat;
+	ChMat_11 tmpMat;
 
-	TmpMat.RotQua(TmpQua);
+	tmpMat.RotQua(tmpQua);
 
-	ChVec3_11 TmpHead = ChVec3_11(0.0f,1.0f,0.0f);
+	ChVec3_11 tmpHead = ChVec3_11(0.0f,1.0f,0.0f);
 
-	TmpHead.MatNormal(TmpMat, TmpHead);
+	tmpHead.MatNormal(tmpMat, tmpHead);
 
-	return GetViewMat(_Pos, _Dir, TmpHead);
+	return GetViewMat(_pos, _dir, tmpHead);
 
 }
 
 ChMat_11 CameraController11::GetViewMat(
-	const ChVec3_11& _Pos
-	, const ChQua_11& _Rot)
+	const ChVec3_11& _pos
+	, const ChQua_11& _rot)
 {
 
-	ChMat_11 TmpMat;
+	ChMat_11 tmpMat;
 
-	TmpMat.RotQua(_Rot);
+	tmpMat.RotQua(_rot);
 
-	ChVec3_11 Dir;
-	ChVec3_11 Head;
+	ChVec3_11 dir;
+	ChVec3_11 head;
 
-	Dir.MatNormal(TmpMat);
-	Head.MatNormal(TmpMat, ChVec3_11(0.0f, 1.0f, 0.0f));
+	dir.MatNormal(tmpMat);
+	head.MatNormal(tmpMat, ChVec3_11(0.0f, 1.0f, 0.0f));
 
-	return GetViewMat(_Pos, Dir, Head);
+	return GetViewMat(_pos, dir, head);
 }

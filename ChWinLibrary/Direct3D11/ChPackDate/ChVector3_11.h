@@ -33,9 +33,9 @@ public:
 
 	operator DirectX::XMFLOAT3()const;
 
-	ChVector3_11&operator = (const DirectX::XMFLOAT4& _Qua);
+	ChVector3_11&operator = (const DirectX::XMFLOAT4& _qua);
 
-	ChVector3_11&operator =(const DirectX::XMFLOAT4X4& _Mat);
+	ChVector3_11&operator =(const DirectX::XMFLOAT4X4& _mat);
 
 
 	///////////////////////////////////////////////////////////////////////////////////
@@ -51,14 +51,14 @@ public:
 		Set0Param();
 	}
 
-	ChVector3_11(const DirectX::XMMATRIX& _Mat)
+	ChVector3_11(const DirectX::XMMATRIX& _mat)
 	{
-		*this = _Mat;
+		*this = _mat;
 	}
 
-	ChVector3_11(const DirectX::XMFLOAT4& _Qua)
+	ChVector3_11(const DirectX::XMFLOAT4& _qua)
 	{
-		*this = _Qua;
+		*this = _qua;
 	}
 
 	ChVector3_11(const float _x, const float _y, const float _z)
@@ -68,11 +68,11 @@ public:
 		z = _z;
 	}
 
-	ChVector3_11(const float _Num)
+	ChVector3_11(const float _num)
 	{
-		x = _Num;
-		y = _Num;
-		z = _Num;
+		x = _num;
+		y = _num;
+		z = _num;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
@@ -83,12 +83,12 @@ public:
 		= DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f))const;
 
 	float GetRadian(
-		const ChVector3_11& _Vec1
-		, const ChVector3_11& _Vec2)const;
+		const ChVector3_11& _vec1
+		, const ChVector3_11& _vec2)const;
 
 	float GetDegree(
-		const ChVector3_11& _Vec1
-		, const ChVector3_11& _Vec2)const;
+		const ChVector3_11& _vec1
+		, const ChVector3_11& _vec2)const;
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//SetFunction//
@@ -105,14 +105,14 @@ public:
 	///////////////////////////////////////////////////////////////////////////////////
 
 	void MatPos(
-		const DirectX::XMMATRIX& _Mat
-		, const ChVector3_11&  _Vec = ChVector3_11(0.0f, 0.0f, 0.0f));
+		const DirectX::XMMATRIX& _mat
+		, const ChVector3_11&  _vec = ChVector3_11(0.0f, 0.0f, 0.0f));
 
 	///////////////////////////////////////////////////////////////////////////////////
 
 	void MatNormal(
-		const DirectX::XMMATRIX& _Mat
-		, const ChVector3_11&  _Vec = ChVector3_11(0.0f, 0.0f, 1.0f));
+		const DirectX::XMMATRIX& _mat
+		, const ChVector3_11&  _vec = ChVector3_11(0.0f, 0.0f, 1.0f));
 
 	///////////////////////////////////////////////////////////////////////////////////
 
@@ -121,21 +121,21 @@ public:
 	///////////////////////////////////////////////////////////////////////////////////
 
 	void Lerp(
-		const ChVector3_11& _SVec
-		, const ChVector3_11& _EVec
-		, const float _NowTime);
+		const ChVector3_11& _sVec
+		, const ChVector3_11& _eVec
+		, const float _nowTime);
 
 	///////////////////////////////////////////////////////////////////////////////////
 
 	void CrossVec(
-		const ChVector3_11& _Vec1
-		, const ChVector3_11& _Vec2);
+		const ChVector3_11& _vec1
+		, const ChVector3_11& _vec2);
 
 	///////////////////////////////////////////////////////////////////////////////////
 
 	float Dot(
-		const ChVector3_11& _Vec1
-		, const ChVector3_11&  _Vec2)const;
+		const ChVector3_11& _vec1
+		, const ChVector3_11&  _vec2)const;
 
 	///////////////////////////////////////////////////////////////////////////////////
 

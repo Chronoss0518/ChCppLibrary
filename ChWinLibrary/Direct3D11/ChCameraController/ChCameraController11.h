@@ -12,24 +12,24 @@ namespace ChD3D11
 
 		//ViewMatrixを作成する際に、自動で上方向を計算しない。//
 		ChMat_11 GetViewMat(
-			const ChVec3_11& _Pos
-			, const ChVec3_11& _Dir
-			, const ChVec3_11& _Up);
+			const ChVec3_11& _pos
+			, const ChVec3_11& _dir
+			, const ChVec3_11& _up);
 
 		//ViewMatrixを作成する際に、自動で上方向を計算する。//
 		ChMat_11 GetViewMat(
-			const ChVec3_11& _Pos
-			, const ChVec3_11& _Dir);
+			const ChVec3_11& _pos
+			, const ChVec3_11& _dir);
 
 		//ViewMatrixを作成する際に、自動で上方向を計算する。//
 		ChMat_11 GetViewMat(
-			const ChVec3_11& _Pos
-			, const ChQua_11& _Rot);
+			const ChVec3_11& _pos
+			, const ChQua_11& _rot);
 
 		//前回使ったデータを使いまわす//
 		inline ChMat_11 GetViewMat()
 		{
-			return CamMat;
+			return camMat;
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -37,9 +37,9 @@ namespace ChD3D11
 
 		static CameraController11& GetIns()
 		{
-			static CameraController11 Ins;
+			static CameraController11 ins;
 
-			return Ins;
+			return ins;
 		}
 
 	protected:
@@ -48,7 +48,7 @@ namespace ChD3D11
 		
 		~CameraController11(){}
 
-		ChMat_11 CamMat;
+		ChMat_11 camMat;
 
 	};
 

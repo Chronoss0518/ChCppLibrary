@@ -33,9 +33,9 @@ public:
 
 	operator DirectX::XMFLOAT4()const;
 
-	ChQuaternion_11&operator = (const DirectX::XMFLOAT3& _Vec);
+	ChQuaternion_11&operator = (const DirectX::XMFLOAT3& _vec);
 
-	ChQuaternion_11&operator =(const DirectX::XMFLOAT4X4& _Mat);
+	ChQuaternion_11&operator =(const DirectX::XMFLOAT4X4& _mat);
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//ConstructerDestructer
@@ -73,35 +73,35 @@ public:
 	
 	void RotYPR(const float _x, const float _y, const float _z);
 
-	inline void RotYPR(const ChVec3& _Vec)
+	inline void RotYPR(const ChVec3& _vec)
 	{
-		RotYPR(_Vec.x, _Vec.y, _Vec.z);
+		RotYPR(_vec.x, _vec.y, _vec.z);
 	}
 
-	inline void RotYPR(const DirectX::XMFLOAT3& _Vec)
+	inline void RotYPR(const DirectX::XMFLOAT3& _vec)
 	{
-		RotYPR(_Vec.x, _Vec.y, _Vec.z);
+		RotYPR(_vec.x, _vec.y, _vec.z);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
 
 	void RotLookAt(
-		const DirectX::XMFLOAT3& _Pos
-		, const DirectX::XMFLOAT3& _BasePos);
+		const DirectX::XMFLOAT3& _pos
+		, const DirectX::XMFLOAT3& _basePos);
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	void RotAxis(const DirectX::XMFLOAT3& _Vec, const float _Ang);
+	void RotAxis(const DirectX::XMFLOAT3& _vec, const float _ang);
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	void RotMat(const DirectX::XMFLOAT4X4& _Mat);
+	void RotMat(const DirectX::XMFLOAT4X4& _mat);
 
 	///////////////////////////////////////////////////////////////////////////////////
 
 	void Lerp(
-		const ChQuaternion_11& _SQua
-		, const ChQuaternion_11& _EQua
+		const ChQuaternion_11& _sQua
+		, const ChQuaternion_11& _eQua
 		, const float _NowTime);
 
 	///////////////////////////////////////////////////////////////////////////////////
@@ -115,14 +115,14 @@ public:
 		Inverse(*this);
 	}
 
-	void Inverse(const DirectX::XMFLOAT4& _Qua)
+	void Inverse(const DirectX::XMFLOAT4& _qua)
 	{
-		ChQuaternion_11 TmpQua;
-		TmpQua = _Qua;
-		Inverse(TmpQua);
+		ChQuaternion_11 tmpQua;
+		tmpQua = _qua;
+		Inverse(tmpQua);
 	}
 
-	void Inverse(const ChQuaternion_11& _Qua);
+	void Inverse(const ChQuaternion_11& _qua);
 
 private:
 

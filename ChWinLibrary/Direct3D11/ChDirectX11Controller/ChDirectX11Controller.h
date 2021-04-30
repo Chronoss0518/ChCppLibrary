@@ -15,11 +15,11 @@ namespace ChD3D11
 
 		void Init(
 			HWND _hWnd
-			, const ChStd::Bool _FullScreenFlg
-			, const unsigned short _ScrW
-			, const unsigned short _ScrH
-			, const unsigned short _ScrX = 5
-			, const unsigned short _ScrY = 5);
+			, const ChStd::Bool _fullScreenFlg
+			, const unsigned short _scrW
+			, const unsigned short _scrH
+			, const unsigned short _scrX = 5
+			, const unsigned short _scrY = 5);
 
 		void Release()override;
 
@@ -34,18 +34,18 @@ namespace ChD3D11
 		//Direct3D11をつかさどるデバイスの取得//
 		inline ID3D11Device* const GetDevice()
 		{
-			return Device;
+			return device;
 		}
 
 		//描画をつかさどるデバイスの取得//
 		inline ID3D11DeviceContext* const GetDC()
 		{
-			return DContext;
+			return dContext;
 		}
 
 		inline IDXGISwapChain* const GetSC()
 		{
-			return Window;
+			return window;
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -54,9 +54,9 @@ namespace ChD3D11
 		//デバイスが存在するかしないかの確認//
 		inline ChStd::Bool IsInstanse()
 		{
-			if (ChPtr::NullCheck(Device))return false;
-			if (ChPtr::NullCheck(DContext))return false;
-			if (ChPtr::NullCheck(Window))return false;
+			if (ChPtr::NullCheck(device))return false;
+			if (ChPtr::NullCheck(dContext))return false;
+			if (ChPtr::NullCheck(window))return false;
 			return true;
 
 		}
@@ -69,21 +69,19 @@ namespace ChD3D11
 
 		void CreateDevice(
 			HWND _hWnd
-			, const unsigned short _ScrW
-			, const unsigned short _ScrH);
+			, const unsigned short _scrW
+			, const unsigned short _scrH);
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//基本オブジェクトをつかさどるデバイス//
-		ID3D11Device* Device = nullptr;
+		ID3D11Device* device = nullptr;
 
 		//描画用デバイス//
-		ID3D11DeviceContext* DContext = nullptr;
+		ID3D11DeviceContext* dContext = nullptr;
 
 		//保持するWindowデータ//
-		IDXGISwapChain* Window = nullptr;
-
-		ChStd::Bool DFlg = false;
+		IDXGISwapChain* window = nullptr;
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetSingleton
@@ -98,8 +96,8 @@ namespace ChD3D11
 
 		static DirectX3D11& GetInstans()
 		{
-			static DirectX3D11 Ins;
-			return Ins;
+			static DirectX3D11 ins;
+			return ins;
 		}
 
 

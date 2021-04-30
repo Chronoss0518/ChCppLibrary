@@ -237,7 +237,7 @@ void Windows::SetKeyCode()
 	int tmp = GetKeyboardState(keyCode);
 	buttonList.SetAllDownFlg();
 
-	for (unsigned char i = 0; i < 256; i++)
+	for (unsigned short i = 0; i < 256; i++)
 	{
 		if (!(keyCode[i] & ChStd::MAX_CHAR_BIT))continue;
 

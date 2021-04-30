@@ -11,11 +11,11 @@ using namespace ChD3D11::ShaderParts;
 //ViewPort Method//
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ViewPort::SetDrawData(ID3D11DeviceContext* _DC)
+void ViewPort::SetDrawData(ID3D11DeviceContext* _dc)
 {
-	if (ChPtr::NullCheck(_DC))return;
+	if (ChPtr::NullCheck(_dc))return;
 
-	_DC->RSSetViewports(1, &View);
+	_dc->RSSetViewports(1, &View);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -23,22 +23,22 @@ void ViewPort::SetDrawData(ID3D11DeviceContext* _DC)
 ///////////////////////////////////////////////////////////////////////////////////
 
 void DrawWindow::Init(
-	ID3D11Device* _Device
+	ID3D11Device* _device
 	, IDXGISwapChain* _SC)
 {
 
-	if (ChPtr::NullCheck(_Device))return;
+	if (ChPtr::NullCheck(_device))return;
 	if (ChPtr::NullCheck(_SC))return;
 
 	Release();
 
-	Window = _SC;
+	window = _SC;
 
 	ID3D11Texture2D* pBackBuffer = nullptr;
 
-	Window->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
+	window->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
 
-	_Device->CreateRenderTargetView(pBackBuffer, nullptr, &BBTargetView);
+	_device->CreateRenderTargetView(pBackBuffer, nullptr, &bbTargetView);
 
 	pBackBuffer->Release();
 
@@ -52,10 +52,10 @@ void DrawWindow::Release()
 	if (!*this)return;
 
 
-	if (ChPtr::NotNullCheck(BBTargetView))
+	if (ChPtr::NotNullCheck(bbTargetView))
 	{
-		BBTargetView->Release();
-		BBTargetView = nullptr;
+		bbTargetView->Release();
+		bbTargetView = nullptr;
 	}
 
 	SetInitFlg(false);
@@ -63,22 +63,22 @@ void DrawWindow::Release()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void DrawWindow::SetDrawData(ID3D11DeviceContext* _DC,ID3D11DepthStencilView* _DSView)
+void DrawWindow::SetDrawData(ID3D11DeviceContext* _dc,ID3D11DepthStencilView* _dsView)
 {
-	if (ChPtr::NullCheck(_DC))return;
+	if (ChPtr::NullCheck(_dc))return;
 	if (!*this)return;
 
-	_DC->OMSetRenderTargets(1, &BBTargetView, _DSView);
+	_dc->OMSetRenderTargets(1, &bbTargetView, _dsView);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void DrawWindow::ClearView(ID3D11DeviceContext* _DC,const ChVec4& _Color)
+void DrawWindow::ClearView(ID3D11DeviceContext* _dc,const ChVec4& _color)
 {
-	if (ChPtr::NullCheck(_DC))return;
+	if (ChPtr::NullCheck(_dc))return;
 	if (!*this)return;
 
-	_DC->ClearRenderTargetView(BBTargetView, _Color.val.GetVal());
+	_dc->ClearRenderTargetView(bbTargetView, _color.val.GetVal());
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -87,18 +87,18 @@ void DrawWindow::Draw()
 {
 	if (!*this)return;
 
-	Window->Present(SEffect, 0);
+	window->Present(sEffect, 0);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 //ChLightHeader Method
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::Init(ID3D11Device* _Device)
+void ChLightHeader::Init(ID3D11Device* _device)
 {
 	Release();
 
-	Device = _Device;
+	device = _device;
 
 	D3D11_BUFFER_DESC Desc;
 	ZeroMemory(&Desc, sizeof(D3D11_BUFFER_DESC));
@@ -110,17 +110,17 @@ void ChLightHeader::Init(ID3D11Device* _Device)
 	Desc.MiscFlags = 0;
 	Desc.StructureByteStride = 0;
 
-	Device->CreateBuffer(&Desc, nullptr, &Buf);
+	device->CreateBuffer(&Desc, nullptr, &buf);
 
 	{
-		ChVec4 TmpCol[256];
+		ChVec4 tmpCol[256];
 
 		for (unsigned long i = 0; i < 256; i++)
 		{
-			TmpCol[i] = ChVec4(i / 256.0f, i / 256.0f, i / 256.0f, 1.0f);
+			tmpCol[i] = ChVec4(i / 256.0f, i / 256.0f, i / 256.0f, 1.0f);
 		}
 
-		LightPow.CreateColorTexture(Device, TmpCol, 256, 1);
+		lightPow.CreateColorTexture(device, tmpCol, 256, 1);
 
 
 		D3D11_SAMPLER_DESC samp;
@@ -129,7 +129,7 @@ void ChLightHeader::Init(ID3D11Device* _Device)
 		samp.AddressV = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_CLAMP;
 		samp.Filter = D3D11_FILTER::D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
 
-		LightPow.SetSampler(samp);
+		lightPow.SetSampler(samp);
 	}
 
 
@@ -143,10 +143,10 @@ void ChLightHeader::Release()
 {
 	if (!*this)return;
 
-	if (ChPtr::NotNullCheck(Buf))
+	if (ChPtr::NotNullCheck(buf))
 	{
-		Buf->Release();
-		Buf = nullptr;
+		buf->Release();
+		buf = nullptr;
 	}
 
 	SetInitFlg(false);
@@ -154,171 +154,171 @@ void ChLightHeader::Release()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::SetLightDiffuse(const ChVec3& _Dif)
+void ChLightHeader::SetLightDiffuse(const ChVec3& _dif)
 {
 	if (!*this)return;
 
-	LightDatas.Light.Dif = _Dif;
+	lightDatas.light.dif = _dif;
 
-	UpdateFlg = true;
+	updateFlg = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::SetUseLightFlg(const ChStd::Bool& _Flg)
+void ChLightHeader::SetUseLightFlg(const ChStd::Bool& _flg)
 {
 	if (!*this)return;
 
-	LightDatas.Light.UseLightFlg = _Flg;
+	lightDatas.light.useLightFlg = _flg;
 
-	UpdateFlg = true;
+	updateFlg = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::SetLightDir(const ChVec3& _Dir)
+void ChLightHeader::SetLightDir(const ChVec3& _dir)
 {
 	if (!*this)return;
 
-	LightDatas.Light.Dir = _Dir;
+	lightDatas.light.dir = _dir;
 
-	UpdateFlg = true;
+	updateFlg = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::SetLightAmbientPow(const float _Amb)
+void ChLightHeader::SetLightAmbientPow(const float _amb)
 {
 	if (!*this)return;
 
-	LightDatas.Light.AmbPow = _Amb;
+	lightDatas.light.ambPow = _amb;
 
-	UpdateFlg = true;
+	updateFlg = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::SetPLightPos(const ChVec3& _Pos, const unsigned long _No)
+void ChLightHeader::SetPLightPos(const ChVec3& _pos, const unsigned long _no)
 {
 	if (!*this)return;
-	if (_No > 10)return;
+	if (_no > 10)return;
 
-	LightDatas.PLight[_No].Pos = _Pos;
+	lightDatas.pLight[_no].pos = _pos;
 
-	UpdateFlg = true;
+	updateFlg = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::SetPLightLen(const float _Len, const unsigned long _No)
+void ChLightHeader::SetPLightLen(const float _len, const unsigned long _no)
 {
 	if (!*this)return;
-	if (_No > 10)return;
+	if (_no > 10)return;
 
-	LightDatas.PLight[_No].Len = _Len;
+	lightDatas.pLight[_no].len = _len;
 
-	UpdateFlg = true;
+	updateFlg = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::SetPLightDiffuse(const ChVec3& _Dif, const unsigned long _No)
+void ChLightHeader::SetPLightDiffuse(const ChVec3& _dif, const unsigned long _no)
 {
 	if (!*this)return;
-	if (_No > 10)return;
+	if (_no > 10)return;
 
-	LightDatas.PLight[_No].Dif = _Dif;
+	lightDatas.pLight[_no].dif = _dif;
 
-	UpdateFlg = true;
+	updateFlg = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::SetPLightUseFlg(const ChStd::Bool& _Flg, const unsigned long _No)
+void ChLightHeader::SetPLightUseFlg(const ChStd::Bool& _flg, const unsigned long _no)
 {
 	if (!*this)return;
-	if (_No > 10)return;
+	if (_no > 10)return;
 
-	LightDatas.PLight[_No].UseFlg = _Flg;
+	lightDatas.pLight[_no].useFlg = _flg;
 
-	UpdateFlg = true;
+	updateFlg = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::SetCamPos(const ChVec3& _CamPos)
+void ChLightHeader::SetCamPos(const ChVec3& _camPos)
 {
 	if (!*this)return;
 
-	LightDatas.CamPos = _CamPos;
+	lightDatas.camPos = _camPos;
 
-	UpdateFlg = true;
+	updateFlg = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::SetLightData(const ChLightHeader::LightData& _LD)
+void ChLightHeader::SetLightData(const ChLightHeader::LightData& _ld)
 {
 	if (!*this)return;
 
-	LightDatas.CamPos = _LD.CamPos;
-	LightDatas.Light = _LD.Light;
+	lightDatas.camPos = _ld.camPos;
+	lightDatas.light = _ld.light;
 	for (unsigned long i = 0; i < 10; i++)
 	{
-		LightDatas.PLight[i] = _LD.PLight[i];
+		lightDatas.pLight[i] = _ld.pLight[i];
 	}
 
-	UpdateFlg = true;
+	updateFlg = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::SetPSDrawData(ID3D11DeviceContext* _DC)
+void ChLightHeader::SetPSDrawData(ID3D11DeviceContext* _dc)
 {
 	if (!*this)return;
 
-	Update(_DC);
+	Update(_dc);
 
-	_DC->PSSetConstantBuffers(10, 1, &Buf);
+	_dc->PSSetConstantBuffers(10, 1, &buf);
 
-	SetTexture(_DC);
+	SetTexture(_dc);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::SetVSDrawData(ID3D11DeviceContext* _DC)
+void ChLightHeader::SetVSDrawData(ID3D11DeviceContext* _dc)
 {
 	if (!*this)return;
 
-	Update(_DC);
+	Update(_dc);
 
-	_DC->VSSetConstantBuffers(10, 1, &Buf);
+	_dc->VSSetConstantBuffers(10, 1, &buf);
 
-	SetTexture(_DC);
+	SetTexture(_dc);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::SetDrawData(ID3D11DeviceContext* _DC)
+void ChLightHeader::SetDrawData(ID3D11DeviceContext* _dc)
 {
 
 	if (!*this)return;
 
-	Update(_DC);
+	Update(_dc);
 
-	_DC->VSSetConstantBuffers(10, 1, &Buf);
-	_DC->PSSetConstantBuffers(10, 1, &Buf);
+	_dc->VSSetConstantBuffers(10, 1, &buf);
+	_dc->PSSetConstantBuffers(10, 1, &buf);
 
-	SetTexture(_DC);
+	SetTexture(_dc);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::SetImportLightPowMap(ChPtr::Shared<Texture11>& _LightPowMap)
+void ChLightHeader::SetImportLightPowMap(ChPtr::Shared<Texture11>& _lightPowMap)
 {
 	if (!*this)return;
 
-	ImportLightPowMap = _LightPowMap;
+	importLightPowMap = _lightPowMap;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -329,12 +329,12 @@ ChLightHeader::LightData ChLightHeader::GetLightData()
 
 	if (!*this)return Out;
 
-	Out.CamPos = LightDatas.CamPos;
-	Out.Light = LightDatas.Light;
+	Out.camPos = lightDatas.camPos;
+	Out.light = lightDatas.light;
 
 	for (unsigned long i = 0; i < 10; i++)
 	{
-		Out.PLight[i] = LightDatas.PLight[i];
+		Out.pLight[i] = lightDatas.pLight[i];
 	}
 
 	return Out;
@@ -346,34 +346,34 @@ void ChLightHeader::ClearImportLightPowMap()
 {
 	if (!*this)return;
 
-	ImportLightPowMap = nullptr;
+	importLightPowMap = nullptr;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::SetTexture(ID3D11DeviceContext* _DC)
+void ChLightHeader::SetTexture(ID3D11DeviceContext* _dc)
 {
 
-	Texture11* TmpLightPow = &LightPow;
+	Texture11* tmpLightPow = &lightPow;
 
-	if (ImportLightPowMap != nullptr)
+	if (importLightPowMap != nullptr)
 	{
-		if (ImportLightPowMap->IsTex())
+		if (importLightPowMap->IsTex())
 		{
-			TmpLightPow = ImportLightPowMap.get();
+			tmpLightPow = importLightPowMap.get();
 		}
 	}
 
-	TmpLightPow->SetDrawData(_DC, 10);
+	tmpLightPow->SetDrawData(_dc, 10);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::Update(ID3D11DeviceContext* _DC)
+void ChLightHeader::Update(ID3D11DeviceContext* _dc)
 {
-	if (!UpdateFlg)return;
+	if (!updateFlg)return;
 
-	_DC->UpdateSubresource(Buf, 0, nullptr, &LightDatas, 0, 0);
+	_dc->UpdateSubresource(buf, 0, nullptr, &lightDatas, 0, 0);
 
-	UpdateFlg = false;
+	updateFlg = false;
 }

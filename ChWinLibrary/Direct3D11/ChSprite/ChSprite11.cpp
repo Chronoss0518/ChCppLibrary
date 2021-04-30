@@ -16,26 +16,26 @@ void Sprite11::Init()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void Sprite11::Init(const ID3D11Device* _Device)
+void Sprite11::Init(const ID3D11Device* _device)
 {
 	Release();
 
-	SetDevice(const_cast<ID3D11Device*>(_Device));
+	SetDevice(const_cast<ID3D11Device*>(_device));
 
-	Primitives.VertexNum = 4;
+	primitives.vertexNum = 4;
 
-	Primitives.VertexArray = new Vertex11[Primitives.VertexNum];
+	primitives.vertexArray = new Vertex11[primitives.vertexNum];
 
-	Primitives.IndexNum = 6;
+	primitives.indexNum = 6;
 
-	Primitives.IndexArray = new unsigned long[Primitives.IndexNum];
+	primitives.indexArray = new unsigned long[primitives.indexNum];
 
-	Primitives.IndexArray[0] = (0);
-	Primitives.IndexArray[1] = (1);
-	Primitives.IndexArray[2] = (2);
-	Primitives.IndexArray[3] = (0);
-	Primitives.IndexArray[4] = (2);
-	Primitives.IndexArray[5] = (3);
+	primitives.indexArray[0] = (0);
+	primitives.indexArray[1] = (1);
+	primitives.indexArray[2] = (2);
+	primitives.indexArray[3] = (0);
+	primitives.indexArray[4] = (2);
+	primitives.indexArray[5] = (3);
 
 	UpdateVertex();
 }
@@ -49,25 +49,25 @@ void Sprite11::Release()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void Sprite11::SetPos(const unsigned char _PosNames, const  ChVec2& _PosData)
+void Sprite11::SetPos(const unsigned char _posNames, const  ChVec2& _posData)
 {
 
-	if (_PosNames >= 4)return;
+	if (_posNames >= 4)return;
 
-	Position[_PosNames] = _PosData;
+	poss[_posNames] = _posData;
 
-	UpdateFlg = true;
+	updateFlg = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void Sprite11::SetUVPos(const unsigned char _PosNames, const ChVec2& _PosData)
+void Sprite11::SetUVPos(const unsigned char _posNames, const ChVec2& _posData)
 {
-	if (_PosNames >= 4)return;
+	if (_posNames >= 4)return;
 
-	UVPoss[_PosNames] = _PosData;
+	uvPoss[_posNames] = _posData;
 
-	UpdateFlg = true;
+	updateFlg = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -76,11 +76,11 @@ void Sprite11::Move(const float _x, const float _y)
 {
 	for (unsigned char i = 0; i < 4; i++)
 	{
-		Position[i].x += _x;
-		Position[i].y += _y;
+		poss[i].x += _x;
+		poss[i].y += _y;
 	}
 
-	UpdateFlg = true;
+	updateFlg = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -88,37 +88,37 @@ void Sprite11::Move(const float _x, const float _y)
 void Sprite11::UpdateVertex()
 {
 
-	if (!UpdateFlg)return;
+	if (!updateFlg)return;
 
-	for (unsigned char i = 0; i < Primitives.VertexNum; i++)
+	for (unsigned char i = 0; i < primitives.vertexNum; i++)
 	{
 
-		Primitives.VertexArray[i].Pos = Position[i];
-		Primitives.VertexArray[i].UVPos = UVPoss[i];
+		primitives.vertexArray[i].pos = poss[i];
+		primitives.vertexArray[i].uvPos = uvPoss[i];
 	}
 
-	CreateVertexBuffer(Primitives);
+	CreateVertexBuffer(primitives);
 
-	CreateIndexBuffer(Primitives);
+	CreateIndexBuffer(primitives);
 
-	UpdateFlg = false;
+	updateFlg = false;
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void Sprite11::SetDrawData(ID3D11DeviceContext* _DC)
+void Sprite11::SetDrawData(ID3D11DeviceContext* _dc)
 {
 	UpdateVertex();
 
 	unsigned int Strides = sizeof(Vertex11);
 	unsigned int Offsets = 0;
 
-	_DC->IASetVertexBuffers(0, 1, &Primitives.Vertexs, &Strides, &Offsets);
-	_DC->IASetIndexBuffer(Primitives.Indexs, DXGI_FORMAT_R32_UINT, 0);
+	_dc->IASetVertexBuffers(0, 1, &primitives.vertexs, &Strides, &Offsets);
+	_dc->IASetIndexBuffer(primitives.indexs, DXGI_FORMAT_R32_UINT, 0);
 
 
-	_DC->DrawIndexed(Primitives.IndexNum, 0, 0);
+	_dc->DrawIndexed(primitives.indexNum, 0, 0);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

@@ -16,7 +16,7 @@ namespace ChD3D11
 		//SetFunction/
 
 		virtual void SetShader(
-			ID3D11DeviceContext* _DC
+			ID3D11DeviceContext* _dc
 		) = 0;
 
 	protected:
@@ -25,65 +25,65 @@ namespace ChD3D11
 
 		//VertexShader用//
 		void CreateVertexShader(
-			ID3D11Device* _Device
-			, ID3D11InputLayout** _LInput
-			, const D3D11_INPUT_ELEMENT_DESC* _Desc
-			, const unsigned long _DescNum
-			, const void* _Binary
-			, const unsigned long _BinarySize
+			ID3D11Device* _device
+			, ID3D11InputLayout** _lInput
+			, const D3D11_INPUT_ELEMENT_DESC* _desc
+			, const unsigned long _descNum
+			, const void* _binary
+			, const unsigned long _binarySize
 		);
 
 		//PixelShader用//
 		void CreatePixelShader(
-			ID3D11Device* _Device
-			, const void* _Binary
-			, const unsigned long _BinarySize
+			ID3D11Device* _device
+			, const void* _binary
+			, const unsigned long _binarySize
 		);
 
 		//VertexShader用//
 		void CreateGeometryShader(
-			ID3D11Device* _Device
-			, const void* _Binary
-			, const unsigned long _BinarySize
+			ID3D11Device* _device
+			, const void* _binary
+			, const unsigned long _binarySize
 		);
 
 		//VertexShader用//
 		void CreateComputeShader(
-			ID3D11Device* _Device
-			, const void* _Binary
-			, const unsigned long _BinarySize
+			ID3D11Device* _device
+			, const void* _binary
+			, const unsigned long _binarySize
 		);
 
 		//VertexShader用//
 		void CreateDomainShader(
-			ID3D11Device* _Device
-			, const void* _Binary
-			, const unsigned long _BinarySize
+			ID3D11Device* _device
+			, const void* _binary
+			, const unsigned long _binarySize
 		);
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		void SetVertexShader(
-			ID3D11DeviceContext* _DC
-			, ID3D11InputLayout* _LInput);
+			ID3D11DeviceContext* _dc
+			, ID3D11InputLayout* _lInput);
 
 		void SetPixelShader(
-			ID3D11DeviceContext* _DC);
+			ID3D11DeviceContext* _dc);
 
 		void SetGeometryShader(
-			ID3D11DeviceContext* _DC);
+			ID3D11DeviceContext* _dc);
 
 		void SetComputeShader(
-			ID3D11DeviceContext* _DC);
+			ID3D11DeviceContext* _dc);
 
 		void SetDomainShader(
-			ID3D11DeviceContext* _DC);
+			ID3D11DeviceContext* _dc);
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 	private:
 
-		ID3D11DeviceChild* Shader = nullptr;
+		ID3D11DeviceChild* shader = nullptr;
 
 	};
 
@@ -95,27 +95,27 @@ namespace ChD3D11
 		//InitAndRelease//
 
 		void Init(
-			ID3D11Device* _Device
-			, const D3D11_INPUT_ELEMENT_DESC* _Desc
-			, const unsigned long _DescNum
-			, const void* _Binary
-			, const unsigned long _BinarySize);
+			ID3D11Device* _device
+			, const D3D11_INPUT_ELEMENT_DESC* _desc
+			, const unsigned long _descNum
+			, const void* _binary
+			, const unsigned long _binarySize);
 
 		void Release()override;
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction/
 
-		inline void SetShader(ID3D11DeviceContext* _DC)override
+		inline void SetShader(ID3D11DeviceContext* _dc)override
 		{
-			SetVertexShader(_DC, LInput);
+			SetVertexShader(_dc, lInput);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 	private:
 
-		ID3D11InputLayout* LInput = nullptr;
+		ID3D11InputLayout* lInput = nullptr;
 
 
 	};
@@ -128,19 +128,19 @@ namespace ChD3D11
 		//InitAndRelease//
 
 		inline void Init(
-			ID3D11Device* _Device
-			, const void* _Binary
-			, const unsigned long _BinarySize)
+			ID3D11Device* _device
+			, const void* _binary
+			, const unsigned long _binarySize)
 		{
-			CreatePixelShader(_Device, _Binary, _BinarySize);
+			CreatePixelShader(_device, _binary, _binarySize);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction/
 
-		inline void SetShader(ID3D11DeviceContext* _DC)override
+		inline void SetShader(ID3D11DeviceContext* _dc)override
 		{
-			SetPixelShader(_DC);
+			SetPixelShader(_dc);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -154,19 +154,19 @@ namespace ChD3D11
 		//InitAndRelease//
 
 		inline void Init(
-			ID3D11Device* _Device
-			, const void* _Binary
-			, const unsigned long _BinarySize)
+			ID3D11Device* _device
+			, const void* _binary
+			, const unsigned long _binarySize)
 		{
-			CreateGeometryShader(_Device, _Binary, _BinarySize);
+			CreateGeometryShader(_device, _binary, _binarySize);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction/
 
-		inline void SetShader(ID3D11DeviceContext* _DC)override
+		inline void SetShader(ID3D11DeviceContext* _dc)override
 		{
-			SetGeometryShader(_DC);
+			SetGeometryShader(_dc);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -180,19 +180,19 @@ namespace ChD3D11
 		//InitAndRelease//
 
 		inline void Init(
-			ID3D11Device* _Device
-			, const void* _Binary
-			, const unsigned long _BinarySize)
+			ID3D11Device* _device
+			, const void* _binary
+			, const unsigned long _binarySize)
 		{
-			CreateComputeShader(_Device, _Binary, _BinarySize);
+			CreateComputeShader(_device, _binary, _binarySize);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction/
 
-		inline void SetShader(ID3D11DeviceContext* _DC)override
+		inline void SetShader(ID3D11DeviceContext* _dc)override
 		{
-			SetComputeShader(_DC);
+			SetComputeShader(_dc);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -206,19 +206,19 @@ namespace ChD3D11
 		//InitAndRelease//
 
 		inline void Init(
-			ID3D11Device* _Device
-			, const void* _Binary
-			, const unsigned long _BinarySize)
+			ID3D11Device* _device
+			, const void* _binary
+			, const unsigned long _binarySize)
 		{
-			CreateDomainShader(_Device, _Binary, _BinarySize);
+			CreateDomainShader(_device, _binary, _binarySize);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction/
 
-		inline void SetShader(ID3D11DeviceContext* _DC)override
+		inline void SetShader(ID3D11DeviceContext* _dc)override
 		{
-			SetDomainShader(_DC);
+			SetDomainShader(_dc);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////

@@ -14,19 +14,19 @@ namespace ChD3D11
 	///////////////////////////////////////////////////////////////////////////////////////
 
 	void Mesh11::Init(
-		ID3D11Device* _Device)
+		ID3D11Device* _device)
 	{
-		if (_Device == nullptr)return;
+		if (_device == nullptr)return;
 
 		Release();
 
-		SetDevice(_Device);
+		SetDevice(_device);
 
-		NormalTex = ChPtr::Make_S<Texture11>();
-		WhiteTex = ChPtr::Make_S<Texture11>();
+		normalTex = ChPtr::Make_S<Texture11>();
+		whiteTex = ChPtr::Make_S<Texture11>();
 
-		NormalTex->CreateColorTexture(_Device, ChVec4(0.5f, 1.0f, 0.5f, 1.0f), 1, 1);
-		WhiteTex->CreateColorTexture(_Device, ChVec4(1.0f), 1, 1);
+		normalTex->CreateColorTexture(_device, ChVec4(0.5f, 1.0f, 0.5f, 1.0f), 1, 1);
+		whiteTex->CreateColorTexture(_device, ChVec4(1.0f), 1, 1);
 
 	}
 
@@ -44,169 +44,169 @@ namespace ChD3D11
 
 	void Mesh11::Release()
 	{
-		FrameList.clear();
+		frameList.clear();
 		ShaderObject<PrimitiveVertex11>::Release();
-		ModelData = nullptr;
+		modelData = nullptr;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
 
-	void Mesh11::Create(const ChCpp::ModelObject& _BaseModels)
+	void Mesh11::Create(const ChCpp::ModelObject& _baseModels)
 	{
-		if (_BaseModels.GetModel() == nullptr)return;
-		auto Model = _BaseModels.GetModel();
-		if (Model->modelData == nullptr)return;
+		if (_baseModels.GetModel() == nullptr)return;
+		auto model = _baseModels.GetModel();
+		if (model->modelData == nullptr)return;
 
-		CreateFrames(ModelData,*Model->modelData);
+		CreateFrames(modelData,*model->modelData);
 
-		ModelData->FrameName = Model->modelData->myName;
+		modelData->frameName = model->modelData->myName;
 
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
 
 	void Mesh11::CreateFrames(
-		ChPtr::Shared<FrameData11>& _Frames
-		, const ChCpp::ModelFrame::Frame& _BaseModels)
+		ChPtr::Shared<FrameData11>& _frames
+		, const ChCpp::ModelFrame::Frame& _baseModels)
 	{
 
-		_Frames = ChPtr::Make_S<FrameData11>();
+		_frames = ChPtr::Make_S<FrameData11>();
 		
-		CreatePrimitiveData(_Frames, _BaseModels);
+		CreatePrimitiveData(_frames, _baseModels);
 
-		for (auto&& Models : _BaseModels.childFrames)
+		for (auto&& models : _baseModels.childFrames)
 		{
-			ChPtr::Shared<FrameData11> Tmp;
-			CreateFrames(Tmp, *Models);
-			_Frames->ChildFrame.push_back(Tmp);
-			Tmp->ParentFrame = _Frames;
+			ChPtr::Shared<FrameData11> tmp;
+			CreateFrames(tmp, *models);
+			_frames->childFrame.push_back(tmp);
+			tmp->parentFrame = _frames;
 		}
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
 
 	void Mesh11::CreatePrimitiveData(
-		ChPtr::Shared<FrameData11>& _Frames
-		, const ChCpp::ModelFrame::Frame& _BaseModels)
+		ChPtr::Shared<FrameData11>& _frames
+		, const ChCpp::ModelFrame::Frame& _baseModels)
 	{
 
-		if (_BaseModels.mesh == nullptr)return;
+		if (_baseModels.mesh == nullptr)return;
 
 
-		_Frames->BaseMat = _BaseModels.baseMat;
+		_frames->baseMat = _baseModels.baseMat;
 
-		auto SurfaceList = CreateSurfaceList(_BaseModels);
+		auto surfaceList = CreateSurfaceList(_baseModels);
 
-		unsigned long MateNum = _BaseModels.mesh->materialList.size();
+		unsigned long mateNum = _baseModels.mesh->materialList.size();
 
-		if (MateNum <= 0)
+		if (mateNum <= 0)
 		{
-			auto Mate = ChPtr::Make_S<ChCpp::ModelFrame::Material>();
+			auto mate = ChPtr::Make_S<ChCpp::ModelFrame::Material>();
 
-			_BaseModels.mesh->materialList.push_back(Mate);
+			_baseModels.mesh->materialList.push_back(mate);
 
-			Mate->diffuse = ChVec4(1.0f);
-			Mate->materialName = "Material1";
-			Mate->specular = ChVec4(0.0f);
-			Mate->spePow = (0.0f);
-			Mate->ambientPow = (0.0f);
+			mate->diffuse = ChVec4(1.0f);
+			mate->materialName = "Material1";
+			mate->specular = ChVec4(0.0f);
+			mate->spePow = (0.0f);
+			mate->ambientPow = (0.0f);
 
-			MateNum = _BaseModels.mesh->materialList.size();
+			mateNum = _baseModels.mesh->materialList.size();
 		}
 
-		auto& MateList = _BaseModels.mesh->materialList;
+		auto& mateList = _baseModels.mesh->materialList;
 
-		auto& VerList = _BaseModels.mesh->vertexList;
+		auto& verList = _baseModels.mesh->vertexList;
 
-		_Frames->PrimitiveCount = MateNum;
+		_frames->primitiveCount = mateNum;
 
 		//PrimitiveCount//
-		for (unsigned long i = 0; i< MateNum;i++)
+		for (unsigned long i = 0; i< mateNum;i++)
 		{
 
-			auto& Faces = SurfaceList[i];
+			auto& faces = surfaceList[i];
 			
-			auto Prim = ChPtr::Make_S<PrimitiveData11<PrimitiveVertex11>>();
+			auto prim = ChPtr::Make_S<PrimitiveData11<PrimitiveVertex11>>();
 
-			Prim->VertexNum = Faces.size() * 3;
-			Prim->IndexNum = Faces.size() * 3;
+			prim->vertexNum = faces.size() * 3;
+			prim->indexNum = faces.size() * 3;
 
 
-			Prim->VertexArray = new PrimitiveVertex11[Prim->VertexNum];
+			prim->vertexArray = new PrimitiveVertex11[prim->vertexNum];
 
-			Prim->IndexArray = new unsigned long[Prim->IndexNum];
+			prim->indexArray = new unsigned long[prim->indexNum];
 
-			unsigned long NowCount = 0;
+			unsigned long nowCount = 0;
 
 			//FaceCount//
-			for (unsigned long FCount = 0; FCount < Faces.size(); FCount++)
+			for (unsigned long fCount = 0; fCount < faces.size(); fCount++)
 			{
 
-				ChVec3_11 FaceNormal = 0.0f;
-				FaceNormal = Faces[FCount]->normal;
-				//ChVec3_11 FaceNormal = 0.0f;
-				//FaceNormal += VerList[Faces[FCount]->VertexData[0].VertexNo]->Normal;
-				//FaceNormal += VerList[Faces[FCount]->VertexData[1].VertexNo]->Normal;
-				//FaceNormal += VerList[Faces[FCount]->VertexData[2].VertexNo]->Normal;
+				ChVec3_11 faceNormal = 0.0f;
+				faceNormal = faces[fCount]->normal;
+				//ChVec3_11 faceNormal = 0.0f;
+				//faceNormal += verList[faces[fCount]->vertexData[0].vertexNo]->normal;
+				//faceNormal += verList[faces[fCount]->vertexData[1].vertexNo]->normal;
+				//faceNormal += verList[faces[fCount]->vertexData[2].vertexNo]->normal;
 
-				//FaceNormal.Normalize();
+				//faceNormal.Normalize();
 
 				//VertexCount//
 				for (unsigned long j = 0; j < 3; j++)
 				{
 
-					auto& Vertexs = (Prim->VertexArray[NowCount]);
+					auto& vertexs = (prim->vertexArray[nowCount]);
 
-					Vertexs.Pos = VerList[Faces[FCount]->vertexData[j].vertexNo]->pos;
-					Vertexs.Normal = VerList[Faces[FCount]->vertexData[j].vertexNo]->normal;
-					Vertexs.FaceNormal = FaceNormal;
-					Vertexs.BlendPow = VerList[Faces[FCount]->vertexData[j].vertexNo]->blendPow;
-					Vertexs.BlendIndex = VerList[Faces[FCount]->vertexData[j].vertexNo]->boneNo;
+					vertexs.pos = verList[faces[fCount]->vertexData[j].vertexNo]->pos;
+					vertexs.normal = verList[faces[fCount]->vertexData[j].vertexNo]->normal;
+					vertexs.faceNormal = faceNormal;
+					vertexs.blendPow = verList[faces[fCount]->vertexData[j].vertexNo]->blendPow;
+					vertexs.blendIndex = verList[faces[fCount]->vertexData[j].vertexNo]->boneNo;
 
-					Vertexs.UVPos = Faces[FCount]->vertexData[j].uvPos;
+					vertexs.uvPos = faces[fCount]->vertexData[j].uvPos;
 
-					Prim->IndexArray[NowCount] = NowCount;
+					prim->indexArray[nowCount] = nowCount;
 
-					NowCount++;
+					nowCount++;
 
 				}
 
 			}
 
-			CreateVertexBuffer(*Prim);
-			CreateIndexBuffer(*Prim);
+			CreateVertexBuffer(*prim);
+			CreateIndexBuffer(*prim);
 
-			Prim->Mate = ChPtr::Make_S<Material11>();
+			prim->mate = ChPtr::Make_S<Material11>();
 
-			Prim->Mate->Material.Ambient = ChVec4(MateList[i]->ambientPow);
-			Prim->Mate->Material.Diffuse = MateList[i]->diffuse;
-			Prim->Mate->Material.Specular = MateList[i]->specular;
-			Prim->Mate->Material.Specular.a = MateList[i]->spePow;
-			Prim->Mate->MaterialName = MateList[i]->materialName;
+			prim->mate->material.ambient = ChVec4(mateList[i]->ambientPow);
+			prim->mate->material.diffuse = mateList[i]->diffuse;
+			prim->mate->material.specular = mateList[i]->specular;
+			prim->mate->material.specular.a = mateList[i]->spePow;
+			prim->mate->materialName = mateList[i]->materialName;
 
-			Prim->Mate->Material.FrameMatrix = _BaseModels.baseMat;
+			prim->mate->material.frameMatrix = _baseModels.baseMat;
 
-			CreateContentBuffer<ShaderUseMaterial11>(&Prim->Mate->MBuffer);
+			CreateContentBuffer<ShaderUseMaterial11>(&prim->mate->mBuffer);
 
-			for (auto TexName : MateList[i]->textureNames)
+			for (auto texName : mateList[i]->textureNames)
 			{
-				auto Tex = ChPtr::Make_S<Texture11>();
+				auto tex = ChPtr::Make_S<Texture11>();
 
-				Tex->CreateTexture(TexName,GetDevice());
+				tex->CreateTexture(texName,GetDevice());
 
-				Prim->Mate->TextureList.push_back(Tex);
+				prim->mate->textureList.push_back(tex);
 
 			}
 
-			if (Prim->Mate->TextureList.size() <= 0)Prim->Mate->TextureList.push_back(WhiteTex);
-			if (Prim->Mate->TextureList.size() <= 1)Prim->Mate->TextureList.push_back(NormalTex);
+			if (prim->mate->textureList.size() <= 0)prim->mate->textureList.push_back(whiteTex);
+			if (prim->mate->textureList.size() <= 1)prim->mate->textureList.push_back(normalTex);
 
 
-			_Frames->PrimitiveDatas[MateList[i]->materialName] = Prim;
+			_frames->primitiveDatas[mateList[i]->materialName] = prim;
 
 		}
 
-		FrameList.push_back(_Frames);
+		frameList.push_back(_frames);
 
 
 
@@ -216,77 +216,77 @@ namespace ChD3D11
 
 	std::vector<std::vector<ChPtr::Shared<ChCpp::ModelFrame::SurFace>>>
 		Mesh11::CreateSurfaceList(
-			const ChCpp::ModelFrame::Frame& _BaseModels)
+			const ChCpp::ModelFrame::Frame& _baseModels)
 	{
 
-		std::vector<std::vector<ChPtr::Shared<ChCpp::ModelFrame::SurFace>>>SurfaceList;
+		std::vector<std::vector<ChPtr::Shared<ChCpp::ModelFrame::SurFace>>>surfaceList;
 
-		unsigned long MateNum = _BaseModels.mesh->materialList.size();
+		unsigned long mateNum = _baseModels.mesh->materialList.size();
 
 
-		if (MateNum < 2)
+		if (mateNum < 2)
 		{
-			SurfaceList.push_back(_BaseModels.mesh->faceList);
-			return SurfaceList;
+			surfaceList.push_back(_baseModels.mesh->faceList);
+			return surfaceList;
 		}
 
-		unsigned long VerCount = _BaseModels.mesh->faceList.size();
+		unsigned long verCount = _baseModels.mesh->faceList.size();
 
-		for (unsigned long i = 0; i < MateNum; i++)
+		for (unsigned long i = 0; i < mateNum; i++)
 		{
-			std::vector<ChPtr::Shared<ChCpp::ModelFrame::SurFace>> Tmp;
+			std::vector<ChPtr::Shared<ChCpp::ModelFrame::SurFace>> tmp;
 
-			for (unsigned long j = 0; j < VerCount; j++)
+			for (unsigned long j = 0; j < verCount; j++)
 			{
-				if (_BaseModels.mesh->faceList[j]->materialNo != i)continue;
+				if (_baseModels.mesh->faceList[j]->materialNo != i)continue;
 
-				auto TmpFace = _BaseModels.mesh->faceList[j];
+				auto tmpFace = _baseModels.mesh->faceList[j];
 
-				Tmp.push_back(TmpFace);
+				tmp.push_back(tmpFace);
 			}
-			SurfaceList.push_back(Tmp);
+			surfaceList.push_back(tmp);
 		}
 
-		return SurfaceList;
+		return surfaceList;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
 
-	void Mesh11::SetDrawData(ID3D11DeviceContext* _DC)
+	void Mesh11::SetDrawData(ID3D11DeviceContext* _dc)
 	{
 
 
-		if (ModelData == nullptr)return;
+		if (modelData == nullptr)return;
 
-		unsigned int Strides = sizeof(PrimitiveVertex11);
-		unsigned int Offsets = 0;
+		unsigned int strides = sizeof(PrimitiveVertex11);
+		unsigned int offsets = 0;
 
 
-		for (auto&& Frame : FrameList)
+		for (auto&& frame : frameList)
 		{
-			for (auto&& Prim : Frame->PrimitiveDatas)
+			for (auto&& prim : frame->primitiveDatas)
 			{
-				_DC->IASetVertexBuffers(0, 1, &Prim.second->Vertexs, &Strides, &Offsets);
-				_DC->IASetIndexBuffer(Prim.second->Indexs, DXGI_FORMAT_R32_UINT, 0);
+				_dc->IASetVertexBuffers(0, 1, &prim.second->vertexs, &strides, &offsets);
+				_dc->IASetIndexBuffer(prim.second->indexs, DXGI_FORMAT_R32_UINT, 0);
 
-				_DC->UpdateSubresource(Prim.second->Mate->MBuffer,0, nullptr, &Prim.second->Mate->Material, 0, 0);
+				_dc->UpdateSubresource(prim.second->mate->mBuffer,0, nullptr, &prim.second->mate->material, 0, 0);
 
-				for (unsigned long i = 0; i < Prim.second->Mate->TextureList.size(); i++)
+				for (unsigned long i = 0; i < prim.second->mate->textureList.size(); i++)
 				{
-					ChPtr::Shared<Texture11> tex = Prim.second->Mate->TextureList[i];
+					ChPtr::Shared<Texture11> tex = prim.second->mate->textureList[i];
 
-					if (!tex->IsTex())tex = WhiteTex;
+					if (!tex->IsTex())tex = whiteTex;
 
-					tex->SetDrawData(_DC, i);
+					tex->SetDrawData(_dc, i);
 
 					if (i - 1 > 128)break;
 
 				}
 
-				_DC->VSSetConstantBuffers(2, 1, &Prim.second->Mate->MBuffer);
-				_DC->PSSetConstantBuffers(2, 1, &Prim.second->Mate->MBuffer);
+				_dc->VSSetConstantBuffers(2, 1, &prim.second->mate->mBuffer);
+				_dc->PSSetConstantBuffers(2, 1, &prim.second->mate->mBuffer);
 
-				_DC->DrawIndexed(Prim.second->IndexNum, 0, 0);
+				_dc->DrawIndexed(prim.second->indexNum, 0, 0);
 
 			}
 		}
@@ -295,13 +295,13 @@ namespace ChD3D11
 
 	///////////////////////////////////////////////////////////////////////////////////////
 
-	void Mesh11::SetDrawData(ID3D11DeviceContext* _CD,const std::string& _FrameName)
+	void Mesh11::SetDrawData(ID3D11DeviceContext* _dc,const std::string& _frameName)
 	{
-		if (ModelData == nullptr)return;
+		if (modelData == nullptr)return;
 
-		for (auto&& Frame : FrameList)
+		for (auto&& frame : frameList)
 		{
-			for (auto&& Prim : Frame->PrimitiveDatas)
+			for (auto&& prim : frame->primitiveDatas)
 			{
 
 			}

@@ -1,5 +1,5 @@
 
-#include<Windows.h>
+#include<windows.h>
 #include"../../BaseIncluder/ChBase.h"
 #include"../../BaseIncluder/ChD3D11I.h"
 
@@ -12,7 +12,7 @@
 
 using namespace ChD3D11;
 
-//ChStd::FPOINT ShaderController11::WindSize = ChStd::FPOINT(1280.0f, 720.0f);
+//ChStd::FPOINT ShaderController11::windSize = ChStd::FPOINT(1280.0f, 720.0f);
 
 ///////////////////////////////////////////////////////////////////////////////////////
 //ChShaderController11メソッド
@@ -41,7 +41,7 @@ void ShaderController11::InitShader()
 		Decl[12] = { "BLENDWEIGHT",  3, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
 		Decl[13] = { "BLENDINDEX",  4, DXGI_FORMAT_R32_UINT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
 
-		BVModel.Init(Device,Decl, 14, main, sizeof(main));
+		bvModel.Init(device,Decl, 14, main, sizeof(main));
 
 		//VSInputElements Elements;
 
@@ -61,7 +61,7 @@ void ShaderController11::InitShader()
 		//Elements.Add(Semantics::BlendWeight, DXGI_FORMAT_R32G32B32A32_FLOAT);
 		//Elements.Add(Semantics::BlendIndex, DXGI_FORMAT_R32_UINT);
 
-		//BVModel.CreateVertexShader(Elements.GetDesc(), Elements.GetCount(), main, sizeof(main));
+		//bvModel.CreateVertexShader(Elements.GetDesc(), Elements.GetCount(), main, sizeof(main));
 
 	}
 
@@ -77,7 +77,7 @@ void ShaderController11::InitShader()
 		Decl[3] = { "NORMAL",  0, DXGI_FORMAT_R32G32B32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
 
 
-		PoVTex.Init(Device,Decl, 4, main, sizeof(main));
+		pvTex.Init(device,Decl, 4, main, sizeof(main));
 
 	}
 
@@ -85,7 +85,7 @@ void ShaderController11::InitShader()
 #include"MBPShader.inc"
 
 
-		BPModel.Init(Device,main, sizeof(main));
+		bpModel.Init(device,main, sizeof(main));
 
 	}
 
@@ -95,25 +95,25 @@ void ShaderController11::InitShader()
 
 		D3D11_INPUT_ELEMENT_DESC Decl[3];
 
-		//Device->CreateVertexShader(&main, sizeof(main), nullptr, &SpVTex);
+		//device->CreateVertexShader(&main, sizeof(main), nullptr, &spvTex);
 
 		Decl[0] = { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA };
 		Decl[1] = { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
 		Decl[2] = { "COLOR",  0, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
 
 
-		SpVTex.Init(Device,Decl, 3, main, sizeof(main));
+		spvTex.Init(device,Decl, 3, main, sizeof(main));
 
-		//Device->CreateInputLayout(SpDecl, ARRAYSIZE(SpDecl), &main, sizeof(main), &SpILayout);
+		//device->CreateInputLayout(SpDecl, ARRAYSIZE(SpDecl), &main, sizeof(main), &SpILayout);
 
 	}
 
 	{
 #include"TPShader.inc"
 		
-		BPTex.Init(Device,&main, sizeof(main));
+		bpTex.Init(device,&main, sizeof(main));
 
-		//Device->CreatePixelShader(&main, sizeof(main), nullptr, &BPTex);
+		//device->CreatePixelShader(&main, sizeof(main), nullptr, &bpTex);
 	}
 
 }
@@ -121,35 +121,35 @@ void ShaderController11::InitShader()
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ShaderController11::Init(
-	DirectX3D11& _ChDevice
-	, const ChVec2& _WindSize)
+	DirectX3D11& _chDevice
+	, const ChVec2& _windSize)
 {
-	if (!_ChDevice.IsInit())return;
+	if (!_chDevice.IsInit())return;
 
-	Init(_ChDevice.GetDevice(), _ChDevice.GetDC(), _ChDevice.GetSC(), _WindSize.w, _WindSize.h);
+	Init(_chDevice.GetDevice(), _chDevice.GetDC(), _chDevice.GetSC(), _windSize.w, _windSize.h);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ShaderController11::Init(
-	DirectX3D11& _ChDevice
-	, const float& _WindWitdh
-	, const float& _WindHeight)
+	DirectX3D11& _chDevice
+	, const float& _windWitdh
+	, const float& _windHeight)
 {
-	if (!_ChDevice.IsInit())return;
+	if (!_chDevice.IsInit())return;
 
-	Init(_ChDevice.GetDevice(), _ChDevice.GetDC(), _ChDevice.GetSC(), _WindWitdh, _WindHeight);
+	Init(_chDevice.GetDevice(), _chDevice.GetDC(), _chDevice.GetSC(), _windWitdh, _windHeight);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ShaderController11::Init(
-	ID3D11Device* _Device
-	, ID3D11DeviceContext* _DC
+	ID3D11Device* _device
+	, ID3D11DeviceContext* _dc
 	, IDXGISwapChain* _SC
-	, const ChVec2& _WindSize) 
+	, const ChVec2& _windSize) 
 {
-	Init(_Device, _DC, _SC, _WindSize.w, _WindSize.h);
+	Init(_device, _dc, _SC, _windSize.w, _windSize.h);
 
 }
 
@@ -157,50 +157,50 @@ void ShaderController11::Init(
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ShaderController11::Init(
-	ID3D11Device* _Device
-	, ID3D11DeviceContext* _DC
+	ID3D11Device* _device
+	, ID3D11DeviceContext* _dc
 	, IDXGISwapChain* _SC
-	, const float& _Witdh
-	, const float& _Height)
+	, const float& _width
+	, const float& _height)
 {
 
-	if (ChPtr::NullCheck(_Device))return;
-	if (ChPtr::NullCheck(_DC))return;
+	if (ChPtr::NullCheck(_device))return;
+	if (ChPtr::NullCheck(_dc))return;
 	if (ChPtr::NullCheck(_SC))return;
 
-	Device = (_Device);
-	DC = (_DC);
+	device = (_device);
+	dc = (_dc);
 	
 	InitShader();
 
-	WhiteTex.CreateColorTexture(Device, ChVec4(1.0f, 1.0f, 1.0f, 1.0f), 1, 1);
+	whiteTex.CreateColorTexture(device, ChVec4(1.0f, 1.0f, 1.0f, 1.0f), 1, 1);
 
-	NormalTex.CreateColorTexture(Device, ChVec4(0.5f, 1.0f, 0.5f, 1.0f), 1, 1);
+	normalTex.CreateColorTexture(device, ChVec4(0.5f, 1.0f, 0.5f, 1.0f), 1, 1);
 
-	BDObject.ProjMat.CreateProjectionMat(
+	bdObject.projMat.CreateProjectionMat(
 		ChMath::ToRadian(60.0f)
-		, _Witdh
-		, _Height
+		, _width
+		, _height
 		, 1.0f
 		, 1000.0f);
 
-	BDObject.ViewMat.CreateViewMat(
+	bdObject.viewMat.CreateViewMat(
 		ChVec3(0.0f, 0.0f, -1.0f)
 		, ChVec3(0.0f, 0.0f, 1.0f)
 		, ChVec3(0.0f, 1.0f, 0.0f));
 
-	BDObject.WindSize = ChVec4(_Witdh, _Height, 0.0f, 0.0f);
+	bdObject.windSize = ChVec4(_width, _height, 0.0f, 0.0f);
 
 	BaseDataUpdate();
 
-	DSBuffer.CreateDepthBuffer(_Device, _Witdh, _Height);
+	dsBuffer.CreateDepthBuffer(_device, _width, _height);
 
 
 	//描画方法//
-	D3D11_RASTERIZER_DESC RasteriserDesc
+	D3D11_RASTERIZER_DESC rasteriserDesc
 	{
-		Fill
-		,Cull
+		fill
+		,cull
 		,true
 		,0
 		,0.0f
@@ -211,31 +211,31 @@ void ShaderController11::Init(
 		,false
 	};
 
-	Device->CreateRasterizerState(&RasteriserDesc, &Rasteriser);
+	device->CreateRasterizerState(&rasteriserDesc, &rasteriser);
 
-	DC->RSSetState(Rasteriser);
+	dc->RSSetState(rasteriser);
 
-	Out3D.CreateRenderTarget(
-		_Device,
-		static_cast<unsigned long>(_Witdh),
-		static_cast<unsigned long>(_Height));
+	out3D.CreateRenderTarget(
+		_device,
+		static_cast<unsigned long>(_width),
+		static_cast<unsigned long>(_height));
 
-	Out2D.CreateRenderTarget(
-		_Device,
-		static_cast<unsigned long>(_Witdh),
-		static_cast<unsigned long>(_Height));
+	out2D.CreateRenderTarget(
+		_device,
+		static_cast<unsigned long>(_width),
+		static_cast<unsigned long>(_height));
 
-	OutSprite.Init(Device);
+	outSprite.Init(device);
 
-	Window.Init(_Device, _SC);
+	window.Init(_device, _SC);
 
-	Window.SetSwapEffect(DXGI_SWAP_EFFECT_DISCARD);
+	window.SetSwapEffect(DXGI_SWAP_EFFECT_DISCARD);
 
-	View.SetDrawDepth(0.0f, 1.0f);
-	View.SetWindPos(ChVec2(0.0f, 0.0f));
-	View.SetWindSize(ChVec2(_Witdh, _Height));
+	view.SetDrawDepth(0.0f, 1.0f);
+	view.SetWindPos(ChVec2(0.0f, 0.0f));
+	view.SetWindSize(ChVec2(_width, _height));
 
-	LightDatas.Init(_Device);
+	lightDatas.Init(_device);
 
 
 
@@ -246,28 +246,28 @@ void ShaderController11::Init(
 
 void ShaderController11::Release()
 {
-	WhiteTex.Release();
-	NormalTex.Release();
+	whiteTex.Release();
+	normalTex.Release();
 
-	LightDatas.Release();
-	Window.Release();
+	lightDatas.Release();
+	window.Release();
 
-	if (ChPtr::NotNullCheck(BaseData))
+	if (ChPtr::NotNullCheck(baseData))
 	{
-		BaseData->Release();
-		BaseData = nullptr;
+		baseData->Release();
+		baseData = nullptr;
 	}
 
-	if (ChPtr::NotNullCheck(CharaData))
+	if (ChPtr::NotNullCheck(charaData))
 	{
-		CharaData->Release();
-		CharaData = nullptr;
+		charaData->Release();
+		charaData = nullptr;
 	}
 
-	if (ChPtr::NotNullCheck(PolygonData))
+	if (ChPtr::NotNullCheck(polygonData))
 	{
-		PolygonData->Release();
-		PolygonData = nullptr;
+		polygonData->Release();
+		polygonData = nullptr;
 	}
 
 	SetInitFlg(false);
@@ -275,13 +275,13 @@ void ShaderController11::Release()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ShaderController11::SetRenderTarget(Texture11& _Tex)
+void ShaderController11::SetRenderTarget(Texture11& _tex)
 {
 	if (!*this)return;
-	if (DrawFlg)return;
+	if (drawFlg)return;
 
 
-	RenderTargets.push_back(const_cast<ID3D11RenderTargetView*>(_Tex.GetRTView()));
+	renderTargets.push_back(const_cast<ID3D11RenderTargetView*>(_tex.GetRTView()));
 
 }
 
@@ -290,17 +290,17 @@ void ShaderController11::SetRenderTarget(Texture11& _Tex)
 void ShaderController11::SetDrawDatas()
 {
 
-	DC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	if (RasteriserUpdate)
+	if (rasteriserUpdate)
 	{
-		Rasteriser->Release();
+		rasteriser->Release();
 
 		//描画方法//
 		D3D11_RASTERIZER_DESC RasteriserDesc
 		{
-			Fill
-			,Cull
+			fill
+			,cull
 			,true
 			,0
 			,0.0f
@@ -312,16 +312,16 @@ void ShaderController11::SetDrawDatas()
 		};
 
 
-		Device->CreateRasterizerState(&RasteriserDesc, &Rasteriser);
+		device->CreateRasterizerState(&RasteriserDesc, &rasteriser);
 
-		DC->RSSetState(Rasteriser);
+		dc->RSSetState(rasteriser);
 
-		RasteriserUpdate = false;
+		rasteriserUpdate = false;
 
 	}
 
 
-	DC->RSSetState(Rasteriser);
+	dc->RSSetState(rasteriser);
 
 }
 
@@ -331,58 +331,58 @@ void ShaderController11::DrawStart()
 {
 
 	if (!*this)return;
-	if (DrawFlg)return;
+	if (drawFlg)return;
 
 
-	if (!RenderTargets.empty())
+	if (!renderTargets.empty())
 	{
-		TmpView = &RenderTargets[0];
-		DC->OMSetRenderTargets(RenderTargets.size(), TmpView, nullptr);
-		DC->ClearRenderTargetView(RenderTargets[0], BackColor.val.GetVal());
-		RTDrawFlg = true;
+		tmpView = &renderTargets[0];
+		dc->OMSetRenderTargets(renderTargets.size(), tmpView, nullptr);
+		dc->ClearRenderTargetView(renderTargets[0], backColor.val.GetVal());
+		rtDrawFlg = true;
 	}
 	else
 	{
-		//Window.SetDrawData(DC, DSBuffer.GetDSView());
+		//window.SetDrawData(dc, dsBuffer.GetDSView());
 
-		Window.ClearView(DC, BackColor);
+		window.ClearView(dc, backColor);
 
-		DSBuffer.ClearDepthBuffer(DC);
+		dsBuffer.ClearDepthBuffer(dc);
 
-		ChVec4 TmpCol = ChVec4(0.0f, 0.0f, 0.0f,0.0f);
+		ChVec4 tmpCol = ChVec4(0.0f, 0.0f, 0.0f,0.0f);
 
-		DC->ClearRenderTargetView(Out3D.GetRTView(), BackColor.val.GetVal());
-		DC->ClearRenderTargetView(Out2D.GetRTView(), TmpCol.val.GetVal());
+		dc->ClearRenderTargetView(out3D.GetRTView(), backColor.val.GetVal());
+		dc->ClearRenderTargetView(out2D.GetRTView(), tmpCol.val.GetVal());
 
-		Out3D.SetDrawData(DC, 12);
+		out3D.SetDrawData(dc, 12);
 
-		RTDrawFlg = false;
+		rtDrawFlg = false;
 	}
 
-	View.SetDrawData(DC);
+	view.SetDrawData(dc);
 
-	LightDatas.SetPSDrawData(DC);
+	lightDatas.SetPSDrawData(dc);
 
-	DC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	SetDrawDatas();
 
-	//BDObject.ProjMat = BDObject.ProjMat.Transpose();
-	//BDObject.ViewMat = BDObject.ViewMat.Transpose();
+	//bdObject.projMat = bdObject.projMat.Transpose();
+	//bdObject.viewMat = bdObject.viewMat.Transpose();
 
-	if (BDUpdateFlg)
+	if (bdUpdateFlg)
 	{
 
-		DC->UpdateSubresource(BaseData, 0, nullptr, &BDObject, 0, 0);
+		dc->UpdateSubresource(baseData, 0, nullptr, &bdObject, 0, 0);
 
-		BDUpdateFlg = false;
+		bdUpdateFlg = false;
 	}
 
-	DC->VSSetConstantBuffers(0, 1, &BaseData);
+	dc->VSSetConstantBuffers(0, 1, &baseData);
 
-	DC->PSSetConstantBuffers(0, 1, &BaseData);
+	dc->PSSetConstantBuffers(0, 1, &baseData);
 
-	DrawFlg = true;
+	drawFlg = true;
 
 
 }
@@ -393,47 +393,47 @@ void ShaderController11::DrawEnd()
 {
 
 	if (!*this)return;
-	if (!DrawFlg)return;
+	if (!drawFlg)return;
 
-	if (ChPtr::NullCheck(Device))return;
+	if (ChPtr::NullCheck(device))return;
 
-	DrawFlg = false;
+	drawFlg = false;
 
-	if (RTDrawFlg)return;
+	if (rtDrawFlg)return;
 	
 
-	Window.SetDrawData(DC, nullptr);
+	window.SetDrawData(dc, nullptr);
 
 
-	SpVTex.SetShader(DC);
+	spvTex.SetShader(dc);
 
-	BPTex.SetShader(DC);
+	bpTex.SetShader(dc);
 
 
-	DC->UpdateSubresource(PolygonData, 0, nullptr, &PDObject, 0, 0);
+	dc->UpdateSubresource(polygonData, 0, nullptr, &pdObject, 0, 0);
 
-	DC->VSSetConstantBuffers(1, 1, &PolygonData);
-	DC->PSSetConstantBuffers(1, 1, &PolygonData);
+	dc->VSSetConstantBuffers(1, 1, &polygonData);
+	dc->PSSetConstantBuffers(1, 1, &polygonData);
 
-	Out3D.SetDrawData(DC, 0);
+	out3D.SetDrawData(dc, 0);
 
-	OutSprite.SetDrawData(DC);
+	outSprite.SetDrawData(dc);
 
-	SpVTex.SetShader(DC);
+	spvTex.SetShader(dc);
 
-	BPTex.SetShader(DC);
+	bpTex.SetShader(dc);
 
-	DC->UpdateSubresource(PolygonData, 0, nullptr, &PDObject, 0, 0);
+	dc->UpdateSubresource(polygonData, 0, nullptr, &pdObject, 0, 0);
 
-	DC->VSSetConstantBuffers(1, 1, &PolygonData);
-	DC->PSSetConstantBuffers(1, 1, &PolygonData);
+	dc->VSSetConstantBuffers(1, 1, &polygonData);
+	dc->PSSetConstantBuffers(1, 1, &polygonData);
 
-	Out2D.SetDrawData(DC, 0);
+	out2D.SetDrawData(dc, 0);
 
-	OutSprite.SetDrawData(DC);
+	outSprite.SetDrawData(dc);
 
 	// バックバッファをプライマリバッファにコピー
-	Window.Draw();
+	window.Draw();
 
 }
 
@@ -441,35 +441,35 @@ void ShaderController11::DrawEnd()
 
 void ShaderController11::Draw(
 	Mesh11& _Mesh
-	, const ChMat_11& _Mat)
+	, const ChMat_11& _mat)
 {
 
 	if (!*this)return;
-	if (!DrawFlg)return;
+	if (!drawFlg)return;
 	if (!_Mesh.IsMesh())return;
 
 
-	CDObject.ModelMat = _Mat.Transpose();
+	cdObject.modelMat = _mat.Transpose();
 
-	CDObject.ModelMat = _Mat;
+	cdObject.modelMat = _mat;
 
-	BVModel.SetShader(DC);
+	bvModel.SetShader(dc);
 
-	BPModel.SetShader(DC);
+	bpModel.SetShader(dc);
 
-	DC->UpdateSubresource(CharaData, 0, nullptr, &CDObject, 0, 0);
+	dc->UpdateSubresource(charaData, 0, nullptr, &cdObject, 0, 0);
 
-	DC->VSSetConstantBuffers(1, 1, &CharaData);
-	DC->PSSetConstantBuffers(1, 1, &CharaData);
+	dc->VSSetConstantBuffers(1, 1, &charaData);
+	dc->PSSetConstantBuffers(1, 1, &charaData);
 
-	if (!RTDrawFlg)
+	if (!rtDrawFlg)
 	{
-		ID3D11RenderTargetView* Tmp = Out3D.GetRTView();
-		DC->OMSetRenderTargets(1, &Tmp, DSBuffer.GetDSView());
+		ID3D11RenderTargetView* tmp = out3D.GetRTView();
+		dc->OMSetRenderTargets(1, &tmp, dsBuffer.GetDSView());
 
 	}
 
-	_Mesh.SetDrawData(DC);
+	_Mesh.SetDrawData(dc);
 
 }
 
@@ -479,109 +479,109 @@ void ShaderController11::Draw(
 void ShaderController11::DrawOutLine(
 	Mesh11& _Mesh
 	, const ChVec4& _Color
-	, const ChMat_11& _Mat
+	, const ChMat_11& _mat
 	, const float _Size)
 {
 	if (!*this)return;
 	if (_Size < 0.0f)return;
-	if (!DrawFlg)return;
+	if (!drawFlg)return;
 	if (_Mesh.IsMesh())return;
 
 
-	if (!RTDrawFlg)
+	if (!rtDrawFlg)
 	{
-		ID3D11RenderTargetView* Tmp = Out3D.GetRTView();
-		DC->OMSetRenderTargets(1, &Tmp, DSBuffer.GetDSView());
+		ID3D11RenderTargetView* tmp = out3D.GetRTView();
+		dc->OMSetRenderTargets(1, &tmp, dsBuffer.GetDSView());
 
 	}
 
-	D3D11_CULL_MODE TmpCull = GetCullMode();
+	D3D11_CULL_MODE tmpCull = GetCullMode();
 	SetCullMode(D3D11_CULL_MODE::D3D11_CULL_FRONT);
 
-	BVModel.SetShader(DC);
+	bvModel.SetShader(dc);
 
-	BPModel.SetShader(DC);
+	bpModel.SetShader(dc);
 
-	SetCullMode(TmpCull);
+	SetCullMode(tmpCull);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ShaderController11::Draw(
-	ChD3D11::Texture11& _Tex
-	, PolygonBoard11& _Polygon
-	, const ChMat_11& _Mat)
+	ChD3D11::Texture11& _tex
+	, PolygonBoard11& _porygon
+	, const ChMat_11& _mat)
 {
 	if (!*this)return;
-	if (!DrawFlg)return;
+	if (!drawFlg)return;
 
-	if (!RTDrawFlg)
+	if (!rtDrawFlg)
 	{
-		ID3D11RenderTargetView* Tmp = Out3D.GetRTView();
-		DC->OMSetRenderTargets(1, &Tmp, DSBuffer.GetDSView());
+		ID3D11RenderTargetView* tmp = out3D.GetRTView();
+		dc->OMSetRenderTargets(1, &tmp, dsBuffer.GetDSView());
 
 	}
 
-	//CDObject.ModelMat = _Mat.Transpose();
-	CDObject.ModelMat = _Mat;
+	//cdObject.modelMat = _mat.Transpose();
+	cdObject.modelMat = _mat;
 
-	ChD3D11::Texture11* DrawTex = &_Tex;
+	ChD3D11::Texture11* drawTex = &_tex;
 
-	if (!DrawTex->IsTex())DrawTex = &WhiteTex;
+	if (!drawTex->IsTex())drawTex = &whiteTex;
 
-	PoVTex.SetShader(DC);
+	pvTex.SetShader(dc);
 
-	BPModel.SetShader(DC);
+	bpModel.SetShader(dc);
 
-	DC->UpdateSubresource(CharaData, 0, nullptr, &CDObject, 0, 0);
+	dc->UpdateSubresource(charaData, 0, nullptr, &cdObject, 0, 0);
 
-	DC->VSSetConstantBuffers(1, 1, &CharaData);
-	DC->PSSetConstantBuffers(1, 1, &CharaData);
+	dc->VSSetConstantBuffers(1, 1, &charaData);
+	dc->PSSetConstantBuffers(1, 1, &charaData);
 
-	DrawTex->SetDrawData(DC, 0);
+	drawTex->SetDrawData(dc, 0);
 
-	_Polygon.SetDrawData(DC);
+	_porygon.SetDrawData(dc);
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ShaderController11::Draw(
-	ChD3D11::Texture11& _Tex
-	, Sprite11& _Sprite
-	, const ChMat_11& _Mat)
+	ChD3D11::Texture11& _tex
+	, Sprite11& _sprite
+	, const ChMat_11& _mat)
 {
 
 	if (!*this)return;
-	if (!DrawFlg)return;
+	if (!drawFlg)return;
 
-	if (!RTDrawFlg)
+	if (!rtDrawFlg)
 	{
-		ID3D11RenderTargetView* Tmp = Out2D.GetRTView();
-		DC->OMSetRenderTargets(1, &Tmp, nullptr);
+		ID3D11RenderTargetView* tmp = out2D.GetRTView();
+		dc->OMSetRenderTargets(1, &tmp, nullptr);
 
-		Out3D.SetDrawData(DC, 12);
+		out3D.SetDrawData(dc, 12);
 	}
 
-	//PDObject.ModelMat = _Mat.Transpose();
-	PDObject.ModelMat = _Mat;
+	//pdObject.modelMat = _mat.Transpose();
+	pdObject.modelMat = _mat;
 
-	ChD3D11::Texture11* DrawTex = &_Tex;
+	ChD3D11::Texture11* drawTex = &_tex;
 
-	if (!DrawTex->IsTex())DrawTex = &WhiteTex;
+	if (!drawTex->IsTex())drawTex = &whiteTex;
 
-	SpVTex.SetShader(DC);
+	spvTex.SetShader(dc);
 
-	BPTex.SetShader(DC);
+	bpTex.SetShader(dc);
 
-	DC->UpdateSubresource(PolygonData, 0, nullptr, &PDObject, 0, 0);
+	dc->UpdateSubresource(polygonData, 0, nullptr, &pdObject, 0, 0);
 
-	DC->VSSetConstantBuffers(1, 1, &PolygonData);
-	DC->PSSetConstantBuffers(1, 1, &PolygonData);
+	dc->VSSetConstantBuffers(1, 1, &polygonData);
+	dc->PSSetConstantBuffers(1, 1, &polygonData);
 
-	DrawTex->SetDrawData(DC, 0);
+	drawTex->SetDrawData(dc, 0);
 
-	_Sprite.SetDrawData(DC);
+	_sprite.SetDrawData(dc);
 
 }
 
@@ -592,37 +592,37 @@ void ShaderController11::BaseDataUpdate()
 
 
 
-	D3D11_BUFFER_DESC Desc;
-	ZeroMemory(&Desc, sizeof(D3D11_BUFFER_DESC));
+	D3D11_BUFFER_DESC desc;
+	ZeroMemory(&desc, sizeof(D3D11_BUFFER_DESC));
 
-	Desc.ByteWidth = sizeof(BaseDatas);
-	Desc.Usage = D3D11_USAGE_DEFAULT;
-	Desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	Desc.CPUAccessFlags = 0;
-	Desc.MiscFlags = 0;
-	Desc.StructureByteStride = 0;
+	desc.ByteWidth = sizeof(BaseDatas);
+	desc.Usage = D3D11_USAGE_DEFAULT;
+	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	desc.CPUAccessFlags = 0;
+	desc.MiscFlags = 0;
+	desc.StructureByteStride = 0;
 
-	Device->CreateBuffer(&Desc, nullptr, &BaseData);
+	device->CreateBuffer(&desc, nullptr, &baseData);
 
-	ZeroMemory(&Desc, sizeof(D3D11_BUFFER_DESC));
+	ZeroMemory(&desc, sizeof(D3D11_BUFFER_DESC));
 
-	Desc.ByteWidth = sizeof(CharaDatas);
-	Desc.Usage = D3D11_USAGE_DEFAULT;
-	Desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	Desc.CPUAccessFlags = 0;
-	Desc.MiscFlags = 0;
-	Desc.StructureByteStride = 0;
+	desc.ByteWidth = sizeof(CharaDatas);
+	desc.Usage = D3D11_USAGE_DEFAULT;
+	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	desc.CPUAccessFlags = 0;
+	desc.MiscFlags = 0;
+	desc.StructureByteStride = 0;
 
-	Device->CreateBuffer(&Desc, nullptr, &CharaData);
+	device->CreateBuffer(&desc, nullptr, &charaData);
 
-	ZeroMemory(&Desc, sizeof(D3D11_BUFFER_DESC));
+	ZeroMemory(&desc, sizeof(D3D11_BUFFER_DESC));
 
-	Desc.ByteWidth = sizeof(PolygonDatas);
-	Desc.Usage = D3D11_USAGE_DEFAULT;
-	Desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	Desc.CPUAccessFlags = 0;
-	Desc.MiscFlags = 0;
-	Desc.StructureByteStride = 0;
+	desc.ByteWidth = sizeof(PolygonDatas);
+	desc.Usage = D3D11_USAGE_DEFAULT;
+	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	desc.CPUAccessFlags = 0;
+	desc.MiscFlags = 0;
+	desc.StructureByteStride = 0;
 
-	Device->CreateBuffer(&Desc, nullptr, &PolygonData);
+	device->CreateBuffer(&desc, nullptr, &polygonData);
 }
