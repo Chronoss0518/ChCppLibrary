@@ -18,7 +18,7 @@ namespace ChCpp
 
 	};
 
-	class BaseCollider:public ChCp::Releaser
+	class BaseCollider:public ClassPerts::Releaser
 	{
 
 	public:
