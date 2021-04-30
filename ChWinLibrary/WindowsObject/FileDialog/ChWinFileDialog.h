@@ -19,15 +19,15 @@ namespace ChWin
 
 		struct Filter
 		{
-			std::string Name = "";
-			std::string Type = "";
+			std::string name = "";
+			std::string type = "";
 		};
 
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
-		void Init(const HWND& _HWnd);
+		void Init(const HWND& _hWnd);
 
 		void Release()override;
 
@@ -36,47 +36,47 @@ namespace ChWin
 
 		std::string GetFileName() 
 		{
-			if (!OpenFlg)return "";
-			OpenFlg = false;
+			if (!openFlg)return "";
+			openFlg = false;
 			return PathToRerative();
 		}
 
 		std::string GetFileNameFullPath()
 		{
-			if (!OpenFlg)return "";
-			OpenFlg = false;
-			return FileName;
+			if (!openFlg)return "";
+			openFlg = false;
+			return fileName;
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		void SetTitle(const std::string& _Title) { Title = _Title; }
+		void SetTitle(const std::string& _title) { title = _title; }
 
-		void SetStartDir(const std::string& _Dir) { StartDir = _Dir; }
+		void SetStartDir(const std::string& _dir) { startDir = _dir; }
 
-		void SetPathLen(const unsigned short _PathLength = 500) 
+		void SetPathLen(const unsigned short _pathLength = 500) 
 		{
-			if (_PathLength < 2)return;
-			PathLength = _PathLength;
+			if (_pathLength < 2)return;
+			pathLength = _pathLength;
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
 
-		ChStd::Bool IsOpen() { return OpenFlg; }
+		ChStd::Bool IsOpen() { return openFlg; }
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
-		void AddFilter(const Filter& _Fil);
+		void AddFilter(const Filter& _fil);
 
 		void AddFilter(
-			const std::string& _Name
-			, const std::string& _Type);
+			const std::string& _name
+			, const std::string& _type);
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
-		void DelFilter(const std::string& _Name);
+		void DelFilter(const std::string& _name);
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
@@ -98,28 +98,28 @@ namespace ChWin
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
-		std::string Title = "";
+		std::string title = "";
 
-		std::string FileName = "";
+		std::string fileName = "";
 
-		std::string StartDir = "";
+		std::string startDir = "";
 
-		std::string BaseDir = "";
+		std::string baseDir = "";
 
-		std::map<std::string,std::string> Filters;
+		std::map<std::string,std::string> filters;
 
-		ChStd::Bool OpenFlg = true;
+		ChStd::Bool openFlg = true;
 
-		unsigned short PathLength = 256;
+		unsigned short pathLength = 256;
 
 		enum class FlgType { Open, Save };
 
-		static const char CutChar;
-		static const DWORD Flgs[];
+		static const char cutChar;
+		static const DWORD flgs[];
 
-		HWND HOwn = nullptr;
+		HWND hOwn = nullptr;
 		
-		static std::string TmpType;
+		static std::string tmpType;
 
 	}FDialog;
 

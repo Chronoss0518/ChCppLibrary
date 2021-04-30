@@ -40,10 +40,10 @@ namespace ChSystem
 		//InitAndRelease//
 
 		//Windの生成//
-		void Init(const std::string& _APPName
-			, const std::string& _WindClassName
-			, const unsigned int _WindWidth
-			, const unsigned int _WindHeight
+		void Init(const std::string& _aPPName
+			, const std::string& _windClassName
+			, const unsigned int _windWidth
+			, const unsigned int _windHeight
 			, const HINSTANCE _hInst
 			, const int _nCmdShow);
 
@@ -53,9 +53,9 @@ namespace ChSystem
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		inline void SetWinProcedure(const ChWinProc& _Proce)
+		inline void SetWinProcedure(const ChWinProc& _proce)
 		{
-			WinProcs = _Proce;
+			WinProcs = _proce;
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -72,24 +72,24 @@ namespace ChSystem
 		///////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
 
-		//標準のカーソルを見えるようにするかのフラグ//
+		//標準のカーソルの表示フラグ//
 		inline void IsCursollShou(const ChStd::Bool _f) { ShowCursor(_f); }
 
 		//キーを押した際のチェックを行う関数//
-		ChStd::Bool IsPushKey(const int _Key)override;
+		ChStd::Bool IsPushKey(const int _key)override;
 
 		//キーを押した際に長押しを含んだのチェックを行う関数//
-		ChStd::Bool IsPushKeyNoHold(const int _Key)override;
+		ChStd::Bool IsPushKeyNoHold(const int _key)override;
 
 		//ポーズ中かどうかを判断する関数。//
 		//第一引数はポーズへ移行するボタン//
 		//戻り値がTrueだった場合はポーズ中//
-		ChStd::Bool IsPause(const int _Key)override;
+		ChStd::Bool IsPause(const int _key)override;
 
 		//チェックメッセージボックス用関数//
 		ChStd::Bool IsMessage(
-			const std::string& _MainStr
-			, const std::string& _SubStr);
+			const std::string& _mainStr
+			, const std::string& _subStr);
 
 		//WindMassageを確認する関数//
 		ChStd::Bool IsUpdate();
@@ -97,25 +97,25 @@ namespace ChSystem
 		///////////////////////////////////////////////////////////////////////////////////
 
 		void ErrerMessage(
-			const std::string& _MainStr
-			, const std::string& _SubStr)override
+			const std::string& _mainStr
+			, const std::string& _subStr)override
 		{
-			WMessage(_MainStr, _SubStr);
+			WMessage(_mainStr, _subStr);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//メッセージボックス用関数//
 		inline void WMessage(
-			const std::string& _MainStr
-			, const std::string& _SubStr)
+			const std::string& _mainStr
+			, const std::string& _subStr)
 		{
 			if (ChPtr::NullCheck(hWnd))return;
 
 			MessageBox(
 				hWnd
-				, &_MainStr[0]
-				, &_SubStr[0]
+				, &_mainStr[0]
+				, &_subStr[0]
 				, MB_OK);
 
 		}
@@ -124,7 +124,7 @@ namespace ChSystem
 
 		friend ChWin::WindObject;
 
-		friend LRESULT CALLBACK WndProc(
+		friend LRESULT CALLBACK ChSystem::WndProc(
 			HWND _hWnd
 			, UINT _uMsg
 			, WPARAM _wParam
@@ -143,9 +143,9 @@ namespace ChSystem
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		ChStd::Bool IsKeyUpdate;
+		ChStd::Bool isKeyUpdate;
 
-		std::string ClassName = "";
+		std::string className = "";
 
 
 		HWND hWnd = nullptr;
@@ -169,23 +169,23 @@ namespace ChSystem
 
 	};
 
-	static inline void ToRelativePath(std::string&_Path)
+	static inline void ToRelativePath(std::string&_path)
 	{
 
-		if (_Path.find(":\\") == _Path.npos && _Path.find(":/") == _Path.npos)return;
+		if (_path.find(":\\") == _path.npos && _path.find(":/") == _path.npos)return;
 
-		std::string Tmp;
+		std::string tmp;
 
 
 		{
 
-			char* Tmp2 = nullptr;
-			Tmp2 = new char[256];
+			char* tmp2 = nullptr;
+			tmp2 = new char[256];
 
-			GetCurrentDirectory(256, Tmp2);
-			Tmp = Tmp2;
+			GetCurrentDirectory(256, tmp2);
+			tmp = tmp2;
 
-			delete[] Tmp2;
+			delete[] tmp2;
 
 		}
 
@@ -196,41 +196,41 @@ namespace ChSystem
 
 			while (1)
 			{
-				size_t TmpLen = Tmp.find(OutCutChar, 0);
-				if (TmpLen == Tmp.npos)break;
-				Tmp.replace(TmpLen, OutCutChar.size(), SetCutChar);
+				size_t tmpLen = tmp.find(OutCutChar, 0);
+				if (tmpLen == tmp.npos)break;
+				tmp.replace(tmpLen, OutCutChar.size(), SetCutChar);
 
 			}
 			while (1)
 			{
-				size_t TmpLen = _Path.find(OutCutChar, 0);
-				if (TmpLen == _Path.npos)break;
-				_Path.replace(TmpLen, OutCutChar.size(), SetCutChar);
+				size_t tmpLen = _path.find(OutCutChar, 0);
+				if (tmpLen == _path.npos)break;
+				_path.replace(tmpLen, OutCutChar.size(), SetCutChar);
 
 			}
 
-			std::string TmpBackChar = "";
+			std::string tmpBackChar = "";
 
 
 			while (1)
 			{
-				size_t TmpLen = _Path.find(Tmp);
+				size_t tmpLen = _path.find(tmp);
 
-				if (TmpLen != _Path.npos)break;
+				if (tmpLen != _path.npos)break;
 
-				TmpLen = Tmp.rfind(SetCutChar, Tmp.length());
+				tmpLen = tmp.rfind(SetCutChar, tmp.length());
 
-				Tmp.replace(TmpLen, Tmp.length() - TmpLen, "");
+				tmp.replace(tmpLen, tmp.length() - tmpLen, "");
 
-				TmpBackChar += "../";
+				tmpBackChar += "../";
 
 			}
 
 
 
-			_Path.replace(0, Tmp.length() + 1, "");
+			_path.replace(0, tmp.length() + 1, "");
 
-			_Path = TmpBackChar + _Path;
+			_path = tmpBackChar + _path;
 
 
 

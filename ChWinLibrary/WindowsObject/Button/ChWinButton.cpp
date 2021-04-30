@@ -6,13 +6,13 @@
 //BaseButtonÉÅÉ\ÉbÉh//
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChWin::BaseButton::Create(const std::string& _ButtonText
+void ChWin::BaseButton::Create(const std::string& _buttonText
 	, const int _x
 	, const int _y
 	, const int _w
 	, const int _h
-	, const HWND _ParentHandl
-	, const std::function<void()> _CallBack)
+	, const HWND _parentHandl
+	, const std::function<void()> _callBack)
 {
 	if (!IsInit())return;
 
@@ -25,35 +25,34 @@ void ChWin::BaseButton::Create(const std::string& _ButtonText
 
 	RegisterObj();
 
-	HIns = CreateWindow(
+	hIns = CreateWindow(
 		"BUTTON",  // Predefined class; Unicode assumed 
-		_ButtonText.c_str(),      // Button text 
+		_buttonText.c_str(),      // Button text 
 		WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON | WS_CLIPCHILDREN,  // Styles 
 		_x,         // x position 
 		_y,         // y position 
 		_w,        // Button width
 		_h,        // Button height
-		_ParentHandl,     // Parent window
-		(HMENU)MyID,       // No menu.
-		(HINSTANCE)GetWindowLong(HOwn, GWL_HINSTANCE),
+		_parentHandl,     // Parent window
+		(HMENU)myID,       // No menu.
+		(HINSTANCE)GetWindowLong(hOwn, GWL_HINSTANCE),
 		NULL);      // Pointer not needed.
 
 
-	Function = _CallBack;
-	RedrawWindow(HOwn, nullptr, nullptr, true);
+	Function = _callBack;
+	RedrawWindow(hOwn, nullptr, nullptr, true);
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChWin::BaseButton::SetFunction(const std::function<void()> _CallBack)
+void ChWin::BaseButton::SetFunction(const std::function<void()> _callBack)
 {
-	Function = _CallBack;
+	Function = _callBack;
 }
 
 void ChWin::BaseButton::Update(const WPARAM& _wParam)
 {
-
 	if (Function == nullptr)return;
 	Function();
 }

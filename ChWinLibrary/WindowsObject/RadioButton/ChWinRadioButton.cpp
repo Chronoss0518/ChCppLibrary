@@ -8,13 +8,13 @@
 //RadioButtonÉÅÉ\ÉbÉh//
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChWin::RadioButton::Create(const std::string& _ButtonText
+void ChWin::RadioButton::Create(const std::string& _buttonText
 	, const int _x
 	, const int _y
 	, const int _w
 	, const int _h
-	, const HWND _ParentHandl
-	, const ChStd::Bool _GlpFlg)
+	, const HWND _parentHandl
+	, const ChStd::Bool _glpFlg)
 {
 	if (!IsInit())return;
 
@@ -27,24 +27,24 @@ void ChWin::RadioButton::Create(const std::string& _ButtonText
 
 	RegisterObj();
 
-	HIns = CreateWindow(
+	hIns = CreateWindow(
 		"BUTTON",  // Predefined class; Unicode assumed 
-		_ButtonText.c_str(),      // Button text 
+		_buttonText.c_str(),      // Button text 
 		WS_VISIBLE
 		| WS_CHILD
-		| (_GlpFlg ? 0 : WS_GROUP)
+		| (_glpFlg ? 0 : WS_GROUP)
 		| BS_AUTORADIOBUTTON
 		| WS_CLIPCHILDREN,  // Styles 
 		_x,         // x position 
 		_y,         // y position 
 		_w,        // Button width
 		_h,        // Button height
-		_ParentHandl,     // Parent window
-		(HMENU)MyID,       // No menu.
-		(HINSTANCE)GetWindowLong(HOwn, GWL_HINSTANCE),
+		_parentHandl,     // Parent window
+		(HMENU)myID,       // No menu.
+		(HINSTANCE)GetWindowLong(hOwn, GWL_HINSTANCE),
 		NULL);      // Pointer not needed.
 
 
-	RedrawWindow(HOwn, nullptr, nullptr, NULL);
+	RedrawWindow(hOwn, nullptr, nullptr, NULL);
 
 }

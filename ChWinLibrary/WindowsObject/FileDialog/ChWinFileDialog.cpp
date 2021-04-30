@@ -3,10 +3,10 @@
 #include"ChWinFileDialog.h"
 
 
-std::string ChWin::FileDialog::TmpType = "";
+std::string ChWin::FileDialog::tmpType = "";
 
-const char ChWin::FileDialog::CutChar = '\0';
-const DWORD ChWin::FileDialog::Flgs[] =
+const char ChWin::FileDialog::cutChar = '\0';
+const DWORD ChWin::FileDialog::flgs[] =
 {
 	(OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_CREATEPROMPT | OFN_NONETWORKBUTTON)
 	, (OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_CREATEPROMPT | OFN_NONETWORKBUTTON | OFN_OVERWRITEPROMPT)
@@ -16,50 +16,50 @@ const DWORD ChWin::FileDialog::Flgs[] =
 //FileDialogÉÅÉ\ÉbÉh//
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChWin::FileDialog::Init(const HWND& _HWnd)
+void ChWin::FileDialog::Init(const HWND& _hWnd)
 {
 	SetInitFlg(true);
 
-	HOwn = _HWnd;
-	char Tmp[MAX_PATH];
+	hOwn = _hWnd;
+	char tmp[MAX_PATH];
 
-	GetCurrentDirectory(MAX_PATH, Tmp);
+	GetCurrentDirectory(MAX_PATH, tmp);
 
-	StartDir += &Tmp[0];
-	BaseDir = &Tmp[0];
+	startDir += &tmp[0];
+	baseDir = &tmp[0];
 }
 
 void ChWin::FileDialog::Release()
 {
 	SetInitFlg(false);
-	Filters.clear();
+	filters.clear();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChWin::FileDialog::AddFilter(const Filter& _Fil)
+void ChWin::FileDialog::AddFilter(const Filter& _fil)
 {
-	AddFilter(_Fil.Name, _Fil.Type);
+	AddFilter(_fil.name, _fil.type);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
 void ChWin::FileDialog::AddFilter(
-	const std::string& _Name
-	, const std::string& _Type)
+	const std::string& _name
+	, const std::string& _type)
 {
-	if (Filters.find(_Name) != Filters.end())return;
-	Filters[_Name] = _Type;
+	if (filters.find(_name) != filters.end())return;
+	filters[_name] = _type;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChWin::FileDialog::DelFilter(const std::string& _Name)
+void ChWin::FileDialog::DelFilter(const std::string& _name)
 {
-	if (Filters.empty())return;
-	if (Filters.find(_Name) == Filters.end())return;
+	if (filters.empty())return;
+	if (filters.find(_name) == filters.end())return;
 
-	Filters.erase(_Name);
+	filters.erase(_name);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -70,35 +70,34 @@ void ChWin::FileDialog::OpenFileDialog()
 
 	CreateFilterStr();
 
-	OPENFILENAMEA Tmp;
-	char* Tmp2;
-	Tmp2 = new char[PathLength];
-	ZeroMemory(&Tmp, sizeof(Tmp));
-	Tmp.lStructSize = sizeof(Tmp);
-	Tmp.hwndOwner = HOwn;
-	//Tmp.lpstrFile = &szFile[0];
+	OPENFILENAMEA tmp;
+	char* tmp2;
+	tmp2 = new char[pathLength];
+	ZeroMemory(&tmp, sizeof(tmp));
+	tmp.lStructSize = sizeof(tmp);
+	tmp.hwndOwner = hOwn;
 	// Set lpstrFile[0] to '\0' so that GetOpenFileName does not  
 	// use the contents of szFile to initialize itself. 
-	Tmp.lpstrFile = Tmp2;
-	Tmp.lpstrFile[0] = '\0';
-	Tmp.nMaxFile = PathLength;
+	tmp.lpstrFile = tmp2;
+	tmp.lpstrFile[0] = '\0';
+	tmp.nMaxFile = pathLength;
 	CreateFilterStr();
-	Tmp.lpstrFilter = TmpType.c_str();
-	Tmp.nFilterIndex = 1;
+	tmp.lpstrFilter = tmpType.c_str();
+	tmp.nFilterIndex = 1;
 
-	Tmp.lpstrTitle = Title.size() <= 0 ? nullptr : Title.c_str();
-	Tmp.lpstrInitialDir = StartDir.size() <= 0 ? nullptr : StartDir.c_str();
+	tmp.lpstrTitle = title.size() <= 0 ? nullptr : title.c_str();
+	tmp.lpstrInitialDir = startDir.size() <= 0 ? nullptr : startDir.c_str();
 
-	Tmp.Flags = Flgs[ChStd::EnumCast(FlgType::Open)];
+	tmp.Flags = flgs[ChStd::EnumCast(FlgType::Open)];
 
-	GetOpenFileName(&Tmp);
-	if(ChPtr::NotNullCheck(Tmp.lpstrFile))FileName = Tmp.lpstrFile;
+	GetOpenFileName(&tmp);
+	if(ChPtr::NotNullCheck(tmp.lpstrFile))fileName = tmp.lpstrFile;
 
-	delete[] Tmp2;
+	delete[] tmp2;
 
-	SetCurrentDirectory(BaseDir.c_str());
+	SetCurrentDirectory(baseDir.c_str());
 
-	OpenFlg = true;
+	openFlg = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -109,46 +108,45 @@ void ChWin::FileDialog::SaveFileDialog()
 	if (!IsInit())return;
 	CreateFilterStr();
 
-	OPENFILENAMEA Tmp;
-	char* Tmp2;
-	Tmp2 = new char[PathLength];
-	ZeroMemory(&Tmp, sizeof(Tmp));
-	Tmp.lStructSize = sizeof(Tmp);
-	Tmp.hwndOwner = HOwn;
-	//Tmp.lpstrFile = &szFile[0];
+	OPENFILENAMEA tmp;
+	char* tmp2;
+	tmp2 = new char[pathLength];
+	ZeroMemory(&tmp, sizeof(tmp));
+	tmp.lStructSize = sizeof(tmp);
+	tmp.hwndOwner = hOwn;
 	// Set lpstrFile[0] to '\0' so that GetOpenFileName does not  
 	// use the contents of szFile to initialize itself. 
-	Tmp.lpstrFile = Tmp2;
-	Tmp.lpstrFile[0] = '\0';
-	Tmp.nMaxFile = PathLength;
+	tmp.lpstrFile = tmp2;
+	tmp.lpstrFile[0] = '\0';
+	tmp.nMaxFile = pathLength;
 	CreateFilterStr();
-	Tmp.lpstrFilter = TmpType.c_str();
-	Tmp.nFilterIndex = 1;
+	tmp.lpstrFilter = tmpType.c_str();
+	tmp.nFilterIndex = 1;
 
-	Tmp.lpstrTitle = Title.size() <= 0 ? nullptr : Title.c_str();
-	Tmp.lpstrInitialDir = StartDir.size() <= 0 ? nullptr : StartDir.c_str();
+	tmp.lpstrTitle = title.size() <= 0 ? nullptr : title.c_str();
+	tmp.lpstrInitialDir = startDir.size() <= 0 ? nullptr : startDir.c_str();
 
-	Tmp.Flags = Flgs[ChStd::EnumCast(FlgType::Save)];
+	tmp.Flags = flgs[ChStd::EnumCast(FlgType::Save)];
 
-	GetSaveFileName(&Tmp);
-	FileName = Tmp2;
+	GetSaveFileName(&tmp);
+	fileName = tmp2;
 
-	delete[] Tmp2;
+	delete[] tmp2;
 
-	SetCurrentDirectory(BaseDir.c_str());
+	SetCurrentDirectory(baseDir.c_str());
 
-	OpenFlg = true;
+	openFlg = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
 void ChWin::FileDialog::CreateFilterStr()
 {
-	TmpType.clear();
+	tmpType.clear();
 
-	for (auto&& Fil : Filters)
+	for (auto&& fil : filters)
 	{
-		TmpType += Fil.first + "(" + "*" + Fil.second + ")" + CutChar + "*" + Fil.second + CutChar;
+		tmpType += fil.first + "(" + "*" + fil.second + ")" + cutChar + "*" + fil.second + cutChar;
 
 	}
 	
@@ -161,13 +159,13 @@ void ChWin::FileDialog::CreateFilterStr()
 std::string ChWin::FileDialog::PathToRerative()
 {
 
-	size_t Tmp = FileName.find_last_of("\\",FileName.size());
+	size_t tmp = fileName.find_last_of("\\",fileName.size());
 
-	std::string BaseStr;
+	std::string baseStr;
 
-	BaseStr = FileName;
+	baseStr = fileName;
 
-	BaseStr.replace(0, Tmp + 1, "");
+	baseStr.replace(0, tmp + 1, "");
 
-	return BaseStr;
+	return baseStr;
 }

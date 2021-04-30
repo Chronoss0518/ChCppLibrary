@@ -27,160 +27,7 @@ struct ChRMatrix;
 struct ChLMatrix;
 struct ChUIMatrix;
 
-namespace ChMath
-{
-
-
-	template<typename T>
-	struct ChVector4Base
-	{
-
-		union {
-			struct
-			{
-				T x, y, z, w;
-			};
-			struct
-			{
-				T r, g, b, a;
-			};
-			struct
-			{
-				T left, top, right, down;
-			};
-			VectorBase<T, 4> val;
-		};
-	};
-
-	template<typename T>
-	struct ChVector3Base
-	{
-
-		union {
-			struct
-			{
-				T x, y, z;
-			};
-			struct
-			{
-				T r, g, b;
-			};
-			VectorBase<T, 3> val;
-		};
-	};
-
-	template<typename T>
-	struct ChVector2Base
-	{
-
-		union {
-			struct
-			{
-				T x, y;
-			};
-			struct
-			{
-				T w, h;
-			};
-			VectorBase<T, 2> val;
-		};
-	};
-
-	struct ChQuaternionBase
-	{
-
-		union {
-			struct
-			{
-				float x, y, z, w;
-			};
-			float val[4]{ 0, 0, 0, 0 };
-		};
-	};
-
-	template<typename T>
-	struct ChBaseMatrix2x2
-	{
-		union
-		{
-			struct
-			{
-
-				T l_11, l_12;
-				T l_21, l_22;
-
-			};
-			struct
-			{
-
-				T r_11, r_21;
-				T r_12, r_22;
-
-			};
-			T m[2][2];
-		};
-
-	};
-
-	template<typename T>
-	struct ChBaseMatrix3x3
-	{
-
-
-		union
-		{
-			struct
-			{
-
-				T l_11, l_12, l_13;
-				T l_21, l_22, l_23;
-				T l_31, l_32, l_33;
-
-			};
-			struct
-			{
-
-				T r_11, r_21, r_31;
-				T r_12, r_22, r_32;
-				T r_13, r_23, r_33;
-
-			};
-			MatrixBase<T, 3, 3> m;
-		};
-
-	};
-
-	template<typename T>
-	struct ChBaseMatrix4x4
-	{
-		union
-		{
-			struct
-			{
-
-				T l_11, l_12, l_13, l_14;
-				T l_21, l_22, l_23, l_24;
-				T l_31, l_32, l_33, l_34;
-				T l_41, l_42, l_43, l_44;
-
-			};
-			struct
-			{
-
-				T r_11, r_21, r_31, r_41;
-				T r_12, r_22, r_32, r_42;
-				T r_13, r_23, r_33, r_43;
-				T r_14, r_24, r_34, r_44;
-
-			};
-			MatrixBase<T, 4, 4> m;
-		};
-
-	};
-
-} // namespace ChMath
-
-struct ChVector4 : public ChMath::ChVector4Base<float>
+struct ChVector4 : public ChMath::Vector4Base<float>
 {
 
 	///////////////////////////////////////////////////////////////////////////////////
@@ -349,7 +196,7 @@ using ChVec4 = ChVector4;
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-struct ChVector3 : public ChMath::ChVector3Base<float>
+struct ChVector3 : public ChMath::Vector3Base<float>
 {
 
 	ChVector3& operator*=(const float& _num);
@@ -506,7 +353,7 @@ using ChVec3 = ChVector3;
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-struct ChVector2 : public ChMath::ChVector2Base<float>
+struct ChVector2 : public ChMath::Vector2Base<float>
 {
 
 	ChVector2& operator*=(const float& _num);
@@ -645,7 +492,7 @@ using ChVec2 = ChVector2;
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-struct ChQuaternion : public ChMath::ChQuaternionBase
+struct ChQuaternion : public ChMath::QuaternionBase
 {
 
 	operator const D3DXQUATERNION() const;
@@ -736,7 +583,7 @@ struct ChLMatrix;
 struct ChRMatrix;
 
 //LeftHandAxisMatrix//
-struct ChLMatrix : public ChMath::ChBaseMatrix4x4<float>
+struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 {
 	///////////////////////////////////////////////////////////////////////////////////
 	//Operator//
@@ -925,7 +772,7 @@ struct ChLMatrix : public ChMath::ChBaseMatrix4x4<float>
 };
 
 //RightHandAxisMatrix//
-struct ChRMatrix : public ChMath::ChBaseMatrix4x4<float>
+struct ChRMatrix : public ChMath::BaseMatrix4x4<float>
 {
 	ChRMatrix& operator =(const ChRMatrix& _mat);
 
@@ -996,7 +843,7 @@ struct ChRMatrix : public ChMath::ChBaseMatrix4x4<float>
 using ChRMat = ChRMatrix;
 using ChLMat = ChLMatrix;
 
-struct ChUIMatrix : public ChMath::ChBaseMatrix4x4<unsigned long>
+struct ChUIMatrix : public ChMath::BaseMatrix4x4<unsigned long>
 {
 	///////////////////////////////////////////////////////////////////////////////////
 	//Operator//

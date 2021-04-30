@@ -33,7 +33,7 @@ LRESULT ImGui_ImplWin32_WndProcHandler(
 namespace ChImGui
 {
 
-	class BaseWind : public ChCpp::ChCp::InitPack
+	class BaseWind : public ChCpp::ClassPerts::Initializer
 	{
 	public:
 
@@ -333,12 +333,18 @@ namespace ChImGui
 			if (!IsBaseInit())return;
 			if (!GetFlgManager().IsWindOpen())return;
 
+			float tmp[2];
+			tmp[0] = _Vec.val[0];
+			tmp[1] = _Vec.val[1];
+
 			ImGui::DragFloat2(
 				_Label.c_str()
-				, _Vec.Val
+				, tmp
 				, _Speed
 				, _Min
 				, _Max);
+
+			_Vec.val.Set(tmp);
 
 		}
 
@@ -359,12 +365,17 @@ namespace ChImGui
 			if (!IsBaseInit())return;
 			if (!GetFlgManager().IsWindOpen())return;
 
+			float tmp[2];
+			tmp[0] = _Vec.val[0];
+			tmp[1] = _Vec.val[1];
+
 			ImGui::SliderFloat2(
 				_Label.c_str()
-				, _Vec.Val
+				, tmp
 				, _Min
 				, _Max);
 
+			_Vec.val.Set(tmp);
 		}
 
 
@@ -388,24 +399,20 @@ namespace ChImGui
 			if (!IsBaseInit())return;
 			if (!GetFlgManager().IsWindOpen())return;
 
+			float tmp[3];
+			tmp[0] = _Vec.val[0];
+			tmp[1] = _Vec.val[1];
+			tmp[2] = _Vec.val[2];
+
 
 			ImGui::DragFloat3(
 				_Label.c_str()
-				, _Vec.Val
+				, tmp
 				, _Speed
 				, _Min
 				, _Max);
 
-			/*
-						DragVector3(
-							_Vec.x
-							, _Vec.y
-							, _Vec.z
-							, _Label
-							, _Max
-							, _Min
-							, _Speed);
-			*/
+			_Vec.val.Set(tmp);
 		}
 
 		//Vector3Edit(Slider)//
@@ -427,12 +434,18 @@ namespace ChImGui
 			if (!IsBaseInit())return;
 			if (!GetFlgManager().IsWindOpen())return;
 
+			float tmp[3];
+			tmp[0] = _Vec.val[0];
+			tmp[1] = _Vec.val[1];
+			tmp[2] = _Vec.val[2];
+
 			ImGui::SliderFloat3(
 				_Label.c_str()
-				, _Vec.Val
+				, tmp
 				, _Min
 				, _Max);
 
+			_Vec.val.Set(tmp);
 		}
 
 		//Vector4Edit//
@@ -456,13 +469,20 @@ namespace ChImGui
 			if (!IsBaseInit())return;
 			if (!GetFlgManager().IsWindOpen())return;
 
+			float tmp[4];
+			tmp[0] = _Vec.val[0];
+			tmp[1] = _Vec.val[1];
+			tmp[2] = _Vec.val[2];
+			tmp[3] = _Vec.val[3];
+
 			ImGui::DragFloat4(
 				_Label.c_str()
-				, _Vec.Val
+				, tmp
 				, _Speed
 				, _Min
 				, _Max);
 
+			_Vec.val.Set(tmp);
 		}
 
 		//Vector4Edit(Slider)//
@@ -485,12 +505,19 @@ namespace ChImGui
 			if (!IsBaseInit())return;
 			if (!GetFlgManager().IsWindOpen())return;
 
+			float tmp[4];
+			tmp[0] = _Vec.val[0];
+			tmp[1] = _Vec.val[1];
+			tmp[2] = _Vec.val[2];
+			tmp[3] = _Vec.val[3];
+
 			ImGui::SliderFloat4(
 				_Label.c_str()
-				, _Vec.Val
+				, tmp
 				, _Min
 				, _Max);
 
+			_Vec.val.Set(tmp);
 		}
 
 		//ColorEdit//
@@ -502,7 +529,7 @@ namespace ChImGui
 			, const std::string& _Label);
 
 		inline void EditColor(
-			ChVec4& _Vec
+			ChMath::ChVector4Base<float> _Vec
 			, const std::string& _Label
 			, const float _Min = 0.0f
 			, const float _Max = 0.0f)
@@ -521,7 +548,7 @@ namespace ChImGui
 		}
 
 		inline void EditColor(
-			ChStd::COLOR1f& _Col
+			ChMath::ChVector4Base<float>& _Col
 			, const std::string& _Label)
 		{
 			if (!IsBaseInit())return;
@@ -538,14 +565,16 @@ namespace ChImGui
 		}
 
 		inline void EditColor(
-			ChStd::COLOR255& _Col
+			ChMath::ChVector4Base<char>& _Col
 			, const std::string& _Label)
 		{
 			if (!IsBaseInit())return;
 			if (!GetFlgManager().IsWindOpen())return;
 
-			ChStd::COLOR1f TmpCol;
-			TmpCol = _Col;
+			ChMath::ChVector4Base<float> TmpCol;
+			_Col.val.Mul(255);
+
+			TmpCol.val.Set(_Col.val);
 
 			EditColor(
 				TmpCol.a
@@ -556,7 +585,9 @@ namespace ChImGui
 
 			);
 
-			_Col = TmpCol;
+			_Col.val.Set(TmpCol.val);
+			_Col.val.Div(255);
+
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -606,7 +637,7 @@ namespace ChImGui
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//全体フラグ管理クラス//
-		class ImGuiFlagBase :public ChCpp::ChCp::InitPack
+		class ImGuiFlagBase :public ChCpp::ClassPerts::Initializer
 		{
 		public:
 
@@ -670,8 +701,8 @@ namespace ChImGui
 
 		static ImGuiFlagBase& GetFlgManager()
 		{
-			static ImGuiFlagBase Ins;
-			return Ins;
+			static ImGuiFlagBase ins;
+			return ins;
 		}
 
 		ChStd::Bool OnceFlg = false;

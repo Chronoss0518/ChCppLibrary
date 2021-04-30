@@ -6,12 +6,12 @@
 //SubWindÉÅÉ\ÉbÉh//
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChWin::SubWind::Create(const std::string& _Title
+void ChWin::SubWind::Create(const std::string& _title
 	, const int _x
 	, const int _y
 	, const int _w
 	, const int _h
-	, const HWND _ParentHandl)
+	, const HWND _parentHandl)
 {
 	if (!IsInit())return;
 
@@ -22,11 +22,11 @@ void ChWin::SubWind::Create(const std::string& _Title
 	w = _w;
 	h = _h;
 
-	std::string TmpStr = ClassName;
+	std::string tmpStr = className;
 
-	HIns = CreateWindow(
-		TmpStr.c_str(),
-		_Title.c_str(),
+	hIns = CreateWindow(
+		tmpStr.c_str(),
+		_title.c_str(),
 		WS_VISIBLE
 		| WS_CHILD 
 		| WS_CAPTION
@@ -38,13 +38,13 @@ void ChWin::SubWind::Create(const std::string& _Title
 		_y,
 		_w,
 		_h,
-		_ParentHandl,
+		_parentHandl,
 		NULL,
-		(HINSTANCE)GetWindowLong(HOwn, GWL_HINSTANCE),
+		(HINSTANCE)GetWindowLong(hOwn, GWL_HINSTANCE),
 		NULL);
 	
 	//RegisterObj();
-	SetWindowLongPtr(HIns, GWLP_USERDATA, (long)this);
+	SetWindowLongPtr(hIns, GWLP_USERDATA, (long)this);
 
 
 

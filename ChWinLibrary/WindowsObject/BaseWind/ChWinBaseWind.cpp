@@ -5,9 +5,9 @@
 #include"ChWinBaseWind.h"
 #include"../../BaseSystem/ChWindows/ChWindows.h"
 
-std::map<unsigned long, ChWin::WindObject*>ChWin::WindObject::ObjList;
+std::map<unsigned long, ChWin::WindObject*>ChWin::WindObject::objList;
 
-std::string ChWin::WindObject::ClassName = "";
+std::string ChWin::WindObject::className = "";
 
 //WindProcedure‚Í“o˜^‚·‚éÛ‚ÉÃ“I‚ÈŠÖ”‚Å‚È‚¯‚ê‚Î‚È‚ç‚È‚¢//
 LRESULT CALLBACK SubWndProc(
@@ -41,8 +41,8 @@ LRESULT CALLBACK SubWndProc(
 
 void ChWin::ObjUpdate(const WPARAM& _wParam)
 {
-	if (ChWin::WindObject::ObjList.empty())return;
-	ChWin::WindObject::ObjList[LOWORD(_wParam)]->Update(_wParam);
+	if (ChWin::WindObject::objList.empty())return;
+	ChWin::WindObject::objList[LOWORD(_wParam)]->Update(_wParam);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -51,12 +51,12 @@ void ChWin::WindMoveUpdate(const HWND _hWnd, LPARAM _lParam)
 {
 
 
-	if (ChWin::WindObject::ObjList.empty())return;
+	if (ChWin::WindObject::objList.empty())return;
 
-	auto Wind = ((ChWin::SubWind*)GetWindowLongPtr(_hWnd, GWLP_USERDATA));
-	if (ChPtr::NullCheck(Wind))return;
+	auto wind = ((ChWin::SubWind*)GetWindowLongPtr(_hWnd, GWLP_USERDATA));
+	if (ChPtr::NullCheck(wind))return;
 
-	if(!Wind->StartMoveFlg)return;
+	if(!wind->startMoveFlg)return;
 
 	{
 
@@ -64,22 +64,22 @@ void ChWin::WindMoveUpdate(const HWND _hWnd, LPARAM _lParam)
 
 		GetClientRect(_hWnd, &TmpRec);
 
-		if (TmpRec.bottom != Wind->h
-			|| TmpRec.right != Wind->w) {
+		if (TmpRec.bottom != wind->h
+			|| TmpRec.right != wind->w) {
 
 			return;
 		}
 	}
 
-	if (Wind->NotCMoveFlg)
+	if (wind->notCMoveFlg)
 	{
-		MoveWindow(_hWnd, Wind->x, Wind->y, Wind->w, Wind->h, true);
+		MoveWindow(_hWnd, wind->x, wind->y, wind->w, wind->h, true);
 
 		return;
 	}
 
-	Wind->x = LOWORD(_lParam);
-	Wind->y = HIWORD(_lParam);
+	wind->x = LOWORD(_lParam);
+	wind->y = HIWORD(_lParam);
 
 
 
@@ -89,47 +89,47 @@ void ChWin::WindMoveUpdate(const HWND _hWnd, LPARAM _lParam)
 
 void ChWin::WindSizeUpdate(const HWND _hWnd, LPARAM _lParam)
 {
-	if (ChWin::WindObject::ObjList.empty())return;
+	if (ChWin::WindObject::objList.empty())return;
 
-	auto Wind = ((ChWin::SubWind*)GetWindowLongPtr(_hWnd, GWLP_USERDATA));
-	if (ChPtr::NullCheck(Wind))return;
+	auto wind = ((ChWin::SubWind*)GetWindowLongPtr(_hWnd, GWLP_USERDATA));
+	if (ChPtr::NullCheck(wind))return;
 
-	if (!Wind->StartMoveFlg)
+	if (!wind->startMoveFlg)
 	{
 
 		RECT TmpRec;
 		GetClientRect(_hWnd, &TmpRec);
 
-		if (TmpRec.right >= Wind->w
-			&& TmpRec.bottom >= Wind->y
+		if (TmpRec.right >= wind->w
+			&& TmpRec.bottom >= wind->y
 			)
 		{
-			Wind->StartMoveFlg = true;
+			wind->startMoveFlg = true;
 			return;
 		}
 
 	}
 
-	if (!Wind->NotCMoveFlg)
+	if (!wind->notCMoveFlg)
 	{
 
 		RECT TmpRec;
 
 		GetWindowRect(_hWnd, &TmpRec);
-		Wind->x = TmpRec.top;
-		Wind->y = TmpRec.left;
+		wind->x = TmpRec.top;
+		wind->y = TmpRec.left;
 	}
 
-	if (Wind->NotCSizeFlg)
+	if (wind->notCSizeFlg)
 	{
 
-		MoveWindow(_hWnd, Wind->x, Wind->y, Wind->w, Wind->h, true);
+		MoveWindow(_hWnd, wind->x, wind->y, wind->w, wind->h, true);
 
 		return;
 	}
 
-	Wind->w = LOWORD(_lParam);
-	Wind->h = HIWORD(_lParam);
+	wind->w = LOWORD(_lParam);
+	wind->h = HIWORD(_lParam);
 
 
 
@@ -144,13 +144,13 @@ void ChWin::WindSizeUpdate(const HWND _hWnd, LPARAM _lParam)
 void ChWin::WindObject::Init(const HWND& _hWnd)
 {
 	if (ChPtr::NullCheck(_hWnd))return;
-	HOwn = _hWnd;
+	hOwn = _hWnd;
 	SetInitFlg(true);
 
 
-	if (!(ClassName.length() <= 0))return;
+	if (!(className.length() <= 0))return;
 
-	ClassName = "ChSubClass";
+	className = "ChSubClass";
 	{
 
 		WNDCLASS wc;
@@ -159,12 +159,12 @@ void ChWin::WindObject::Init(const HWND& _hWnd)
 		wc.lpfnWndProc = SubWndProc;
 		wc.cbClsExtra = 0;
 		wc.cbWndExtra = 0;
-		wc.hInstance = (HINSTANCE)GetWindowLong(HOwn, GWL_HINSTANCE);
+		wc.hInstance = (HINSTANCE)GetWindowLong(hOwn, GWL_HINSTANCE);
 		wc.hIcon = NULL;
 		wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 		wc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
 		wc.lpszMenuName = (LPSTR)NULL;
-		wc.lpszClassName = ClassName.c_str();
+		wc.lpszClassName = className.c_str();
 
 		RegisterClass(&wc);
 
@@ -176,21 +176,21 @@ void ChWin::WindObject::Init(const HWND& _hWnd)
 
 void ChWin::WindObject::Release()
 {
-	if (ChPtr::NullCheck(HIns))return;
-	DestroyWindow(HIns);
-	HIns = nullptr;
+	if (ChPtr::NullCheck(hIns))return;
+	DestroyWindow(hIns);
+	hIns = nullptr;
 
-	StartMoveFlg = false;
+	startMoveFlg = false;
 
 	SetInitFlg(false);
 
-	ObjList.erase(MyID);
+	objList.erase(myID);
 
-	if (!ObjList.empty()) return;
+	if (!objList.empty()) return;
 
 	UnregisterClass(
-		ClassName.c_str()
-		, (HINSTANCE)GetWindowLong(HOwn, GWL_HINSTANCE));
+		className.c_str()
+		, (HINSTANCE)GetWindowLong(hOwn, GWL_HINSTANCE));
 
 }
 
@@ -201,16 +201,16 @@ void ChWin::WindObject::Move(const int _x
 	, const int _w
 	, const int _h)
 {
-	if (ChPtr::NullCheck(HIns))return;
-	MoveWindow(HIns, _x, _y, _w, _h, true);
+	if (ChPtr::NullCheck(hIns))return;
+	MoveWindow(hIns, _x, _y, _w, _h, true);
 }
 
 void ChWin::WindObject::Move(const int _x
 	, const int _y)
 {
 
-	if (ChPtr::NullCheck(HIns))return;
-	MoveWindow(HIns, _x, _y, w, h, true);
+	if (ChPtr::NullCheck(hIns))return;
+	MoveWindow(hIns, _x, _y, w, h, true);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -219,16 +219,16 @@ void ChWin::WindObject::ReSize(
 	const int _w
 	, const int _h)
 {
-	if (ChPtr::NullCheck(HIns))return;
-	MoveWindow(HIns, x, y, _w, _h, true);
+	if (ChPtr::NullCheck(hIns))return;
+	MoveWindow(hIns, x, y, _w, _h, true);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
 void ChWin::WindObject::RegisterObj()
 {
-	MyID = ObjList.size();
-	ObjList[MyID] = (this);
+	myID = objList.size();
+	objList[myID] = (this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////

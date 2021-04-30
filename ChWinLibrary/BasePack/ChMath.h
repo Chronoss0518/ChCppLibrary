@@ -1149,7 +1149,152 @@ namespace ChMath
 
 	};
 
+	template<typename T>
+	struct Vector4Base
+	{
 
+		union {
+			struct
+			{
+				T x, y, z, w;
+			};
+			struct
+			{
+				T r, g, b, a;
+			};
+			struct
+			{
+				T left, top, right, down;
+			};
+			VectorBase<T, 4> val;
+		};
+	};
+
+	template<typename T>
+	struct Vector3Base
+	{
+
+		union {
+			struct
+			{
+				T x, y, z;
+			};
+			struct
+			{
+				T r, g, b;
+			};
+			VectorBase<T, 3> val;
+		};
+	};
+
+	template<typename T>
+	struct Vector2Base
+	{
+
+		union {
+			struct
+			{
+				T x, y;
+			};
+			struct
+			{
+				T w, h;
+			};
+			VectorBase<T, 2> val;
+		};
+	};
+
+	struct QuaternionBase
+	{
+
+		union {
+			struct
+			{
+				float x, y, z, w;
+			};
+			float val[4]{ 0, 0, 0, 0 };
+		};
+	};
+
+	template<typename T>
+	struct BaseMatrix2x2
+	{
+		union
+		{
+			struct
+			{
+
+				T l_11, l_12;
+				T l_21, l_22;
+
+			};
+			struct
+			{
+
+				T r_11, r_21;
+				T r_12, r_22;
+
+			};
+			T m[2][2];
+		};
+
+	};
+
+	template<typename T>
+	struct BaseMatrix3x3
+	{
+
+
+		union
+		{
+			struct
+			{
+
+				T l_11, l_12, l_13;
+				T l_21, l_22, l_23;
+				T l_31, l_32, l_33;
+
+			};
+			struct
+			{
+
+				T r_11, r_21, r_31;
+				T r_12, r_22, r_32;
+				T r_13, r_23, r_33;
+
+			};
+			MatrixBase<T, 3, 3> m;
+		};
+
+	};
+
+	template<typename T>
+	struct BaseMatrix4x4
+	{
+		union
+		{
+			struct
+			{
+
+				T l_11, l_12, l_13, l_14;
+				T l_21, l_22, l_23, l_24;
+				T l_31, l_32, l_33, l_34;
+				T l_41, l_42, l_43, l_44;
+
+			};
+			struct
+			{
+
+				T r_11, r_21, r_31, r_41;
+				T r_12, r_22, r_32, r_42;
+				T r_13, r_23, r_33, r_43;
+				T r_14, r_24, r_34, r_44;
+
+			};
+			MatrixBase<T, 4, 4> m;
+		};
+
+	};
 
 }
 

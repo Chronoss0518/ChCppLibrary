@@ -7,14 +7,14 @@
 //DrawTexterÉÅÉ\ÉbÉh
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChWin::DrawTexter::Init(const HWND& _BaseWindHandl)
+void ChWin::DrawTexter::Init(const HWND& _baseWindHandl)
 {
 	if (*this)return;
-	if (ChPtr::NullCheck(_BaseWindHandl))return;
+	if (ChPtr::NullCheck(_baseWindHandl))return;
 
-	SetWind(_BaseWindHandl);
+	SetWind(_baseWindHandl);
 
-	FontData = CreateFont(
+	fontData = CreateFont(
 		16
 		, 8
 		, 0
@@ -39,7 +39,7 @@ void ChWin::DrawTexter::Release()
 {
 	if (!*this)return;
 
-	DeleteObject(FontData);
+	DeleteObject(fontData);
 
 	SetInitFlg(false);
 }
@@ -47,22 +47,22 @@ void ChWin::DrawTexter::Release()
 ///////////////////////////////////////////////////////////////////////////////////////
 
 void ChWin::DrawTexter::SetFontData(
-	const long& _FWidth
-	, const long& _FHeight
-	, const long& _FSize
-	, const ChStd::Bool& _ULFlg)
+	const long& _fWidth
+	, const long& _fHeight
+	, const long& _fSize
+	, const ChStd::Bool& _ulFlg)
 {
 
-	DeleteObject(FontData);
+	DeleteObject(fontData);
 
-	FontData = CreateFont(
-		_FWidth
-		, _FHeight
+	fontData = CreateFont(
+		_fWidth
+		, _fHeight
 		, 0
 		, 0
-		, _FSize
+		, _fSize
 		, false
-		, _ULFlg
+		, _ulFlg
 		, false
 		, SHIFTJIS_CHARSET
 		, OUT_DEFAULT_PRECIS
@@ -76,29 +76,29 @@ void ChWin::DrawTexter::SetFontData(
 ///////////////////////////////////////////////////////////////////////////////////////
 
 void ChWin::DrawTexter::Draw(
-	const std::string&_DrawText
+	const std::string&_drawText
 	, const long& _x
 	, const long& _y)
 {
 	return;
-	HDC TmpDC;
-	TmpDC = GetDC(HOwn);
+	HDC tmpDC;
+	tmpDC = GetDC(hOwn);
 
-	SelectObject(TmpDC, FontData);
-	SetTextColor(TmpDC, RGB(FontColor.r, FontColor.g, FontColor.b));
+	SelectObject(tmpDC, fontData);
+	SetTextColor(tmpDC, RGB(fontColor.r, fontColor.g, fontColor.b));
 
-	if (BackColor.a <= 0)
+	if (backColor.a <= 0)
 	{
-		SetBkMode(TmpDC, TRANSPARENT);
+		SetBkMode(tmpDC, TRANSPARENT);
 	}
 	else
 	{
-		SetBkColor(TmpDC, RGB(BackColor.r, BackColor.g, BackColor.b));
+		SetBkColor(tmpDC, RGB(backColor.r, backColor.g, backColor.b));
 	}
 
-	TextOut(TmpDC, _x, _y, _DrawText.c_str(),_DrawText.size() + 1);
+	TextOut(tmpDC, _x, _y, _drawText.c_str(), _drawText.size() + 1);
 
-	DeleteDC(TmpDC);
+	DeleteDC(tmpDC);
 
 }
 

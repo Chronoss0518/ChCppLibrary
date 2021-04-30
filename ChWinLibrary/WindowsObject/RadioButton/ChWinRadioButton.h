@@ -21,20 +21,20 @@ namespace ChWin
 		///////////////////////////////////////////////////////////////////////////////////////
 
 		void Create(
-			const std::string& _ButtonText
+			const std::string& _buttonText
 			, const int _x
 			, const int _y
 			, const int _w
 			, const int _h
-			, const HWND _ParentHandl = nullptr
-			, const ChStd::Bool _GlpFlg = false);
+			, const HWND _parentHandl = nullptr
+			, const ChStd::Bool _glpFlg = false);
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
 
-		ChStd::Bool IsSelection()
+		ChStd::Bool isSelection()
 		{
-			return (SendMessage(HIns, BM_GETCHECK, 0, 0) == BST_CHECKED);
+			return (SendMessage(hIns, BM_GETCHECK, 0, 0) == BST_CHECKED);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////////

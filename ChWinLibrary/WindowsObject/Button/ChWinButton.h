@@ -26,13 +26,13 @@ namespace ChWin
 			, const int _y
 			, const int _w
 			, const int _h
-			, const HWND _ParentHandl = nullptr
-			, const std::function<void()> _CallBack = nullptr);
+			, const HWND _parentHandl = nullptr
+			, const std::function<void()> _callBack = nullptr);
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		void SetFunction(const std::function<void()> _CallBack);
+		void SetFunction(const std::function<void()> _callBack);
 
 		///////////////////////////////////////////////////////////////////////////////////////
 

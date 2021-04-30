@@ -59,7 +59,7 @@ namespace ChSystem
 
 		SystemManager* system = nullptr;
 
-		ChMath::ChVector2Base<unsigned long> windSize;
+		ChMath::Vector2Base<unsigned long> windSize;
 
 		ChCpp::BitBool buttonList;
 		ChCpp::BitBool isNowPush;

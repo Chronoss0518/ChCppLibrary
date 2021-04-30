@@ -4,7 +4,6 @@
 #define Ch_Win_BObj_h
 
 #include"../../BaseIncluder/ChBase.h"
-#include"ChWinBaseWind.h"
 
 namespace ChSystem
 {
@@ -57,16 +56,16 @@ namespace ChWin
 		///////////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
-		inline const HWND GethWnd()const { return HIns; }
+		inline const HWND GethWnd()const { return hIns; }
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
 		//移動させないためのフラグ//
-		inline void SetNoMoveFlg(const ChStd::Bool _Flg) { NotCMoveFlg = _Flg; }
+		inline void SetNoMoveFlg(const ChStd::Bool _flg) { notCMoveFlg = _flg; }
 
 		//サイズ変更させないためのフラグ//
-		inline void SetNoSizeFlg(const ChStd::Bool _Flg) { NotCSizeFlg = _Flg; }
+		inline void SetNoSizeFlg(const ChStd::Bool _flg) { notCSizeFlg = _flg; }
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
@@ -82,7 +81,7 @@ namespace ChWin
 
 		virtual void Update(const WPARAM& _wParam)
 		{
-			UpdateWindow(HIns);
+			UpdateWindow(hIns);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////////
@@ -101,19 +100,19 @@ namespace ChWin
 
 	protected:
 
-		static std::string ClassName;
+		static std::string className;
 
-		HWND HIns = nullptr;
+		HWND hIns = nullptr;
 
-		DWORD MyID = 0;
+		DWORD myID = 0;
 
-		HWND HOwn = nullptr;
+		HWND hOwn = nullptr;
 
-		ChStd::Bool NotCSizeFlg = false;
-		ChStd::Bool NotCMoveFlg = false;
+		ChStd::Bool notCSizeFlg = false;
+		ChStd::Bool notCMoveFlg = false;
 
 
-		ChStd::Bool StartMoveFlg = false;
+		ChStd::Bool startMoveFlg = false;
 
 		void RegisterObj();
 		
@@ -124,7 +123,7 @@ namespace ChWin
 
 	private:
 
-		static std::map<unsigned long, WindObject*>ObjList;
+		static std::map<unsigned long, WindObject*>objList;
 
 	}WindObj;
 }

@@ -21,12 +21,12 @@ namespace ChWin
 		///////////////////////////////////////////////////////////////////////////////////////
 
 		void Create(
-			const std::string& _Title
+			const std::string& _title
 			, const int _x
 			, const int _y
 			, const int _w
 			, const int _h
-			, const HWND _ParentHandl = nullptr);
+			, const HWND _parentHandl = nullptr);
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
@@ -35,7 +35,7 @@ namespace ChWin
 		///////////////////////////////////////////////////////////////////////////////////////
 	private:
 
-		ChStd::Bool DrawUpdateFlg = true;
+		ChStd::Bool drawUpdateFlg = true;
 
 	};
 

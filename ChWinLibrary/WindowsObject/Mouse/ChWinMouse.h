@@ -20,35 +20,35 @@ namespace ChWin
 
 		void Init(
 			const HWND& _hWnd
-			, const unsigned long _WindWidth
-			, const unsigned long _WindHeight);
+			, const unsigned long _windWidth
+			, const unsigned long _windHeight);
 
-		void Init(const ChSystem::Windows& _Win);
+		void Init(const ChSystem::Windows& _win);
 
 		void Release()override;
 
 		inline void SetWindSize(
-			const unsigned long _WindWidth
-			, const unsigned long _WindHeight)
+			const unsigned long _windWidth
+			, const unsigned long _windHeight)
 		{
 			if (!*this)return;
-			WindWidth = _WindWidth;
-			WindHeight = _WindHeight;
+			windSize.w = _windWidth;
+			windSize.h = _windHeight;
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		inline void SetVisibleFlg(const ChStd::Bool _Flg)
+		inline void SetVisibleFlg(const ChStd::Bool _flg)
 		{
 			if (!*this)return;
-			VisFlg = _Flg; 
+			visFlg = _flg; 
 		}
 
-		inline void SetCenterFixedFlg(const ChStd::Bool _Flg)
+		inline void SetCenterFixedFlg(const ChStd::Bool _flg)
 		{
 			if (!*this)return;
-			SetCenterPosFlg = _Flg;
+			setCenterPosFlg = _flg;
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -57,13 +57,13 @@ namespace ChWin
 		inline POINTS GetWeelMove()
 		{
 			if (!*this)return { 0,0 };
-			return WheelMoveVal; 
+			return wheelMoveVal; 
 		}
 
 		inline POINT GetNowPos() 
 		{
 			if (!*this)return { 0,0 };
-			return NowPos; 
+			return nowPos; 
 		}
 
 		ChVec2 GetNowPosToChVec2();
@@ -81,21 +81,21 @@ namespace ChWin
 
 		void WheelUpdate(const POINTS _UpdateData)
 		{
-			if (!WheelMoveFlg)return;
-			WheelMoveVal = _UpdateData; 
-			if(WheelMoveVal.x > 0 || WheelMoveVal.x < 0)WheelMoveVal.x /= WHEEL_DELTA;
-			if(WheelMoveVal.y > 0 || WheelMoveVal.y < 0)WheelMoveVal.y /= WHEEL_DELTA;
+			if (!wheelMoveFlg)return;
+			wheelMoveVal = _UpdateData; 
+			if(wheelMoveVal.x > 0 || wheelMoveVal.x < 0)wheelMoveVal.x /= WHEEL_DELTA;
+			if(wheelMoveVal.y > 0 || wheelMoveVal.y < 0)wheelMoveVal.y /= WHEEL_DELTA;
 
-			WheelMoveFlg = false;
+			wheelMoveFlg = false;
 		}
 		  
 		///////////////////////////////////////////////////////////////////////////////////
 
 		void ReSetWheel()
 		{
-			WheelMoveVal.x = 0;
-			WheelMoveVal.y = 0;
-			WheelMoveFlg = true;
+			wheelMoveVal.x = 0;
+			wheelMoveVal.y = 0;
+			wheelMoveFlg = true;
 		}
 
 		friend ChSystem::Windows;
@@ -106,17 +106,17 @@ namespace ChWin
 
 	private:
 		
-		POINTS WheelMoveVal{ 0,0 };
-		POINT CenterPos{ 0,0 };
-		POINT NowPos{ 0,0 };
-		POINT BeforPos{ 0,0 };
+		POINTS wheelMoveVal{ 0,0 };
+		POINT centerPos{ 0,0 };
+		POINT nowPos{ 0,0 };
+		POINT beforPos{ 0,0 };
 
-		ChStd::Bool WheelMoveFlg = true;
-		ChStd::Bool VisFlg = false;
-		ChStd::Bool SetCenterPosFlg = false;
+		ChStd::Bool wheelMoveFlg = true;
+		ChStd::Bool visFlg = false;
+		ChStd::Bool setCenterPosFlg = false;
 
-		unsigned long WindWidth = 0;
-		unsigned long WindHeight = 0;
+		ChMath::Vector2Base<unsigned long>windSize;
+
 		HWND hWnd = nullptr;
 
 		MouseController(){}
@@ -125,8 +125,8 @@ namespace ChWin
 
 		static MouseController& GetIns()
 		{
-			static MouseController Ins;
-			return Ins;
+			static MouseController ins;
+			return ins;
 		}
 
 	};

@@ -11,29 +11,29 @@
 
 void ChWin::MouseController::Init(
 	const HWND& _hWnd
-	, const unsigned long _WindWidth
-	, const unsigned long _WindHeight)
+	, const unsigned long _windWidth
+	, const unsigned long _windHeight)
 {
 	if (ChPtr::NullCheck(_hWnd))return;
 
 	hWnd = _hWnd;
 
-	WindWidth = _WindWidth;
-	WindHeight = _WindHeight;
+	windSize.w = _windWidth;
+	windSize.h = _windHeight;
 
-	CenterPos.x = WindWidth / 2;
-	CenterPos.y = WindWidth / 2;
+	centerPos.x = windSize.w / 2;
+	centerPos.y = windSize.h / 2;
 
-	ScreenToClient(_hWnd, &CenterPos);
+	ScreenToClient(_hWnd, &centerPos);
 
 	SetInitFlg(true);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChWin::MouseController::Init(const ChSystem::Windows& _Win)
+void ChWin::MouseController::Init(const ChSystem::Windows& _win)
 {
-	Init(_Win.GethWnd(), _Win.GetWindWidth(), _Win.GetWindHeight());
+	Init(_win.GethWnd(), _win.GetWindWidth(), _win.GetWindHeight());
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -49,10 +49,10 @@ ChVec2 ChWin::MouseController::GetNowPosToChVec2()
 {
 	if (!*this)return { 0.0f,0.0f };
 
-	ChVec2 TmpVec;
-	TmpVec.x = static_cast<float>(NowPos.x);
-	TmpVec.y = static_cast<float>(NowPos.y);
-	return TmpVec;
+	ChVec2 tmpVec;
+	tmpVec.x = static_cast<float>(nowPos.x);
+	tmpVec.y = static_cast<float>(nowPos.y);
+	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -61,27 +61,27 @@ ChVec2 ChWin::MouseController::GetNowProPosToChVec2()
 {
 	if (!*this)return { 0.0f,0.0f };
 
-	float TmpX, TmpY;
-	TmpX = static_cast<float>(WindWidth);
-	TmpY = static_cast<float>(WindHeight);
+	float tmpX, tmpY;
+	tmpX = static_cast<float>(windSize.w);
+	tmpY = static_cast<float>(windSize.h);
 
-	ChVec2 TmpVec;
-	TmpVec.x = static_cast<float>(NowPos.x);
-	TmpVec.y = static_cast<float>(NowPos.y);
-
-
-	TmpVec.x /= (TmpX);
-	TmpVec.y /= (TmpY);
-
-	TmpVec *= 2.0f;
-
-	TmpVec -= 1.0f;
-
-	TmpVec.y *= -1.0f;
+	ChVec2 tmpVec;
+	tmpVec.x = static_cast<float>(nowPos.x);
+	tmpVec.y = static_cast<float>(nowPos.y);
 
 
+	tmpVec.x /= (tmpX);
+	tmpVec.y /= (tmpY);
 
-	return TmpVec;
+	tmpVec *= 2.0f;
+
+	tmpVec -= 1.0f;
+
+	tmpVec.y *= -1.0f;
+
+
+
+	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -90,11 +90,11 @@ POINT ChWin::MouseController::GetMoveValue()
 {
 	if (!*this)return { 0,0 };
 
-	POINT Tmp;
-	Tmp.x = (NowPos.x - BeforPos.x);
-	Tmp.y = (NowPos.y - BeforPos.y);
+	POINT tmp;
+	tmp.x = (nowPos.x - beforPos.x);
+	tmp.y = (nowPos.y - beforPos.y);
 
-	return Tmp;
+	return tmp;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -104,11 +104,11 @@ ChVec2 ChWin::MouseController::GetMoveValueToChVec2()
 
 	if (!*this)return { 0.0f,0.0f };
 
-	ChVec2 TmpVec;
-	TmpVec.x = static_cast<float>(NowPos.x - BeforPos.x);
-	TmpVec.y = static_cast<float>(NowPos.y - BeforPos.y);
+	ChVec2 tmpVec;
+	tmpVec.x = static_cast<float>(nowPos.x - beforPos.x);
+	tmpVec.y = static_cast<float>(nowPos.y - beforPos.y);
 
-	return TmpVec;
+	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -117,21 +117,21 @@ void ChWin::MouseController::Update()
 {
 	if (!*this)return;
 
-	BeforPos = NowPos;
+	beforPos = nowPos;
 
-	GetCursorPos(&NowPos);
+	GetCursorPos(&nowPos);
 
-	ScreenToClient(hWnd, &NowPos);
+	ScreenToClient(hWnd, &nowPos);
 
-	if (SetCenterPosFlg)
+	if (setCenterPosFlg)
 	{
-		BeforPos = CenterPos;
-		POINT Tmp;
+		beforPos = centerPos;
+		POINT tmp;
 
-		Tmp = CenterPos;
+		tmp = centerPos;
 
-		ClientToScreen(hWnd, &Tmp);
-		SetCursorPos(Tmp.x, Tmp.y);
+		ClientToScreen(hWnd, &tmp);
+		SetCursorPos(tmp.x, tmp.y);
 	}
 
 
@@ -139,16 +139,13 @@ void ChWin::MouseController::Update()
 
 	GetClientRect(hWnd, &Rec);
 
-	WindWidth = Rec.right - Rec.left;
-	WindHeight = Rec.bottom - Rec.top;
+	windSize.w = Rec.right - Rec.left;
+	windSize.h = Rec.bottom - Rec.top;
 
-	if (SetCenterPosFlg)
+	if (setCenterPosFlg)
 	{
-		//CenterPos.x = static_cast<float>(Rec.left + (Rec.right - Rec.left) / 2);
-		//CenterPos.y = static_cast<float>(Rec.top + (Rec.bottom - Rec.top) / 2);
-		CenterPos.x = static_cast<float>((Rec.right - Rec.left) / 2);
-		CenterPos.y = static_cast<float>((Rec.bottom - Rec.top) / 2);
-		//ScreenToClient(hWnd, &CenterPos);
+		centerPos.x = static_cast<float>((Rec.right - Rec.left) / 2);
+		centerPos.y = static_cast<float>((Rec.bottom - Rec.top) / 2);
 	}
 
 }

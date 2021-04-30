@@ -17,20 +17,20 @@ namespace ChWin
 		///////////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
-		void Init(const HWND& _BaseWindHandl);
+		void Init(const HWND& _baseWindHandl);
 
 		void Release()override;
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 		
-		inline void SetWind(const HWND& _Wind)
+		inline void SetWind(const HWND& _wind)
 		{
-			if (ChPtr::NullCheck(_Wind))return;
-			HOwn = _Wind;
+			if (ChPtr::NullCheck(_wind))return;
+			hOwn = _wind;
 
-			InvalidateRect(HOwn, nullptr, true);
-			UpdateWindow(HOwn);
+			InvalidateRect(hOwn, nullptr, true);
+			UpdateWindow(hOwn);
 
 		}
 
@@ -41,21 +41,27 @@ namespace ChWin
 			, const ChStd::Bool& _ULFlg);
 
 		//ï`âÊÇ∑ÇÈï∂éöóÒÇÃêFê›íË//
-		inline void SetTexColor(const ChVec4& _Color)
+		inline void SetTexColor(const ChVec4& _color)
 		{
-			FontColor = _Color * 256;
+			fontColor.a = _color.a * 255;
+			fontColor.r = _color.r * 255;
+			fontColor.g = _color.g * 255;
+			fontColor.b = _color.b * 255;
 		}
 
 		//ï`âÊÇ∑ÇÈï∂éöóÒÇÃîwåiêFê›íË//
-		inline void SetTexBackColor(const ChVec4& _Color)
+		inline void SetTexBackColor(const ChVec4& _color)
 		{
-			BackColor = _Color * 256;
+			backColor.a = _color.a * 255;
+			backColor.r = _color.r * 255;
+			backColor.g = _color.g * 255;
+			backColor.b = _color.b * 255;
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
 		void Draw(
-			const std::string&_DrawText
+			const std::string&_drawText
 			, const long& _x
 			, const long& _y);
 
@@ -68,19 +74,19 @@ namespace ChWin
 		inline DrawTexter(){}
 
 
-		HWND HOwn = nullptr;
+		HWND hOwn = nullptr;
 
-		HFONT FontData = nullptr;
+		HFONT fontData = nullptr;
 
-		ChVec4 FontColor;
-		ChVec4 BackColor;
+		ChMath::Vector4Base<unsigned char> fontColor;
+		ChMath::Vector4Base<unsigned char> backColor;
 
 	public:
 
 		static inline DrawTexter& GetIns()
 		{
-			static DrawTexter Ins;
-			return Ins;
+			static DrawTexter ins;
+			return ins;
 		}
 
 	};

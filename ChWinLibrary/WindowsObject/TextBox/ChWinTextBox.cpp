@@ -8,12 +8,12 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 
 void ChWin::TextBox::Create(
-	const std::string&  _StartText
+	const std::string&  _startText
 	, const int _x
 	, const int _y
 	, const int _w
 	, const int _h
-	, const HWND _ParentHandl)
+	, const HWND _parentHandl)
 {
 
 	if (!IsInit())return;
@@ -23,10 +23,10 @@ void ChWin::TextBox::Create(
 	w = _w;
 	h = _h;
 	
-	HIns = CreateWindowEx(
+	hIns = CreateWindowEx(
 		WS_EX_CLIENTEDGE,
 		"EDIT",
-		_StartText.c_str(),
+		_startText.c_str(),
 		WS_VISIBLE
 		| WS_CHILD
 		| WS_BORDER
@@ -36,14 +36,14 @@ void ChWin::TextBox::Create(
 		_y,
 		_w,
 		_h,
-		_ParentHandl,
-		(HMENU)MyID,       
-		(HINSTANCE)GetWindowLong(HOwn, GWL_HINSTANCE),
+		_parentHandl,
+		(HMENU)myID,
+		(HINSTANCE)GetWindowLong(hOwn, GWL_HINSTANCE),
 		NULL);
 
 	
 	//RegisterObj();
-	SetWindowLong(HIns, GWLP_USERDATA, (long)this);
+	SetWindowLong(hIns, GWLP_USERDATA, (long)this);
 
 }
 
@@ -53,12 +53,12 @@ std::string ChWin::TextBox::GetText()
 {
 	std::string Text = "";
 
-	if (SelectFlg)return Text;
-	char Tmp[1500] = "\0";
+	if (selectFlg)return Text;
+	char tmp[1500] = "\0";
 
-	SendMessage(HIns, WM_GETTEXT, (WPARAM)1500, (LPARAM)Tmp);
+	SendMessage(hIns, WM_GETTEXT, (WPARAM)1500, (LPARAM)tmp);
 
-	Text = Tmp;
+	Text = tmp;
 
 	return Text;
 
@@ -66,21 +66,21 @@ std::string ChWin::TextBox::GetText()
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChWin::TextBox::SetText(const std::string& _Text)
+void ChWin::TextBox::SetText(const std::string& _text)
 {
 
-	if (SelectFlg)return;
-	SendMessage(HIns, WM_SETTEXT, (WPARAM)_Text.size(), (LPARAM)_Text.c_str());
+	if (selectFlg)return;
+	SendMessage(hIns, WM_SETTEXT, (WPARAM)_text.size(), (LPARAM)_text.c_str());
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChWin::TextBox::SetCharLimit(const unsigned long _Size)
+void ChWin::TextBox::SetCharLimit(const unsigned long _size)
 {
-	if (SelectFlg)return;
-	SendMessage(HIns, EM_SETLIMITTEXT, (WPARAM)_Size, NULL);
-	CharLimit = _Size;
+	if (selectFlg)return;
+	SendMessage(hIns, EM_SETLIMITTEXT, (WPARAM)_size, NULL);
+	charLimit = _size;
 
 }
 
@@ -91,10 +91,10 @@ void ChWin::TextBox::Update(const WPARAM& _wParam)
 	switch (HIWORD(_wParam))
 	{
 	case EN_KILLFOCUS:
-		SelectFlg = false;
+		selectFlg = false;
 		break;
 	case EN_SETFOCUS:
-		SelectFlg = true;
+		selectFlg = true;
 		break;
 	default:
 		//SendMessage(HIns, WM_PAINT, NULL, NULL);

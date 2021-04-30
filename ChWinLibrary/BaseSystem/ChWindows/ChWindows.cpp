@@ -16,7 +16,7 @@ using namespace ChSystem;
 namespace ChWin
 {
 
-	static const std::map<int, std::string>WindowsKeyName
+	static const std::map<int, std::string>windowsKeyName
 	{
 		{(int)'\0',"None" },{(int)'A',"A Key"},{(int)'B',"B Key"}
 		,{(int)'C',"C Key"},{(int)'D',"D Key"},{(int)'E',"E Key"}
@@ -41,7 +41,7 @@ namespace ChWin
 
 	std::map<int, std::string> GetWindowsKeyName()
 	{
-		return WindowsKeyName;
+		return windowsKeyName;
 	}
 }
 
@@ -62,16 +62,16 @@ std::function<ChStd::Bool(
 ///////////////////////////////////////////////////////////////////////////////////////
 
 void Windows::Init(
-	const std::string& _APPName
-	, const std::string& _WindClassName
-	, const unsigned int _WindWidth
-	, const unsigned int _WindHeight
+	const std::string& _appName
+	, const std::string& _windClassName
+	, const unsigned int _windWidth
+	, const unsigned int _windHeight
 	, const HINSTANCE _hInst
 	, const int _nCmdShow)
 {
 
-	windSize.w = _WindWidth;
-	windSize.h = _WindHeight;
+	windSize.w = _windWidth;
+	windSize.h = _windHeight;
 
 	WNDCLASS wc;
 	wc.style = CS_HREDRAW | CS_VREDRAW;
@@ -83,23 +83,23 @@ void Windows::Init(
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
 	wc.lpszMenuName = (LPSTR)NULL;
-	wc.lpszClassName = _WindClassName.c_str();
+	wc.lpszClassName = _windClassName.c_str();
 	RegisterClass(&wc);
 
 	WinProcs = BaseWndProcs;
 
-	ClassName = wc.lpszClassName;
+	className = wc.lpszClassName;
 
 	hWnd = CreateWindow(
 		wc.lpszClassName
-		, _APPName.c_str()
+		, _appName.c_str()
 		, WS_OVERLAPPEDWINDOW
 		| WS_CLIPCHILDREN 
 		| WS_GROUP
 		, 10
 		, 10
-		, _WindWidth
-		, _WindHeight
+		, _windWidth
+		, _windHeight
 		, NULL
 		, NULL
 		, _hInst
@@ -123,7 +123,7 @@ void Windows::Release()
 {
 	SetInitFlg(false);
 	UnregisterClass(
-		ClassName.c_str()
+		className.c_str()
 		, (HINSTANCE)GetWindowLong(hWnd, GWL_HINSTANCE));
 }
 
@@ -167,13 +167,13 @@ ChStd::Bool Windows::IsPause(const int _Key)
 {
 	SetKeyCode();
 
-	ChStd::Bool TmpFlg;
-	TmpFlg = IsPushKey(_Key);
+	ChStd::Bool tmpFlg;
+	tmpFlg = IsPushKey(_Key);
 
-	if (TmpFlg && nowKey)return pauseFlg;
+	if (tmpFlg && nowKey)return pauseFlg;
 	nowKey = false;
 
-	if (!TmpFlg)return pauseFlg;
+	if (!tmpFlg)return pauseFlg;
 
 	pauseFlg = !pauseFlg;
 	nowKey = true;
@@ -184,16 +184,16 @@ ChStd::Bool Windows::IsPause(const int _Key)
 ///////////////////////////////////////////////////////////////////////////////////
 
 ChStd::Bool Windows::IsMessage(
-	const std::string& _MainStr
-	, const std::string& _SubStr)
+	const std::string& _mainStr
+	, const std::string& _subStr)
 {
 
  	if (ChPtr::NullCheck(hWnd))return true;
 
 	if (MessageBox(
 		hWnd
-		, &_MainStr[0]
-		, &_SubStr[0]
+		, &_mainStr[0]
+		, &_subStr[0]
 		, MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2)
 		== IDYES)return true;
 
@@ -207,7 +207,7 @@ ChStd::Bool Windows::IsUpdate()
 {
 	if (ChPtr::NullCheck(hWnd))return false;
 
-	IsKeyUpdate = false;
+	isKeyUpdate = false;
 	if (!PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE))return true;
 
 	if (!(GetMessage(&msg, NULL, 0, 0)))return false;
@@ -216,11 +216,11 @@ ChStd::Bool Windows::IsUpdate()
 	
 	{
 
-		RECT Tmp;
-		GetClientRect(hWnd, &Tmp);
+		RECT tmp;
+		GetClientRect(hWnd, &tmp);
 
-		windSize.w = Tmp.right - Tmp.left;
-		windSize.h = Tmp.bottom - Tmp.top;
+		windSize.w = tmp.right - tmp.left;
+		windSize.h = tmp.bottom - tmp.top;
 
 	}
 
@@ -232,19 +232,19 @@ ChStd::Bool Windows::IsUpdate()
 void Windows::SetKeyCode()
 {
 	if (!system->IsUseSystemButtons())return;
-	if (IsKeyUpdate)return;
-	unsigned char KeyCode[256];
-	int Tmp = GetKeyboardState(KeyCode);
+	if (isKeyUpdate)return;
+	unsigned char keyCode[256];
+	int tmp = GetKeyboardState(keyCode);
 	buttonList.SetAllDownFlg();
 
-	for (unsigned short i = 0; i < 256; i++)
+	for (unsigned char i = 0; i < 256; i++)
 	{
-		if (!(KeyCode[i] & ChStd::MAX_CHAR_BIT))continue;
+		if (!(keyCode[i] & ChStd::MAX_CHAR_BIT))continue;
 
 		buttonList.SetBitTrue((unsigned char)i);
 	}
 
-	IsKeyUpdate = true;
+	isKeyUpdate = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -258,11 +258,11 @@ LRESULT CALLBACK ChSystem::WndProc(
 
 	if (Windows::ImGuiProc)if (Windows::ImGuiProc(_hWnd, _uMsg, _wParam, _lParam))return true;
 
-	auto Base = SysManager().GetSystem<Windows>();
+	auto base = SysManager().GetSystem<Windows>();
 
-	if (Base)
+	if (base)
 	{
-		Base->WinProcs(_hWnd, _uMsg, _wParam, _lParam);
+		base->WinProcs(_hWnd, _uMsg, _wParam, _lParam);
 	}
 	else
 	{
@@ -302,20 +302,20 @@ ChStd::Bool BaseWndProcs(
 
 	{
 
-		POINTS Tmp;
-		Tmp.y = 0;
-		Tmp.x = GET_WHEEL_DELTA_WPARAM(_wParam);
-		ChWin::Mouse().WheelUpdate(Tmp);
+		POINTS tmp;
+		tmp.y = 0;
+		tmp.x = GET_WHEEL_DELTA_WPARAM(_wParam);
+		ChWin::Mouse().WheelUpdate(tmp);
 
 	}
 	break;
 
 	case WM_MOUSEHWHEEL:
 	{
-		POINTS Tmp;
-		Tmp.x = 0;
-		Tmp.y = GET_WHEEL_DELTA_WPARAM(_wParam);
-		ChWin::Mouse().WheelUpdate(Tmp);
+		POINTS tmp;
+		tmp.x = 0;
+		tmp.y = GET_WHEEL_DELTA_WPARAM(_wParam);
+		ChWin::Mouse().WheelUpdate(tmp);
 
 	}
 	break;
