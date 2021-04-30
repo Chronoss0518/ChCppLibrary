@@ -20,10 +20,10 @@
 //ChTextureComponent9ƒƒ\ƒbƒh
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChTextureComponent9::SetTexture(const std::string& _TextureName)
+void ChTextureComponent9::SetTexture(const std::string& _textureName)
 {
-	Texture = ChTex::BaseTexture9::TextureType(_TextureName);
-	Texture->CreateTexture(_TextureName, ChD3D9::D3D9Device());
+	texture = ChTex::BaseTexture9::TextureType(_textureName);
+	texture->CreateTexture(_textureName, ChD3D9::D3D9Device());
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -32,11 +32,11 @@ void ChTextureComponent9::SetTexture(const std::string& _TextureName)
 
 void ChSpriteTextureComponent9::Draw2D()
 {
-	if (Texture == nullptr)return;
+	if (texture == nullptr)return;
 
 	for (unsigned char i = 0; i < 4; i++)
 	{
-		Ver.SpData[i].Pos.z = 0.0f;
+		ver.spData[i].pos.z = 0.0f;
 	}
 
 	ChMat_9 TmpMat;
@@ -53,7 +53,7 @@ void ChSpriteTextureComponent9::Draw2D()
 
 	//}
 
-	ChD3D9::Shader().DrawSprite(Texture, TmpMat,Ver);
+	ChD3D9::Shader().DrawSprite(texture, TmpMat,ver);
 
 }
 
@@ -63,7 +63,7 @@ void ChSpriteTextureComponent9::Draw2D()
 
 void ChPolygonTextureComponent9::Draw3D()
 {
-	if (Texture == nullptr)return;
+	if (texture == nullptr)return;
 
 	ChMat_9 TmpMat;
 
@@ -79,7 +79,7 @@ void ChPolygonTextureComponent9::Draw3D()
 
 	}
 
-	ChD3D9::Shader().DrawPolygonBoard(Texture, Ver, TmpMat);
+	ChD3D9::Shader().DrawPolygonBoard(texture, ver, TmpMat);
 
 
 }

@@ -15,48 +15,48 @@ using namespace ChD3D9;
 //ChFont9メソッド
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void DrawFont::Init(const LPDIRECT3DDEVICE9 _Dv)
+void DrawFont::Init(const LPDIRECT3DDEVICE9 _dv)
 {
-	FontType =  "MS ゴシック";
+	fontType =  "MS ゴシック";
 
-	Device = _Dv;
+	device = _dv;
 	D3DXCreateFont(
-		Device
-		, FontH
-		, FontW
+		device
+		, fontSize.h
+		, fontSize.w
 		, FW_REGULAR
 		, NULL
 		, false
 		, SHIFTJIS_CHARSET
 		, OUT_DEFAULT_PRECIS
-		, PROOF_QUALITY, FIXED_PITCH | FF_MODERN, FontType.c_str(), &LpFont);
+		, PROOF_QUALITY, FIXED_PITCH | FF_MODERN, fontType.c_str(), &lpFont);
 
 	SetInitFlg(true);
 }
 
 void DrawFont::Release()
 {
-	if (ChPtr::NullCheck(LpFont))return;
-	LpFont->Release();
-	LpFont = nullptr;
+	if (ChPtr::NullCheck(lpFont))return;
+	lpFont->Release();
+	lpFont = nullptr;
 
 	SetInitFlg(false);
 }
 
 void DrawFont::Draw(
-	std::string _DrawStr
+	std::string _drawStr
 	, const long _x
 	, const long _y
-	, ChVec4 _Col)
+	, ChVec4 _col)
 {
 
 	auto col = D3DCOLOR_ARGB(
-		static_cast<unsigned char>(_Col.a * 255),
-		static_cast<unsigned char>(_Col.r * 255),
-		static_cast<unsigned char>(_Col.g * 255),
-		static_cast<unsigned char>(_Col.b * 255));
+		static_cast<unsigned char>(_col.a * 255),
+		static_cast<unsigned char>(_col.r * 255),
+		static_cast<unsigned char>(_col.g * 255),
+		static_cast<unsigned char>(_col.b * 255));
 
-	RECT rc = { _x, _y,_x + FontW, _y + FontH };
-	LpFont->DrawText(NULL, _DrawStr.c_str(), _DrawStr.length(), &rc, DT_LEFT | DT_NOCLIP
+	RECT rc = { _x, _y,_x + fontSize.w, _y + fontSize.h };
+	lpFont->DrawText(NULL, _drawStr.c_str(), _drawStr.length(), &rc, DT_LEFT | DT_NOCLIP
 		, col);
 }

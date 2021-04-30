@@ -14,9 +14,9 @@
 
 using namespace ChMesh;
 
-MeshFace9 MeshList9::NFase;
+MeshFace9 MeshList9::nFace;
 
-std::vector<ChPtr::Shared<ChMaterial_9>> MeshList9::NMaterial;
+std::vector<ChPtr::Shared<ChMaterial_9>> MeshList9::nMaterial;
 
 ///////////////////////////////////////////////////////////////////////////////////////
 //ChMeshListメソッド
@@ -30,25 +30,25 @@ MeshList9::~MeshList9()
 ///////////////////////////////////////////////////////////////////////////////////
 
 void MeshList9::SetMesh(
-	const std::string& _MeshName
-	, const ChStd::DataNo _DataNum)
+	const std::string& _meshName
+	, const ChStd::DataNo _dataNum)
 {
-	if (MeshList.find(_DataNum) != MeshList.end())return;
+	if (meshList.find(_dataNum) != meshList.end())return;
 
-	if (_MeshName.length() <= 0)return;
+	if (_meshName.length() <= 0)return;
 
-	std::string TmpString = _MeshName;
-	std::string TmpPathName = "./";
-	if (DirectoryPath.length() > 0)
+	std::string tmpString = _meshName;
+	std::string tmpPathName = "./";
+	if (directoryPath.length() > 0)
 	{
-		TmpPathName = DirectoryPath + '/';
+		tmpPathName = directoryPath + '/';
 	}
 
-	auto TmpMesh = Mesh9::MeshType(_MeshName);
+	auto tmpMesh = Mesh9::MeshType(_meshName);
 
-	TmpMesh->CreateMesh(_MeshName, TmpPathName, Device);
+	tmpMesh->CreateMesh(_meshName, tmpPathName, device);
 
-	if (TmpMesh->Mesh == nullptr)
+	if (tmpMesh->mesh == nullptr)
 	{
 
 			//ChSystem::ErrerMessage("メッシュが読み込まれませんでした", "警告");
@@ -57,33 +57,33 @@ void MeshList9::SetMesh(
 	}
 
 
-	MeshList[_DataNum] = TmpMesh;
+	meshList[_dataNum] = tmpMesh;
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void MeshList9::SetSkinMesh(
-	const std::string& _MeshName
-	, const ChStd::DataNo _DataNum)
+	const std::string& _meshName
+	, const ChStd::DataNo _dataNum)
 {
 
-	if (MeshList.find(_DataNum) != MeshList.end())return;
+	if (meshList.find(_dataNum) != meshList.end())return;
 
-	if (_MeshName.length() <= 0)return;
+	if (_meshName.length() <= 0)return;
 
-	std::string TmpString = _MeshName;
-	std::string TmpPathName = "./";
-	if (DirectoryPath.length() > 0)
+	std::string tmpString = _meshName;
+	std::string tmpPathName = "./";
+	if (directoryPath.length() > 0)
 	{
-		TmpPathName = DirectoryPath + '/';
+		tmpPathName = directoryPath + '/';
 	}
 
-	auto TmpMesh = Mesh9::SkinMeshType(_MeshName);
+	auto tmpMesh = Mesh9::SkinMeshType(_meshName);
 
-	TmpMesh->CreateMesh(_MeshName, TmpPathName, Device);
+	tmpMesh->CreateMesh(_meshName, tmpPathName, device);
 
-	if (TmpMesh->InsMesh() == nullptr)
+	if (tmpMesh->InsMesh() == nullptr)
 	{
 
 			//ChSystem::ErrerMessage("メッシュが読み込まれませんでした", "警告");
@@ -92,90 +92,90 @@ void MeshList9::SetSkinMesh(
 	}
 
 	{
-		auto TmpSkinMesh = ChPtr::SharedSafeCast<ChMesh::SkinMesh9>(TmpMesh);
+		auto tmpSkinMesh = ChPtr::SharedSafeCast<ChMesh::SkinMesh9>(tmpMesh);
 
-		if (TmpSkinMesh->BoneList.size() <= 0)
+		if (tmpSkinMesh->boneList.size() <= 0)
 		{
 			//ChSystem::ErrerMessage("スキンメッシュではありません", "警告");
 
-			TmpMesh->Release();
+			tmpMesh->Release();
 			return;
 		}
 	}
-	MeshList[_DataNum] = TmpMesh;
+	meshList[_dataNum] = tmpMesh;
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChMeshList9::SetTexture(
-	const ChStd::DataNo _DataNum
-	, const unsigned long _TexNum
-	, const ChPtr::Shared<ChTex::Texture9> _Tex)
+	const ChStd::DataNo _dataNum
+	, const unsigned long _texNum
+	, const ChPtr::Shared<ChTex::Texture9> _tex)
 {
-	if (_Tex == nullptr)return;
-	if (MeshList.size() <= _DataNum)return;
+	if (_tex == nullptr)return;
+	if (meshList.size() <= _dataNum)return;
 
-	if (MeshList[_DataNum]->InsTex().size() <= _TexNum)return;
+	if (meshList[_dataNum]->InsTex().size() <= _texNum)return;
 
-	MeshList[_DataNum]->InsTex()[_TexNum] = nullptr;
+	meshList[_dataNum]->InsTex()[_texNum] = nullptr;
 
-	MeshList[_DataNum]->InsTex()[_TexNum] = _Tex;
+	meshList[_dataNum]->InsTex()[_texNum] = _tex;
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChMeshList9::SetAnimation(
-	const ChStd::DataNo _DataNum
-	, const std::string& _AniamtionName
-	, const std::string& _XFileName)
+	const ChStd::DataNo _dataNum
+	, const std::string& _aniamtionName
+	, const std::string& _xFileName)
 {
-	if (_DataNum >= MeshList.size())
+	if (_dataNum >= meshList.size())
 	{
 		//ChSystem::ErrerMessage("登録されていない数値です", "警告");
 
 		return;
 	}
 
-	auto SkinMesh = ChPtr::SharedSafeCast<SkinMesh9>(MeshList[_DataNum]);
+	auto skinMesh = ChPtr::SharedSafeCast<SkinMesh9>(meshList[_dataNum]);
 
-	if (SkinMesh == nullptr)
+	if (skinMesh == nullptr)
 	{
 		//ChSystem::ErrerMessage("スキンメッシュではありません", "警告");
 
 		return;
 	}
 
-	SkinMesh->SetAnimation(_AniamtionName, _XFileName);
+	skinMesh->SetAnimation(_aniamtionName, _xFileName);
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChMeshList9::SetAnimation(
-	const ChStd::DataNo _DataNum
-	, const std::string& _AniamtionName
-	, const std::map<std::string, ChPtr::Shared<ChAnimationObject9>>& _Animes)
+	const ChStd::DataNo _dataNum
+	, const std::string& _aniamtionName
+	, const std::map<std::string, ChPtr::Shared<ChAnimationObject9>>& _animes)
 {
 
-	if (_DataNum >= MeshList.size())
+	if (_dataNum >= meshList.size())
 	{
 		//ChSystem::ErrerMessage("登録されていない数値です", "警告");
 
 		return;
 	}
 
-	auto SkinMesh = ChPtr::SharedSafeCast<SkinMesh9>(MeshList[_DataNum]);
+	auto skinMesh = ChPtr::SharedSafeCast<SkinMesh9>(meshList[_dataNum]);
 
-	if (SkinMesh == nullptr)
+	if (skinMesh == nullptr)
 	{
 		//ChSystem::ErrerMessage("スキンメッシュではありません", "警告");
 
 		return;
 	}
 
-	SkinMesh->SetAnimation(_AniamtionName, _Animes);
+	skinMesh->SetAnimation(_aniamtionName, _animes);
 
 }
 
@@ -183,13 +183,13 @@ void ChMeshList9::SetAnimation(
 
 void ChMeshList9::DrawMesh(
 	const ChMat_9&_Mat
-	, const ChStd::DataNo _DataNum
-	, const long _SubNum)
+	, const ChStd::DataNo _dataNum
+	, const long _subNum)
 {
 
-	if (MeshList.size() <= _DataNum) return;
+	if (meshList.size() <= _dataNum) return;
 
-	MeshList[_DataNum]->Draw(_Mat, Device, _SubNum);
+	meshList[_dataNum]->Draw(_Mat, device, _subNum);
 
 
 }
@@ -197,41 +197,41 @@ void ChMeshList9::DrawMesh(
 ///////////////////////////////////////////////////////////////////////////////////
 
 std::vector<ChPtr::Shared<ChMaterial_9>>& ChMeshList9::GetMeshMaterials(
-	const ChStd::DataNo _DataNum)
+	const ChStd::DataNo _dataNum)
 {
-	static std::vector<ChPtr::Shared<ChMaterial_9>> TmpMateList;
+	static std::vector<ChPtr::Shared<ChMaterial_9>> tmpMateList;
 
-	if (MeshList.empty())return NMaterial;
-	if (MeshList.size() <= _DataNum)return NMaterial;
-	return MeshList[_DataNum]->InsMaterials();
+	if (meshList.empty())return nMaterial;
+	if (meshList.size() <= _dataNum)return nMaterial;
+	return meshList[_dataNum]->InsMaterials();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 MeshFace9 ChMeshList9::GetEasyFace(
-	const ChStd::DataNo _DataNum
-	, const unsigned long _FaseNum)
+	const ChStd::DataNo _dataNum
+	, const unsigned long _faceNum)
 {
-	MeshFace9 Face;
+	MeshFace9 face;
 
-	if (MeshList.size() <= _DataNum)return NFase;
+	if (meshList.size() <= _dataNum)return nFace;
 
-	if (MeshList[_DataNum]->InsFace().size() <= _FaseNum)return NFase;
+	if (meshList[_dataNum]->InsFace().size() <= _faceNum)return nFace;
 
-	Face = *MeshList[_DataNum]->InsFace()[_FaseNum];
+	face = *meshList[_dataNum]->InsFace()[_faceNum];
 
-	return Face;
+	return face;
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChMeshList9::CreateEasyFace(
-	const ChStd::DataNo _DataNum
+	const ChStd::DataNo _dataNum
 	, const unsigned short _BaseMatNum)
 {
 
-	if (MeshList.size() <= _DataNum)return;
+	if (meshList.size() <= _dataNum)return;
 
-	MeshList[_DataNum]->CreateEasyFaceList();
+	meshList[_dataNum]->CreateEasyFaceList();
 }

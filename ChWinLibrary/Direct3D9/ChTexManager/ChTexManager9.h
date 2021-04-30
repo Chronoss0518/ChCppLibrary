@@ -15,7 +15,7 @@ namespace ChTex
 		///////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
-		void Init(LPDIRECT3DDEVICE9 _Dv);
+		void Init(LPDIRECT3DDEVICE9 _dv);
 
 		void Release();
 
@@ -25,55 +25,55 @@ namespace ChTex
 		//テクスチャを登録する//
 		//第二引数に登録するテクスチャをわかりやすくするための名前を入れる//
 		void SetTexture(
-			const std::string& _TextureName
-			, const std::string& _DataName
-			, const std::string& _UsePathName
-			, const unsigned int _GameReSizeWidth
-			, const unsigned int _GameReSizeHeight
-			, const D3DCOLOR& _ColorKey = D3DCOLOR_ARGB(255,255,255,255)
+			const std::string& _textureName
+			, const std::string& _dataName
+			, const std::string& _usePathName
+			, const unsigned int _gameReSizeWidth
+			, const unsigned int _gameReSizeHeight
+			, const D3DCOLOR& _colorKey = D3DCOLOR_ARGB(255,255,255,255)
 		);
 
 		//基本色の設定//
 		void SetBlendColor(
-			const ChVec4& _Color
-			, const std::string _DataName);
+			const ChVec4& _color
+			, const std::string _dataName);
 
 		//画像の透明化設定//
 		void SetBlendAlpha(
 			const unsigned char _a
-			, std::string _DataName);
+			, std::string _dataName);
 
 		//決めた色でTextureの作成//
 		void SetColorTex(
-			const unsigned long& _Color
-			, const std::string& _DataName
-			, const unsigned int _GameReSizeWidth
-			, const unsigned int _GameReSizeHeight
-			, const unsigned long _Type = 0);
+			const unsigned long& _color
+			, const std::string& _dataName
+			, const unsigned int _gameReSizeWidth
+			, const unsigned int _gameReSizeHeight
+			, const unsigned long _type = 0);
 
 		//利用するテクスチャの入っているディレクトリを設定する//
 		//SetTextureを呼ぶ前にこの関数を呼ぶ//
 		void SetDirectoryPath(
-			std::string _DirectoryPath
-			, const std::string _UseDirectoryPashName);
+			std::string _directoryPath
+			, const std::string _useDirectoryPashName);
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
 		//登録してあるテクスチャを取得する//
 		inline ChPtr::Shared<Texture9> GetTexture(
-			const std::string _DataName)
+			const std::string _dataName)
 		{
-			if (TexList.empty())return nullptr;
-			if (TexList.find(_DataName) == TexList.end())return nullptr;
-			return TexList[_DataName];
+			if (texList.empty())return nullptr;
+			if (texList.find(_dataName) == texList.end())return nullptr;
+			return texList[_dataName];
 		}
 
 		//登録してあるディレクトリパスの数を取得//
-		inline size_t GetPathCnt() { return PathList.size(); }
+		inline size_t GetPathCnt() { return pathList.size(); }
 
 		//登録してあるテクスチャの数を取得//
-		inline size_t GetTexCnt() { return TexList.size(); }
+		inline size_t GetTexCnt() { return texList.size(); }
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
@@ -82,11 +82,11 @@ namespace ChTex
 
 	private:
 
-		std::map<std::string, ChPtr::Shared<BaseTexture9>>TexList;
+		std::map<std::string, ChPtr::Shared<BaseTexture9>>texList;
 
-		std::map<std::string, ChPtr::Shared<std::string>> PathList;
+		std::map<std::string, ChPtr::Shared<std::string>> pathList;
 
-		LPDIRECT3DDEVICE9 Device;
+		LPDIRECT3DDEVICE9 device;
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//ConstructerDestructer//
@@ -99,8 +99,8 @@ namespace ChTex
 
 		static TextureManager9& GetInstance()
 		{
-			static TextureManager9 Ins;
-			return Ins;
+			static TextureManager9 ins;
+			return ins;
 		}
 
 	};

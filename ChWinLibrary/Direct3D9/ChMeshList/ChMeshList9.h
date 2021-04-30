@@ -19,16 +19,16 @@ namespace ChMesh
 	//メッシュの頂点データ//
 	struct MeshVertex9
 	{
-		ChVec3_9 Pos;
-		ChVec3_9 Normal;
-		D3DXVECTOR2 Tex;
+		ChVec3_9 pos;
+		ChVec3_9 normal;
+		D3DXVECTOR2 tex;
 	};
 
 	struct MeshFace9
 	{
-		unsigned long VertexNum[3];
-		ChVec3_9 Normal;
-		ChVec3_9 CenterPos;
+		unsigned long vertexNum[3];
+		ChVec3_9 normal;
+		ChVec3_9 centerPos;
 	};
 
 #endif
@@ -37,14 +37,14 @@ namespace ChMesh
 
 	//SmpXFile専用のenum classを作って、SetSmpXFileの第二引数に入れる。//
 	//以降第二引数に入れた数字を使ってSmpXFileを操作する。//
-	typedef class MeshList9:public ChCpp::ClassPerts::Initializer
+	typedef class MeshList9:public ChCpp::ClassPerts::Initializer,public ChCpp::ClassPerts::Releaser
 	{
 	public:
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//OperatorList//
 
-		MeshList9& operator =(const MeshList9& _XList)
+		MeshList9& operator =(const MeshList9& _xList)
 		{
 			return *this;
 		}
@@ -59,18 +59,18 @@ namespace ChMesh
 
 		//もし、XFileフォルダーなどを作っていない場合は第二引数に""を入れる。//
 		inline void Init(
-			const LPDIRECT3DDEVICE9 _Dv
-			, const std::string& _FileInDirectoryPath)
+			const LPDIRECT3DDEVICE9 _dv
+			, const std::string& _fileInDirectoryPath)
 		{
-			Device = _Dv;
-			DirectoryPath = _FileInDirectoryPath;
+			device = _dv;
+			directoryPath = _fileInDirectoryPath;
 			SetInitFlg(true);
 		}
 
-		inline void Release()
+		inline void Release()override
 		{
-			if (MeshList.empty())return;
-			MeshList.clear();
+			if (meshList.empty())return;
+			meshList.clear();
 			SetInitFlg(false);
 		}
 
@@ -79,90 +79,90 @@ namespace ChMesh
 
 		//Meshの登録(DataNameを使って3Dモデルを選択する)//
 		void SetMesh(
-			const std::string& _MeshName
-			, const ChStd::DataNo DataNum);
+			const std::string& _meshName
+			, const ChStd::DataNo _dataNum);
 
 		//※登録できるSkinMeshがまだ完成していない//
 		//SkinMeshの登録(DataNameを使って3Dモデルを選択する)//
 		void SetSkinMesh(
-			const std::string& _MeshName
-			, const ChStd::DataNo _DataNum);
+			const std::string& _meshName
+			, const ChStd::DataNo _dataNum);
 
 		//登録されているMeshの画像を一部変更//
 		void SetTexture(
-			const ChStd::DataNo _DataNum
-			, const unsigned long _TexNum
-			, const ChPtr::Shared<ChTex::Texture9> _Tex);
+			const ChStd::DataNo _dataNum
+			, const unsigned long _texNum
+			, const ChPtr::Shared<ChTex::Texture9> _tex);
 
 		//SkinMesh専用//
 		//XFileよりアニメーションを取得//
 		void SetAnimation(
-			const ChStd::DataNo _DataNum
-			, const std::string& _AniamtionName
-			, const std::string& _XFileName);
+			const ChStd::DataNo _dataNum
+			, const std::string& _aniamtionName
+			, const std::string& _xFileName);
 
 		//SkinMesh専用//
 		//外部で作成したアニメーションをセット//
 		void SetAnimation(
-			const ChStd::DataNo _DataNum
-			, const std::string& _AniamtionName
-			, const std::map<std::string, ChPtr::Shared<ChAnimationObject9>>& _Animes);
+			const ChStd::DataNo _dataNum
+			, const std::string& _aniamtionName
+			, const std::map<std::string, ChPtr::Shared<ChAnimationObject9>>& _animes);
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
 		//選択したMeshの選択した面のベースとなる法線//
 		MeshFace9 GetEasyFace(
-			const ChStd::DataNo _DataNum
-			, const unsigned long _FaseNum);
+			const ChStd::DataNo _dataNum
+			, const unsigned long _faseNum);
 
 		//登録されているMeshの数//
 		inline const ChStd::DataNo GetMeshSize()
 		{
-			return (ChStd::DataNo)MeshList.size();
+			return (ChStd::DataNo)meshList.size();
 		}
 
 		//登録されているMeshのマテリアルを取得//
 		std::vector<ChPtr::Shared<ChMaterial_9>>& GetMeshMaterials(
-			const ChStd::DataNo _DataNum);
+			const ChStd::DataNo _dataNum);
 
 		//描画時などに利用されるMeshを出力//
-		inline ChPtr::Shared<BaseMesh9> GetMesh(const ChStd::DataNo DataNum)
+		inline ChPtr::Shared<BaseMesh9> GetMesh(const ChStd::DataNo _dataNum)
 		{
-			if (MeshList.size() <= DataNum)return nullptr;
+			if (meshList.size() <= _dataNum)return nullptr;
 
-			return MeshList[DataNum];
+			return meshList[_dataNum];
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//この関数を呼ぶと各面に横滑りを行うための法線が生成される。
 		void CreateEasyFace(
-			const ChStd::DataNo _DataNum
-			, const unsigned short _BaseMatNum);
+			const ChStd::DataNo _dataNum
+			, const unsigned short _baseMatNum);
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//登録されているXFileをSubSetごとに描画する//
 		void DrawMesh(
-			const ChMat_9 &_Mat
-			, const ChStd::DataNo _DataNum
-			, const long _SubNum = -1);
+			const ChMat_9 &_mat
+			, const ChStd::DataNo _dataNum
+			, const long _subNum = -1);
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 	protected:
 
-		LPDIRECT3DDEVICE9 Device;
+		LPDIRECT3DDEVICE9 device;
 
-		std::string DirectoryPath;
+		std::string directoryPath;
 
 
-		static MeshFace9 NFase;
+		static MeshFace9 nFace;
 
-		static std::vector<ChPtr::Shared<ChMaterial_9>> NMaterial;
+		static std::vector<ChPtr::Shared<ChMaterial_9>> nMaterial;
 
-		std::map<ChStd::DataNo, ChPtr::Shared<BaseMesh9>>MeshList;
+		std::map<ChStd::DataNo, ChPtr::Shared<BaseMesh9>>meshList;
 
 	}ChMeshList9;
 

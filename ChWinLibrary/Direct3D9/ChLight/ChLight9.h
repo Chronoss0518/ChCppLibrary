@@ -13,43 +13,43 @@ public:
 	///////////////////////////////////////////////////////////////////////////////////
 	//ConstructerDestRucter//
 
-	ChLight9(LPDIRECT3DDEVICE9 _Dv);
+	ChLight9(LPDIRECT3DDEVICE9 _dv);
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//SetFunction//
 
 	//Lightを使用するかしないかの設定//
-	void SetLight(bool Flg);
+	void SetLight(bool _flg);
 
 	//Lightの角度の設定//
-	void SetDir(const ChVec3_9& _Dir);
+	void SetDir(const ChVec3_9& _dir);
 
 	//Lightの角度の設定//
-	void SetPos(const D3DXVECTOR3 *_Pos);
+	void SetPos(const D3DXVECTOR3 *_pos);
 
 	//Lightの光源色のセット//
 	void SetLightDif(const float _a, const float _r, const float _g, const float _b);
 
 	//Lightの光沢効果のセット//
-	void SetLightSpe(bool _SpeFlg, const float _r, const float _g, const float _b);
+	void SetLightSpe(bool _speFlg, const float _r, const float _g, const float _b);
 
 	//Lightの光沢効果のセット//
-	void SetLightAmb(bool _AmbFlg, const float _r, const float _g, const float _b);
+	void SetLightAmb(bool _ambFlg, const float _r, const float _g, const float _b);
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//GetFunction//
 
-	const inline D3DLIGHT9* GetLight(void) { return &Light; }
+	const inline D3DLIGHT9* GetLight(void) { return &light; }
 
 	///////////////////////////////////////////////////////////////////////////////////
 
 private:
 
-	LPDIRECT3DDEVICE9 Device;
+	LPDIRECT3DDEVICE9 device;
 
 	void RegisterLight();
 
-	D3DLIGHT9 Light;
+	D3DLIGHT9 light;
 
 };
 

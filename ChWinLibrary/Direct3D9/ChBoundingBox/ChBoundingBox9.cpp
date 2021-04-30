@@ -18,96 +18,96 @@ using namespace ChMesh;
 ///////////////////////////////////////////////////////////////////////////////////
 
 
-void BoundingBox9::SetBBox(const ChPtr::Shared<Mesh9>& _Mesh)
+void BoundingBox9::SetBBox(const ChPtr::Shared<Mesh9>& _mesh)
 {
-	if (_Mesh == nullptr)return;
-	if(ChPtr::NullCheck(_Mesh->GetMesh()))return;
-	ChVec3_9 MaxVec;
-	ChVec3_9 MinVec;
+	if (_mesh == nullptr)return;
+	if(ChPtr::NullCheck(_mesh->GetMesh()))return;
+	ChVec3_9 maxVec;
+	ChVec3_9 minVec;
 
-	DWORD VertexNum = _Mesh->GetMesh()->GetNumVertices();
-	DWORD VSize = _Mesh->GetMesh()->GetNumBytesPerVertex();
-	BYTE *P;
+	DWORD vertexNum = _mesh->GetMesh()->GetNumVertices();
+	DWORD vSize = _mesh->GetMesh()->GetNumBytesPerVertex();
+	BYTE *p;
 
-	_Mesh->GetMesh()->LockVertexBuffer(D3DLOCK_READONLY, (LPVOID*)&P);
+	_mesh->GetMesh()->LockVertexBuffer(D3DLOCK_READONLY, (LPVOID*)&p);
 
-	D3DXComputeBoundingBox((D3DXVECTOR3*)P, VertexNum, VSize, &MinVec, &MaxVec);
+	D3DXComputeBoundingBox((D3DXVECTOR3*)p, vertexNum, vSize, &minVec, &maxVec);
 
-	_Mesh->GetMesh()->UnlockVertexBuffer();
+	_mesh->GetMesh()->UnlockVertexBuffer();
 
-	Main = MinVec;
+	main = minVec;
 
-	Depth = MaxVec - MinVec;
+	depth = maxVec - minVec;
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void BoundingBox9::SetBSphere(const ChPtr::Shared<Mesh9>& _Mesh)
+void BoundingBox9::SetBSphere(const ChPtr::Shared<Mesh9>& _mesh)
 {
-	if (_Mesh == nullptr)return;
-	if (ChPtr::NullCheck(_Mesh->GetMesh()))return;
+	if (_mesh == nullptr)return;
+	if (ChPtr::NullCheck(_mesh->GetMesh()))return;
 
-	DWORD VertexNum = _Mesh->GetMesh()->GetNumVertices();
-	DWORD VSize = _Mesh->GetMesh()->GetNumBytesPerVertex();
-	BYTE *P;
+	DWORD vertexNum = _mesh->GetMesh()->GetNumVertices();
+	DWORD vSize = _mesh->GetMesh()->GetNumBytesPerVertex();
+	BYTE *p;
 
-	_Mesh->GetMesh()->LockVertexBuffer(D3DLOCK_READONLY, (LPVOID*)&P);
+	_mesh->GetMesh()->LockVertexBuffer(D3DLOCK_READONLY, (LPVOID*)&p);
 
-	D3DXComputeBoundingSphere((D3DXVECTOR3*)P, VertexNum, VSize, &Main, &Radius);
+	D3DXComputeBoundingSphere((D3DXVECTOR3*)p, vertexNum, vSize, &main, &radius);
 
-	_Mesh->GetMesh()->UnlockVertexBuffer();
+	_mesh->GetMesh()->UnlockVertexBuffer();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 std::vector<ChPtr::Shared<ChVec3_9>> BoundingBox9::GetPosition()
 {
-	std::vector<ChPtr::Shared<ChVec3_9>> TmpPos;
-	if (Main == Depth)return TmpPos;
+	std::vector<ChPtr::Shared<ChVec3_9>> tmpPos;
+	if (main == depth)return tmpPos;
 
-	TmpPos.push_back(ChPtr::Make_S<ChVec3_9>(Main.x, Main.y, Main.z));
+	tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x, main.y, main.z));
 
-	TmpPos.push_back(ChPtr::Make_S<ChVec3_9>(Main.x + Depth.x, Main.y, Main.z));
+	tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x + depth.x, main.y, main.z));
 
-	TmpPos.push_back(ChPtr::Make_S<ChVec3_9>(Main.x, Main.y + Depth.y, Main.z));
+	tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x, main.y + depth.y, main.z));
 
-	TmpPos.push_back(ChPtr::Make_S<ChVec3_9>(Main.x, Main.y, Main.z + Depth.z));
+	tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x, main.y, main.z + depth.z));
 
-	TmpPos.push_back(ChPtr::Make_S<ChVec3_9>(Main.x + Depth.x, Main.y + Depth.y, Main.z));
+	tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x + depth.x, main.y + depth.y, main.z));
 
-	TmpPos.push_back(ChPtr::Make_S<ChVec3_9>(Main.x + Depth.x, Main.y, Main.z + Depth.z));
+	tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x + depth.x, main.y, main.z + depth.z));
 
-	TmpPos.push_back(ChPtr::Make_S<ChVec3_9>(Main.x, Main.y + Depth.y, Main.z + Depth.z));
+	tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x, main.y + depth.y, main.z + depth.z));
 
-	TmpPos.push_back(ChPtr::Make_S<ChVec3_9>(Main.x + Depth.x, Main.y + Depth.y, Main.z + Depth.z));
+	tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x + depth.x, main.y + depth.y, main.z + depth.z));
 
-	return TmpPos;
+	return tmpPos;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 ChStd::Bool BoundingBox9::IsHitToPos(
-	const ChMat_9* _Mat
-	, const ChVec3_9* _Pos)
+	const ChMat_9* _mat
+	, const ChVec3_9* _pos)
 {
 
-	ChVec3_9 PPos = *_Pos;
+	ChVec3_9 pPos = *_pos;
 
-	ChMat_9 TmpMat = *_Mat;
+	ChMat_9 tmpMat = *_mat;
 
-	TmpMat.Inverse();
+	tmpMat.Inverse();
 
-	PPos.MatPos(TmpMat, PPos);
+	pPos.MatPos(tmpMat, pPos);
 
-	if (!(Main.y < PPos.y
-		&& Main.y + Depth.y > PPos.y))return false;
+	if (!(main.y < pPos.y
+		&& main.y + depth.y > pPos.y))return false;
 
-	if (!(Main.x < PPos.x
-		&& Main.x + Depth.x > PPos.x))return false;
+	if (!(main.x < pPos.x
+		&& main.x + depth.x > pPos.x))return false;
 
-	if (!(Main.z < PPos.z
-		&& Main.z + Depth.z > PPos.z))return false;
+	if (!(main.z < pPos.z
+		&& main.z + depth.z > pPos.z))return false;
 
 	return true;
 }
@@ -115,35 +115,35 @@ ChStd::Bool BoundingBox9::IsHitToPos(
 ///////////////////////////////////////////////////////////////////////////////////
 
 ChStd::Bool BoundingBox9::IsHitToB_Box(
-	const ChMat_9* _Mat
-	, const ChB_Box9* _Pos)
+	const ChMat_9* _mat
+	, const ChB_Box9* _pos)
 {
 
-	const unsigned char BoxVertex = 8;
+	const unsigned char boxVertex = 8;
 
-	ChB_Box9 PBox = *_Pos;
+	ChB_Box9 pBox = *_pos;
 
-	ChMat_9 TmpMat = *_Mat;
+	ChMat_9 tmpMat = *_mat;
 
-	ChVec3_9 TmpPos;
+	ChVec3_9 tmpPos;
 
-	TmpPos = PBox.Main + PBox.Depth;
+	tmpPos = pBox.main + pBox.depth;
 
-	TmpMat.Inverse();
+	tmpMat.Inverse();
 
-	TmpPos.MatPos(TmpMat, TmpPos);
-	PBox.Main.MatPos(TmpMat, PBox.Main);
+	tmpPos.MatPos(tmpMat, tmpPos);
+	pBox.main.MatPos(tmpMat, pBox.main);
 
-	for (unsigned char i = 0; i < BoxVertex; i++)
+	for (unsigned char i = 0; i < boxVertex; i++)
 	{
-		if (!(Main.y < TmpPos.y + PBox.Main.y
-			&& Main.y + Depth.y > TmpPos.y))continue;
+		if (!(main.y < tmpPos.y + pBox.main.y
+			&& main.y + depth.y > tmpPos.y))continue;
 
-		if (!(Main.x < TmpPos.x + PBox.Main.x
-			&& Main.x + Depth.x > TmpPos.x))continue;
+		if (!(main.x < tmpPos.x + pBox.main.x
+			&& main.x + depth.x > tmpPos.x))continue;
 
-		if (!(Main.z < TmpPos.z + PBox.Main.z
-			&& Main.z + Depth.z > TmpPos.z))continue;
+		if (!(main.z < tmpPos.z + pBox.main.z
+			&& main.z + depth.z > tmpPos.z))continue;
 
 		return true;
 	}
@@ -154,31 +154,31 @@ ChStd::Bool BoundingBox9::IsHitToB_Box(
 ///////////////////////////////////////////////////////////////////////////////////
 
 ChStd::Bool BoundingBox9::IsHitToBull(
-	const ChMat_9* _Mat
-	, const ChVec3_9* _Pos
-	, const float _R)
+	const ChMat_9* _mat
+	, const ChVec3_9* _pos
+	, const float _r)
 {
 
-	ChMat_9 TmpMat = *_Mat;
-	ChVec3_9 TmpPos = *_Pos;
-	ChVec3_9 TmpVec;
+	ChMat_9 tmpMat = *_mat;
+	ChVec3_9 tmpPos = *_pos;
+	ChVec3_9 tmpVec;
 
-	TmpMat.Inverse();
+	tmpMat.Inverse();
 
-	TmpPos.MatPos(TmpMat, TmpPos);
-	TmpVec = TmpPos;
+	tmpPos.MatPos(tmpMat, tmpPos);
+	tmpVec = tmpPos;
 
-	TmpVec.Normalize();
-	TmpVec *= _R;
+	tmpVec.Normalize();
+	tmpVec *= _r;
 
-	if (!(Main.y < TmpPos.y + TmpVec.y
-		&& Main.y + Depth.y > TmpPos.y - TmpVec.y))return false;
+	if (!(main.y < tmpPos.y + tmpVec.y
+		&& main.y + depth.y > tmpPos.y - tmpVec.y))return false;
 
-	if (!(Main.x < TmpPos.x + TmpVec.x
-		&& Main.x + Depth.x > TmpPos.x - TmpVec.x))return false;
+	if (!(main.x < tmpPos.x + tmpVec.x
+		&& main.x + depth.x > tmpPos.x - tmpVec.x))return false;
 
-	if (!(Main.z < TmpPos.z + TmpVec.z
-		&& Main.z + Depth.z > TmpPos.z - TmpVec.z))return false;
+	if (!(main.z < tmpPos.z + tmpVec.z
+		&& main.z + depth.z > tmpPos.z - tmpVec.z))return false;
 
 	return true;
 

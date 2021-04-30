@@ -10,128 +10,128 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 
 D3DXMATRIX ChD3D9::CameraController::MakeViewMatrix(
-	const ChD3D9::CamObj& _Cam)
+	const ChD3D9::CamObj& _cal)
 {
-	ChMat_9 TmpMat;
+	ChMat_9 tmpMat;
 
-	ChVec3_9 TmpHead = _Cam.Head;
+	ChVec3_9 tmpHead = _cal.head;
 
-	TmpHead.Normalize();
+	tmpHead.Normalize();
 
 	// 視点行列の設定
 	D3DXMatrixLookAtLH(
-		&TmpMat,
-		&_Cam.Pos,	// カメラの位置
-		&_Cam.Look,	// カメラの視点
-		&TmpHead	// カメラの頭の方向
+		&tmpMat,
+		&_cal.pos,	// カメラの位置
+		&_cal.look,	// カメラの視点
+		&tmpHead	// カメラの頭の方向
 	);
 
-	LastCamData = _Cam;
+	lastCamData = _cal;
 
-	ViewMat = TmpMat;
+	viewMat = tmpMat;
 
-	return TmpMat;
+	return tmpMat;
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 D3DXMATRIX ChD3D9::CameraController::MakeViewMatrix(
-	const D3DXVECTOR3& _CamPos
-	, const D3DXVECTOR3& _CamLook
-	, const D3DXVECTOR3& _CamHead)
+	const D3DXVECTOR3& _calPos
+	, const D3DXVECTOR3& _calLook
+	, const D3DXVECTOR3& _calHead)
 {
 
-	ChMat_9 TmpMat;
-	ChVec3_9 TmpHead = _CamLook - _CamPos;
+	ChMat_9 tmpMat;
+	ChVec3_9 tmpHead = _calLook - _calPos;
 
-	if(D3DXVec3Length(&_CamHead) == 0.0f){
+	if(D3DXVec3Length(&_calHead) == 0.0f){
 
-		TmpHead.Normalize();
+		tmpHead.Normalize();
 
-		ChQua_9 TmpQua;
+		ChQua_9 tmpQua;
 
-		TmpQua = TmpHead;
+		tmpQua = tmpHead;
 
-		TmpMat = TmpQua;
+		tmpMat = tmpQua;
 
-		TmpHead.MatNormal(TmpMat, ChVec3_9(0.0f, 1.0f, 0.0f));
+		tmpHead.MatNormal(tmpMat, ChVec3_9(0.0f, 1.0f, 0.0f));
 
 	}
 	else
 	{
-		TmpHead = _CamHead;
+		tmpHead = _calHead;
 	}
 
 
 	// 視点行列の設定
 	D3DXMatrixLookAtLH(
-		&TmpMat,
-		&_CamPos,	// カメラの位置
-		&_CamLook,	// カメラの視点
-		&TmpHead	// カメラの頭の方向
+		&tmpMat,
+		&_calPos,	// カメラの位置
+		&_calLook,	// カメラの視点
+		&tmpHead	// カメラの頭の方向
 	);
 
-	ViewMat = TmpMat;
+	viewMat = tmpMat;
 
-	LastCamData.Pos = _CamPos;
-	LastCamData.Look = _CamLook;
-	LastCamData.Head = TmpHead;
+	lastCamData.pos = _calPos;
+	lastCamData.look = _calLook;
+	lastCamData.head = tmpHead;
 
-	return TmpMat;
+	return tmpMat;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 D3DXMATRIX ChD3D9::CameraController::MakeProjectionMatrix(
-	const ChD3D9::CamObj& _Cam
-	, const float _WindWidth
-	, const float _WindHeight
-	, const float _ViewAngDeg)
+	const ChD3D9::CamObj& _cal
+	, const float _windWidth
+	, const float _windHeight
+	, const float _viewAngDeg)
 {
-	ChMat_9 TmpMat;
+	ChMat_9 tmpMat;
 
 
 	// 投影行列の設定
 	D3DXMatrixPerspectiveFovLH(
-		&TmpMat
-		, D3DXToRadian(_ViewAngDeg)
-		, _WindWidth / _WindHeight
-		, _Cam.LMin, _Cam.LMax);
+		&tmpMat
+		, D3DXToRadian(_viewAngDeg)
+		, _windWidth / _windHeight
+		, _cal.lMin, _cal.lMax);
 
-	ProjectionMat = TmpMat;
+	projectionMat = tmpMat;
 
-	LastCamData = _Cam;
+	lastCamData = _cal;
 
-	return TmpMat;
+	return tmpMat;
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 D3DXMATRIX ChD3D9::CameraController::MakeProjectionMatrix(
-	const float _LookNear
-	, const float _LookDistant
-	, const float _WindWidth
-	, const float _WindHeight
-	, const float _ViewAngDeg)
+	const float _lookNear
+	, const float _lookDistant
+	, const float _windWidth
+	, const float _windHeight
+	, const float _viewAngDeg)
 {
 
-	ChMat_9 TmpMat;
+	ChMat_9 tmpMat;
 
 	// 投影行列の設定
 	D3DXMatrixPerspectiveFovLH(
-		&TmpMat
-		, D3DXToRadian(_ViewAngDeg)
-		, _WindWidth / _WindHeight
-		, _LookNear, _LookDistant);
+		&tmpMat
+		, D3DXToRadian(_viewAngDeg)
+		, _windWidth / _windHeight
+		, _lookNear, _lookDistant);
 
-	ProjectionMat = TmpMat;
+	projectionMat = tmpMat;
 
-	LastCamData.LMin = _LookNear;
-	LastCamData.LMax = _LookDistant;
+	lastCamData.lMin = _lookNear;
+	lastCamData.lMax = _lookDistant;
 
-	return TmpMat;
+	return tmpMat;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

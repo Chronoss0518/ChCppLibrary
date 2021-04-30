@@ -69,31 +69,32 @@ public:
 };
 
 //BGMクラス//
-typedef struct ChMainSound9
+typedef struct ChMainSound9 : public ChCpp::ClassPerts::Releaser
 {
-	LPDIRECTSOUNDBUFFER8 Sound;
-	LPDIRECTSOUND3DBUFFER8 DSound;
-	DWORD Hz;
-	long Vol;
+	LPDIRECTSOUNDBUFFER8 sound;
+	LPDIRECTSOUND3DBUFFER8 dSound;
+	DWORD hz;
+	long vol;
 
 	ChMainSound9& operator = (const ChMainSound9& _cm)
 	{
-		*Sound = *_cm.Sound;
-		*DSound = *_cm.DSound;
+		*sound = *_cm.sound;
+		*dSound = *_cm.dSound;
 		return *this;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
-	//ConstructerDestructer//
+	//InitAndRelease//
 
-	~ChMainSound9()
+	inline void Release()override
 	{
-		DWORD Flg;
-		if (ChPtr::NullCheck(Sound) && ChPtr::NullCheck(DSound))return;
-		Sound->GetStatus(&Flg);
-		if ((Flg & DSBSTATUS_PLAYING) != 0)Sound->Stop();
-		Sound->Release();
-		DSound->Release();
+
+		DWORD flg;
+		if (ChPtr::NullCheck(sound) && ChPtr::NullCheck(dSound))return;
+		sound->GetStatus(&flg);
+		if ((flg & DSBSTATUS_PLAYING) != 0)sound->Stop();
+		sound->Release();
+		dSound->Release();
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
@@ -103,33 +104,35 @@ typedef struct ChMainSound9
 ///////////////////////////////////////////////////////////////////////////////////
 
 //SEクラス//
-typedef struct ChSubSound9
+typedef struct ChSubSound9:public ChCpp::ClassPerts::Releaser
 {
 
-	LPDIRECTSOUNDBUFFER8 Sound;
-	LPDIRECTSOUND3DBUFFER8 DSound;
-	DWORD Hz;
-	long Vol;
+	LPDIRECTSOUNDBUFFER8 sound;
+	LPDIRECTSOUND3DBUFFER8 dSound;
+	DWORD hz;
+	long vol;
 
 	ChSubSound9& operator = (const ChSubSound9& _cm)
 	{
-		*Sound = *_cm.Sound;
-		*DSound = *_cm.DSound;
+		*sound = *_cm.sound;
+		*dSound = *_cm.dSound;
 		return *this;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
-	//ConstructerDestructer//
+	//InitAndRelease//
 
-	~ChSubSound9()
+	inline void Release()override
 	{
-		DWORD Flg;
-		if (ChPtr::NullCheck(Sound) && ChPtr::NullCheck(DSound))return;
-		Sound->GetStatus(&Flg);
-		if ((Flg & DSBSTATUS_PLAYING) != 0)Sound->Stop();
-		Sound->Release();
-		DSound->Release();
+
+		DWORD flg;
+		if (ChPtr::NullCheck(sound) && ChPtr::NullCheck(dSound))return;
+		sound->GetStatus(&flg);
+		if ((flg & DSBSTATUS_PLAYING) != 0)sound->Stop();
+		sound->Release();
+		dSound->Release();
 	}
+
 
 	///////////////////////////////////////////////////////////////////////////////////
 

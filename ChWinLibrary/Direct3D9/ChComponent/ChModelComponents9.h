@@ -6,20 +6,20 @@ typedef class ChModelComponent9 :public ChCpp::BaseComponent
 {
 public:
 
-	virtual void SetModel(const std::string& _ModelName);
+	virtual void SetModel(const std::string& _modelName);
 
-	inline ChPtr::Shared<ChMesh::BaseMesh9> InsModel() { return Model; }
+	inline ChPtr::Shared<ChMesh::BaseMesh9> InsModel() { return model; }
 
 	void Draw3D()override;
 
 protected:
 
-	ChPtr::Shared<ChMesh::BaseMesh9>Model = nullptr;
+	ChPtr::Shared<ChMesh::BaseMesh9>model = nullptr;
 
 	void DIvidePathToName(
-		std::string& _Path
-		, std::string& _Name
-		,const std::string& _FullPathName);
+		std::string& _path
+		, std::string& _name
+		,const std::string& _fullPathName);
 
 }ChModelCom9;
 
@@ -29,7 +29,7 @@ typedef class ChMModelComponent9 :public ChModelCom9
 {
 public:
 
-	void SetModel(const std::string& _ModelName)override;
+	void SetModel(const std::string& _modelName)override;
 
 protected:
 
@@ -41,7 +41,7 @@ typedef class ChSkinMeshModelComponent9 :public ChModelCom9
 {
 public:
 
-	void SetModel(const std::string& _ModelName)override;
+	void SetModel(const std::string& _modelName)override;
 
 	ChPtr::Shared<ChMesh::SkinMesh9> GetSkinModel();
 
@@ -57,7 +57,7 @@ typedef class ChMSkinMeshModelComponent9 :public ChSkModelCom9
 {
 public:
 
-	void SetModel(const std::string& _ModelName)override;
+	void SetModel(const std::string& _modelName)override;
 
 private:
 

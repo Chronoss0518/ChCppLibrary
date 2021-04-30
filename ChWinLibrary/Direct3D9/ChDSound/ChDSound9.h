@@ -21,7 +21,7 @@ struct ChSubSound9;
 
 //(改良必)//
 //大元のサウンドの名前とは別にストップ用のNoを持っておく//
-class ChDirectSound9 :public ChCpp::ClassPerts::Initializer
+class ChDirectSound9 :public ChCpp::ClassPerts::Initializer,public ChCpp::ClassPerts::Releaser
 {
 public:
 
@@ -31,60 +31,60 @@ public:
 	void Init(
 		HWND _hWnd);
 
-	void Release();
+	void Release()override;
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//SetFunction//
 
 	//リスナーの位置情報更新用//
-	void SetListenerPos(const ChVec3_9 *_Pos)
+	void SetListenerPos(const ChVec3_9 *_pos)
 	{
-		ListenerPos = (ChVec3_9*)_Pos;
+		listenerPos = (ChVec3_9*)_pos;
 	}
 
 	//使用するディレクトリのパスをセット//
 	void SetUseDirectory(
-		const std::string _SoundDirectoryName
-		, const std::string _UseSoundDirectory);
+		const std::string _soundDirectoryName
+		, const std::string _useSoundDirectory);
 
 	//先に登録してあるDirectoryを利用してBGMをセット//
 	void SetBGMSound(
-		const std::string _SoundName
-		, const std::string _SoundFilePath
-		, const std::string _UseSoundDirectory);
+		const std::string _soundName
+		, const std::string _soundFilePath
+		, const std::string _useSoundDirectory);
 
 	//先に登録してあるDirectoryを利用してSEをセット//
 	ChStd::DataNo SetSESound(
-		const std::string _SoundFilePath
-		, const std::string _UseSoundDirectory);
+		const std::string _soundFilePath
+		, const std::string _useSoundDirectory);
 
 	//セットされたBGMのHzを変更//
-	inline void SetHzForBGM(const std::string _SoundName
-		, const DWORD _Hz);
+	inline void SetHzForBGM(const std::string _soundName
+		, const DWORD _hz);
 
 	//セットされたBGMのVolumeを変更//
-	inline void SetVolumeForBGM(const std::string _SoundName
-		, const long _Volume);
+	inline void SetVolumeForBGM(const std::string _soundName
+		, const long _volume);
 
 	//セットされたBGMのHzを読み込んだ際のサイズに戻す//
-	inline void SetBaseHzForBGM(const std::string _SoundName);
+	inline void SetBaseHzForBGM(const std::string _soundName);
 
 	//セットされたBGMのVolumeを読み込んだ際のサイズに戻す//
-	inline void SetBaseVolumeForBGM(const std::string _SoundName);
+	inline void SetBaseVolumeForBGM(const std::string _soundName);
 
 	//セットされたSEのHzを変更//
-	inline void SetHzForSE(const ChStd::DataNo _SoundNo
-		, const DWORD _Hz);
+	inline void SetHzForSE(const ChStd::DataNo _soundNo
+		, const DWORD _hz);
 
 	//セットされたSEのVolumeを変更//
-	inline void SetVolumeForSE(const ChStd::DataNo _SoundNo
-		, const long _Volume);
+	inline void SetVolumeForSE(const ChStd::DataNo _soundNo
+		, const long _volume);
 
 	//セットされたSEのHzを読み込んだ際のサイズに戻す//
-	inline void SetBaseHzForSE(const ChStd::DataNo _SoundNo);
+	inline void SetBaseHzForSE(const ChStd::DataNo _soundNo);
 
 	//セットされたSEのVolumeを読み込んだ際のサイズに戻す//
-	inline void SetBaseVolumeForSE(const ChStd::DataNo _SoundNo);
+	inline void SetBaseVolumeForSE(const ChStd::DataNo _soundNo);
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//UpdateFunction//
@@ -100,7 +100,7 @@ public:
 	///////////////////////////////////////////////////////////////////////////////////
 
 	//登録時に保持した数値でSEデータを解放する//
-	void ClearSE(const ChStd::DataNo _SoundNo);
+	void ClearSE(const ChStd::DataNo _soundNo);
 
 	///////////////////////////////////////////////////////////////////////////////////
 
@@ -110,18 +110,18 @@ public:
 	///////////////////////////////////////////////////////////////////////////////////
 
 	//セットされたBGMを再生//
-	void PlayBGM(const std::string _SoundName);
+	void PlayBGM(const std::string _soundName);
 
 	///////////////////////////////////////////////////////////////////////////////////
 
 	//登録時に保持した数値でSEを再生する//
-	void PlaySE(const ChStd::DataNo _SoundNo);
+	void PlaySE(const ChStd::DataNo _soundNo);
 
 	//直接SEを再生する(Updateメソッドを設置する必要がある)//
 	void PlaySE(
-		const std::string _SoundName
-		, const std::string _UseSoundDirectory
-		, const ChVec3_9* _SoundPos);
+		const std::string _soundName
+		, const std::string _useSoundDirectory
+		, const ChVec3_9* _soundPos);
 
 	///////////////////////////////////////////////////////////////////////////////////
 
@@ -131,31 +131,31 @@ public:
 	///////////////////////////////////////////////////////////////////////////////////
 
 	//登録時に保持した数値でSEを止める//
-	void StopSE(const ChStd::DataNo _SoundNo);
+	void StopSE(const ChStd::DataNo _soundNo);
 
 	///////////////////////////////////////////////////////////////////////////////////
 
 protected:
 
 	//UserData//
-	std::map<std::string, std::string> DirectoryPathList;
+	std::map<std::string, std::string> directoryPathList;
 	
 	LPDIRECTSOUND3DLISTENER8 lpSListener;//リスナー(聞く人)//
-	LPDIRECTSOUNDBUFFER Primary;
-	LPDIRECTSOUND8 LpDS;
-	ChVec3_9* ListenerPos;
-	const float ListenerBaseLen = 0.3f;
+	LPDIRECTSOUNDBUFFER primary;
+	LPDIRECTSOUND8 lpDS;
+	ChVec3_9* listenerPos;
+	const float listenerBaseLen = 0.3f;
 
-	const ChStd::DataNo MaxSE = 10000;
+	const ChStd::DataNo maxSE = 10000;
 
-	ChStd::DataNo SENo = 1;
+	ChStd::DataNo seNo = 1;
 	
-	std::map<std::string, ChPtr::Shared<ChMainSound9>>MainSoundList;
-	std::map<ChStd::DataNo, ChPtr::Shared<ChSubSound9>>SubSoundList;
+	std::map<std::string, ChPtr::Shared<ChMainSound9>>mainSoundList;
+	std::map<ChStd::DataNo, ChPtr::Shared<ChSubSound9>>subSoundList;
 
-	std::vector<ChPtr::Shared<ChSubSound9>>PlaySubSoundList;
+	std::vector<ChPtr::Shared<ChSubSound9>>playSubSoundList;
 
-	std::string MainSoundName = "";
+	std::string mainSoundName = "";
 
 	///////////////////////////////////////////////////////////////////////////////////
 
@@ -165,9 +165,9 @@ protected:
 
 	//音楽読み込み用関数//
 	void LoadSound(
-		LPDIRECTSOUNDBUFFER8 &_LpSound
-		, LPDIRECTSOUND3DBUFFER8 &_Lp3DSound
-		, std::string _SoundFileName);
+		LPDIRECTSOUNDBUFFER8 &_lpSound
+		, LPDIRECTSOUND3DBUFFER8 &_lp3DSound
+		, std::string _soundFileName);
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//ConstructerDestructer//
@@ -180,8 +180,8 @@ protected:
 
 	static ChDirectSound9& GetIns()
 	{
-		static ChDirectSound9 Ins;
-		return Ins;
+		static ChDirectSound9 ins;
+		return ins;
 	}
 
 };

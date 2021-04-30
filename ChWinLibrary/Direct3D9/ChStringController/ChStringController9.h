@@ -20,37 +20,38 @@ namespace ChTex
 		//ConstructerDextructer//
 
 		StringController9(
-			const LPDIRECT3DDEVICE9 _Dv
-			, const std::string& _Path
-			, const std::string& _Type
-			, const unsigned short _OriginalWedth
-			, const unsigned short _OriginalHeight);
+			const LPDIRECT3DDEVICE9 _dv
+			, const std::string& _path
+			, const std::string& _type
+			, const unsigned short _originalWedth
+			, const unsigned short _originalHeight);
 
 		~StringController9() { SetInitFlg(false); };
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		void SetStringColor(const ChVec4& _Color);
+		void SetStringColor(const ChVec4& _color);
 
 		void SetStringAlpha(const unsigned char _a);
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		void DrawSprightString(
-			const std::string& _Str
-			, const ChMat_9& _Mat
-			, Sprite9 &_Sp);
+			const std::string& _str
+			, const ChMat_9& _mat
+			, Sprite9 &_sp);
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 	private:
-		std::string StrPath;
-		std::string TypeName;
-		unsigned short W;
-		unsigned short H;
-		ChPtr::Shared<Texture9> StrTex;
-		LPDIRECT3DDEVICE9 Device = nullptr;
+		std::string strPath;
+		std::string typeName;
+		
+		ChMath::Vector2Base<unsigned short>size;
+
+		ChPtr::Shared<Texture9> strTex;
+		LPDIRECT3DDEVICE9 device = nullptr;
 
 		///////////////////////////////////////////////////////////////////////////////////
 

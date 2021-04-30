@@ -14,17 +14,17 @@
 
 using namespace ChMesh;
 
-MeshFace9 MeshManager9::NFace;
+MeshFace9 MeshManager9::nFace;
 
-std::vector<ChPtr::Shared<ChMaterial_9>> MeshManager9::NMaterial;
+std::vector<ChPtr::Shared<ChMaterial_9>> MeshManager9::nMaterial;
 
 ///////////////////////////////////////////////////////////////////////////////////////
 //MeshManager9ÉÅÉ\ÉbÉh
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void MeshManager9::Init(const LPDIRECT3DDEVICE9 _Dev)
+void MeshManager9::Init(const LPDIRECT3DDEVICE9 _dev)
 {
-	Device = _Dev;
+	device = _dev;
 	SetInitFlg(true);
 }
 
@@ -32,10 +32,10 @@ void MeshManager9::Init(const LPDIRECT3DDEVICE9 _Dev)
 
 void MeshManager9::Release()
 {
-	if (!MeshList.empty())MeshList.clear();
-	if (!PathList.empty())PathList.clear();
-	if (MeshList.empty())return;
-	MeshList.clear();
+	if (!meshList.empty())meshList.clear();
+	if (!pathList.empty())pathList.clear();
+	if (meshList.empty())return;
+	meshList.clear();
 	SetInitFlg(false);
 }
 
@@ -47,30 +47,30 @@ void MeshManager9::SetMesh(
 	, const std::string& _UsePashName)
 {
 
-	if (MeshList.find(_DataName) != MeshList.end())return;
+	if (meshList.find(_DataName) != meshList.end())return;
 
 	if (_MeshName.length() <= 0)return;
 
-	std::string TmpString;
-	std::string TmpPathName = "./";
-	if (PathList.find(_UsePashName) != PathList.end())
+	std::string tmpString;
+	std::string tmpPathName = "./";
+	if (pathList.find(_UsePashName) != pathList.end())
 	{
-		TmpPathName = *PathList[_UsePashName] + '/';
+		tmpPathName = *pathList[_UsePashName] + '/';
 	}
 
-	auto TmpMesh = Mesh9::MeshType(_MeshName);
+	auto tmpMesh = Mesh9::MeshType(_MeshName);
 
-	TmpMesh->CreateMesh(_MeshName, TmpPathName, Device);
+	tmpMesh->CreateMesh(_MeshName, tmpPathName, device);
 
-	if (TmpMesh->InsMesh() == nullptr)
+	if (tmpMesh->InsMesh() == nullptr)
 	{
 		//ChSystem::ErrerMessage("ÉÅÉbÉVÉÖÇ™ì«Ç›çûÇ‹ÇÍÇ‹ÇπÇÒÇ≈ÇµÇΩ","åxçê");
 
-		TmpMesh = nullptr;
+		tmpMesh = nullptr;
 		return;
 	}
 
-	MeshList[_DataName] = TmpMesh;
+	meshList[_DataName] = tmpMesh;
 
 }
 
@@ -81,22 +81,22 @@ void MeshManager9::SetSkinMesh(const std::string& _MeshName
 	, const std::string& _UsePashName)
 {
 
-	if (MeshList.find(_DataName) != MeshList.end())return;
+	if (meshList.find(_DataName) != meshList.end())return;
 
 	if (_MeshName.length() <= 0)return;
 
-	std::string TmpString;
-	std::string TmpPathName = "./";
-	if (PathList.find(_UsePashName) != PathList.end())
+	std::string tmpString;
+	std::string tmpPathName = "./";
+	if (pathList.find(_UsePashName) != pathList.end())
 	{
-		TmpPathName = *PathList[_UsePashName] + '/';
+		tmpPathName = *pathList[_UsePashName] + '/';
 	}
 
-	auto TmpMesh = Mesh9::SkinMeshType(_MeshName);
+	auto tmpMesh = Mesh9::SkinMeshType(_MeshName);
 
-	TmpMesh->CreateMesh(_MeshName, TmpPathName, Device);
+	tmpMesh->CreateMesh(_MeshName, tmpPathName, device);
 
-	if (TmpMesh->InsMesh() == nullptr)
+	if (tmpMesh->InsMesh() == nullptr)
 	{
 		//ChSystem::ErrerMessage("ÉÅÉbÉVÉÖÇ™ì«Ç›çûÇ‹ÇÍÇ‹ÇπÇÒÇ≈ÇµÇΩ", "åxçê");
 
@@ -104,19 +104,19 @@ void MeshManager9::SetSkinMesh(const std::string& _MeshName
 	}
 
 	{
-		auto TmpSkinMesh = ChPtr::SharedSafeCast<ChMesh::SkinMesh9>(TmpMesh);
+		auto tmpSkinMesh = ChPtr::SharedSafeCast<ChMesh::SkinMesh9>(tmpMesh);
 
-		if (TmpSkinMesh->BoneList.size() <= 0)
+		if (tmpSkinMesh->boneList.size() <= 0)
 		{
 			//ChSystem::ErrerMessage("ÉXÉLÉìÉÅÉbÉVÉÖÇ≈ÇÕÇ†ÇËÇ‹ÇπÇÒ", "åxçê");
 
-			TmpMesh->Release();
+			tmpMesh->Release();
 			return;
 		}
 	}
 
 
-	MeshList[_DataName] = TmpMesh;
+	meshList[_DataName] = tmpMesh;
 
 }
 
@@ -125,11 +125,11 @@ void MeshManager9::SetSkinMesh(const std::string& _MeshName
 void MeshManager9::SetDirectoryPath(const std::string& _DirectoryPath
 	, const std::string& _UseDirectoryPashName)
 {
-	if (PathList.find(_UseDirectoryPashName) != PathList.end())return;
+	if (pathList.find(_UseDirectoryPashName) != pathList.end())return;
 	if (_DirectoryPath.length() <= 0)return;
 
-	PathList.insert(std::pair<std::string, ChPtr::Shared<std::string>>(_UseDirectoryPashName, ChPtr::Make_S<std::string>()));
-	*PathList[_UseDirectoryPashName] = _DirectoryPath;
+	pathList.insert(std::pair<std::string, ChPtr::Shared<std::string>>(_UseDirectoryPashName, ChPtr::Make_S<std::string>()));
+	*pathList[_UseDirectoryPashName] = _DirectoryPath;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -140,13 +140,13 @@ void MeshManager9::SetTexture(
 	, const ChPtr::Shared<ChTex::Texture9> _Tex)
 {
 	if (_Tex == nullptr)return;
-	if (MeshList.find(_DataName) == MeshList.end())return;
+	if (meshList.find(_DataName) == meshList.end())return;
 
-	if (MeshList[_DataName]->InsTex().size() <= _TexNum)return;
+	if (meshList[_DataName]->InsTex().size() <= _TexNum)return;
 
-	MeshList[_DataName]->InsTex()[_TexNum] = nullptr;
+	meshList[_DataName]->InsTex()[_TexNum] = nullptr;
 
-	MeshList[_DataName]->InsTex()[_TexNum] = _Tex;
+	meshList[_DataName]->InsTex()[_TexNum] = _Tex;
 
 }
 
@@ -157,14 +157,14 @@ void MeshManager9::SetAnimation(
 	, const std::string& _AniamtionName
 	, const std::string& _XFileName)
 {
-	if (MeshList.find(_MeshName) == MeshList.end())
+	if (meshList.find(_MeshName) == meshList.end())
 	{
 		//ChSystem::ErrerMessage("ìoò^Ç≥ÇÍÇƒÇ¢Ç»Ç¢êîílÇ≈Ç∑", "åxçê");
 
 		return;
 	}
 
-	auto SkinMesh = ChPtr::SharedSafeCast<SkinMesh9>(MeshList[_MeshName]);
+	auto SkinMesh = ChPtr::SharedSafeCast<SkinMesh9>(meshList[_MeshName]);
 
 	if (SkinMesh == nullptr)
 	{
@@ -185,14 +185,14 @@ void MeshManager9::SetAnimation(
 	, const std::map<std::string, ChPtr::Shared<ChAnimationObject9>>& _Animes)
 {
 
-	if (MeshList.find(_MeshName) == MeshList.end())
+	if (meshList.find(_MeshName) == meshList.end())
 	{
 		//ChSystem::ErrerMessage("ìoò^Ç≥ÇÍÇƒÇ¢Ç»Ç¢êîílÇ≈Ç∑", "åxçê");
 
 		return;
 	}
 
-	auto SkinMesh = ChPtr::SharedSafeCast<SkinMesh9>(MeshList[_MeshName]);
+	auto SkinMesh = ChPtr::SharedSafeCast<SkinMesh9>(meshList[_MeshName]);
 
 	if (SkinMesh == nullptr)
 	{
@@ -220,14 +220,14 @@ void MeshManager9::SetAnimationTime(
 		return;
 	}
 
-	if (MeshList.find(_MeshName) == MeshList.end())
+	if (meshList.find(_MeshName) == meshList.end())
 	{
 		//ChSystem::ErrerMessage("ìoò^Ç≥ÇÍÇƒÇ¢Ç»Ç¢êîílÇ≈Ç∑", "åxçê");
 
 		return;
 	}
 
-	auto SkinMesh = ChPtr::SharedSafeCast<SkinMesh9>(MeshList[_MeshName]);
+	auto SkinMesh = ChPtr::SharedSafeCast<SkinMesh9>(meshList[_MeshName]);
 
 	if (SkinMesh == nullptr)
 	{
@@ -243,11 +243,11 @@ void MeshManager9::SetAnimationTime(
 
 void MeshManager9::ClearData(const std::string& _DataName)
 {
-	if (MeshList.empty())return;
+	if (meshList.empty())return;
 
-	if (MeshList.find(_DataName) == MeshList.end()) return;
+	if (meshList.find(_DataName) == meshList.end()) return;
 
-	MeshList.erase(_DataName);
+	meshList.erase(_DataName);
 
 	return;
 
@@ -261,9 +261,9 @@ void MeshManager9::DrawMesh(
 	, const long _SubNum)
 {
 
-	if (MeshList.find(_DataName) == MeshList.end())return;
-	MeshList[_DataName]->SetSkin();
-	MeshList[_DataName]->Draw(_Mat, Device, _SubNum);
+	if (meshList.find(_DataName) == meshList.end())return;
+	meshList[_DataName]->SetSkin();
+	meshList[_DataName]->Draw(_Mat, device, _SubNum);
 
 }
 
@@ -273,9 +273,9 @@ std::vector<ChPtr::Shared<ChMaterial_9>>& MeshManager9::GetMeshMaterials(
 	const std::string& _DataName)
 {
 
-	if (MeshList.empty())return NMaterial;
-	if (MeshList.find(_DataName) == MeshList.end())return NMaterial;
-	return MeshList[_DataName]->InsMaterials();
+	if (meshList.empty())return nMaterial;
+	if (meshList.find(_DataName) == meshList.end())return nMaterial;
+	return meshList[_DataName]->InsMaterials();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -284,12 +284,12 @@ MeshFace9 MeshManager9::GetEasyFace(
 	const std::string& _DataName
 	, const unsigned long _FaseNum)
 {
-	MeshFace9 Face;
+	MeshFace9 face;
 
-	if (MeshList.find(_DataName) == MeshList.end())return NFace;
-	if (MeshList[_DataName]->InsFace().size() <= _FaseNum)return NFace;
-	Face = *MeshList[_DataName]->InsFace()[_FaseNum];
-	return Face;
+	if (meshList.find(_DataName) == meshList.end())return nFace;
+	if (meshList[_DataName]->InsFace().size() <= _FaseNum)return nFace;
+	face = *meshList[_DataName]->InsFace()[_FaseNum];
+	return face;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -299,8 +299,8 @@ void MeshManager9::CreateEasyFace(
 	, const unsigned short _BaseMatNum)
 {
 
-	if (MeshList.find(_DataName) == MeshList.end())return;
+	if (meshList.find(_DataName) == meshList.end())return;
 
-	MeshList[_DataName]->CreateEasyFaceList();
+	meshList[_DataName]->CreateEasyFaceList();
 }
 

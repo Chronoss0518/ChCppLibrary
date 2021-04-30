@@ -18,14 +18,19 @@ namespace ChSound
 	typedef class BackGroundMusic8 BGM8;
 	typedef class SoundEffect8 SE8;
 
-	class SoundManager8:public ChCpp::ClassPerts::Initializer
+	class SoundManager8:public ChCpp::ClassPerts::Initializer,public ChCpp::ClassPerts::Releaser
 	{
 	public:
 
 		void Init(const HWND _hWin);
 
-		void Release()
+		inline void Release()override
 		{
+			if (ChPtr::NotNullCheck(soundDevice))
+			{
+				soundDevice->Release();
+				soundDevice = nullptr;
+			}
 			SetInitFlg(false);
 		}
 
@@ -35,19 +40,14 @@ namespace ChSound
 
 		SoundManager8(){}
 
-		~SoundManager8()
-		{
-			SoundDevice->Release();
-			SoundDevice = nullptr;
-		}
 
-		LPDIRECTSOUND8 SoundDevice = nullptr;
-		LPDIRECTSOUNDBUFFER8 MainBuffer = nullptr;
+		LPDIRECTSOUND8 soundDevice = nullptr;
+		LPDIRECTSOUNDBUFFER8 mainBuffer = nullptr;
 		LPDIRECTSOUND3DLISTENER8 lpSListener = nullptr;//リスナー(聞く人)//
 
-		std::map<std::string, ChPtr::Shared<BGM8>>MusicList;
+		std::map<std::string, ChPtr::Shared<BGM8>>musicList;
 
-		std::map<std::string, ChPtr::Shared<SE8>>SEList;
+		std::map<std::string, ChPtr::Shared<SE8>>seList;
 
 
 

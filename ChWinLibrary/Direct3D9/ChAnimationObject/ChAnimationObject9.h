@@ -4,74 +4,68 @@
 
 class ChAnimationSupporter9;
 
-typedef class ChAnimationObject9
+typedef class ChAnimationObject9:public ChCpp::ClassPerts::Releaser
 {
 public:
-	///////////////////////////////////////////////////////////////////////////////////////
-	//ConstructerDestructer//
-
-	ChAnimationObject9() {}
-
-	~ChAnimationObject9() { Release(); };
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	//InitAndRelease//
 
-	inline void Release()
+	inline void Release()override
 	{
-		AniList.clear();
+		aniList.clear();
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	//SetFunction//
 
 	void SetAnimationFunction(
-		const std::function<void()>& _Func
-		, const size_t _AniFrameNum);
+		const std::function<void()>& _func
+		, const size_t _aniFrameNum);
 
 	//現在の行列からアニメーションへ移行する//
-	void SetStartMat(const ChMat_9& _StartMat)
+	void SetStartMat(const ChMat_9& _startMat)
 	{
-		TmpStartMat = (ChMat_9*)&_StartMat;
+		tmpStartMat = (ChMat_9*)&_startMat;
 	}
 
-	void SetOneFrameTime(const float _FTime)
+	void SetOneFrameTime(const float _fps)
 	{
-		OneFrameTime = 1.0f / _FTime;
+		oneFrameTime = 1.0f / _fps;
 	}
 
 	void SetAniObject(
-		const ChVec3_9& _Pos
-		, const ChVec3_9& _Sca
-		, const ChQua_9& _Rot);
+		const ChVec3_9& _pos
+		, const ChVec3_9& _sca
+		, const ChQua_9& _rot);
 
-	void SetAniObject(const ChMat_9& _Mat);
+	void SetAniObject(const ChMat_9& _mat);
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	//GetFunction//
 
-	size_t GetAniCnt() { return AniList.size(); }
+	size_t GetAniCnt() { return aniList.size(); }
 
 	//現在の初期行列//
 	ChMat_9 GetNowStartMat()
 	{
-		ChMat_9 TmpAni;
-		if (NowFrame >= AniList.size())TmpAni;
-		TmpAni.Scaling(AniList[NowFrame]->Sca);
-		TmpAni *= AniList[NowFrame]->Rot;
-		TmpAni = AniList[NowFrame]->Pos;
-		return TmpAni;
+		ChMat_9 tmpAni;
+		if (nowFrame >= aniList.size())tmpAni;
+		tmpAni.Scaling(aniList[nowFrame]->sca);
+		tmpAni *= aniList[nowFrame]->rot;
+		tmpAni = aniList[nowFrame]->pos;
+		return tmpAni;
 	}
 
 	//最初期行列//
 	ChMat_9 GetFirstMat()
 	{
-		ChMat_9 TmpAni;
-		if (NowFrame >= AniList.size())TmpAni;
-		TmpAni.Scaling(AniList[0]->Sca);
-		TmpAni *= AniList[0]->Rot;
-		TmpAni = AniList[0]->Pos;
-		return TmpAni;
+		ChMat_9 tmpAni;
+		if (nowFrame >= aniList.size())tmpAni;
+		tmpAni.Scaling(aniList[0]->sca);
+		tmpAni *= aniList[0]->rot;
+		tmpAni = aniList[0]->pos;
+		return tmpAni;
 	}
 
 
@@ -83,35 +77,35 @@ public:
 
 	///////////////////////////////////////////////////////////////////////////////////////
 
-	void Play(const size_t _StartFrame = -1)
+	void Play(const size_t _startFrame = -1)
 	{
-		if (AniList.size() < 2)return;
+		if (aniList.size() < 2)return;
 
-		if (NowFrame + 1 >= AniList.size())
+		if (nowFrame + 1 >= aniList.size())
 		{
-			NowFrame = 0;
-			if (_StartFrame >= 0
-				&& _StartFrame + 1 < AniList.size())NowFrame = _StartFrame;
+			nowFrame = 0;
+			if (_startFrame >= 0
+				&& _startFrame + 1 < aniList.size())nowFrame = _startFrame;
 		}
 
-		NowTime = 0.0f;
-		AniPlayFlg = true;
+		nowTime = 0.0f;
+		aniPlayFlg = true;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
 
 	void Pause()
 	{
-		AniPlayFlg = false;
+		aniPlayFlg = false;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
 
 	void Stop()
 	{
-		AniPlayFlg = false;
-		NowTime = 0.0f;
-		NowFrame = 0;
+		aniPlayFlg = false;
+		nowTime = 0.0f;
+		nowFrame = 0;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -124,23 +118,23 @@ private:
 	{
 		AniObject()
 		{
-			Sca = 1.0f;
+			sca = 1.0f;
 		}
 
-		void Lerp(const AniObject _SAni, const AniObject _EAni,const float NowTime)
+		void Lerp(const AniObject _sAni, const AniObject _eAni,const float nowTime)
 		{
-			Pos.Lerp(_SAni.Pos, _EAni.Pos, NowTime);
+			pos.Lerp(_sAni.pos, _eAni.pos, nowTime);
 
-			Sca.Lerp(_SAni.Sca, _EAni.Sca, NowTime);
+			sca.Lerp(_sAni.sca, _eAni.sca, nowTime);
 
-			Rot.Lerp(_SAni.Rot, _EAni.Rot, NowTime);
+			rot.Lerp(_sAni.rot, _eAni.rot, nowTime);
 
 		}
 
-		ChVec3_9 Pos;
-		ChVec3_9 Sca;
-		ChQua_9 Rot;
-		std::function<void()>FrameFunc = nullptr;
+		ChVec3_9 pos;
+		ChVec3_9 sca;
+		ChQua_9 rot;
+		std::function<void()>frameFunc = nullptr;
 	};
 
 	enum class Flg
@@ -148,25 +142,25 @@ private:
 		UseFunc, AniPlay
 	};
 
-	ChCpp::BitBool Flgs;
+	ChCpp::BitBool flgs;
 
-	std::map<std::string, std::function<std::string(const std::string& _FileName)>>OpenFuncList;
-
-
-	ChMat_9* TmpStartMat;
+	std::map<std::string, std::function<std::string(const std::string& _FileName)>>openFuncList;
 
 
-	ChMat_9 LastPlayMat;
+	ChMat_9* tmpStartMat;
 
-	ChStd::Bool FuncFlg = false;
+
+	ChMat_9 lastPlayMat;
+
+	ChStd::Bool funcFlg = false;
 	//1フレーム間の進む時間//
-	float OneFrameTime = 1.0f / 60.0f;
+	float oneFrameTime = 1.0f / 60.0f;
 
-	ChStd::Bool AniPlayFlg = true;
+	ChStd::Bool aniPlayFlg = true;
 
-	float NowTime = 0.0f;
-	size_t NowFrame = 0;
-	std::vector<ChPtr::Shared<AniObject>> AniList;
+	float nowTime = 0.0f;
+	size_t nowFrame = 0;
+	std::vector<ChPtr::Shared<AniObject>> aniList;
 
 }ChAniObj9;
 
@@ -175,20 +169,20 @@ class ChAnimationSupporter9
 public:
 
 	inline std::map < std::string, ChPtr::Shared<ChAnimationObject9>>
-		CreateKeyFrame(const std::string& _FileName)
+		CreateKeyFrame(const std::string& _fileName)
 	{
-		if (!CFlg)
+		if (!cFlg)
 		{
 			CreateFunction();
-			CFlg = true;
+			cFlg = true;
 		}
 
-		std::string TmpType = _FileName;
-		size_t Tmp = TmpType.rfind(".");
+		std::string tmpType = _fileName;
+		size_t tmp = tmpType.rfind(".");
 
-		TmpType = TmpType.substr(Tmp);
+		tmpType = tmpType.substr(tmp);
 
-		return (Creaters[TmpType](_FileName));
+		return (creaters[tmpType](_fileName));
 
 	}
 
@@ -196,24 +190,24 @@ public:
 
 private:
 
-	static const std::string AnimationCheck;
+	static const std::string animationCheck;
 
-	static const std::string Animation;
+	static const std::string animation;
 
-	static const std::string AniKey;
+	static const std::string aniKey;
 
 	void CreateFunction();
 
 	std::vector<ChPtr::Shared<ChQua_9>>Create4D
-	(const std::string& _Str, size_t& _FPos ,const ChStd::Bool _RFlg);
+	(const std::string& _str, size_t& _fPos ,const ChStd::Bool _rFlg);
 
 	std::vector<ChPtr::Shared<ChVec3_9>> Create3D
-	(const std::string& _Str, size_t& _FPos, const ChStd::Bool _RFlg);
+	(const std::string& _str, size_t& _fPos, const ChStd::Bool _rFlg);
 
 
 	std::map<std::string, std::function
-		<std::map<std::string, ChPtr::Shared<ChAnimationObject9>>(const std::string&)>>Creaters;
-	ChStd::Bool CFlg = false;
+		<std::map<std::string, ChPtr::Shared<ChAnimationObject9>>(const std::string&)>>creaters;
+	ChStd::Bool cFlg = false;
 
 	ChAnimationSupporter9() {}
 
@@ -221,8 +215,8 @@ public:
 
 	static ChAnimationSupporter9& GetIns()
 	{
-		static ChAnimationSupporter9 Ins;
-		return Ins;
+		static ChAnimationSupporter9 ins;
+		return ins;
 	}
 
 };

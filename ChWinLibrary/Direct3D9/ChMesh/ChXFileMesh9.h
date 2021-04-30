@@ -12,9 +12,9 @@ namespace ChMesh
 	public:
 
 		void OpenFile(
-			const std::string& _FileName
-			, const std::string& _PathName
-			, const LPDIRECT3DDEVICE9& _Dev)override;
+			const std::string& _fileName
+			, const std::string& _pathName
+			, const LPDIRECT3DDEVICE9& _dev)override;
 
 
 	};

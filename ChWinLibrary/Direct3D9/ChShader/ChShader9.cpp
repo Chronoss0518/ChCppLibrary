@@ -12,25 +12,25 @@
 
 using namespace ChD3D9;
 
-ChVec2 ShaderController::WindSize = ChVec2(1280.0f, 720.0f);
+ChVec2 ShaderController::windSize = ChVec2(1280.0f, 720.0f);
 
 ///////////////////////////////////////////////////////////////////////////////////////
 //ChShaderControllerメソッド
 ///////////////////////////////////////////////////////////////////////////////////////
 
 void ShaderController::Init(const LPDIRECT3DDEVICE9 _d
-	, const D3DPRESENT_PARAMETERS& _Param
-	, const float& _WindWidth
-	, const float& _WindHeight) {
+	, const D3DPRESENT_PARAMETERS& _param
+	, const float& _windWidth
+	, const float& _windHeight) {
 	
 	if (ChPtr::NullCheck(_d))return;
 
-	Device = _d;
-	Param = _Param;
+	device = _d;
+	param = _param;
 
 	InitShader();
 
-	Device->GetVertexDeclaration(&BaseDec);
+	device->GetVertexDeclaration(&baseDec);
 
 	{
 
@@ -42,7 +42,7 @@ void ShaderController::Init(const LPDIRECT3DDEVICE9 _d
 		};
 
 
-		Device->CreateVertexDeclaration(decl, &TVerDec);
+		device->CreateVertexDeclaration(decl, &tVerDec);
 
 	}
 
@@ -56,7 +56,7 @@ void ShaderController::Init(const LPDIRECT3DDEVICE9 _d
 		};
 
 
-		Device->CreateVertexDeclaration(decl, &MVerDec);
+		device->CreateVertexDeclaration(decl, &mVerDec);
 
 	}
 
@@ -66,76 +66,127 @@ void ShaderController::Init(const LPDIRECT3DDEVICE9 _d
 
 	MakeLightingPowTexture();
 
-	BeforeTex = ChPtr::Make_S<ChTex::Texture9>();
+	beforeTex = ChPtr::Make_S<ChTex::Texture9>();
 
-	BeforeTex->CreateMinuColTexture<D3DCOLOR>(Device, D3DCOLOR_ARGB(255, 255, 255, 255));
+	beforeTex->CreateMinuColTexture<D3DCOLOR>(device, D3DCOLOR_ARGB(255, 255, 255, 255));
 
 	SetInitFlg(true);
 }
 
+void ShaderController::InitShader()
+{
+
+	{
+#include"ModelBVS.inc"
+
+
+		device->CreateVertexShader((DWORD*)ModelBVS, &bVModel);
+	}
+
+	{
+#include"ModelBPS.inc"
+
+
+		device->CreatePixelShader((DWORD*)ModelBPS, &bPModel);
+	}
+
+	{
+#include"ModelOLVS.inc"
+
+
+		device->CreateVertexShader((DWORD*)ModelOLVS, &cVModel);
+	}
+
+	{
+#include"ModelCPS.inc"
+
+
+		device->CreatePixelShader((DWORD*)ModelCPS, &cPModel);
+	}
+
+	{
+#include"SpTexVS.inc"
+
+
+		device->CreateVertexShader((DWORD*)SpTexVS, &spVTex);
+	}
+
+	{
+#include"PoTexVS.inc"
+
+		device->CreateVertexShader((DWORD*)PoTexVS, &poVTex);
+	}
+
+	{
+#include"TexPS.inc"
+
+		device->CreatePixelShader((DWORD*)TexPS, &bPTex);
+	}
+
+}
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ShaderController::Release()
 {
-	if (ChPtr::NotNullCheck(BVModel))
+	if (ChPtr::NotNullCheck(bVModel))
 	{
-		BVModel->Release();
-		BVModel = nullptr;
+		bVModel->Release();
+		bVModel = nullptr;
 	}
-	if (ChPtr::NotNullCheck(BPModel))
+	if (ChPtr::NotNullCheck(bPModel))
 	{
-		BPModel->Release();
-		BPModel = nullptr;
-	}
-
-	if (ChPtr::NotNullCheck(CVModel))
-	{
-		CVModel->Release();
-		CVModel = nullptr;
-	}
-	if (ChPtr::NotNullCheck(CPModel))
-	{
-		CPModel->Release();
-		CPModel = nullptr;
+		bPModel->Release();
+		bPModel = nullptr;
 	}
 
-	if (ChPtr::NotNullCheck(SpVTex))
+	if (ChPtr::NotNullCheck(cVModel))
 	{
-		SpVTex->Release();
-		SpVTex = nullptr;
+		cVModel->Release();
+		cVModel = nullptr;
 	}
-	if (ChPtr::NotNullCheck(PoVTex))
+	if (ChPtr::NotNullCheck(cPModel))
 	{
-		PoVTex->Release();
-		PoVTex = nullptr;
-	}
-	if (ChPtr::NotNullCheck(BPTex))
-	{
-		BPTex->Release();
-		BPTex = nullptr;
+		cPModel->Release();
+		cPModel = nullptr;
 	}
 
-	WhiteTex = nullptr;
-	NormalTex = nullptr;
-	LightEffectTex = nullptr;
-
-	if (ChPtr::NotNullCheck(BaseDec))
+	if (ChPtr::NotNullCheck(spVTex))
 	{
-		BaseDec->Release();
-		BaseDec = nullptr;
+		spVTex->Release();
+		spVTex = nullptr;
 	}
-	if (ChPtr::NotNullCheck(TVerDec))
+	if (ChPtr::NotNullCheck(poVTex))
 	{
-		TVerDec->Release();
-		TVerDec = nullptr;
+		poVTex->Release();
+		poVTex = nullptr;
 	}
-	if (ChPtr::NotNullCheck(MVerDec))
+	if (ChPtr::NotNullCheck(bPTex))
 	{
-		MVerDec->Release();
-		MVerDec = nullptr;
+		bPTex->Release();
+		bPTex = nullptr;
 	}
 
-	MyLightTex = nullptr;
+	whiteTex = nullptr;
+	normalTex = nullptr;
+	lightEffectTex = nullptr;
+
+	if (ChPtr::NotNullCheck(baseDec))
+	{
+		baseDec->Release();
+		baseDec = nullptr;
+	}
+	if (ChPtr::NotNullCheck(tVerDec))
+	{
+		tVerDec->Release();
+		tVerDec = nullptr;
+	}
+	if (ChPtr::NotNullCheck(mVerDec))
+	{
+		mVerDec->Release();
+		mVerDec = nullptr;
+	}
+
+	myLightTex = nullptr;
 
 	SetInitFlg(false);
 }
@@ -143,77 +194,77 @@ void ShaderController::Release()
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ShaderController::SetDrawDatas(const D3DCOLOR&
-	_BackColor)
+	_backColor)
 {
 
 	// バックバッファと Z バッファをクリア
-	Device->Clear(0, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, _BackColor, 1.0f, 0);
+	device->Clear(0, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, _backColor, 1.0f, 0);
 
-	if (ChPtr::NullCheck(Device))return;
+	if (ChPtr::NullCheck(device))return;
 
 	struct MatData
 	{
-		ChMat_9 ViewMat;
-		ChMat_9 ProMat;
+		ChMat_9 viewMat;
+		ChMat_9 proMat;
 	};
 
-	MatData Tmp;
+	MatData tmp;
 
 
 
-	Device->GetTransform(D3DTS_VIEW, &Tmp.ViewMat);
-	Device->GetTransform(D3DTS_PROJECTION, &Tmp.ProMat);
+	device->GetTransform(D3DTS_VIEW, &tmp.viewMat);
+	device->GetTransform(D3DTS_PROJECTION, &tmp.proMat);
 
 	//ビュー・射影行列セット//
-	Device->SetVertexShader(PoVTex);
+	device->SetVertexShader(poVTex);
 
-	Device->SetVertexShaderConstantF(0, (const float*)&Tmp, 8);
+	device->SetVertexShaderConstantF(0, (const float*)&tmp, 8);
 
-	Device->SetVertexShader(CVModel);
+	device->SetVertexShader(cVModel);
 
-	Device->SetVertexShaderConstantF(0, (const float*)&Tmp, 8);
+	device->SetVertexShaderConstantF(0, (const float*)&tmp, 8);
 
-	Device->SetVertexShader(BVModel);
+	device->SetVertexShader(bVModel);
 
-	Device->SetVertexShaderConstantF(0, (const float*)&Tmp, 8);
+	device->SetVertexShaderConstantF(0, (const float*)&tmp, 8);
 
-	ChVec4 TmpPos;
+	ChVec4 tmpPos;
 
-	TmpPos.x = CamPos.x;
-	TmpPos.y = CamPos.y;
-	TmpPos.z = CamPos.z;
+	tmpPos.x = camPos.x;
+	tmpPos.y = camPos.y;
+	tmpPos.z = camPos.z;
 
-	TmpPos.w = 0.0f;
+	tmpPos.w = 0.0f;
 
-	Device->SetPixelShader(BPModel);
+	device->SetPixelShader(bPModel);
 
-	Device->SetPixelShaderConstantF(0, (const float*)&TmpPos, 1);
+	device->SetPixelShaderConstantF(0, (const float*)&tmpPos, 1);
 
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ShaderController::IsLight(const ChStd::Bool _Flg)
+void ShaderController::IsLight(const ChStd::Bool _flg)
 {
-	LightUseFlg = _Flg;
+	lightUseFlg = _flg;
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ShaderController::DrawStart(const D3DCOLOR&
-	_BackColor)
+	_backColor)
 {
 	if (!*this)return;
-	if (RTDrawFlg)return;
-	if (DrawFlg)return;
+	if (rtDrawFlg)return;
+	if (drawFlg)return;
 
-	SetDrawDatas(_BackColor);
+	SetDrawDatas(_backColor);
 
-	Device->BeginScene();
+	device->BeginScene();
 
-	DrawFlg = true;
+	drawFlg = true;
 
 }
 
@@ -222,20 +273,20 @@ void ShaderController::DrawStart(const D3DCOLOR&
 void ShaderController::DrawEnd()
 {
 	if (!*this)return;
-	if (RTDrawFlg)return;
-	if (!DrawFlg)return;
+	if (rtDrawFlg)return;
+	if (!drawFlg)return;
 
-	if (ChPtr::NullCheck(Device))return;
+	if (ChPtr::NullCheck(device))return;
 
 
-	Device->EndScene();
+	device->EndScene();
 
-	DrawFlg = false;
+	drawFlg = false;
 
 	// バックバッファをプライマリバッファにコピー
-	if (FAILED(Device->Present(NULL, NULL, NULL, NULL)))
+	if (FAILED(device->Present(NULL, NULL, NULL, NULL)))
 	{
-		Device->Reset(&Param);
+		device->Reset(&param);
 	}
 
 }
@@ -243,65 +294,65 @@ void ShaderController::DrawEnd()
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ShaderController::DrawMesh(
-	const ChPtr::Shared<ChMesh::Mesh9> _Mesh
-	, const ChMat_9& _Mat)
+	const ChPtr::Shared<ChMesh::Mesh9> _mesh
+	, const ChMat_9& _mat)
 {
 
 	if (!*this)return;
-	if (!DrawFlg && !RTDrawFlg)return;
-	if (_Mesh == nullptr)return;
-	if (ChPtr::NullCheck(_Mesh->GetMesh()))return;
+	if (!drawFlg && !rtDrawFlg)return;
+	if (_mesh == nullptr)return;
+	if (ChPtr::NullCheck(_mesh->GetMesh()))return;
 
-	Device->SetVertexShader(BVModel);
-	Device->SetPixelShader(BPModel);
+	device->SetVertexShader(bVModel);
+	device->SetPixelShader(bPModel);
 
 	SetLightFunction();
 
 
-	ChMat_9 TmpMat;
+	ChMat_9 tmpMat;
 
 
-	Device->SetVertexDeclaration(MVerDec);
+	device->SetVertexDeclaration(mVerDec);
 
-	for (unsigned long i = 0; i < _Mesh->GetMaterials().size(); i++) {
+	for (unsigned long i = 0; i < _mesh->GetMaterials().size(); i++) {
 
-		TmpMat = _Mesh->GetMaterials()[i]->Mat * _Mat;
+		tmpMat = _mesh->GetMaterials()[i]->mat * _mat;
 
-		Device->SetVertexShaderConstantF(8, (const float*)&_Mat, 4);
+		device->SetVertexShaderConstantF(8, (const float*)&_mat, 4);
 
-		auto TmpMate = SetMateData(*_Mesh->GetMaterials()[i]);
+		auto tmpMate = SetMateData(*_mesh->GetMaterials()[i]);
 
-		Device->SetPixelShaderConstantF(1, (const float*)&TmpMate, 2);
+		device->SetPixelShaderConstantF(1, (const float*)&tmpMate, 2);
 
 
 		{
 
-			auto TmpTex = _Mesh->GetTex()[i]->GetTex();
+			auto tmpTex = _mesh->GetTex()[i]->GetTex();
 
-			if (ChPtr::NullCheck(TmpTex))TmpTex = WhiteTex->GetTex();
+			if (ChPtr::NullCheck(tmpTex))tmpTex = whiteTex->GetTex();
 
-			Device->SetTexture(0, TmpTex);
+			device->SetTexture(0, tmpTex);
 
 		}
 
-		if (!_Mesh->GetNormalTex().empty())
+		if (!_mesh->GetNormalTex().empty())
 		{
-			auto pNormal = _Mesh->GetNormalTex()[i]->GetTex();
+			auto pNormal = _mesh->GetNormalTex()[i]->GetTex();
 
-			if (ChPtr::NullCheck(pNormal))pNormal = NormalTex->GetTex();
+			if (ChPtr::NullCheck(pNormal))pNormal = normalTex->GetTex();
 
-			Device->SetTexture(2, pNormal);
+			device->SetTexture(2, pNormal);
 
 		}
 		else
 		{
-			Device->SetTexture(2, NormalTex->GetTex());
+			device->SetTexture(2, normalTex->GetTex());
 		}
 
-		_Mesh->GetMesh()->DrawSubset(i);
+		_mesh->GetMesh()->DrawSubset(i);
 	}
 
-	Device->SetVertexDeclaration(BaseDec);
+	device->SetVertexDeclaration(baseDec);
 
 }
 
@@ -309,187 +360,187 @@ void ShaderController::DrawMesh(
 
 //Mesh描画用関数//
 void ShaderController::DrawMeshContour(
-	const ChPtr::Shared<ChMesh::Mesh9> _Mesh
-	, const ChVec4& _Color
-	, const ChMat_9& _Mat
+	const ChPtr::Shared<ChMesh::Mesh9> _mesh
+	, const ChVec4& _color
+	, const ChMat_9& _mat
 	, const float _Size)
 {
 	if (!*this)return;
 	if (_Size < 0.0f)return;
-	if (!DrawFlg && !RTDrawFlg)return;
-	if (_Mesh == nullptr)return;
-	if (ChPtr::NullCheck(_Mesh->GetMesh()))return;
+	if (!drawFlg && !rtDrawFlg)return;
+	if (_mesh == nullptr)return;
+	if (ChPtr::NullCheck(_mesh->GetMesh()))return;
 
-	CULL TmpCull = GetCullMode();
+	CULL tmpCull = GetCullMode();
 	SetCullMode(ChD3D9::CULL::CW);
 
-	Device->SetVertexShader(CVModel);
-	Device->SetPixelShader(CPModel);
+	device->SetVertexShader(cVModel);
+	device->SetPixelShader(cPModel);
 
-	ChMat_9 TmpMat;
+	ChMat_9 tmpMat;
 
-	Device->SetVertexDeclaration(MVerDec);
+	device->SetVertexDeclaration(mVerDec);
 
-	for (unsigned long i = 0; i < _Mesh->GetMaterials().size(); i++) {
+	for (unsigned long i = 0; i < _mesh->GetMaterials().size(); i++) {
 
-		TmpMat = _Mesh->GetMaterials()[i]->Mat * _Mat;
+		tmpMat = _mesh->GetMaterials()[i]->mat * _mat;
 
-		Device->SetVertexShaderConstantF(8, (const float*)&_Mat, 4);
+		device->SetVertexShaderConstantF(8, (const float*)&_mat, 4);
 
-		ChVec4 TmpVec = ChVec4(_Size, 0.0f, 0.0f, 0.0f);
+		ChVec4 tmpVec = ChVec4(_Size, 0.0f, 0.0f, 0.0f);
 
-		Device->SetVertexShaderConstantF(12, (const float*)&_Size, 1);
+		device->SetVertexShaderConstantF(12, (const float*)&_Size, 1);
 
-		Device->SetPixelShaderConstantF(0, (const float*)&_Color, 1);
+		device->SetPixelShaderConstantF(0, (const float*)&_color, 1);
 
-		_Mesh->GetMesh()->DrawSubset(i);
+		_mesh->GetMesh()->DrawSubset(i);
 	}
 
-	Device->SetVertexDeclaration(BaseDec);
+	device->SetVertexDeclaration(baseDec);
 
-	SetCullMode(TmpCull);
+	SetCullMode(tmpCull);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ShaderController::DrawPolygonBoard(
-	const ChPtr::Shared<ChTex::Texture9>& _Tex
-	, const VertexData& _Vertex
-	, const ChMat_9& _Mat
-	, const unsigned int _TriangleCount
+	const ChPtr::Shared<ChTex::Texture9>& _tex
+	, const VertexData& _vertex
+	, const ChMat_9& _mat
+	, const unsigned int _triangleCount
 )
 {
 
 	if (!*this)return;
-	if (!DrawFlg && !RTDrawFlg)return;
-	if (_Tex == nullptr)return;
-	if (_Tex->GetBaseColor().a <= 0.1f)return;
+	if (!drawFlg && !rtDrawFlg)return;
+	if (_tex == nullptr)return;
+	if (_tex->GetBaseColor().a <= 0.1f)return;
 
-	Device->SetVertexShader(PoVTex);
-	Device->SetPixelShader(BPTex);
+	device->SetVertexShader(poVTex);
+	device->SetPixelShader(bPTex);
 
 	//キャラクター移動行列セット//
-	Device->SetVertexShaderConstantF(8, (const float*)&_Mat, 4);
+	device->SetVertexShaderConstantF(8, (const float*)&_mat, 4);
 
 	{
 
-		D3DXVECTOR4 TmpVec;
-		TmpVec.x = (_Tex->GetBaseColor().r / 255.0f);
-		TmpVec.y = (_Tex->GetBaseColor().g / 255.0f);
-		TmpVec.z = (_Tex->GetBaseColor().b / 255.0f);
-		TmpVec.w = (_Tex->GetBaseColor().a / 255.0f);
-		Device->SetPixelShaderConstantF(0, (const float*)&TmpVec, 1);
+		D3DXVECTOR4 tmpVec;
+		tmpVec.x = (_tex->GetBaseColor().r / 255.0f);
+		tmpVec.y = (_tex->GetBaseColor().g / 255.0f);
+		tmpVec.z = (_tex->GetBaseColor().b / 255.0f);
+		tmpVec.w = (_tex->GetBaseColor().a / 255.0f);
+		device->SetPixelShaderConstantF(0, (const float*)&tmpVec, 1);
 	}
 
 	//画像セット//
-	auto Tex = _Tex->GetTex();
+	auto tex = _tex->GetTex();
 
-	if (ChPtr::NullCheck(Tex)) Tex = WhiteTex->GetTex();
+	if (ChPtr::NullCheck(tex)) tex = whiteTex->GetTex();
 
-	Device->SetTexture(0, Tex);
+	device->SetTexture(0, tex);
 
-	Device->SetVertexDeclaration(TVerDec);
+	device->SetVertexDeclaration(tVerDec);
 
-	Device->DrawPrimitiveUP(
-		D3DPT_TRIANGLEFAN, _TriangleCount
-		, _Vertex.Ver, sizeof(VertexData::Vertex));
+	device->DrawPrimitiveUP(
+		D3DPT_TRIANGLEFAN, _triangleCount
+		, _vertex.ver, sizeof(VertexData::Vertex));
 
-	Device->SetVertexDeclaration(BaseDec);
+	device->SetVertexDeclaration(baseDec);
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ShaderController::DrawSprite(
-	const ChPtr::Shared<ChTex::Texture9>& _Tex
-	, const ChMat_9& _Mat
-	, const SpriteData& _SpData)
+	const ChPtr::Shared<ChTex::Texture9>& _tex
+	, const ChMat_9& _mat
+	, const SpriteData& _spData)
 {
 
 	if (!*this)return;
-	if (!DrawFlg && !RTDrawFlg)return;
-	if (_Tex == nullptr)return;
-	if (_Tex->GetBaseColor().a <= 0.1f)return;
+	if (!drawFlg && !rtDrawFlg)return;
+	if (_tex == nullptr)return;
+	if (_tex->GetBaseColor().a <= 0.1f)return;
 
-	Device->SetVertexShader(SpVTex);
-	Device->SetPixelShader(BPTex);
+	device->SetVertexShader(spVTex);
+	device->SetPixelShader(bPTex);
 
 	//キャラクター移動行列セット//
-	Device->SetVertexShaderConstantF(0, (const float*)&_Mat, 4);
+	device->SetVertexShaderConstantF(0, (const float*)&_mat, 4);
 
 	{
 
-		D3DXVECTOR4 TmpVec = D3DXVECTOR4(0.0f, 0.0f, 0.0f, 0.0f);
+		D3DXVECTOR4 tmpVec = D3DXVECTOR4(0.0f, 0.0f, 0.0f, 0.0f);
 
-		TmpVec.x = WindSize.w;
-		TmpVec.y = WindSize.h;
+		tmpVec.x = windSize.w;
+		tmpVec.y = windSize.h;
 
 		//WindSizeSet//
-		Device->SetVertexShaderConstantF(4, (const float*)&TmpVec, 1);
+		device->SetVertexShaderConstantF(4, (const float*)&tmpVec, 1);
 
 	}
 
 
 	{
 
-		ChVec4 TmpVec;
-		TmpVec = _Tex->GetBaseColor();
+		ChVec4 tmpVec;
+		tmpVec = _tex->GetBaseColor();
 
-		Device->SetPixelShaderConstantF(0, (const float*)&TmpVec, 1);
+		device->SetPixelShaderConstantF(0, (const float*)&tmpVec, 1);
 	}
 
 	{
 
 		//画像セット//
-		auto Tex = _Tex->GetTex();
+		auto tex = _tex->GetTex();
 
-		if (ChPtr::NullCheck(Tex)) Tex = WhiteTex->GetTex();
+		if (ChPtr::NullCheck(tex)) tex = whiteTex->GetTex();
 
-		Device->SetTexture(0, Tex);
+		device->SetTexture(0, tex);
 
 	}
 
-	SpriteData TmpSprite = _SpData;
+	SpriteData tmpSprite = _spData;
 	
 	for (unsigned char i = 0; i < 4; i++)
 	{
-		TmpSprite.SpData[i].Pos.z = 0.0f;
+		tmpSprite.spData[i].pos.z = 0.0f;
 	}
 
 
 
-	Device->SetVertexDeclaration(TVerDec);
+	device->SetVertexDeclaration(tVerDec);
 
-	Device->DrawPrimitiveUP(
+	device->DrawPrimitiveUP(
 		D3DPT_TRIANGLEFAN, 2
-		, TmpSprite.SpData.Ver, sizeof(VertexData::Vertex));
+		, tmpSprite.spData.ver, sizeof(VertexData::Vertex));
 
-	Device->SetVertexDeclaration(BaseDec);
+	device->SetVertexDeclaration(baseDec);
 
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ShaderController::CreateLightPowTex(const std::string& _LightPowTexName)
+void ShaderController::CreateLightPowTex(const std::string& _lightPowTexName)
 {
-	if (_LightPowTexName.length())
+	if (_lightPowTexName.length())
 	{
 		//ChSystem::ErrerMessage("使用する画像のファイル名を入力してください", "警告");
 
 		return;
 	}
 
-	MyLightTex = ChTex::BaseTexture9::TextureType(_LightPowTexName.c_str());
+	myLightTex = ChTex::BaseTexture9::TextureType(_lightPowTexName.c_str());
 
-	MyLightTex->CreateTexture(_LightPowTexName.c_str(), Device);
+	myLightTex->CreateTexture(_lightPowTexName.c_str(), device);
 
-	if (MyLightTex->GetTex() == nullptr)
+	if (myLightTex->GetTex() == nullptr)
 	{
 
 		//ChSystem::ErrerMessage("画像の作成に失敗しました", "警告");
 
-		MyLightTex = nullptr;
+		myLightTex = nullptr;
 
 		return;
 	}
@@ -501,9 +552,9 @@ void ShaderController::CreateLightPowTex(const std::string& _LightPowTexName)
 
 void ShaderController::MakeWhiteTexture()
 {
-	WhiteTex = ChPtr::Make_S<ChTex::BaseTexture9>();
+	whiteTex = ChPtr::Make_S<ChTex::BaseTexture9>();
 
-	WhiteTex->CreateColTexture(Device, D3DCOLOR_ARGB(255, 255, 255, 255));
+	whiteTex->CreateColTexture(device, D3DCOLOR_ARGB(255, 255, 255, 255));
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -511,24 +562,24 @@ void ShaderController::MakeWhiteTexture()
 void ShaderController::MakeLightingPowTexture()
 {
 
-	LightEffectTex = ChPtr::Make_S<ChTex::BaseTexture9>();
+	lightEffectTex = ChPtr::Make_S<ChTex::BaseTexture9>();
 
-	LightEffectTex->CreateColTexture(Device, D3DCOLOR_ARGB(255, 255, 255, 255), 255, 1);
+	lightEffectTex->CreateColTexture(device, D3DCOLOR_ARGB(255, 255, 255, 255), 255, 1);
 
 	unsigned char Col = 0;
 
 	D3DLOCKED_RECT LockRect;
-	if (LightEffectTex->InsTex()->LockRect(0, &LockRect, nullptr, 0) != D3D_OK)
+	if (lightEffectTex->InsTex()->LockRect(0, &LockRect, nullptr, 0) != D3D_OK)
 	{
-		LightEffectTex = nullptr;
+		lightEffectTex = nullptr;
 		return;
 	}
 	UINT* pPitch = (UINT*)LockRect.pBits;
 
 	UINT Pitch = LockRect.Pitch / sizeof(UINT);
-	for (unsigned int h = 0; h < LightEffectTex->GetOriginalHeight(); h++)
+	for (unsigned int h = 0; h < lightEffectTex->GetOriginalHeight(); h++)
 	{
-		for (unsigned int w = 0; w < LightEffectTex->GetOriginalWidth(); w++)
+		for (unsigned int w = 0; w < lightEffectTex->GetOriginalWidth(); w++)
 		{
 			*(pPitch + w) = D3DCOLOR_ARGB(Col, Col, Col, Col);
 			Col++;
@@ -536,36 +587,36 @@ void ShaderController::MakeLightingPowTexture()
 		pPitch += Pitch;
 	}
 
-	LightEffectTex->InsTex()->UnlockRect(0);
+	lightEffectTex->InsTex()->UnlockRect(0);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ShaderController::MakeNormalMapTexture()
 {
-	NormalTex = ChPtr::Make_S<ChTex::BaseTexture9>();
+	normalTex = ChPtr::Make_S<ChTex::BaseTexture9>();
 
-	NormalTex->CreateColTexture(Device, D3DCOLOR_ARGB(255, 128, 128, 128));
+	normalTex->CreateColTexture(device, D3DCOLOR_ARGB(255, 128, 128, 128));
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ShaderController::Material ShaderController::SetMateData(D3DMATERIAL9& _Mate)
+ShaderController::Material ShaderController::SetMateData(D3DMATERIAL9& _mate)
 {
-	Material Tmp;
-	Tmp.Dif.a = _Mate.Diffuse.a;
-	Tmp.Dif.r = _Mate.Diffuse.r;
-	Tmp.Dif.g = _Mate.Diffuse.g;
-	Tmp.Dif.b = _Mate.Diffuse.b;
+	Material tmp;
+	tmp.dif.a = _mate.Diffuse.a;
+	tmp.dif.r = _mate.Diffuse.r;
+	tmp.dif.g = _mate.Diffuse.g;
+	tmp.dif.b = _mate.Diffuse.b;
 
-	Tmp.SpeCol.r = _Mate.Specular.r;
-	Tmp.SpeCol.g = _Mate.Specular.g;
-	Tmp.SpeCol.b = _Mate.Specular.b;
+	tmp.speCol.r = _mate.Specular.r;
+	tmp.speCol.g = _mate.Specular.g;
+	tmp.speCol.b = _mate.Specular.b;
 
-	Tmp.SpePow = _Mate.Power;
+	tmp.spePow = _mate.Power;
 
-	return Tmp;
+	return tmp;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -574,49 +625,49 @@ void ShaderController::SetLightFunction()
 {
 
 
-	Device->SetVertexShader(BVModel);
-	Device->SetPixelShader(BPModel);
+	device->SetVertexShader(bVModel);
+	device->SetPixelShader(bPModel);
 
 	{
-		auto LightTex = LightEffectTex->GetTex();
+		auto lightTex = lightEffectTex->GetTex();
 
-		if (ChPtr::NullCheck(LightTex))LightTex = WhiteTex->GetTex();
+		if (ChPtr::NullCheck(lightTex))lightTex = whiteTex->GetTex();
 
-		if (UseMyLightTex)LightTex = MyLightTex->GetTex();
+		if (useMyLightTex)lightTex = myLightTex->GetTex();
 
-		Device->SetTexture(1, LightTex);
+		device->SetTexture(1, lightTex);
 
 	}
 
 	{
 
-		Light.Dir.Normalize();
+		light.dir.Normalize();
 
-		TmpPLight PLight[7];
-		float PLFlg[8];
+		TmpPLight pLight[7];
+		float pLFlg[8];
 		for (unsigned char i = 0; i < 7; i++)
 		{
-			PLFlg[i] = PosLight[i].Flg;
-			if (!PosLight[i].Flg)continue;
-			if (PosLight[i].Len <= 0.0f)PosLight[i].Flg = false;
+			pLFlg[i] = posLight[i].flg;
+			if (!posLight[i].flg)continue;
+			if (posLight[i].len <= 0.0f)posLight[i].flg = false;
 
-			PLFlg[i] = PosLight[i].Flg ? 1.0f : -1.0f;
-			PLight[i].Dif = PosLight[i].Dif;
-			PLight[i].Len = PosLight[i].Len;
-			PLight[i].Pos = PosLight[i].Pos;
+			pLFlg[i] = posLight[i].flg ? 1.0f : -1.0f;
+			pLight[i].dif = posLight[i].dif;
+			pLight[i].len = posLight[i].len;
+			pLight[i].pos = posLight[i].pos;
 		}
-		PLFlg[7] = LightUseFlg ? 1.0f : -1.0f;
+		pLFlg[7] = lightUseFlg ? 1.0f : -1.0f;
 
-		Device->SetPixelShaderConstantF(3, (const float*)&Light, 2);
+		device->SetPixelShaderConstantF(3, (const float*)&light, 2);
 
-		float TmpFlg[8] = 
+		float tmpFlg[8] = 
 		{
-			PLFlg[0],PLFlg[1],PLFlg[2],PLFlg[3],
-			PLFlg[4],PLFlg[5],PLFlg[6],PLFlg[7]
+			pLFlg[0],pLFlg[1],pLFlg[2],pLFlg[3],
+			pLFlg[4],pLFlg[5],pLFlg[6],pLFlg[7]
 		};
 
-		Device->SetPixelShaderConstantF(5, TmpFlg, 2);
-		Device->SetPixelShaderConstantF(7, (const float*)&PLFlg, 14);
+		device->SetPixelShaderConstantF(5, tmpFlg, 2);
+		device->SetPixelShaderConstantF(7, (const float*)&pLFlg, 14);
 	}
 
 }

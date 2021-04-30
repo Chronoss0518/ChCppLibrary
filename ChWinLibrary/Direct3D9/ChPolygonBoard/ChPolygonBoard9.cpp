@@ -12,160 +12,161 @@ using namespace ChTex;
 //ChPolygonBord9ÉÅÉ\ÉbÉh
 ///////////////////////////////////////////////////////////////////////////////////
 
-void PolygonBoard9::Init(const LPDIRECT3DDEVICE9& _Dv)
+void PolygonBoard9::Init(const LPDIRECT3DDEVICE9& _dv)
 {
-	Device = _Dv;
+	device = _dv;
 	SetXYPosition(ChVec3_9(1.0f, 1.0f, 0.0f), 2.0f, 2.0f);
-	for (unsigned char i = 0; i < VertexMaxCnt; i++) {
+	for (unsigned char i = 0; i < vertexMaxCnt; i++) {
 		SetColor(D3DCOLOR_ARGB(255, 255, 255, 255), i);
-		//Ver[i].specular = D3DCOLOR_ARGB(255, 255, 255, 255);
+		//ver[i].specular = D3DCOLOR_ARGB(255, 255, 255, 255);
 	}
-	AlphaFlg = FALSE;
-	Ver[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-	Ver[1].tex = D3DXVECTOR2(1.0f, 0.0f);
-	Ver[2].tex = D3DXVECTOR2(1.0f, 1.0f);
-	Ver[3].tex = D3DXVECTOR2(0.0f, 1.0f);
+	alphaFlg = FALSE;
+	ver[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+	ver[1].tex = D3DXVECTOR2(1.0f, 0.0f);
+	ver[2].tex = D3DXVECTOR2(1.0f, 1.0f);
+	ver[3].tex = D3DXVECTOR2(0.0f, 1.0f);
 
-	InitFlg = true;
+	SetInitFlg(true);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void PolygonBoard9::SetXYPosition(const ChVec3_9& _LeftTopPos, const float _X, const float _Y)
+void PolygonBoard9::SetXYPosition(const ChVec3_9& _leftTopPos, const float _x, const float _y)
 {
-	for (char i = 0; i < VertexMaxCnt; i++) {
-		Ver[i].pos = _LeftTopPos;
+	for (char i = 0; i < vertexMaxCnt; i++) {
+		ver[i].pos = _leftTopPos;
 	}
 
-	Ver[1].pos.x += _X;
-	Ver[2].pos.x += _X;
-	Ver[2].pos.y -= _Y;
-	Ver[3].pos.y -= _Y;
+	ver[1].pos.x += _x;
+	ver[2].pos.x += _x;
+	ver[2].pos.y -= _y;
+	ver[3].pos.y -= _y;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void PolygonBoard9::SetYZPosition(const ChVec3_9& _LeftTopPos, const float _Z, const float _Y)
+void PolygonBoard9::SetYZPosition(const ChVec3_9& _leftTopPos, const float _z, const float _y)
 {
-	for (char i = 0; i < VertexMaxCnt; i++) {
-		Ver[i].pos = _LeftTopPos;
+	for (char i = 0; i < vertexMaxCnt; i++) {
+		ver[i].pos = _leftTopPos;
 	}
 
-	Ver[1].pos.z += _Z;
-	Ver[2].pos.z += _Z;
-	Ver[2].pos.y -= _Y;
-	Ver[3].pos.y -= _Y;
+	ver[1].pos.z += _z;
+	ver[2].pos.z += _z;
+	ver[2].pos.y -= _y;
+	ver[3].pos.y -= _y;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void PolygonBoard9::SetZXPosition(const ChVec3_9& _LeftTopPos, const float _X, const float _Z)
+void PolygonBoard9::SetZXPosition(const ChVec3_9& _leftTopPos, const float _x, const float _z)
 {
-	for (char i = 0; i < VertexMaxCnt; i++) {
-		Ver[i].pos = _LeftTopPos;
+	for (char i = 0; i < vertexMaxCnt; i++) {
+		ver[i].pos = _leftTopPos;
 	}
 
-	Ver[1].pos.x += _X;
-	Ver[2].pos.x += _X;
-	Ver[2].pos.z -= _Z;
-	Ver[3].pos.z -= _Z;
+	ver[1].pos.x += _x;
+	ver[2].pos.x += _x;
+	ver[2].pos.z -= _z;
+	ver[3].pos.z -= _z;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void PolygonBoard9::Draw(
-	const ChPtr::Shared<BaseTexture9>& _Tex
-	, const LPD3DXMATRIX& _Mat)
+	const ChPtr::Shared<BaseTexture9>& _tex
+	, const LPD3DXMATRIX& _mat)
 {
-	if (_Tex == nullptr)return;
+	if (!*this)return;
+	if (_tex == nullptr)return;
 
-	DWORD TmpData;
-	Device->GetRenderState(D3DRS_CULLMODE, &TmpData);
-	Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+	DWORD tmpData;
+	device->GetRenderState(D3DRS_CULLMODE, &tmpData);
+	device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
 
-	if (AlphaFlg)Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+	if (alphaFlg)device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
 
-	Device->SetTexture(0, _Tex->GetTex());
+	device->SetTexture(0, _tex->GetTex());
 
-	Device->SetTransform(D3DTS_WORLD, _Mat);
+	device->SetTransform(D3DTS_WORLD, _mat);
 
-	//Device->SetFVF((D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1 | D3DFVF_SPECULAR | D3DFVF_NORMAL));
+	//device->SetFVF((D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1 | D3DFVF_SPECULAR | D3DFVF_NORMAL));
 
-	Device->SetFVF((D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1));
+	device->SetFVF((D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1));
 
 	/*
 		if (UpDateFlg)
 		{
-			Device->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, Ver, sizeof(ChVertex));
+			device->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, ver, sizeof(Chvertex));
 		}
 		else
 		{
 	*/
 
-	Device->SetRenderState(D3DRS_LIGHTING, FALSE);
-	Device->SetRenderState(D3DRS_NORMALIZENORMALS, FALSE);
+	device->SetRenderState(D3DRS_LIGHTING, FALSE);
+	device->SetRenderState(D3DRS_NORMALIZENORMALS, FALSE);
 
-	Device->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, Ver, sizeof(ChVertex9));
+	device->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, ver, sizeof(ChVertex9));
 	
-	Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
+	device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
 
-	Device->SetRenderState(D3DRS_NORMALIZENORMALS, true);
-	Device->SetRenderState(D3DRS_CULLMODE, TmpData);
+	device->SetRenderState(D3DRS_NORMALIZENORMALS, true);
+	device->SetRenderState(D3DRS_CULLMODE, tmpData);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void PolygonBoard9::SetPositionVector(const D3DXVECTOR3* _Pos, const char _PosNo)
+void PolygonBoard9::SetPositionVector(const D3DXVECTOR3* _pos, const char _posNo)
 {
-	if (_PosNo > VertexMaxCnt)return;
-	if (ChPtr::NullCheck(_Pos))return;
-	Ver[_PosNo].pos = *_Pos;
+	if (_posNo > vertexMaxCnt)return;
+	if (ChPtr::NullCheck(_pos))return;
+	ver[_posNo].pos = *_pos;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void PolygonBoard9::SetColor(const D3DCOLOR _Col, const unsigned char _PosNo)
+void PolygonBoard9::SetColor(const D3DCOLOR _col, const unsigned char _posNo)
 {
-	if (_PosNo > VertexMaxCnt)return;
-	Ver[_PosNo].col = _Col;
+	if (_posNo > vertexMaxCnt)return;
+	ver[_posNo].col = _col;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void PolygonBoard9::SetTex(const D3DXVECTOR2 _Tex, const unsigned char _PosNo)
+void PolygonBoard9::SetTex(const D3DXVECTOR2 _tex, const unsigned char _posNo)
 {
-	if (_PosNo > VertexMaxCnt)return;
-	Ver[_PosNo].tex = _Tex;
+	if (_posNo > vertexMaxCnt)return;
+	ver[_posNo].tex = _tex;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void PolygonBoard9::SetRectTex(
-	const ChPtr::Shared<BaseTexture9> _Tex
+	const ChPtr::Shared<BaseTexture9> _tex
 	, const RECT& _rect
 	, const unsigned char _SPosNo)
 {
-	if (_Tex == nullptr)return;
-	if (_SPosNo > VertexMaxCnt)return;
-	D3DXVECTOR2 TmpVec;
-	TmpVec = D3DXVECTOR2((float)(_rect.right / _Tex->GetOriginalWidth()), (float)(_rect.top / _Tex->GetOriginalHeight()));
-	Ver[(_SPosNo + 0) % VertexMaxCnt].tex = TmpVec;
-	TmpVec = D3DXVECTOR2((float)((_rect.right + _rect.left) / _Tex->GetOriginalWidth())
-		, (float)(_rect.top / _Tex->GetOriginalHeight()));
-	Ver[(_SPosNo + 1) % VertexMaxCnt].tex = TmpVec;
-	TmpVec = D3DXVECTOR2((float)((_rect.right + _rect.left) / _Tex->GetOriginalWidth())
-		, (float)((_rect.top + _rect.bottom) / _Tex->GetOriginalHeight()));
-	Ver[(_SPosNo + 2) % VertexMaxCnt].tex = TmpVec;
-	TmpVec = D3DXVECTOR2((float)(_rect.right / _Tex->GetOriginalWidth())
-		, (float)((_rect.top + _rect.bottom) / _Tex->GetOriginalHeight()));
-	Ver[(_SPosNo + 3) % VertexMaxCnt].tex = TmpVec;
+	if (_tex == nullptr)return;
+	if (_SPosNo > vertexMaxCnt)return;
+	D3DXVECTOR2 tmpVec;
+	tmpVec = D3DXVECTOR2((float)(_rect.right / _tex->GetOriginalWidth()), (float)(_rect.top / _tex->GetOriginalHeight()));
+	ver[(_SPosNo + 0) % vertexMaxCnt].tex = tmpVec;
+	tmpVec = D3DXVECTOR2((float)((_rect.right + _rect.left) / _tex->GetOriginalWidth())
+		, (float)(_rect.top / _tex->GetOriginalHeight()));
+	ver[(_SPosNo + 1) % vertexMaxCnt].tex = tmpVec;
+	tmpVec = D3DXVECTOR2((float)((_rect.right + _rect.left) / _tex->GetOriginalWidth())
+		, (float)((_rect.top + _rect.bottom) / _tex->GetOriginalHeight()));
+	ver[(_SPosNo + 2) % vertexMaxCnt].tex = tmpVec;
+	tmpVec = D3DXVECTOR2((float)(_rect.right / _tex->GetOriginalWidth())
+		, (float)((_rect.top + _rect.bottom) / _tex->GetOriginalHeight()));
+	ver[(_SPosNo + 3) % vertexMaxCnt].tex = tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 //
-//void ChPolygonBoard9::SetNormal(const D3DXVECTOR3 _Normal, const char _PosNo)
+//void ChPolygonBoard9::SetNormal(const D3DXVECTOR3 _Normal, const char _posNo)
 //{
-//	if (_PosNo > VertexMaxCnt)return;
-//	//Ver[_PosNo].normal = _Normal;
+//	if (_posNo > vertexMaxCnt)return;
+//	//ver[_posNo].normal = _Normal;
 //}

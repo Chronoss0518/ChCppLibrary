@@ -1,4 +1,4 @@
-#ifndef Ch_D3D9_Vec3_h
+#ifndef Ch_D3D9_vec3_h
 #define Ch_D3D9_Vec3_h
 
 //ƒpƒbƒN‰»‚µ‚½D3DXVECTOR3Œ^//
@@ -17,22 +17,22 @@ public:
 
 	ChVector3_9&operator = (const D3DXQUATERNION& _cm)
 	{
-		D3DXMATRIX TmpMat;
+		D3DXMATRIX tmpMat;
 
-		D3DXMatrixRotationQuaternion(&TmpMat, &_cm);
+		D3DXMatrixRotationQuaternion(&tmpMat, &_cm);
 
-		auto Tmp = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
+		auto tmp = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
 
-		D3DXVec3TransformNormal(this, &Tmp, &TmpMat);
+		D3DXVec3TransformNormal(this, &tmp, &tmpMat);
 
 		return *this;
 	}
 
-	ChVector3_9&operator =(const D3DXMATRIX& _Mat)
+	ChVector3_9&operator =(const D3DXMATRIX& _mat)
 	{
-		x = _Mat._41;
-		y = _Mat._42;
-		z = _Mat._43;
+		x = _mat._41;
+		y = _mat._42;
+		z = _mat._43;
 		return *this;
 	}
 
@@ -49,14 +49,14 @@ public:
 		Set0Param();
 	}
 
-	ChVector3_9(const D3DXMATRIX& _Mat)
+	ChVector3_9(const D3DXMATRIX& _mat)
 	{
-		*this = _Mat;
+		*this = _mat;
 	}
 
-	ChVector3_9(const D3DXQUATERNION& _Qua)
+	ChVector3_9(const D3DXQUATERNION& _qua)
 	{
-		*this = _Qua;
+		*this = _qua;
 	}
 
 	ChVector3_9(const float _x, const float _y, const float _z)
@@ -66,46 +66,46 @@ public:
 		z = _z;
 	}
 
-	ChVector3_9(const float _Num)
+	ChVector3_9(const float _num)
 	{
-		x = _Num;
-		y = _Num;
-		z = _Num;
+		x = _num;
+		y = _num;
+		z = _num;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//GetFunction//
 
-	inline float GetLen(const D3DXVECTOR3& _Vec = D3DXVECTOR3(0.0f, 0.0f, 0.0f))
+	inline float GetLen(const D3DXVECTOR3& _vec = D3DXVECTOR3(0.0f, 0.0f, 0.0f))
 	{
-		ChVector3_9 TmpVec;
-		TmpVec = *this - _Vec;
+		ChVector3_9 tmpVec;
+		tmpVec = *this - _vec;
 
-		return D3DXVec3Length(&TmpVec);
+		return D3DXVec3Length(&tmpVec);
 	}
 
-	inline float GetRadian(const D3DXVECTOR3& _Vec)
+	inline float GetRadian(const D3DXVECTOR3& _vec)
 	{
-		ChVector3_9 TmpVec1, TmpVec2;
-		TmpVec1 = *this;
-		TmpVec2 = _Vec;
-		TmpVec1.Normalize();
-		TmpVec2.Normalize();
+		ChVector3_9 tmpVec1, tmpVec2;
+		tmpVec1 = *this;
+		tmpVec2 = _vec;
+		tmpVec1.Normalize();
+		tmpVec2.Normalize();
 
-		return acosf(D3DXVec3Dot(&TmpVec1, &TmpVec2));
+		return acosf(D3DXVec3Dot(&tmpVec1, &tmpVec2));
 	}
 
-	inline float GetDegree(const D3DXVECTOR3& _Vec)
+	inline float GetDegree(const D3DXVECTOR3& _vec)
 	{
-		ChVector3_9 TmpVec1, TmpVec2;
+		ChVector3_9 tmpVec1, tmpVec2;
 
-		TmpVec1 = *this;
-		TmpVec2 = _Vec;
+		tmpVec1 = *this;
+		tmpVec2 = _vec;
 
-		TmpVec1.Normalize();
-		TmpVec2.Normalize();
+		tmpVec1.Normalize();
+		tmpVec2.Normalize();
 
-		return D3DXToDegree(acosf(D3DXVec3Dot(&TmpVec1, &TmpVec2)));
+		return D3DXToDegree(acosf(D3DXVec3Dot(&tmpVec1, &tmpVec2)));
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
@@ -144,29 +144,29 @@ public:
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	inline void Move2D(const D3DXVECTOR3 *_Vec)
+	inline void Move2D(const D3DXVECTOR3 *_vec)
 	{
-		D3DXVECTOR3 TmpVec = *_Vec;
+		D3DXVECTOR3 tmpVec = *_vec;
 
-		TmpVec.x = 0.0f;
-		TmpVec.y = 0.0f;
+		tmpVec.x = 0.0f;
+		tmpVec.y = 0.0f;
 
-		*this += (*_Vec - TmpVec);
+		*this += (*_vec - tmpVec);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
 
 
-	inline void MatPos(const D3DXMATRIX& _Mat, const D3DXVECTOR3& _Vec)
+	inline void MatPos(const D3DXMATRIX& _mat, const D3DXVECTOR3& _vec)
 	{
-		D3DXVec3TransformCoord(this, &_Vec, &_Mat);
+		D3DXVec3TransformCoord(this, &_vec, &_mat);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	inline void MatNormal(const D3DXMATRIX& _Mat, const D3DXVECTOR3& _Vec = D3DXVECTOR3(0.0f, 0.0f, 1.0f))
+	inline void MatNormal(const D3DXMATRIX& _mat, const D3DXVECTOR3& _vec = D3DXVECTOR3(0.0f, 0.0f, 1.0f))
 	{
-		D3DXVec3TransformNormal(this, &_Vec, &_Mat);
+		D3DXVec3TransformNormal(this, &_vec, &_mat);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
@@ -174,33 +174,33 @@ public:
 	inline void Normalize()
 	{
 		if (CheckNormals())return;
-		float TmpLen = std::abs(this->x) + std::abs(this->y) + std::abs(this->z);
-		if (TmpLen > 0.0f)*this /= TmpLen;
+		float tmpLen = std::abs(this->x) + std::abs(this->y) + std::abs(this->z);
+		if (tmpLen > 0.0f)*this /= tmpLen;
 		else *this = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
 
 	inline void Lerp(
-		const D3DXVECTOR3& _SVec
-		,const D3DXVECTOR3& _EVec
-		,const float _NowTime)
+		const D3DXVECTOR3& _sVec
+		,const D3DXVECTOR3& _eVec
+		,const float _nowTime)
 	{
-		D3DXVec3Lerp(this, &_SVec, &_EVec, _NowTime);
+		D3DXVec3Lerp(this, &_sVec, &_eVec, _nowTime);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	inline void CrossVec(const D3DXVECTOR3& _Vec1, const D3DXVECTOR3& _Vec2)
+	inline void CrossVec(const D3DXVECTOR3& _vec1, const D3DXVECTOR3& _vec2)
 	{
-		D3DXVec3Cross(this, &_Vec1, &_Vec2);
+		D3DXVec3Cross(this, &_vec1, &_vec2);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	inline float DotVec(const D3DXVECTOR3& _Vec)
+	inline float DotVec(const D3DXVECTOR3& _vec)
 	{
-		return D3DXVec3Dot(&_Vec, this);
+		return D3DXVec3Dot(&_vec, this);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////

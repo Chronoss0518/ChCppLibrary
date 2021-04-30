@@ -9,27 +9,27 @@
 //ChLight9メソッド
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChLight9::ChLight9(LPDIRECT3DDEVICE9 _Dv) 
+ChLight9::ChLight9(LPDIRECT3DDEVICE9 _dv) 
 {
-	Device = _Dv;
-	Device->SetRenderState(D3DRS_LIGHTING, TRUE);
+	device = _dv;
+	device->SetRenderState(D3DRS_LIGHTING, TRUE);
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	//TypeSet(光源の種類)
 
-	Light.Type = D3DLIGHT_DIRECTIONAL;
+	light.Type = D3DLIGHT_DIRECTIONAL;
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	//DirectionSet(ライトの角度)
 
-	Light.Direction = D3DXVECTOR3(1.0f, -1.0f, 0.0f);
+	light.Direction = D3DXVECTOR3(1.0f, -1.0f, 0.0f);
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//Position(lightの位置)
 
 	{
-		auto Tmp = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		SetPos(&Tmp);
+		auto tmp = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		SetPos(&tmp);
 	}
 
 
@@ -50,25 +50,25 @@ ChLight9::ChLight9(LPDIRECT3DDEVICE9 _Dv)
 	///////////////////////////////////////////////////////////////////////////////////////
 	//RegisterLight
 
-	Device->SetLight(0, &Light);
-	Device->LightEnable(0, TRUE);
+	device->SetLight(0, &light);
+	device->LightEnable(0, TRUE);
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	//RangeSet(ライトの範囲)
 
-	Light.Range = 25.0f;
+	light.Range = 25.0f;
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	//AttenuatSet(長距離へ行った時のライトの強さ計算)
 
-	Light.Attenuation0 = 0.0f;
-	Light.Attenuation1 = 0.2f;
-	Light.Attenuation2 = 0.0f;
+	light.Attenuation0 = 0.0f;
+	light.Attenuation1 = 0.2f;
+	light.Attenuation2 = 0.0f;
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	//PositionSet(Point,SpotLight時のライトの位置)
 
-	Light.Position = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	light.Position = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 
 }
@@ -76,27 +76,27 @@ ChLight9::ChLight9(LPDIRECT3DDEVICE9 _Dv)
 ///////////////////////////////////////////////////////////////////////////////////
 
 	//Lightを使用するかしないかの設定
-void ChLight9::SetLight(bool Flg)
+void ChLight9::SetLight(bool _flg)
 {
-	Device->LightEnable(0, TRUE);
+	device->LightEnable(0, _flg);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 //Lightの角度の設定
-void ChLight9::SetDir(const ChVec3_9& _Dir)
+void ChLight9::SetDir(const ChVec3_9& _dir)
 {
-	ChVec3_9 TmpVec = _Dir;
-	TmpVec.Normalize();
-	Light.Direction = TmpVec;
+	ChVec3_9 tmpVec = _dir;
+	tmpVec.Normalize();
+	light.Direction = tmpVec;
 	RegisterLight();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLight9::SetPos(const D3DXVECTOR3 *_Pos)
+void ChLight9::SetPos(const D3DXVECTOR3 *_pos)
 {
-	Light.Position = *_Pos;
+	light.Position = *_pos;
 }
 
 
@@ -105,10 +105,10 @@ void ChLight9::SetPos(const D3DXVECTOR3 *_Pos)
 //Lightの光源色のセット
 void ChLight9::SetLightDif(const float _a, const float _r, const float _g, const float _b)
 {
-	Light.Diffuse.a = _a;
-	Light.Diffuse.r = _r;
-	Light.Diffuse.g = _g;
-	Light.Diffuse.b = _b;
+	light.Diffuse.a = _a;
+	light.Diffuse.r = _r;
+	light.Diffuse.g = _g;
+	light.Diffuse.b = _b;
 	RegisterLight();
 }
 
@@ -117,10 +117,10 @@ void ChLight9::SetLightDif(const float _a, const float _r, const float _g, const
 //Lightの光沢効果のセット
 void ChLight9::SetLightSpe(bool _SpeFlg, const float _r, const float _g, const float _b)
 {
-	Device->SetRenderState(D3DRS_SPECULARENABLE, _SpeFlg);
-	Light.Specular.r = _r;
-	Light.Specular.g = _g;
-	Light.Specular.b = _b;
+	device->SetRenderState(D3DRS_SPECULARENABLE, _SpeFlg);
+	light.Specular.r = _r;
+	light.Specular.g = _g;
+	light.Specular.b = _b;
 	RegisterLight();
 }
 
@@ -129,10 +129,10 @@ void ChLight9::SetLightSpe(bool _SpeFlg, const float _r, const float _g, const f
 //Lightの光沢効果のセット
 void ChLight9::SetLightAmb(bool _AmbFlg, const float _r, const float _g, const float _b)
 {
-	Device->SetRenderState(D3DRS_AMBIENT, _AmbFlg);
-	Light.Ambient.r = _r;
-	Light.Ambient.g = _g;
-	Light.Ambient.b = _b;
+	device->SetRenderState(D3DRS_AMBIENT, _AmbFlg);
+	light.Ambient.r = _r;
+	light.Ambient.g = _g;
+	light.Ambient.b = _b;
 	RegisterLight();
 }
 
@@ -140,5 +140,5 @@ void ChLight9::SetLightAmb(bool _AmbFlg, const float _r, const float _g, const f
 
 void ChLight9::RegisterLight()
 {
-	Device->SetLight(0, &Light);
+	device->SetLight(0, &light);
 }

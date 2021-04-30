@@ -21,12 +21,12 @@ public:
 
 	ChPhysicalBase9()
 	{
-		ObjCon = &ChObjCon9();
+		objCon = &ChObjCon9();
 	}
 
 	virtual  ~ChPhysicalBase9()
 	{
-		ObjCon = nullptr;
+		objCon = nullptr;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
@@ -39,22 +39,22 @@ public:
 	///////////////////////////////////////////////////////////////////////////////////
 	//SetFunction//
 
-	void SetMesh(const ChPtr::Shared<ChMesh::Mesh9> _Mesh);
+	void SetMesh(const ChPtr::Shared<ChMesh::Mesh9> _mesh);
 
 	//重力の場合は重力の力を変更可能(通常時は下方向に秒速9.8の速さで落ちる)//
 	inline virtual void SetData(const float) {}
 
-	inline void SetLen(const float _BaseLen) 
+	inline void SetLen(const float _baseLen) 
 	{
-		BaseLen = _BaseLen;
+		baseLen = _baseLen;
 	}
 
 	//オブジェクトコントローラーのセット//
 	//拡張したオブジェクトコントローラーをセットできる//
-	inline void SetObjCon(ChObjectController9* _YouUsedObjCon)
+	inline void SetObjCon(ChObjectController9* _youUsedObjCon)
 	{
-		if (ChPtr::NullCheck(_YouUsedObjCon))return;
-		ObjCon = _YouUsedObjCon;
+		if (ChPtr::NullCheck(_youUsedObjCon))return;
+		objCon = _youUsedObjCon;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
@@ -69,13 +69,13 @@ public:
 
 protected:
 
-	std::vector<ChPtr::Weak<ChMesh::Mesh9>>WpXList;
+	std::vector<ChPtr::Weak<ChMesh::Mesh9>>wpXList;
 
-	float BaseLen = 1.0f;
-	ChObjectController9* ObjCon;
-	float Pow = 0.0f;
+	float baseLen = 1.0f;
+	ChObjectController9* objCon = nullptr;
+	float pow = 0.0f;
 	float FPS = 60.0f;
-	ChVec3_9 Vec;
+	ChVec3_9 vec;
 
 };
 
@@ -93,23 +93,23 @@ public:
 	///////////////////////////////////////////////////////////////////////////////////
 	//SetFunction//
 
-	inline void SetData(const float _Data)override
+	inline void SetData(const float _data)override
 	{
-		G = _Data;
+		g = _data;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//UpdateFunction//
 
 	ChStd::Bool UpDate(
-		ChVec3_9* _Pos
-		, const ChVec3_9* _MoveDir)override;
+		ChVec3_9* _pos
+		, const ChVec3_9* _moveDir)override;
 
 private:
 
-	float VirtualHeight = 0.0f;
-	float G = 9.8f;
-	float TmpSpeed = 0.0f;
+	float virtualHeight = 0.0f;
+	float g = 9.8f;
+	float tmpSpeed = 0.0f;
 };
 
 //物体への衝突時に押し戻すクラス//
@@ -127,7 +127,7 @@ public:
 
 	inline void SetData(const float _Data)override
 	{
-		BackLine = _Data;
+		backLine = _Data;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
@@ -137,7 +137,7 @@ public:
 
 private:
 
-	float BackLine = 1.0f;
+	float backLine = 1.0f;
 };
 
 #endif

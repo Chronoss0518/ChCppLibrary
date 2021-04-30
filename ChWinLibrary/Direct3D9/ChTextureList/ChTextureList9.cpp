@@ -13,53 +13,53 @@ using namespace ChTex;
 ///////////////////////////////////////////////////////////////////////////////////////
 
 void ChTexList9::SetTexture(
-	const std::string& _TextureName
-	, const ChStd::DataNo DataNum
-	, const unsigned int _GameReSizeWidth
-	, const unsigned int _GameReSizeHeight
+	const std::string& _textureName
+	, const ChStd::DataNo _dataNum
+	, const unsigned int _gameReSizeWidth
+	, const unsigned int _gameReSizeHeight
 	, const D3DCOLOR ColorKey)
 {
-	if (TexList.find(DataNum) != TexList.end())return;
+	if (texList.find(_dataNum) != texList.end())return;
 
-	if (_TextureName.length() <= 0)return;
+	if (_textureName.length() <= 0)return;
 
-	std::string TmpPath = "./";
+	std::string tmpPath = "./";
 
-	if (DirectoryPath.length() > 0)
+	if (directoryPath.length() > 0)
 	{
-		TmpPath = DirectoryPath;
-		TmpPath += "/";
+		tmpPath = directoryPath;
+		tmpPath += "/";
 	}
 
-	std::string TmpString = _TextureName;
+	std::string tmpString = _textureName;
 
-	TmpString = TmpPath + TmpString;
+	tmpString = tmpPath + tmpString;
 
-	auto TmpTex = ChTex::Texture9::TextureType(TmpString);
+	auto tmpTex = ChTex::Texture9::TextureType(tmpString);
 
-	TmpTex->CreateTexture(TmpString,Device, ColorKey);
+	tmpTex->CreateTexture(tmpString,device, ColorKey);
 
-	if (ChPtr::NullCheck(TmpTex->GetTex()))
+	if (ChPtr::NullCheck(tmpTex->GetTex()))
 	{
 		//ChSystem::ErrerMessage("‰æ‘œ‚ª“Ç‚Ýž‚Ü‚ê‚Ü‚¹‚ñ‚Å‚µ‚½", "Œx");
 
-		TmpTex = nullptr;
+		tmpTex = nullptr;
 		return;
 	}
 
-	TmpTex->InsSclXSize() = 1.0f;
-	TmpTex->InsSclYSize() = 1.0f;
+	tmpTex->InsSclXSize() = 1.0f;
+	tmpTex->InsSclYSize() = 1.0f;
 	
 	{
 		float tmpX, tmpY;
-		tmpX = _GameReSizeWidth > 1.0f ? (float)_GameReSizeWidth / (float)TmpTex->GetOriginalWidth() : 1.0f;
-		tmpY = _GameReSizeHeight > 1.0f ? (float)_GameReSizeHeight / (float)TmpTex->GetOriginalHeight() : 1.0f;
+		tmpX = _gameReSizeWidth > 1.0f ? (float)_gameReSizeWidth / (float)tmpTex->GetOriginalWidth() : 1.0f;
+		tmpY = _gameReSizeHeight > 1.0f ? (float)_gameReSizeHeight / (float)tmpTex->GetOriginalHeight() : 1.0f;
 		
-		TmpTex->InsSclXSize() = tmpX;
-		TmpTex->InsSclYSize() = tmpY;
+		tmpTex->InsSclXSize() = tmpX;
+		tmpTex->InsSclYSize() = tmpY;
 	}
 
-	TexList[DataNum] = TmpTex;
+	texList[_dataNum] = tmpTex;
 
 
 
@@ -68,28 +68,28 @@ void ChTexList9::SetTexture(
 ///////////////////////////////////////////////////////////////////////////////////
 
 void TextureList9::SetColorTex(
-	const unsigned long& _Color
-	, const ChStd::DataNo _DataNum
-	, const unsigned int _GameReSizeWidth
-	, const unsigned int _GameReSizeHeight
-	, const unsigned long _Type)
+	const unsigned long& _color
+	, const ChStd::DataNo _dataNum
+	, const unsigned int _gameReSizeWidth
+	, const unsigned int _gameReSizeHeight
+	, const unsigned long _type)
 {
-	if (TexList.find(_DataNum) != TexList.end())return;
+	if (texList.find(_dataNum) != texList.end())return;
 
-	auto TmpTex = ChPtr::Make_S<Texture9>();
+	auto tmpTex = ChPtr::Make_S<Texture9>();
 
-	TmpTex->CreateColTexture(Device, _Color);
+	tmpTex->CreateColTexture(device, _color);
 
-	TmpTex->InsSclXSize() = 1.0f;
-	TmpTex->InsSclYSize() = 1.0f;
+	tmpTex->InsSclXSize() = 1.0f;
+	tmpTex->InsSclYSize() = 1.0f;
 
-	if (_GameReSizeWidth > 0 && _GameReSizeHeight > 0)
+	if (_gameReSizeWidth > 0 && _gameReSizeHeight > 0)
 	{
-		TmpTex->InsSclXSize() = (float)_GameReSizeWidth;
-		TmpTex->InsSclYSize() = (float)_GameReSizeHeight;
+		tmpTex->InsSclXSize() = (float)_gameReSizeWidth;
+		tmpTex->InsSclYSize() = (float)_gameReSizeHeight;
 	}
 
-	TexList[_DataNum] = TmpTex;
+	texList[_dataNum] = tmpTex;
 
 	return;
 }
@@ -97,20 +97,20 @@ void TextureList9::SetColorTex(
 ///////////////////////////////////////////////////////////////////////////////////
 
 void TextureList9::SetBlendColor(
-	const ChVec4& _Color
-	, const ChStd::DataNo DataNum)
+	const ChVec4& _color
+	, const ChStd::DataNo _dataNum)
 {
-	if (TexList.find(DataNum) == TexList.end())return;
+	if (texList.find(_dataNum) == texList.end())return;
 
-	TexList[DataNum]->SetBaseColor(_Color);
+	texList[_dataNum]->SetBaseColor(_color);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void TextureList9::SetBlendAlpha(const unsigned char _a, const ChStd::DataNo DataNum) {
+void TextureList9::SetBlendAlpha(const unsigned char _a, const ChStd::DataNo _dataNum) {
 
-	if (TexList.find(DataNum) == TexList.end())return;
+	if (texList.find(_dataNum) == texList.end())return;
 
-	TexList[DataNum]->InsBaseColor().a = _a;
+	texList[_dataNum]->InsBaseColor().a = _a;
 }
 

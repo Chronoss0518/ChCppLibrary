@@ -23,20 +23,20 @@
 //ChModelComponent9メソッド
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChModelCom9::SetModel(const std::string& _ModelName)
+void ChModelCom9::SetModel(const std::string& _modelName)
 {
-	Model = nullptr;
+	model = nullptr;
 
-	std::string MName = _ModelName;
-	std::string Path = "./";
+	std::string mName = _modelName;
+	std::string path = "./";
 
-	DIvidePathToName(Path, MName, _ModelName);
+	DIvidePathToName(path, mName, _modelName);
 
-	Model = ChMesh::BaseMesh9::MeshType(MName);
+	model = ChMesh::BaseMesh9::MeshType(mName);
 
-	Model->CreateMesh(MName, Path, ChD3D9::D3D9API().GetDevice());
+	model->CreateMesh(mName, path, ChD3D9::D3D9API().GetDevice());
 
-	if (ChPtr::NullCheck(Model->GetMesh()))Model = nullptr;
+	if (ChPtr::NullCheck(model->GetMesh()))model = nullptr;
 
 
 }
@@ -45,63 +45,63 @@ void ChModelCom9::SetModel(const std::string& _ModelName)
 
 void ChModelCom9::Draw3D()
 {
-	if (Model == nullptr)return;
-	if (Model->GetMesh() == nullptr)return;
+	if (model == nullptr)return;
+	if (model->GetMesh() == nullptr)return;
 
-	ChMat_9 TmpMat;
+	ChMat_9 tmpMat;
 	{
 
 		//auto Trans = LookObj()->GetTransform<ChTransformCom9>();
 
 		//if (nullptr != Trans)
 		//{
-		//	TmpMat = Trans->GetMat();
+		//	tmpMat = Trans->GetMat();
 		//}
 
 	}
 
-	ChD3D9::Shader().DrawMesh(Model, TmpMat);
+	ChD3D9::Shader().DrawMesh(model, tmpMat);
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChModelCom9::DIvidePathToName(
-	std::string& _Path
-	, std::string& _Name
-	, const std::string& _FullPathName)
+	std::string& _path
+	, std::string& _name
+	, const std::string& _fullPathName)
 {
 
 	{
 
-		size_t SPos = 0;
+		size_t sPos = 0;
 		
-		ChStd::Bool TmpFlg = false;
+		ChStd::Bool tmpFlg = false;
 
-		size_t SlashSize = 1;
-		std::string Slash[2]
+		size_t slashSize = 1;
+		std::string slash[2]
 		{
 			"/","\\"
 		};
 
-		for (auto&& sla : Slash)
+		for (auto&& sla : slash)
 		{
-			if ((SPos = _FullPathName.rfind(sla.c_str(), _FullPathName.size()))
+			if ((sPos = _fullPathName.rfind(sla.c_str(), _fullPathName.size()))
 				== std::string::npos)continue;
 
-			size_t TmpSize = _FullPathName.size() - SPos;
-			SlashSize = sla.length();
-			TmpFlg = true;
+			size_t tmpSize = _fullPathName.size() - sPos;
+			slashSize = sla.length();
+			tmpFlg = true;
 			break;
 		}
 
 
-		if (!TmpFlg)return;
+		if (!tmpFlg)return;
 
-		size_t TmpSize = _FullPathName.size() - SPos;
+		size_t tmpSize = _fullPathName.size() - sPos;
 
-		_Path = _FullPathName.substr(0, SPos);
-		_Name = _FullPathName.substr(SPos + SlashSize, TmpSize);
+		_path = _fullPathName.substr(0, sPos);
+		_name = _fullPathName.substr(sPos + slashSize, tmpSize);
 
 	}
 
@@ -111,33 +111,33 @@ void ChModelCom9::DIvidePathToName(
 //ChMModelComponent9メソッド
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChMModelCom9::SetModel(const std::string& _ModelName)
+void ChMModelCom9::SetModel(const std::string& _modelName)
 {
-	std::string MName = _ModelName;
-	std::string Path = "./";
+	std::string mName = _modelName;
+	std::string path = "./";
 
-	Model = nullptr;
+	model = nullptr;
 
-	DIvidePathToName(Path, MName, _ModelName);
+	DIvidePathToName(path, mName, _modelName);
 
-	auto TmpMesh = ChMesh::MeManager9().GetMesh(MName);
+	auto tmpMesh = ChMesh::MeManager9().GetMesh(mName);
 
-	if (TmpMesh != nullptr)
+	if (tmpMesh != nullptr)
 	{
-		Model = TmpMesh;
+		model = tmpMesh;
 
 		return;
 
 	}
 
-	if (!ChMesh::MeManager9().IsPath(Path))
+	if (!ChMesh::MeManager9().IsPath(path))
 	{
-		ChMesh::MeManager9().SetDirectoryPath(Path, Path);
+		ChMesh::MeManager9().SetDirectoryPath(path, path);
 	}
 
-	ChMesh::MeManager9().SetMesh(MName, MName, Path);
+	ChMesh::MeManager9().SetMesh(mName, mName, path);
 
-	Model = ChMesh::MeManager9().GetMesh(MName);
+	model = ChMesh::MeManager9().GetMesh(mName);
 
 }
 
@@ -145,21 +145,21 @@ void ChMModelCom9::SetModel(const std::string& _ModelName)
 //ChSkinMeshModelComponent9メソッド
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChSkModelCom9::SetModel(const std::string& _ModelName)
+void ChSkModelCom9::SetModel(const std::string& _modelName)
 {
-	Model = nullptr;
+	model = nullptr;
 
-	std::string MName = _ModelName;
-	std::string Path = "./";
+	std::string mName = _modelName;
+	std::string path = "./";
 
-	DIvidePathToName(Path, MName, _ModelName);
+	DIvidePathToName(path, mName, _modelName);
 
 
-	Model = ChMesh::BaseMesh9::SkinMeshType(MName);
+	model = ChMesh::BaseMesh9::SkinMeshType(mName);
 
-	Model->CreateMesh(MName, Path, ChD3D9::D3D9API().GetDevice());
+	model->CreateMesh(mName, path, ChD3D9::D3D9API().GetDevice());
 
-	if (ChPtr::NullCheck(Model->GetMesh()))Model = nullptr;
+	if (ChPtr::NullCheck(model->GetMesh()))model = nullptr;
 
 
 }
@@ -168,13 +168,13 @@ void ChSkModelCom9::SetModel(const std::string& _ModelName)
 
 void ChSkModelCom9::Update()
 {
-	if (Model == nullptr)return;
+	if (model == nullptr)return;
 
-	auto TmpModel = ChPtr::SharedSafeCast<ChMesh::SkinMesh9>(Model);
+	auto tmpModel = ChPtr::SharedSafeCast<ChMesh::SkinMesh9>(model);
 
-	if (TmpModel == nullptr)return;
+	if (tmpModel == nullptr)return;
 
-	TmpModel->SetSkin();
+	tmpModel->SetSkin();
 
 }
 
@@ -182,36 +182,36 @@ void ChSkModelCom9::Update()
 //ChMSkinMeshModelComponent9メソッド
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChMSkModelCom9::SetModel(const std::string& _ModelName)
+void ChMSkModelCom9::SetModel(const std::string& _modelName)
 {
-	std::string MName = _ModelName;
-	std::string Path = "./";
+	std::string mName = _modelName;
+	std::string path = "./";
 
-	Model = nullptr;
+	model = nullptr;
 
-	DIvidePathToName(Path, MName, _ModelName);
+	DIvidePathToName(path, mName, _modelName);
 
 
-	auto TmpMesh = ChPtr::SharedSafeCast
-		<ChMesh::SkinMesh9>(ChMesh::MeManager9().GetMesh(MName));
+	auto tmpMesh = ChPtr::SharedSafeCast
+		<ChMesh::SkinMesh9>(ChMesh::MeManager9().GetMesh(mName));
 
-	if (TmpMesh != nullptr)
+	if (tmpMesh != nullptr)
 	{
-		Model = TmpMesh;
+		model = tmpMesh;
 
 		return;
 
 	}
 
-	if (ChMesh::MeManager9().IsMesh(MName))return;
+	if (ChMesh::MeManager9().IsMesh(mName))return;
 
-	if (!ChMesh::MeManager9().IsPath(Path))
+	if (!ChMesh::MeManager9().IsPath(path))
 	{
-		ChMesh::MeManager9().SetDirectoryPath(Path, Path);
+		ChMesh::MeManager9().SetDirectoryPath(path, path);
 	}
 
-	ChMesh::MeManager9().SetSkinMesh(MName, MName, Path);
+	ChMesh::MeManager9().SetSkinMesh(mName, mName, path);
 
-	Model = ChMesh::MeManager9().GetMesh(MName);
+	model = ChMesh::MeManager9().GetMesh(mName);
 
 }

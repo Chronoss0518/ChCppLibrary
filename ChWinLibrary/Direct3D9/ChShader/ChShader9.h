@@ -23,33 +23,33 @@ namespace ChD3D9
 
 	//※LightはShader内のBaseLightとPointLightを利用してください//
 	//独自で構築しているShaderクラス//
-	class ShaderController:public ChCpp::ClassPerts::Initializer
+	class ShaderController:public ChCpp::ClassPerts::Initializer,public ChCpp::ClassPerts::Releaser
 	{
 
 	protected:
 
 		struct LambertLight
 		{
-			ChVec4 Dif = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
-			ChVec3_9 Dir = ChVec3_9(0.0f, -1.0f, 0.0f);
-			float AmbPow = 0.3f;
+			ChVec4 dif = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
+			ChVec3_9 dir = ChVec3_9(0.0f, -1.0f, 0.0f);
+			float ambPow = 0.3f;
 		};
 
 		struct PointLight
 		{
 			PointLight() {}
 
-			ChVec3 Dif = ChVec3(1.0f);
-			float Len = 1.0f;
-			ChVec3_9 Pos = ChVec3_9();
-			bool Flg;
+			ChVec3 dif = ChVec3(1.0f);
+			float len = 1.0f;
+			ChVec3_9 pos = ChVec3_9();
+			bool flg;
 		};
 
 		struct Material
 		{
-			ChVec4 Dif;
-			ChVec3 SpeCol;
-			float SpePow;
+			ChVec4 dif;
+			ChVec3 speCol;
+			float spePow;
 		};
 
 	public:
@@ -59,147 +59,98 @@ namespace ChD3D9
 
 		//第一引数にChLibraryの入っているDirectoryPathを選択//
 		void Init(const LPDIRECT3DDEVICE9 _d
-			, const D3DPRESENT_PARAMETERS& Param
-			, const float& _WindWidth = 1280.0f
-			, const float& _WindHeight = 720.0f);
+			, const D3DPRESENT_PARAMETERS& param
+			, const float& _windWidth = 1280.0f
+			, const float& _windHeight = 720.0f);
 
 	protected:
 
-		inline void InitShader()
-		{
+		void InitShader();
 
-			{
-#include"ModelBVS.inc"
-
-
-				Device->CreateVertexShader((DWORD*)ModelBVS, &BVModel);
-			}
-
-			{
-#include"ModelBPS.inc"
-
-
-				Device->CreatePixelShader((DWORD*)ModelBPS, &BPModel);
-			}
-
-			{
-#include"ModelOLVS.inc"
-
-
-				Device->CreateVertexShader((DWORD*)ModelOLVS, &CVModel);
-			}
-
-			{
-#include"ModelCPS.inc"
-
-
-				Device->CreatePixelShader((DWORD*)ModelCPS, &CPModel);
-			}
-
-			{
-#include"SpTexVS.inc"
-
-
-				Device->CreateVertexShader((DWORD*)SpTexVS, &SpVTex);
-			}
-
-			{
-#include"PoTexVS.inc"
-
-				Device->CreateVertexShader((DWORD*)PoTexVS, &PoVTex);
-			}
-
-			{
-#include"TexPS.inc"
-
-				Device->CreatePixelShader((DWORD*)TexPS, &BPTex);
-			}
-
-		}
 	public:
 
-		void Release();
+		void Release()override;
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
 		//描画をする際に利用するカリングタイプをセット//
-		inline void SetCullMode(const CULL _CULL)
+		inline void SetCullMode(const CULL _cull)
 		{
-			Cull = _CULL;
-			Device->SetRenderState(D3DRS_CULLMODE, ChStd::EnumCast(_CULL));
+			cull = _cull;
+			device->SetRenderState(D3DRS_CULLMODE, ChStd::EnumCast(_cull));
 		}
 
 		//霧効果を使用するか否かのフラグ//
-		inline void SetFogFlg(ChStd::Bool _Flg) { FogFlg = _Flg; }
+		inline void SetFogFlg(ChStd::Bool _flg) { fogFlg = _flg; }
 
 		//Windサイズの設定//
 		inline void SetWindSize(const float _w, const float _h)
 		{
-			WindSize.w = _w;
-			WindSize.h = _h;
+			windSize.w = _w;
+			windSize.h = _h;
 		}
 
 		inline void SetWindSize(const ChVec4& _Size)
 		{
-			WindSize = _Size;
+			windSize = _Size;
 		}
 
 		//自身の用意したライトの強さを表すテクスチャを利用するためのフラグ//
 		inline void SetLightPowTexFlg(const ChStd::Bool _Flg)
 		{
-			if (MyLightTex == nullptr)return;
-			UseMyLightTex = _Flg;
+			if (myLightTex == nullptr)return;
+			useMyLightTex = _Flg;
 		}
 
-		inline void SetCamPos(const ChVec3_9& _Pos) { CamPos = _Pos; }
+		inline void SetCamPos(const ChVec3_9& _pos) { camPos = _pos; }
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
-		inline LambertLight& GetLightInstanse() { return Light; }
+		inline LambertLight& GetLightInstanse() { return light; }
 
 		struct PointLights
 		{
-			PointLight Light[7];
+			PointLight light[7];
 
 			PointLight& operator[](int _Num)
 			{
-				return Light[_Num];
+				return light[_Num];
 			}
 		};
 
-		inline PointLights& GetPointLightInstanse() { return PosLight; }
+		inline PointLights& GetPointLightInstanse() { return posLight; }
 
 		inline CULL GetCullMode()
 		{
-			return Cull;
+			return cull;
 		}
 
 		inline ChVec2 GetWindSize()
 		{
-			return WindSize;
+			return windSize;
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
 
-		void IsLight(const ChStd::Bool _Flg);
+		void IsLight(const ChStd::Bool _flg);
 
 		//描画可能確認関数//
 		inline ChStd::Bool IsDraw()
 		{
-			return DrawFlg;
+			return drawFlg;
 		}
 
-		inline ChStd::Bool IsRTDraw() { return RTDrawFlg; }
+		inline ChStd::Bool IsRTDraw() { return rtDrawFlg; }
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//描画開始前に呼ぶ関数//
 		//ChTex::RenderTargetManager9::SetRT//
 		//ChTex::RenderTargetList9::SetRTとは併用できません//
-		void DrawStart(const D3DCOLOR& _BackColor = D3DCOLOR_ARGB(255, 255, 255, 255));
+		void DrawStart(const D3DCOLOR& _backColor = D3DCOLOR_ARGB(255, 255, 255, 255));
 
 		///////////////////////////////////////////////////////////////////////////////////
 
@@ -212,38 +163,38 @@ namespace ChD3D9
 
 		//Mesh描画用関数//
 		void DrawMesh(
-			const ChPtr::Shared<ChMesh::Mesh9> _Mesh
-			, const ChMat_9& _Mat = ChMat_9());
+			const ChPtr::Shared<ChMesh::Mesh9> _mesh
+			, const ChMat_9& _mat = ChMat_9());
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//Mesh描画用関数//
 		void DrawMeshContour(
-			const ChPtr::Shared<ChMesh::Mesh9> _Mesh
-			, const ChVec4& _Color
-			, const ChMat_9& _Mat = ChMat_9()
-			, const float _Size = 1.0f);
+			const ChPtr::Shared<ChMesh::Mesh9> _mesh
+			, const ChVec4& _color
+			, const ChMat_9& _mat = ChMat_9()
+			, const float _size = 1.0f);
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//板ポリゴン描画//
 		void DrawPolygonBoard(
-			const ChPtr::Shared<ChTex::Texture9>& _Tex
-			, const VertexData& _Vertex
-			, const ChMat_9& _Mat = ChMat_9()
-			, const unsigned int _TriangleCount = 2);
+			const ChPtr::Shared<ChTex::Texture9>& _tex
+			, const VertexData& _vertex
+			, const ChMat_9& _mat = ChMat_9()
+			, const unsigned int _triangleCount = 2);
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//スプライト描画//
 		void DrawSprite(
-			const ChPtr::Shared<ChTex::Texture9>& _Tex
-			, const ChMat_9& _Mat = ChMat_9()
-			, const SpriteData&_SpData = SpriteData(ChVec2(0.0f, 0.0f), WindSize));
+			const ChPtr::Shared<ChTex::Texture9>& _tex
+			, const ChMat_9& _mat = ChMat_9()
+			, const SpriteData&_spData = SpriteData(ChVec2(0.0f, 0.0f), windSize));
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		void CreateLightPowTex(const std::string& _LightPowTexName);
+		void CreateLightPowTex(const std::string& _lightPowTexName);
 
 		///////////////////////////////////////////////////////////////////////////////////
 
@@ -253,22 +204,22 @@ namespace ChD3D9
 	protected:
 
 		//レンダーターゲット用フラグ//
-		inline void SetRTDraw(const ChStd::Bool _Flg) { RTDrawFlg = _Flg; }
+		inline void SetRTDraw(const ChStd::Bool _flg) { rtDrawFlg = _flg; }
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//描画データの初期化//
 		void SetDrawDatas(const D3DCOLOR&
-			_BackColor);
+			_backColor);
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		struct TmpPLight
 		{
 			
-			ChVec3 Dif = ChVec3(1.0f);
-			ChVec3_9 Pos = ChVec3_9();
-			float Len = 1.0f;
+			ChVec3 dif = ChVec3(1.0f);
+			ChVec3_9 pos = ChVec3_9();
+			float len = 1.0f;
 		};
 
 		void MakeBlurFuncNum();
@@ -291,7 +242,7 @@ namespace ChD3D9
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//標準マテリアルから自身の使うマテリアル型への変更//
-		Material SetMateData(D3DMATERIAL9& _Mate);
+		Material SetMateData(D3DMATERIAL9& _mate);
 
 		///////////////////////////////////////////////////////////////////////////////////
 
@@ -300,74 +251,74 @@ namespace ChD3D9
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//3Dモデル描画用シェーダー//
-		LPDIRECT3DVERTEXSHADER9 BVModel = nullptr;
-		LPDIRECT3DPIXELSHADER9 BPModel = nullptr;
-		LPDIRECT3DVERTEXSHADER9 CVModel = nullptr;
-		LPDIRECT3DPIXELSHADER9 CPModel = nullptr;
+		LPDIRECT3DVERTEXSHADER9 bVModel = nullptr;
+		LPDIRECT3DPIXELSHADER9 bPModel = nullptr;
+		LPDIRECT3DVERTEXSHADER9 cVModel = nullptr;
+		LPDIRECT3DPIXELSHADER9 cPModel = nullptr;
 
 		//板ポリゴンなどテクスチャ単体描画用シェーダー//
-		LPDIRECT3DVERTEXSHADER9 SpVTex = nullptr;
-		LPDIRECT3DVERTEXSHADER9 PoVTex = nullptr;
-		LPDIRECT3DPIXELSHADER9 BPTex = nullptr;
+		LPDIRECT3DVERTEXSHADER9 spVTex = nullptr;
+		LPDIRECT3DVERTEXSHADER9 poVTex = nullptr;
+		LPDIRECT3DPIXELSHADER9 bPTex = nullptr;
 
-		LPD3DXCONSTANTTABLE PixelCnstant = nullptr;
-		LPD3DXCONSTANTTABLE VertexCnstant = nullptr;
+		LPD3DXCONSTANTTABLE pixelCnstant = nullptr;
+		LPD3DXCONSTANTTABLE vertexCnstant = nullptr;
 
-		ChStd::Bool AllCreateFlg = false;
+		ChStd::Bool allCreateFlg = false;
 
 		//ベースとなる頂点情報//
-		LPDIRECT3DVERTEXDECLARATION9 BaseDec = nullptr;
+		LPDIRECT3DVERTEXDECLARATION9 baseDec = nullptr;
 
 		//頂点情報変更用//
-		LPDIRECT3DVERTEXDECLARATION9 TVerDec = nullptr;
-		LPDIRECT3DVERTEXDECLARATION9 MVerDec = nullptr;
+		LPDIRECT3DVERTEXDECLARATION9 tVerDec = nullptr;
+		LPDIRECT3DVERTEXDECLARATION9 mVerDec = nullptr;
 
 		//モデルの画像がない場合にセットする//
-		ChPtr::Shared<ChTex::BaseTexture9>WhiteTex = nullptr;
+		ChPtr::Shared<ChTex::BaseTexture9>whiteTex = nullptr;
 
 		//モデルの法線マップがない場合に使用する画像//
-		ChPtr::Shared<ChTex::BaseTexture9>NormalTex = nullptr;
+		ChPtr::Shared<ChTex::BaseTexture9>normalTex = nullptr;
 
 		//ライトの強さを表す画像情報//
-		ChPtr::Shared<ChTex::BaseTexture9>LightEffectTex = nullptr;
+		ChPtr::Shared<ChTex::BaseTexture9>lightEffectTex = nullptr;
 
 		//ひとつ前の描画保存用//
-		ChPtr::Shared<ChTex::Texture9>BeforeTex = nullptr;
+		ChPtr::Shared<ChTex::Texture9>beforeTex = nullptr;
 
-		ChStd::Bool LightUseFlg = false;
+		ChStd::Bool lightUseFlg = false;
 
 		//専用ライト//
-		LambertLight Light = LambertLight();
+		LambertLight light = LambertLight();
 
 		//専用ポイントライト//
-		PointLights PosLight = PointLights();
+		PointLights posLight = PointLights();
 
-		ChVec3_9 CamPos = ChVec3_9();
+		ChVec3_9 camPos = ChVec3_9();
 
-		LPDIRECT3DDEVICE9 Device = nullptr;
+		LPDIRECT3DDEVICE9 device = nullptr;
 
 		//Device初期化用パラメータ//
-		D3DPRESENT_PARAMETERS Param{ 0 };
+		D3DPRESENT_PARAMETERS param{ 0 };
 
-		LPDIRECT3DCUBETEXTURE9 AmbTex = nullptr;
+		LPDIRECT3DCUBETEXTURE9 ambTex = nullptr;
 
 		//ライトの強さを設定する画像//
-		ChPtr::Shared<ChTex::Texture9>MyLightTex = nullptr;
+		ChPtr::Shared<ChTex::Texture9>myLightTex = nullptr;
 
-		ChStd::Bool UseMyLightTex = false;
+		ChStd::Bool useMyLightTex = false;
 
 		//描画可能フラグ//
-		ChStd::Bool DrawFlg = false;
-		ChStd::Bool RTDrawFlg = false;
+		ChStd::Bool drawFlg = false;
+		ChStd::Bool rtDrawFlg = false;
 
 		//フォグ描画フラグ//
-		ChStd::Bool FogFlg = false;
+		ChStd::Bool fogFlg = false;
 
 		//ウィンドサイズ//
-		static ChVec2 WindSize;
+		static ChVec2 windSize;
 
 		//カリングタイプ//
-		CULL Cull = CULL::NONE;
+		CULL cull = CULL::NONE;
 
 		///////////////////////////////////////////////////////////////////////////////////
 
@@ -375,15 +326,13 @@ namespace ChD3D9
 
 		static inline ShaderController& GetIns()
 		{
-			static ShaderController Ins;
-			return Ins;
+			static ShaderController ins;
+			return ins;
 		}
 
 	protected:
 
 		ShaderController() {}
-
-		~ShaderController() {}
 
 	};
 

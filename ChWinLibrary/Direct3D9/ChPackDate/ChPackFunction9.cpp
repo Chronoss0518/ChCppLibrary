@@ -4,25 +4,20 @@
 
 #include"../../BaseIncluder/ChD3D9I.h"
 
-
-#include"ChVector3_9.h"
-#include"ChQuaternion_9.h"
-#include"ChMatrix_9.h"
-
 ///////////////////////////////////////////////////////////////////////////////////
 //ChVector4Operator//
 ///////////////////////////////////////////////////////////////////////////////////
 
 ChVec4::operator const D3DXVECTOR4()const
 {
-	D3DXVECTOR4 TmpVec;
+	D3DXVECTOR4 tmpVec;
 
-	TmpVec.x = x;
-	TmpVec.y = y;
-	TmpVec.z = z;
-	TmpVec.w = w;
+	tmpVec.x = x;
+	tmpVec.y = y;
+	tmpVec.z = z;
+	tmpVec.w = w;
 
-	return TmpVec;
+	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -34,12 +29,12 @@ ChVec4::operator const D3DXVECTOR4*()const
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVec4& ChVec4::operator= (const D3DXVECTOR4& _Vec)
+ChVec4& ChVec4::operator= (const D3DXVECTOR4& _vec)
 {
-	x = _Vec.x;
-	y = _Vec.y;
-	z = _Vec.z;
-	w = _Vec.w;
+	x = _vec.x;
+	y = _vec.y;
+	z = _vec.z;
+	w = _vec.w;
 
 	return *this;
 }
@@ -50,13 +45,13 @@ ChVec4& ChVec4::operator= (const D3DXVECTOR4& _Vec)
 
 ChVec3::operator const D3DXVECTOR3()const
 {
-	D3DXVECTOR3 TmpVec;
+	D3DXVECTOR3 tmpVec;
 
-	TmpVec.x = x;
-	TmpVec.y = y;
-	TmpVec.z = z;
+	tmpVec.x = x;
+	tmpVec.y = y;
+	tmpVec.z = z;
 
-	return TmpVec;
+	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -68,40 +63,40 @@ ChVec3::operator const D3DXVECTOR3*()const
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVec3& ChVec3::operator= (const D3DXVECTOR3& _Vec)
+ChVec3& ChVec3::operator= (const D3DXVECTOR3& _vec)
 {
-	x = _Vec.x;
-	y = _Vec.y;
-	z = _Vec.z;
+	x = _vec.x;
+	y = _vec.y;
+	z = _vec.z;
 
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVec3& ChVec3::operator= (const D3DXQUATERNION& _Qua)
+ChVec3& ChVec3::operator= (const D3DXQUATERNION& _qua)
 {
-	D3DXMATRIX TmpMat;
-	D3DXVECTOR3 TmpVec;
+	D3DXMATRIX tmpMat;
+	D3DXVECTOR3 tmpVec;
 
-	D3DXMatrixRotationQuaternion(&TmpMat, &_Qua);
+	D3DXMatrixRotationQuaternion(&tmpMat, &_qua);
 
-	auto Tmp = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
+	auto tmp = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
 
-	D3DXVec3TransformNormal(&TmpVec, &Tmp, &TmpMat);
+	D3DXVec3TransformNormal(&tmpVec, &tmp, &tmpMat);
 
-	*this = TmpVec;
+	*this = tmpVec;
 
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVec3& ChVec3::operator= (const D3DXMATRIX& _Mat)
+ChVec3& ChVec3::operator= (const D3DXMATRIX& _mat)
 {
-	x = _Mat._41;
-	y = _Mat._42;
-	z = _Mat._43;
+	x = _mat._41;
+	y = _mat._42;
+	z = _mat._43;
 
 	return *this;
 
@@ -113,12 +108,12 @@ ChVec3& ChVec3::operator= (const D3DXMATRIX& _Mat)
 
 ChVec2::operator const D3DXVECTOR2()const
 {
-	D3DXVECTOR2 TmpVec;
+	D3DXVECTOR2 tmpVec;
 
-	TmpVec.x = x;
-	TmpVec.y = y;
+	tmpVec.x = x;
+	tmpVec.y = y;
 
-	return TmpVec;
+	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -130,10 +125,10 @@ ChVec2::operator const D3DXVECTOR2*()const
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVec2& ChVec2::operator= (const D3DXVECTOR2& _Vec)
+ChVec2& ChVec2::operator= (const D3DXVECTOR2& _vec)
 {
-	x = _Vec.x;
-	y = _Vec.y;
+	x = _vec.x;
+	y = _vec.y;
 
 	return *this;
 }
@@ -144,13 +139,13 @@ ChVec2& ChVec2::operator= (const D3DXVECTOR2& _Vec)
 
 ChQua::operator const D3DXQUATERNION()const
 {
-	ChQua_9 TmpQua;
-	TmpQua.x = x;
-	TmpQua.y = y;
-	TmpQua.z = z;
-	TmpQua.w = w;
+	ChQua_9 tmpQua;
+	tmpQua.x = x;
+	tmpQua.y = y;
+	tmpQua.z = z;
+	tmpQua.w = w;
 
-	return TmpQua;
+	return tmpQua;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -162,32 +157,32 @@ ChQua::operator const D3DXQUATERNION*()const
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChQua& ChQua::operator= (const D3DXQUATERNION& _Qua)
+ChQua& ChQua::operator= (const D3DXQUATERNION& _qua)
 {
-	x = _Qua.x;
-	y = _Qua.y;
-	z = _Qua.z;
-	w = _Qua.w;
+	x = _qua.x;
+	y = _qua.y;
+	z = _qua.z;
+	w = _qua.w;
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChQua& ChQua::operator= (const D3DXVECTOR3& _Vec)
+ChQua& ChQua::operator= (const D3DXVECTOR3& _vec)
 {
-	ChQua_9 TmpQua = _Vec;
-	*this = TmpQua;
+	ChQua_9 tmpQua = _vec;
+	*this = tmpQua;
 	return *this;
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChQua& ChQua::operator= (const D3DXMATRIX& _Mat)
+ChQua& ChQua::operator= (const D3DXMATRIX& _mat)
 {
 
-	ChQua_9 TmpQua = _Mat;
-	*this = TmpQua;
+	ChQua_9 tmpQua = _mat;
+	*this = tmpQua;
 	return *this;
 }
 
@@ -197,16 +192,16 @@ ChQua& ChQua::operator= (const D3DXMATRIX& _Mat)
 
 ChLMat::operator const D3DXMATRIX()const
 {
-	ChMat_9 TmpMat;
+	ChMat_9 tmpMat;
 	for (unsigned char i = 0; i < 4; i++)
 	{
 		for (unsigned char j = 0; j < 4; j++)
 		{
-			TmpMat.m[i][j] = m[i][j];
+			tmpMat.m[i][j] = m[i][j];
 		}
 	}
 
-	return TmpMat;
+	return tmpMat;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -218,26 +213,26 @@ ChLMat::operator const D3DXMATRIX*()const
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChLMat& ChLMat::operator= (const D3DXQUATERNION& _Qua)
+ChLMat& ChLMat::operator= (const D3DXQUATERNION& _qua)
 {
-	ChMat_9 TmpMat = _Qua;
-	*this = TmpMat;
+	ChMat_9 tmpMat = _qua;
+	*this = tmpMat;
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChLMat& ChLMat::operator= (const D3DXVECTOR3& _Vec)
+ChLMat& ChLMat::operator= (const D3DXVECTOR3& _vec)
 {
-	ChMat_9 TmpMat = _Vec;
-	*this = TmpMat;
+	ChMat_9 tmpMat = _vec;
+	*this = tmpMat;
 	return *this;
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChLMat& ChLMat::operator= (const D3DXMATRIX& _Mat)
+ChLMat& ChLMat::operator= (const D3DXMATRIX& _mat)
 {
 
 
@@ -245,7 +240,7 @@ ChLMat& ChLMat::operator= (const D3DXMATRIX& _Mat)
 	{
 		for (unsigned char j = 0; j < 4; j++)
 		{
-			m[i][j] = _Mat.m[i][j];
+			m[i][j] = _mat.m[i][j];
 		}
 	}
 

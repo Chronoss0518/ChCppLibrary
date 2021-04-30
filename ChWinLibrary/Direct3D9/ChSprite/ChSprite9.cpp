@@ -14,64 +14,66 @@ using namespace ChTex;
 
 void Sprite9::Init(const LPDIRECT3DDEVICE9 _d)
 {
-	Device = _d;
+	device = _d;
 
-	D3DXCreateSprite(Device, &Sp);
-	Sp->OnResetDevice();
+	D3DXCreateSprite(device, &sp);
+	sp->OnResetDevice();
 
-	InitFlg = true;
+	SetInitFlg(true);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void Sprite9::Release() {
-	if(ChPtr::NotNullCheck(Sp))Sp->Release();
-	Sp = nullptr;
+	if(ChPtr::NotNullCheck(sp))sp->Release();
+	sp = nullptr;
 
-	InitFlg = false;
+	SetInitFlg(false);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void Sprite9::DrawSprite(
 	const ChPtr::Shared<Texture9> _tex
-	, const ChMat_9 &_Mat
-	, const ChVec3_9 &_CenterPos
-	, const RECT &_AnimationRect)
+	, const ChMat_9 &_mat
+	, const ChVec3_9 &_centerPos
+	, const RECT &_animationRect)
 {
+	if (!*this)return;
+
 	if(_tex == nullptr)return;
 	if (ChPtr::NullCheck(_tex->GetTex()))
 	{
 		//ChSystem::ErrerMessage("•`‰æ‚ÉŽ¸”s‚µ‚Ü‚µ‚½", "Œx");
 
 	}
-	ChVec3_9 TmpVec;
+	ChVec3_9 tmpVec;
 
-	RECT TmpRec{ 0,0, (long)_tex->GetOriginalWidth(),(long)_tex->GetOriginalHeight() };
+	RECT tmpRec{ 0,0, (long)_tex->GetOriginalWidth(),(long)_tex->GetOriginalHeight() };
 
-	if (_AnimationRect.top != _AnimationRect.bottom
-		&& _AnimationRect.left != _AnimationRect.right)TmpRec = _AnimationRect;
+	if (_animationRect.top != _animationRect.bottom
+		&& _animationRect.left != _animationRect.right)tmpRec = _animationRect;
 
 	ChMat_9 tmpMat;
 
 	if (_tex->GetSclXSize() != 0.0f && _tex->GetSclYSize() != 0.0f)
 		tmpMat.Scaling(_tex->GetSclXSize(), _tex->GetSclYSize(), 0.0f);
 
-	tmpMat = (_Mat) * tmpMat;
+	tmpMat = (_mat) * tmpMat;
 
-	Sp->Begin(D3DXSPRITE_ALPHABLEND);
+	sp->Begin(D3DXSPRITE_ALPHABLEND);
 
-	Device->SetTransform(D3DTS_WORLD, &tmpMat);
-	Device->SetFVF((D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1));
+	device->SetTransform(D3DTS_WORLD, &tmpMat);
+	device->SetFVF((D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1));
 
-	auto Tmp = D3DXVECTOR3((float)(_tex->GetOriginalWidth() / 2.0f), (float)(_tex->GetOriginalHeight() / 2.0f), 0.0f);
+	auto tmp = D3DXVECTOR3((float)(_tex->GetOriginalWidth() / 2.0f), (float)(_tex->GetOriginalHeight() / 2.0f), 0.0f);
 
-	Sp->Draw(
+	sp->Draw(
 		_tex->GetTex()
-		, &TmpRec
-		, &Tmp
-		, &TmpVec
+		, &tmpRec
+		, &tmp
+		, &tmpVec
 		, _tex->GetBaseColD3D());
 
-	Sp->End();
+	sp->End();
 }

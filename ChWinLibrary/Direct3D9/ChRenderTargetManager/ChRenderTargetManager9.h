@@ -12,7 +12,7 @@ namespace ChTex
 	typedef class BaseTexture9 Texture9;
 
 	//レンダーターゲットを設定するクラス//
-	class RenderTargetManager9:public ChCpp::ClassPerts::Initializer
+	class RenderTargetManager9:public ChCpp::ClassPerts::Initializer,public ChCpp::ClassPerts::Releaser
 	{
 	public:
 
@@ -20,12 +20,12 @@ namespace ChTex
 		//InitAndRelease//
 
 		void Init(
-			const LPDIRECT3DDEVICE9& _Dv
-			, const unsigned short _WW
-			, const unsigned short _WH
-			, const ChD3D9::ShaderController* _Shader = nullptr);
+			const LPDIRECT3DDEVICE9& _dv
+			, const unsigned short _windWidth
+			, const unsigned short _windHeight
+			, const ChD3D9::ShaderController* _shader = nullptr);
 
-		void Release();
+		void Release()override;
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
@@ -34,28 +34,28 @@ namespace ChTex
 		//第二引数で画面をクリアする色指定//
 		//ChD3D9::Shader::DrawStartと併用できません//
 		void SetRT(
-			const std::string& _DataName
-			, const D3DCOLOR _BackCol = D3DCOLOR_ARGB(0, 0, 0, 0));
+			const std::string& _dataName
+			, const D3DCOLOR _backCol = D3DCOLOR_ARGB(0, 0, 0, 0));
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
 		//作成したテクスチャを取得//
-		inline ChPtr::Shared<Texture9> GetRTTexture(const std::string& _DataName)
+		inline ChPtr::Shared<Texture9> GetRTTexture(const std::string& _dataName)
 		{
-			if (RTList.find(_DataName) == RTList.end())return nullptr;
-			return RTList[_DataName];
+			if (rtList.find(_dataName) == rtList.end())return nullptr;
+			return rtList[_dataName];
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//登録されてるテクスチャを選択して消去//
-		inline void DeleteRTTexture(const std::string& _DataName)
+		inline void DeleteRTTexture(const std::string& _dataName)
 		{
-			if (RTList.empty())return;
-			if (RTList.find(_DataName) == RTList.end())return;
+			if (rtList.empty())return;
+			if (rtList.find(_dataName) == rtList.end())return;
 
-			RTList.erase(_DataName);
+			rtList.erase(_dataName);
 
 		}
 
@@ -64,18 +64,18 @@ namespace ChTex
 		//登録してあるすべてのレンダーターゲットテクスチャを解放//
 		inline void ClearRT()
 		{
-			if (RTList.empty())return;
-			RTList.clear();
+			if (rtList.empty())return;
+			rtList.clear();
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//レンダーターゲットとなるテクスチャを作成:登録//
 		void CreateRT(
-			const std::string& _DataName
-			, const UINT _RTW = 1280
-			, const UINT _RTH = 720
-			, const _D3DFORMAT _FMT = D3DFMT_A8R8G8B8);
+			const std::string& _dataName
+			, const UINT _rtWidth = 1280
+			, const UINT _rtHeight = 720
+			, const _D3DFORMAT _format = D3DFMT_A8R8G8B8);
 
 		///////////////////////////////////////////////////////////////////////////////////
 
@@ -86,27 +86,26 @@ namespace ChTex
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		LPDIRECT3DDEVICE9 Device;
+		LPDIRECT3DDEVICE9 device;
 
-		std::map<std::string, ChPtr::Shared<BaseTexture9>>RTList;
+		std::map<std::string, ChPtr::Shared<BaseTexture9>>rtList;
 
-		ChPtr::Shared<BaseTexture9>DBData;
+		ChPtr::Shared<BaseTexture9>dbData;
 
-		ChD3D9::ShaderController* UShader = nullptr;
+		ChD3D9::ShaderController* uShader = nullptr;
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//ConstructerDestructer//
 
 		RenderTargetManager9() {};
 
-		~RenderTargetManager9() { Release(); }
 
 	public:
 
 		static RenderTargetManager9& GetInc()
 		{
-			static RenderTargetManager9 Ins;
-			return Ins;
+			static RenderTargetManager9 ins;
+			return ins;
 		}
 
 	};

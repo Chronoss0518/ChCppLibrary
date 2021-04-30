@@ -14,45 +14,45 @@ using namespace ChTex;
 
 void BaseTexture9::Release()
 {
-	if (ChPtr::NotNullCheck(Tex))Tex->Release();
-	Tex = nullptr;
+	if (ChPtr::NotNullCheck(tex))tex->Release();
+	tex = nullptr;
 
-	if (ChPtr::NotNullCheck(Sur))Sur->Release();
-	Sur = nullptr;
+	if (ChPtr::NotNullCheck(sur))sur->Release();
+	sur = nullptr;
 
-	if (ChPtr::NotNullCheck(ZBu))ZBu->Release();
-	ZBu = nullptr;
+	if (ChPtr::NotNullCheck(zBu))zBu->Release();
+	zBu = nullptr;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 template<class T>
 T BaseTexture9::GetColor(
-	const unsigned int _Width
-	, const unsigned int _Height)
+	const unsigned int _width
+	, const unsigned int _height)
 {
 
-	T TmpCol;
+	T tmpCol;
 
-	ZeroMemory(&TmpCol, sizeof(TmpCol));
+	ZeroMemory(&tmpCol, sizeof(tmpCol));
 
-	if (_Width >= OWidth || _Height >= OHeight)return TmpCol;
+	if (_width >= original.w || _height >= original.h)return tmpCol;
 
-	D3DLOCKED_RECT LockRect;
+	D3DLOCKED_RECT lockRect;
 
-	if (Tex->LockRect(0, &LockRect, nullptr, 0) != D3D_OK)
+	if (tex->LockRect(0, &lockRect, nullptr, 0) != D3D_OK)
 	{
-		return TmpCol;
+		return tmpCol;
 	}
-	T* pPitch = (T*)LockRect.pBits;
+	T* pPitch = (T*)lockRect.pBits;
 
-	DWORD Pitch = LockRect.Pitch / sizeof(T);
-	pPitch += (Pitch * _Height);
-	TmpCol = *(pPitch + _Width);
+	DWORD pitch = lockRect.Pitch / sizeof(T);
+	pPitch += (pitch * _height);
+	tmpCol = *(pPitch + _width);
 
-	Tex->UnlockRect(0);
+	tex->UnlockRect(0);
 
-	return TmpCol;
+	return tmpCol;
 }
 template D3DCOLOR BaseTexture9::GetColor(
 	const unsigned int _Width
@@ -60,58 +60,58 @@ template D3DCOLOR BaseTexture9::GetColor(
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVec4 BaseTexture9::D3DColorToColor255(const D3DCOLOR& _Col)
+ChVec4 BaseTexture9::D3DColorToColor255(const D3DCOLOR& _col)
 {
 
-	D3DCOLOR TmpCol = _Col;
-	ChVec4 TmpCol2;
-	TmpCol2.a = static_cast<unsigned char>((TmpCol >> 24) & 0xff) / 255.0f;
-	TmpCol2.r = static_cast<unsigned char>((TmpCol >> 16) & 0xff) / 255.0f;
-	TmpCol2.g = static_cast<unsigned char>((TmpCol >> 8) & 0xff) / 255.0f;
-	TmpCol2.b = static_cast<unsigned char>((TmpCol) & 0xff) / 255.0f;
-	return TmpCol2;
+	D3DCOLOR tmpCol = _col;
+	ChVec4 tmpCol2;
+	tmpCol2.a = static_cast<unsigned char>((tmpCol >> 24) & 0xff) / 255.0f;
+	tmpCol2.r = static_cast<unsigned char>((tmpCol >> 16) & 0xff) / 255.0f;
+	tmpCol2.g = static_cast<unsigned char>((tmpCol >> 8) & 0xff) / 255.0f;
+	tmpCol2.b = static_cast<unsigned char>((tmpCol) & 0xff) / 255.0f;
+	return tmpCol2;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void BaseTexture9::CreateTexture(
-	const std::string& _FileName
-	, const LPDIRECT3DDEVICE9& _Dev
-	, const D3DCOLOR& _ColKey)
+	const std::string& _fileName
+	, const LPDIRECT3DDEVICE9& _dev
+	, const D3DCOLOR& _colKey)
 {
-	if (ChPtr::NotNullCheck(Tex))return;
+	if (ChPtr::NotNullCheck(tex))return;
 
-	OpenFile(_FileName);
-	if (OWidth <= 0 || OHeight <= 0)return;
+	OpenFile(_fileName);
+	if (original.w <= 0 || original.h <= 0)return;
 
 	D3DXCreateTextureFromFileEx(
-		_Dev
-		, _FileName.c_str()
-		, OWidth, OHeight
+		_dev
+		, _fileName.c_str()
+		, original.w, original.h
 		, 1, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED
 		, D3DX_FILTER_NONE, D3DX_DEFAULT
-		, _ColKey, NULL, NULL, &Tex);
+		, _colKey, NULL, NULL, &tex);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void BaseTexture9::CreateColTexture(
-	const LPDIRECT3DDEVICE9& _Dev
-	, const D3DCOLOR& _Col
-	, const unsigned long _W
-	, const unsigned long _H)
+	const LPDIRECT3DDEVICE9& _dev
+	, const D3DCOLOR& _col
+	, const unsigned long _w
+	, const unsigned long _h)
 {
 	D3DXCreateTexture(
-		_Dev, _W, _H, 1, 0
+		_dev, _w, _h, 1, 0
 		, D3DFMT_A8R8G8B8
-		, D3DPOOL_MANAGED, &Tex);
+		, D3DPOOL_MANAGED, &tex);
 
-	if (Tex == nullptr)return;
+	if (tex == nullptr)return;
 
-	OWidth = _W;
-	OHeight = _H;
+	original.w = _w;
+	original.h = _h;
 
-	SetTexColor(_Col);
+	SetTexColor(_col);
 
 }
 
@@ -119,80 +119,80 @@ void BaseTexture9::CreateColTexture(
 
 template<typename T>
 void BaseTexture9::CreateMinuColTexture(
-	const LPDIRECT3DDEVICE9& _Dev
-	, const T& _Col
-	, const unsigned long _W
-	, const unsigned long _H
-	, const _D3DFORMAT _FMT
-	, const unsigned long _Usage
-	, const _D3DPOOL _Pool)
+	const LPDIRECT3DDEVICE9& _dev
+	, const T& _col
+	, const unsigned long _w
+	, const unsigned long _h
+	, const _D3DFORMAT _format
+	, const unsigned long _usage
+	, const _D3DPOOL _pool)
 {
 
 	D3DXCreateTexture(
-		_Dev, _W, _H, 1, _Usage
-		, _FMT, _Pool, &Tex);
+		_dev, _w, _h, 1, _usage
+		, _format, _pool, &tex);
 
-	if (Tex == nullptr)return;
+	if (tex == nullptr)return;
 
-	OWidth = _W;
-	OHeight = _H;
+	original.w = _w;
+	original.h = _h;
 
-	if(_Usage != 0)return;
+	if(_usage != 0)return;
 
-	SetTexColor(_Col);
+	SetTexColor(_col);
 
 }
 template void BaseTexture9::CreateMinuColTexture(
-	const LPDIRECT3DDEVICE9& _Dev
-	, const D3DCOLOR& _Col
-	, const unsigned long _W
-	, const unsigned long _H
-	, const _D3DFORMAT _FMT
-	, const DWORD _Usage
-	, const _D3DPOOL _Pool);
+	const LPDIRECT3DDEVICE9& _dev
+	, const D3DCOLOR& _col
+	, const unsigned long _w
+	, const unsigned long _h
+	, const _D3DFORMAT _format
+	, const DWORD _usage
+	, const _D3DPOOL _pool);
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void BaseTexture9::CreateZBuffer(
-	const LPDIRECT3DDEVICE9& _Dev
-	, const _D3DFORMAT _FMT
-	, const _D3DMULTISAMPLE_TYPE _MSample
-	, const unsigned long _MQuality)
+	const LPDIRECT3DDEVICE9& _dev
+	, const _D3DFORMAT _format
+	, const _D3DMULTISAMPLE_TYPE _mSample
+	, const unsigned long _mQuality)
 {
 
-	if (ChPtr::NullCheck(Tex))return;
+	if (ChPtr::NullCheck(tex))return;
 
-	_Dev->CreateDepthStencilSurface(
-		OWidth
-		, OHeight
-		, _FMT
-		, _MSample
-		, _MQuality
+	_dev->CreateDepthStencilSurface(
+		original.w
+		, original.h
+		, _format
+		, _mSample
+		, _mQuality
 		, false
-		, &ZBu
+		, &zBu
 		, nullptr);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 ChPtr::Shared<BaseTexture9> BaseTexture9::TextureType(
-	const std::string _FileName)
+	const std::string _fileName)
 {
-	std::string TmpStr;
+	std::string tmpStr;
 
 	{
-		size_t TmpNum = _FileName.rfind(".");
-		if (TmpNum == _FileName.npos)return ChPtr::Make_S<BaseTexture9>();
-		TmpStr = &_FileName[TmpNum];
+		size_t tmpNum = _fileName.rfind(".");
+		if (tmpNum == _fileName.npos)return ChPtr::Make_S<BaseTexture9>();
+		tmpStr = &_fileName[tmpNum];
 	}
 
-	if (TmpStr.find("png") != TmpStr.npos)
+	if (tmpStr.find("png") != tmpStr.npos)
 	{
 		return ChPtr::Make_S<PngTex9>();
 	}
 
-	if (TmpStr.find("jpeg") != TmpStr.npos
-		|| TmpStr.find("jpg") != TmpStr.npos)
+	if (tmpStr.find("jpeg") != tmpStr.npos
+		|| tmpStr.find("jpg") != tmpStr.npos)
 	{
 		return ChPtr::Make_S<JpegTex>();
 	}
@@ -204,152 +204,152 @@ ChPtr::Shared<BaseTexture9> BaseTexture9::TextureType(
 ///////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-void BaseTexture9::SetTexColor(const T& _Color)
+void BaseTexture9::SetTexColor(const T& _color)
 {
 
-	D3DLOCKED_RECT LockRect;
-	if (Tex->LockRect(0, &LockRect, nullptr, 0) != D3D_OK)
+	D3DLOCKED_RECT lockRect;
+	if (tex->LockRect(0, &lockRect, nullptr, 0) != D3D_OK)
 	{
 		Release();
 		return;
 	}
-	T* pPitch = (T*)LockRect.pBits;
+	T* pPitch = (T*)lockRect.pBits;
 
-	UINT Pitch = LockRect.Pitch / sizeof(T);
-	for (unsigned int h = 0; h < OHeight; h++)
+	UINT pitch = lockRect.Pitch / sizeof(T);
+	for (unsigned int h = 0; h < original.h; h++)
 	{
-		for (unsigned int w = 0; w < OWidth; w++)
+		for (unsigned int w = 0; w < original.w; w++)
 		{
-			pPitch[w] = _Color;
+			pPitch[w] = _color;
 		}
-		pPitch += Pitch;
+		pPitch += pitch;
 	}
 
-	Tex->UnlockRect(0);
+	tex->UnlockRect(0);
 }
-template void BaseTexture9::SetTexColor(const D3DCOLOR& _Color);
+template void BaseTexture9::SetTexColor(const D3DCOLOR& _color);
 
 ///////////////////////////////////////////////////////////////////////////////////
 //ChPngTex9メソッド
 ///////////////////////////////////////////////////////////////////////////////////
 
-void PngTex9::OpenFile(const std::string& _FileName)
+void PngTex9::OpenFile(const std::string& _fileName)
 {
 
-	ChFIO::File File;
+	ChFIO::File file;
 
-	File.FileOpen(_FileName, std::ios::binary | std::ios::in | std::ios::out);
+	file.FileOpen(_fileName, std::ios::binary | std::ios::in | std::ios::out);
 
-	std::string TmpStr;
+	std::string tmpStr;
 
-	TmpStr = File.FileRead();
+	tmpStr = file.FileRead();
 
-	File.FileClose();
+	file.FileClose();
 
-	auto Chank = SetChank(TmpStr);
+	auto chank = SetChank(tmpStr);
 
-	if (Chank.CHData <= 0 || Chank.CWData <= 0)return;
+	if (chank.CHData <= 0 || chank.CWData <= 0)return;
 
-	OWidth = Chank.CWData;
-	OHeight = Chank.CHData;
+	original.w = chank.CWData;
+	original.h = chank.CHData;
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-PngTex9::CIHDR PngTex9::SetChank(const std::string& _Str)
+PngTex9::CIHDR PngTex9::SetChank(const std::string& _str)
 {
-	CIHDR Chank;
-	if (_Str == "")return Chank;
+	CIHDR chank;
+	if (_str == "")return chank;
 
-	size_t FPos;
+	size_t fPos;
 
 	{
-		std::string Tmp = (char*)Chank.CType;
-		FPos = _Str.find(Tmp, 1);
+		std::string tmp = (char*)chank.CType;
+		fPos = _str.find(tmp, 1);
 	}
 
 
-	if (FPos == std::string::npos)return Chank;
-	FPos -= 4;
+	if (fPos == std::string::npos)return chank;
+	fPos -= 4;
 
-	SetBynaryForStr(Chank.Length, _Str, FPos);
+	SetBynaryForStr(chank.Length, _str, fPos);
 
-	FPos += 4;
+	fPos += 4;
 
-	SetBynaryForStr(Chank.CWData, _Str, FPos);
+	SetBynaryForStr(chank.CWData, _str, fPos);
 
-	SetBynaryForStr(Chank.CHData, _Str, FPos);
+	SetBynaryForStr(chank.CHData, _str, fPos);
 
-	SetBynaryForStr(Chank.BD, _Str, FPos);
+	SetBynaryForStr(chank.BD, _str, fPos);
 
-	SetBynaryForStr(Chank.ColType, _Str, FPos);
+	SetBynaryForStr(chank.ColType, _str, fPos);
 
-	SetBynaryForStr(Chank.Zips, _Str, FPos);
+	SetBynaryForStr(chank.Zips, _str, fPos);
 
-	SetBynaryForStr(Chank.Fillter, _Str, FPos);
+	SetBynaryForStr(chank.Fillter, _str, fPos);
 
-	SetBynaryForStr(Chank.Interlase, _Str, FPos);
+	SetBynaryForStr(chank.Interlase, _str, fPos);
 
-	SetBynaryForStr(Chank.CRC, _Str, FPos);
+	SetBynaryForStr(chank.CRC, _str, fPos);
 
-	return Chank;
+	return chank;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 //ChPngTex9メソッド
 ///////////////////////////////////////////////////////////////////////////////////
 
-void JpegTex::OpenFile(const std::string& _FileName)
+void JpegTex::OpenFile(const std::string& _fileName)
 {
 
 	ChFIO::File File;
-	File.FileOpen(_FileName , std::ios::binary | std::ios::in | std::ios::out);
+	File.FileOpen(_fileName , std::ios::binary | std::ios::in | std::ios::out);
 
-	std::string TmpStr;
-	TmpStr = File.FileRead();
+	std::string tmpStr;
+	tmpStr = File.FileRead();
 
 	File.FileClose();
 
-	auto Data = SetSegment(TmpStr);
+	auto data = SetSegment(tmpStr);
 
-	if (Data.TexWidht <= 0 || Data.TexHeight <= 0)return;
+	if (data.TexWidht <= 0 || data.TexHeight <= 0)return;
 
-	OWidth = Data.TexWidht;
-	OHeight = Data.TexHeight;
+	original.w = data.TexWidht;
+	original.h = data.TexHeight;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-JpegTex::S_SOF JpegTex::SetSegment(const std::string& _Str)
+JpegTex::S_SOF JpegTex::SetSegment(const std::string& _str)
 {
-	S_SOF Seg;
+	S_SOF seg;
 
 
-	if (_Str == "")return Seg;
+	if (_str == "")return seg;
 
-	size_t FPos;
+	size_t fPos;
 
 	{
-		std::string Tmp = (char*)Seg.MType;
-		FPos = _Str.find(Tmp, 1);
+		std::string tmp = (char*)seg.MType;
+		fPos = _str.find(tmp, 1);
 	}
 
 
-	if (FPos == std::string::npos)return Seg;
-	FPos += 2;
+	if (fPos == std::string::npos)return seg;
+	fPos += 2;
 
-	SetBynaryForStr(Seg.S_Len, _Str, FPos);
+	SetBynaryForStr(seg.S_Len, _str, fPos);
+					
+	SetBynaryForStr(seg.Sample, _str, fPos);
+					
+	SetBynaryForStr(seg.TexHeight, _str, fPos);
+					
+	SetBynaryForStr(seg.TexWidht, _str, fPos);
+					
+	SetBynaryForStr(seg.TypeCnt, _str, fPos);
 
-	SetBynaryForStr(Seg.Sample, _Str, FPos);
-
-	SetBynaryForStr(Seg.TexHeight, _Str, FPos);
-
-	SetBynaryForStr(Seg.TexWidht, _Str, FPos);
-
-	SetBynaryForStr(Seg.TypeCnt, _Str, FPos);
-
-	return Seg;
+	return seg;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

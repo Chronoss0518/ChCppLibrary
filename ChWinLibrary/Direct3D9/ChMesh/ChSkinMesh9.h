@@ -18,9 +18,9 @@ namespace ChMesh
 
 			virtual ~SkinMesh9()
 			{
-				BoneList.clear();
-				BoneNameList.clear();
-				TAni.Release();
+				boneList.clear();
+				boneNameList.clear();
+				tAni.Release();
 			}
 
 			///////////////////////////////////////////////////////////////////////////////////////
@@ -28,35 +28,35 @@ namespace ChMesh
 
 			//XFileよりアニメーションを取得//
 			void SetAnimation(
-				const std::string& _AniamtionName
-				, const std::string& _XFileName);
+				const std::string& _aniamtionName
+				, const std::string& _xFileName);
 
 			//外部で作成したアニメーションをセット//
 			void SetAnimation(
-				const std::string& _AniamtionName
-				, const std::map<std::string, ChPtr::Shared<ChAnimationObject9>>& _Animes)
+				const std::string& _aniamtionName
+				, const std::map<std::string, ChPtr::Shared<ChAnimationObject9>>& _animes)
 			{
-				Animations[_AniamtionName] = _Animes;
+				animations[_aniamtionName] = _animes;
 
-				if (StartPlayAniCheck)return;
-				StartPlayAniCheck = true;
-				NowPlayAniName = _AniamtionName;
+				if (startPlayAniCheck)return;
+				startPlayAniCheck = true;
+				nowPlayAniName = _aniamtionName;
 			}
 
 			//再生するアニメーションを変更//
-			inline void SetPlayAniName(const std::string& _AniName)
+			inline void SetPlayAniName(const std::string& _aniName)
 			{
-				if (Animations.find(_AniName) == Animations.end())return;
+				if (animations.find(_aniName) == animations.end())return;
 
 
-				for (auto&& Anis : Animations[NowPlayAniName])
+				for (auto&& anis : animations[nowPlayAniName])
 				{
-					Anis.second->Stop();
+					anis.second->Stop();
 				}
-				NowPlayAniName = _AniName;
-				for (auto&& Anis : Animations[NowPlayAniName])
+				nowPlayAniName = _aniName;
+				for (auto&& anis : animations[nowPlayAniName])
 				{
-					Anis.second->Play();
+					anis.second->Play();
 				}
 
 
@@ -64,17 +64,17 @@ namespace ChMesh
 
 			//再生するアニメーションの終了フレーム数を変更//
 			inline void SetAniTime(
-				const std::string& _AniName
-				, const float _PlayMaxTime)
+				const std::string& _aniName
+				, const float _playMaxTime)
 			{
-				if (Animations.find(_AniName) == Animations.end())
+				if (animations.find(_aniName) == animations.end())
 				{
 					return;
 				}
 
-				for (auto&& Anis : Animations[_AniName])
+				for (auto&& anis : animations[_aniName])
 				{
-					Anis.second->SetOneFrameTime(_PlayMaxTime);
+					anis.second->SetOneFrameTime(_playMaxTime);
 				}
 			}
 
@@ -85,22 +85,22 @@ namespace ChMesh
 
 			inline std::vector<ChPtr::Shared<std::string>> GetAniNameList()
 			{
-				std::vector<ChPtr::Shared<std::string>> TmpStr;
-				for (auto&& Anis : Animations)
+				std::vector<ChPtr::Shared<std::string>> tmpStr;
+				for (auto&& anis : animations)
 				{
-					auto Str = ChPtr::Make_S<std::string>();
-					*Str = Anis.first;
-					TmpStr.push_back(Str);
+					auto str = ChPtr::Make_S<std::string>();
+					*str = anis.first;
+					tmpStr.push_back(str);
 
 				}
 
-				return TmpStr;
+				return tmpStr;
 			}
 
-			ChMat_9 GetBoneMat(const std::string& _Str)override
+			ChMat_9 GetBoneMat(const std::string& _str)override
 			{
-				if (BoneList.find(_Str) == BoneList.end())return ChMat_9();
-				return BoneList[_Str]->BaseMat;
+				if (boneList.find(_str) == boneList.end())return ChMat_9();
+				return boneList[_str]->baseMat;
 			}
 
 			///////////////////////////////////////////////////////////////////////////////////////
@@ -122,44 +122,44 @@ namespace ChMesh
 			{
 				struct BonePow
 				{
-					ChMat_9* UpdateMat;
-					ChMat_9* OffMat;
-					float WaitPow = 0.0f;
+					ChMat_9* updateMat;
+					ChMat_9* offMat;
+					float waitPow = 0.0f;
 
 				};
 
-				ChVec3_9 Pos;
-				std::vector<ChPtr::Shared<BonePow>>UpdateMat;
+				ChVec3_9 pos;
+				std::vector<ChPtr::Shared<BonePow>>updateMat;
 			};
 
 			struct Bone
 			{
-				ChMat_9 BaseMat;
-				ChMat_9 UpdateMat;
-				ChMat_9 OffMat;
-				std::string MyName;
-				ChPtr::Shared<Bone> OffsetBone = nullptr;
+				ChMat_9 baseMat;
+				ChMat_9 updateMat;
+				ChMat_9 offMat;
+				std::string myName;
+				ChPtr::Shared<Bone> offsetBone = nullptr;
 
 			};
 
-			std::string TestName = "";
+			std::string testName = "";
 
-			std::vector<ChPtr::Shared<BoneVertex>>BoneVertexList;
+			std::vector<ChPtr::Shared<BoneVertex>>boneVertexList;
 
 			//第一にアニメーション名//
 			//第二にBone名を入れる。//
 			using BoneAnimation = std::map<std::string, ChPtr::Shared<ChAnimationObject9>>;
 			
-			std::map<std::string, BoneAnimation> Animations;
+			std::map<std::string, BoneAnimation> animations;
 
-			std::string NowPlayAniName = "";
-			ChStd::Bool StartPlayAniCheck = false;
+			std::string nowPlayAniName = "";
+			ChStd::Bool startPlayAniCheck = false;
 
-			std::map<std::string, ChPtr::Shared<Bone>> BoneList;
+			std::map<std::string, ChPtr::Shared<Bone>> boneList;
 			
-			std::vector<std::string> BoneNameList;
+			std::vector<std::string> boneNameList;
 
-			ChAniObj9 TAni;
+			ChAniObj9 tAni;
 
 		};
 	

@@ -25,12 +25,12 @@ namespace ChTex
 
 		//もし、XFileフォルダーなどを作っていない場合は第二引数に""を入れる。//
 		inline void Init(
-			const LPDIRECT3DDEVICE9 _Dv
-			, const std::string _FileInDirectoryPath)
+			const LPDIRECT3DDEVICE9 _dv
+			, const std::string _fileInDirectoryPath)
 		{
-			Device = _Dv;
+			device = _dv;
 
-			DirectoryPath = _FileInDirectoryPath;
+			directoryPath = _fileInDirectoryPath;
 
 			SetInitFlg(true);
 		}
@@ -38,8 +38,8 @@ namespace ChTex
 		inline void Release()
 		{
 
-			if (TexList.empty())return;
-			TexList.clear();
+			if (texList.empty())return;
+			texList.clear();
 
 			SetInitFlg(false);
 		}
@@ -49,42 +49,42 @@ namespace ChTex
 
 		//Textureの登録//
 		void SetTexture(
-			const std::string& _TextureName
-			, const ChStd::DataNo DataNum
-			, const unsigned int _GameReSizeWidth
-			, const unsigned int _GameReSizeHeight
-			, const D3DCOLOR ColorKey = D3DCOLOR_ARGB(0, 0, 0, 0)
+			const std::string& _textureName
+			, const ChStd::DataNo _dataNum
+			, const unsigned int _gameReSizeWidth
+			, const unsigned int _gameReSizeHeight
+			, const D3DCOLOR _colorKey = D3DCOLOR_ARGB(0, 0, 0, 0)
 		);
 
 		//合成可色、基本色の設定//
 		void SetBlendColor(
-			const ChVec4& _Color
-			, const ChStd::DataNo _DataNum);
+			const ChVec4& _color
+			, const ChStd::DataNo _dataNum);
 
 		//画像の透明化設定//
 		void SetBlendAlpha(
 			const unsigned char _a
-			, const ChStd::DataNo _DataNum);
+			, const ChStd::DataNo _dataNum);
 
 		//決めた色でTextureの作成//
 		//登録するための_DataNumはかぶってはならない//
 		void SetColorTex(
-			const unsigned long& _Color
-			, const ChStd::DataNo _DataNum
-			, const unsigned int _GameReSizeWidth
-			, const unsigned int _GameReSizeHeight
-			, const unsigned long _Type = 0);
+			const unsigned long& _color
+			, const ChStd::DataNo _dataNum
+			, const unsigned int _gameReSizeWidth
+			, const unsigned int _gameReSizeHeight
+			, const unsigned long _type = 0);
 
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
 		//外部利用するためのテクスチャを取得する//
-		inline ChPtr::Shared<Texture9> GetTex(const ChStd::DataNo DataNum)
+		inline ChPtr::Shared<Texture9> GetTex(const ChStd::DataNo dataNum)
 		{
-			if (TexList.find(DataNum) == TexList.end())return nullptr;
+			if (texList.find(dataNum) == texList.end())return nullptr;
 
-			return TexList[DataNum];
+			return texList[dataNum];
 
 		}
 
@@ -92,11 +92,11 @@ namespace ChTex
 
 	private:
 
-		std::string DirectoryPath;
+		std::string directoryPath;
 
-		std::map<ChStd::DataNo, ChPtr::Shared<Texture9>>TexList;
+		std::map<ChStd::DataNo, ChPtr::Shared<Texture9>>texList;
 
-		LPDIRECT3DDEVICE9 Device;
+		LPDIRECT3DDEVICE9 device;
 
 		///////////////////////////////////////////////////////////////////////////////////
 

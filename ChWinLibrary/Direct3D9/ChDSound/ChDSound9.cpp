@@ -12,10 +12,10 @@
 
 void ChDirectSound9::CreatePrimaryBuffer(HWND _hWnd)
 {
-	DirectSoundCreate8(NULL, &LpDS, NULL);
+	DirectSoundCreate8(NULL, &lpDS, NULL);
 
 	//協調レベルを設定
-	LpDS->SetCooperativeLevel(_hWnd, DSSCL_PRIORITY);
+	lpDS->SetCooperativeLevel(_hWnd, DSSCL_PRIORITY);
 
 	// プライマリ・バッファの作成
 	// DSBUFFERDESC構造体を設定
@@ -28,7 +28,7 @@ void ChDirectSound9::CreatePrimaryBuffer(HWND _hWnd)
 	dsbdesc.lpwfxFormat = NULL;
 
 	// バッファを作る
-	LpDS->CreateSoundBuffer(&dsbdesc, &Primary, NULL);
+	lpDS->CreateSoundBuffer(&dsbdesc, &primary, NULL);
 
 	
 
@@ -42,27 +42,27 @@ void ChDirectSound9::CreatePrimaryBuffer(HWND _hWnd)
 	pcmwf.nBlockAlign = 4;
 	pcmwf.nAvgBytesPerSec = pcmwf.nSamplesPerSec * pcmwf.nBlockAlign;
 	pcmwf.wBitsPerSample = 16;		// 16ビット
-	Primary->SetFormat(&pcmwf);
+	primary->SetFormat(&pcmwf);
 
 	CoInitialize(NULL);
 
 
-	Primary->QueryInterface(IID_IDirectSound3DListener8
+	primary->QueryInterface(IID_IDirectSound3DListener8
 		, (LPVOID *)&lpSListener);
 
-	lpSListener->SetRolloffFactor(ListenerBaseLen, DS3D_IMMEDIATE);
+	lpSListener->SetRolloffFactor(listenerBaseLen, DS3D_IMMEDIATE);
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChDirectSound9::LoadSound(LPDIRECTSOUNDBUFFER8 &_LpSound, LPDIRECTSOUND3DBUFFER8 &_Lp3DSound, std::string _SoundFileName)
+void ChDirectSound9::LoadSound(LPDIRECTSOUNDBUFFER8 &_LpSound, LPDIRECTSOUND3DBUFFER8 &_Lp3DSound, std::string _soundFileName)
 {
 	HRESULT hr;
 
-	CWaveSoundRead9 WaveFile;
+	CWaveSoundRead9 waveFile;
 	// WAVEファイルを開く
-	WaveFile.Open(_SoundFileName.c_str());
+	waveFile.Open(_soundFileName.c_str());
 
 	// セカンダリ・バッファを作成する
 	// DSBUFFERDESC構造体を設定
@@ -73,8 +73,8 @@ void ChDirectSound9::LoadSound(LPDIRECTSOUNDBUFFER8 &_LpSound, LPDIRECTSOUND3DBU
 	//(DSBCAPS_CTRL3D=３Ｄサウンドを使用)
 	dsbdesc.dwFlags = DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_GLOBALFOCUS | DSBCAPS_CTRL3D |
 		DSBCAPS_CTRLVOLUME | /*DSBCAPS_CTRLPAN |*/ DSBCAPS_CTRLFREQUENCY;
-	dsbdesc.dwBufferBytes = WaveFile.m_ckIn.cksize;
-	dsbdesc.lpwfxFormat = WaveFile.m_pwfx;
+	dsbdesc.dwBufferBytes = waveFile.m_ckIn.cksize;
+	dsbdesc.lpwfxFormat = waveFile.m_pwfx;
 
 	//3DサウンドのHELアルゴリズムを選択
 	dsbdesc.guid3DAlgorithm = DS3DALG_NO_VIRTUALIZATION;
@@ -84,7 +84,7 @@ void ChDirectSound9::LoadSound(LPDIRECTSOUNDBUFFER8 &_LpSound, LPDIRECTSOUND3DBU
 		// バッファを作る
 	LPDIRECTSOUNDBUFFER pDSTmp;
 	//	lpDSound->CreateSoundBuffer(&dsbdesc, &pDSData, NULL); 
-	LpDS->CreateSoundBuffer(&dsbdesc, &pDSTmp, NULL);
+	lpDS->CreateSoundBuffer(&dsbdesc, &pDSTmp, NULL);
 	pDSTmp->QueryInterface(IID_IDirectSoundBuffer8, reinterpret_cast<LPVOID *>(&_LpSound));
 	pDSTmp->Release();
 
@@ -94,13 +94,13 @@ void ChDirectSound9::LoadSound(LPDIRECTSOUNDBUFFER8 &_LpSound, LPDIRECTSOUND3DBU
 	LPVOID lpvPtr2;		// ２番目のブロックのポインタ
 	DWORD dwBytes2;		// ２番目のブロックのサイズ
 
-	hr = _LpSound->Lock(0, WaveFile.m_ckIn.cksize, &lpvPtr1, &dwBytes1, &lpvPtr2, &dwBytes2, 0);
+	hr = _LpSound->Lock(0, waveFile.m_ckIn.cksize, &lpvPtr1, &dwBytes1, &lpvPtr2, &dwBytes2, 0);
 
 	// DSERR_BUFFERLOSTが返された場合，Restoreメソッドを使ってバッファを復元する
 	if (DSERR_BUFFERLOST == hr)
 	{
 		_LpSound->Restore();
-		hr = _LpSound->Lock(0, WaveFile.m_ckIn.cksize, &lpvPtr1, &dwBytes1, &lpvPtr2, &dwBytes2, 0);
+		hr = _LpSound->Lock(0, waveFile.m_ckIn.cksize, &lpvPtr1, &dwBytes1, &lpvPtr2, &dwBytes2, 0);
 	}
 	if (SUCCEEDED(hr))
 	{
@@ -109,9 +109,9 @@ void ChDirectSound9::LoadSound(LPDIRECTSOUNDBUFFER8 &_LpSound, LPDIRECTSOUND3DBU
 		// ここで，バッファに書き込む
 		// バッファにデータをコピーする
 		UINT rsize;
-		WaveFile.Read(dwBytes1, (LPBYTE)lpvPtr1, &rsize);
+		waveFile.Read(dwBytes1, (LPBYTE)lpvPtr1, &rsize);
 		if (0 != dwBytes2)
-			WaveFile.Read(dwBytes2, (LPBYTE)lpvPtr2, &rsize);
+			waveFile.Read(dwBytes2, (LPBYTE)lpvPtr2, &rsize);
 
 		// 書き込みが終わったらすぐにUnlockする．
 		hr = _LpSound->Unlock(lpvPtr1, dwBytes1, lpvPtr2, dwBytes2);
@@ -129,12 +129,12 @@ void ChDirectSound9::Init(HWND _hWnd)
 	CoInitialize(NULL);
 
 	//DirectSoundObject作成
-	if (DirectSoundCreate8(NULL, &LpDS, NULL) != S_OK)return;
+	if (DirectSoundCreate8(NULL, &lpDS, NULL) != S_OK)return;
 
-	if (LpDS->SetCooperativeLevel(_hWnd, DSSCL_EXCLUSIVE | DSSCL_PRIORITY) != DS_OK)
+	if (lpDS->SetCooperativeLevel(_hWnd, DSSCL_EXCLUSIVE | DSSCL_PRIORITY) != DS_OK)
 	{
-		LpDS->Release();
-		LpDS = nullptr;
+		lpDS->Release();
+		lpDS = nullptr;
 		return;
 	}
 
@@ -147,19 +147,19 @@ void ChDirectSound9::Init(HWND _hWnd)
 
 void ChDirectSound9::Release()
 {
-	if (!MainSoundList.empty())MainSoundList.clear();
-	if (!SubSoundList.empty())SubSoundList.clear();
+	if (!mainSoundList.empty())mainSoundList.clear();
+	if (!subSoundList.empty())subSoundList.clear();
 
-	if (Primary != nullptr)
+	if (primary != nullptr)
 	{
-		Primary->Release();
-		Primary = nullptr;
+		primary->Release();
+		primary = nullptr;
 	}
 
-	if (LpDS != nullptr)
+	if (lpDS != nullptr)
 	{
-		LpDS->Release();
-		LpDS = nullptr;
+		lpDS->Release();
+		lpDS = nullptr;
 	}
 
 	CoUninitialize();
@@ -172,13 +172,13 @@ void ChDirectSound9::Release()
 void ChDirectSound9::Update()
 {
 	DWORD Flg;
-	if (PlaySubSoundList.empty())return;
-	auto Obj = PlaySubSoundList[0];
-	for(unsigned char i = 0;i< PlaySubSoundList.size();i++)
+	if (playSubSoundList.empty())return;
+	auto Obj = playSubSoundList[0];
+	for(unsigned char i = 0;i< playSubSoundList.size();i++)
 	{
-		PlaySubSoundList[i]->Sound->GetStatus(&Flg);
+		playSubSoundList[i]->sound->GetStatus(&Flg);
 		if ((Flg & DSBSTATUS_PLAYING) == 0) {
-			PlaySubSoundList.erase(PlaySubSoundList.begin() + i);
+			playSubSoundList.erase(playSubSoundList.begin() + i);
 			i -= 1;
 			continue;
 		}
@@ -190,12 +190,12 @@ void ChDirectSound9::Update()
 		, DS3D_IMMEDIATE);
 
 
-	if (ChPtr::NullCheck(ListenerPos))return;
+	if (ChPtr::NullCheck(listenerPos))return;
 
 	lpSListener->SetPosition(
-		ListenerPos->x
-		, ListenerPos->y
-		, ListenerPos->z
+		listenerPos->x
+		, listenerPos->y
+		, listenerPos->z
 		, DS3D_IMMEDIATE);
 
 
@@ -205,210 +205,210 @@ void ChDirectSound9::Update()
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChDirectSound9::SetUseDirectory(
-	const std::string _SoundDirectoryName
-	, const std::string _UseSoundDirectory)
+	const std::string _soundDirectoryName
+	, const std::string _useSoundDirectory)
 {
 
-	if (DirectoryPathList.find(_UseSoundDirectory) != DirectoryPathList.end())return;
+	if (directoryPathList.find(_useSoundDirectory) != directoryPathList.end())return;
 	
-	DirectoryPathList.insert
-	(std::pair < std::string, std::string>(_UseSoundDirectory, _SoundDirectoryName));
+	directoryPathList.insert
+	(std::pair < std::string, std::string>(_useSoundDirectory, _soundDirectoryName));
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChDirectSound9::SetBGMSound(
-	const std::string _SoundName
-	, const std::string _SoundFilePath
-	, const std::string _UseSoundDirectory)
+	const std::string _soundName
+	, const std::string _soundFilePath
+	, const std::string _useSoundDirectory)
 {
-	if (MainSoundList.find(_SoundName) != MainSoundList.end())return;
+	if (mainSoundList.find(_soundName) != mainSoundList.end())return;
 
-	std::string TmpString = _SoundFilePath;
+	std::string tmpString = _soundFilePath;
 
-	if (TmpString.length() <= 0)return;
+	if (tmpString.length() <= 0)return;
 
-	if (DirectoryPathList.find(_UseSoundDirectory)
-		!= DirectoryPathList.end())
+	if (directoryPathList.find(_useSoundDirectory)
+		!= directoryPathList.end())
 	{
-		TmpString = DirectoryPathList[_UseSoundDirectory] + '/' + TmpString;
+		tmpString = directoryPathList[_useSoundDirectory] + '/' + tmpString;
 	}
 
-	auto BGM = ChPtr::Make_S<ChMainSound9>();
+	auto bgm = ChPtr::Make_S<ChMainSound9>();
 
-	if (BGM == nullptr)return;
+	if (bgm == nullptr)return;
 
-	LoadSound(BGM->Sound, BGM->DSound, TmpString);
+	LoadSound(bgm->sound, bgm->dSound, tmpString);
 
-	BGM->DSound->SetMode(DS3DMODE_DISABLE, DS3D_IMMEDIATE);
+	bgm->dSound->SetMode(DS3DMODE_DISABLE, DS3D_IMMEDIATE);
 
-	BGM->Sound->GetFrequency(&BGM->Hz);
+	bgm->sound->GetFrequency(&bgm->hz);
 
-	BGM->Sound->GetVolume(&BGM->Vol);
+	bgm->sound->GetVolume(&bgm->vol);
 
-	MainSoundList.insert(std::pair<std::string, ChPtr::Shared<ChBGM9>>(_SoundName, BGM));
+	mainSoundList.insert(std::pair<std::string, ChPtr::Shared<ChBGM9>>(_soundName, bgm));
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 ChStd::DataNo ChDirectSound9::SetSESound(
-	const std::string _SoundFilePath
-	, const std::string _UseSoundDirectory)
+	const std::string _soundFilePath
+	, const std::string _useSoundDirectory)
 {
-	if (SubSoundList.size() >= MaxSE)return 0;
+	if (subSoundList.size() >= maxSE)return 0;
 
-	std::string TmpString = _SoundFilePath;
+	std::string tmpString = _soundFilePath;
 
-	if (TmpString.length() <= 0)return 0;
+	if (tmpString.length() <= 0)return 0;
 
-	ChStd::DataNo TmpData = 0;
+	ChStd::DataNo tmpData = 0;
 	while(1)
 	{
-		if (SubSoundList.find(SENo) == SubSoundList.end())break;
-		++SENo %= MaxSE;
-		if (SENo == 0)SENo = 1;
+		if (subSoundList.find(seNo) == subSoundList.end())break;
+		++seNo %= maxSE;
+		if (seNo == 0)seNo = 1;
 	}
 
-	TmpData = SENo;
+	tmpData = seNo;
 
-	if (DirectoryPathList.find(_UseSoundDirectory)
-		!= DirectoryPathList.end())
+	if (directoryPathList.find(_useSoundDirectory)
+		!= directoryPathList.end())
 	{
-		TmpString = DirectoryPathList[_UseSoundDirectory] + '/' + TmpString;
+		tmpString = directoryPathList[_useSoundDirectory] + '/' + tmpString;
 	}
-	ChPtr::Shared<ChSubSound9> SE = nullptr;
-	SE = ChPtr::Make_S<ChSubSound9>();
-	LoadSound(SE->Sound, SE->DSound, TmpString);
+	ChPtr::Shared<ChSubSound9> se = nullptr;
+	se = ChPtr::Make_S<ChSubSound9>();
+	LoadSound(se->sound, se->dSound, tmpString);
 
-	SE->Sound->GetFrequency(&SE->Hz);
+	se->sound->GetFrequency(&se->hz);
 
-	SE->Sound->GetVolume(&SE->Vol);
+	se->sound->GetVolume(&se->vol);
 
-	SubSoundList.insert(std::pair<ChStd::DataNo, ChPtr::Shared<ChSE9>>(TmpData, SE));
+	subSoundList.insert(std::pair<ChStd::DataNo, ChPtr::Shared<ChSE9>>(tmpData, se));
 
-	return TmpData;
+	return tmpData;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChDirectSound9::SetHzForBGM(const std::string _SoundName
-	, const DWORD _Hz)
+void ChDirectSound9::SetHzForBGM(const std::string _soundName
+	, const DWORD _hz)
 {
-	if (MainSoundList.find(_SoundName) == MainSoundList.end())return;
-	MainSoundList[_SoundName]->Sound->SetFrequency(_Hz);
+	if (mainSoundList.find(_soundName) == mainSoundList.end())return;
+	mainSoundList[_soundName]->sound->SetFrequency(_hz);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChDirectSound9::SetVolumeForBGM(const std::string _SoundName
-	, const long _Volume)
+void ChDirectSound9::SetVolumeForBGM(const std::string _soundName
+	, const long _volume)
 {
-	if (MainSoundList.find(_SoundName) == MainSoundList.end())return;
-	MainSoundList[_SoundName]->Sound->SetVolume(_Volume);
+	if (mainSoundList.find(_soundName) == mainSoundList.end())return;
+	mainSoundList[_soundName]->sound->SetVolume(_volume);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChDirectSound9::SetBaseHzForBGM(const std::string _SoundName)
+void ChDirectSound9::SetBaseHzForBGM(const std::string _soundName)
 {
-	if (MainSoundList.find(_SoundName) == MainSoundList.end())return;
-	MainSoundList[_SoundName]->Sound->SetFrequency(MainSoundList[_SoundName]->Hz);
+	if (mainSoundList.find(_soundName) == mainSoundList.end())return;
+	mainSoundList[_soundName]->sound->SetFrequency(mainSoundList[_soundName]->hz);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChDirectSound9::SetBaseVolumeForBGM(const std::string _SoundName)
+void ChDirectSound9::SetBaseVolumeForBGM(const std::string _soundName)
 {
-	if (MainSoundList.find(_SoundName) == MainSoundList.end())return;
-	MainSoundList[_SoundName]->Sound->SetVolume(MainSoundList[_SoundName]->Vol);
+	if (mainSoundList.find(_soundName) == mainSoundList.end())return;
+	mainSoundList[_soundName]->sound->SetVolume(mainSoundList[_soundName]->vol);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChDirectSound9::SetHzForSE(const ChStd::DataNo _SoundNo
-	, const DWORD _Hz)
+void ChDirectSound9::SetHzForSE(const ChStd::DataNo _soundNo
+	, const DWORD _hz)
 {
-	if (SubSoundList.find(_SoundNo) == SubSoundList.end())return;
-	SubSoundList[_SoundNo]->Sound->SetFrequency(_Hz);
+	if (subSoundList.find(_soundNo) == subSoundList.end())return;
+	subSoundList[_soundNo]->sound->SetFrequency(_hz);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChDirectSound9::SetVolumeForSE(const ChStd::DataNo _SoundNo
-	, const long _Volume)
+void ChDirectSound9::SetVolumeForSE(const ChStd::DataNo _soundNo
+	, const long _volume)
 {
-	if (SubSoundList.find(_SoundNo) == SubSoundList.end())return;
-	SubSoundList[_SoundNo]->Sound->SetVolume(_Volume);
+	if (subSoundList.find(_soundNo) == subSoundList.end())return;
+	subSoundList[_soundNo]->sound->SetVolume(_volume);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChDirectSound9::SetBaseHzForSE(const ChStd::DataNo _SoundNo)
+void ChDirectSound9::SetBaseHzForSE(const ChStd::DataNo _soundNo)
 {
-	if (SubSoundList.find(_SoundNo) == SubSoundList.end())return;
-	SubSoundList[_SoundNo]->Sound->SetFrequency(SubSoundList[_SoundNo]->Hz);
+	if (subSoundList.find(_soundNo) == subSoundList.end())return;
+	subSoundList[_soundNo]->sound->SetFrequency(subSoundList[_soundNo]->hz);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChDirectSound9::SetBaseVolumeForSE(const ChStd::DataNo _SoundNo)
+void ChDirectSound9::SetBaseVolumeForSE(const ChStd::DataNo _soundNo)
 {
-	if (SubSoundList.find(_SoundNo) == SubSoundList.end())return;
-	SubSoundList[_SoundNo]->Sound->SetVolume(SubSoundList[_SoundNo]->Vol);
+	if (subSoundList.find(_soundNo) == subSoundList.end())return;
+	subSoundList[_soundNo]->sound->SetVolume(subSoundList[_soundNo]->vol);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChDirectSound9::ClearBGM()
 {
-	if (MainSoundList.empty())return;
+	if (mainSoundList.empty())return;
 	StopBGM();
-	MainSoundList.clear();
+	mainSoundList.clear();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChDirectSound9::ClearSE(const ChStd::DataNo _SoundNo)
+void ChDirectSound9::ClearSE(const ChStd::DataNo _soundNo)
 {
-	if (SubSoundList.empty())return;
-	if (SubSoundList.find(_SoundNo) == SubSoundList.end())return;
-	SubSoundList.erase(_SoundNo);
+	if (subSoundList.empty())return;
+	if (subSoundList.find(_soundNo) == subSoundList.end())return;
+	subSoundList.erase(_soundNo);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChDirectSound9::ClearSE()
 {
-	if (SubSoundList.empty())return;
-	SubSoundList.clear();
+	if (subSoundList.empty())return;
+	subSoundList.clear();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChDirectSound9::PlayBGM(const std::string _SoundName)
+void ChDirectSound9::PlayBGM(const std::string _soundName)
 {
-	if (MainSoundList.find(_SoundName) == MainSoundList.end())return;
+	if (mainSoundList.find(_soundName) == mainSoundList.end())return;
 	StopBGM();
-	MainSoundName = _SoundName;
+	mainSoundName = _soundName;
 
-	MainSoundList[_SoundName]->Sound->SetCurrentPosition(0);
-	MainSoundList[_SoundName]->Sound->Play(0, 0, DSBPLAY_LOOPING);
+	mainSoundList[_soundName]->sound->SetCurrentPosition(0);
+	mainSoundList[_soundName]->sound->Play(0, 0, DSBPLAY_LOOPING);
 
 	return;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChDirectSound9::PlaySE(const ChStd::DataNo _SoundNo)
+void ChDirectSound9::PlaySE(const ChStd::DataNo _soundNo)
 {
-	if (SubSoundList.find(_SoundNo) != SubSoundList.end())return;
+	if (subSoundList.find(_soundNo) != subSoundList.end())return;
 
-	auto TmpBGM = SubSoundList[_SoundNo];
+	auto tmpBGM = subSoundList[_soundNo];
 
-	TmpBGM->Sound->SetCurrentPosition(0);
-	TmpBGM->Sound->Play(0, 0, 0);
+	tmpBGM->sound->SetCurrentPosition(0);
+	tmpBGM->sound->Play(0, 0, 0);
 
 	return;
 }
@@ -416,35 +416,35 @@ void ChDirectSound9::PlaySE(const ChStd::DataNo _SoundNo)
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChDirectSound9::PlaySE(
-	const std::string _SoundName
-	, const std::string _UseSoundDirectory
-	, const ChVec3_9* _SoundPos)
+	const std::string _soundName
+	, const std::string _useSoundDirectory
+	, const ChVec3_9* _soundPos)
 {
-	std::string TmpString = _SoundName;
+	std::string tmpString = _soundName;
 
-	if (TmpString.length() <= 0)return;
+	if (tmpString.length() <= 0)return;
 
-	if (DirectoryPathList.find(_UseSoundDirectory)
-		!= DirectoryPathList.end())
+	if (directoryPathList.find(_useSoundDirectory)
+		!= directoryPathList.end())
 	{
-		TmpString = DirectoryPathList[_UseSoundDirectory] + '/' + TmpString;
+		tmpString = directoryPathList[_useSoundDirectory] + '/' + tmpString;
 	}
 
-	auto SE = ChPtr::Make_S<ChSubSound9>();
-	LoadSound(SE->Sound, SE->DSound, TmpString);
+	auto se = ChPtr::Make_S<ChSubSound9>();
+	LoadSound(se->sound, se->dSound, tmpString);
 
-	if (ChPtr::NotNullCheck(_SoundPos))
+	if (ChPtr::NotNullCheck(_soundPos))
 	{
-		SE->DSound->SetPosition(_SoundPos->x
-			, _SoundPos->y
-			, _SoundPos->z
+		se->dSound->SetPosition(_soundPos->x
+			, _soundPos->y
+			, _soundPos->z
 			, DS3D_IMMEDIATE);
 	}
 
-	SE->Sound->SetCurrentPosition(0);
-	SE->Sound->Play(0, 0, 0);
+	se->sound->SetCurrentPosition(0);
+	se->sound->Play(0, 0, 0);
 
-	PlaySubSoundList.push_back(SE);
+	playSubSoundList.push_back(se);
 
 	return;
 }
@@ -453,31 +453,31 @@ void ChDirectSound9::PlaySE(
 
 void ChDirectSound9::StopBGM()
 {
-	if (MainSoundName.length() <= 0)return;
+	if (mainSoundName.length() <= 0)return;
 
 	DWORD Flg;
-	MainSoundList[MainSoundName]->Sound->GetStatus(&Flg);
+	mainSoundList[mainSoundName]->sound->GetStatus(&Flg);
 	if ((Flg & DSBSTATUS_PLAYING) != 0)
 	{
-		MainSoundList[MainSoundName]->Sound->Stop();
+		mainSoundList[mainSoundName]->sound->Stop();
 	}
-	MainSoundName = "";
+	mainSoundName = "";
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChDirectSound9::StopSE(const ChStd::DataNo _SoundNo)
+void ChDirectSound9::StopSE(const ChStd::DataNo _soundNo)
 {
-	auto TmpBuffer = SubSoundList[_SoundNo];
+	auto tmpBuffer = subSoundList[_soundNo];
 
 	DWORD Flg;
-	TmpBuffer->Sound->GetStatus(&Flg);
+	tmpBuffer->sound->GetStatus(&Flg);
 
 	if ((Flg & DSBSTATUS_PLAYING) == 0) {
 		return;
 	}
 
-	TmpBuffer->Sound->Stop();
+	tmpBuffer->sound->Stop();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////

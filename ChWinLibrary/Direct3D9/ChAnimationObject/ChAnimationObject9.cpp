@@ -18,14 +18,14 @@ using namespace ChSystem;
 ///////////////////////////////////////////////////////////////////////////////////////
 
 void ChAniObj9::SetAnimationFunction(
-	const std::function<void()>& _Func
-	, const size_t _AniFrameNum)
+	const std::function<void()>& _func
+	, const size_t _aniFrameNum)
 {
-	if (_AniFrameNum > AniList.size()) {
+	if (_aniFrameNum > aniList.size()) {
 
 		//ChSystem::ErrerMessage("関数がセットできませんでした", "警告");
 
-		AniList[_AniFrameNum]->FrameFunc = _Func;
+		aniList[_aniFrameNum]->frameFunc = _func;
 
 		return;
 	}
@@ -35,34 +35,34 @@ void ChAniObj9::SetAnimationFunction(
 ///////////////////////////////////////////////////////////////////////////////////////
 
 void ChAniObj9::SetAniObject(
-	const ChVec3_9& _Pos
-	, const ChVec3_9& _Sca
-	, const ChQua_9& _Rot)
+	const ChVec3_9& _pos
+	, const ChVec3_9& _sca
+	, const ChQua_9& _rot)
 {
-	auto Ani = ChPtr::Make_S<AniObject>();
+	auto ani = ChPtr::Make_S<AniObject>();
 
-	Ani->Pos = _Pos;
-	Ani->Sca = _Sca;
-	Ani->Rot = _Rot;
+	ani->pos = _pos;
+	ani->sca = _sca;
+	ani->rot = _rot;
 
-	AniList.push_back(Ani);
+	aniList.push_back(ani);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
 void ChAniObj9::SetAniObject(const ChMat_9& _Mat)
 {
-	auto TmpMat = _Mat;
+	auto tmpMat = _Mat;
 
-	auto Ani = ChPtr::Make_S<AniObject>();
+	auto ani = ChPtr::Make_S<AniObject>();
 
-	Ani->Pos = TmpMat;
+	ani->pos = tmpMat;
 
-	Ani->Rot = TmpMat;
+	ani->rot = tmpMat;
 
-	Ani->Sca = TmpMat.GetScaleSize();
+	ani->sca = tmpMat.GetScaleSize();
 
-	AniList.push_back(Ani);
+	aniList.push_back(ani);
 
 }
 
@@ -70,56 +70,56 @@ void ChAniObj9::SetAniObject(const ChMat_9& _Mat)
 
 ChMat_9 ChAniObj9::Update()
 {
-	if (!AniPlayFlg)return LastPlayMat;
+	if (!aniPlayFlg)return lastPlayMat;
 
-	if (NowFrame + 1 >= AniList.size())
+	if (nowFrame + 1 >= aniList.size())
 	{
 		Stop();
-		return  LastPlayMat;
+		return  lastPlayMat;
 	}
 
-	AniObject SAni, EAni, NAni;
+	AniObject sAni, eAni, nAni;
 
-	SAni = *AniList[NowFrame];
+	sAni = *aniList[nowFrame];
 
-	if (NowFrame < 0 && ChPtr::NotNullCheck(TmpStartMat))
+	if (nowFrame < 0 && ChPtr::NotNullCheck(tmpStartMat))
 	{
 
-		auto TmpMat = *TmpStartMat;
-		SAni.Pos = TmpMat;
-		SAni.Rot = TmpMat;
-		SAni.Sca = TmpMat.GetScaleSize();
+		auto tmpMat = *tmpStartMat;
+		sAni.pos = tmpMat;
+		sAni.rot = tmpMat;
+		sAni.sca = tmpMat.GetScaleSize();
 
 	}
 
-	EAni = *AniList[NowFrame + 1];
+	eAni = *aniList[nowFrame + 1];
 
-	NAni.Lerp(SAni, EAni, NowTime);
+	nAni.Lerp(sAni, eAni, nowTime);
 
-	NowTime += OneFrameTime;
+	nowTime += oneFrameTime;
 
-	if (NowTime > 1.0f)
+	if (nowTime > 1.0f)
 	{
-		NowTime -= 1.0f;
-		NowFrame++;
-		FuncFlg = false;
+		nowTime -= 1.0f;
+		nowFrame++;
+		funcFlg = false;
 	}
 
-	LastPlayMat.Identity();
-	LastPlayMat.Scaling(NAni.Sca);
-	LastPlayMat *= NAni.Rot;
-	LastPlayMat = NAni.Pos;
+	lastPlayMat.Identity();
+	lastPlayMat.Scaling(nAni.sca);
+	lastPlayMat *= nAni.rot;
+	lastPlayMat = nAni.pos;
 
 
 
-	if (FuncFlg)return LastPlayMat;
-	if (NAni.FrameFunc == nullptr)return LastPlayMat;
+	if (funcFlg)return lastPlayMat;
+	if (nAni.frameFunc == nullptr)return lastPlayMat;
 
-	NAni.FrameFunc();
+	nAni.frameFunc();
 
-	FuncFlg = true;
+	funcFlg = true;
 
-	return LastPlayMat;
+	return lastPlayMat;
 
 }
 
@@ -127,17 +127,17 @@ ChMat_9 ChAniObj9::Update()
 //ChAnimationSupporter9メソッド
 ///////////////////////////////////////////////////////////////////////////////////////
 
-const std::string ChAnimationSupporter9::AnimationCheck = "AnimationSet Global {";
+const std::string ChAnimationSupporter9::animationCheck = "AnimationSet Global {";
 
-const std::string ChAnimationSupporter9::Animation = "Animation {";
+const std::string ChAnimationSupporter9::animation = "Animation {";
 
-const std::string ChAnimationSupporter9::AniKey = "AnimationKey {";
+const std::string ChAnimationSupporter9::aniKey = "AnimationKey {";
 
 void ChAnimationSupporter9::CreateFunction()
 {
-	if (CFlg)return;
+	if (cFlg)return;
 
-	Creaters[".x"] =
+	creaters[".x"] =
 		[this](const std::string& _FileName)
 	{
 
@@ -149,24 +149,24 @@ void ChAnimationSupporter9::CreateFunction()
 			File.FileClose();
 		}
 
-		std::map<std::string, ChPtr::Shared<ChAnimationObject9>>Animations;
+		std::map<std::string, ChPtr::Shared<ChAnimationObject9>>animations;
 
-		if (Datas.find(AnimationCheck) == std::string::npos)return std::move(Animations);
+		if (Datas.find(animationCheck) == std::string::npos)return std::move(animations);
 
-		size_t FPos = 0;
-		std::vector<ChPtr::Shared<ChVec3_9>>PosList;
-		std::vector<ChPtr::Shared<ChVec3_9>>SclList;
-		std::vector<ChPtr::Shared<ChQua_9>>RotList;
+		size_t fPos = 0;
+		std::vector<ChPtr::Shared<ChVec3_9>>posList;
+		std::vector<ChPtr::Shared<ChVec3_9>>sclList;
+		std::vector<ChPtr::Shared<ChQua_9>>rotList;
 
-		while ((FPos = Datas.find(Animation, FPos)) != std::string::npos)
+		while ((fPos = Datas.find(animation, fPos)) != std::string::npos)
 		{
-			if (Datas.find(AniKey, FPos) == std::string::npos)break;
+			if (Datas.find(aniKey, fPos) == std::string::npos)break;
 
 
-			FPos += Animation.length();
+			fPos += animation.length();
 			std::string BoneName;
 
-			BoneName = Datas.substr(Datas.find("{", FPos) + 1, Datas.find("}", FPos) - Datas.find("{", FPos) - 1);
+			BoneName = Datas.substr(Datas.find("{", fPos) + 1, Datas.find("}", fPos) - Datas.find("{", fPos) - 1);
 
 
 
@@ -176,34 +176,34 @@ void ChAnimationSupporter9::CreateFunction()
 
 				while (1)
 				{
-					size_t TmpPos = Datas.find(AniKey, FPos);
-					if (TmpPos == std::string::npos)break;
-					TmpPos += AniKey.length();
+					size_t tmpPos = Datas.find(aniKey, fPos);
+					if (tmpPos == std::string::npos)break;
+					tmpPos += aniKey.length();
 
-					FPos = Datas.find(";", TmpPos);
+					fPos = Datas.find(";", tmpPos);
 					std::string Test;
-					Test = Datas.substr(FPos - 2, 2);
-					int Tmp = std::atoi(Datas.substr(FPos - 2, 2).c_str());
+					Test = Datas.substr(fPos - 2, 2);
+					int tmp = std::atoi(Datas.substr(fPos - 2, 2).c_str());
 
-					switch (Tmp)
+					switch (tmp)
 					{
 					case 0:
 
-						RotList = (Create4D(Datas, FPos, false));
-						for (auto&& Qua : RotList)
+						rotList = (Create4D(Datas, fPos, false));
+						for (auto&& qua : rotList)
 						{
-							Qua->w *= -1.0f;
+							qua->w *= -1.0f;
 						}
 						BreakFlg.SetBitTrue(0);
 						break;
 					case 1:
 
-						SclList = (Create3D(Datas, FPos, false));
+						sclList = (Create3D(Datas, fPos, false));
 						BreakFlg.SetBitTrue(1);
 						break;
 					case 2:
 
-						PosList = (Create3D(Datas, FPos, false));
+						posList = (Create3D(Datas, fPos, false));
 						BreakFlg.SetBitTrue(2);
 
 						break;
@@ -218,119 +218,119 @@ void ChAnimationSupporter9::CreateFunction()
 				}
 			}
 
-			size_t Min = RotList.size(), Max = RotList.size();
+			size_t min = rotList.size(), max = rotList.size();
 
-			if (Max < SclList.size())Max = SclList.size();
-			if (Max < PosList.size())Max = PosList.size();
+			if (max < sclList.size())max = sclList.size();
+			if (max < posList.size())max = posList.size();
 
 
-			if (Min > SclList.size())Min = SclList.size();
-			if (Min < PosList.size())Min = PosList.size();
+			if (min > sclList.size())min = sclList.size();
+			if (min < posList.size())min = posList.size();
 
-			for (size_t Cnt = 0; Cnt < Max - Min; Cnt++)
+			for (size_t Cnt = 0; Cnt < max - min; Cnt++)
 			{
-				if (RotList.size() < Max)
+				if (rotList.size() < max)
 				{
-					auto Rot = ChPtr::Make_S<ChQua_9>();
-					if (RotList.size() > 0)
+					auto rot = ChPtr::Make_S<ChQua_9>();
+					if (rotList.size() > 0)
 					{
-						*Rot = *RotList[RotList.size() - 1];
+						*rot = *rotList[rotList.size() - 1];
 
 					}
-					RotList.push_back(Rot);
+					rotList.push_back(rot);
 				}
-				if (SclList.size() < Max)
+				if (sclList.size() < max)
 				{
-					auto Scl = ChPtr::Make_S<ChVec3_9>();
-					if (SclList.size() > 0)
+					auto scl = ChPtr::Make_S<ChVec3_9>();
+					if (sclList.size() > 0)
 					{
-						*Scl = *SclList[SclList.size() - 1];
+						*scl = *sclList[sclList.size() - 1];
 					}
-					SclList.push_back(Scl);
+					sclList.push_back(scl);
 				}
-				if (PosList.size() < Max)
+				if (posList.size() < max)
 				{
-					auto Pos = ChPtr::Make_S<ChVec3_9>();
-					if (PosList.size() > 0)
+					auto pos = ChPtr::Make_S<ChVec3_9>();
+					if (posList.size() > 0)
 					{
-						*Pos = *PosList[PosList.size() - 1];
+						*pos = *posList[posList.size() - 1];
 					}
-					*Pos = *PosList[PosList.size() - 1];
-					PosList.push_back(Pos);
+					*pos = *posList[posList.size() - 1];
+					posList.push_back(pos);
 				}
 			}
 
 
-			auto Ani = ChPtr::Make_S<ChAnimationObject9>();
+			auto ani = ChPtr::Make_S<ChAnimationObject9>();
 
-			for (size_t Cnt = 0; Cnt < Max; Cnt++)
+			for (size_t Cnt = 0; Cnt < max; Cnt++)
 			{
-				Ani->SetAniObject
+				ani->SetAniObject
 				(
-					*PosList[Cnt]
-					, *SclList[Cnt]
-					, *RotList[Cnt]
+					*posList[Cnt]
+					, *sclList[Cnt]
+					, *rotList[Cnt]
 				);
 
 			}
 
 
-			Animations[BoneName] = Ani;
+			animations[BoneName] = ani;
 
 		}
 
 
-		return (Animations);
+		return (animations);
 		//SizeTest//
 
 	};
 
 
 
-	CFlg = true;
+	cFlg = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
 std::vector<ChPtr::Shared<ChQua_9>>
-ChAnimationSupporter9::Create4D(const std::string& _Str, size_t& _FPos, const ChStd::Bool _RFlg)
+ChAnimationSupporter9::Create4D(const std::string& _Str, size_t& _fPos, const ChStd::Bool _rFlg)
 {
 
-	std::vector<ChPtr::Shared<ChQua_9>> TmpQua;
-	std::string CutStart = ";4;";
-	std::string CutEnd = ";;";
-	std::string End = ";;;";
+	std::vector<ChPtr::Shared<ChQua_9>> tmpQua;
+	std::string cutStart = ";4;";
+	std::string cutEnd = ";;";
+	std::string end = ";;;";
 
-	size_t TmpFPos = 0;
-	while (_Str.find(End, _FPos - 1) >= _FPos)
+	size_t tmpFPos = 0;
+	while (_Str.find(end, _fPos - 1) >= _fPos)
 	{
 
-		if ((TmpFPos = _Str.find(CutStart, _FPos)) >= _Str.find(End, _FPos))break;
-		_FPos = TmpFPos;
-		_FPos += CutStart.length();
+		if ((tmpFPos = _Str.find(cutStart, _fPos)) >= _Str.find(end, _fPos))break;
+		_fPos = tmpFPos;
+		_fPos += cutStart.length();
 
-		auto Qua = ChPtr::Make_S<ChQua_9>();
+		auto qua = ChPtr::Make_S<ChQua_9>();
 
 		{
-			ChQua TmpQua;
-			TmpQua.Deserialize(_Str, _FPos);
-			Qua->x = TmpQua.x;
-			Qua->y = TmpQua.y;
-			Qua->z = TmpQua.z;
-			Qua->w = TmpQua.w;
+			ChQua tmpQua;
+			tmpQua.Deserialize(_Str, _fPos);
+			qua->x = tmpQua.x;
+			qua->y = tmpQua.y;
+			qua->z = tmpQua.z;
+			qua->w = tmpQua.w;
 		}
 
-		if (_RFlg)*Qua *= -1.0f;
-		_FPos = _Str.find(CutEnd, _FPos);
+		if (_rFlg)*qua *= -1.0f;
+		_fPos = _Str.find(cutEnd, _fPos);
 
-		TmpQua.push_back(Qua);
+		tmpQua.push_back(qua);
 
 
 	}
 
-	_FPos = _Str.find(End, _FPos);
+	_fPos = _Str.find(end, _fPos);
 
-	return TmpQua;
+	return tmpQua;
 
 
 }
@@ -338,34 +338,34 @@ ChAnimationSupporter9::Create4D(const std::string& _Str, size_t& _FPos, const Ch
 ///////////////////////////////////////////////////////////////////////////////////////
 
 std::vector<ChPtr::Shared<ChVec3_9>>
-ChAnimationSupporter9::Create3D(const std::string& _Str, size_t& _FPos, const ChStd::Bool _RFlg)
+ChAnimationSupporter9::Create3D(const std::string& _Str, size_t& _fPos, const ChStd::Bool _rFlg)
 {
-	std::vector<ChPtr::Shared<ChVec3_9>> TmpVec;
+	std::vector<ChPtr::Shared<ChVec3_9>> tmpVec;
 	std::string CutStart = ";3;";
 	std::string CutEnd = ";;";
 	std::string End = ";;;";
 
-	size_t TmpFPos = 0;
-	while (_Str.find(End, _FPos - 1) >= _FPos)
+	size_t tmpFPos = 0;
+	while (_Str.find(End, _fPos - 1) >= _fPos)
 	{
 
-		if ((TmpFPos = _Str.find(CutStart, _FPos)) >= _Str.find(End, _FPos))break;
-		_FPos = TmpFPos;
-		_FPos += CutStart.length();
+		if ((tmpFPos = _Str.find(CutStart, _fPos)) >= _Str.find(End, _fPos))break;
+		_fPos = tmpFPos;
+		_fPos += CutStart.length();
 
 		auto Vec = ChPtr::Make_S<ChVec3_9>();
 
 		{
-			ChVec3 TmpVec;
-			TmpVec.Deserialize(_Str, _FPos);
-			*Vec = TmpVec;
+			ChVec3 tmpVec;
+			tmpVec.Deserialize(_Str, _fPos);
+			*Vec = tmpVec;
 		}
 
-		if (_RFlg)*Vec *= -1.0f;
-		TmpVec.push_back(Vec);
-		_FPos = _Str.find(CutEnd, _FPos);
+		if (_rFlg)*Vec *= -1.0f;
+		tmpVec.push_back(Vec);
+		_fPos = _Str.find(CutEnd, _fPos);
 	}
 
-	return TmpVec;
+	return tmpVec;
 
 }

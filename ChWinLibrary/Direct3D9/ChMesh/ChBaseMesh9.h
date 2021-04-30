@@ -22,54 +22,47 @@ namespace ChMesh
 	//メッシュの頂点データ//
 	struct MeshVertex9
 	{
-		ChVec3_9 Pos;
-		ChVec3_9 Normal;
-		D3DXVECTOR2 Tex;
+		ChVec3_9 pos;
+		ChVec3_9 normal;
+		D3DXVECTOR2 tex;
 	};
 
 	struct MeshFace9
 	{
-		unsigned long VertexNum[3];
-		ChVec3_9 Normal;
-		ChVec3_9 CenterPos;
+		unsigned long vertexNum[3];
+		ChVec3_9 normal;
+		ChVec3_9 centerPos;
 	};
 
 #endif
 
 	//D3DXMeshを操る基底クラス//
-	typedef class BaseMesh9
+	typedef class BaseMesh9:public ChCpp::ClassPerts::Releaser
 	{
 	public:
 
 		///////////////////////////////////////////////////////////////////////////////////
-		//ConstructerDestructer//
-
-		BaseMesh9() {};
-
-		virtual ~BaseMesh9() { Release(); }
-
-		///////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
-		void Release();
+		void Release()override;
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
 		virtual void SetSkin(){}
 
-		void SetMaterialName(const std::string& _FileName);
+		void SetMaterialName(const std::string& _fileName);
 
 		inline void SetMaterialCol(
 			const unsigned long _Num
 			,const ChVec4& _Dif) 
 		{
-			if (Material.size() <= _Num)return;
+			if (material.size() <= _Num)return;
 
-			Material[_Num]->Diffuse.a = _Dif.a;
-			Material[_Num]->Diffuse.r = _Dif.r;
-			Material[_Num]->Diffuse.g = _Dif.g;
-			Material[_Num]->Diffuse.b = _Dif.b;
+			material[_Num]->Diffuse.a = _Dif.a;
+			material[_Num]->Diffuse.r = _Dif.r;
+			material[_Num]->Diffuse.g = _Dif.g;
+			material[_Num]->Diffuse.b = _Dif.b;
 
 		}
 
@@ -77,31 +70,31 @@ namespace ChMesh
 			const unsigned long _Num
 			, const ChLMat& _Mat)
 		{
-			if (Material.size() <= _Num)return;
+			if (material.size() <= _Num)return;
 
-			Material[_Num]->Mat = _Mat;
+			material[_Num]->mat = _Mat;
 
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
-		inline const LPD3DXMESH GetMesh() const { return Mesh; }
+		inline const LPD3DXMESH GetMesh() const { return mesh; }
 
 		inline std::vector<ChPtr::Shared<ChVec3_9>> GetVertexList()const
 		{ 
-			return OffsetVertexList; 
+			return offsetVertexList; 
 		}
 
-		inline std::vector<ChPtr::Shared<ChMaterial_9>> GetMaterials() const { return Material; }
+		inline std::vector<ChPtr::Shared<ChMaterial_9>> GetMaterials() const { return material; }
 
-		inline std::vector<ChPtr::Shared<ChTex::BaseTexture9>> GetTex() const { return TexList; }
+		inline std::vector<ChPtr::Shared<ChTex::BaseTexture9>> GetTex() const { return texList; }
 
-		inline std::vector<ChPtr::Shared<ChTex::BaseTexture9>> GetNormalTex() const { return NormalTex; }
+		inline std::vector<ChPtr::Shared<ChTex::BaseTexture9>> GetNormalTex() const { return normalTex; }
 
-		inline std::vector<ChPtr::Shared<MeshFace9>> GetFace() const { return EasyFaceList; }
+		inline std::vector<ChPtr::Shared<MeshFace9>> GetFace() const { return easyFaceList; }
 		
-		virtual inline ChMat_9 GetBoneMat(const std::string& _Str){ return ChMat_9(); }
+		virtual inline ChMat_9 GetBoneMat(const std::string& _str){ return ChMat_9(); }
 
 		///////////////////////////////////////////////////////////////////////////////////
 
@@ -110,26 +103,26 @@ namespace ChMesh
 		///////////////////////////////////////////////////////////////////////////////////
 
 		virtual void Draw(
-			const ChMat_9& _Mat
-			, const LPDIRECT3DDEVICE9& _Dev
-			, const long _SubNum = -1);
+			const ChMat_9& _mat
+			, const LPDIRECT3DDEVICE9& _dev
+			, const long _subNum = -1);
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		void CreateMesh(
-			const std::string& _FileName
-			, const std::string& _PathName
-			, const LPDIRECT3DDEVICE9& _Dev);
+			const std::string& _fileName
+			, const std::string& _pathName
+			, const LPDIRECT3DDEVICE9& _dev);
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		static ChPtr::Shared<BaseMesh9> MeshType(
-			const std::string& _FileName);
+			const std::string& _fileName);
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		static ChPtr::Shared<BaseMesh9> SkinMeshType(
-			const std::string& _FileName);
+			const std::string& _fileName);
 
 		friend MeshManager9;
 		friend MeshList9;
@@ -140,22 +133,22 @@ namespace ChMesh
 		///////////////////////////////////////////////////////////////////////////////////
 
 		virtual void OpenFile(
-			const std::string& _FileName
-			, const std::string& _PathName
-			, const LPDIRECT3DDEVICE9& _Dev) {}
+			const std::string& _fileName
+			, const std::string& _pathName
+			, const LPDIRECT3DDEVICE9& _dev) {}
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//InsFunction//
 
-		virtual LPD3DXMESH InsMesh() { return Mesh; }
+		virtual LPD3DXMESH InsMesh() { return mesh; }
 
-		std::vector<ChPtr::Shared<ChMaterial_9>>& InsMaterials() { return Material; }
+		std::vector<ChPtr::Shared<ChMaterial_9>>& InsMaterials() { return material; }
 
-		std::vector<ChPtr::Shared<ChTex::BaseTexture9>>& InsTex() { return TexList; }
+		std::vector<ChPtr::Shared<ChTex::BaseTexture9>>& InsTex() { return texList; }
 
-		std::vector<ChPtr::Shared<ChTex::BaseTexture9>>& InsNormalTex() { return NormalTex; }
+		std::vector<ChPtr::Shared<ChTex::BaseTexture9>>& InsNormalTex() { return normalTex; }
 
-		std::vector<ChPtr::Shared<MeshFace9>>& InsFace() { return EasyFaceList; }
+		std::vector<ChPtr::Shared<MeshFace9>>& InsFace() { return easyFaceList; }
 
 		///////////////////////////////////////////////////////////////////////////////////
 
@@ -163,16 +156,16 @@ namespace ChMesh
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		LPD3DXMESH Mesh = nullptr;//メッシュの形状//
-		std::vector<ChPtr::Shared<ChMaterial_9>> Material;//マテリアルの内容//
-		std::vector<ChPtr::Shared<ChTex::BaseTexture9>> TexList;//テクスチャーの内容//
-		std::vector<ChPtr::Shared<ChTex::BaseTexture9>> NormalTex;//法線マッピング//
+		LPD3DXMESH mesh = nullptr;//メッシュの形状//
+		std::vector<ChPtr::Shared<ChMaterial_9>> material;//マテリアルの内容//
+		std::vector<ChPtr::Shared<ChTex::BaseTexture9>> texList;//テクスチャーの内容//
+		std::vector<ChPtr::Shared<ChTex::BaseTexture9>> normalTex;//法線マッピング//
 
-		std::vector<ChPtr::Shared<ChVec3_9>>OptimalVertexList;//最適化した頂点//
-		std::vector<ChPtr::Shared<MeshFace9>>EasyFaceList;//最適化した頂点//
+		std::vector<ChPtr::Shared<ChVec3_9>>optimalVertexList;//最適化した頂点//
+		std::vector<ChPtr::Shared<MeshFace9>>easyFaceList;//最適化した頂点//
 
-		std::vector<ChPtr::Shared<ChVec3_9>>OffsetVertexList;//初期の頂点位置//
-		size_t VertexNum = 0;
+		std::vector<ChPtr::Shared<ChVec3_9>>offsetVertexList;//初期の頂点位置//
+		size_t vertexNum = 0;
 
 
 	}Mesh9;

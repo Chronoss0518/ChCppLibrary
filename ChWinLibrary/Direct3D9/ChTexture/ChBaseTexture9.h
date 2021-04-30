@@ -4,28 +4,21 @@
 namespace ChTex
 {
 
-	typedef class BaseTexture9
+	typedef class BaseTexture9:public ChCpp::ClassPerts::Releaser
 	{
 	public:
 
 		///////////////////////////////////////////////////////////////////////////////////
-		//ConstructerDestructer//
-
-		BaseTexture9() {}
-
-		virtual ~BaseTexture9() { Release(); }
-
-		///////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
-		void Release();
+		void Release()override;
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		void SetBaseColor(const ChVec4& _Col){ Col = _Col; }
+		void SetBaseColor(const ChVec4& _col){ col = _col; }
 
-		void SetBaseColor(const D3DCOLOR& _Col) { Col = D3DColorToColor255(_Col); }
+		void SetBaseColor(const D3DCOLOR& _col) { col = D3DColorToColor255(_col); }
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
@@ -33,137 +26,137 @@ namespace ChTex
 		//選択した箇所の色取得//
 		template<class T>
 		T GetColor(
-			const unsigned int _Width
-			, const unsigned int _Height);
+			const unsigned int _width
+			, const unsigned int _height);
 
-		inline const LPDIRECT3DTEXTURE9 GetTex()const { return Tex; }
+		inline const LPDIRECT3DTEXTURE9 GetTex()const { return tex; }
 
-		inline const LPDIRECT3DSURFACE9 GetSur()const { return Sur; }
+		inline const LPDIRECT3DSURFACE9 GetSur()const { return sur; }
 
-		inline const LPDIRECT3DSURFACE9 GetZBu()const { return ZBu; }
+		inline const LPDIRECT3DSURFACE9 GetZBu()const { return zBu; }
 
-		float GetSclXSize()const { return ScalingX; }
+		float GetSclXSize()const { return scal.x; }
 
-		float GetSclYSize()const { return ScalingY; }
+		float GetSclYSize()const { return scal.y; }
 
-		unsigned int GetOriginalWidth()const { return OWidth; }
+		unsigned int GetOriginalWidth()const { return original.w; }
 
-		unsigned int GetOriginalHeight()const { return OHeight; }
+		unsigned int GetOriginalHeight()const { return original.h; }
 
-		ChVec4 GetBaseColor()const { return Col; }
+		ChVec4 GetBaseColor()const { return col; }
 
 		D3DCOLOR GetBaseColD3D()const 
 		{
 			return D3DCOLOR_ARGB(
-				static_cast<unsigned char>(Col.a * 255)
-				, static_cast<unsigned char>(Col.r * 255)
-				, static_cast<unsigned char>(Col.g * 255)
-				, static_cast<unsigned char>(Col.b * 255));
+				static_cast<unsigned char>(col.a * 255)
+				, static_cast<unsigned char>(col.r * 255)
+				, static_cast<unsigned char>(col.g * 255)
+				, static_cast<unsigned char>(col.b * 255));
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//InsFunction//
 
-		inline LPDIRECT3DTEXTURE9& InsTex() { return Tex; }
+		inline LPDIRECT3DTEXTURE9& InsTex() { return tex; }
 
-		inline LPDIRECT3DSURFACE9& InsSur() { return Sur; }
+		inline LPDIRECT3DSURFACE9& InsSur() { return sur; }
 
-		inline LPDIRECT3DSURFACE9& InsZBu() { return ZBu; }
+		inline LPDIRECT3DSURFACE9& InsZBu() { return zBu; }
 
-		float&  InsSclXSize() { return ScalingX; }
+		float&  InsSclXSize() { return scal.x; }
 
-		float&  InsSclYSize() { return ScalingY; }
+		float&  InsSclYSize() { return scal.y; }
 
-		unsigned int& InsOriginalWidth() { return OWidth; }
+		unsigned int& InsOriginalWidth() { return original.w; }
 
-		unsigned int& InsOriginalHeight() { return OHeight; }
+		unsigned int& InsOriginalHeight() { return original.h; }
 
-		ChVec4& InsBaseColor() { return Col; }
+		ChVec4& InsBaseColor() { return col; }
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//専用拡張子でのインポート//
-		static ChVec4 D3DColorToColor255(const D3DCOLOR& _Col);
+		static ChVec4 D3DColorToColor255(const D3DCOLOR& _col);
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//CreateFucntion//
 
 		//外部ファイルより画像作成//
 		void CreateTexture(
-			const std::string& _FileName
-			, const LPDIRECT3DDEVICE9& _Dev
-			, const D3DCOLOR& _ColKey = D3DCOLOR_ARGB(0, 0, 0, 0));
+			const std::string& _fileName
+			, const LPDIRECT3DDEVICE9& _dev
+			, const D3DCOLOR& _colKey = D3DCOLOR_ARGB(0, 0, 0, 0));
 
 		//色付き画像作成//
 		void CreateColTexture(
-			const LPDIRECT3DDEVICE9& _Dev
-			, const D3DCOLOR& _Col = D3DCOLOR_ARGB(255, 255, 255, 255)
-			, const unsigned long _W = 1
-			, const unsigned long _H = 1);
+			const LPDIRECT3DDEVICE9& _dev
+			, const D3DCOLOR& _col = D3DCOLOR_ARGB(255, 255, 255, 255)
+			, const unsigned long _w = 1
+			, const unsigned long _h = 1);
 
 		//色付き詳細画像作成//
 		template<typename T>
 		void CreateMinuColTexture(
-			const LPDIRECT3DDEVICE9& _Dev
-			, const T& _Col
-			, const unsigned long _W = 1
-			, const unsigned long _H = 1
-			, const _D3DFORMAT _FMT = D3DFMT_A8R8G8B8
-			, const unsigned long _Usage = 0
-			, const _D3DPOOL _Pool = D3DPOOL_MANAGED);
+			const LPDIRECT3DDEVICE9& _dev
+			, const T& _col
+			, const unsigned long _w = 1
+			, const unsigned long _h = 1
+			, const _D3DFORMAT _format = D3DFMT_A8R8G8B8
+			, const unsigned long _usage = 0
+			, const _D3DPOOL _pool = D3DPOOL_MANAGED);
 
 		//サーフェイス作成//
 		//※画像作成後に使用//
-		inline void CreateSurface(const unsigned int _Level)
+		inline void CreateSurface(const unsigned int _level)
 		{
-			if (ChPtr::NullCheck(Tex))return;
+			if (ChPtr::NullCheck(tex))return;
 
-			Tex->GetSurfaceLevel(0, &Sur);
+			tex->GetSurfaceLevel(0, &sur);
 		}
 
 		//深度バッファの作成//
 		//※画像作成後に使用//
 		void CreateZBuffer(
-			const LPDIRECT3DDEVICE9& _Dev
-			, const _D3DFORMAT _FMT = D3DFMT_D16
-			, const _D3DMULTISAMPLE_TYPE _MSample = D3DMULTISAMPLE_NONE
-			, const unsigned long _MQuality = 0);
+			const LPDIRECT3DDEVICE9& _dev
+			, const _D3DFORMAT _format = D3DFMT_D16
+			, const _D3DMULTISAMPLE_TYPE _mSample = D3DMULTISAMPLE_NONE
+			, const unsigned long _mQuality = 0);
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		static ChPtr::Shared<BaseTexture9> TextureType(
-			const std::string _FileName);
+			const std::string _fileName);
 
 	protected:
 
 		template<typename T>
-		inline void SetTexColor(const T& _Color);
+		inline void SetTexColor(const T& _color);
 
-		LPDIRECT3DTEXTURE9 Tex = nullptr;	//テクスチャマップ収納用//
-		LPDIRECT3DSURFACE9 Sur = nullptr;
-		LPDIRECT3DSURFACE9 ZBu = nullptr;
+		LPDIRECT3DTEXTURE9 tex = nullptr;	//テクスチャマップ収納用//
+		LPDIRECT3DSURFACE9 sur = nullptr;
+		LPDIRECT3DSURFACE9 zBu = nullptr;
 
-		float ScalingX = 1.0f;
-		float ScalingY = 1.0f;
-		unsigned int OWidth;	//オリジナルサイズの横幅//
-		unsigned int OHeight;	//オリジナルサイズの縦幅//
-		ChVec4 Col{ 1.0f,1.0f,1.0f,1.0f };	//色彩基本色//
+		ChMath::Vector2Base<float>scal;//拡縮のサイズ//
+
+		ChMath::Vector2Base<unsigned int>original;//オリジナルのサイズ//
+
+		ChVec4 col{ 1.0f,1.0f,1.0f,1.0f };	//色彩基本色//
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		virtual void OpenFile(const std::string& _FileName) {};
+		virtual void OpenFile(const std::string& _fileName) {};
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		template<typename T>
 		void SetBynaryForStr(
-			T& _SetData
-			, const std::string& _Str
-			, size_t& _FPos)
+			T& _setData
+			, const std::string& _str
+			, size_t& _fPos)
 		{
-			if (_FPos > _Str.size())return;
-			ChStr::StrBinaryToNum(_SetData, _Str, _FPos);
-			_FPos += sizeof(T);
+			if (_fPos > _str.size())return;
+			ChStr::StrBinaryToNum(_setData, _str, _fPos);
+			_fPos += sizeof(T);
 
 		}
 

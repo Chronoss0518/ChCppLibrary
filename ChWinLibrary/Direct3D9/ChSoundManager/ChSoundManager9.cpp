@@ -14,31 +14,31 @@ using namespace ChSound;
 
 void SoundManager8::Init(const HWND _hWin)
 {
-	LPDIRECTSOUNDBUFFER Tmp = nullptr;
+	LPDIRECTSOUNDBUFFER tmp = nullptr;
 
-	DirectSoundCreate8(nullptr, &SoundDevice, nullptr);
+	DirectSoundCreate8(nullptr, &soundDevice, nullptr);
 
-	if (SoundDevice == nullptr)return;
+	if (soundDevice == nullptr)return;
 
-	SoundDevice->SetCooperativeLevel(_hWin, DSSCL_NORMAL);
+	soundDevice->SetCooperativeLevel(_hWin, DSSCL_NORMAL);
 
-	DSBUFFERDESC TmpB;
+	DSBUFFERDESC tmpB;
 	WAVEFORMATEX wf;
 
 	wf = SetWaveFormat();
 
-	TmpB.dwSize = sizeof(DSBUFFERDESC);
-	TmpB.dwFlags = DSBCAPS_CTRLVOLUME | DSBCAPS_CTRL3D | DSBCAPS_PRIMARYBUFFER;
-	TmpB.dwBufferBytes = 0;
-	TmpB.dwReserved = 0;
-	TmpB.lpwfxFormat = &wf;
-	TmpB.guid3DAlgorithm = GUID_NULL;
+	tmpB.dwSize = sizeof(DSBUFFERDESC);
+	tmpB.dwFlags = DSBCAPS_CTRLVOLUME | DSBCAPS_CTRL3D | DSBCAPS_PRIMARYBUFFER;
+	tmpB.dwBufferBytes = 0;
+	tmpB.dwReserved = 0;
+	tmpB.lpwfxFormat = &wf;
+	tmpB.guid3DAlgorithm = GUID_NULL;
 
-	SoundDevice->CreateSoundBuffer(&TmpB, &Tmp, NULL);
+	soundDevice->CreateSoundBuffer(&tmpB, &tmp, NULL);
 
-	Tmp->QueryInterface(IID_IDirectSoundBuffer8, (LPVOID*)&MainBuffer);
+	tmp->QueryInterface(IID_IDirectSoundBuffer8, (LPVOID*)&mainBuffer);
 
-	Tmp->Release();
+	tmp->Release();
 
 	SetInitFlg(true);
 

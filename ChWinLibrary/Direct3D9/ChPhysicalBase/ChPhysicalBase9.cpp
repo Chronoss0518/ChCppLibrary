@@ -15,10 +15,10 @@ using namespace ChMesh;
 //ChPhysicalBase9ÉÅÉ\ÉbÉh
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChPhysicalBase9::SetMesh(const ChPtr::Shared<Mesh9> _SmpX)
+void ChPhysicalBase9::SetMesh(const ChPtr::Shared<Mesh9> _smpX)
 {
-	if (_SmpX == nullptr)return;
-	WpXList.push_back(_SmpX);
+	if (_smpX == nullptr)return;
+	wpXList.push_back(_smpX);
 
 }
 
@@ -34,67 +34,67 @@ void ChGravity9::Init(const float _FPS)
 ///////////////////////////////////////////////////////////////////////////////////
 
 ChStd::Bool ChGravity9::UpDate(
-	ChVec3_9* _Pos
-	, const ChVec3_9* _MoveDir)
+	ChVec3_9* _pos
+	, const ChVec3_9* _moveDir)
 {
-	Vec = ChVec3_9(0.0f, 0.0f, 0.0f);
+	vec = ChVec3_9(0.0f, 0.0f, 0.0f);
 
 	
-	for (unsigned short i = 0; i < WpXList.size(); i++)
+	for (unsigned short i = 0; i < wpXList.size(); i++)
 	{
-		if (WpXList.empty())return false;
+		if (wpXList.empty())return false;
 
-		auto TmpX = WpXList[i].lock();
+		auto tmpX = wpXList[i].lock();
 
-		if (TmpX == nullptr)
+		if (tmpX == nullptr)
 		{
-			WpXList.erase(WpXList.begin() + i);
+			wpXList.erase(wpXList.begin() + i);
 			i--;
 			continue;
 		}
 
-		float TmpLen;
-		ChVec3_9 TmpVec(0.0f, 0.0f, 0.0f);
+		float tmpLen;
+		ChVec3_9 tmpVec(0.0f, 0.0f, 0.0f);
 
-		Vec = ChVec3_9(0.0f, -1.0f, 0.0f);
+		vec = ChVec3_9(0.0f, -1.0f, 0.0f);
 
-		Pow += G / FPS;
+		pow += g / FPS;
 
-		Pow -= _MoveDir->y;
+		pow -= _moveDir->y;
 
-		if (_MoveDir->y > 0.0f)
+		if (_moveDir->y > 0.0f)
 		{
-			TmpSpeed = _MoveDir->y;
+			tmpSpeed = _moveDir->y;
 			return true;
 		}
 
-		if (-TmpSpeed >= Pow)Pow = -TmpSpeed;
-		TmpSpeed = 0.0f;
+		if (-tmpSpeed >= pow)pow = -tmpSpeed;
+		tmpSpeed = 0.0f;
 
-		ChVec3_9 TmpPos = *_Pos;
-		TmpPos.y += VirtualHeight;
+		ChVec3_9 tmpPos = *_pos;
+		tmpPos.y += virtualHeight;
 		
-		DWORD TmpD;
+		DWORD tmpD;
 
 		if (!ChObjCon9().MeshHitRay(
-			TmpD
-			, TmpLen
-			,TmpX
+			tmpD
+			, tmpLen
+			,tmpX
 			, ChMat_9()
-			, TmpPos
-			, Vec))continue;
+			, tmpPos
+			, vec))continue;
 
-		if (TmpLen - BaseLen - VirtualHeight < Pow) {
-			Vec *= (TmpLen - BaseLen - VirtualHeight);
-			*_Pos = Vec + TmpPos;
-			_Pos->y -= _MoveDir->y;
-			Pow = 0.0f;
+		if (tmpLen - baseLen - virtualHeight < pow) {
+			vec *= (tmpLen - baseLen - virtualHeight);
+			*_pos = vec + tmpPos;
+			_pos->y -= _moveDir->y;
+			pow = 0.0f;
 
 			return true;
 		}
 
-		Vec *= Pow;
-		*_Pos += Vec;
+		vec *= pow;
+		*_pos += vec;
 		return true;
 	}
 
@@ -112,68 +112,68 @@ void ChPushBack9::Init()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ChPushBack9::UpDate(ChVec3_9* _Pos, const ChVec3_9* _Dir)
+ChStd::Bool ChPushBack9::UpDate(ChVec3_9* _pos, const ChVec3_9* _dir)
 {
-	Vec = ChVec3_9(0.0f, 0.0f, 0.0f);
-	ChVec3_9 TmpVec;
-	ChVec3_9 TmpPos;
-	float Len;
+	vec = ChVec3_9(0.0f, 0.0f, 0.0f);
+	ChVec3_9 tmpVec;
+	ChVec3_9 tmpPos;
+	float len;
 
 
 
-	for (unsigned short i = 0; i < WpXList.size(); i++)
+	for (unsigned short i = 0; i < wpXList.size(); i++)
 	{
 
-		if (WpXList.empty())return false;
+		if (wpXList.empty())return false;
 
-		auto TmpX = WpXList[i].lock();
+		auto tmpX = wpXList[i].lock();
 
-		if (TmpX == nullptr)
+		if (tmpX == nullptr)
 		{
-			WpXList.erase(WpXList.begin() + i);
+			wpXList.erase(wpXList.begin() + i);
 			i--;
 			continue;
 		}
 
-		TmpVec = *_Dir;
-		TmpPos = *_Pos;
+		tmpVec = *_dir;
+		tmpPos = *_pos;
 
-		Len = TmpVec.GetLen();
+		len = tmpVec.GetLen();
 
-		TmpVec.Normalize();
+		tmpVec.Normalize();
 
-		float TmpLen = 0.0f;
-		DWORD FaceNum;
+		float tmpLen = 0.0f;
+		DWORD faceNum;
 
-		if (!ObjCon->MeshHitRay(
-			FaceNum
-			, TmpLen
-			, TmpX
+		if (!objCon->MeshHitRay(
+			faceNum
+			, tmpLen
+			, tmpX
 			, ChMat_9()
-			, TmpPos
-			, TmpVec))continue;
+			, tmpPos
+			, tmpVec))continue;
 
-		ChVec3_9 TmpDir;
+		ChVec3_9 tmpDir;
 
-		TmpDir = TmpX->GetFace()[FaceNum]->Normal;
+		tmpDir = tmpX->GetFace()[faceNum]->normal;
 
-		TmpVec = -TmpVec;
+		tmpVec = -tmpVec;
 
-		float TmpDot = D3DXVec3Dot(&TmpDir, &TmpVec);
+		float tmpDot = D3DXVec3Dot(&tmpDir, &tmpVec);
 
-		TmpVec = -TmpVec;
+		tmpVec = -tmpVec;
 
-		if (TmpDot == 0.0f)continue;
+		if (tmpDot == 0.0f)continue;
 
-		TmpDot = fabsf(TmpDot);
+		tmpDot = fabsf(tmpDot);
 
-		float Limit = BackLine / TmpDot;
+		float Limit = backLine / tmpDot;
 
 		if (Limit < 0)Limit *= -1;
 
-		if (TmpLen - Len >= Limit)continue;
+		if (tmpLen - len >= Limit)continue;
 
-		*_Pos += TmpDir * (Limit - TmpLen + Len) * TmpDot;
+		*_pos += tmpDir * (Limit - tmpLen + len) * tmpDot;
 
 		return true;
 

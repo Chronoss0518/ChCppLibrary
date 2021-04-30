@@ -14,34 +14,34 @@ using namespace ChTex;
 ///////////////////////////////////////////////////////////////////////////////////
 
 void RenderTargetManager9::Init(
-	const LPDIRECT3DDEVICE9& _Dv
-	, const unsigned short _WW
-	, const unsigned short _WH
-	, const ChD3D9::ShaderController* _Shader)
+	const LPDIRECT3DDEVICE9& _dv
+	, const unsigned short _windWidth
+	, const unsigned short _windHeight
+	, const ChD3D9::ShaderController* _shader)
 {
-	DBData = ChPtr::Make_S<Texture9>();
+	dbData = ChPtr::Make_S<Texture9>();
 
-	DBData->InsOriginalWidth() = _WW;
-	DBData->InsOriginalHeight() = _WH;
+	dbData->InsOriginalWidth() = _windWidth;
+	dbData->InsOriginalHeight() = _windHeight;
 
-	DBData->InsSclXSize() = 1.0f;
-	DBData->InsSclYSize() = 1.0f;
+	dbData->InsSclXSize() = 1.0f;
+	dbData->InsSclYSize() = 1.0f;
 
-	Device = _Dv;
-	Device->GetRenderTarget(0, &DBData->InsSur());
-	Device->GetDepthStencilSurface(&DBData->InsZBu());
+	device = _dv;
+	device->GetRenderTarget(0, &dbData->InsSur());
+	device->GetDepthStencilSurface(&dbData->InsZBu());
 
 	SetInitFlg(true);
 
-	if (ChPtr::NullCheck(_Shader))
+	if (ChPtr::NullCheck(_shader))
 	{
 		if (!ChD3D9::Shader())return;
-		UShader = &ChD3D9::Shader();
+		uShader = &ChD3D9::Shader();
 		return;
 	}
-	if (!*_Shader)return;
+	if (!*_shader)return;
 
-	UShader = const_cast<ChD3D9::ShaderController*>(_Shader);
+	uShader = const_cast<ChD3D9::ShaderController*>(_shader);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -49,7 +49,7 @@ void RenderTargetManager9::Init(
 void RenderTargetManager9::Release()
 {
 	ReturnRT();
-	RTList.clear();
+	rtList.clear();
 
 	SetInitFlg(false);
 
@@ -58,61 +58,61 @@ void RenderTargetManager9::Release()
 ///////////////////////////////////////////////////////////////////////////////////
 
 void RenderTargetManager9::CreateRT(
-	const std::string& _DataName
-	, const UINT _RTW
-	, const UINT _RTH
-	, const _D3DFORMAT _FMT)
+	const std::string& _dataName
+	, const UINT _rtWidth
+	, const UINT _rtHeight
+	, const _D3DFORMAT _format)
 {
-	if (_RTW <= 0 || _RTH <= 0)return;
-	if (RTList.find(_DataName) != RTList.end())return;
+	if (_rtWidth <= 0 || _rtHeight <= 0)return;
+	if (rtList.find(_dataName) != rtList.end())return;
 
-	auto TmpRT = ChPtr::Make_S<Texture9>();
+	auto tmpRT = ChPtr::Make_S<Texture9>();
 
-	TmpRT->CreateMinuColTexture<D3DCOLOR>(
-		Device
+	tmpRT->CreateMinuColTexture<D3DCOLOR>(
+		device
 		, D3DCOLOR_ARGB(0, 0, 0, 0)
-		, _RTW
-		, _RTH
-		, _FMT
+		, _rtWidth
+		, _rtHeight
+		, _format
 		, D3DUSAGE_RENDERTARGET
 		, D3DPOOL_DEFAULT);
 
-	if (ChPtr::NullCheck(TmpRT->GetTex()))return;
+	if (ChPtr::NullCheck(tmpRT->GetTex()))return;
 
-	TmpRT->CreateSurface(0);
+	tmpRT->CreateSurface(0);
 
-	if (ChPtr::NullCheck(TmpRT->GetSur()))return;
+	if (ChPtr::NullCheck(tmpRT->GetSur()))return;
 
-	TmpRT->CreateZBuffer(Device);
+	tmpRT->CreateZBuffer(device);
 
-	if (ChPtr::NullCheck(TmpRT->GetZBu()))return;
+	if (ChPtr::NullCheck(tmpRT->GetZBu()))return;
 
-	RTList[_DataName]=TmpRT;
+	rtList[_dataName]=tmpRT;
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void RenderTargetManager9::SetRT(
-	const std::string& _DataName
-	, const D3DCOLOR _BackCol)
+	const std::string& _dataName
+	, const D3DCOLOR _backCol)
 {
-	if (RTList.find(_DataName) == RTList.end())return;
-	if (DBData == nullptr)return;
+	if (rtList.find(_dataName) == rtList.end())return;
+	if (dbData == nullptr)return;
 
-	if (ChPtr::NotNullCheck(UShader))
+	if (ChPtr::NotNullCheck(uShader))
 	{
-		if (UShader->IsDraw())return;
+		if (uShader->IsDraw())return;
 	}
 
-	Device->SetRenderTarget(0, RTList[_DataName]->GetSur());
-	Device->SetDepthStencilSurface(RTList[_DataName]->GetZBu());
+	device->SetRenderTarget(0, rtList[_dataName]->GetSur());
+	device->SetDepthStencilSurface(rtList[_dataName]->GetZBu());
 
 
-	if (ChPtr::NotNullCheck(UShader))
+	if (ChPtr::NotNullCheck(uShader))
 	{
-		UShader->SetRTDraw(true);
-		UShader->SetDrawDatas(_BackCol);
+		uShader->SetRTDraw(true);
+		uShader->SetDrawDatas(_backCol);
 	}
 
 }
@@ -121,13 +121,13 @@ void RenderTargetManager9::SetRT(
 
 void RenderTargetManager9::ReturnRT()
 {
-	if (DBData == nullptr)return;
-	Device->SetRenderTarget(0, DBData->GetSur());
-	Device->SetDepthStencilSurface(DBData->GetZBu());
+	if (dbData == nullptr)return;
+	device->SetRenderTarget(0, dbData->GetSur());
+	device->SetDepthStencilSurface(dbData->GetZBu());
 
-	if (ChPtr::NotNullCheck(UShader))
+	if (ChPtr::NotNullCheck(uShader))
 	{
-		UShader->SetRTDraw(false);
+		uShader->SetRTDraw(false);
 	}
 
 }

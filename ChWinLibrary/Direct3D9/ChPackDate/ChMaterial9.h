@@ -9,11 +9,11 @@
 struct ChMaterial_9 :public D3DMATERIAL9
 {
 	//Material名
-	std::string Name = "";
+	std::string name = "";
 	
 
 	//SubSet描画時に移動させるマテリアルの行列//
-	ChMat_9 Mat;
+	ChMat_9 mat;
 
 	ChMaterial_9&operator=(const D3DMATERIAL9 _cm)
 	{
@@ -24,13 +24,13 @@ struct ChMaterial_9 :public D3DMATERIAL9
 
 	D3DMATERIAL9&operator=(const ChMaterial_9 _cm)
 	{
-		D3DMATERIAL9 TmpMat;
-		TmpMat.Ambient = _cm.Ambient;
-		TmpMat.Diffuse = _cm.Diffuse;
-		TmpMat.Emissive = _cm.Emissive;
-		TmpMat.Power = _cm.Power;
-		TmpMat.Specular = _cm.Specular;
-		return  TmpMat;
+		D3DMATERIAL9 tmpMat;
+		tmpMat.Ambient = _cm.Ambient;
+		tmpMat.Diffuse = _cm.Diffuse;
+		tmpMat.Emissive = _cm.Emissive;
+		tmpMat.Power = _cm.Power;
+		tmpMat.Specular = _cm.Specular;
+		return  tmpMat;
 	}
 
 	ChMaterial_9(D3DMATERIAL9 &_cm) :D3DMATERIAL9(_cm) {};

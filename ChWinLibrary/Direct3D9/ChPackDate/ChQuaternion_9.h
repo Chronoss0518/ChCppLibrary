@@ -8,26 +8,26 @@ public:
 
 	operator D3DXVECTOR3()
 	{
-		D3DXVECTOR3 TmpVec;
+		D3DXVECTOR3 tmpVec;
 
-		D3DXMATRIX TmpMat;
+		D3DXMATRIX tmpMat;
 
-		D3DXMatrixRotationQuaternion(&TmpMat, this);
+		D3DXMatrixRotationQuaternion(&tmpMat, this);
 
-		auto Tmp = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
+		auto tmp = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
 
-		D3DXVec3TransformNormal(&TmpVec, &Tmp, &TmpMat);
+		D3DXVec3TransformNormal(&tmpVec, &tmp, &tmpMat);
 
-		return TmpVec;
+		return tmpVec;
 	}
 
 	operator D3DXMATRIX()
 	{
-		D3DXMATRIX TmpMat;
+		D3DXMATRIX tmpMat;
 
-		D3DXMatrixRotationQuaternion(&TmpMat, this);
+		D3DXMatrixRotationQuaternion(&tmpMat, this);
 
-		return TmpMat;
+		return tmpMat;
 	}
 
 	ChQuaternion_9&operator=(const D3DXQUATERNION& _cm)
@@ -46,17 +46,17 @@ public:
 
 	ChQuaternion_9&operator =(const D3DXVECTOR3& _cm)
 	{
-		D3DXVECTOR3 TmpVec = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
-		D3DXVECTOR3 TmpVec2 = _cm;
+		D3DXVECTOR3 tmpVec = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
+		D3DXVECTOR3 tmpVec2 = _cm;
 
-		D3DXVec3Normalize(&TmpVec, &TmpVec);
-		D3DXVec3Normalize(&TmpVec2, &TmpVec2);
+		D3DXVec3Normalize(&tmpVec, &tmpVec);
+		D3DXVec3Normalize(&tmpVec2, &tmpVec2);
 
-		float TmpDot = D3DXVec3Dot(&TmpVec, &TmpVec2);
+		float tmpDot = D3DXVec3Dot(&tmpVec, &tmpVec2);
 
-		D3DXVec3Cross(&TmpVec, &TmpVec, &TmpVec2);
+		D3DXVec3Cross(&tmpVec, &tmpVec, &tmpVec2);
 
-		D3DXQuaternionRotationAxis(this, &TmpVec, TmpDot);
+		D3DXQuaternionRotationAxis(this, &tmpVec, tmpDot);
 
 		return *this;
 
@@ -80,17 +80,17 @@ public:
 
 	ChQuaternion_9(const D3DXVECTOR3& _cm)
 	{
-		D3DXVECTOR3 TmpVec = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
-		D3DXVECTOR3 TmpVec2 = _cm;
+		D3DXVECTOR3 tmpVec = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
+		D3DXVECTOR3 tmpVec2 = _cm;
 
-		D3DXVec3Normalize(&TmpVec, &TmpVec);
-		D3DXVec3Normalize(&TmpVec2, &TmpVec2);
+		D3DXVec3Normalize(&tmpVec, &tmpVec);
+		D3DXVec3Normalize(&tmpVec2, &tmpVec2);
 
-		float TmpDot = D3DXVec3Dot(&TmpVec, &TmpVec2);
+		float tmpDot = D3DXVec3Dot(&tmpVec, &tmpVec2);
 
-		D3DXVec3Cross(&TmpVec, &TmpVec, &TmpVec2);
+		D3DXVec3Cross(&tmpVec, &tmpVec, &tmpVec2);
 
-		D3DXQuaternionRotationAxis(this, &TmpVec, TmpDot);
+		D3DXQuaternionRotationAxis(this, &tmpVec, tmpDot);
 
 	}
 
@@ -119,36 +119,36 @@ public:
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	inline void RotYPR(const D3DXVECTOR3& _Vec)
+	inline void RotYPR(const D3DXVECTOR3& _vec)
 	{
-		RotYPR(_Vec.x, _Vec.y, _Vec.z);
+		RotYPR(_vec.x, _vec.y, _vec.z);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	inline void RotAxis(const D3DXVECTOR3 *_Vec,const float _Ang)
+	inline void RotAxis(const D3DXVECTOR3 *_vec,const float _ang)
 	{
 		D3DXQuaternionRotationAxis(
 			this
-			, _Vec
-			, D3DXToRadian(_Ang));
+			, _vec
+			, D3DXToRadian(_ang));
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	inline void RotMat(const D3DXMATRIX *_Mat)
+	inline void RotMat(const D3DXMATRIX *_mat)
 	{
-		D3DXQuaternionRotationMatrix(this, _Mat);
+		D3DXQuaternionRotationMatrix(this, _mat);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
 
 	inline void Lerp(
-		const D3DXQUATERNION& _SQua
-		, const D3DXQUATERNION& _EQua
-		, const float _NowTime)
+		const D3DXQUATERNION& _sQua
+		, const D3DXQUATERNION& _eQua
+		, const float _nowTime)
 	{
-		D3DXQuaternionSlerp(this, &_SQua, &_EQua, _NowTime);
+		D3DXQuaternionSlerp(this, &_sQua, &_eQua, _nowTime);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////

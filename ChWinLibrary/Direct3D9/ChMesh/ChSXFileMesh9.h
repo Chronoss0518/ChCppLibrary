@@ -15,23 +15,23 @@ namespace ChMesh
 		///////////////////////////////////////////////////////////////////////////////////////
 
 		void OpenFile(
-			const std::string& _FileName
-			, const std::string& _PathName
-			, const LPDIRECT3DDEVICE9& _Dev)override;
+			const std::string& _fileName
+			, const std::string& _pathName
+			, const LPDIRECT3DDEVICE9& _dev)override;
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		void SetBone(const std::string& _FileName);
+		void SetBone(const std::string& _fileName);
 
-		void SetBoneVertex(const std::string& _FStr);
+		void SetBoneVertex(const std::string& _fStr);
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
 		void CreateBoneTree(
-			const std::string& _FStr
-			, size_t& _FPos
-			, const ChPtr::Shared<Bone>& _Bone = nullptr);
+			const std::string& _fStr
+			, size_t& _fPos
+			, const ChPtr::Shared<Bone>& _bone = nullptr);
 
 		///////////////////////////////////////////////////////////////////////////////////
 
@@ -39,8 +39,8 @@ namespace ChMesh
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		static const std::string FreamMat;
-		static const std::string SkinWaights;
+		static const std::string frameMat;
+		static const std::string skinWaights;
 
 
 	};

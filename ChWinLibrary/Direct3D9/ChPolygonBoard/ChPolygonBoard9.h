@@ -6,7 +6,8 @@ namespace ChTex
 	typedef class BaseTexture9 Texture9;
 
 	//板ポリゴン管理用クラス//
-	class PolygonBoard9 {
+	class PolygonBoard9:public ChCpp::ClassPerts::Initializer
+	{
 	public:
 
 		//板ポリゴンで利用する頂点情報//
@@ -19,53 +20,53 @@ namespace ChTex
 
 		ChVertex9& operator[](int _size)
 		{
-			return this->Ver[_size];
+			return this->ver[_size];
 		}
 
 		ChVertex9 operator[](const int _size)const
 		{
-			return this->Ver[_size];
+			return this->ver[_size];
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
-		void Init(const LPDIRECT3DDEVICE9& _Dv);
+		void Init(const LPDIRECT3DDEVICE9& _dv);
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
 		//透過させるかさせないかのフラグ//
-		void SetAlphaFlg(bool _Flg) { AlphaFlg = _Flg; }
+		void SetAlphaFlg(bool _flg) { alphaFlg = _flg; }
 
 		//スペキュラ情報などを含むか含まないか//
 		//void SetUpDateFlg(const bool _Flg) { UpDateFlg = _Flg; }
 
 		//左上のD3DXVECTOR3を取得し、そこからの幅高さを計算し出力してくれる。//
 		//XY方向の板ポリゴンのポジション指定//
-		void SetXYPosition(const ChVec3_9& _LeftTopPos, const float _W, const float _H);
+		void SetXYPosition(const ChVec3_9& _leftTopPos, const float _w, const float _h);
 
 		//YZ方向の板ポリゴンのポジション指定//
-		void SetYZPosition(const ChVec3_9& _LeftTopPos, const float _W, const float _H);
+		void SetYZPosition(const ChVec3_9& _leftTopPos, const float _w, const float _h);
 
 		//ZX方向の板ポリゴンのポジション指定//
-		void SetZXPosition(const ChVec3_9& _LeftTopPos, const float _W, const float _H);
+		void SetZXPosition(const ChVec3_9& _leftTopPos, const float _w, const float _h);
 
 		//対象のVertexをオリジナルの位置へ持っていくことができる。//
-		void SetPositionVector(const D3DXVECTOR3* _Pos, const char _PosNo);
+		void SetPositionVector(const D3DXVECTOR3* _pos, const char _posNo);
 
 		//対象のVertexの色情報をセットできる//
-		void SetColor(const D3DCOLOR _Col, const unsigned char _PosNo);
+		void SetColor(const D3DCOLOR _col, const unsigned char _posNo);
 
 		//対象のVertexのTexture描画地点(スクリーン座標系)の設定を行うことができる。//
-		void SetTex(const D3DXVECTOR2 _Tex, const unsigned char _PosNo);
+		void SetTex(const D3DXVECTOR2 _tex, const unsigned char _posNo);
 
 		//第二引数には、オリジナルサイズから見たピクセルサイズ。//
 		//第三引数には、画像の左上画像位置。//
 		void SetRectTex(
-			const ChPtr::Shared<BaseTexture9> _Tex
+			const ChPtr::Shared<BaseTexture9> _tex
 			, const RECT& _rect
-			, const unsigned char _SPosNo);
+			, const unsigned char _sPosNo);
 
 		//対象のVerTexの法線をセットできる。//
 		//void SetNormal(const D3DXVECTOR3 _Normal, const char _PosNo);
@@ -73,10 +74,10 @@ namespace ChTex
 		///////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
-		const inline ChVertex9* GetPosVertex(unsigned char _VertexCnt)
+		const inline ChVertex9* GetPosVertex(unsigned char _vertexCnt)
 		{
-			if (VertexMaxCnt < _VertexCnt)return nullptr;
-			return &Ver[_VertexCnt];
+			if (vertexMaxCnt < _vertexCnt)return nullptr;
+			return &ver[_vertexCnt];
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -89,11 +90,11 @@ namespace ChTex
 
 
 
-		ChStd::Bool AlphaFlg;
+		ChStd::Bool alphaFlg;
 
-		static const unsigned char VertexMaxCnt = 4;
+		static const unsigned char vertexMaxCnt = 4;
 
-		LPDIRECT3DDEVICE9 Device;
+		LPDIRECT3DDEVICE9 device;
 
 		union
 		{
@@ -102,7 +103,7 @@ namespace ChTex
 				ChVertex9 _1,_2,_3,_4;
 			};
 
-			ChVertex9 Ver[VertexMaxCnt];
+			ChVertex9 ver[vertexMaxCnt];
 
 		};
 
@@ -113,20 +114,13 @@ namespace ChTex
 		//を初期値とした2づつずれた向きがXY壁をセットする。//
 		PolygonBoard9() {};
 
-		virtual ~PolygonBoard9() { InitFlg = false; }
-
-	private:
-
-		ChStd::Bool InitFlg = false;
 
 	public:
 
-		inline ChStd::Bool IsInit() { return InitFlg; }
-
 		inline static PolygonBoard9& GetIns()
 		{
-			static PolygonBoard9 Ins;
-			return Ins;
+			static PolygonBoard9 ins;
+			return ins;
 		}
 
 	};

@@ -1,4 +1,4 @@
-#pragma once
+
 #ifndef Ch_D3D9_Sp_h
 #define Ch_D3D9_Sp_h
 
@@ -8,7 +8,8 @@ namespace ChTex
 
 	//(シングルトンに対して改良中)
 	//スプライト描画を行うクラス//
-	class Sprite9 {
+	class Sprite9 :public ChCpp::ClassPerts::Initializer,public ChCpp::ClassPerts::Releaser
+	{
 	public:
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -16,41 +17,31 @@ namespace ChTex
 
 		void Init(const LPDIRECT3DDEVICE9 _d);
 
-		void Release();
+		void Release()override;
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//第三引数がNULL又はnullptrだった場合,画面サイズと同じになる。//
 		virtual void DrawSprite(
 			const ChPtr::Shared<Texture9> _tex
-			, const ChMat_9& _Mat
-			, const ChVec3_9& _CenterPos
-			, const RECT& _AnimationRect = { 0,0,0,0 });
+			, const ChMat_9& _mat
+			, const ChVec3_9& _centerPos
+			, const RECT& _animationRect = { 0,0,0,0 });
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 	protected:
 
 
-		LPD3DXSPRITE Sp;
-		LPDIRECT3DDEVICE9 Device;
+		LPD3DXSPRITE sp;
+		LPDIRECT3DDEVICE9 device;
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//ConstructerDestructer//
 
 		Sprite9() {};
 
-		virtual ~Sprite9() {
-			Release();
-		};
-
-	private:
-
-		ChStd::Bool InitFlg = false;
-
 	public:
-
-		inline ChStd::Bool IsInit() { return InitFlg; }
 
 		inline static Sprite9& GetIns()
 		{

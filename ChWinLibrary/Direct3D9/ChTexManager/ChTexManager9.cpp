@@ -12,9 +12,9 @@ using namespace ChTex;
 //ChTextureManager9ÉÅÉ\ÉbÉh
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void TextureManager9::Init(LPDIRECT3DDEVICE9 _Dv)
+void TextureManager9::Init(LPDIRECT3DDEVICE9 _dv)
 {
-	Device = _Dv;
+	device = _dv;
 
 	SetInitFlg(true);
 }
@@ -24,12 +24,12 @@ void TextureManager9::Init(LPDIRECT3DDEVICE9 _Dv)
 void TextureManager9::Release()
 {
 
-	if (!TexList.empty()) {
-		TexList.clear();
+	if (!texList.empty()) {
+		texList.clear();
 	}
-	if (!PathList.empty())
+	if (!pathList.empty())
 	{
-		PathList.clear();
+		pathList.clear();
 	}
 
 	SetInitFlg(false);
@@ -45,87 +45,87 @@ TextureManager9::~TextureManager9()
 ///////////////////////////////////////////////////////////////////////////////////
 
 void TextureManager9::SetTexture(
-	const std::string& _TextureName
-	, const std::string& _DataName
-	, const std::string& _UsePathName
-	, const unsigned int _GameReSizeWidth
-	, const unsigned int _GameReSizeHeight
-	, const D3DCOLOR& _ColorKey)
+	const std::string& _textureName
+	, const std::string& _dataName
+	, const std::string& _usePathName
+	, const unsigned int _gameReSizeWidth
+	, const unsigned int _gameReSizeHeight
+	, const D3DCOLOR& _colorKey)
 {
-	if (TexList.find(_DataName) != TexList.end())return;
-	if (_TextureName.length() <= 0)return;
+	if (texList.find(_dataName) != texList.end())return;
+	if (_textureName.length() <= 0)return;
 
-	std::string TmpPath = "./";
+	std::string tmpPath = "./";
 
 
-	if (PathList.find(_UsePathName) != PathList.end())
+	if (pathList.find(_usePathName) != pathList.end())
 	{
-		TmpPath = *PathList[_UsePathName];
-		TmpPath += "/";
+		tmpPath = *pathList[_usePathName];
+		tmpPath += "/";
 
 	}
 
-	std::string TmpString = _TextureName;
+	std::string tmpString = _textureName;
 
-	TmpString = TmpPath + TmpString;
+	tmpString = tmpPath + tmpString;
 
-	auto TmpTex = ChTex::Texture9::TextureType(TmpString);
+	auto tmpTex = ChTex::Texture9::TextureType(tmpString);
 
-	TmpTex->CreateTexture(TmpString, Device, _ColorKey);
+	tmpTex->CreateTexture(tmpString, device, _colorKey);
 
-	if (ChPtr::NullCheck(TmpTex->GetTex()))
+	if (ChPtr::NullCheck(tmpTex->GetTex()))
 	{
 		//ChSystem::ErrerMessage("âÊëúÇ™ì«Ç›çûÇ‹ÇÍÇ‹ÇπÇÒÇ≈ÇµÇΩ", "åxçê");
 
 
-		TmpTex = nullptr;
+		tmpTex = nullptr;
 		return;
 	}
 
 
-	if (ChPtr::NullCheck(TmpTex->GetTex())) return;
+	if (ChPtr::NullCheck(tmpTex->GetTex())) return;
 
-	TmpTex->InsSclXSize() = 0.0f;
-	TmpTex->InsSclYSize() = 0.0f;
-	if (_GameReSizeWidth != NULL && _GameReSizeHeight != NULL) {
+	tmpTex->InsSclXSize() = 0.0f;
+	tmpTex->InsSclYSize() = 0.0f;
+	if (_gameReSizeWidth != NULL && _gameReSizeHeight != NULL) {
 		float tmpX, tmpY;
-		tmpX = (float)_GameReSizeWidth / (float)TmpTex->GetOriginalWidth();
-		tmpY = (float)_GameReSizeHeight / (float)TmpTex->GetOriginalHeight();
-		if (_GameReSizeWidth == TmpTex->GetOriginalWidth())tmpX = 0.0f;
-		if (_GameReSizeHeight == TmpTex->GetOriginalHeight())tmpY = 0.0f;
-		TmpTex->InsSclXSize() = tmpX;
-		TmpTex->InsSclYSize() = tmpY;
+		tmpX = (float)_gameReSizeWidth / (float)tmpTex->GetOriginalWidth();
+		tmpY = (float)_gameReSizeHeight / (float)tmpTex->GetOriginalHeight();
+		if (_gameReSizeWidth == tmpTex->GetOriginalWidth())tmpX = 0.0f;
+		if (_gameReSizeHeight == tmpTex->GetOriginalHeight())tmpY = 0.0f;
+		tmpTex->InsSclXSize() = tmpX;
+		tmpTex->InsSclYSize() = tmpY;
 	}
 
-	TexList[_DataName] = TmpTex;
+	texList[_dataName] = tmpTex;
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void TextureManager9::SetColorTex(
-	const unsigned long& _Color
-	, const std::string& _DataName
-	, const unsigned int _GameReSizeWidth
-	, const unsigned int _GameReSizeHeight
-	, const unsigned long _Type)
+	const unsigned long& _color
+	, const std::string& _dataName
+	, const unsigned int _gameReSizeWidth
+	, const unsigned int _gameReSizeHeight
+	, const unsigned long _type)
 {
-	if (TexList.find(_DataName) != TexList.end())return;
+	if (texList.find(_dataName) != texList.end())return;
 
-	auto TmpTex = ChPtr::Make_S<Texture9>();
+	auto tmpTex = ChPtr::Make_S<Texture9>();
 
-	TmpTex->CreateColTexture(Device, _Color);
+	tmpTex->CreateColTexture(device, _color);
 
-	TmpTex->InsSclXSize() = 1.0f;
-	TmpTex->InsSclYSize() = 1.0f;
+	tmpTex->InsSclXSize() = 1.0f;
+	tmpTex->InsSclYSize() = 1.0f;
 
-	if (_GameReSizeWidth != 0 && _GameReSizeHeight != 0)
+	if (_gameReSizeWidth != 0 && _gameReSizeHeight != 0)
 	{
-		TmpTex->InsSclXSize() = (float)_GameReSizeWidth;
-		TmpTex->InsSclYSize() = (float)_GameReSizeHeight;
+		tmpTex->InsSclXSize() = (float)_gameReSizeWidth;
+		tmpTex->InsSclYSize() = (float)_gameReSizeHeight;
 	}
 
-	TexList[_DataName] = TmpTex;
+	texList[_dataName] = tmpTex;
 
 	return;
 }
@@ -133,45 +133,45 @@ void TextureManager9::SetColorTex(
 ///////////////////////////////////////////////////////////////////////////////////
 
 void TextureManager9::SetBlendColor(
-	const ChVec4& _Color
-	, const std::string _DataName)
+	const ChVec4& _color
+	, const std::string _dataName)
 {
 
-	if (TexList.find(_DataName) == TexList.end())return;
-	TexList[_DataName]->SetBaseColor(_Color);
+	if (texList.find(_dataName) == texList.end())return;
+	texList[_dataName]->SetBaseColor(_color);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void TextureManager9::SetBlendAlpha(
 	const unsigned char _a
-	, std::string _DataName)
+	, std::string _dataName)
 {
-	if (TexList.find(_DataName) == TexList.end())return;
-	TexList[_DataName]->InsBaseColor().a = _a;
+	if (texList.find(_dataName) == texList.end())return;
+	texList[_dataName]->InsBaseColor().a = _a;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void TextureManager9::SetDirectoryPath(std::string _DirectoryPath
-	, const std::string _UseDirectoryPashName)
+void TextureManager9::SetDirectoryPath(std::string _directoryPath
+	, const std::string _useDirectoryPashName)
 {
-	if (PathList.find(_UseDirectoryPashName) != PathList.end())return;
-	if (_DirectoryPath.length() <= 0)return;
+	if (pathList.find(_useDirectoryPashName) != pathList.end())return;
+	if (_directoryPath.length() <= 0)return;
 
-	PathList.insert(std::pair<std::string, ChPtr::Shared<std::string>>(_UseDirectoryPashName, ChPtr::Make_S<std::string>()));
-	*PathList[_UseDirectoryPashName] = _DirectoryPath;
+	pathList.insert(std::pair<std::string, ChPtr::Shared<std::string>>(_useDirectoryPashName, ChPtr::Make_S<std::string>()));
+	*pathList[_useDirectoryPashName] = _directoryPath;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void TextureManager9::ClearData(const std::string _DataName)
+void TextureManager9::ClearData(const std::string _dataName)
 {
-	if (TexList.empty())return;
+	if (texList.empty())return;
 
-	if (TexList.find(_DataName) == TexList.end()) return;
+	if (texList.find(_dataName) == texList.end()) return;
 
-	TexList.erase(_DataName);
+	texList.erase(_dataName);
 
 	return;
 

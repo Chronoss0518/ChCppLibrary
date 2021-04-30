@@ -21,17 +21,17 @@ using namespace ChMesh;
 
 void BaseMesh9::Release() {
 
-	if (ChPtr::NullCheck(Mesh))return;
+	if (ChPtr::NullCheck(mesh))return;
 
-	if (!Material.empty())Material.clear();
+	if (!material.empty())material.clear();
 
-	if (!TexList.empty())TexList.clear();
-	if (!NormalTex.empty())NormalTex.clear();
-	if (!EasyFaceList.empty())EasyFaceList.clear();
+	if (!texList.empty())texList.clear();
+	if (!normalTex.empty())normalTex.clear();
+	if (!easyFaceList.empty())easyFaceList.clear();
 
-	Mesh->Release();
+	mesh->Release();
 
-	Mesh = nullptr;
+	mesh = nullptr;
 
 }
 
@@ -40,76 +40,76 @@ void BaseMesh9::Release() {
 void BaseMesh9::CreateEasyFaceList()
 {
 
-	MeshVertex9* MeshData;
+	MeshVertex9* meshData;
 
 	WORD *p;
 
-	Mesh->LockIndexBuffer(0, (LPVOID*)&p);
-	Mesh->LockVertexBuffer(0, (LPVOID*)&MeshData);
+	mesh->LockIndexBuffer(0, (LPVOID*)&p);
+	mesh->LockVertexBuffer(0, (LPVOID*)&meshData);
 
-	for (unsigned long FaseNum = 0
-		; FaseNum < Mesh->GetNumFaces()
-		; FaseNum++)
+	for (unsigned long faceNum = 0
+		; faceNum < mesh->GetNumFaces()
+		; faceNum++)
 	{
 
-		auto MeshFace = ChPtr::Make_S<MeshFace9>();
+		auto meshFace = ChPtr::Make_S<MeshFace9>();
 
 		for (unsigned char i = 0; i < 3; i++)
 		{
-			MeshFace->VertexNum[i] = (*(p + FaseNum * 3 + i));
+			meshFace->vertexNum[i] = (*(p + faceNum * 3 + i));
 		}
 
-		MeshFace->Normal = (MeshData + MeshFace->VertexNum[0])->Normal;
+		meshFace->normal = (meshData + meshFace->vertexNum[0])->normal;
 		for (unsigned char i = 1; i < 3; i++)
 		{
-			MeshFace->Normal += (MeshData + MeshFace->VertexNum[i])->Normal;
+			meshFace->normal += (meshData + meshFace->vertexNum[i])->normal;
 		}
 
-		MeshFace->Normal.Normalize();
+		meshFace->normal.Normalize();
 
-		MeshFace->CenterPos = *OffsetVertexList[MeshFace->VertexNum[0]];
+		meshFace->centerPos = *offsetVertexList[meshFace->vertexNum[0]];
 
 		for (unsigned char i = 1; i < 3; i++)
 		{
-			MeshFace->CenterPos += *OffsetVertexList[MeshFace->VertexNum[i]];
+			meshFace->centerPos += *offsetVertexList[meshFace->vertexNum[i]];
 
 		}
 
-		MeshFace->CenterPos /= 3.0f;
+		meshFace->centerPos /= 3.0f;
 
-		EasyFaceList.push_back(MeshFace);
+		easyFaceList.push_back(meshFace);
 
 	}
 
-	Mesh->UnlockIndexBuffer();
-	Mesh->UnlockVertexBuffer();
+	mesh->UnlockIndexBuffer();
+	mesh->UnlockVertexBuffer();
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void BaseMesh9::SetMaterialName(const std::string& _FileName)
+void BaseMesh9::SetMaterialName(const std::string& _fileName)
 {
 
-	ChFIO::File File;
-	File.FileOpen(_FileName);
+	ChFIO::File file;
+	file.FileOpen(_fileName);
 
-	std::string TmpStr;
-	TmpStr = File.FileRead();
+	std::string tmpStr;
+	tmpStr = file.FileRead();
 
-	std::string TmpMateName = "Material ";
+	std::string tmpMateName = "Material ";
 
-	size_t Size = 0;
+	size_t size = 0;
 
 	unsigned int i = 0;
-	while ((Size = TmpStr.find(TmpMateName, Size)) != std::string::npos)
+	while ((size = tmpStr.find(tmpMateName, size)) != std::string::npos)
 	{
-		Size += TmpMateName.length();
-		size_t TmpNum = TmpStr.find("{", Size);
-		if (TmpNum == std::string::npos)break;
-		TmpNum -= (Size + 1);
-		Material[i]->Name = TmpStr.substr(Size, TmpNum);
-		Size += TmpNum;
+		size += tmpMateName.length();
+		size_t tmpNum = tmpStr.find("{", size);
+		if (tmpNum == std::string::npos)break;
+		tmpNum -= (size + 1);
+		material[i]->name = tmpStr.substr(size, tmpNum);
+		size += tmpNum;
 		i++;
 
 	}
@@ -119,11 +119,11 @@ void BaseMesh9::SetMaterialName(const std::string& _FileName)
 ///////////////////////////////////////////////////////////////////////////////////
 
 void BaseMesh9::CreateMesh(
-	const std::string& _FileName
-	, const std::string& _PathName
-	, const LPDIRECT3DDEVICE9& _Dev)
+	const std::string& _fileName
+	, const std::string& _pathName
+	, const LPDIRECT3DDEVICE9& _dev)
 {
-	OpenFile(_FileName, _PathName, _Dev);
+	OpenFile(_fileName, _pathName, _dev);
 
 	SetOffsetVertex();
 
@@ -132,45 +132,45 @@ void BaseMesh9::CreateMesh(
 ///////////////////////////////////////////////////////////////////////////////////
 
 void BaseMesh9::Draw(
-	const ChMat_9& _Mat
-	, const LPDIRECT3DDEVICE9& _Dev
-	, const long _SubNum)
+	const ChMat_9& _mat
+	, const LPDIRECT3DDEVICE9& _dev
+	, const long _subNum)
 {
 
-	D3DMATERIAL9 TmpMate;
-	ChMat_9 TmpMat;
+	D3DMATERIAL9 tmpMate;
+	ChMat_9 tmpMat;
 
-	if (_SubNum < 0 || _SubNum >= (long)Material.size())
+	if (_subNum < 0 || _subNum >= (long)material.size())
 	{
 
-		for (unsigned short i = 0; i < Material.size(); i++) {
-			TmpMate = *Material[i];
+		for (unsigned short i = 0; i < material.size(); i++) {
+			tmpMate = *material[i];
 
 			//頂点情報の整理//
-			_Dev->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
-			_Dev->SetMaterial(&TmpMate);
-			_Dev->SetTexture(0, TexList[i]->GetTex());
+			_dev->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
+			_dev->SetMaterial(&tmpMate);
+			_dev->SetTexture(0, texList[i]->GetTex());
 
-			TmpMat = Material[i]->Mat * _Mat;
-			_Dev->SetTransform(D3DTS_WORLD, &TmpMat);
-			_Dev->SetRenderState(D3DRS_NORMALIZENORMALS, TRUE);
+			tmpMat = material[i]->mat * _mat;
+			_dev->SetTransform(D3DTS_WORLD, &tmpMat);
+			_dev->SetRenderState(D3DRS_NORMALIZENORMALS, TRUE);
 
-			Mesh->DrawSubset(i);
+			mesh->DrawSubset(i);
 		}
 		return;
 	}
 
-	TmpMate = *Material[_SubNum];
+	tmpMate = *material[_subNum];
 
-	_Dev->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
-	_Dev->SetMaterial(&TmpMate);
-	_Dev->SetTexture(0, TexList[_SubNum]->GetTex());
+	_dev->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
+	_dev->SetMaterial(&tmpMate);
+	_dev->SetTexture(0, texList[_subNum]->GetTex());
 
-	TmpMat = Material[_SubNum]->Mat * _Mat;
-	_Dev->SetTransform(D3DTS_WORLD, &TmpMat);
-	_Dev->SetRenderState(D3DRS_NORMALIZENORMALS, TRUE);
+	tmpMat = material[_subNum]->mat * _mat;
+	_dev->SetTransform(D3DTS_WORLD, &tmpMat);
+	_dev->SetRenderState(D3DRS_NORMALIZENORMALS, TRUE);
 
-	Mesh->DrawSubset(_SubNum);
+	mesh->DrawSubset(_subNum);
 
 }
 
@@ -178,40 +178,40 @@ void BaseMesh9::Draw(
 
 void BaseMesh9::SetOffsetVertex()
 {
-	if (ChPtr::NullCheck(Mesh))return;
+	if (ChPtr::NullCheck(mesh))return;
 
-	MeshVertex9 *TmpVer = nullptr;
-	Mesh->LockVertexBuffer(NULL, (LPVOID*)&TmpVer);
+	MeshVertex9 *tmpVer = nullptr;
+	mesh->LockVertexBuffer(NULL, (LPVOID*)&tmpVer);
 
-	if (ChPtr::NullCheck(TmpVer))return;
+	if (ChPtr::NullCheck(tmpVer))return;
 
-	for (unsigned long Ver = 0; Ver < Mesh->GetNumVertices(); Ver++)
+	for (unsigned long ver = 0; ver < mesh->GetNumVertices(); ver++)
 	{
-		auto TmpPos = ChPtr::Make_S<ChVec3_9>();
+		auto tmpPos = ChPtr::Make_S<ChVec3_9>();
 
-		*TmpPos = (TmpVer + Ver)->Pos;
+		*tmpPos = (tmpVer + ver)->pos;
 
-OffsetVertexList.push_back(TmpPos);
+offsetVertexList.push_back(tmpPos);
 	}
 
 
-	Mesh->UnlockVertexBuffer();
+	mesh->UnlockVertexBuffer();
 	return;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 ChPtr::Shared<BaseMesh9> BaseMesh9::MeshType(
-	const std::string& _FileName)
+	const std::string& _fileName)
 {
-	std::string TmpStr;
+	std::string tmpStr;
 	{
-		size_t TmpNum = _FileName.rfind(".");
-		if (TmpNum == _FileName.npos)return ChPtr::Make_S<BaseMesh9>();
-		TmpStr = &_FileName[TmpNum];
+		size_t tmpNum = _fileName.rfind(".");
+		if (tmpNum == _fileName.npos)return ChPtr::Make_S<BaseMesh9>();
+		tmpStr = &_fileName[tmpNum];
 	}
 
-	if (TmpStr.find(".x") != TmpStr.npos)
+	if (tmpStr.find(".x") != tmpStr.npos)
 	{
 		return ChPtr::Make_S<XFileMesh9>();
 	}
@@ -223,17 +223,17 @@ ChPtr::Shared<BaseMesh9> BaseMesh9::MeshType(
 ///////////////////////////////////////////////////////////////////////////////////
 
 ChPtr::Shared<BaseMesh9> BaseMesh9::SkinMeshType(
-	const std::string& _FileName)
+	const std::string& _fileName)
 {
 
-	std::string TmpStr;
+	std::string tmpStr;
 	{
-		size_t TmpNum = _FileName.rfind(".");
-		if (TmpNum == _FileName.npos)return ChPtr::Make_S<SkinMesh9>();
-		TmpStr = &_FileName[TmpNum];
+		size_t tmpNum = _fileName.rfind(".");
+		if (tmpNum == _fileName.npos)return ChPtr::Make_S<SkinMesh9>();
+		tmpStr = &_fileName[tmpNum];
 	}
 
-	if (TmpStr.find(".x") != TmpStr.npos)
+	if (tmpStr.find(".x") != tmpStr.npos)
 	{
 		return ChPtr::Make_S<SXFileMesh9>();
 	}
@@ -247,95 +247,95 @@ ChPtr::Shared<BaseMesh9> BaseMesh9::SkinMeshType(
 ///////////////////////////////////////////////////////////////////////////////////////
 
 void XFileMesh9::OpenFile(
-	const std::string& _FileName
-	, const std::string& _PathName
-	, const LPDIRECT3DDEVICE9& _Dev)
+	const std::string& _fileName
+	, const std::string& _pathName
+	, const LPDIRECT3DDEVICE9& _dev)
 {
 
-	if (_FileName.rfind(".x") == std::string::npos)return;
+	if (_fileName.rfind(".x") == std::string::npos)return;
 
-	std::string TmpStr;
-	TmpStr = _PathName + "/" + _FileName;
+	std::string tmpStr;
+	tmpStr = _pathName + "/" + _fileName;
 
-	if (_PathName.length() <= 0)TmpStr = "." + TmpStr;
+	if (_pathName.length() <= 0)tmpStr = "." + tmpStr;
 
 
 	{
 
-		LPD3DXBUFFER TmpBuffer;
+		LPD3DXBUFFER tmpBuffer;
 
-		DWORD NumMaterial;
+		DWORD numMaterial;
 
 		D3DXLoadMeshFromX(
-			TmpStr.c_str()
+			tmpStr.c_str()
 			, D3DXMESH_MANAGED
-			, _Dev
+			, _dev
 			, NULL
-			, &TmpBuffer
+			, &tmpBuffer
 			, NULL
-			, &(NumMaterial)
-			, &(Mesh));
+			, &(numMaterial)
+			, &(mesh));
 
-		if (ChPtr::NullCheck(Mesh))return;
+		if (ChPtr::NullCheck(mesh))return;
 
-		D3DXMATERIAL* D3DXMat = (D3DXMATERIAL*)TmpBuffer->GetBufferPointer();
-		std::string TmpString;
+		D3DXMATERIAL* D3DXMat = (D3DXMATERIAL*)tmpBuffer->GetBufferPointer();
+		std::string tmpString;
 
-		for (DWORD i = 0; i < NumMaterial; i++) {
+		for (DWORD i = 0; i < numMaterial; i++) {
 
 
-			auto TmpMat = ChPtr::Make_S<ChMaterial_9>();
-			*TmpMat = (D3DXMat + i)->MatD3D;
+			auto tmpMat = ChPtr::Make_S<ChMaterial_9>();
+			*tmpMat = (D3DXMat + i)->MatD3D;
 
-			TmpMat->Specular = TmpMat->Diffuse;
+			tmpMat->Specular = tmpMat->Diffuse;
 
-			TmpString = "";
+			tmpString = "";
 
 			if (ChPtr::NotNullCheck((D3DXMat + i)->pTextureFilename))
 			{
-				TmpString = &(D3DXMat + i)->pTextureFilename[0];
-				TmpString = _PathName + "/" + TmpString;
-				if (_PathName.length() <= 0)TmpString = "." + TmpString;
+				tmpString = &(D3DXMat + i)->pTextureFilename[0];
+				tmpString = _pathName + "/" + tmpString;
+				if (_pathName.length() <= 0)tmpString = "." + tmpString;
 
 			}
-			Material.push_back(TmpMat);
+			material.push_back(tmpMat);
 
-			auto TmpTex = BaseTexture9::TextureType(TmpString.c_str());
+			auto tmpTex = BaseTexture9::TextureType(tmpString.c_str());
 
-			TmpTex->CreateTexture(TmpString.c_str(), _Dev);
+			tmpTex->CreateTexture(tmpString.c_str(), _dev);
 
-			if (ChPtr::NullCheck(TmpTex->GetTex())) {
+			if (ChPtr::NullCheck(tmpTex->GetTex())) {
 
-				TmpTex->CreateColTexture(_Dev);
+				tmpTex->CreateColTexture(_dev);
 
 			}
 
-			TexList.push_back(TmpTex);
+			texList.push_back(tmpTex);
 
 		}
 
-		TmpBuffer->Release();
+		tmpBuffer->Release();
 	}
 
 	{
 
-		LPD3DXMESH TmpMesh = nullptr;
-		HRESULT Res;
-		Res = Mesh->CloneMeshFVF(
+		LPD3DXMESH tmpMesh = nullptr;
+		HRESULT res;
+		res = mesh->CloneMeshFVF(
 			D3DXMESH_MANAGED |
 			D3DXMESH_NPATCHES,
 			D3DFVF_XYZ |//座標
 			D3DFVF_NORMAL |//法線
 			D3DFVF_TEX1//テクスチャ座標
-			, _Dev, &TmpMesh//クローン先
+			, _dev, &tmpMesh//クローン先
 		);
 
-		Mesh->Release();
+		mesh->Release();
 
-		Mesh = TmpMesh;
+		mesh = tmpMesh;
 	}
 
-	SetMaterialName(TmpStr);
+	SetMaterialName(tmpStr);
 
 }
 
@@ -344,45 +344,45 @@ void XFileMesh9::OpenFile(
 ///////////////////////////////////////////////////////////////////////////////////////
 
 void SkinMesh9::SetAnimation(
-	const std::string& _AniamtionName
+	const std::string& _animationName
 	, const std::string& _XFileName)
 {
-	BoneAnimation TmpAni;
+	BoneAnimation tmpAni;
 
 
-	TmpAni = ChANiSupport().CreateKeyFrame(_XFileName);
+	tmpAni = ChANiSupport().CreateKeyFrame(_XFileName);
 
 	size_t AniNum = 0;
-	for (auto&& Bones : BoneList)
+	for (auto&& bones : boneList)
 	{
-		if (TmpAni.find(Bones.first) == TmpAni.end())continue;
-		AniNum = TmpAni[Bones.first]->GetAniCnt();
+		if (tmpAni.find(bones.first) == tmpAni.end())continue;
+		AniNum = tmpAni[bones.first]->GetAniCnt();
 		break;
 	}
 
-	for (auto&& Bones : BoneList)
+	for (auto&& bones : boneList)
 	{
-		if (TmpAni.find(Bones.first) != TmpAni.end())continue;
+		if (tmpAni.find(bones.first) != tmpAni.end())continue;
 		auto Ani = ChPtr::Make_S<ChAnimationObject9>();
 
 		for (size_t i = 0; i < AniNum; i++)
 		{
 			Ani->SetAniObject(ChMat_9());
 		}
-		TmpAni[Bones.first] = Ani;
+		tmpAni[bones.first] = Ani;
 
 	}
 
 
-	if (TmpAni.size() < BoneList.size())return;
+	if (tmpAni.size() < boneList.size())return;
 
-	Animations[_AniamtionName] = TmpAni;
+	animations[_animationName] = tmpAni;
 
-	if (StartPlayAniCheck)return;
-	StartPlayAniCheck = true;
-	NowPlayAniName = _AniamtionName;
+	if (startPlayAniCheck)return;
+	startPlayAniCheck = true;
+	nowPlayAniName = _animationName;
 
-	for (auto&& Ani : Animations[NowPlayAniName])
+	for (auto&& Ani : animations[nowPlayAniName])
 	{
 		Ani.second->Play();
 	}
@@ -394,80 +394,80 @@ void SkinMesh9::SetAnimation(
 
 void SkinMesh9::SetSkin()
 {
-	if (ChPtr::NullCheck(Mesh))return;
-	if (Animations.size() <= 0)return;
-	if (BoneList.size() <= 0)return;
+	if (ChPtr::NullCheck(mesh))return;
+	if (animations.size() <= 0)return;
+	if (boneList.size() <= 0)return;
 
-	MeshVertex9 *TmpVer = nullptr;
-	Mesh->LockVertexBuffer(NULL, (LPVOID*)&TmpVer);
+	MeshVertex9 *tmpVer = nullptr;
+	mesh->LockVertexBuffer(NULL, (LPVOID*)&tmpVer);
 
-	if (ChPtr::NullCheck(TmpVer))return;
+	if (ChPtr::NullCheck(tmpVer))return;
 
 	//BoneUpdate//
-	for (auto&& BoneName : BoneNameList)
+	for (auto&& boneName : boneNameList)
 	{
-		ChMat_9 TmpMat = BoneList[BoneName]->OffMat;
+		ChMat_9 tmpMat = boneList[boneName]->offMat;
 
-		BoneList[BoneName]->UpdateMat = Animations[NowPlayAniName][BoneName]->Update();
+		boneList[boneName]->updateMat = animations[nowPlayAniName][boneName]->Update();
 
 
 	}
 
 	//LastUpdateBone//
 
-	for (unsigned long i = BoneNameList.size() - 1; i + 1 > 0; i--)
+	for (unsigned long i = boneNameList.size() - 1; i + 1 > 0; i--)
 	{
 
-		ChMat_9 TmpMat = BoneList[BoneNameList[i]]->OffMat;
+		ChMat_9 tmpMat = boneList[boneNameList[i]]->offMat;
 
-		if (BoneList[BoneNameList[i]]->OffsetBone == nullptr)
+		if (boneList[boneNameList[i]]->offsetBone == nullptr)
 		{
 
-			BoneList[BoneNameList[i]]->UpdateMat
-				= TmpMat * BoneList[BoneNameList[i]]->UpdateMat;
+			boneList[boneNameList[i]]->updateMat
+				= tmpMat * boneList[boneNameList[i]]->updateMat;
 
 			continue;
 		}
 
-		BoneList[BoneNameList[i]]->UpdateMat
-			= TmpMat
-			* BoneList[BoneNameList[i]]->UpdateMat
-			* BoneList[BoneNameList[i]]->OffsetBone->UpdateMat;
+		boneList[boneNameList[i]]->updateMat
+			= tmpMat
+			* boneList[boneNameList[i]]->updateMat
+			* boneList[boneNameList[i]]->offsetBone->updateMat;
 
 	}
 
 	//UpdateVertex//
-	for (unsigned long Ver = 0; Ver < Mesh->GetNumVertices(); Ver++)
+	for (unsigned long ver = 0; ver < mesh->GetNumVertices(); ver++)
 	{
-		ChMat_9 TmpMat;
-		TmpMat.Clear0();
-		ChVec3_9 TmpVec;
+		ChMat_9 tmpMat;
+		tmpMat.Clear0();
+		ChVec3_9 tmpVec;
 
-		TmpVec = *OffsetVertexList[Ver];
+		tmpVec = *offsetVertexList[ver];
 
-		for (auto&& Bones : BoneVertexList[Ver]->UpdateMat)
+		for (auto&& bones : boneVertexList[ver]->updateMat)
 		{
 
-			if (Bones->WaitPow <= 0.0f)continue;
+			if (bones->waitPow <= 0.0f)continue;
 
-			ChMat_9 Tmp;
-			Tmp = (*Bones->UpdateMat
-				* Bones->WaitPow);
+			ChMat_9 tmp;
+			tmp = (*bones->updateMat
+				* bones->waitPow);
 
-			TmpMat += Tmp;
+			tmpMat += tmp;
 
 		}
 
 
 
-		TmpVec.MatPos(TmpMat, TmpVec);
+		tmpVec.MatPos(tmpMat, tmpVec);
 
-		(TmpVer + Ver)->Pos = TmpVec;
+		(tmpVer + ver)->pos = tmpVec;
 	}
 
 
 
-	Mesh->UnlockVertexBuffer();
+	mesh->UnlockVertexBuffer();
 
 }
 
@@ -475,165 +475,165 @@ void SkinMesh9::SetSkin()
 //ChSXFileMesh9メソッド
 ///////////////////////////////////////////////////////////////////////////////////////
 
-const std::string SXFileMesh9::FreamMat = "FrameTransformMatrix {";
+const std::string SXFileMesh9::frameMat = "FrameTransformMatrix {";
 
-const std::string SXFileMesh9::SkinWaights = "SkinWeights {";
+const std::string SXFileMesh9::skinWaights = "SkinWeights {";
 
 void SXFileMesh9::OpenFile(
-	const std::string& _FileName
-	, const std::string& _PathName
-	, const LPDIRECT3DDEVICE9& _Dev)
+	const std::string& _fileName
+	, const std::string& _pathName
+	, const LPDIRECT3DDEVICE9& _dev)
 {
 
-	if (_FileName.rfind(".x") == std::string::npos)return;
+	if (_fileName.rfind(".x") == std::string::npos)return;
 
-	std::string TmpStr;
-	TmpStr = _PathName + "/" + _FileName;
+	std::string tmpStr;
+	tmpStr = _pathName + "/" + _fileName;
 
-	if (_PathName.length() <= 0)TmpStr = "." + TmpStr;
+	if (_pathName.length() <= 0)tmpStr = "." + tmpStr;
 
 
 
 	{
 
-		LPD3DXBUFFER TmpBuffer;
+		LPD3DXBUFFER tmpBuffer;
 
-		DWORD NumMaterial;
+		DWORD numMaterial;
 
 		D3DXLoadMeshFromX(
-			TmpStr.c_str()
+			tmpStr.c_str()
 			, D3DXMESH_MANAGED
-			, _Dev
+			, _dev
 			, NULL
-			, &TmpBuffer
+			, &tmpBuffer
 			, NULL
-			, &(NumMaterial)
-			, &(Mesh));
+			, &(numMaterial)
+			, &(mesh));
 
-		if (ChPtr::NullCheck(Mesh))return;
+		if (ChPtr::NullCheck(mesh))return;
 
-		D3DXMATERIAL* D3DXMat = (D3DXMATERIAL*)TmpBuffer->GetBufferPointer();
-		std::string TmpString;
+		D3DXMATERIAL* D3DXMat = (D3DXMATERIAL*)tmpBuffer->GetBufferPointer();
+		std::string tmpString;
 
-		for (DWORD i = 0; i < NumMaterial; i++) {
+		for (DWORD i = 0; i < numMaterial; i++) {
 
 
-			auto TmpMat = ChPtr::Make_S<ChMaterial_9>();
-			*TmpMat = (D3DXMat + i)->MatD3D;
+			auto tmpMat = ChPtr::Make_S<ChMaterial_9>();
+			*tmpMat = (D3DXMat + i)->MatD3D;
 
-			TmpMat->Specular = TmpMat->Diffuse;
+			tmpMat->Specular = tmpMat->Diffuse;
 
-			TmpString = "";
+			tmpString = "";
 			if (ChPtr::NotNullCheck((D3DXMat + i)->pTextureFilename))
 			{
-				TmpString = &(D3DXMat + i)->pTextureFilename[0];
-				TmpString = _PathName + TmpString;
+				tmpString = &(D3DXMat + i)->pTextureFilename[0];
+				tmpString = _pathName + tmpString;
 			}
-			Material.push_back(TmpMat);
+			material.push_back(tmpMat);
 
-			auto TmpTex = BaseTexture9::TextureType(TmpString.c_str());
+			auto tmpTex = BaseTexture9::TextureType(tmpString.c_str());
 
-			TmpTex->CreateTexture(TmpString.c_str(), _Dev);
+			tmpTex->CreateTexture(tmpString.c_str(), _dev);
 
-			if (ChPtr::NullCheck(TmpTex->GetTex())) {
+			if (ChPtr::NullCheck(tmpTex->GetTex())) {
 
-				TmpTex->CreateColTexture(_Dev);
+				tmpTex->CreateColTexture(_dev);
 
 			}
 
-			TexList.push_back(TmpTex);
+			texList.push_back(tmpTex);
 
 		}
 
-		TmpBuffer->Release();
+		tmpBuffer->Release();
 	}
 
 	{
 
-		LPD3DXMESH TmpMesh = nullptr;
+		LPD3DXMESH tmpMesh = nullptr;
 
-		HRESULT Res;
-		Res = Mesh->CloneMeshFVF(
+		HRESULT res;
+		res = mesh->CloneMeshFVF(
 			D3DXMESH_MANAGED |
 			D3DXMESH_NPATCHES,
 			D3DFVF_XYZ |//座標
 			D3DFVF_NORMAL |//法線
 			D3DFVF_TEX1//テクスチャ座標
-			, _Dev, &TmpMesh//クローン先
+			, _dev, &tmpMesh//クローン先
 		);
 
 
-		Mesh->Release();
+		mesh->Release();
 
-		Mesh = TmpMesh;
+		mesh = tmpMesh;
 	}
 
-	if (ChPtr::NullCheck(Mesh))return;
+	if (ChPtr::NullCheck(mesh))return;
 
-	SetMaterialName(TmpStr);
+	SetMaterialName(tmpStr);
 
 	SetOffsetVertex();
 
 	{
 
-		std::string FStr;
+		std::string fStr;
 		{
 
-			ChFIO::File File;
-			File.FileOpen(_PathName + _FileName);
-			FStr = File.FileRead();
-			File.FileClose();
+			ChFIO::File file;
+			file.FileOpen(_pathName + _fileName);
+			fStr = file.FileRead();
+			file.FileClose();
 
 		}
-		SetBone(FStr);
+		SetBone(fStr);
 
-		if (TestName.size() <= 0)return;
+		if (testName.size() <= 0)return;
 	}
-	TestName.clear();
+	testName.clear();
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void SXFileMesh9::SetBone(const std::string& _FStr)
+void SXFileMesh9::SetBone(const std::string& _fStr)
 {
 
 	{
 
-		if (_FStr.find("Frame ") == std::string::npos)return;
+		if (_fStr.find("Frame ") == std::string::npos)return;
 
-		size_t FPos = _FStr.find("Frame ");
+		size_t fPos = _fStr.find("Frame ");
 
-		CreateBoneTree(_FStr, FPos);
+		CreateBoneTree(_fStr, fPos);
 
 	}
 
-	SetBoneVertex(_FStr);
+	SetBoneVertex(_fStr);
 
-	for (auto&& BoneName : BoneNameList)
+	for (auto&& boneName : boneNameList)
 	{
 /*
-		ChMat_9 TmpMat;
+		ChMat_9 tmpMat;
 
-		TmpMat = BoneList[BoneName]->BaseMat;
+		tmpMat = boneList[boneName]->baseMat;
 
-		BoneList[BoneName]->BaseMat
-			= TmpMat * BoneList[BoneName]->OffsetBone->BaseMat;
+		boneList[boneName]->baseMat
+			= tmpMat * boneList[boneName]->offsetbone->baseMat;
 */
 		
 
 
-		if (BoneList[BoneName]->OffsetBone == nullptr)continue;
+		if (boneList[boneName]->offsetBone == nullptr)continue;
 
 /*
-		ChMat_9 TmpMat;
+		ChMat_9 tmpMat;
 
-		TmpMat = BoneList[BoneName]->OffMat;
+		tmpMat = boneList[boneName]->offMat;
 
-		TmpMat.Inverse();
+		tmpMat.Inverse();
 
-		BoneList[BoneName]->OffMat
-			=  TmpMat * BoneList[BoneName]->OffsetBone->OffMat;
+		boneList[boneName]->offMat
+			=  tmpMat * boneList[boneName]->offsetBone->offMat;
 */
 	}
 
@@ -642,80 +642,80 @@ void SXFileMesh9::SetBone(const std::string& _FStr)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void SXFileMesh9::SetBoneVertex(const std::string& _FStr)
+void SXFileMesh9::SetBoneVertex(const std::string& _fStr)
 {
 	std::string End = ";";
-	size_t FPos = 0;
-	if (_FStr.find("template SkinWeights {", FPos) != std::string::npos)
+	size_t fPos = 0;
+	if (_fStr.find("template SkinWeights {", fPos) != std::string::npos)
 	{
-		FPos = _FStr.find("template SkinWeights {", FPos);
-		FPos += std::strlen("template SkinWeights {");
+		fPos = _fStr.find("template SkinWeights {", fPos);
+		fPos += std::strlen("template SkinWeights {");
 	}
 
 	{
 
-		std::string BoneName;
+		std::string boneName;
 
-		while (_FStr.find(SkinWaights, FPos) != std::string::npos)
+		while (_fStr.find(skinWaights, fPos) != std::string::npos)
 		{
 
-			FPos = _FStr.find(SkinWaights, FPos);
-			FPos = _FStr.find("\"", FPos);
-			BoneName = _FStr.substr(FPos + 1, _FStr.find("\";", FPos) - FPos - 1);
+			fPos = _fStr.find(skinWaights, fPos);
+			fPos = _fStr.find("\"", fPos);
+			boneName = _fStr.substr(fPos + 1, _fStr.find("\";", fPos) - fPos - 1);
 
-			if (TestName == BoneName)break;
-			if(TestName.size() <= 0)TestName = BoneName;
+			if (testName == boneName)break;
+			if(testName.size() <= 0)testName = boneName;
 			
 
-			FPos = _FStr.find("\";", FPos);
-			FPos += 2;
-			FPos = _FStr.find(";", FPos);
-			FPos += 2;
+			fPos = _fStr.find("\";", fPos);
+			fPos += 2;
+			fPos = _fStr.find(";", fPos);
+			fPos += 2;
 
-			std::vector<unsigned long> TmpNum;
+			std::vector<unsigned long> tmpNum;
 
 			while (1)
 			{
-				std::string Num = _FStr.substr(FPos, _FStr.find(",", FPos + 1) - FPos);
-				auto Ver = ChPtr::Make_S<BoneVertex::BonePow>();
-				auto VertexNo = std::atol(Num.c_str());
-				TmpNum.push_back(VertexNo);
-				Ver->UpdateMat = &BoneList[BoneName]->UpdateMat;
-				Ver->OffMat = &BoneList[BoneName]->OffMat;
-				BoneVertexList[VertexNo]->UpdateMat.push_back(Ver);
-				if (_FStr.find(End, FPos) <= _FStr.find(",", FPos))break;
-				FPos = _FStr.find(",", FPos + 1);
-				FPos += 2;
+				std::string num = _fStr.substr(fPos, _fStr.find(",", fPos + 1) - fPos);
+				auto ver = ChPtr::Make_S<BoneVertex::BonePow>();
+				auto VertexNo = std::atol(num.c_str());
+				tmpNum.push_back(VertexNo);
+				ver->updateMat = &boneList[boneName]->updateMat;
+				ver->offMat = &boneList[boneName]->offMat;
+				boneVertexList[VertexNo]->updateMat.push_back(ver);
+				if (_fStr.find(End, fPos) <= _fStr.find(",", fPos))break;
+				fPos = _fStr.find(",", fPos + 1);
+				fPos += 2;
 
 
 			}
-			FPos = _FStr.find(End, FPos);
-			FPos += 2;
+			fPos = _fStr.find(End, fPos);
+			fPos += 2;
 
 
-			for (auto&& VerNum : TmpNum)
+			for (auto&& VerNum : tmpNum)
 			{
-				std::string Num = _FStr.substr(FPos, _FStr.find(",", FPos + 1) - FPos);
+				std::string num = _fStr.substr(fPos, _fStr.find(",", fPos + 1) - fPos);
 				
-				BoneVertexList[VerNum]->
-					UpdateMat[BoneVertexList[VerNum]->
-					UpdateMat.size() - 1]->
-					WaitPow = (float)std::atof(Num.c_str());
+				boneVertexList[VerNum]->
+					updateMat[boneVertexList[VerNum]->
+					updateMat.size() - 1]->
+					waitPow = (float)std::atof(num.c_str());
 
-				if (_FStr.find(End, FPos) <= _FStr.find(",", FPos))break;
-				FPos = _FStr.find(",", FPos + 1);
-				FPos += 2;
+				if (_fStr.find(End, fPos) <= _fStr.find(",", fPos))break;
+				fPos = _fStr.find(",", fPos + 1);
+				fPos += 2;
 
 
 			}
 
-			FPos = _FStr.find(End, FPos);
-			FPos += 2;
+			fPos = _fStr.find(End, fPos);
+			fPos += 2;
 			{
-				ChLMatrix TmpMat;
-				TmpMat.Deserialize(_FStr, FPos);
+				ChLMatrix tmpMat;
+				tmpMat.Deserialize(_fStr, fPos);
 
-				BoneList[BoneName]->OffMat = TmpMat;
+				boneList[boneName]->offMat = tmpMat;
 			}
 
 		}
@@ -728,85 +728,85 @@ void SXFileMesh9::SetBoneVertex(const std::string& _FStr)
 ///////////////////////////////////////////////////////////////////////////////////
 
 void SXFileMesh9::CreateBoneTree(
-	const std::string& _FStr
-	, size_t& _FPos
-	, const ChPtr::Shared<Bone>& _Bone)
+	const std::string& _fStr
+	, size_t& _fPos
+	, const ChPtr::Shared<Bone>& _bone)
 {
-	_FPos += 6;
-	size_t TmpPos = _FStr.find(" {", _FPos);
+	_fPos += 6;
+	size_t tmpPos = _fStr.find(" {", _fPos);
 
-	if (BoneList.find(_FStr.substr(_FPos, TmpPos - _FPos)) != BoneList.end())return;
+	if (boneList.find(_fStr.substr(_fPos, tmpPos - _fPos)) != boneList.end())return;
 
-	auto TmpBone = ChPtr::Make_S<Bone>();
-	TmpBone->OffsetBone = _Bone;
+	auto tmpBone = ChPtr::Make_S<Bone>();
+	tmpBone->offsetBone = _bone;
 
-	std::string Test = _FStr.substr(_FPos, TmpPos - _FPos);
-	BoneList[Test] = TmpBone;
-	TmpBone->MyName = Test;
-	BoneNameList.push_back(Test);
+	std::string test = _fStr.substr(_fPos, tmpPos - _fPos);
+	boneList[test] = tmpBone;
+	tmpBone->myName = test;
+	boneNameList.push_back(test);
 
-	_FPos = _FStr.find(FreamMat, _FPos);
+	_fPos = _fStr.find(frameMat, _fPos);
 
-	_FPos += FreamMat.length();
+	_fPos += frameMat.length();
 
 	{
-		ChLMatrix TmpMat;
-		TmpMat.Deserialize(_FStr, _FPos);
-		TmpBone->BaseMat = TmpMat;
+		ChLMatrix tmpMat;
+		tmpMat.Deserialize(_fStr, _fPos);
+		tmpBone->baseMat = tmpMat;
 	}
 
-	_FPos = _FStr.find("}", _FPos);
-	_FPos += 1;
+	_fPos = _fStr.find("}", _fPos);
+	_fPos += 1;
 
 	////メッシュ取得//
-	//if (_FStr.find("Mesh {", _FPos) <= _FStr.find("}", _FPos))
+	//if (_fStr.find("mesh {", _fPos) <= _fStr.find("}", _fPos))
 	//{
-	//	size_t Tmp = VertexNum;
-	//	_FPos = _FStr.find("Mesh {", _FPos);
-	//	_FPos = _FStr.find("\n", _FPos);
-	//	_FPos += 1;
-	//	std::string Num = _FStr.substr(_FPos, _FStr.find(";", _FPos) - _FPos);
-	//	VertexNum += std::atol(Num.c_str());
+	//	size_t tmp = vertexNum;
+	//	_fPos = _fStr.find("mesh {", _fPos);
+	//	_fPos = _fStr.find("\n", _fPos);
+	//	_fPos += 1;
+	//	std::string num = _fStr.substr(_fPos, _fStr.find(";", _fPos) - _fPos);
+	//	vertexNum += std::atol(num.c_str());
 	//}
 
-	while (_FStr.find("}", _FPos) >= _FStr.find("Frame ", _FPos))
+	while (_fStr.find("}", _fPos) >= _fStr.find("Frame ", _fPos))
 	{
-		_FPos = _FStr.find("Frame ", _FPos);
-		if (_FPos == std::string::npos)break;
-		CreateBoneTree(_FStr, _FPos, TmpBone);
+		_fPos = _fStr.find("Frame ", _fPos);
+		if (_fPos == std::string::npos)break;
+		CreateBoneTree(_fStr, _fPos, tmpBone);
 
 	}
 
-	_FPos = _FStr.find("}", _FPos);
-	_FPos += 1;
+	_fPos = _fStr.find("}", _fPos);
+	_fPos += 1;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void SkinMesh9::SetOffsetVertex()
 {
-	if (ChPtr::NullCheck(Mesh))return;
+	if (ChPtr::NullCheck(mesh))return;
 
-	MeshVertex9 *TmpVer = nullptr;
-	Mesh->LockVertexBuffer(NULL, (LPVOID*)&TmpVer);
+	MeshVertex9 *tmpVer = nullptr;
+	mesh->LockVertexBuffer(NULL, (LPVOID*)&tmpVer);
 
-	if (ChPtr::NullCheck(TmpVer))return;
+	if (ChPtr::NullCheck(tmpVer))return;
 
-	for (unsigned long Ver = 0; Ver < Mesh->GetNumVertices(); Ver++)
+	for (unsigned long ver = 0; ver < mesh->GetNumVertices(); ver++)
 	{
-		auto TmpPos = ChPtr::Make_S<ChVec3_9>();
-		auto TmpVertex = ChPtr::Make_S<BoneVertex>();
+		auto tmpPos = ChPtr::Make_S<ChVec3_9>();
+		auto tmpVertex = ChPtr::Make_S<BoneVertex>();
 
-		*TmpPos = (TmpVer + Ver)->Pos;
+		*tmpPos = (tmpVer + ver)->pos;
 
-		TmpVertex->Pos = (TmpVer + Ver)->Pos;
+		tmpVertex->pos = (tmpVer + ver)->pos;
 
-		OffsetVertexList.push_back(TmpPos);
+		offsetVertexList.push_back(tmpPos);
 
-		BoneVertexList.push_back(TmpVertex);
+		boneVertexList.push_back(tmpVertex);
 	}
 
 
-	Mesh->UnlockVertexBuffer();
+	mesh->UnlockVertexBuffer();
 	return;
 }

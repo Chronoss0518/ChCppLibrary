@@ -5,36 +5,37 @@ namespace ChD3D9
 {
 
 	//標準機能で描画されるフォントクラス//
-	class DrawFont:public ChCpp::ClassPerts::Initializer
+	class DrawFont:public ChCpp::ClassPerts::Initializer,ChCpp::ClassPerts::Releaser
 	{
 	public:
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
-		void Init(const LPDIRECT3DDEVICE9 _Dv);
+		void Init(const LPDIRECT3DDEVICE9 _dv);
 
-		void Release();
+		void Release()override;
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
 		//描画する際のフォントサイズ//
 		inline void SetFontSize(const unsigned long _W, const unsigned long _H) {
-			FontW = _W;
-			FontH = _H;
+			
+			fontSize.w = _W;
+			fontSize.h = _H;
 			Release();
-			Init(Device);
+			Init(device);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//フォントの描画//
 		void Draw(
-			std::string _DrawStr
+			std::string _drawStr
 			, const long _x
 			, const long y
-			, ChVec4 _Col = ChVec4(1.0f,1.0f,1.0f,1.0f));
+			, ChVec4 _col = ChVec4(1.0f,1.0f,1.0f,1.0f));
 
 		///////////////////////////////////////////////////////////////////////////////////
 
@@ -45,24 +46,22 @@ namespace ChD3D9
 
 		DrawFont() {}
 
-		~DrawFont() { Release(); }
 
+		LPD3DXFONT lpFont;
+		LPDIRECT3DDEVICE9 device;
+		const long startSize = 90;
 
-		LPD3DXFONT LpFont;
-		LPDIRECT3DDEVICE9 Device;
-		const long StartSize = 90;
+		ChMath::Vector2Base<long>fontSize;
 
-		long FontW = StartSize;
-		long FontH = StartSize;
-		ChVec4 FontColor = { 1.0f,1.0f,1.0f,1.0f };
-		std::string FontType;
+		ChVec4 fontColor = { 1.0f,1.0f,1.0f,1.0f };
+		std::string fontType;
 
 	public:
 
 		static DrawFont& GetIns()
 		{
-			static DrawFont Ins;
-			return Ins;
+			static DrawFont ins;
+			return ins;
 		}
 	};
 

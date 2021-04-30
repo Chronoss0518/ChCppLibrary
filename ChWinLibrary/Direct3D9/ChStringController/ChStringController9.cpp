@@ -13,38 +13,38 @@ using namespace ChTex;
 //ChStringController9ƒƒ\ƒbƒh
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void StringController9::SetStrTexture(const std::string& _Str)
+void StringController9::SetStrTexture(const std::string& _str)
 {
-	std::string TmpStr;
+	std::string tmpStr;
 
 	D3DXCreateTextureFromFileEx(
-		Device
-		, TmpStr.c_str()
-		, W, H, 1, 0
+		device
+		, tmpStr.c_str()
+		, size.w, size.h, 1, 0
 		, D3DFMT_UNKNOWN
 		, D3DPOOL_MANAGED
 		, D3DX_FILTER_NONE
 		, D3DX_DEFAULT
 		, NULL, NULL, NULL
-		, &StrTex->InsTex());
+		, &strTex->InsTex());
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 StringController9::StringController9(
-	const LPDIRECT3DDEVICE9 _Dv
-	, const std::string& _Path
-	, const std::string& _Type
-	, const unsigned short _OriginalWedth
-	, const unsigned short _OriginalHeight)
+	const LPDIRECT3DDEVICE9 _dv
+	, const std::string& _path
+	, const std::string& _type
+	, const unsigned short _originalWedth
+	, const unsigned short _originalHeight)
 {
-	W = _OriginalWedth;
-	H = _OriginalHeight;
-	if (W == 0 || H == 0)return;
-	Device = _Dv;
-	StrPath = _Path;
-	TypeName = _Type;
+	size.w = _originalWedth;
+	size.h = _originalHeight;
+	if (size.w == 0 || size.h == 0)return;
+	device = _dv;
+	strPath = _path;
+	typeName = _type;
 
 	SetInitFlg(true);
 }
@@ -52,24 +52,24 @@ StringController9::StringController9(
 ///////////////////////////////////////////////////////////////////////////////////
 
 void StringController9::DrawSprightString(
-	const std::string& _Str
-	, const ChMat_9& _Mat
-	, Sprite9 &_Sp)
+	const std::string& _str
+	, const ChMat_9& _mat
+	, Sprite9 &_sp)
 {
-	if (Device == nullptr)return;
-	if (_Str.length() <= 0)return;
+	if (device == nullptr)return;
+	if (_str.length() <= 0)return;
 
-	std::string TmpStr;
-	TmpStr = _Str + StrPath;
+	std::string tmpStr;
+	tmpStr = _str + strPath;
 
-	for (unsigned short i = 0; i < _Str.length(); i++)
+	for (unsigned short i = 0; i < _str.length(); i++)
 	{
-		//char TmpChar[3];
-		SetStrTexture(_Str);
+		//char tmpChar[3];
+		SetStrTexture(_str);
 
-		_Sp.DrawSprite(
-			StrTex
-			, _Mat
+		_sp.DrawSprite(
+			strTex
+			, _mat
 			, ChVec3_9(0.0f, 0.0f, 0.0f));
 	}
 
@@ -77,9 +77,9 @@ void StringController9::DrawSprightString(
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void StringController9::SetStringColor(const ChVec4& _Color)
+void StringController9::SetStringColor(const ChVec4& _color)
 {
-	StrTex->GetBaseColor() = _Color;
+	strTex->GetBaseColor() = _color;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

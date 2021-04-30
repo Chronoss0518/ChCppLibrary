@@ -21,10 +21,10 @@ namespace ChSound
 	{
 	public:
 
-		LPDIRECTSOUNDBUFFER8 Sound;
-		LPDIRECTSOUND3DBUFFER8 DSound;
-		DWORD Hz;
-		long Vol;
+		LPDIRECTSOUNDBUFFER8 sound;
+		LPDIRECTSOUND3DBUFFER8 dSound;
+		DWORD hz;
+		long vol;
 
 	protected:
 
@@ -35,10 +35,10 @@ namespace ChSound
 	{
 	public:
 
-		LPDIRECTSOUNDBUFFER8 Sound;
-		LPDIRECTSOUND3DBUFFER8 DSound;
-		DWORD Hz;
-		long Vol;
+		LPDIRECTSOUNDBUFFER8 sound;
+		LPDIRECTSOUND3DBUFFER8 dSound;
+		DWORD hz;
+		long vol;
 
 
 	protected:
