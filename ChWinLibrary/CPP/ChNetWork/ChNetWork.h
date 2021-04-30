@@ -68,16 +68,16 @@ namespace ChCpp
 			///////////////////////////////////////////////////////////////////////////////
 			//InitAndRelease//
 
-			virtual void Init(const unsigned short _Port_No = 49152) = 0;
+			virtual void Init(const unsigned short _portNo = 49152) = 0;
 
 			virtual void Release()override
 			{
 				if (!(*this))return;
-				closesocket(BaseSock);
+				closesocket(baseSock);
 				SetInitFlg(false);
 			}
 
-			virtual ChStd::Bool InitPropaty(const int _MaxLinkCount) = 0;
+			virtual ChStd::Bool InitPropaty(const int _maxLinkCount) = 0;
 
 			///////////////////////////////////////////////////////////////////////////////
 			//SetFunction//
@@ -85,9 +85,9 @@ namespace ChCpp
 			///////////////////////////////////////////////////////////////////////////////
 			//GetFunction//
 
-			const SOCKET GetBaseSocket() const { return BaseSock; }
+			const SOCKET GetbaseSocket() const { return baseSock; }
 
-			const sockaddr* GetAddr() { return reinterpret_cast<sockaddr*>(&Addr); }
+			const sockaddr* GetAddr() { return reinterpret_cast<sockaddr*>(&addr); }
 
 			///////////////////////////////////////////////////////////////////////////////
 			//UpdateFunction//
@@ -100,9 +100,9 @@ namespace ChCpp
 
 		protected:
 
-			SOCKET BaseSock{ 0 };
+			SOCKET baseSock{ 0 };
 
-			sockaddr_in Addr{ 0 };
+			sockaddr_in addr{ 0 };
 
 		};
 
@@ -118,10 +118,10 @@ namespace ChCpp
 			///////////////////////////////////////////////////////////////////////////////
 			//InitAndRelease//
 
-			inline virtual ChStd::Bool Init(SockBase* _Base)
+			inline virtual ChStd::Bool Init(SockBase* _base)
 			{
-				if (ChPtr::NullCheck(_Base))return false;
-				TargetSocket = _Base;
+				if (ChPtr::NullCheck(_base))return false;
+				targetSocket = _base;
 				return true;
 			}
 
@@ -129,7 +129,7 @@ namespace ChCpp
 			//CommunityFunction//
 
 			virtual ChStd::Bool Send(
-				const std::string& _Str) = 0;
+				const std::string& _str) = 0;
 
 			virtual ChStd::Bool Receve() = 0;
 
@@ -142,46 +142,46 @@ namespace ChCpp
 		protected:
 
 			//SocketBaseからベースとなるソケットを取得//
-			SOCKET& InsSocketFromSockBase(SockBase& _Sock)
+			SOCKET& InsSocketFromSockBase(SockBase& _sock)
 			{
-				return _Sock.BaseSock;
+				return _sock.baseSock;
 			}
 
 			//InsSocketFromSockBaseの省略版//
-			SOCKET& InsSocket(SockBase& _Sock)
+			SOCKET& InsSocket(SockBase& _sock)
 			{
-				return _Sock.BaseSock;
+				return _sock.baseSock;
 			}
 
 			//SocketBaseからSockAddrを取得//
-			sockaddr_in& InsSockAddrFromSockBase_In(SockBase& _Sock)
+			sockaddr_in& InsSockAddrFromSockBase_In(SockBase& _sock)
 			{
-				return _Sock.Addr;
+				return _sock.addr;
 			}
 
 			//InsSockAddrFromSockBaseの省略版//
-			sockaddr_in& InsSockAddr_In(SockBase& _Sock)
+			sockaddr_in& InsSockAddr_In(SockBase& _sock)
 			{
-				return _Sock.Addr;
+				return _sock.addr;
 			}
 
 			//SocketBaseからSockAddrを取得//
-			sockaddr* InsSockAddrFromSockBase(SockBase& _Sock)
+			sockaddr* InsSockAddrFromSockBase(SockBase& _sock)
 			{
-				return reinterpret_cast<sockaddr*>(&_Sock.Addr);
+				return reinterpret_cast<sockaddr*>(&_sock.addr);
 			}
 
 			//InsSockAddrFromSockBaseの省略版//
-			sockaddr* InsSockAddr(SockBase& _Sock)
+			sockaddr* InsSockAddr(SockBase& _sock)
 			{
-				return reinterpret_cast<sockaddr*>(&_Sock.Addr);
+				return reinterpret_cast<sockaddr*>(&_sock.addr);
 			}
 
-			std::vector<std::string>ReceveStrs;
+			std::vector<std::string>receveStrs;
 
 		private:
 
-			SockBase* TargetSocket = nullptr;
+			SockBase* targetSocket = nullptr;
 
 		};
 
@@ -193,59 +193,48 @@ namespace ChCpp
 
 		///////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
-		template<class ip, class sock>
+		template<class IP, class Sock>
 		auto Init(const int _MaxLinkCount = 1)->typename std::enable_if
-			<
-			std::is_base_of<NetWorkBase::InternetProtocol, ip>::value &&
-			(std::is_base_of<Server, sock>::value
-				|| std::is_same<Server, sock>::value)
-			, void
-			>::type
+			<std::is_base_of<NetWorkBase::InternetProtocol, IP>::value &&
+			(std::is_base_of<Server, Sock>::value
+				|| std::is_same<Server, Sock>::value), void>::type
 		{
 			if (_MaxLinkCount <= 0)return;
 
 			WinInit();
 
-			Sock = new sock();
+			sock = new Sock();
 
-			Sock->Init();
+			sock->Init();
 
-			IP = new ip();
+			ip = new IP();
 
-			if (!IP->Init(Sock))
+			if (!ip->Init(sock))
 			{
 				return;
 			}
 
-
-
-
 		}
 
-		template<class ip, class sock>
+		template<class IP, class Sock>
 		auto Init()->typename std::enable_if
-			<
-			std::is_base_of<NetWorkBase::InternetProtocol, ip>::value &&
-			(std::is_base_of<Client, sock>::value
-				|| std::is_same<Client, sock>::value)
-			, void
-			>::type
+			<std::is_base_of<NetWorkBase::InternetProtocol, IP>::value &&
+			(std::is_base_of<Client, Sock>::value
+				|| std::is_same<Client, Sock>::value), void>::type
 		{
 
 			WinInit();
 
-			Sock = new sock();
+			sock = new Sock();
 
-			Sock->Init();
+			sock->Init();
 
-			IP = new ip();
+			ip = new IP();
 
-			if (!IP->Init(Sock))
+			if (!ip->Init(sock))
 			{
 				return;
 			}
-
-
 
 		}
 
@@ -257,17 +246,15 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
-		template<class sock>
+		template<class Sock>
 		auto GetSock()->typename std::enable_if
-			<std::is_base_of<NetWorkBase::SockBase, sock>::value, sock*>
-			::type
-		{ return dynamic_cast<sock*>(Sock); }
+			<std::is_base_of<NetWorkBase::SockBase, Sock>::value, Sock*>::type
+		{ return ChPtr::SafeCast<Sock*>(sock); }
 
-		template<class ip>
+		template<class IP>
 		auto GetIP()->typename std::enable_if
-			<std::is_base_of<NetWorkBase::InternetProtocol, ip>::value, ip*>
-			::type 
-		{ return dynamic_cast<ip*>(IP); }
+			<std::is_base_of<NetWorkBase::InternetProtocol, IP>::value, IP*>::type 
+		{ return ChPtr::SafeCast<IP*>(ip); }
 
 		///////////////////////////////////////////////////////////////////////////////
 		//UpdateFunction//
@@ -279,7 +266,7 @@ namespace ChCpp
 		inline ChStd::Bool WinInit()
 		{
 
-#ifdef _WIN32
+#ifdef _WINDOWS_
 			//WisSockVer//
 			WORD wVerReq = MAKEWORD(1, 1);
 			//ライブラリの詳細情報を受け取る//
@@ -300,7 +287,7 @@ namespace ChCpp
 		inline void WinRelease()
 		{
 
-#ifdef _WIN32
+#ifdef _WINDOWS_
 			WSACleanup();
 #endif
 
@@ -308,8 +295,8 @@ namespace ChCpp
 
 	private:
 
-		NetWorkBase::InternetProtocol* IP;
-		NetWorkBase::SockBase* Sock;
+		NetWorkBase::InternetProtocol* ip;
+		NetWorkBase::SockBase* sock;
 
 	};
 

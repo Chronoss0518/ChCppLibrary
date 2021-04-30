@@ -9,19 +9,19 @@ namespace ChCpp
 	//Serverメソッド//
 	///////////////////////////////////////////////////////////////////////////////
 
-	void Server::Init(const unsigned short _Port_No)
+	void Server::Init(const unsigned short _portNo)
 	{
 
 		//アドレスファミリの指定
-		Addr.sin_family = AF_INET;
+		addr.sin_family = AF_INET;
 
 		//サーバのIPアドレス
 		//htonl:ネットワークバイトオーダーからホストバイトオーダーへ変換する//
-		Addr.sin_addr.s_addr = htonl(INADDR_ANY);
+		addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
 		//サーバのポート番号//
 		//htons:ホストバイトオーダーからネットワークバイトオーダーへ変換する//
-		Addr.sin_port = htons(_Port_No);
+		addr.sin_port = htons(_portNo);
 	}
 
 	void Server::Release()
@@ -31,16 +31,16 @@ namespace ChCpp
 
 	///////////////////////////////////////////////////////////////////////////////
 
-	void Server::SetLinkSocket(const std::vector<SOCKET>& _LinksSock)
+	void Server::SetLinkSocket(const std::vector<SOCKET>& _linkSock)
 	{
-		if (_LinksSock.empty())return;
+		if (_linkSock.empty())return;
 
-		if (!LinkSock.empty())
+		if (!_linkSock.empty())
 		{
-			LinkSock.clear();
+			linkSock.clear();
 		}
 
-		LinkSock = _LinksSock;
+		linkSock = _linkSock;
 
 	}
 
@@ -79,16 +79,16 @@ namespace ChCpp
 	//IP_TCPメソッド//
 	///////////////////////////////////////////////////////////////////////////////
 
-	ChStd::Bool IP_TCP::Init(NetWorkBase::SockBase* _Base)
+	ChStd::Bool IP_TCP::Init(NetWorkBase::SockBase* _base)
 	{
 
-		InternetProtocol::Init(_Base);
+		InternetProtocol::Init(_base);
 
-		SOCKET Test;
+		SOCKET test;
 
-		Test = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+		test = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
 
-		if (Test == SOCKET_ERROR)
+		if (test == SOCKET_ERROR)
 		{
 			ChFIO::OutToErrorText(
 				"NetWorkProgrammError"
@@ -98,16 +98,16 @@ namespace ChCpp
 			return false;
 		}
 
-		InsSocket(*_Base);
+		InsSocket(*_base);
 
 
-		Test = bind(InsSocket(
-			*_Base)
-			, InsSockAddr(*_Base)
-			, sizeof(InsSockAddr_In(*_Base)));
+		test = bind(InsSocket(
+			*_base)
+			, InsSockAddr(*_base)
+			, sizeof(InsSockAddr_In(*_base)));
 
 
-		if (Test == SOCKET_ERROR)
+		if (test == SOCKET_ERROR)
 		{
 			ChFIO::OutToErrorText(
 				"NetWorkProgrammError"
@@ -124,7 +124,7 @@ namespace ChCpp
 	///////////////////////////////////////////////////////////////////////////////
 
 	ChStd::Bool IP_TCP::Send(
-		const std::string& _Str)
+		const std::string& _str)
 	{
 		return true;
 	}
@@ -140,8 +140,8 @@ namespace ChCpp
 	///////////////////////////////////////////////////////////////////////////////
 
 	std::string IP_TCP::TargetSend(
-		const SOCKET& _TargetSocket
-		, const std::string& _Str)
+		const SOCKET& _targetSocket
+		, const std::string& _str)
 	{
 
 		return "";
@@ -150,7 +150,7 @@ namespace ChCpp
 	///////////////////////////////////////////////////////////////////////////////
 
 	std::string IP_TCP::TargetReceve(
-		const SOCKET& _TargetSocket)
+		const SOCKET& _targetSocket)
 	{
 
 		return "";
@@ -161,10 +161,10 @@ namespace ChCpp
 	///////////////////////////////////////////////////////////////////////////////
 
 
-	ChStd::Bool IP_UDP::Init(NetWorkBase::SockBase* _Base)
+	ChStd::Bool IP_UDP::Init(NetWorkBase::SockBase* _base)
 	{
 
-		InternetProtocol::Init(_Base);
+		InternetProtocol::Init(_base);
 
 
 
@@ -174,7 +174,7 @@ namespace ChCpp
 
 	///////////////////////////////////////////////////////////////////////////////
 
-	ChStd::Bool IP_UDP::Send(const std::string& _Str)
+	ChStd::Bool IP_UDP::Send(const std::string& _str)
 	{
 
 		return true;

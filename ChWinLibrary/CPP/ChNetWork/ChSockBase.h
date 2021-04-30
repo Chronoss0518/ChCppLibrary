@@ -36,19 +36,19 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
-		virtual void Init(const unsigned short _Port_No)override;
+		virtual void Init(const unsigned short _portNo)override;
 
 		void Release()override;
 
 		///////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
-		inline std::vector<SOCKET> GetLinsSocket() { return LinkSock; }
+		inline std::vector<SOCKET> GetLinsSocket() { return linkSock; }
 
 		///////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		void SetLinkSocket(const std::vector<SOCKET>& _LinksSock);
+		void SetLinkSocket(const std::vector<SOCKET>& _linkSock);
 
 		///////////////////////////////////////////////////////////////////////////////
 		//UpdateFunction//
@@ -61,8 +61,8 @@ namespace ChCpp
 
 	private:
 
-		std::vector<SOCKET>LinkSock;
-		int LinkCount = 0;
+		std::vector<SOCKET>linkSock;
+		int linkCount = 0;
 
 	};
 
@@ -74,7 +74,7 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
-		virtual void Init(const unsigned short _Port_No)override;
+		virtual void Init(const unsigned short _portNo)override;
 
 		void Release()override;
 
@@ -84,7 +84,7 @@ namespace ChCpp
 
 	private:
 
-		SOCKET LinkSock{ 0 };
+		SOCKET linkSock{ 0 };
 
 	};
 

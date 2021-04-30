@@ -37,22 +37,22 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
-		virtual ChStd::Bool Init(NetWorkBase::SockBase* _Base)override;
+		virtual ChStd::Bool Init(NetWorkBase::SockBase* _base)override;
 
 		///////////////////////////////////////////////////////////////////////////////
 		//CommunityFunction//
 
 		 ChStd::Bool Send(
-			const std::string& _Str)override;
+			const std::string& _str)override;
 
 		 ChStd::Bool Receve()override;
 
 		 std::string TargetSend(
-			const SOCKET& _TargetSocket
-			, const std::string& _Str);
+			const SOCKET& _targetSocket
+			, const std::string& _str);
 
 		 std::string TargetReceve(
-			const SOCKET& _TargetSocket);
+			const SOCKET& _targetSocket);
 	};
 
 	class IP_UDP :public NetWorkBase::InternetProtocol
@@ -62,13 +62,13 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
-		virtual ChStd::Bool Init(NetWorkBase::SockBase* _Base)override;
+		virtual ChStd::Bool Init(NetWorkBase::SockBase* _base)override;
 
 		///////////////////////////////////////////////////////////////////////////////
 		//CommunityFunction//
 
 		ChStd::Bool Send(
-			const std::string& _Str)override;
+			const std::string& _str)override;
 
 		ChStd::Bool Receve()override;
 
