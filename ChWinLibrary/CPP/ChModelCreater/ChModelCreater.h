@@ -16,11 +16,11 @@ namespace ChCpp
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
-		virtual void CreateModel(const std::string& _FilePath) = 0;
+		virtual void CreateModel(const std::string& _filePath) = 0;
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
-		virtual void OutModelFile(const std::string& _FilePath) = 0;
+		virtual void OutModelFile(const std::string& _filePath) = 0;
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
@@ -31,17 +31,17 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////////////
 
 		//カレントディレクトリからのルートパス取得//
-		std::string GetRoutePath(const std::string& _FilePath);
+		std::string GetRoutePath(const std::string& _filePath);
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
-		void Init(ModelObject * _Model);
+		void Init(ModelObject * _model);
 
-		void SetModel(ChPtr::Shared<ModelFrame> _Models);
+		void SetModel(ChPtr::Shared<ModelFrame> _models);
 
 	private:
 
-		ModelObject* OModel;
+		ModelObject* oModel;
 
 	};
 }

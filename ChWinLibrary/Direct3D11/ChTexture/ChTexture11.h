@@ -4,7 +4,7 @@
 namespace ChD3D11
 {
 
-	class Texture11:public ChCpp::ChCp::Releaser
+	class Texture11:public ChCpp::ClassPerts::Releaser
 	{
 	public:
 

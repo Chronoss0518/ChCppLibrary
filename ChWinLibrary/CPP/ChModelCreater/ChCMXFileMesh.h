@@ -14,58 +14,58 @@ namespace ChCpp
 
 			struct XVertex
 			{
-				ChVec3 Pos;
-				ChVec3 Normal;
-				ChVec2 UVPos;
+				ChVec3 pos;
+				ChVec3 normal;
+				ChVec2 uvPos;
 			};
 
 			struct XMaterial
 			{
-				std::string MaterialName;
+				std::string materialName;
 
-				ChVec4 Diffuse;
-				float SpecularPower = 0.0f;
-				ChVec3 Specular;
-				ChVec3 Ambient;
+				ChVec4 diffuse;
+				float specularPower = 0.0f;
+				ChVec3 specular;
+				ChVec3 ambient;
 
-				std::vector<std::string>TextureNameList;
+				std::vector<std::string>textureNameList;
 
 			};
 
 			struct XFace
 			{
-				std::vector<unsigned long> VertexNos;
-				unsigned long MateNo = 0;
+				std::vector<unsigned long> vertexNos;
+				unsigned long mateNo = 0;
 			};
 
 			struct XSkinWeights
 			{
-				std::string TargetFrameName = "";
+				std::string targetFrameName = "";
 
-				std::map<unsigned long, float>WeitPow;
+				std::map<unsigned long, float>weitPow;
 
-				ChLMat BoneOffset;
+				ChLMat boneOffset;
 
 			};
 			struct XMesh
 			{
-				std::vector<ChPtr::Shared<XVertex>>VertexList;
-				std::vector<ChPtr::Shared<XMaterial>>MaterialList;
-				std::vector<ChPtr::Shared<XFace>>FaceList;
+				std::vector<ChPtr::Shared<XVertex>>vertexList;
+				std::vector<ChPtr::Shared<XMaterial>>materialList;
+				std::vector<ChPtr::Shared<XFace>>faceList;
 			};
 
 			struct XFrame
 			{
-				std::string FName;
-				ChPtr::Shared<XMesh> Meshs;
-				std::vector<ChPtr::Shared<XFrame>>Next;
-				std::vector<ChPtr::Shared<XSkinWeights>>SkinWeightDatas;
+				std::string fName;
+				ChPtr::Shared<XMesh> mesh;
+				std::vector<ChPtr::Shared<XFrame>>next;
+				std::vector<ChPtr::Shared<XSkinWeights>>skinWeightDatas;
 				ChLMat frameMatrix;
 			};
 
 
-			ChPtr::Shared<XFrame> ModelData = nullptr;
-			std::string ModelName;
+			ChPtr::Shared<XFrame> modelData = nullptr;
+			std::string modelName;
 
 		};
 
@@ -81,196 +81,196 @@ namespace ChCpp
 
 		struct TemplateRange
 		{
-			size_t Bigen = 0;
-			size_t End = 0;
-			std::vector<ChPtr::Shared<TemplateRange>> Nest;
+			size_t begin = 0;
+			size_t end = 0;
+			std::vector<ChPtr::Shared<TemplateRange>> nest;
 		};
 
 		//モデルデータの読み込み口//
-		void CreateModel(const std::string& _FilePath)override;
+		void CreateModel(const std::string& _filePath)override;
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
 		//ChModelへ変換//
 		void XFrameToChFrame(
-			ChPtr::Shared<ModelFrame::Frame>& _ChFrame
-			, const ChPtr::Shared<XFileModelFrame::XFrame>& _XFrame);
+			ChPtr::Shared<ModelFrame::Frame>& _chFrame
+			, const ChPtr::Shared<XFileModelFrame::XFrame>& _xFrame);
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
-		void OutModelFile(const std::string& _FilePath)override;
+		void OutModelFile(const std::string& _filePath)override;
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
 		ChStd::Bool SetFrame(
-			ChPtr::Shared<XFileModelFrame::XFrame>& _Frames
-			, const ChPtr::Shared<TemplateRange>& _TargetTemplate
-			, const std::string& _Text);
+			ChPtr::Shared<XFileModelFrame::XFrame>& _frames
+			, const ChPtr::Shared<TemplateRange>& _targetTemplate
+			, const std::string& _text);
 
 		ChStd::Bool SetFremeTransformMatrix(
-			ChPtr::Shared<XFileModelFrame::XFrame>& _Frames
-			, const ChPtr::Shared<TemplateRange>& _TargetTemplate
-			, const std::string& _Text);
+			ChPtr::Shared<XFileModelFrame::XFrame>& _frames
+			, const ChPtr::Shared<TemplateRange>& _targetTemplate
+			, const std::string& _text);
 		
 		ChStd::Bool SetMesh(
-			ChPtr::Shared<XFileModelFrame::XFrame>& _Frames
-			, const ChPtr::Shared<TemplateRange>& _TargetTemplate
-			, const std::string& _Text);
+			ChPtr::Shared<XFileModelFrame::XFrame>& _frames
+			, const ChPtr::Shared<TemplateRange>& _targetTemplate
+			, const std::string& _text);
 
 		ChStd::Bool SetMeshNormal(
-			ChPtr::Shared<XFileModelFrame::XFrame>& _Frames
-			, const ChPtr::Shared<TemplateRange>& _TargetTemplate
-			, const std::string& _Text);
+			ChPtr::Shared<XFileModelFrame::XFrame>& _frames
+			, const ChPtr::Shared<TemplateRange>& _targetTemplate
+			, const std::string& _text);
 
 		ChStd::Bool SetMeshTextureCoords(
-			ChPtr::Shared<XFileModelFrame::XFrame>& _Frames
-			, const ChPtr::Shared<TemplateRange>& _TargetTemplate
-			, const std::string& _Text);
+			ChPtr::Shared<XFileModelFrame::XFrame>& _frames
+			, const ChPtr::Shared<TemplateRange>& _targetTemplate
+			, const std::string& _text);
 
 		ChStd::Bool SetMeshMaterialList(
-			ChPtr::Shared<XFileModelFrame::XFrame>& _Frames
-			, const ChPtr::Shared<TemplateRange>& _TargetTemplate
-			, const std::string& _Text);
+			ChPtr::Shared<XFileModelFrame::XFrame>& _frames
+			, const ChPtr::Shared<TemplateRange>& _targetTemplate
+			, const std::string& _text);
 
 		ChStd::Bool SetMaterial(
-			ChPtr::Shared<XFileModelFrame::XFrame>& _Frames
-			, const ChPtr::Shared<TemplateRange>& _TargetTemplate
-			, const std::string& _Text);
+			ChPtr::Shared<XFileModelFrame::XFrame>& _frames
+			, const ChPtr::Shared<TemplateRange>& _targetTemplate
+			, const std::string& _text);
 
 		ChStd::Bool SetSkinWeights(
-			ChPtr::Shared<XFileModelFrame::XFrame>& _Frames
-			, const ChPtr::Shared<TemplateRange>& _TargetTemplate
-			, const std::string& _Text);
+			ChPtr::Shared<XFileModelFrame::XFrame>& _frames
+			, const ChPtr::Shared<TemplateRange>& _targetTemplate
+			, const std::string& _text);
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
 		template<class T>
 		auto GetArrayValues(
-			const std::string& _Text
-			, const size_t& _StartPos = 0
-			, const std::string& _CutChar = ","
-			, const std::string& _EndChar = ";"
+			const std::string& _text
+			, const size_t& _startPos = 0
+			, const std::string& _cutChar = ","
+			, const std::string& _endChar = ";"
 		)->typename std::enable_if
 			<std::is_base_of<BaseType, T>::value
 			, std::vector<ChPtr::Shared<T>>>::type
 		{
 
-			std::vector<ChPtr::Shared<T>> Out;
+			std::vector<ChPtr::Shared<T>> out;
 
-			std::string UseText = "";
+			std::string useText = "";
 
 			{
-				size_t tmpEnd = _Text.find(_EndChar, _StartPos);
-				tmpEnd += _EndChar.length();
+				size_t tmpEnd = _text.find(_endChar, _startPos);
+				tmpEnd += _endChar.length();
 
-				UseText = _Text.substr(_StartPos, tmpEnd - _StartPos);
+				useText = _text.substr(_startPos, tmpEnd - _startPos);
 			
 			}
 
-			size_t TmpPos = 0;
-			TmpPos = UseText.find(";");
+			size_t tmpPos = 0;
+			tmpPos = useText.find(";");
 
-			if (TmpPos >= UseText.size())return Out;
+			if (tmpPos >= useText.size())return out;
 
-			unsigned long ArrayCount = 0;
+			unsigned long arrayCount = 0;
 
-			ArrayCount = ChStr::GetIntegialFromText<unsigned long>(UseText, UseText.find("\n"),TmpPos);
+			arrayCount = ChStr::GetIntegialFromText<unsigned long>(useText, useText.find("\n"),tmpPos);
 
-			if (ArrayCount <= 0)return Out;
+			if (arrayCount <= 0)return out;
 
-			for (unsigned long i = 0; i < ArrayCount; i++)
+			for (unsigned long i = 0; i < arrayCount; i++)
 			{
 				
-				size_t SPos = TmpPos + 1;
+				size_t sPos = tmpPos + 1;
 
-				TmpPos = UseText.find(_CutChar, SPos);
-				std::string tmpEnd = _CutChar;
+				tmpPos = useText.find(_cutChar, sPos);
+				std::string tmpEnd = _cutChar;
 
-				if (i >= ArrayCount - 1)
+				if (i >= arrayCount - 1)
 				{
-					TmpPos = UseText.find(_EndChar, SPos);
-					tmpEnd = _EndChar;
+					tmpPos = useText.find(_endChar, sPos);
+					tmpEnd = _endChar;
 				}
 
-				if (TmpPos >= std::string::npos)
+				if (tmpPos >= std::string::npos)
 				{
-					Out.clear();
-					return Out;
+					out.clear();
+					return out;
 				}
 
 
-				ChPtr::Shared<BaseType> Value = ChPtr::Make_S<T>();
+				ChPtr::Shared<BaseType> value = ChPtr::Make_S<T>();
 
-				Value->Desirialise(UseText, SPos, tmpEnd);
+				value->Desirialise(useText, sPos, tmpEnd);
 
-				Out.push_back(ChPtr::SharedSafeCast<T>(Value));
+				out.push_back(ChPtr::SharedSafeCast<T>(value));
 
-				TmpPos += _EndChar.length();
+				tmpPos += _endChar.length();
 
 			}
 
-			return Out;
+			return out;
 
 		}
 
 		template<class T>
 		auto GetArrayValuesNC(
-			const std::string& _Text
-			, const size_t& _StartPos = 0
-			, const std::string& _CutChar = ","
-			, const std::string& _EndChar = ";"
+			const std::string& _text
+			, const size_t& _startPos = 0
+			, const std::string& _cutChar = ","
+			, const std::string& _endChar = ";"
 		)->typename std::enable_if
 			<std::is_base_of<BaseType, T>::value
 			, std::vector<ChPtr::Shared<T>>>::type
 		{
 
-			std::vector<ChPtr::Shared<T>> Out;
+			std::vector<ChPtr::Shared<T>> out;
 
-			std::string UseText = "";
+			std::string useText = "";
 
 			{
-				size_t tmpEnd = _Text.find(_EndChar, _StartPos);
-				tmpEnd += _EndChar.length();
+				size_t tmpEnd = _text.find(_endChar, _startPos);
+				tmpEnd += _endChar.length();
 
-				UseText = _Text.substr(_StartPos, tmpEnd - _StartPos);
+				useText = _text.substr(_startPos, tmpEnd - _startPos);
 
 			}
 
-			size_t TmpPos = 0;
+			size_t tmpPos = 0;
 
-			if (TmpPos >= UseText.size())return Out;
+			if (tmpPos >= useText.size())return out;
 
-			while (TmpPos <= UseText.size())
+			while (tmpPos <= useText.size())
 			{
 
-				size_t SPos = TmpPos + 1;
+				size_t sPos = tmpPos + 1;
 
-				TmpPos = UseText.find(_CutChar, SPos);
-				std::string tmpEnd = _CutChar;
+				tmpPos = useText.find(_cutChar, sPos);
+				std::string tmpEnd = _cutChar;
 
-				if (TmpPos >= UseText.size())
+				if (tmpPos >= useText.size())
 				{
-					TmpPos = UseText.find(_EndChar, SPos);
-					tmpEnd = _EndChar;
+					tmpPos = useText.find(_endChar, sPos);
+					tmpEnd = _endChar;
 				}
 				
 
-				ChPtr::Shared<BaseType> Value = ChPtr::Make_S<T>();
+				ChPtr::Shared<BaseType> value = ChPtr::Make_S<T>();
 
-				Value->Desirialise(UseText, SPos, tmpEnd);
+				value->Desirialise(useText, sPos, tmpEnd);
 
-				Out.push_back(ChPtr::SharedSafeCast<T>(Value));
+				out.push_back(ChPtr::SharedSafeCast<T>(value));
 
-				TmpPos += _EndChar.length();
+				tmpPos += _endChar.length();
 
 				if (tmpEnd == ";")break;
 
 			}
 
 
-			return Out;
+			return out;
 
 		}
 
@@ -278,36 +278,36 @@ namespace ChCpp
 		//IsFunction//
 
 		ChStd::Bool IsTags(
-			size_t& _OutTagPos
-			, const std::string& _TagName
-			, const ChPtr::Shared<TemplateRange> _LookTemplate
-			, const std::string& _Text);
+			size_t& _outTagPos
+			, const std::string& _tagName
+			, const ChPtr::Shared<TemplateRange> _lookTemplate
+			, const std::string& _text);
 
 		inline ChStd::Bool IsTags(
-			const std::string& _TagName
-			, const ChPtr::Shared<TemplateRange> _LookTemplate
-			, const std::string& _Text)
+			const std::string& _tagName
+			, const ChPtr::Shared<TemplateRange> _lookTemplate
+			, const std::string& _text)
 		{
 
-			size_t Tmp;
+			size_t tmp;
 
-			return IsTags(Tmp, _TagName, _LookTemplate, _Text);
+			return IsTags(tmp, _tagName, _lookTemplate, _text);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//TmplateCreate//
 
 		void LoadToTemplates(
-			ChPtr::Shared<TemplateRange>& _Templates
-			, const size_t& _Offset
-			, const std::string& _Text);
+			ChPtr::Shared<TemplateRange>& _templates
+			, const size_t& _offset
+			, const std::string& _text);
 
 		void SetToTemplate(
-			ChPtr::Shared<TemplateRange>& _Tmp
-			, size_t& _BCnt
-			, size_t& _ECnt
-			, const std::vector<size_t>& _STemplateTags
-			, const std::vector<size_t>& _ETemplateTags);
+			ChPtr::Shared<TemplateRange>& _tmp
+			, size_t& _bCnt
+			, size_t& _eCnt
+			, const std::vector<size_t>& _sTemplateTags
+			, const std::vector<size_t>& _eTemplateTags);
 
 
 		///////////////////////////////////////////////////////////////////////////////////////
@@ -316,14 +316,14 @@ namespace ChCpp
 		struct XDWORD : public BaseType
 		{
 			void Desirialise(
-				const std::string& _Text
-				, const size_t& _Start
-				, const std::string& _EndChar)override
+				const std::string& _text
+				, const size_t& _start
+				, const std::string& _endChar)override
 			{
 
-				size_t Tmp = _Text.find(_EndChar, _Start);
+				size_t Tmp = _text.find(_endChar, _start);
 
-				value = ChStr::GetIntegialFromText<unsigned long>(_Text, _Start, Tmp);
+				value = ChStr::GetIntegialFromText<unsigned long>(_text, _start, Tmp);
 			}
 
 			std::string Serialise()override
@@ -338,14 +338,14 @@ namespace ChCpp
 		struct XCHAR : public BaseType
 		{
 			void Desirialise(
-				const std::string& _Text
-				, const size_t& _Start
-				, const std::string& _EndChar)override
+				const std::string& _text
+				, const size_t& _start
+				, const std::string& _endChar)override
 			{
 
-				size_t Tmp = _Text.find(_EndChar, _Start);
+				size_t Tmp = _text.find(_endChar, _start);
 
-				value = ChStr::GetIntegialFromText<unsigned char>(_Text, _Start, Tmp);
+				value = ChStr::GetIntegialFromText<unsigned char>(_text, _start, Tmp);
 			}
 
 			std::string Serialise()override
@@ -360,14 +360,14 @@ namespace ChCpp
 		struct XFLOAT : public BaseType
 		{
 			void Desirialise(
-				const std::string& _Text
-				, const size_t& _Start
-				, const std::string& _EndChar)override
+				const std::string& _text
+				, const size_t& _start
+				, const std::string& _endChar)override
 			{
 
-				size_t Tmp = _Text.find(_EndChar, _Start);
+				size_t tmp = _text.find(_endChar, _start);
 
-				value = ChStr::GetFloatingFromText<float>(_Text, _Start, Tmp);
+				value = ChStr::GetFloatingFromText<float>(_text, _start, tmp);
 			}
 
 			std::string Serialise()override
@@ -382,11 +382,11 @@ namespace ChCpp
 		struct XVECTOR : public BaseType
 		{
 			void Desirialise(
-				const std::string& _Text
-				, const size_t& _Start
-				, const std::string& _EndChar)override
+				const std::string& _text
+				, const size_t& _start
+				, const std::string& _endChar)override
 			{
-				value.Deserialize(_Text, _Start,";", _EndChar);
+				value.Deserialize(_text, _start,";", _endChar);
 			}
 
 			std::string Serialise()override
@@ -401,11 +401,11 @@ namespace ChCpp
 		struct XCOODS2D : public BaseType
 		{
 			void Desirialise(
-				const std::string& _Text
-				, const size_t& _Start
-				, const std::string& _EndChar)override
+				const std::string& _text
+				, const size_t& _start
+				, const std::string& _endChar)override
 			{
-				value.Deserialize(_Text, _Start, ";", _EndChar);
+				value.Deserialize(_text, _start, ";", _endChar);
 			}
 
 			std::string Serialise()override
@@ -420,47 +420,47 @@ namespace ChCpp
 		struct XMESHFACE : public BaseType
 		{
 			void Desirialise(
-				const std::string& _Text
-				, const size_t& _Start
-				, const std::string& _EndChar)override
+				const std::string& _text
+				, const size_t& _start
+				, const std::string& _endChar)override
 			{
 
 
-				size_t End = _Text.find(_EndChar, _Start);
+				size_t end = _text.find(_endChar, _start);
 
-				std::string UseText = _Text.substr(_Start, End - _Start);
+				std::string useText = _text.substr(_start, end - _start);
 
 
-				size_t TmpPos = 0;
-				TmpPos = UseText.find(";");
+				size_t tmpPos = 0;
+				tmpPos = useText.find(";");
 
-				if (TmpPos >= End)return;
+				if (tmpPos >= end)return;
 
-				unsigned long ArrayCount = 0;
+				unsigned long arrayCount = 0;
 
-				ArrayCount = ChStr::GetIntegialFromText<unsigned long>(UseText, 0, TmpPos);
+				arrayCount = ChStr::GetIntegialFromText<unsigned long>(useText, 0, tmpPos);
 
-				if (ArrayCount <= 0)return;
+				if (arrayCount <= 0)return;
 
-				for (unsigned long i = 0; i < ArrayCount; i++)
+				for (unsigned long i = 0; i < arrayCount; i++)
 				{
 
-					size_t SPos = TmpPos + 1;
-					TmpPos = UseText.find(",", SPos + 1);
+					size_t sPos = tmpPos + 1;
+					tmpPos = useText.find(",", sPos + 1);
 
-					if (i >= ArrayCount - 1)
+					if (i >= arrayCount - 1)
 					{
-						TmpPos = UseText.find(";", SPos);
+						tmpPos = useText.find(";", sPos);
 					}
 
-					if (TmpPos >= std::string::npos)
+					if (tmpPos >= std::string::npos)
 					{
-						TmpPos = UseText.size();
+						tmpPos = useText.size();
 					}
 
 					unsigned long Value;
 
-					Value = ChStr::GetIntegialFromText<unsigned long>(UseText, SPos, TmpPos);
+					Value = ChStr::GetIntegialFromText<unsigned long>(useText, sPos, tmpPos);
 
 					value.push_back(Value);
 
@@ -481,11 +481,11 @@ namespace ChCpp
 		struct ColorRGBA : public BaseType
 		{
 			void Desirialise(
-				const std::string& _Text
-				, const size_t& _Start
-				, const std::string& _EndChar)override
+				const std::string& _text
+				, const size_t& _start
+				, const std::string& _endChar)override
 			{
-				value.Deserialize(_Text, _Start, ";", _EndChar);
+				value.Deserialize(_text, _start, ";", _endChar);
 			}
 
 			std::string Serialise()override
@@ -500,11 +500,11 @@ namespace ChCpp
 		struct ColorRGB : public BaseType
 		{
 			void Desirialise(
-				const std::string& _Text
-				, const size_t& _Start
-				, const std::string& _EndChar)override
+				const std::string& _text
+				, const size_t& _start
+				, const std::string& _endChar)override
 			{
-				value.Deserialize(_Text, _Start, ";", _EndChar);
+				value.Deserialize(_text, _start, ";", _endChar);
 			}
 
 			std::string Serialise()override
@@ -523,25 +523,25 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////////////
 		//XFileTemplateNames//
 
-		const std::string FrameTags = "Frame ";
+		const std::string frameTags = "Frame ";
 
-		const std::string FrameTransformMatrixTags = "FrameTransformMatrix ";
+		const std::string frameTransformMatrixTags = "FrameTransformMatrix ";
 
-		const std::string MeshTags = "Mesh ";
+		const std::string meshTags = "Mesh ";
 
-		const std::string NormalTags = "MeshNormals ";
+		const std::string normalTags = "MeshNormals ";
 
-		const std::string MaterialListTags = "MeshMaterialList ";
+		const std::string materialListTags = "MeshMaterialList ";
 
-		const std::string MaterialTags = "Material ";
+		const std::string materialTags = "Material ";
 
-		const std::string SkinWeightsTags = "SkinWeights ";
+		const std::string skinWeightsTags = "SkinWeights ";
 
-		const std::string UVTags = "MeshTextureCoords ";
+		const std::string uvTags = "MeshTextureCoords ";
 
-		const std::string TextureFilenameTag = "TextureFilename ";
+		const std::string textureFileNameTag = "TextureFilename ";
 
-		const std::string SkinWeightsTag = "SkinWeights ";
+		const std::string skinWeightsTag = "SkinWeights ";
 	};
 
 }

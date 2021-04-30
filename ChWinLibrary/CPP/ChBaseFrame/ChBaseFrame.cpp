@@ -12,19 +12,19 @@ using namespace ChCpp;
 
 void BaseFrameList::Update()
 {
-	if (NowFrame == nullptr)return;
-	NowFrame->Frame();
+	if (nowFrame == nullptr)return;
+	nowFrame->Frame();
 
 	Chenges();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void BaseFrameList::ChengeFrame(const std::string& _FrameName)
+void BaseFrameList::ChengeFrame(const std::string& _frameName)
 {
-	if (FrameList.find(_FrameName) == FrameList.end())return;
+	if (frameList.find(_frameName) == frameList.end())return;
 
-	NextFrame = FrameList[_FrameName]();
+	nextFrame = frameList[_frameName]();
 
 
 }
@@ -34,16 +34,16 @@ void BaseFrameList::ChengeFrame(const std::string& _FrameName)
 void BaseFrameList::Chenges()
 {
 
-	if (NextFrame == nullptr)return;
+	if (nextFrame == nullptr)return;
 
-	if (NowFrame != nullptr)
+	if (nowFrame != nullptr)
 	{
-		NowFrame->Release();
+		nowFrame->Release();
 	}
 
-	NowFrame = NextFrame;
+	nowFrame = nextFrame;
 
-	NowFrame->Init();
+	nowFrame->Init();
 
-	NextFrame = nullptr;
+	nextFrame = nullptr;
 }

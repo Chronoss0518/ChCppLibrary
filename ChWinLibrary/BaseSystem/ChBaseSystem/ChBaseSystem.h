@@ -6,7 +6,7 @@ namespace ChSystem
 {
 	class SystemManager;
 
-	class BaseSystem : public ChCpp::ChCp::Initializer
+	class BaseSystem : public ChCpp::ClassPerts::Initializer
 	{
 
 	public:
@@ -14,28 +14,28 @@ namespace ChSystem
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		void SetSystemManager(const SystemManager* _Own)
+		void SetSystemManager(const SystemManager* _own)
 		{
-			System = const_cast<SystemManager*>(_Own);
+			system = const_cast<SystemManager*>(_own);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
 		//Windの横幅サイズ取得//
-		const inline unsigned int GetWindWidth()const { return WindWidth; }
+		const inline unsigned int GetWindWidth()const { return windSize.w; }
 
 		//Windの立幅サイズ取得//
-		const inline unsigned int GetWindHeight()const { return WindHeight; }
+		const inline unsigned int GetWindHeight()const { return windSize.h; }
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
 
-		virtual ChStd::Bool IsPushKey(const int _Key);
+		virtual ChStd::Bool IsPushKey(const int _key);
 
-		virtual ChStd::Bool IsPushKeyNoHold(const int _Key);
+		virtual ChStd::Bool IsPushKeyNoHold(const int _key);
 
-		virtual ChStd::Bool IsPause(const int _Key);
+		virtual ChStd::Bool IsPause(const int _key);
 
 		virtual ChStd::Bool IsUpdate() { return false; };
 
@@ -49,29 +49,28 @@ namespace ChSystem
 		///////////////////////////////////////////////////////////////////////////////////
 
 		inline virtual void ErrerMessage(
-			const std::string& _MainStr
-			, const std::string& _SubStr)
+			const std::string& _mainStr
+			, const std::string& _subStr)
 		{
-			std::cerr << _MainStr;
+			std::cerr << _mainStr;
 		};
 
 	protected:
 
-		SystemManager* System = nullptr;
+		SystemManager* system = nullptr;
 
-		unsigned int WindWidth = 0;
-		unsigned int WindHeight = 0;
+		ChMath::ChVector2Base<unsigned long> windSize;
 
-		ChCpp::BitBool ButtonList;
-		ChCpp::BitBool IsNowPush;
+		ChCpp::BitBool buttonList;
+		ChCpp::BitBool isNowPush;
 
 		//Pause用変数//
-		ChStd::Bool NowKey = false;
-		ChStd::Bool PauseFlg = false;
+		ChStd::Bool nowKey = false;
+		ChStd::Bool pauseFlg = false;
 
 	};
 
-	class SystemManager :public ChCpp::ChCp::Initializer,public ChCpp::ChCp::Releaser
+	class SystemManager :public ChCpp::ClassPerts::Initializer,public ChCpp::ClassPerts::Releaser
 	{
 	public:
 
@@ -85,26 +84,27 @@ namespace ChSystem
 		auto Init()
 			->typename std::enable_if
 			<std::is_base_of<BaseSystem,C>::value
-			&& !std::is_same<BaseSystem,C>::value, ChPtr::Shared<C>>::type
+			&& !std::is_same<BaseSystem,C>::value, C* const>::type
 		{
 			if (*this)return nullptr;
 
-			BaseSystems = nullptr;
+			if (ChPtr::NotNullCheck(baseSystems))delete baseSystems;
+			baseSystems = nullptr;
 
-			BaseSystems= ChPtr::Make_S<C>();
-
-			BaseSystems->SetSystemManager(this);
+			baseSystems = new C();
+			baseSystems->SetSystemManager(this);
 
 			SetInitFlg(true);
 
-			return ChPtr::SharedSafeCast<C>(BaseSystems);
+			return ChPtr::SafeCast<C>(baseSystems);
 		}
 
 		inline void Release()override
 		{
 			if (!*this)return;
 
-			BaseSystems = nullptr;
+			if (ChPtr::NotNullCheck(baseSystems))delete baseSystems;
+			baseSystems = nullptr;
 
 			SetInitFlg(false);
 		}
@@ -115,9 +115,9 @@ namespace ChSystem
 		//全体で利用するFPSを管理//
 		inline void SetFPS(const unsigned long _FPS) { FPS = _FPS; }
 
-		inline void SetNowTime(const unsigned long _Time) { NowTime = _Time; }
+		inline void SetNowTime(const unsigned long _time) { nowTime = _time; }
 
-		inline void SetUseSystemButtons(const ChStd::Bool _Button) { UseSystemButton = _Button; }
+		inline void SetUseSystemButtons(const ChStd::Bool _button) { useSystemButton = _button; }
 
 		///////////////////////////////////////////////////////////////////////////////////s
 		//GetFunction//
@@ -129,50 +129,50 @@ namespace ChSystem
 		template<class T>
 		auto GetSystem()->
 			typename std::enable_if
-			<std::is_base_of<BaseSystem, T>::value, ChPtr::Shared<T>>::type
+			<std::is_base_of<BaseSystem, T>::value, T* const>::type
 		{
-			return ChPtr::SharedSafeCast<T>(BaseSystems);
+			return ChPtr::SafeCast<T>(baseSystems);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////s
 		//IsFunction//
 
 		//BaseSystemより間接的に確認する//
-		inline ChStd::Bool IsPushKey(const int _Key)
+		inline ChStd::Bool IsPushKey(const int _key)
 		{
 			if (!*this)return false;
-			if (BaseSystems == nullptr)return false;
-			return BaseSystems->IsPushKey(_Key);
+			if (baseSystems == nullptr)return false;
+			return baseSystems->IsPushKey(_key);
 		}
 
 		//BaseSystemより間接的に確認する//
-		inline ChStd::Bool IsPushKeyNoHold(const int _Key)
+		inline ChStd::Bool IsPushKeyNoHold(const int _key)
 		{
 			if (!*this)return false;
-			if (BaseSystems == nullptr)return false;
-			return BaseSystems->IsPushKeyNoHold(_Key);
+			if (baseSystems == nullptr)return false;
+			return baseSystems->IsPushKeyNoHold(_key);
 
 		}
 
 		//BaseSystemより間接的に確認する//
-		inline ChStd::Bool IsPause(const int _Key)
+		inline ChStd::Bool IsPause(const int _key)
 		{
 			if (!*this)return false;
-			if (BaseSystems == nullptr)return false;
-			return BaseSystems->IsPause(_Key);
+			if (baseSystems == nullptr)return false;
+			return baseSystems->IsPause(_key);
 
 		}
 
 		//システムを継続するか//
 		ChStd::Bool IsUpdate()
 		{
-			if (BaseSystems == nullptr)return false;
-			NowTime = BaseSystems->GetNowTime();
-			return BaseSystems->IsUpdate();
+			if (baseSystems == nullptr)return false;
+			nowTime = baseSystems->GetNowTime();
+			return baseSystems->IsUpdate();
 		}
 
 		//システムで提供されているボタンを利用するか//
-		ChStd::Bool IsUseSystemButtons() { return UseSystemButton; }
+		ChStd::Bool IsUseSystemButtons() { return useSystemButton; }
 
 		///////////////////////////////////////////////////////////////////////////////////s
 
@@ -180,34 +180,34 @@ namespace ChSystem
 		inline ChStd::Bool FPSProcess()
 		{
 			if (!*this)return false;
-			if (BaseSystems == nullptr)return false;
+			if (baseSystems == nullptr)return false;
 
-			NowTime = BaseSystems->GetNowTime();
+			nowTime = baseSystems->GetNowTime();
 
 			static unsigned long FPSTime;
-			if (NowTime - FPSTime < 1000 / FPS)return false;
-			FPSTime = NowTime;
+			if (nowTime - FPSTime < 1000 / FPS)return false;
+			FPSTime = nowTime;
 			return true;
 		}
 
 	private:
 
-		ChPtr::Shared<BaseSystem> BaseSystems = nullptr;
+		BaseSystem* baseSystems = nullptr;
 
 		SystemManager() {}
 		unsigned long FPS = 60;
-		unsigned long NowTime = 0;
+		unsigned long nowTime = 0;
 
-		ChStd::Bool UseSystemButton = true;
+		ChStd::Bool useSystemButton = true;
 
 	public:
 
 		static SystemManager& GetIns()
 		{
 
-			static SystemManager Ins;
+			static SystemManager ins;
 
-			return Ins;
+			return ins;
 		}
 
 

@@ -29,7 +29,7 @@ namespace ChD3D11
 
 		};
 
-		class DrawWindow final:public ChCpp::ChCp::Initializer
+		class DrawWindow final:public ChCpp::ClassPerts::Initializer
 		{
 
 		public:
@@ -72,7 +72,7 @@ namespace ChD3D11
 			ID3D11RenderTargetView* BBTargetView = nullptr;
 		};
 
-		class ChLightHeader final :public ChCpp::ChCp::Initializer,public ChCpp::ChCp::Releaser
+		class ChLightHeader final :public ChCpp::ClassPerts::Initializer,public ChCpp::ClassPerts::Releaser
 		{
 		public:
 

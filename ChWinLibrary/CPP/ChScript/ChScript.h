@@ -6,7 +6,7 @@ namespace ChCpp
 
 	//スクリプト全体を管理するクラス//
 	//これを各地に配置して利用する//
-	typedef class ScriptController:public ChCp::Releaser
+	typedef class ScriptController:public ClassPerts::Releaser
 	{
 
 	public:
@@ -16,7 +16,7 @@ namespace ChCpp
 
 		void Release()override
 		{
-			ScriptList.clear();
+			scriptList.clear();
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -24,10 +24,10 @@ namespace ChCpp
 
 		//登録しているScriptをセットする。//
 		void SetScript(
-			const std::function<void()> _Update
-			, const std::function<void()> _Draw = []() {}
-			, const std::function<void()> _Enter = []() {}
-		, const std::function<void()> _Exit = []() {});
+			const std::function<void()> _update
+			, const std::function<void()> _draw = []() {}
+			, const std::function<void()> _enter = []() {}
+		, const std::function<void()> _exit = []() {});
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
@@ -35,27 +35,27 @@ namespace ChCpp
 		unsigned long GetNowScriptNum()
 		{
 
-			if (NowScript.lock() == nullptr)return ULONG_MAX;
+			if (nowScript.lock() == nullptr)return ULONG_MAX;
 
-			return NowScript.lock()->MyNum;
+			return nowScript.lock()->myNum;
 
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		void ChangeScript(const unsigned long _ScriptNo = ULONG_MAX)
+		void ChangeScript(const unsigned long _scriptNo = ULONG_MAX)
 		{
 
-			unsigned long Tmp = 0;
-			if (NowScript.lock() != nullptr)
+			unsigned long tmp = 0;
+			if (nowScript.lock() != nullptr)
 			{
-				Tmp = NowScript.lock()->MyNum + 1;
+				tmp = nowScript.lock()->myNum + 1;
 			}
 
-			if (ScriptList.size() > _ScriptNo)Tmp = _ScriptNo;
-			if (ScriptList.size() <= Tmp)Tmp = NowScript.lock()->MyNum;
+			if (scriptList.size() > _scriptNo)tmp = _scriptNo;
+			if (scriptList.size() <= tmp)tmp = nowScript.lock()->myNum;
 
-			NextScript = ScriptList[Tmp];
+			nowScript = scriptList[tmp];
 
 		}
 
@@ -64,8 +64,8 @@ namespace ChCpp
 
 		void Update()
 		{
-			if (NowScript.lock() == nullptr)return;
-			NowScript.lock()->Update();
+			if (nowScript.lock() == nullptr)return;
+			nowScript.lock()->update();
 			Chenge();
 		}
 
@@ -74,8 +74,8 @@ namespace ChCpp
 		void Draw()
 		{
 
-			if (NowScript.lock() == nullptr)return;
-			NowScript.lock()->Draw();
+			if (nowScript.lock() == nullptr)return;
+			nowScript.lock()->draw();
 			Chenge();
 		}
 
@@ -83,25 +83,25 @@ namespace ChCpp
 
 		void ClearScript()
 		{
-			ScriptList.clear();
+			scriptList.clear();
 		}
 
 	protected:
 
 		void Chenge()
 		{
-			if (NextScript == nullptr)return;
+			if (nextScript == nullptr)return;
 
-			if (NowScript.lock() != nullptr)
+			if (nowScript.lock() != nullptr)
 			{
-				NowScript.lock()->Exit();
+				nowScript.lock()->exit();
 			}
 
-			NowScript = NextScript;
+			nowScript = nextScript;
 
-			NowScript.lock()->Enter();
+			nowScript.lock()->enter();
 
-			NextScript = nullptr;
+			nextScript = nullptr;
 		}
 
 		struct ChScript
@@ -111,23 +111,23 @@ namespace ChCpp
 			//ConstructerDestructer//
 
 
-			std::function<void()>Enter = []() {};
+			std::function<void()>enter = []() {};
 
-			std::function<void()>Update = []() {};
+			std::function<void()>update = []() {};
 
-			std::function<void()>Draw = []() {};
+			std::function<void()>draw = []() {};
 
-			std::function<void()>Exit = []() {};
+			std::function<void()>exit = []() {};
 
-			unsigned long MyNum = 0;
+			unsigned long myNum = 0;
 
 		};
 
-		std::vector<ChPtr::Shared<ChScript>> ScriptList;
+		std::vector<ChPtr::Shared<ChScript>> scriptList;
 
-		ChPtr::Shared<ChScript> NextScript = nullptr;
+		ChPtr::Shared<ChScript> nextScript = nullptr;
 
-		ChPtr::Weak<ChScript>NowScript;
+		ChPtr::Weak<ChScript>nowScript;
 
 	}ChScCon;
 

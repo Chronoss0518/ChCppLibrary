@@ -23,7 +23,7 @@ namespace ChD3D9
 
 	//※LightはShader内のBaseLightとPointLightを利用してください//
 	//独自で構築しているShaderクラス//
-	class ShaderController:public ChCpp::ChCp::Initializer
+	class ShaderController:public ChCpp::ClassPerts::Initializer
 	{
 
 	protected:

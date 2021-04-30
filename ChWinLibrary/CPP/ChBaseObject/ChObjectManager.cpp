@@ -12,17 +12,17 @@ using namespace ChCpp;
 
 std::vector<ChPtr::Shared<BaseObject>> ObjectManager::GetObjectList()
 {
-	std::vector<ChPtr::Shared<BaseObject>>TmpObjList;
+	std::vector<ChPtr::Shared<BaseObject>>tmpObjList;
 
-	for (auto&& objlist : ObjectList)
+	for (auto&& objlist : objectList)
 	{
 		for (auto&& obj : objlist.second)
 		{
-			TmpObjList.push_back(obj);
+			tmpObjList.push_back(obj);
 		}
 	}
 
-	return TmpObjList;
+	return tmpObjList;
 
 }
 
@@ -31,14 +31,14 @@ std::vector<ChPtr::Shared<BaseObject>> ObjectManager::GetObjectList()
 std::vector<ChPtr::Shared<BaseObject>> ObjectManager::GetObjectListForTag(const std::string& _TagName)
 {
 
-	std::vector<ChPtr::Shared<BaseObject>>TmpObjList;
+	std::vector<ChPtr::Shared<BaseObject>>tmpObjList;
 
-	for (auto&& obj : ObjectList[_TagName])
+	for (auto&& obj : objectList[_TagName])
 	{
-		TmpObjList.push_back(obj);
+		tmpObjList.push_back(obj);
 	}
 
-	return TmpObjList;
+	return tmpObjList;
 
 }
 
@@ -47,18 +47,18 @@ std::vector<ChPtr::Shared<BaseObject>> ObjectManager::GetObjectListForTag(const 
 std::vector<ChPtr::Shared<BaseObject>> ObjectManager::GetObjectListForName(const std::string& _Name)
 {
 
-	std::vector<ChPtr::Shared<BaseObject>>TmpObjList;
+	std::vector<ChPtr::Shared<BaseObject>>tmpObjList;
 
-	for (auto&& objlist : ObjectList)
+	for (auto&& objlist : objectList)
 	{
 		for (auto&& obj : objlist.second)
 		{
 			if (obj->GetMyName() != _Name)continue;
-			TmpObjList.push_back(obj);
+			tmpObjList.push_back(obj);
 		}
 	}
 
-	return TmpObjList;
+	return tmpObjList;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -79,9 +79,9 @@ void ObjectManager::Update()
 void ObjectManager::ObjectUpdateBegin()
 {
 
-	for (auto&& Obj : RootObjects)
+	for (auto&& obj : rootObjects)
 	{
-		Obj->UpdateBeginFunction();
+		obj->UpdateBeginFunction();
 	}
 
 }
@@ -90,39 +90,39 @@ void ObjectManager::ObjectUpdateBegin()
 
 void ObjectManager::ObjectUpdate()
 {
-	for (auto&& ObjGloap : ObjectList)
+	for (auto&& objGloap : objectList)
 	{
-		auto Obj = ObjGloap.second.begin();
-		while (Obj != ObjGloap.second.end())
+		auto obj = objGloap.second.begin();
+		while (obj != objGloap.second.end())
 		{
-			if ((*Obj) != nullptr)
+			if ((*obj) != nullptr)
 			{
 
-				if (!(*Obj)->DFlg)
+				if (!(*obj)->dFlg)
 				{
-					(*Obj)->IsReleasComponent();
-					Obj++;
+					(*obj)->IsReleasComponent();
+					obj++;
 					continue;
 				}
 			}
-			ObjGloap.second.erase(Obj);
+			objGloap.second.erase(obj);
 
 		}
 	}
 
-	if (RootObjects.empty())return;
+	if (rootObjects.empty())return;
 
-	for (auto&& Obj = RootObjects.begin(); Obj != RootObjects.end(); Obj)
+	for (auto&& obj = rootObjects.begin(); obj != rootObjects.end(); obj)
 	{
-		if ((*Obj)->DFlg)
+		if ((*obj)->dFlg)
 		{
-			RootObjects.erase(Obj);
+			rootObjects.erase(obj);
 			continue;
 		}
 
-		(*Obj)->UpdateFunction();
+		(*obj)->UpdateFunction();
 
-		Obj++;
+		obj++;
 	}
 
 }
@@ -131,9 +131,9 @@ void ObjectManager::ObjectUpdate()
 
 void ObjectManager::ObjectUpdateEnd()
 {
-	for (auto&& Obj : RootObjects)
+	for (auto&& obj : rootObjects)
 	{
-		Obj->UpdateEndFunction();
+		obj->UpdateEndFunction();
 	}
 }
 
@@ -152,9 +152,9 @@ void ObjectManager::Move()
 
 void ObjectManager::ObjectMoveBegin()
 {
-	for (auto&& Obj : RootObjects)
+	for (auto&& obj : rootObjects)
 	{
-		Obj->MoveBeginFunction();
+		obj->MoveBeginFunction();
 	}
 }
 
@@ -162,9 +162,9 @@ void ObjectManager::ObjectMoveBegin()
 
 void ObjectManager::ObjectMove()
 {
-	for (auto&& Obj : RootObjects)
+	for (auto&& obj : rootObjects)
 	{
-		Obj->MoveFunction();
+		obj->MoveFunction();
 	}
 }
 
@@ -172,9 +172,9 @@ void ObjectManager::ObjectMove()
 
 void ObjectManager::ObjectMoveEnd()
 {
-	for (auto&& Obj : RootObjects)
+	for (auto&& obj : rootObjects)
 	{
-		Obj->MoveEndFunction();
+		obj->MoveEndFunction();
 	}
 }
 
@@ -182,11 +182,11 @@ void ObjectManager::ObjectMoveEnd()
 
 void ObjectManager::ClearObjectForTag(const std::string& _Tags)
 {
-	if (ObjectList.find(_Tags) == ObjectList.end())return;
+	if (objectList.find(_Tags) == objectList.end())return;
 
-	for (auto&& Obj : ObjectList[_Tags])
+	for (auto&& obj : objectList[_Tags])
 	{
-		Obj->Destroy();
+		obj->Destroy();
 	}
 }
 
@@ -194,12 +194,12 @@ void ObjectManager::ClearObjectForTag(const std::string& _Tags)
 
 void ObjectManager::ClearObjectForName(const std::string& _Name)
 {
-	for (auto&& ObjList : ObjectList)
+	for (auto&& objList : objectList)
 	{
-		for (auto&& Obj : ObjList.second)
+		for (auto&& obj : objList.second)
 		{
-			if (Obj->MyName.find(_Name, 0) == std::string::npos)continue;
-			Obj->Destroy();
+			if (obj->myName.find(_Name, 0) == std::string::npos)continue;
+			obj->Destroy();
 		}
 	}
 }
@@ -210,13 +210,13 @@ void ObjectManager::ClearObjectForTagAndName(
 	const std::string& _Name,
 	const std::string& _Tags)
 {
-	if (ObjectList.find(_Tags) == ObjectList.end())return;
+	if (objectList.find(_Tags) == objectList.end())return;
 
-	for (auto&& Obj : ObjectList[_Tags])
+	for (auto&& obj : objectList[_Tags])
 	{
-		if (Obj->MyName.find(_Name, 0) != std::string::npos)continue;
+		if (obj->myName.find(_Name, 0) != std::string::npos)continue;
 
-		Obj->Destroy();
+		obj->Destroy();
 	}
 }
 
@@ -237,9 +237,9 @@ void ObjectManager::Draw()
 
 void ObjectManager::ObjectDrawBegin()
 {
-	for (auto&& Obj : RootObjects)
+	for (auto&& obj : rootObjects)
 	{
-		Obj->DrawBeginFunction();
+		obj->DrawBeginFunction();
 	}
 }
 
@@ -247,9 +247,9 @@ void ObjectManager::ObjectDrawBegin()
 
 void ObjectManager::ObjectDraw2D()
 {
-	for (auto&& Obj : RootObjects)
+	for (auto&& obj : rootObjects)
 	{
-		Obj->Draw3DFunction();
+		obj->Draw3DFunction();
 	}
 }
 
@@ -257,9 +257,9 @@ void ObjectManager::ObjectDraw2D()
 
 void ObjectManager::ObjectDraw3D()
 {
-	for (auto&& Obj : RootObjects)
+	for (auto&& obj : rootObjects)
 	{
-		Obj->Draw2DFunction();
+		obj->Draw2DFunction();
 	}
 }
 
@@ -267,8 +267,8 @@ void ObjectManager::ObjectDraw3D()
 
 void ObjectManager::ObjectDrawEnd()
 {
-	for (auto&& Obj : RootObjects)
+	for (auto&& obj : rootObjects)
 	{
-		Obj->DrawEndFunction();
+		obj->DrawEndFunction();
 	}
 }

@@ -14,7 +14,7 @@ namespace ChCpp
 	//オブジェクトを生成する場合、このクラスを継承して作成する。//
 	//このクラスとクラスパーツ(ChCpp::OP)を継承した//
 	//オリジナルのクラスを作成して利用する。//
-	class BaseObject :public std::enable_shared_from_this<BaseObject>, public ChCpp::ChCp::Releaser
+	class BaseObject :public std::enable_shared_from_this<BaseObject>
 	{
 	public:
 
@@ -36,10 +36,10 @@ namespace ChCpp
 		void Destroy();
 
 		//自身が持つ子を削除する//
-		void DestroyToChild(const ChPtr::Shared<BaseObject>& _Child);
+		void DestroyToChild(const ChPtr::Shared<BaseObject>& _child);
 
 		//コンポーネントを指定して削除する//
-		void ReleaseComponent(const std::string& _ComName);
+		void ReleaseComponent(const std::string& _comName);
 
 	public:
 
@@ -47,22 +47,22 @@ namespace ChCpp
 		//GetFunction//
 
 		//現在のタグを取得//
-		std::string GetThisTag() { return Tag; }
+		std::string GetThisTag() { return tag; }
 
-		std::string GetMyName() { return MyName; }
+		std::string GetMyName() { return myName; }
 
 		//コンポーネントの取得//
 		template<class T = BaseComponent>
 		inline auto GetComponent()->typename std::enable_if
-			<std::is_base_of<BaseComponent, T>::value, const ChPtr::Shared<T>>::type
+			<std::is_base_of<BaseComponent, T>::value, ChPtr::Shared<T>>::type
 		{
-			for (auto&& Com : ComList)
+			for (auto&& com : comList)
 			{
-				if (ChPtr::SharedSafeCast<T, BaseComponent>(Com) != nullptr)
+				if (ChPtr::SharedSafeCast<T, BaseComponent>(com) != nullptr)
 				{
-					if (Com->DFlg)continue;
-					if (!Com->UseFlg)continue;
-					return ChPtr::SharedSafeCast<T, BaseComponent>(Com);
+					if (com->dFlg)continue;
+					if (!com->useFlg)continue;
+					return ChPtr::SharedSafeCast<T, BaseComponent>(com);
 				}
 			}
 			return nullptr;
@@ -71,29 +71,29 @@ namespace ChCpp
 		//コンポーネントリストの取得//
 		template<typename T = BaseComponent>
 		inline auto GetComponents()->typename std::enable_if
-			<std::is_base_of<BaseComponent, T>::value, std::vector<ChPtr::Shared<const T>>&>::type
+			<std::is_base_of<BaseComponent, T>::value, std::vector<ChPtr::Shared<T>>&>::type
 		{
-			std::vector<ChPtr::Shared<const T>>TmpComList;
-			for (auto&& Com : ComList)
+			std::vector<ChPtr::Shared<T>>tmpComList;
+			for (auto&& com : comList)
 			{
-				if (ChPtr::SharedSafeCast<T>(Com) == nullptr)continue;
-				if (Com->DFlg)continue;
-				if (!Com->UseFlg)continue;
-				TmpComList.push_back(Com);
+				if (ChPtr::SharedSafeCast<T>(com) == nullptr)continue;
+				if (com->DFlg)continue;
+				if (!com->UseFlg)continue;
+				tmpComList.push_back(com);
 			}
-			return TmpComList;
+			return tmpComList;
 		}
 
 		//子オブジェクト群の取得//
 		std::vector<ChPtr::Shared<BaseObject>>GetChildlen()
 		{
-			return ChildList;
+			return childList;
 		}
 
 		//親の取得//
 		ChPtr::Shared<BaseObject>GetParent()
 		{
-			return Parent.lock();
+			return parent.lock();
 		}
 
 
@@ -106,49 +106,47 @@ namespace ChCpp
 			<std::is_base_of<BaseComponent, T>::value, const ChPtr::Shared<T>>::type
 		{
 
-			ChPtr::Shared<BaseComponent> TmpCom = ChPtr::Make_S<T>();
+			ChPtr::Shared<BaseComponent> tmpCom = ChPtr::Make_S<T>();
 
-			if (TmpCom == nullptr)return nullptr;
+			if (tmpCom == nullptr)return nullptr;
 
-			ComList.push_back(TmpCom);
+			comList.push_back(tmpCom);
 
-			TmpCom->BaseInit(shared_from_this());
+			tmpCom->BaseInit(shared_from_this());
 
-			TmpCom->Init();
-
-			return ChPtr::SharedSafeCast<T>(TmpCom);
+			return ChPtr::SharedSafeCast<T>(tmpCom);
 
 		}
 
 		//子オブジェクトのセット//
 		template<class T>
 		inline void SetChild(typename std::enable_if
-			<std::is_base_of<BaseObject, T>::value, const ChPtr::Shared<T>>::type _ChildObject)
+			<std::is_base_of<BaseObject, T>::value, const ChPtr::Shared<T>>::type _childObject)
 		{
-			ChPtr::Shared<BaseObject> Obj = ChPtr::SharedSafeCast<T>(_ChildObject);
-			ChildList.push_back(Obj);
-			EraseRootObj(Obj);
+			ChPtr::Shared<BaseObject> obj = ChPtr::SharedSafeCast<T>(_childObject);
+			childList.push_back(obj);
+			EraseRootObj(obj);
 
-			Obj->Parent = shared_from_this();
+			obj->Parent = shared_from_this();
 
 		}
 
 		//自身の名前のセット//
-		inline void SetMyName(const std::string& _NewName) { MyName = _NewName; }
+		inline void SetMyName(const std::string& _newName) { myName = _newName; }
 
 		//使用フラグ//
-		inline void SetUseFlg(const ChStd::Bool& _Flg) { UseFlg = _Flg; }
+		inline void SetUseFlg(const ChStd::Bool& _flg) { useFlg = _flg; }
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
 
 		//使用可否の確認//
-		inline ChStd::Bool IsUseFlg() { return UseFlg; }
+		inline ChStd::Bool IsUseFlg() { return useFlg; }
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
 		//Tag変更時に走らせる関数//
-		void ChengeTag(const std::string& _NewTag);
+		void ChengeTag(const std::string& _newTag);
 
 	protected:
 
@@ -163,17 +161,17 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////////////
 
 		//選択したタグのオブジェクトの確認//
-		std::vector<ChPtr::Shared<BaseObject>>LookObjectListForTag(const std::string& _Tag);
+		std::vector<ChPtr::Shared<BaseObject>>LookObjectListForTag(const std::string& _tag);
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
 		//選択した名前のオブジェクトの確認//
-		std::vector<ChPtr::Shared<BaseObject>>LookObjectListForName(const std::string& _ObjectName);
+		std::vector<ChPtr::Shared<BaseObject>>LookObjectListForName(const std::string& _objectName);
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
 		//選択したタグ内の選択した名前ののオブジェクトの確認//
-		std::vector<ChPtr::Shared<BaseObject>>LookObjectListForTagAndName(const std::string& _ObjectName, const std::string& _Tag);
+		std::vector<ChPtr::Shared<BaseObject>>LookObjectListForTagAndName(const std::string& _objectName, const std::string& _Tag);
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//UsingFunctionToManagers//
@@ -216,13 +214,12 @@ namespace ChCpp
 
 		virtual ~BaseObject()
 		{
-			Release();
 			BaseRelease();
 		}
 
 		BaseObject() {};
 
-		ChStd::Bool UseFlg = true;
+		ChStd::Bool useFlg = true;
 
 	private:
 
@@ -231,9 +228,9 @@ namespace ChCpp
 
 		//Set時に走る関数//
 		void BaseInit(
-			const std::string& _ObjectName
-			, const std::string& _Tag
-			, const ObjectManager* _ObjMa);
+			const std::string& _objectName
+			, const std::string& _tag
+			, const ObjectManager* _objMa);
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//Component//
@@ -242,19 +239,19 @@ namespace ChCpp
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		void EraseRootObj(const ChPtr::Shared<BaseObject> _Obj);
+		void EraseRootObj(const ChPtr::Shared<BaseObject> _obj);
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		std::vector<ChPtr::Shared<BaseObject>>ChildList;
-		ChPtr::Weak<BaseObject>Parent;
+		std::vector<ChPtr::Shared<BaseObject>>childList;
+		ChPtr::Weak<BaseObject>parent;
 
-		std::vector<ChPtr::Shared<BaseComponent>>ComList;
+		std::vector<ChPtr::Shared<BaseComponent>>comList;
 
-		ObjectManager* ObjMa = nullptr;
-		std::string MyName;
-		std::string Tag;
-		ChStd::Bool DFlg = false;
+		ObjectManager* objMa = nullptr;
+		std::string myName;
+		std::string tag;
+		ChStd::Bool dFlg = false;
 
 	};
 

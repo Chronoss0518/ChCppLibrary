@@ -9,21 +9,21 @@ using namespace ChCpp;
 //ModelAniCreater Method//
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void AnimationCreater::Init(ModelObject* _Model)
+void AnimationCreater::Init(ModelObject* _model)
 {
-	Model = _Model;
+	model = _model;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
 std::string& AnimationCreater::ModelNameIns()
 {
-	return Model->Model->ModelName;
+	return model->model->modelName;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void AnimationCreater::SetModel(ChPtr::Shared<ModelFrame> _Models)
+void AnimationCreater::SetModel(ChPtr::Shared<ModelFrame> _models)
 {
-	Model->Model = _Models;
+	model->model = _models;
 }

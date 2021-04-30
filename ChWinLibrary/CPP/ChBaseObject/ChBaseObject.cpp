@@ -13,17 +13,17 @@ using namespace ChCpp;
 
 void BaseObject::Destroy()
 {
-	DFlg = true;
+	dFlg = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void BaseObject::DestroyToChild(const ChPtr::Shared<BaseObject>& _Child)
+void BaseObject::DestroyToChild(const ChPtr::Shared<BaseObject>& _child)
 {
-	auto It = std::find(ChildList.begin(), ChildList.end(), _Child);
+	auto It = std::find(childList.begin(), childList.end(), _child);
 
-	if (It == ChildList.end())return;
-	(*It)->DFlg = true;
+	if (It == childList.end())return;
+	(*It)->dFlg = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -32,14 +32,14 @@ void BaseObject::UpdateBeginFunction()
 {
 	UpdateBegin();
 
-	for (auto Com : ComList)
+	for (auto com : comList)
 	{
-		Com->UpdateBegin();
+		com->UpdateBegin();
 	}
 
-	for (auto&& Childs : ChildList)
+	for (auto&& childs : childList)
 	{
-		Childs->UpdateBegin();
+		childs->UpdateBegin();
 	}
 
 }
@@ -53,14 +53,14 @@ void BaseObject::UpdateFunction()
 
 	Update();
 
-	for (auto Com : ComList)
+	for (auto com : comList)
 	{
-		Com->Update();
+		com->Update();
 	}
 
-	for (auto&& Childs : ChildList)
+	for (auto&& childs : childList)
 	{
-		Childs->Update();
+		childs->Update();
 	}
 }
 
@@ -71,14 +71,14 @@ void BaseObject::UpdateEndFunction()
 
 	UpdateEnd();
 
-	for (auto Com : ComList)
+	for (auto com : comList)
 	{
-		Com->UpdateEnd();
+		com->UpdateEnd();
 	}
 
-	for (auto&& Childs : ChildList)
+	for (auto&& childs : childList)
 	{
-		Childs->UpdateEnd();
+		childs->UpdateEnd();
 	}
 }
 
@@ -89,14 +89,14 @@ void BaseObject::MoveBeginFunction()
 
 	MoveBegin();
 
-	for (auto Com : ComList)
+	for (auto com : comList)
 	{
-		Com->MoveBegin();
+		com->MoveBegin();
 	}
 
-	for (auto&& Childs : ChildList)
+	for (auto&& childs : childList)
 	{
-		Childs->MoveBegin();
+		childs->MoveBegin();
 	}
 }
 
@@ -107,14 +107,14 @@ void BaseObject::MoveFunction()
 
 	Move();
 
-	for (auto Com : ComList)
+	for (auto com : comList)
 	{
-		Com->Move();
+		com->Move();
 	}
 
-	for (auto&& Childs : ChildList)
+	for (auto&& childs : childList)
 	{
-		Childs->Move();
+		childs->Move();
 	}
 }
 
@@ -125,14 +125,14 @@ void BaseObject::MoveEndFunction()
 
 	MoveEnd();
 
-	for (auto Com : ComList)
+	for (auto com : comList)
 	{
-		Com->MoveEnd();
+		com->MoveEnd();
 	}
 
-	for (auto&& Childs : ChildList)
+	for (auto&& childs : childList)
 	{
-		Childs->MoveEnd();
+		childs->MoveEnd();
 	}
 }
 
@@ -143,14 +143,14 @@ void BaseObject::DrawBeginFunction()
 
 	DrawBegin();
 
-	for (auto Com : ComList)
+	for (auto com : comList)
 	{
-		Com->DrawBegin();
+		com->DrawBegin();
 	}
 
-	for (auto&& Childs : ChildList)
+	for (auto&& childs : childList)
 	{
-		Childs->DrawBegin();
+		childs->DrawBegin();
 	}
 }
 
@@ -161,14 +161,14 @@ void BaseObject::Draw3DFunction()
 
 	Draw3D();
 
-	for (auto Com : ComList)
+	for (auto com : comList)
 	{
-		Com->Draw3D();
+		com->Draw3D();
 	}
 
-	for (auto&& Childs : ChildList)
+	for (auto&& childs : childList)
 	{
-		Childs->Draw3D();
+		childs->Draw3D();
 	}
 }
 
@@ -179,14 +179,14 @@ void BaseObject::Draw2DFunction()
 
 	Draw2D();
 
-	for (auto Com : ComList)
+	for (auto com : comList)
 	{
-		Com->Draw2D();
+		com->Draw2D();
 	}
 
-	for (auto&& Childs : ChildList)
+	for (auto&& childs : childList)
 	{
-		Childs->Draw2D();
+		childs->Draw2D();
 	}
 }
 
@@ -197,14 +197,14 @@ void BaseObject::DrawEndFunction()
 
 	DrawEnd();
 
-	for (auto Com : ComList)
+	for (auto com : comList)
 	{
-		Com->DrawEnd();
+		com->DrawEnd();
 	}
 
-	for (auto&& Childs : ChildList)
+	for (auto&& childs : childList)
 	{
-		Childs->DrawEnd();
+		childs->DrawEnd();
 	}
 }
 
@@ -212,11 +212,11 @@ void BaseObject::DrawEndFunction()
 
 void BaseObject::BaseRelease()
 {
-	if (!ComList.empty())ComList.clear();
+	if (!comList.empty())comList.clear();
 
-	for (auto&& Childs : ChildList)
+	for (auto&& childs : childList)
 	{
-		Childs->BaseRelease();
+		childs->BaseRelease();
 	}
 
 	Release();
@@ -226,57 +226,59 @@ void BaseObject::BaseRelease()
 
 void BaseObject::BaseInit(
 	const std::string& _ObjectName
-	, const std::string& _Tag
-	, const ObjectManager* _ObjMa)
+	, const std::string& _tag
+	, const ObjectManager* _objMa)
 {
-	ObjMa = (ObjectManager*)_ObjMa;
-	Tag = _Tag;
-	MyName = _ObjectName;
+	objMa = (ObjectManager*)_objMa;
+	tag = _tag;
+	myName = _ObjectName;
+
+	Init();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void BaseObject::ReleaseComponent(const std::string& _ComName)
+void BaseObject::ReleaseComponent(const std::string& _comName)
 {
 
-	for (auto&& Com : ComList)
+	for (auto&& com : comList)
 	{
-		std::string TmpName = typeid((*Com)).name();
+		std::string tmpName = typeid((*com)).name();
 
-		if (TmpName.find(_ComName) == TmpName.npos) {
+		if (tmpName.find(_comName) == tmpName.npos) {
 			continue;
 		}
 
-		auto Tmp = std::find(ComList.begin(), ComList.end(), Com);
+		auto tmp = std::find(comList.begin(), comList.end(), com);
 
-		ComList.erase(Tmp);
+		comList.erase(tmp);
 
-		if (ComList.empty())break;
+		if (comList.empty())break;
 
 	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void BaseObject::ChengeTag(const std::string& _NewTag)
+void BaseObject::ChengeTag(const std::string& _newTag)
 {
-	if (DFlg)return;
-	auto Tmp = std::find(
-		ObjMa->ObjectList[Tag].begin()
-		, ObjMa->ObjectList[Tag].end()
+	if (dFlg)return;
+	auto tmp = std::find(
+		objMa->objectList[tag].begin()
+		, objMa->objectList[tag].end()
 		, shared_from_this());
 
-	auto TmpTag = (*Tmp)->Tag;
+	auto tmpTag = (*tmp)->tag;
 
-	ObjMa->ObjectList[_NewTag].push_back((*Tmp));
+	objMa->objectList[_newTag].push_back((*tmp));
 
-	ObjMa->ObjectList[TmpTag].erase(Tmp);
+	objMa->objectList[tmpTag].erase(tmp);
 
-	(*Tmp)->Tag = _NewTag;
+	(*tmp)->tag = _newTag;
 
-	if (!ObjMa->ObjectList[TmpTag].empty())return;
+	if (!objMa->objectList[tmpTag].empty())return;
 
-	ObjMa->ObjectList.erase(TmpTag);
+	objMa->objectList.erase(tmpTag);
 
 }
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -284,18 +286,18 @@ void BaseObject::ChengeTag(const std::string& _NewTag)
 void BaseObject::IsReleasComponent()
 {
 
-	if (ComList.empty())return;
-	auto Com = ComList.begin();
-	while (Com != ComList.end())
+	if (comList.empty())return;
+	auto com = comList.begin();
+	while (com != comList.end())
 	{
-		if (!(*Com)->DFlg)
+		if (!(*com)->dFlg)
 		{
-			Com++;
+			com++;
 			continue;
 		}
-		ComList.erase(Com);
+		comList.erase(com);
 
-		if (ComList.empty())break;
+		if (comList.empty())break;
 
 	}
 }
@@ -307,11 +309,11 @@ void BaseObject::EraseRootObj(const ChPtr::Shared<BaseObject> _Obj)
 
 	{
 		auto It = std::find(
-			ObjMa->RootObjects.begin()
-			, ObjMa->RootObjects.end()
+			objMa->rootObjects.begin()
+			, objMa->rootObjects.end()
 			, _Obj);
 
-		ObjMa->RootObjects.erase(It);
+		objMa->rootObjects.erase(It);
 	}
 }
 
@@ -319,37 +321,37 @@ void BaseObject::EraseRootObj(const ChPtr::Shared<BaseObject> _Obj)
 
 std::vector<ChPtr::Shared<BaseObject>> BaseObject::LookObjectList()
 {
-	std::vector<ChPtr::Shared<BaseObject>>TmpObjList;
+	std::vector<ChPtr::Shared<BaseObject>>tmpObjList;
 
-	for (auto&&objlist : ObjMa->ObjectList)
+	for (auto&&objlist : objMa->objectList)
 	{
 		for (auto&& obj : objlist.second)
 		{
-			TmpObjList.push_back(obj);
+			tmpObjList.push_back(obj);
 		}
 	}
 
-	return TmpObjList;
+	return tmpObjList;
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
 std::vector<ChPtr::Shared<BaseObject>> BaseObject::LookObjectListForTag
-(const std::string& _Tag)
+(const std::string& _tag)
 {
-	std::vector<ChPtr::Shared<BaseObject>>TmpObjList;
+	std::vector<ChPtr::Shared<BaseObject>>tmpObjList;
 
-	if (ObjMa->ObjectList.find(_Tag) == ObjMa->ObjectList.end())return TmpObjList;
+	if (objMa->objectList.find(_tag) == objMa->objectList.end())return tmpObjList;
 
-	auto objlist = ObjMa->ObjectList[_Tag];
+	auto objlist = objMa->objectList[_tag];
 
 	for (auto&& obj : objlist)
 	{
-		TmpObjList.push_back(obj);
+		tmpObjList.push_back(obj);
 	}
 
-	return TmpObjList;
+	return tmpObjList;
 
 }
 
@@ -359,18 +361,18 @@ std::vector<ChPtr::Shared<BaseObject>>
 BaseObject::LookObjectListForName(const std::string& _ObjectName)
 {
 
-	std::vector<ChPtr::Shared<BaseObject>>TmpObjList;
+	std::vector<ChPtr::Shared<BaseObject>>tmpObjList;
 
-	for (auto&& Tags : ObjMa->ObjectList)
+	for (auto&& tags : objMa->objectList)
 	{
-		for (auto&& Obj : Tags.second)
+		for (auto&& Obj : tags.second)
 		{
-			if (_ObjectName != Obj->MyName)continue;
-			TmpObjList.push_back(Obj);
+			if (_ObjectName != Obj->myName)continue;
+			tmpObjList.push_back(Obj);
 		}
 	}
 
-	return TmpObjList;
+	return tmpObjList;
 
 }
 
@@ -379,21 +381,21 @@ BaseObject::LookObjectListForName(const std::string& _ObjectName)
 std::vector<ChPtr::Shared<BaseObject>>
 BaseObject::LookObjectListForTagAndName(
 	const std::string& _ObjectName
-	,const std::string& _Tag)
+	,const std::string& _tag)
 {
-	std::vector<ChPtr::Shared<BaseObject>>TmpObjList;
+	std::vector<ChPtr::Shared<BaseObject>>tmpObjList;
 
-	if (ObjMa->ObjectList.find(_Tag) == ObjMa->ObjectList.end())return TmpObjList;
+	if (objMa->objectList.find(_tag) == objMa->objectList.end())return tmpObjList;
 
-	auto objlist = ObjMa->ObjectList[_Tag];
+	auto objlist = objMa->objectList[_tag];
 
 	for (auto&& obj : objlist)
 	{
-		if (_ObjectName != obj->MyName)continue;
-		TmpObjList.push_back(obj);
+		if (_ObjectName != obj->myName)continue;
+		tmpObjList.push_back(obj);
 	}
 
-	return TmpObjList;
+	return tmpObjList;
 
 
 }

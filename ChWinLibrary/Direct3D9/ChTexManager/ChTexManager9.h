@@ -8,7 +8,7 @@ namespace ChTex
 
 	//Texture専用のconst enumを作って、SetTextureの第二引数に入れる。
 	//以降第二引数に入れた数字を使ってTextureを操作する。
-	class TextureManager9:public ChCpp::ChCp::Initializer
+	class TextureManager9:public ChCpp::ClassPerts::Initializer
 	{
 	public:
 

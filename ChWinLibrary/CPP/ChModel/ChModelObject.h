@@ -9,7 +9,7 @@
 namespace ChCpp
 {
 
-	class ModelObject :public ChCp::Releaser
+	class ModelObject :public ClassPerts::Releaser
 	{
 	public:
 
@@ -25,7 +25,7 @@ namespace ChCpp
 
 		ChPtr::Shared<ModelFrame> GetModel()const
 		{
-			return Model;
+			return model;
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////////
@@ -39,7 +39,7 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////////////
 
 		template<class T>
-		auto CreateModel(const std::string& _FilePath)->typename std::enable_if<
+		auto CreateModel(const std::string& _filePath)->typename std::enable_if<
 			std::is_base_of<ModelCreater, T>::value, void>::type
 		{
 			Release();
@@ -49,13 +49,13 @@ namespace ChCpp
 
 			creater->Init(this);
 
-			creater->CreateModel(_FilePath);
+			creater->CreateModel(_filePath);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
 		template<class T>
-		auto OutModelFile(const std::string& _FilePath)->typename std::enable_if<
+		auto OutModelFile(const std::string& _filePath)->typename std::enable_if<
 			std::is_base_of<ModelCreater, T>::value, void>::type
 		{
 
@@ -66,9 +66,9 @@ namespace ChCpp
 
 	protected:
 
-		ChPtr::Shared<ModelFrame>Model = nullptr;
+		ChPtr::Shared<ModelFrame>model = nullptr;
 
-		std::vector<std::string>AnimatorNames;
+		std::vector<std::string>animatorNames;
 
 	private:
 
@@ -77,7 +77,7 @@ namespace ChCpp
 
 		using Animation = std::map<AnimationName, ChPtr::Shared<ModelAnimator>>;
 
-		static	std::map<FrameName, Animation>AnimatorList;
+		static	std::map<FrameName, Animation>animatorList;
 
 	};
 

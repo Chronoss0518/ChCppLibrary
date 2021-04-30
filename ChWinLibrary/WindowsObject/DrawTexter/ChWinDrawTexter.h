@@ -10,7 +10,7 @@ namespace ChSystem
 
 namespace ChWin
 {
-	class DrawTexter:public ChCpp::ChCp::Initializer,public ChCpp::ChCp::Releaser
+	class DrawTexter:public ChCpp::ClassPerts::Initializer,public ChCpp::ClassPerts::Releaser
 	{
 	public:
 

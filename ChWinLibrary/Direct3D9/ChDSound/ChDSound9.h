@@ -21,7 +21,7 @@ struct ChSubSound9;
 
 //(改良必)//
 //大元のサウンドの名前とは別にストップ用のNoを持っておく//
-class ChDirectSound9 :public ChCpp::ChCp::Initializer
+class ChDirectSound9 :public ChCpp::ClassPerts::Initializer
 {
 public:
 

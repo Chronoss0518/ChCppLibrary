@@ -4,92 +4,89 @@
 
 namespace ChCpp
 {
-	namespace CP
+	namespace ClassPerts
 	{
 
-		class CPBase :public std::enable_shared_from_this<CPBase>
-		{
-
-		};
+		class CPBase{};
 
 
-		class UpdateStart :public CPBase
+		class CPUpdateStart :public CPBase
 		{
 		public:
 
-			virtual void Function() = 0;
+			virtual void UpdateStart() = 0;
 
 		};
 
-		class Update :public CPBase
+		class CPUpdate :public CPBase
 		{
 		public:
 
-			virtual void Function() = 0;
+			virtual void Update() = 0;
 
 		};
 
-		class UpdateEnd :public CPBase
+		class CPUpdateEnd :public CPBase
 		{
 		public:
 
-			virtual void Function() = 0;
+			virtual void UpdateEnd() = 0;
 
 		};
 
-		class MoveStart :public CPBase
+		class CPMoveStart :public CPBase
 		{
 		public:
 
-			virtual void Function() = 0;
+			virtual void MoveStart() = 0;
 
 		};
 
-		class Move :public CPBase
+		class CPMove :public CPBase
 		{
 		public:
 
-			virtual void Function() = 0;
+			virtual void Move() = 0;
 
 		};
 
-		class MoveEnd :public CPBase
+		class CPMoveEnd :public CPBase
 		{
 		public:
 
-			virtual void Function() = 0;
+			virtual void MoveEnd() = 0;
 
 		};
 
-		class DrawStart :public CPBase
+		class CPDrawStart :public CPBase
 		{
 		public:
 
-			virtual void Function() = 0;
+			virtual void DrawStart() = 0;
 
 		};
 
-		class Draw2D :public CPBase
+		class CPDraw2D :public CPBase
 		{
 		public:
 
-			virtual void Function() = 0;
+			virtual void Draw2D() = 0;
 
 		};
 
-		class Draw3D :public CPBase
+		class CPDraw3D :public CPBase
 		{
 		public:
 
-			virtual void Function() = 0;
+			virtual void Draw3D() = 0;
 
 		};
 
-		class DrawEnd :public CPBase
+		class CPDrawEnd :public CPBase
 		{
 		public:
 
-			virtual void Function() = 0;
+			virtual void DrawEnd() = 0;
 
 		};
 		

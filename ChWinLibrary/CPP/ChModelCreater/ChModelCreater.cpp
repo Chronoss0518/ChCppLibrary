@@ -7,30 +7,30 @@
 #include"ChCMXFileMesh.h"
 #include"ChCMObjFileMesh.h"
 
-void ChCpp::ModelCreater::Init(ModelObject* _Model)
+void ChCpp::ModelCreater::Init(ModelObject* _model)
 {
-	OModel = _Model;
+	oModel = _model;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::ModelCreater::SetModel(ChPtr::Shared<ModelFrame> _Models)
+void ChCpp::ModelCreater::SetModel(ChPtr::Shared<ModelFrame> _models)
 {
-	OModel->Model = _Models;
+	oModel->model = _models;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-std::string ChCpp::ModelCreater::GetRoutePath(const std::string& _FilePath)
+std::string ChCpp::ModelCreater::GetRoutePath(const std::string& _filePath)
 {
 
-	if (_FilePath.find("\\") == _FilePath.find("/"))return "";
+	if (_filePath.find("\\") == _filePath.find("/"))return "";
 
-	std::string TmpPath = ChStr::StrReplase(_FilePath, "\\", "/");
+	std::string tmpPath = ChStr::StrReplase(_filePath, "\\", "/");
 
-	unsigned long Tmp = TmpPath.rfind("/");
+	unsigned long tmp = tmpPath.rfind("/");
 
-	return TmpPath.substr(0, Tmp + 1);
+	return tmpPath.substr(0, tmp + 1);
 
 }
 
@@ -38,79 +38,79 @@ std::string ChCpp::ModelCreater::GetRoutePath(const std::string& _FilePath)
 //ChXFileMesh Method//
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::CMXFile::CreateModel(const std::string& _FilePath)
+void ChCpp::CMXFile::CreateModel(const std::string& _filePath)
 {
-	if (_FilePath.size() <= 0)return;
+	if (_filePath.size() <= 0)return;
 
-	std::string Text;
+	std::string text;
 	{
 
-		ChFIO::File Files;
+		ChFIO::File files;
 
-		Files.FileOpen(_FilePath);
+		files.FileOpen(_filePath);
 
-		Text = Files.FileRead();
+		text = files.FileRead();
 
-		Files.FileClose();
+		files.FileClose();
 
-		if (Text.length() <= 0)
+		if (text.length() <= 0)
 		{
 			return;
 		}
 	}
 
-	if (Text.find("xof") != 0)return;
+	if (text.find("xof") != 0)return;
 
-	size_t TextPos = Text.find("xof");
+	size_t textPos = text.find("xof");
 
 	{
-		std::string Tmp = "template Frame";
-		size_t TmpLen = Text.find(Tmp, TextPos);
+		std::string tmp = "template Frame";
+		size_t tmpLen = text.find(tmp, textPos);
 
-		if (TmpLen != Tmp.npos) {
-			TextPos = TmpLen;
-			TextPos += Tmp.length();
+		if (tmpLen != tmp.npos) {
+			textPos = tmpLen;
+			textPos += tmp.length();
 		}
 	}
 
-	size_t TmpLen = Text.find("Frame", TextPos);
-	if (TmpLen == Text.npos)return;
+	size_t tmpLen = text.find("Frame", textPos);
+	if (tmpLen == text.npos)return;
 
-	TmpLen = Text.find("}", TmpLen);
-	if (TmpLen == Text.npos)return;
+	tmpLen = text.find("}", tmpLen);
+	if (tmpLen == text.npos)return;
 
-	ChPtr::Shared<TemplateRange> Templates = ChPtr::Make_S<TemplateRange>();
+	ChPtr::Shared<TemplateRange> templates = ChPtr::Make_S<TemplateRange>();
 
-	LoadToTemplates(Templates, TextPos, Text);
+	LoadToTemplates(templates, textPos, text);
 
-	auto XModel = ChPtr::Make_S<XFileModelFrame>();
+	auto xModel = ChPtr::Make_S<XFileModelFrame>();
 
-	for (auto&& Temp : Templates->Nest)
+	for (auto&& tmp : templates->nest)
 	{
 
-		SetFrame(XModel->ModelData, Temp, Text);
+		SetFrame(xModel->modelData, tmp, text);
 
-		SetMesh(XModel->ModelData, Temp, Text);
+		SetMesh(xModel->modelData, tmp, text);
 
 	}
 
 	if (exceptionFlg)return;
 
-	ChPtr::Shared<ModelFrame> OutModels = nullptr;
+	ChPtr::Shared<ModelFrame> outModels = nullptr;
 
-	OutModels = ChPtr::Make_S<ModelFrame>();
+	outModels = ChPtr::Make_S<ModelFrame>();
 
-	OutModels->ModelName = _FilePath;
+	outModels->modelName = _filePath;
 
-	XFrameToChFrame(OutModels->ModelData, XModel->ModelData);
+	XFrameToChFrame(outModels->modelData, xModel->modelData);
 
-	SetModel(OutModels);
+	SetModel(outModels);
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::CMXFile::OutModelFile(const std::string& _FilePath)
+void ChCpp::CMXFile::OutModelFile(const std::string& _filePath)
 {
 
 }
@@ -118,44 +118,44 @@ void ChCpp::CMXFile::OutModelFile(const std::string& _FilePath)
 /////////////////////////////////////////////////////////////////////////////////////
 
 ChStd::Bool ChCpp::CMXFile::SetFrame(
-	ChPtr::Shared<XFileModelFrame::XFrame>& _Frames
-	, const ChPtr::Shared<TemplateRange>& _TargetTemplate
-	, const std::string& _Text)
+	ChPtr::Shared<XFileModelFrame::XFrame>& _frames
+	, const ChPtr::Shared<TemplateRange>& _targetTemplate
+	, const std::string& _text)
 {
 	if (exceptionFlg)return false;
 
-	size_t FramePos;
+	size_t framePos;
 
-	if (!IsTags(FramePos, FrameTags, _TargetTemplate, _Text))return false;
+	if (!IsTags(framePos, frameTags, _targetTemplate, _text))return false;
 
-	FramePos += FrameTags.length();
+	framePos += frameTags.length();
 
-	auto TmpFrame = ChPtr::Make_S<XFileModelFrame::XFrame>();
+	auto tmpFrame = ChPtr::Make_S<XFileModelFrame::XFrame>();
 
-	TmpFrame->FName = _Text.substr(FramePos, _TargetTemplate->Bigen - FramePos);
+	tmpFrame->fName = _text.substr(framePos, _targetTemplate->begin - framePos);
 
-	TmpFrame->FName = ChStr::RemoveToWhiteSpaceChars(TmpFrame->FName);
+	tmpFrame->fName = ChStr::RemoveToWhiteSpaceChars(tmpFrame->fName);
 
-	for (auto&& Temp : _TargetTemplate->Nest)
+	for (auto&& tmp : _targetTemplate->nest)
 	{
-		if (SetFremeTransformMatrix(TmpFrame, Temp, _Text)) continue;
+		if (SetFremeTransformMatrix(tmpFrame, tmp, _text)) continue;
 
 		{
-			ChPtr::Shared<XFileModelFrame::XFrame> Obj = nullptr;
+			ChPtr::Shared<XFileModelFrame::XFrame> obj = nullptr;
 
-			if (SetFrame(Obj, Temp, _Text))
+			if (SetFrame(obj, tmp, _text))
 			{
 
-				TmpFrame->Next.push_back(Obj);
+				tmpFrame->next.push_back(obj);
 
 				continue;
 			}
 		}
 
-		if (SetMesh(TmpFrame, Temp, _Text)) continue;
+		if (SetMesh(tmpFrame, tmp, _text)) continue;
 	}
 
-	_Frames = TmpFrame;
+	_frames = tmpFrame;
 
 	return true;
 }
@@ -163,24 +163,24 @@ ChStd::Bool ChCpp::CMXFile::SetFrame(
 ///////////////////////////////////////////////////////////////////////////////////////
 
 ChStd::Bool ChCpp::CMXFile::SetFremeTransformMatrix(
-	ChPtr::Shared<XFileModelFrame::XFrame>& _Frames
-	, const ChPtr::Shared<TemplateRange>& _TargetTemplate
-	, const std::string& _Text)
+	ChPtr::Shared<XFileModelFrame::XFrame>& _frames
+	, const ChPtr::Shared<TemplateRange>& _targetTemplate
+	, const std::string& _text)
 {
 
 	if (exceptionFlg)return false;
 
-	if (!IsTags(FrameTransformMatrixTags, _TargetTemplate, _Text))return false;
+	if (!IsTags(frameTransformMatrixTags, _targetTemplate, _text))return false;
 
-	std::string UseText;
+	std::string useText;
 
 	{
-		size_t TextLen = _TargetTemplate->End - _TargetTemplate->Bigen - 1;
+		size_t textLen = _targetTemplate->end - _targetTemplate->begin - 1;
 
-		UseText = _Text.substr(_TargetTemplate->Bigen + 1, TextLen);
+		useText = _text.substr(_targetTemplate->begin + 1, textLen);
 	}
 
-	_Frames->frameMatrix.Deserialize(UseText, 0, ",", ";;");
+	_frames->frameMatrix.Deserialize(useText, 0, ",", ";;");
 
 	return true;
 
@@ -189,74 +189,74 @@ ChStd::Bool ChCpp::CMXFile::SetFremeTransformMatrix(
 ///////////////////////////////////////////////////////////////////////////////////////
 
 ChStd::Bool ChCpp::CMXFile::SetMesh(
-	ChPtr::Shared<XFileModelFrame::XFrame>& _Frames
-	, const ChPtr::Shared<TemplateRange>& _TargetTemplate
-	, const std::string& _Text)
+	ChPtr::Shared<XFileModelFrame::XFrame>& _frames
+	, const ChPtr::Shared<TemplateRange>& _targetTemplate
+	, const std::string& _text)
 {
 	if (exceptionFlg)return false;
 
-	if (!IsTags(MeshTags, _TargetTemplate, _Text))return false;
+	if (!IsTags(meshTags, _targetTemplate, _text))return false;
 
-	if (_Frames == nullptr)
+	if (_frames == nullptr)
 	{
-		_Frames = ChPtr::Make_S<XFileModelFrame::XFrame>();
-		_Frames->FName = "Root";
+		_frames = ChPtr::Make_S<XFileModelFrame::XFrame>();
+		_frames->fName = "Root";
 	}
 
-	size_t TmpPos = _TargetTemplate->Bigen;
+	size_t tmpPos = _targetTemplate->begin;
 
-	TmpPos += 1;
+	tmpPos += 1;
 
-	auto Meshs = ChPtr::Make_S<XFileModelFrame::XMesh>();
+	auto mesh = ChPtr::Make_S<XFileModelFrame::XMesh>();
 
 	{
 
-		auto Values = GetArrayValues<XVECTOR>(_Text, TmpPos, ";,", ";;");
+		auto values = GetArrayValues<XVECTOR>(_text, tmpPos, ";,", ";;");
 
-		for (auto&& Poss : Values)
+		for (auto&& poss : values)
 		{
-			auto Vertex = ChPtr::Make_S<XFileModelFrame::XVertex>();
+			auto vertex = ChPtr::Make_S<XFileModelFrame::XVertex>();
 
-			Vertex->Pos = Poss->value;
+			vertex->pos = poss->value;
 
-			Meshs->VertexList.push_back(Vertex);
+			mesh->vertexList.push_back(vertex);
 
 		}
 
 	}
 
-	TmpPos = _Text.find(";;", TmpPos);
-	TmpPos += 2;
+	tmpPos = _text.find(";;", tmpPos);
+	tmpPos += 2;
 
 	{
-		auto Values = GetArrayValues<XMESHFACE>(_Text, TmpPos, ";,", ";;");
+		auto values = GetArrayValues<XMESHFACE>(_text, tmpPos, ";,", ";;");
 
-		for (auto&& Poss : Values)
+		for (auto&& Poss : values)
 		{
-			auto Face = ChPtr::Make_S<XFileModelFrame::XFace>();
+			auto face = ChPtr::Make_S<XFileModelFrame::XFace>();
 
-			for (auto&& No : Poss->value)
+			for (auto&& no : Poss->value)
 			{
-				Face->VertexNos.push_back(No);
+				face->vertexNos.push_back(no);
 			}
 
-			Meshs->FaceList.push_back(Face);
+			mesh->faceList.push_back(face);
 
 		}
 	}
 
-	_Frames->Meshs = Meshs;
+	_frames->mesh = mesh;
 
-	for (auto&& Temp : _TargetTemplate->Nest)
+	for (auto&& tmp : _targetTemplate->nest)
 	{
 
-		if (SetMeshNormal(_Frames, Temp, _Text)) continue;
+		if (SetMeshNormal(_frames, tmp, _text)) continue;
 
-		if (SetMeshTextureCoords(_Frames, Temp, _Text)) continue;
+		if (SetMeshTextureCoords(_frames, tmp, _text)) continue;
 
-		if (SetMeshMaterialList(_Frames, Temp, _Text)) continue;
+		if (SetMeshMaterialList(_frames, tmp, _text)) continue;
 
-		if (SetSkinWeights(_Frames, Temp, _Text)) continue;
+		if (SetSkinWeights(_frames, tmp, _text)) continue;
 
 	}
 	return true;
@@ -265,41 +265,41 @@ ChStd::Bool ChCpp::CMXFile::SetMesh(
 ///////////////////////////////////////////////////////////////////////////////////////
 
 ChStd::Bool ChCpp::CMXFile::SetMeshNormal(
-	ChPtr::Shared<XFileModelFrame::XFrame>& _Frames
-	, const ChPtr::Shared<TemplateRange>& _TargetTemplate
-	, const std::string& _Text)
+	ChPtr::Shared<XFileModelFrame::XFrame>& _frames
+	, const ChPtr::Shared<TemplateRange>& _targetTemplate
+	, const std::string& _text)
 {
 	if (exceptionFlg)return false;
 
-	if (!IsTags(NormalTags, _TargetTemplate, _Text))return false;
+	if (!IsTags(normalTags, _targetTemplate, _text))return false;
 
-	size_t TmpPos = _TargetTemplate->Bigen;
+	size_t tmpPos = _targetTemplate->begin;
 
-	TmpPos += 1;
+	tmpPos += 1;
 
-	auto Normals = GetArrayValues<XVECTOR>(_Text, TmpPos, ";,", ";;");
+	auto normals = GetArrayValues<XVECTOR>(_text, tmpPos, ";,", ";;");
 
-	TmpPos = _Text.find(";;", TmpPos);
-	TmpPos += 2;
+	tmpPos = _text.find(";;", tmpPos);
+	tmpPos += 2;
 
-	auto Faces = GetArrayValues<XMESHFACE>(_Text, TmpPos, ";,", ";;");
+	auto faces = GetArrayValues<XMESHFACE>(_text, tmpPos, ";,", ";;");
 
-	for (unsigned long i = 0; i < Faces.size(); i++)
+	for (unsigned long i = 0; i < faces.size(); i++)
 	{
-		auto Mesh = _Frames->Meshs->FaceList[i];
+		auto Mesh = _frames->mesh->faceList[i];
 
-		for (unsigned long j = 0; j < Mesh->VertexNos.size(); j++)
+		for (unsigned long j = 0; j < Mesh->vertexNos.size(); j++)
 		{
 
-			_Frames->Meshs->VertexList[Mesh->VertexNos[j]]->Normal +=
-				Normals[Faces[i]->value[j]]->value;
+			_frames->mesh->vertexList[Mesh->vertexNos[j]]->normal +=
+				normals[faces[i]->value[j]]->value;
 
 		}
 	}
-	for (auto&& Vertex : _Frames->Meshs->VertexList)
+	for (auto&& vertex : _frames->mesh->vertexList)
 	{
-		if (Vertex->Normal.Len() == 1.00000000f)continue;
-		Vertex->Normal.Normalize();
+		if (vertex->normal.Len() == 1.00000000f)continue;
+		vertex->normal.Normalize();
 	}
 
 	return true;
@@ -308,28 +308,28 @@ ChStd::Bool ChCpp::CMXFile::SetMeshNormal(
 ///////////////////////////////////////////////////////////////////////////////////////
 
 ChStd::Bool ChCpp::CMXFile::SetMeshTextureCoords(
-	ChPtr::Shared<XFileModelFrame::XFrame>& _Frames
-	, const ChPtr::Shared<TemplateRange>& _TargetTemplate
-	, const std::string& _Text)
+	ChPtr::Shared<XFileModelFrame::XFrame>& _frames
+	, const ChPtr::Shared<TemplateRange>& _targetTemplate
+	, const std::string& _text)
 {
 	if (exceptionFlg)return false;
 
-	if (!IsTags(UVTags, _TargetTemplate, _Text))return false;
+	if (!IsTags(uvTags, _targetTemplate, _text))return false;
 
-	size_t TmpPos = _TargetTemplate->Bigen;
+	size_t tmpPos = _targetTemplate->begin;
 
-	TmpPos += 1;
+	tmpPos += 1;
 
-	auto UVs = GetArrayValues<XCOODS2D>(_Text, TmpPos, ";,", ";;");
+	auto UVs = GetArrayValues<XCOODS2D>(_text, tmpPos, ";,", ";;");
 
-	TmpPos = _Text.find(";;", TmpPos);
-	TmpPos += 2;
+	tmpPos = _text.find(";;", tmpPos);
+	tmpPos += 2;
 
-	auto& VertexList = _Frames->Meshs->VertexList;
+	auto& vertexList = _frames->mesh->vertexList;
 
-	for (unsigned long i = 0; i < VertexList.size(); i++)
+	for (unsigned long i = 0; i < vertexList.size(); i++)
 	{
-		VertexList[i]->UVPos = UVs[i]->value;
+		vertexList[i]->uvPos = UVs[i]->value;
 	}
 
 	return true;
@@ -338,34 +338,34 @@ ChStd::Bool ChCpp::CMXFile::SetMeshTextureCoords(
 ///////////////////////////////////////////////////////////////////////////////////////
 
 ChStd::Bool ChCpp::CMXFile::SetMeshMaterialList(
-	ChPtr::Shared<XFileModelFrame::XFrame>& _Frames
-	, const ChPtr::Shared<TemplateRange>& _TargetTemplate
-	, const std::string& _Text)
+	ChPtr::Shared<XFileModelFrame::XFrame>& _frames
+	, const ChPtr::Shared<TemplateRange>& _targetTemplate
+	, const std::string& _text)
 {
 	if (exceptionFlg)return false;
 
-	if (!IsTags(MaterialListTags, _TargetTemplate, _Text))return false;
+	if (!IsTags(materialListTags, _targetTemplate, _text))return false;
 
-	size_t TmpPos = _TargetTemplate->Bigen;
+	size_t tmpPos = _targetTemplate->begin;
 
-	TmpPos += 1;
+	tmpPos += 1;
 
-	TmpPos = _Text.find(";", TmpPos);
+	tmpPos = _text.find(";", tmpPos);
 
-	TmpPos += 1;
+	tmpPos += 1;
 
-	auto MateNo = GetArrayValues<XDWORD>(_Text, TmpPos, ",", ";;");
+	auto mateNo = GetArrayValues<XDWORD>(_text, tmpPos, ",", ";;");
 
-	auto& Faces = _Frames->Meshs->FaceList;
+	auto& faces = _frames->mesh->faceList;
 
-	for (unsigned long i = 0; i < Faces.size(); i++)
+	for (unsigned long i = 0; i < faces.size(); i++)
 	{
-		Faces[i]->MateNo = MateNo[i]->value;
+		faces[i]->mateNo = mateNo[i]->value;
 	}
 
-	for (auto&& Temp : _TargetTemplate->Nest)
+	for (auto&& tmp : _targetTemplate->nest)
 	{
-		SetMaterial(_Frames, Temp, _Text);
+		SetMaterial(_frames, tmp, _text);
 	}
 
 	return true;
@@ -374,116 +374,116 @@ ChStd::Bool ChCpp::CMXFile::SetMeshMaterialList(
 ///////////////////////////////////////////////////////////////////////////////////////
 
 ChStd::Bool ChCpp::CMXFile::SetMaterial(
-	ChPtr::Shared<XFileModelFrame::XFrame>& _Frames
-	, const ChPtr::Shared<TemplateRange>& _TargetTemplate
-	, const std::string& _Text)
+	ChPtr::Shared<XFileModelFrame::XFrame>& _frames
+	, const ChPtr::Shared<TemplateRange>& _targetTemplate
+	, const std::string& _text)
 {
 	if (exceptionFlg)return false;
 
-	size_t MatePos;
+	size_t matePos;
 
-	if (!IsTags(MatePos, MaterialTags, _TargetTemplate, _Text))return false;
+	if (!IsTags(matePos, materialTags, _targetTemplate, _text))return false;
 
-	std::string MaterialName = "";
+	std::string materialName = "";
 
-	MatePos += MaterialTags.length();
+	matePos += materialTags.length();
 
-	MaterialName = _Text.substr(MatePos, _TargetTemplate->Bigen - MatePos);
+	materialName = _text.substr(matePos, _targetTemplate->begin - matePos);
 
-	MaterialName = ChStr::RemoveToWhiteSpaceChars(MaterialName);
+	materialName = ChStr::RemoveToWhiteSpaceChars(materialName);
 
-	size_t TmpPos = _TargetTemplate->Bigen;
+	size_t tmpPos = _targetTemplate->begin;
 
-	TmpPos += 1;
+	tmpPos += 1;
 
-	ColorRGBA Diffuse;
+	ColorRGBA diffuse;
 
 	{
-		std::string UseText = "";
+		std::string useText = "";
 
-		size_t tmpEnd = _Text.find(";;", TmpPos);
+		size_t tmpEnd = _text.find(";;", tmpPos);
 		tmpEnd += 2;
 
-		UseText = _Text.substr(TmpPos, tmpEnd - TmpPos);
+		useText = _text.substr(tmpPos, tmpEnd - tmpPos);
 
-		TmpPos = tmpEnd;
+		tmpPos = tmpEnd;
 
-		Diffuse.Desirialise(UseText, 0, ";;");
+		diffuse.Desirialise(useText, 0, ";;");
 	}
 
-	XFLOAT SpePow;
+	XFLOAT spePow;
 
 	{
-		std::string UseText = "";
+		std::string useText = "";
 
-		size_t tmpEnd = _Text.find(";", TmpPos);
+		size_t tmpEnd = _text.find(";", tmpPos);
 		tmpEnd += 1;
 
-		UseText = _Text.substr(TmpPos, tmpEnd - TmpPos);
+		useText = _text.substr(tmpPos, tmpEnd - tmpPos);
 
-		TmpPos = tmpEnd;
+		tmpPos = tmpEnd;
 
-		SpePow.Desirialise(UseText, 0, ";");
+		spePow.Desirialise(useText, 0, ";");
 	}
 
-	ColorRGB Specular;
+	ColorRGB specular;
 
 	{
-		std::string UseText = "";
+		std::string useText = "";
 
-		size_t tmpEnd = _Text.find(";;", TmpPos);
+		size_t tmpEnd = _text.find(";;", tmpPos);
 		tmpEnd += 2;
 
-		UseText = _Text.substr(TmpPos, tmpEnd - TmpPos);
+		useText = _text.substr(tmpPos, tmpEnd - tmpPos);
 
-		TmpPos = tmpEnd;
+		tmpPos = tmpEnd;
 
-		Specular.Desirialise(UseText, 0, ";;");
+		specular.Desirialise(useText, 0, ";;");
 	}
 
-	ColorRGB Ambient;
+	ColorRGB ambient;
 
 	{
-		std::string UseText = "";
+		std::string useText = "";
 
-		size_t tmpEnd = _Text.find(";;", TmpPos);
+		size_t tmpEnd = _text.find(";;", tmpPos);
 		tmpEnd += 2;
 
-		UseText = _Text.substr(TmpPos, tmpEnd - TmpPos);
+		useText = _text.substr(tmpPos, tmpEnd - tmpPos);
 
-		TmpPos = tmpEnd;
+		tmpPos = tmpEnd;
 
-		Ambient.Desirialise(UseText, 0, ";;");
+		ambient.Desirialise(useText, 0, ";;");
 	}
 
-	auto Mate = ChPtr::Make_S<XFileModelFrame::XMaterial>();
+	auto mate = ChPtr::Make_S<XFileModelFrame::XMaterial>();
 
-	Mate->MaterialName = MaterialName;
-	Mate->Diffuse = Diffuse.value;
-	Mate->SpecularPower = SpePow.value;
-	Mate->Specular = Specular.value;
-	Mate->Ambient = Ambient.value;
+	mate->materialName = materialName;
+	mate->diffuse = diffuse.value;
+	mate->specularPower = spePow.value;
+	mate->specular = specular.value;
+	mate->ambient = ambient.value;
 
-	for (auto&& Temp : _TargetTemplate->Nest)
+	for (auto&& tmp : _targetTemplate->nest)
 	{
 
-		if (!IsTags(TextureFilenameTag, Temp, _Text))continue;
+		if (!IsTags(textureFileNameTag, tmp, _text))continue;
 
-		size_t Start = _Text.find("\"", Temp->Bigen);
+		size_t start = _text.find("\"", tmp->begin);
 
-		if (Start >= Temp->End)continue;
+		if (start >= tmp->end)continue;
 
-		size_t End = _Text.find("\"", Start + 1);
+		size_t end = _text.find("\"", start + 1);
 
-		if (End >= Temp->End)continue;
+		if (end >= tmp->end)continue;
 
-		std::string TexturePath = _Text.substr(Start + 1, End - Start - 1);
+		std::string texturePath = _text.substr(start + 1, end - start - 1);
 
-		Mate->TextureNameList.push_back(TexturePath);
+		mate->textureNameList.push_back(texturePath);
 
 	}
 
-	_Frames->Meshs->MaterialList.push_back(Mate);
+	_frames->mesh->materialList.push_back(mate);
 
 	return true;
 }
@@ -491,71 +491,71 @@ ChStd::Bool ChCpp::CMXFile::SetMaterial(
 ///////////////////////////////////////////////////////////////////////////////////////
 
 ChStd::Bool ChCpp::CMXFile::SetSkinWeights(
-	ChPtr::Shared<XFileModelFrame::XFrame>& _Frames
-	, const ChPtr::Shared<TemplateRange>& _TargetTemplate
-	, const std::string& _Text)
+	ChPtr::Shared<XFileModelFrame::XFrame>& _frames
+	, const ChPtr::Shared<TemplateRange>& _targetTemplate
+	, const std::string& _text)
 {
 
 	if (exceptionFlg)return false;
 
-	if (!IsTags(SkinWeightsTag, _TargetTemplate, _Text))return false;
+	if (!IsTags(skinWeightsTag, _targetTemplate, _text))return false;
 
-	size_t TmpPos = _TargetTemplate->Bigen;
+	size_t tmpPos = _targetTemplate->begin;
 
-	TmpPos += 1;
+	tmpPos += 1;
 
-	std::string BoneName;
+	std::string boneName;
 
 	{
-		size_t TmpStart = _Text.find("\"", TmpPos);
+		size_t tmpStart = _text.find("\"", tmpPos);
 
-		size_t TmpEnd = _Text.find("\";", TmpPos);
+		size_t tmpEnd = _text.find("\";", tmpPos);
 
-		if (TmpStart > _TargetTemplate->End
-			|| TmpEnd > _TargetTemplate->End)return true;
+		if (tmpStart > _targetTemplate->end
+			|| tmpEnd > _targetTemplate->end)return true;
 
 
-		BoneName = _Text.substr(TmpStart + 1, TmpEnd - TmpStart - 1);
+		boneName = _text.substr(tmpStart + 1, tmpEnd - tmpStart - 1);
 
-		TmpPos = TmpEnd + 2;
+		tmpPos = tmpEnd + 2;
 	}
 
-	TmpPos = _Text.find(";", TmpPos);
-	TmpPos += 1;
+	tmpPos = _text.find(";", tmpPos);
+	tmpPos += 1;
 
 
-	auto VertexNo = GetArrayValuesNC<XDWORD>(_Text, TmpPos, ",", ";");
+	auto vertexNo = GetArrayValuesNC<XDWORD>(_text, tmpPos, ",", ";");
 
-	TmpPos = _Text.find(";", TmpPos);
-	TmpPos += 1;
+	tmpPos = _text.find(";", tmpPos);
+	tmpPos += 1;
 
-	auto WeightPow = GetArrayValuesNC<XFLOAT>(_Text, TmpPos, ",", ";");
+	auto weightPow = GetArrayValuesNC<XFLOAT>(_text, tmpPos, ",", ";");
 
-	TmpPos = _Text.find(";", TmpPos);
-	TmpPos += 1;
+	tmpPos = _text.find(";", tmpPos);
+	tmpPos += 1;
 
-	ChLMat TmpOffMat;
+	ChLMat tmpOffMat;
 
-	TmpOffMat.Deserialize(_Text, TmpPos, ",", ";;");
+	tmpOffMat.Deserialize(_text, tmpPos, ",", ";;");
 
-	auto SkinWeight = ChPtr::Make_S<XFileModelFrame::XSkinWeights>();
+	auto skinWeight = ChPtr::Make_S<XFileModelFrame::XSkinWeights>();
 
-	SkinWeight->BoneOffset = TmpOffMat;
+	skinWeight->boneOffset = tmpOffMat;
 
-	SkinWeight->TargetFrameName = BoneName;
+	skinWeight->targetFrameName = boneName;
 
 	{
-		size_t WeightingCount = VertexNo.size();
+		size_t weightingCount = vertexNo.size();
 
-		if (WeightingCount > WeightPow.size())WeightingCount = WeightPow.size();
+		if (weightingCount > weightPow.size())weightingCount = weightPow.size();
 
-		for (unsigned long i = 0; i < WeightingCount; i++)
+		for (unsigned long i = 0; i < weightingCount; i++)
 		{
-			SkinWeight->WeitPow[VertexNo[i]->value] = WeightPow[i]->value;
+			skinWeight->weitPow[vertexNo[i]->value] = weightPow[i]->value;
 		}
 	}
 
-	_Frames->SkinWeightDatas.push_back(SkinWeight);
+	_frames->skinWeightDatas.push_back(skinWeight);
 
 	return true;
 }
@@ -563,31 +563,31 @@ ChStd::Bool ChCpp::CMXFile::SetSkinWeights(
 ///////////////////////////////////////////////////////////////////////////////////////
 
 ChStd::Bool ChCpp::CMXFile::IsTags(
-	size_t& _OutTagPos
+	size_t& _outTagPos
 	, const std::string& _TagName
 	, const ChPtr::Shared<TemplateRange> _LookTemplate
-	, const std::string& _Text)
+	, const std::string& _text)
 {
 
-	size_t CheckStartPos
-		= _Text.rfind("\n", _LookTemplate->Bigen);
+	size_t checkStartPos
+		= _text.rfind("\n", _LookTemplate->begin);
 
 
-	if (CheckStartPos == _Text.npos)
+	if (checkStartPos == _text.npos)
 	{
 		exceptionFlg = true;
 		return false;
 	}
 
-	std::string tmp = _Text.substr(
-		CheckStartPos
-		, _LookTemplate->Bigen - CheckStartPos);
+	std::string tmp = _text.substr(
+		checkStartPos
+		, _LookTemplate->begin - checkStartPos);
 
-	size_t Checked = tmp.find(_TagName);
+	size_t checked = tmp.find(_TagName);
 
-	if (Checked == _Text.npos)return false;
+	if (checked == _text.npos)return false;
 
-	_OutTagPos = _Text.find(_TagName, CheckStartPos);
+	_outTagPos = _text.find(_TagName, checkStartPos);
 
 	return true;
 }
@@ -595,61 +595,61 @@ ChStd::Bool ChCpp::CMXFile::IsTags(
 ///////////////////////////////////////////////////////////////////////////////////////
 
 void ChCpp::CMXFile::LoadToTemplates(
-	ChPtr::Shared<TemplateRange>& _Templates
-	, const size_t& _Offset
-	, const std::string& _Text)
+	ChPtr::Shared<TemplateRange>& _templates
+	, const size_t& _offset
+	, const std::string& _text)
 {
-	std::vector<size_t>TemplateTags[2];
-	char Tags[] = { '{','}' };
+	std::vector<size_t>templateTags[2];
+	char tags[] = { '{','}' };
 
 	for (size_t i = 0; i < 2; i++)
 	{
 
-		size_t offset = _Offset;
+		size_t offset = _offset;
 
 		while (1)
 		{
-			offset = _Text.find(Tags[i], offset + 1);
+			offset = _text.find(tags[i], offset + 1);
 
-			if (offset >= _Text.npos)break;
+			if (offset >= _text.npos)break;
 
-			TemplateTags[i].push_back(offset);
+			templateTags[i].push_back(offset);
 
 		}
 	}
 
 
-	if (TemplateTags[0].size() != TemplateTags[1].size())
+	if (templateTags[0].size() != templateTags[1].size())
 	{
 		exceptionFlg = true;
 		return;
 	}
 
 
-	size_t TempCount = TemplateTags[0].size();
+	size_t tempCount = templateTags[0].size();
 
-	size_t BeginCount = 0;
-	size_t EndCount = 0;
+	size_t beginCount = 0;
+	size_t endCount = 0;
 
-	_Templates = ChPtr::Make_S<TemplateRange>();
+	_templates = ChPtr::Make_S<TemplateRange>();
 
-	_Templates->Bigen = 0;
-	_Templates->End = 0;
+	_templates->begin = 0;
+	_templates->end = 0;
 
 	while (1)
 	{
 
-		if (BeginCount >= TemplateTags[0].size())
+		if (beginCount >= templateTags[0].size())
 		{
 			break;
 		}
 
 		SetToTemplate(
-			_Templates
-			, BeginCount
-			, EndCount
-			, TemplateTags[0]
-			, TemplateTags[1]);
+			_templates
+			, beginCount
+			, endCount
+			, templateTags[0]
+			, templateTags[1]);
 
 	}
 
@@ -660,51 +660,51 @@ void ChCpp::CMXFile::LoadToTemplates(
 ///////////////////////////////////////////////////////////////////////////////////////
 
 void ChCpp::CMXFile::SetToTemplate(
-	ChPtr::Shared<TemplateRange>& _Tmp
-	, size_t& _BCnt
-	, size_t& _ECnt
-	, const std::vector<size_t>& _STemplateTags
-	, const std::vector<size_t>& _ETemplateTags)
+	ChPtr::Shared<TemplateRange>& _tmp
+	, size_t& _bCnt
+	, size_t& _eCnt
+	, const std::vector<size_t>& _sTemplateTags
+	, const std::vector<size_t>& _eTemplateTags)
 {
 
-	if (_ECnt >= _ETemplateTags.size())
+	if (_eCnt >= _eTemplateTags.size())
 	{
 		exceptionFlg = true;
 		return;
 	}
 
-	auto Temp = ChPtr::Make_S<TemplateRange>();
+	auto tmp = ChPtr::Make_S<TemplateRange>();
 
-	Temp->Bigen = _STemplateTags[_BCnt];
+	tmp->begin = _sTemplateTags[_bCnt];
 
-	_Tmp->Nest.push_back(Temp);
+	_tmp->nest.push_back(tmp);
 
-	_BCnt++;
+	_bCnt++;
 
 	while (1)
 	{
 
-		if (_BCnt >= _STemplateTags.size())
+		if (_bCnt >= _sTemplateTags.size())
 		{
 
-			Temp->End = _ETemplateTags[_ECnt];
-			_ECnt++;
+			tmp->end = _eTemplateTags[_eCnt];
+			_eCnt++;
 			break;
 		}
 
-		if (_STemplateTags[_BCnt] > _ETemplateTags[_ECnt])
+		if (_sTemplateTags[_bCnt] > _eTemplateTags[_eCnt])
 		{
-			Temp->End = _ETemplateTags[_ECnt];
-			_ECnt++;
+			tmp->end = _eTemplateTags[_eCnt];
+			_eCnt++;
 			break;
 		}
 
 		SetToTemplate(
-			Temp
-			, _BCnt
-			, _ECnt
-			, _STemplateTags
-			, _ETemplateTags);
+			tmp
+			, _bCnt
+			, _eCnt
+			, _sTemplateTags
+			, _eTemplateTags);
 
 
 	}
@@ -715,135 +715,135 @@ void ChCpp::CMXFile::SetToTemplate(
 ///////////////////////////////////////////////////////////////////////////////////////
 
 void ChCpp::CMXFile::XFrameToChFrame(
-	ChPtr::Shared<ModelFrame::Frame>& _ChFrame
-	, const ChPtr::Shared<XFileModelFrame::XFrame>& _XFrame)
+	ChPtr::Shared<ModelFrame::Frame>& _chFrame
+	, const ChPtr::Shared<XFileModelFrame::XFrame>& _xFrame)
 {
 
 
-	_ChFrame = ChPtr::Make_S<ModelFrame::Frame>();
+	_chFrame = ChPtr::Make_S<ModelFrame::Frame>();
 
-	_ChFrame->BaseMat = _XFrame->frameMatrix;
-	_ChFrame->MyName = _XFrame->FName;
+	_chFrame->baseMat = _xFrame->frameMatrix;
+	_chFrame->myName = _xFrame->fName;
 
 
-	for (auto&& Frame : _XFrame->Next)
+	for (auto&& frame : _xFrame->next)
 	{
-		ChPtr::Shared<ModelFrame::Frame> ChFrame = nullptr;
+		ChPtr::Shared<ModelFrame::Frame> chFrame = nullptr;
 
-		XFrameToChFrame(ChFrame, Frame);
+		XFrameToChFrame(chFrame, frame);
 
-		_ChFrame->ChildFrames.push_back(ChFrame);
+		_chFrame->childFrames.push_back(chFrame);
 
-		ChFrame->Parent = _ChFrame;
+		chFrame->parent = _chFrame;
 	}
 
-	std::map<unsigned long, unsigned long>SummarizeVertex;
+	std::map<unsigned long, unsigned long>summarizeVertex;
 
-	auto Meshs = ChPtr::Make_S<ModelFrame::Mesh>();
+	auto mesh = ChPtr::Make_S<ModelFrame::Mesh>();
 
-	if (_XFrame->Meshs == nullptr)return;
+	if (_xFrame->mesh == nullptr)return;
 	//SetVertexList//
 	{
-		auto& XVertexList = _XFrame->Meshs->VertexList;
+		auto& xVertexList = _xFrame->mesh->vertexList;
 
-		auto& ChVertexList = Meshs->VertexList;
+		auto& chVertexList = mesh->vertexList;
 
-		for (unsigned long i = 0; i < XVertexList.size(); i++)
+		for (unsigned long i = 0; i < xVertexList.size(); i++)
 		{
-			ChStd::Bool LookFlg = false;
+			ChStd::Bool lookFlg = false;
 
-			for (unsigned long j = 0; j < ChVertexList.size(); j++)
+			for (unsigned long j = 0; j < chVertexList.size(); j++)
 			{
 
-				if (ChVertexList[j]->Pos != XVertexList[i]->Pos)continue;
+				if (chVertexList[j]->pos != xVertexList[i]->pos)continue;
 
-				SummarizeVertex[i] = j;
+				summarizeVertex[i] = j;
 
-				ChVertexList[j]->Normal += XVertexList[i]->Normal;
+				chVertexList[j]->normal += xVertexList[i]->normal;
 
-				LookFlg = true;
+				lookFlg = true;
 
 				break;
 
 			}
 
-			if (LookFlg)continue;
+			if (lookFlg)continue;
 
 
-			SummarizeVertex[i] = ChVertexList.size();
+			summarizeVertex[i] = chVertexList.size();
 
-			auto ChVertex = ChPtr::Make_S<ModelFrame::VertexData>();
+			auto chVertex = ChPtr::Make_S<ModelFrame::VertexData>();
 
-			ChVertex->Pos = XVertexList[i]->Pos;
-			ChVertex->Normal += XVertexList[i]->Normal;
+			chVertex->pos = xVertexList[i]->pos;
+			chVertex->normal += chVertexList[i]->normal;
 
-			ChVertexList.push_back(ChVertex);
+			chVertexList.push_back(chVertex);
 
 		}
 
-		for (auto&& ChVertex : ChVertexList)
+		for (auto&& chVertex : chVertexList)
 		{
-			ChVertex->Normal.Normalize();
+			chVertex->normal.Normalize();
 		}
 
 	}
 
 	//SetFaceList//
 	{
-		auto& XVertexList = _XFrame->Meshs->VertexList;
+		auto& xVertexList = _xFrame->mesh->vertexList;
 
-		auto& XFaceList = _XFrame->Meshs->FaceList;
+		auto& xFaceList = _xFrame->mesh->faceList;
 
-		auto& ChFaceList = Meshs->FaceList;
+		auto& chFaceList = mesh->faceList;
 
-		for (auto&& XFace : XFaceList)
+		for (auto&& xFace : xFaceList)
 		{
-			unsigned long Counters[3];
-			Counters[0] = 0;
-			Counters[1] = 1;
-			Counters[2] = XFace->VertexNos.size() - 1;
+			unsigned long counters[3];
+			counters[0] = 0;
+			counters[1] = 1;
+			counters[2] = xFace->vertexNos.size() - 1;
 
-			ChStd::Bool UpperFlg = true;
+			ChStd::Bool upperFlg = true;
 
-			for (unsigned long i = 0; i < XFace->VertexNos.size() - 2; i++)
+			for (unsigned long i = 0; i < xFace->vertexNos.size() - 2; i++)
 			{
-				auto ChFace = ChPtr::Make_S<ModelFrame::SurFace>();
+				auto chFace = ChPtr::Make_S<ModelFrame::SurFace>();
 
 				for (unsigned long j = 0; j < 3; j++)
 				{
 
-					auto ChVertexData = ChPtr::Make_S<ModelFrame::SurFace::SurFaceVertex>();
+					auto chVertexData = ChPtr::Make_S<ModelFrame::SurFace::SurFaceVertex>();
 
-					unsigned long VertexNo = SummarizeVertex[XFace->VertexNos[Counters[j]]];
+					unsigned long VertexNo = summarizeVertex[xFace->vertexNos[counters[j]]];
 
-					ChVertexData->VertexNo = VertexNo;
-					ChVertexData->UVPos = XVertexList[XFace->VertexNos[Counters[j]]]->UVPos;
+					chVertexData->vertexNo = VertexNo;
+					chVertexData->uvPos = xVertexList[xFace->vertexNos[counters[j]]]->uvPos;
 
 
-					ChFace->VertexData[j].UVPos = ChVertexData->UVPos;
-					ChFace->VertexData[j].VertexNo = ChVertexData->VertexNo;
+					chFace->vertexData[j].uvPos = chVertexData->uvPos;
+					chFace->vertexData[j].vertexNo = chVertexData->vertexNo;
 
-					ChFace->Normal += XVertexList[XFace->VertexNos[Counters[j]]]->Normal;
+					chFace->normal += xVertexList[xFace->vertexNos[counters[j]]]->normal;
 				}
 
-				ChFace->Normal.Normalize();
+				chFace->normal.Normalize();
 
-				if (UpperFlg)
+				if (upperFlg)
 				{
-					Counters[0] = Counters[1];
-					Counters[1] = Counters[2] - 1;
+					counters[0] = counters[1];
+					counters[1] = counters[2] - 1;
 				}
 				else
 				{
-					Counters[2] = Counters[1];
-					Counters[1] = Counters[0] + 1;
+					counters[2] = counters[1];
+					counters[1] = counters[0] + 1;
 				}
 
-				UpperFlg = !UpperFlg;
+				upperFlg = !upperFlg;
 
-				ChFace->Materials = XFace->MateNo;
+				chFace->materialNo = xFace->mateNo;
 
-				ChFaceList.push_back(ChFace);
+				chFaceList.push_back(chFace);
 			}
 		}
 
@@ -853,34 +853,34 @@ void ChCpp::CMXFile::XFrameToChFrame(
 	//SetMaterial//
 
 	{
-		auto& ChMateList = Meshs->MaterialList;
-		auto& ChMateNos = Meshs->MaterialNo;
+		auto& chMateList = mesh->materialList;
+		auto& chMateNos = mesh->materialNo;
 
 		unsigned long i = 0;
 
-		for (auto&& XMate : _XFrame->Meshs->MaterialList)
+		for (auto&& xMate : _xFrame->mesh->materialList)
 		{
-			auto ChMate = ChPtr::Make_S<ModelFrame::Material>();
+			auto chMate = ChPtr::Make_S<ModelFrame::Material>();
 
-			ChMate->Diffuse = XMate->Diffuse;
-			ChMate->MaterialName = XMate->MaterialName;
-			ChMate->Specular = XMate->Specular;
-			ChMate->SpePow = XMate->SpecularPower;
-			ChMate->AmbientPow = XMate->Ambient.Len() / 4.0f;
+			chMate->diffuse = xMate->diffuse;
+			chMate->materialName = xMate->materialName;
+			chMate->specular = xMate->specular;
+			chMate->spePow = xMate->specularPower;
+			chMate->ambientPow = xMate->ambient.Len() / 4.0f;
 
-			for (unsigned long i = 0; i < XMate->TextureNameList.size(); i++)
+			for (unsigned long i = 0; i < xMate->textureNameList.size(); i++)
 			{
-				ChMate->TextureNames.push_back(XMate->TextureNameList[i]);
+				chMate->textureNames.push_back(xMate->textureNameList[i]);
 
 				//switch (i)
 				//{
-				//case 0:ChMate->DiffuseMap = XMate->TextureNameList[i]; break;
+				//case 0:ChMate->diffuseMap = XMate->TextureNameList[i]; break;
 				//case 1:ChMate->NormalMap = XMate->TextureNameList[i]; break;
 				//case 2:ChMate->AmbientMap = XMate->TextureNameList[i]; break;
-				//case 3:ChMate->SpecularMap = XMate->TextureNameList[i]; break;
-				//case 4:ChMate->SpecularPowMap = XMate->TextureNameList[i]; break;
+				//case 3:ChMate->specularMap = XMate->TextureNameList[i]; break;
+				//case 4:ChMate->specularPowMap = XMate->TextureNameList[i]; break;
 				//case 5:ChMate->BumpMap = XMate->TextureNameList[i]; break;
-				//case 6:ChMate->AlphaMap = XMate->TextureNameList[i]; break;
+				//case 6:ChMate->alphaMap = XMate->TextureNameList[i]; break;
 				//case 7:ChMate->MetallicMap = XMate->TextureNameList[i]; break;
 				//default:
 				//	break;
@@ -888,9 +888,9 @@ void ChCpp::CMXFile::XFrameToChFrame(
 
 			}
 
-			ChMateNos[ChMate->MaterialName] = i;
+			chMateNos[chMate->materialName] = i;
 
-			ChMateList.push_back(ChMate);
+			chMateList.push_back(chMate);
 
 			i++;
 
@@ -898,7 +898,7 @@ void ChCpp::CMXFile::XFrameToChFrame(
 
 	}
 
-	_ChFrame->Meshs = Meshs;
+	_chFrame->mesh = mesh;
 
 }
 
@@ -907,737 +907,737 @@ void ChCpp::CMXFile::XFrameToChFrame(
 //ChCMObjeFile Method//
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::CMObjFile::CreateModel(const std::string& _FilePath)
+void ChCpp::CMObjFile::CreateModel(const std::string& _filePath)
 {
-	if (_FilePath.size() <= 0)return;
+	if (_filePath.size() <= 0)return;
 
-	ChCpp::TextObject Text;
+	ChCpp::TextObject text;
 
 	{
-		std::string Tmp;
+		std::string tmp;
 
-		ChFIO::File Files;
+		ChFIO::File files;
 
-		Files.FileOpen(_FilePath);
+		files.FileOpen(_filePath);
 
-		Tmp = Files.FileRead();
+		tmp = files.FileRead();
 
-		Files.FileClose();
+		files.FileClose();
 
-		if (Tmp.length() <= 0)
+		if (tmp.length() <= 0)
 		{
 			return;
 		}
 
-		Text.SetText(Tmp);
+		text.SetText(tmp);
 
 	}
 
-	FolderPath = GetRoutePath(_FilePath);
+	folderPath = GetRoutePath(_filePath);
 
-	for (unsigned long i = 0; i < Text.LineCount(); i++)
+	for (unsigned long i = 0; i < text.LineCount(); i++)
 	{
-		if (Text[i].length() <= 0)continue;
-		if (Text[i][0] == CommentTags)continue;
+		if (text[i].length() <= 0)continue;
+		if (text[i][0] == commentTags)continue;
 
-		CreateMaterials(Text[i]);
+		CreateMaterials(text[i]);
 
-		CreateObject(Text[i]);
-		SetVertex(Text[i]);
-		SetUV(Text[i]);
-		SetNormal(Text[i]);
-		SetFace(Text[i]);
-		SetMateBlock(Text[i]);
+		CreateObject(text[i]);
+		SetVertex(text[i]);
+		SetUV(text[i]);
+		SetNormal(text[i]);
+		SetFace(text[i]);
+		SetMateBlock(text[i]);
 	}
 
 	//if (ObjectMaps.size() <= 0)return;
-	if (Objects.size() <= 0)return;
+	if (objects.size() <= 0)return;
 
-	auto OutModels = ChPtr::Make_S<ModelFrame>();
+	auto outModels = ChPtr::Make_S<ModelFrame>();
 
-	OutModels->ModelName = _FilePath;
+	outModels->modelName = _filePath;
 
-	OutModels->ModelData = ChPtr::Make_S<ModelFrame::Frame>();
+	outModels->modelData = ChPtr::Make_S<ModelFrame::Frame>();
 
-	OutModels->ModelData->MyName = "Root";
+	outModels->modelData->myName = "Root";
 
-	CreateChFrame(OutModels->ModelData);
+	CreateChFrame(outModels->modelData);
 
-	SetModel(OutModels);
+	SetModel(outModels);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::CMObjFile::CreateObject(const std::string& _ObjectName)
+void ChCpp::CMObjFile::CreateObject(const std::string& _objectName)
 {
-	if (_ObjectName.size() < 3)return;
-	if (_ObjectName[0] != ObjectBlockTags)return;
-	if (_ObjectName[1] != ' ')return;
+	if (_objectName.size() < 3)return;
+	if (_objectName[0] != objectBlockTags)return;
+	if (_objectName[1] != ' ')return;
 
-	auto Name = _ObjectName.substr(2);
+	auto name = _objectName.substr(2);
 
-	auto Obj = ChPtr::Make_S<ObjFileModelData>();
+	auto obj = ChPtr::Make_S<ObjFileModelData>();
 
-	Obj->SVertex = MakeObject != nullptr ? MakeObject->SVertex + MakeObject->VertexDatas.size() : 0;
-	Obj->SUV = MakeObject != nullptr ? MakeObject->SUV + MakeObject->UVDatas.size() : 0;
-	Obj->SNormal = MakeObject != nullptr ? MakeObject->SNormal + MakeObject->NormalDatas.size() : 0;
+	obj->sVertex = makeObject != nullptr ? makeObject->sVertex + makeObject->vertexDatas.size() : 0;
+	obj->sUV = makeObject != nullptr ? makeObject->sUV + makeObject->uvDatas.size() : 0;
+	obj->sNormal = makeObject != nullptr ? makeObject->sNormal + makeObject->normalDatas.size() : 0;
 
-	MakeObject = nullptr;
+	makeObject = nullptr;
 
-	MakeObject = Obj;
+	makeObject = obj;
 	//ObjectMaps[Name] = MakeObject;
-	MakeObject->Objectname = Name;
-	Objects.push_back(MakeObject);
+	makeObject->objectName = name;
+	objects.push_back(makeObject);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::CMObjFile::CreateMaterials(const std::string& _FileName)
+void ChCpp::CMObjFile::CreateMaterials(const std::string& _fileName)
 {
-	if (_FileName.size() < 8)return;
-	if (_FileName[0] != UseMaterialFileNameTags[0])return;
-	if (_FileName[1] != UseMaterialFileNameTags[1])return;
-	if (_FileName[2] != UseMaterialFileNameTags[2])return;
-	if (_FileName[3] != UseMaterialFileNameTags[3])return;
-	if (_FileName[4] != UseMaterialFileNameTags[4])return;
-	if (_FileName[5] != UseMaterialFileNameTags[5])return;
+	if (_fileName.size() < 8)return;
+	if (_fileName[0] != useMaterialFileNameTags[0])return;
+	if (_fileName[1] != useMaterialFileNameTags[1])return;
+	if (_fileName[2] != useMaterialFileNameTags[2])return;
+	if (_fileName[3] != useMaterialFileNameTags[3])return;
+	if (_fileName[4] != useMaterialFileNameTags[4])return;
+	if (_fileName[5] != useMaterialFileNameTags[5])return;
 
-	std::string FileName = &_FileName[7];
+	std::string fileName = &_fileName[7];
 
-	ChCpp::TextObject Text;
+	ChCpp::TextObject text;
 
 	{
-		std::string Tmp;
+		std::string tmp;
 
-		ChFIO::File Files;
+		ChFIO::File files;
 
-		Files.FileOpen(FolderPath + FileName);
+		files.FileOpen(folderPath + fileName);
 
-		Tmp = Files.FileRead();
+		tmp = files.FileRead();
 
-		Files.FileClose();
+		files.FileClose();
 
-		if (Tmp.length() <= 0)
+		if (tmp.length() <= 0)
 		{
 			return;
 		}
 
-		Text.SetText(Tmp);
+		text.SetText(tmp);
 	}
 
-	for (unsigned long i = 0; i < Text.LineCount(); i++)
+	for (unsigned long i = 0; i < text.LineCount(); i++)
 	{
-		if (Text[i].length() <= 0)continue;
-		if (Text[i][0] == CommentTags)continue;
+		if (text[i].length() <= 0)continue;
+		if (text[i][0] == commentTags)continue;
 
-		CreateMaterial(Text[i]);
-		SetMatAmbient(Text[i]);
-		SetMatDiffuse(Text[i]);
-		SetMatSpecular(Text[i]);
-		SetMatSpecularHighLight(Text[i]);
-		SetMatDissolve(Text[i]);
-		SetMatODensity(Text[i]);
-		SetMatAmbientMap(Text[i]);
-		SetMatDiffuseMap(Text[i]);
-		SetMatSpecularMap(Text[i]);
-		SetMatSpecularHighLightMap(Text[i]);
-		SetMatBumpMap(Text[i]);
-		SetMatMetallicMap(Text[i]);
-		SetMatNormalMap(Text[i]);
+		CreateMaterial(text[i]);
+		SetMatAmbient(text[i]);
+		SetMatDiffuse(text[i]);
+		SetMatSpecular(text[i]);
+		SetMatSpecularHighLight(text[i]);
+		SetMatDissolve(text[i]);
+		SetMatODensity(text[i]);
+		SetMatAmbientMap(text[i]);
+		SetMatDiffuseMap(text[i]);
+		SetMatSpecularMap(text[i]);
+		SetMatSpecularHighLightMap(text[i]);
+		SetMatBumpMap(text[i]);
+		SetMatMetallicMap(text[i]);
+		SetMatNormalMap(text[i]);
 	}
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::CMObjFile::CreateMaterial(const std::string& _MatName)
+void ChCpp::CMObjFile::CreateMaterial(const std::string& _matName)
 {
 
-	if (_MatName.size() < 7)return;
-	if (_MatName[0] != MatMaterialBlockTags[0])return;
-	if (_MatName[1] != MatMaterialBlockTags[1])return;
-	if (_MatName[2] != MatMaterialBlockTags[2])return;
-	if (_MatName[3] != MatMaterialBlockTags[3])return;
-	if (_MatName[4] != MatMaterialBlockTags[4])return;
-	if (_MatName[5] != MatMaterialBlockTags[5])return;
+	if (_matName.size() < 7)return;
+	if (_matName[0] != matMaterialBlockTags[0])return;
+	if (_matName[1] != matMaterialBlockTags[1])return;
+	if (_matName[2] != matMaterialBlockTags[2])return;
+	if (_matName[3] != matMaterialBlockTags[3])return;
+	if (_matName[4] != matMaterialBlockTags[4])return;
+	if (_matName[5] != matMaterialBlockTags[5])return;
 
-	TargetMaterial = nullptr;
+	targetMaterial = nullptr;
 
-	TargetMaterial = ChPtr::Make_S<ObjFileMaterialData>();
+	targetMaterial = ChPtr::Make_S<ObjFileMaterialData>();
 
-	MaterialMaps[&_MatName[7]] = TargetMaterial;
+	materialMaps[&_matName[7]] = targetMaterial;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::CMObjFile::CreateChFrame(ChPtr::Shared<ChCpp::ModelFrame::Frame>& _Frame)
+void ChCpp::CMObjFile::CreateChFrame(ChPtr::Shared<ChCpp::ModelFrame::Frame>& _frame)
 {
 
 	//for (auto&& Obj : ObjectMaps)
-	for (auto&& Obj : Objects)
+	for (auto&& obj : objects)
 	{
-		unsigned long MaterialNo = 0;
+		unsigned long materialNo = 0;
 
-		auto Meshs = ChPtr::Make_S<ChCpp::ModelFrame::Mesh>();
+		auto mesh = ChPtr::Make_S<ChCpp::ModelFrame::Mesh>();
 
 		//for (auto&& Vertexs : Obj.second->VertexDatas)
-		for (auto&& Vertexs : Obj->VertexDatas)
+		for (auto&& vertexs : obj->vertexDatas)
 		{
-			auto Ver = ChPtr::Make_S<ChCpp::ModelFrame::VertexData>();
+			auto ver = ChPtr::Make_S<ChCpp::ModelFrame::VertexData>();
 
-			Ver->Pos = *Vertexs;
+			ver->pos = *vertexs;
 
-			Meshs->VertexList.push_back(Ver);
+			mesh->vertexList.push_back(ver);
 
 		}
 
 		//for (auto&& Face : Obj.second->MeshDatas)
-		for (auto&& Face : Obj->MeshDatas)
+		for (auto&& face : obj->meshDatas)
 		{
 
-			if (Meshs->MaterialNo.find(Face->TargetMaterialName) == Meshs->MaterialNo.end())
+			if (mesh->materialNo.find(face->targetMaterialName) == mesh->materialNo.end())
 			{
 
-				Meshs->MaterialNo[Face->TargetMaterialName] = MaterialNo;
+				mesh->materialNo[face->targetMaterialName] = materialNo;
 
-				auto Mate = ChPtr::Make_S<ChCpp::ModelFrame::Material>();
+				auto mate = ChPtr::Make_S<ChCpp::ModelFrame::Material>();
 
-				auto& TmpMate = MaterialMaps[Face->TargetMaterialName];
+				auto& tmpMate = materialMaps[face->targetMaterialName];
 
-				Mate->MaterialName = Face->TargetMaterialName;
+				mate->materialName = face->targetMaterialName;
 
-				Mate->Diffuse = TmpMate->Diffuse;
-				Mate->Diffuse.a = TmpMate->Alpha;
+				mate->diffuse = tmpMate->diffuse;
+				mate->diffuse.a = tmpMate->alpha;
 
-				Mate->Specular = TmpMate->Specular;
+				mate->specular = tmpMate->specular;
 
-				Mate->SpePow = TmpMate->SpePow;
+				mate->spePow = tmpMate->spePow;
 
-				Mate->AmbientPow = TmpMate->Ambient.r + TmpMate->Ambient.g + TmpMate->Ambient.b;
+				mate->ambientPow = tmpMate->ambient.r + tmpMate->ambient.g + tmpMate->ambient.b;
 
-				Mate->AmbientPow /= 3;
+				mate->ambientPow /= 3;
 
-				Mate->TextureNames.push_back(TmpMate->DiffuseMap);
-				Mate->TextureNames.push_back(TmpMate->AmbientMap);
-				Mate->TextureNames.push_back(TmpMate->SpecularMap);
-				Mate->TextureNames.push_back(TmpMate->SpecularHighLightMap);
-				Mate->TextureNames.push_back(TmpMate->BumpMap);
-				Mate->TextureNames.push_back(TmpMate->AlphaMap);
-				Mate->TextureNames.push_back(TmpMate->NormalMap);
-				Mate->TextureNames.push_back(TmpMate->MetallicMap);
+				mate->textureNames.push_back(tmpMate->diffuseMap);
+				mate->textureNames.push_back(tmpMate->ambientMap);
+				mate->textureNames.push_back(tmpMate->specularMap);
+				mate->textureNames.push_back(tmpMate->specularHighLightMap);
+				mate->textureNames.push_back(tmpMate->bumpMap);
+				mate->textureNames.push_back(tmpMate->alphaMap);
+				mate->textureNames.push_back(tmpMate->normalMap);
+				mate->textureNames.push_back(tmpMate->metallicMap);
 
-				//Mate->DiffuseMap = TmpMate->DiffuseMap;
-				//Mate->AmbientMap = TmpMate->AmbientMap;
-				//Mate->SpecularMap = TmpMate->SpecularMap;
-				//Mate->SpecularPowMap = TmpMate->SpecularHighLightMap;
-				//Mate->BumpMap = TmpMate->BumpMap;
-				//Mate->AlphaMap = TmpMate->AlphaMap;
-				//Mate->NormalMap = TmpMate->NormalMap;
-				//Mate->MetallicMap = TmpMate->MetallicMap;
+				//mate->diffuseMap = tmpMate->diffuseMap;
+				//mate->AmbientMap = tmpMate->AmbientMap;
+				//mate->specularMap = tmpMate->specularMap;
+				//mate->specularPowMap = tmpMate->specularHighLightMap;
+				//mate->BumpMap = tmpMate->BumpMap;
+				//mate->alphaMap = tmpMate->alphaMap;
+				//mate->NormalMap = tmpMate->NormalMap;
+				//mate->MetallicMap = tmpMate->MetallicMap;
 
-				Meshs->MaterialList.push_back(Mate);
+				mesh->materialList.push_back(mate);
 
-				MaterialNo++;
+				materialNo++;
 			}
 
-			std::vector<ChPtr::Shared<ChCpp::ModelFrame::SurFace::SurFaceVertex>>FVList;
+			std::vector<ChPtr::Shared<ChCpp::ModelFrame::SurFace::SurFaceVertex>>fVList;
 
-			for (auto&& Values : Face->Values)
+			for (auto&& values : face->values)
 			{
 
 				//unsigned long NVertex = Values->VertexNum - Obj.second->SVertex - 1;
 				//unsigned long NUV = Values->UVNum - Obj.second->SUV - 1;
 				//unsigned long NNormal = Values->NormalNum - Obj.second->SNormal - 1;
-				unsigned long NVertex = Values->VertexNum - Obj->SVertex - 1;
-				unsigned long NUV = Values->UVNum - Obj->SUV - 1;
-				unsigned long NNormal = Values->NormalNum - Obj->SNormal - 1;
+				unsigned long nVertex = values->vertexNum - obj->sVertex - 1;
+				unsigned long nUV = values->uvNum - obj->sUV - 1;
+				unsigned long nNormal = values->normalNum - obj->sNormal - 1;
 
 				auto faceVertex = ChPtr::Make_S<ChCpp::ModelFrame::SurFace::SurFaceVertex>();
 				
-				faceVertex->VertexNo = NVertex;
+				faceVertex->vertexNo = nVertex;
 				//if(Obj.second->UVDatas.size() > NUV)faceVertex->UVPos = *Obj.second->UVDatas[NUV];
-				if(Obj->UVDatas.size() > NUV)faceVertex->UVPos = *Obj->UVDatas[NUV];
+				if(obj->uvDatas.size() > nUV)faceVertex->uvPos = *obj->uvDatas[nUV];
 
-				FVList.push_back(faceVertex);
+				fVList.push_back(faceVertex);
 
-				//Meshs->VertexList[NVertex]->Normal += *Obj.second->NormalDatas[NNormal];
-				Meshs->VertexList[NVertex]->Normal += *Obj->NormalDatas[NNormal];
+				//mesh->VertexList[NVertex]->Normal += *Obj.second->NormalDatas[NNormal];
+				mesh->vertexList[nVertex]->normal += *obj->normalDatas[nNormal];
 			}
 
-			if (FVList.size() >= 3)
+			if (fVList.size() >= 3)
 			{
 
-				unsigned long Counters[3];
-				Counters[0] = 0;
-				Counters[1] = 1;
-				Counters[2] = FVList.size() - 1;
+				unsigned long counters[3];
+				counters[0] = 0;
+				counters[1] = 1;
+				counters[2] = fVList.size() - 1;
 
-				ChStd::Bool UpperFlg = true;
+				ChStd::Bool upperFlg = true;
 				
 
-				for (unsigned long i = 0; i < FVList.size() - 2; i++)
+				for (unsigned long i = 0; i < fVList.size() - 2; i++)
 				{
 
 					auto face = ChPtr::Make_S<ChCpp::ModelFrame::SurFace>();
 
-					face->VertexData[0] = *FVList[Counters[2]];
-					face->VertexData[1] = *FVList[Counters[1]];
-					face->VertexData[2] = *FVList[Counters[0]];
+					face->vertexData[0] = *fVList[counters[2]];
+					face->vertexData[1] = *fVList[counters[1]];
+					face->vertexData[2] = *fVList[counters[0]];
 
 					//face->VertexData[0] = *FVList[i];
 					//face->VertexData[1] = *FVList[i + 1];
 					//face->VertexData[2] = *FVList[i + 2];
 
-					face->Materials = MaterialNo - 1;
+					face->materialNo = materialNo - 1;
 
-					if (UpperFlg)
+					if (upperFlg)
 					{
-						Counters[0] = Counters[1];
-						Counters[1] = Counters[2] - 1;
+						counters[0] = counters[1];
+						counters[1] = counters[2] - 1;
 					}
 					else
 					{
-						Counters[2] = Counters[1];
-						Counters[1] = Counters[0] + 1;
+						counters[2] = counters[1];
+						counters[1] = counters[0] + 1;
 					}
 
-					UpperFlg = !UpperFlg;
+					upperFlg = !upperFlg;
 
-					Meshs->FaceList.push_back(face);
+					mesh->faceList.push_back(face);
 				}
 
 			}
 
 
-			for (auto&& Ver : Meshs->VertexList)
+			for (auto&& ver : mesh->vertexList)
 			{
-				Ver->Normal.Normalize();
+				ver->normal.Normalize();
 			}
 
 		}
 
-		auto Frame = ChPtr::Make_S< ChCpp::ModelFrame::Frame>();
+		auto frame = ChPtr::Make_S< ChCpp::ModelFrame::Frame>();
 
 		//Frame->MyName = Obj.first;
-		Frame->MyName = Obj->Objectname;
-		Frame->Parent = _Frame;
-		Frame->Meshs = Meshs;
+		frame->myName = obj->objectName;
+		frame->parent = _frame;
+		frame->mesh = mesh;
 
 
-		_Frame->ChildFrames.push_back(Frame);
+		_frame->childFrames.push_back(frame);
 
 	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::CMObjFile::OutModelFile(const std::string& _FilePath)
+void ChCpp::CMObjFile::OutModelFile(const std::string& _filePath)
 {
-	if (_FilePath.size() <= 0)return;
-	if (_FilePath.rfind(".") == std::string::npos)return;
+	if (_filePath.size() <= 0)return;
+	if (_filePath.rfind(".") == std::string::npos)return;
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::CMObjFile::SetVertex(const std::string& _Line)
+void ChCpp::CMObjFile::SetVertex(const std::string& _line)
 {
-	if (_Line.size() < 2)return;
-	if (_Line[0] != VertexTags)return;
-	if (_Line[1] != ' ')return;
+	if (_line.size() < 2)return;
+	if (_line[0] != vertexTags)return;
+	if (_line[1] != ' ')return;
 
-	auto Pos = ChPtr::Make_S<ChVec3>();
+	auto pos = ChPtr::Make_S<ChVec3>();
 
-	Pos->Deserialize(_Line, 2, " ");
+	pos->Deserialize(_line, 2, " ");
 
-	MakeObject->VertexDatas.push_back(Pos);
+	makeObject->vertexDatas.push_back(pos);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::CMObjFile::SetUV(const std::string& _Line)
+void ChCpp::CMObjFile::SetUV(const std::string& _line)
 {
-	if (_Line.size() < 3)return;
-	if (_Line[0] != UVTags[0])return;
-	if (_Line[1] != UVTags[1])return;
+	if (_line.size() < 3)return;
+	if (_line[0] != uvTags[0])return;
+	if (_line[1] != uvTags[1])return;
 
-	auto UV = ChPtr::Make_S<ChVec2>();
+	auto uv = ChPtr::Make_S<ChVec2>();
 
-	UV->Deserialize(_Line, 3, " ");
+	uv->Deserialize(_line, 3, " ");
 
-	MakeObject->UVDatas.push_back(UV);
+	makeObject->uvDatas.push_back(uv);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::CMObjFile::SetNormal(const std::string& _Line)
+void ChCpp::CMObjFile::SetNormal(const std::string& _line)
 {
-	if (_Line.size() < 3)return;
-	if (_Line[0] != NormalTags[0])return;
-	if (_Line[1] != NormalTags[1])return;
+	if (_line.size() < 3)return;
+	if (_line[0] != normalTags[0])return;
+	if (_line[1] != normalTags[1])return;
 
-	auto Normal = ChPtr::Make_S<ChVec3>();
+	auto normal = ChPtr::Make_S<ChVec3>();
 
-	Normal->Deserialize(_Line, 3, " ");
+	normal->Deserialize(_line, 3, " ");
 
-	MakeObject->NormalDatas.push_back(Normal);
+	makeObject->normalDatas.push_back(normal);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::CMObjFile::SetFace(const std::string& _Line)
+void ChCpp::CMObjFile::SetFace(const std::string& _line)
 {
-	if (_Line.size() < 2)return;
-	if (_Line[0] != MeshTags)return;
-	if (_Line[1] != ' ')return;
+	if (_line.size() < 2)return;
+	if (_line[0] != meshTags)return;
+	if (_line[1] != ' ')return;
 
-	unsigned long Pos = _Line.find(' ');
+	unsigned long pos = _line.find(' ');
 
-	unsigned long TmpPos = Pos;
+	unsigned long tmpPos = pos;
 
-	unsigned long End = 0;
+	unsigned long end = 0;
 
 	auto data = ChPtr::Make_S<ChCpp::CMObjFile::ObjFileModelData::MeshData>();
 
-	data->TargetMaterialName = BlockMaterial;
+	data->targetMaterialName = blockMaterial;
 
-	MakeObject->MeshDatas.push_back(data);
+	makeObject->meshDatas.push_back(data);
 
-	ChStd::Bool EndFlg = false;
+	ChStd::Bool endFlg = false;
 
 	while (1)
 	{
 
-		TmpPos = _Line.find(' ', Pos + 1);
+		tmpPos = _line.find(' ', pos + 1);
 
-		if (_Line.size() < TmpPos)
+		if (_line.size() < tmpPos)
 		{
-			EndFlg = true;
-			TmpPos = _Line.size();
+			endFlg = true;
+			tmpPos = _line.size();
 		}
 
-		auto Mdata = ChPtr::Make_S<ChCpp::CMObjFile::ObjFileModelData::MeshData::Data>();
+		auto mdata = ChPtr::Make_S<ChCpp::CMObjFile::ObjFileModelData::MeshData::Data>();
 
 
-		std::string Tmp = _Line.substr(Pos, TmpPos - Pos);
+		std::string tmp = _line.substr(pos, tmpPos - pos);
 
-		unsigned long Val[3] = { 0xffffffff,0xffffffff ,0xffffffff };
+		unsigned long val[3] = { 0xffffffff,0xffffffff ,0xffffffff };
 
 		//SrashCount//
-		unsigned long SCount = 0;
+		unsigned long sCount = 0;
 
-		unsigned long Start = 0;
+		unsigned long start = 0;
 
 		while (1)
 		{
-			End = Tmp.find('/', Start);
+			end = tmp.find('/', start);
 
-			if (Tmp.size() <= End)End = Tmp.size();
+			if (tmp.size() <= end)end = tmp.size();
 
-			std::string ST = Tmp.substr(Start, End - Start);
+			std::string ST = tmp.substr(start, end - start);
 
-			if (Tmp[Start] != '/')
+			if (tmp[start] != '/')
 			{
-				Val[SCount] = ChStr::GetIntegialFromText<unsigned long>(Tmp.substr(Start, End - Start));
+				val[sCount] = ChStr::GetIntegialFromText<unsigned long>(tmp.substr(start, end - start));
 			}
 
-			if (Tmp.size() <= End)break;
+			if (tmp.size() <= end)break;
 
-			SCount++;
-			Start = End + 1;
+			sCount++;
+			start = end + 1;
 		}
 
-		Pos += Tmp.length();
+		pos += tmp.length();
 
-		Mdata->VertexNum = Val[0];
-		Mdata->UVNum = Val[1];
-		Mdata->NormalNum = Val[2];
+		mdata->vertexNum = val[0];
+		mdata->uvNum = val[1];
+		mdata->normalNum = val[2];
 
-		data->Values.push_back(Mdata);
-		if (EndFlg)break;
+		data->values.push_back(mdata);
+		if (endFlg)break;
 
-		End = 0;
+		end = 0;
 
 	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::CMObjFile::SetMateBlock(const std::string& _Line)
+void ChCpp::CMObjFile::SetMateBlock(const std::string& _line)
 {
 
-	if (_Line.size() < 7)return;
-	if (_Line[0] != MaterialBlockTags[0])return;
-	if (_Line[1] != MaterialBlockTags[1])return;
-	if (_Line[2] != MaterialBlockTags[2])return;
-	if (_Line[3] != MaterialBlockTags[3])return;
-	if (_Line[4] != MaterialBlockTags[4])return;
-	if (_Line[5] != MaterialBlockTags[5])return;
+	if (_line.size() < 7)return;
+	if (_line[0] != materialBlockTags[0])return;
+	if (_line[1] != materialBlockTags[1])return;
+	if (_line[2] != materialBlockTags[2])return;
+	if (_line[3] != materialBlockTags[3])return;
+	if (_line[4] != materialBlockTags[4])return;
+	if (_line[5] != materialBlockTags[5])return;
 
-	BlockMaterial = &_Line[7];
+	blockMaterial = &_line[7];
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::CMObjFile::SetMatAmbient(const std::string& _Line)
+void ChCpp::CMObjFile::SetMatAmbient(const std::string& _line)
 {
-	if (_Line.size() < 3)return;
-	if (_Line[0] != MatAmbientTags[0])return;
-	if (_Line[1] != MatAmbientTags[1])return;
+	if (_line.size() < 3)return;
+	if (_line[0] != matAmbientTags[0])return;
+	if (_line[1] != matAmbientTags[1])return;
 
-	TargetMaterial->Ambient.Deserialize(&_Line[3], 0, " ");
+	targetMaterial->ambient.Deserialize(&_line[3], 0, " ");
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::CMObjFile::SetMatDiffuse(const std::string& _Line)
+void ChCpp::CMObjFile::SetMatDiffuse(const std::string& _line)
 {
 
-	if (_Line.size() < 3)return;
-	if (_Line[0] != MatDiffuseTags[0])return;
-	if (_Line[1] != MatDiffuseTags[1])return;
+	if (_line.size() < 3)return;
+	if (_line[0] != matDiffuseTags[0])return;
+	if (_line[1] != matDiffuseTags[1])return;
 
-	TargetMaterial->Diffuse.Deserialize(&_Line[3], 0, " ");
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-
-void ChCpp::CMObjFile::SetMatSpecular(const std::string& _Line)
-{
-
-	if (_Line.size() < 3)return;
-	if (_Line[0] != MatSpecularTags[0])return;
-	if (_Line[1] != MatSpecularTags[1])return;
-
-	TargetMaterial->Specular.Deserialize(&_Line[3], 0, " ");
+	targetMaterial->diffuse.Deserialize(&_line[3], 0, " ");
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::CMObjFile::SetMatSpecularHighLight(const std::string& _Line)
+void ChCpp::CMObjFile::SetMatSpecular(const std::string& _line)
 {
 
-	if (_Line.size() < 3)return;
-	if (_Line[0] != MatSpecularHighLightTags[0])return;
-	if (_Line[1] != MatSpecularHighLightTags[1])return;
+	if (_line.size() < 3)return;
+	if (_line[0] != matSpecularTags[0])return;
+	if (_line[1] != matSpecularTags[1])return;
 
-	TargetMaterial->SpePow = ChStr::GetFloatingFromText<float>(&_Line[3], 0);
+	targetMaterial->specular.Deserialize(&_line[3], 0, " ");
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::CMObjFile::SetMatDissolve(const std::string& _Line)
+void ChCpp::CMObjFile::SetMatSpecularHighLight(const std::string& _line)
 {
 
-	if (_Line.size() < 2)return;
-	if (_Line[0] != MatDissolveTags)return;
-	if (_Line[1] != ' ')return;
+	if (_line.size() < 3)return;
+	if (_line[0] != matSpecularHighLightTags[0])return;
+	if (_line[1] != matSpecularHighLightTags[1])return;
 
-	TargetMaterial->Alpha = ChStr::GetFloatingFromText<float>(&_Line[2], 0);
+	targetMaterial->spePow = ChStr::GetFloatingFromText<float>(&_line[3], 0);
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::CMObjFile::SetMatODensity(const std::string& _Line)
+void ChCpp::CMObjFile::SetMatDissolve(const std::string& _line)
 {
-	if (_Line.size() < 3)return;
 
-	if (_Line[0] != MatODensityTags[0])return;
-	if (_Line[1] != MatODensityTags[1])return;
+	if (_line.size() < 2)return;
+	if (_line[0] != matDissolveTags)return;
+	if (_line[1] != ' ')return;
 
-	TargetMaterial->ODensity = ChStr::GetFloatingFromText<float>(&_Line[3], 0);
+	targetMaterial->alpha = ChStr::GetFloatingFromText<float>(&_line[2], 0);
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::CMObjFile::SetMatAmbientMap(const std::string& _Line)
+void ChCpp::CMObjFile::SetMatODensity(const std::string& _line)
 {
-	if (_Line.size() < 7)return;
+	if (_line.size() < 3)return;
+		
+	if (_line[0] != matODensityTags[0])return;
+	if (_line[1] != matODensityTags[1])return;
 
-	if (_Line[0] != MatAmbientMapTags[0])return;
-	if (_Line[1] != MatAmbientMapTags[1])return;
-	if (_Line[2] != MatAmbientMapTags[2])return;
-	if (_Line[3] != MatAmbientMapTags[3])return;
-	if (_Line[4] != MatAmbientMapTags[4])return;
-	if (_Line[5] != MatAmbientMapTags[5])return;
-
-	TargetMaterial->AmbientMap = LoadTextureName(&_Line[7]);
+	targetMaterial->ODensity = ChStr::GetFloatingFromText<float>(&_line[3], 0);
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::CMObjFile::SetMatDiffuseMap(const std::string& _Line)
+void ChCpp::CMObjFile::SetMatAmbientMap(const std::string& _line)
 {
+	if (_line.size() < 7)return;
+		
+	if (_line[0] != matAmbientMapTags[0])return;
+	if (_line[1] != matAmbientMapTags[1])return;
+	if (_line[2] != matAmbientMapTags[2])return;
+	if (_line[3] != matAmbientMapTags[3])return;
+	if (_line[4] != matAmbientMapTags[4])return;
+	if (_line[5] != matAmbientMapTags[5])return;
 
-	if (_Line.size() < 7)return;
-
-	if (_Line[0] != MatDiffuseMapTags[0])return;
-	if (_Line[1] != MatDiffuseMapTags[1])return;
-	if (_Line[2] != MatDiffuseMapTags[2])return;
-	if (_Line[3] != MatDiffuseMapTags[3])return;
-	if (_Line[4] != MatDiffuseMapTags[4])return;
-	if (_Line[5] != MatDiffuseMapTags[5])return;
-
-	TargetMaterial->DiffuseMap = LoadTextureName(&_Line[7]);
+	targetMaterial->ambientMap = LoadTextureName(&_line[7]);
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::CMObjFile::SetMatSpecularMap(const std::string& _Line)
+void ChCpp::CMObjFile::SetMatDiffuseMap(const std::string& _line)
 {
 
-	if (_Line.size() < 7)return;
+	if (_line.size() < 7)return;
 
-	if (_Line[0] != MatSpecularMapTags[0])return;
-	if (_Line[1] != MatSpecularMapTags[1])return;
-	if (_Line[2] != MatSpecularMapTags[2])return;
-	if (_Line[3] != MatSpecularMapTags[3])return;
-	if (_Line[4] != MatSpecularMapTags[4])return;
-	if (_Line[5] != MatSpecularMapTags[5])return;
+	if (_line[0] != matDiffuseMapTags[0])return;
+	if (_line[1] != matDiffuseMapTags[1])return;
+	if (_line[2] != matDiffuseMapTags[2])return;
+	if (_line[3] != matDiffuseMapTags[3])return;
+	if (_line[4] != matDiffuseMapTags[4])return;
+	if (_line[5] != matDiffuseMapTags[5])return;
 
-	TargetMaterial->SpecularMap = LoadTextureName(&_Line[7]);
+	targetMaterial->diffuseMap = LoadTextureName(&_line[7]);
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::CMObjFile::SetMatSpecularHighLightMap(const std::string& _Line)
+void ChCpp::CMObjFile::SetMatSpecularMap(const std::string& _line)
 {
 
-	if (_Line.size() < 7)return;
+	if (_line.size() < 7)return;
 
-	if (_Line[0] != MatSpecularHighLightMapTags[0])return;
-	if (_Line[1] != MatSpecularHighLightMapTags[1])return;
-	if (_Line[2] != MatSpecularHighLightMapTags[2])return;
-	if (_Line[3] != MatSpecularHighLightMapTags[3])return;
-	if (_Line[4] != MatSpecularHighLightMapTags[4])return;
-	if (_Line[5] != MatSpecularHighLightMapTags[5])return;
+	if (_line[0] != matSpecularMapTags[0])return;
+	if (_line[1] != matSpecularMapTags[1])return;
+	if (_line[2] != matSpecularMapTags[2])return;
+	if (_line[3] != matSpecularMapTags[3])return;
+	if (_line[4] != matSpecularMapTags[4])return;
+	if (_line[5] != matSpecularMapTags[5])return;
 
-	TargetMaterial->SpecularHighLightMap = LoadTextureName(&_Line[7]);
+	targetMaterial->specularMap = LoadTextureName(&_line[7]);
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::CMObjFile::SetMatBumpMap(const std::string& _Line)
+void ChCpp::CMObjFile::SetMatSpecularHighLightMap(const std::string& _line)
 {
 
-	if (_Line.size() < 9)return;
+	if (_line.size() < 7)return;
+		
+	if (_line[0] != matSpecularHighLightMapTags[0])return;
+	if (_line[1] != matSpecularHighLightMapTags[1])return;
+	if (_line[2] != matSpecularHighLightMapTags[2])return;
+	if (_line[3] != matSpecularHighLightMapTags[3])return;
+	if (_line[4] != matSpecularHighLightMapTags[4])return;
+	if (_line[5] != matSpecularHighLightMapTags[5])return;
 
-	if (_Line[0] != MatBumpMapTags[0])return;
-	if (_Line[1] != MatBumpMapTags[1])return;
-	if (_Line[2] != MatBumpMapTags[2])return;
-	if (_Line[3] != MatBumpMapTags[3])return;
-	if (_Line[4] != MatBumpMapTags[4])return;
-	if (_Line[5] != MatBumpMapTags[5])return;
-	if (_Line[6] != MatBumpMapTags[6])return;
-	if (_Line[7] != MatBumpMapTags[7])return;
-
-	TargetMaterial->BumpMap = LoadTextureName(&_Line[9]);
+	targetMaterial->specularHighLightMap = LoadTextureName(&_line[7]);
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::CMObjFile::SetMatBumpMap2(const std::string& _Line)
+void ChCpp::CMObjFile::SetMatBumpMap(const std::string& _line)
 {
-	if (_Line.size() < 5)return;
 
-	if (_Line[0] != MatBumpMapTags2[0])return;
-	if (_Line[1] != MatBumpMapTags2[1])return;
-	if (_Line[2] != MatBumpMapTags2[2])return;
-	if (_Line[3] != MatBumpMapTags2[3])return;
+	if (_line.size() < 9)return;
+		
+	if (_line[0] != matBumpMapTags[0])return;
+	if (_line[1] != matBumpMapTags[1])return;
+	if (_line[2] != matBumpMapTags[2])return;
+	if (_line[3] != matBumpMapTags[3])return;
+	if (_line[4] != matBumpMapTags[4])return;
+	if (_line[5] != matBumpMapTags[5])return;
+	if (_line[6] != matBumpMapTags[6])return;
+	if (_line[7] != matBumpMapTags[7])return;
 
-	TargetMaterial->BumpMap = LoadTextureName(&_Line[5]);
+	targetMaterial->bumpMap = LoadTextureName(&_line[9]);
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::CMObjFile::SetMatMetallicMap(const std::string& _Line)
+void ChCpp::CMObjFile::SetMatBumpMap2(const std::string& _line)
 {
+	if (_line.size() < 5)return;
+		
+	if (_line[0] != matBumpMapTags2[0])return;
+	if (_line[1] != matBumpMapTags2[1])return;
+	if (_line[2] != matBumpMapTags2[2])return;
+	if (_line[3] != matBumpMapTags2[3])return;
 
-	if (_Line.size() < 7)return;
-
-	if (_Line[0] != MatMetallicMapTags[0])return;
-	if (_Line[1] != MatMetallicMapTags[1])return;
-	if (_Line[2] != MatMetallicMapTags[2])return;
-	if (_Line[3] != MatMetallicMapTags[3])return;
-	if (_Line[4] != MatMetallicMapTags[4])return;
-	if (_Line[5] != MatMetallicMapTags[5])return;
-
-	TargetMaterial->MetallicMap = LoadTextureName(&_Line[7]);
+	targetMaterial->bumpMap = LoadTextureName(&_line[5]);
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::CMObjFile::SetMatMetallicMap2(const std::string& _Line)
+void ChCpp::CMObjFile::SetMatMetallicMap(const std::string& _line)
 {
 
-	if (_Line.size() < 3)return;
+	if (_line.size() < 7)return;
 
-	if (_Line[0] != MatMetallicMapTags2[0])return;
-	if (_Line[1] != MatMetallicMapTags2[1])return;
+	if (_line[0] != matMetallicMapTags[0])return;
+	if (_line[1] != matMetallicMapTags[1])return;
+	if (_line[2] != matMetallicMapTags[2])return;
+	if (_line[3] != matMetallicMapTags[3])return;
+	if (_line[4] != matMetallicMapTags[4])return;
+	if (_line[5] != matMetallicMapTags[5])return;
 
-	TargetMaterial->MetallicMap = LoadTextureName(&_Line[3]);
+	targetMaterial->metallicMap = LoadTextureName(&_line[7]);
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::CMObjFile::SetMatNormalMap(const std::string& _Line)
+void ChCpp::CMObjFile::SetMatMetallicMap2(const std::string& _line)
 {
 
-	if (_Line.size() < 5)return;
+	if (_line.size() < 3)return;
+		
+	if (_line[0] != matMetallicMapTags2[0])return;
+	if (_line[1] != matMetallicMapTags2[1])return;
 
-	if (_Line[0] != MatNormalMapTags[0])return;
-	if (_Line[1] != MatNormalMapTags[1])return;
-	if (_Line[2] != MatNormalMapTags[2])return;
-	if (_Line[3] != MatNormalMapTags[3])return;
-
-	TargetMaterial->NormalMap = LoadTextureName(&_Line[5]);
+	targetMaterial->metallicMap = LoadTextureName(&_line[3]);
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-std::string ChCpp::CMObjFile::LoadTextureName(const std::string& _Line)
+void ChCpp::CMObjFile::SetMatNormalMap(const std::string& _line)
 {
 
-	ChStd::Bool LoadFlg = false;
-	std::string Name = "";
+	if (_line.size() < 5)return;
+		
+	if (_line[0] != matNormalMapTags[0])return;
+	if (_line[1] != matNormalMapTags[1])return;
+	if (_line[2] != matNormalMapTags[2])return;
+	if (_line[3] != matNormalMapTags[3])return;
 
-	size_t NowPos = 0;
-	size_t NowEndPos = 0;
+	targetMaterial->normalMap = LoadTextureName(&_line[5]);
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+std::string ChCpp::CMObjFile::LoadTextureName(const std::string& _line)
+{
+
+	ChStd::Bool loadFlg = false;
+	std::string name = "";
+
+	size_t nowPos = 0;
+	size_t nowEndPos = 0;
 
 	while (1)
 	{
-		NowPos = NowEndPos;
-		NowEndPos = _Line.find(' ', NowPos + 1);
+		nowPos = nowEndPos;
+		nowEndPos = _line.find(' ', nowPos + 1);
 
-		if (NowEndPos == _Line.npos)NowEndPos = _Line.length();
+		if (nowEndPos == _line.npos)nowEndPos = _line.length();
 
-		if (_Line[NowPos + 1] == '-')
+		if (_line[nowPos + 1] == '-')
 		{
 
-			NowPos = NowEndPos;
-			NowEndPos = _Line.find(' ', NowPos + 1);
+			nowPos = nowEndPos;
+			nowEndPos = _line.find(' ', nowPos + 1);
 
 			continue;
 		}
 
-		Name = _Line.substr(NowPos, NowEndPos - NowPos);
+		name = _line.substr(nowPos, nowEndPos - nowPos);
 		break;
 	}
 
-	return Name;
+	return name;
 }

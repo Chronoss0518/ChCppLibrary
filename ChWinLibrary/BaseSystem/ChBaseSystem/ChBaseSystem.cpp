@@ -14,13 +14,13 @@ using namespace ChSystem;
 
 ChStd::Bool BaseSystem::IsPushKey(const int _Key)
 {
-	if (!System->IsUseSystemButtons())return 0;
-	return ButtonList.GetBitFlg(_Key);
+	if (!system->IsUseSystemButtons())return 0;
+	return buttonList.GetBitFlg(_Key);
 }
 
 ChStd::Bool BaseSystem::IsPushKeyNoHold(const int _Key)
 {
-	return ButtonList.GetBitFlg(_Key);
+	return buttonList.GetBitFlg(_Key);
 }
 
 ChStd::Bool BaseSystem::IsPause(const int _Key)

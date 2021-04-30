@@ -11,49 +11,49 @@ using namespace ChCpp;
 
 std::string TextObject::GetText()const
 {
-	std::string Out = "";
+	std::string out = "";
 
-	for (auto Text : FileText)
+	for (auto text : textLines)
 	{
-		Out += Text + "\n";
+		out += text + "\n";
 	}
 
-	return Out;
+	return out;
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-std::string TextObject::GetTextLine(const size_t _Index)const
+std::string TextObject::GetTextLine(const size_t _index)const
 {
-	size_t Tmp = _Index + 1;
-	if (Tmp >= FileText.size())return "";
+	size_t tmp = _index + 1;
+	if (tmp >= textLines.size())return "";
 
-	return FileText[Tmp];
+	return textLines[tmp];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void TextObject::SetText(const std::string _Str)
+void TextObject::SetText(const std::string _str)
 {
-	FileText.clear();
-	if (_Str.find("\n") == _Str.npos)
+	textLines.clear();
+	if (_str.find("\n") == _str.npos)
 	{
-		FileText.push_back(_Str);
+		textLines.push_back(_str);
 		return;
 	}
 
-	size_t TmpPos = 0;
+	size_t tmpPos = 0;
 	size_t testPos = 0;
 
 	while (true)
 	{
-		testPos = _Str.find("\n", TmpPos);
+		testPos = _str.find("\n", tmpPos);
 
-		if (testPos == _Str.npos)break;
+		if (testPos == _str.npos)break;
 
-		FileText.push_back(_Str.substr(TmpPos, testPos - TmpPos));
-		TmpPos = testPos + 1;
+		textLines.push_back(_str.substr(tmpPos, testPos - tmpPos));
+		tmpPos = testPos + 1;
 
 
 	}
@@ -63,44 +63,44 @@ void TextObject::SetText(const std::string _Str)
 ///////////////////////////////////////////////////////////////////////////////////////
 
 void TextObject::SetTextLine(
-	const std::string _Str
-	, const unsigned int _SetIndex)
+	const std::string _str
+	, const unsigned int _setIndex)
 {
-	if (_Str.find("\n") != std::string::npos)return;
-	if (_SetIndex > FileText.size())return;
+	if (_str.find("\n") != std::string::npos)return;
+	if (_setIndex > textLines.size())return;
 
-	if (_SetIndex == FileText.size())
+	if (_setIndex == textLines.size())
 	{
-		FileText.push_back(_Str);
+		textLines.push_back(_str);
 		return;
 	}
 
-	FileText.insert(FileText.begin() + (FileText.size() - _SetIndex - 1), _Str);
+	textLines.insert(textLines.begin() + (textLines.size() - _setIndex - 1), _str);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
 unsigned long TextObject::FindLine(
-	const std::string& _FindStr
-	, const size_t _StartPos)const
+	const std::string& _findStr
+	, const size_t _startPos)const
 {
 
-	std::string Str = GetText();
+	std::string str = GetText();
 
-	size_t Tmp = _StartPos;
-	size_t Base = Str.find(_FindStr);
+	size_t tmp = _startPos;
+	size_t Base = str.find(_findStr);
 
-	if (Base == Str.npos)return 0;
+	if (Base == str.npos)return 0;
 	unsigned long count = 1;
 	while (1)
 	{
-		Tmp = Str.find("\n", Tmp);
+		tmp = str.find("\n", tmp);
 
-		if (Tmp >= Base)return count;
+		if (tmp >= Base)return count;
 
 		count++;
 
-		Tmp++;
+		tmp++;
 
 	}
 

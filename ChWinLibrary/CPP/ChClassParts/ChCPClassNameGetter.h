@@ -5,7 +5,7 @@
 
 namespace ChCpp
 {
-	namespace ChCp
+	namespace ClassPerts
 	{
 		//継承して利用する//
 		//自身のクラスネーム及びクラス自身の型を取得できる//
@@ -19,18 +19,18 @@ namespace ChCpp
 			template<class T>
 			inline std::string GetName() 
 			{
-				std::string Tmp;
+				std::string tmp;
 				
 #ifdef __GNUC__
 
-				Tmp = typeid(T).name();
+				tmp = typeid(T).name();
 
 #else
 
-				Tmp = typeid(T).raw_name();
+				tmp = typeid(T).raw_name();
 
 #endif
-				return Tmp;
+				return tmp;
 			}
 
 		protected:

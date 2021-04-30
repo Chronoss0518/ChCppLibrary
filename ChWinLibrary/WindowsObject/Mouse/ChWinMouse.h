@@ -11,7 +11,7 @@ namespace ChSystem
 namespace ChWin
 {
 
-	class MouseController :public ChCpp::ChCp::Initializer,public ChCpp::ChCp::Releaser
+	class MouseController :public ChCpp::ClassPerts::Initializer,public ChCpp::ClassPerts::Releaser
 	{
 	public:
 

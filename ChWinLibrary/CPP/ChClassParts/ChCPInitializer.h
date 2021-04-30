@@ -4,7 +4,7 @@
 
 namespace ChCpp
 {
-	namespace ChCp
+	namespace ClassPerts
 	{
 		//継承して利用する//
 		//初期化が完了しているか確認できるようになる//
@@ -18,7 +18,7 @@ namespace ChCpp
 
 			//初期化(Initialize)する際に呼ぶことを必須とする関数//
 			//Initializeしたという判定を勝手に行うことがないため必要としている//
-			inline void SetInitFlg(const ChStd::Bool _Flg) { InitFlg = _Flg; }
+			inline void SetInitFlg(const ChStd::Bool _flg) { initFlg = _flg; }
 
 			///////////////////////////////////////////////////////////////////////////////////
 
@@ -26,11 +26,11 @@ namespace ChCpp
 
 			///////////////////////////////////////////////////////////////////////////////////
 
-			inline explicit operator bool()const { return InitFlg; }
+			inline explicit operator bool()const { return initFlg; }
 
 			///////////////////////////////////////////////////////////////////////////////////
 
-			inline ChStd::Bool IsInit() { return InitFlg; }
+			inline ChStd::Bool IsInit() { return initFlg; }
 
 			///////////////////////////////////////////////////////////////////////////////////
 
@@ -44,7 +44,7 @@ namespace ChCpp
 
 		private:
 
-			ChStd::Bool InitFlg = false;
+			ChStd::Bool initFlg = false;
 
 		};
 		

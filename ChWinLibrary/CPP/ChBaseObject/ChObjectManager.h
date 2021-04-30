@@ -11,7 +11,7 @@ namespace ChCpp
 
 	
 
-	class ObjectManager:public ChCp::Releaser
+	class ObjectManager:public ClassPerts::Releaser
 	{
 	public:
 
@@ -31,20 +31,20 @@ namespace ChCpp
 		//オブジェクトを登録する//
 		//BaseObjectを継承したオブジェクトのみ登録可能//
 		template<class T>
-		auto SetObject(const std::string& _ObjectName, const std::string& _Tag) ->typename std::enable_if
+		auto SetObject(const std::string& _objectName, const std::string& _tag) ->typename std::enable_if
 			<std::is_base_of<BaseObject, T>::value, ChPtr::Shared<T>>::type
 		{
 
-			ChPtr::Shared<BaseObject> TmpObj = ChPtr::Make_S<T>();
+			ChPtr::Shared<BaseObject> tmpObj = ChPtr::Make_S<T>();
 
-			TmpObj->BaseInit(_ObjectName, _Tag, this);
+			tmpObj->BaseInit(_objectName, _tag, this);
 
-			TmpObj->Init();
+			tmpObj->Init();
 
-			ObjectList[_Tag].push_back(TmpObj);
-			RootObjects.push_back(TmpObj);
+			objectList[_tag].push_back(tmpObj);
+			rootObjects.push_back(tmpObj);
 
-			return ChPtr::SharedSafeCast<T>(TmpObj);
+			return ChPtr::SharedSafeCast<T>(tmpObj);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////////
@@ -52,9 +52,9 @@ namespace ChCpp
 
 		std::vector<ChPtr::Shared<BaseObject>> GetObjectList();
 
-		std::vector<ChPtr::Shared<BaseObject>> GetObjectListForTag(const std::string& _TagName);
+		std::vector<ChPtr::Shared<BaseObject>> GetObjectListForTag(const std::string& _tagName);
 
-		std::vector<ChPtr::Shared<BaseObject>> GetObjectListForName(const std::string& _Name);
+		std::vector<ChPtr::Shared<BaseObject>> GetObjectListForName(const std::string& _name);
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//UpdateFunction//
@@ -86,19 +86,19 @@ namespace ChCpp
 		//保持しているすべてのオブジェクトを削除する。
 		inline void ClearObject()
 		{
-			if (!ObjectList.empty())ObjectList.clear();
+			if (!objectList.empty())objectList.clear();
 		}
 
 		//選択されたタグのオブジェクトをすべて消去する//
-		void ClearObjectForTag(const std::string& _Tags);
+		void ClearObjectForTag(const std::string& _tags);
 
 		//選択された名前のオブジェクトをすべて消去する//
-		void ClearObjectForName(const std::string& _Name);
+		void ClearObjectForName(const std::string& _name);
 
 		//選択されたタグと関連する名前のオブジェクトをすべて消去する//
 		void ClearObjectForTagAndName(
-			const std::string& _Name,
-			const std::string& _Tags);
+			const std::string& _name,
+			const std::string& _tags);
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
@@ -118,9 +118,9 @@ namespace ChCpp
 
 	private:
 
-		std::map<std::string, std::vector<ChPtr::Shared<BaseObject>>>ObjectList;
+		std::map<std::string, std::vector<ChPtr::Shared<BaseObject>>>objectList;
 
-		std::vector<ChPtr::Shared<BaseObject>>RootObjects;
+		std::vector<ChPtr::Shared<BaseObject>>rootObjects;
 
 
 		///////////////////////////////////////////////////////////////////////////////////////

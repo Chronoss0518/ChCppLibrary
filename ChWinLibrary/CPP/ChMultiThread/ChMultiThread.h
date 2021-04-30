@@ -19,19 +19,19 @@ namespace ChCpp
 
 		ChMultiThread() {}
 
-		ChMultiThread(const std::function<void(void)> _Func);
+		ChMultiThread(const std::function<void(void)> _func);
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
 		//マルチスレッドで動かしたい関数をセットする//
-		void Init(const std::function<void(void)> _Func);
+		void Init(const std::function<void(void)> _func);
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
 
 		//マルチスレッドで動いている関数が終わったかの判定//
-		ChStd::Bool IsEndFunc() { return EndFlg; }
+		ChStd::Bool IsEndFunc() { return endFlg; }
 
 		///////////////////////////////////////////////////////////////////////////////////
 
@@ -42,11 +42,11 @@ namespace ChCpp
 
 		void Function();
 
-		std::thread Thread;
+		std::thread thread;
 
-		std::function<void(void)> Func = nullptr;
+		std::function<void(void)> func = nullptr;
 
-		ChStd::Bool EndFlg = false;
+		ChStd::Bool endFlg = false;
 
 	};
 

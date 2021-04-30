@@ -9,7 +9,7 @@ namespace ChCpp
 	class BaseObject;
 
 	//ChBaseObjectに対するコンポーネントシステム//
-	 class BaseComponent :public  std::enable_shared_from_this<BaseComponent>,public ChCpp::ChCp::Releaser
+	 class BaseComponent :public  std::enable_shared_from_this<BaseComponent>,public ChCpp::ClassPerts::Releaser
 	{
 	public:
 
@@ -35,18 +35,16 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		void SetUsing(const ChStd::Bool _Flg) { UseFlg = _Flg; }
+		void SetUsing(const ChStd::Bool _Flg) { useFlg = _Flg; }
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
 
-		ChStd::Bool IsDeth() { return DFlg; }
+		ChStd::Bool IsDeth() { return dFlg; }
 
-		ChStd::Bool IsUse() { return UseFlg; }
+		ChStd::Bool IsUse() { return useFlg; }
 
 	private:
-
-		ChCpp::BitBool FunctionFlgs = ChCpp::BitBool(2);
 
 	protected:
 
@@ -56,14 +54,14 @@ namespace ChCpp
 		//直接本体に触りたいときに呼ぶ関数//
 		template<class Class = BaseObject>
 		ChStd::Bool LookObj(typename
-			std::enable_if<std::is_base_of<BaseObject, Class>::value, ChPtr::Shared<Class>>::type _Out)
+			std::enable_if<std::is_base_of<BaseObject, Class>::value, ChPtr::Shared<Class>>::type _out)
 			
 		{
-			auto This = ChPtr::SharedSafeCast<Class>(Obj);
+			auto testObj = ChPtr::SharedSafeCast<Class>(obj);
 
-			if (This == nullptr)return false;
+			if (testObj == nullptr)return false;
 
-			_Out = This;
+			_out = testObj;
 
 			return true;
 
@@ -75,7 +73,7 @@ namespace ChCpp
 			typename std::enable_if<std::is_base_of<BaseObject, Class>::value, ChPtr::Shared<Class>>::type
 
 		{
-			return ChPtr::SharedSafeCast<Class>(Obj);
+			return ChPtr::SharedSafeCast<Class>(obj);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -85,7 +83,7 @@ namespace ChCpp
 
 		BaseComponent() {}
 
-		ChStd::Bool UseFlg = true;
+		ChStd::Bool useFlg = true;
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//UpdateFuncsions//
@@ -109,14 +107,14 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//セットされる際に呼ばれる//
-		void BaseInit(ChPtr::Shared<BaseObject> _Obj);
+		void BaseInit(ChPtr::Shared<BaseObject> _obj);
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 
-		ChPtr::Shared<BaseObject> Obj = nullptr;
+		ChPtr::Shared<BaseObject> obj = nullptr;
 
-		ChStd::Bool DFlg = false;
+		ChStd::Bool dFlg = false;
 
 
 	};

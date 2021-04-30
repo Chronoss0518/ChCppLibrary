@@ -13,7 +13,7 @@ namespace ChSystem
 namespace ChWin
 {
 
-	typedef class FileDialog:ChCpp::ChCp::Initializer,public ChCpp::ChCp::Releaser
+	typedef class FileDialog:ChCpp::ClassPerts::Initializer,public ChCpp::ClassPerts::Releaser
 	{
 	public:
 

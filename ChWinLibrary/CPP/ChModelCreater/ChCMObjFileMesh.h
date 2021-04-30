@@ -16,22 +16,22 @@ namespace ChCpp
 
 		struct ObjFileMaterialData
 		{
-			ChVec3 Ambient;
-			ChVec3 Diffuse;
-			ChVec3 Specular;
+			ChVec3 ambient;
+			ChVec3 diffuse;
+			ChVec3 specular;
 
-			float SpePow = 1.0f;
-			float Alpha = 1.0f;
+			float spePow = 1.0f;
+			float alpha = 1.0f;
 			float ODensity = 1.0f;
 
-			std::string AmbientMap = "";
-			std::string DiffuseMap = "";
-			std::string SpecularMap = "";
-			std::string SpecularHighLightMap = "";
-			std::string BumpMap = "";
-			std::string MetallicMap = "";
-			std::string AlphaMap = "";
-			std::string NormalMap = "";
+			std::string ambientMap = "";
+			std::string diffuseMap = "";
+			std::string specularMap = "";
+			std::string specularHighLightMap = "";
+			std::string bumpMap = "";
+			std::string metallicMap = "";
+			std::string alphaMap = "";
+			std::string normalMap = "";
 		};
 
 		struct ObjFileModelData
@@ -41,89 +41,89 @@ namespace ChCpp
 
 				struct Data
 				{
-					unsigned long VertexNum;
-					unsigned long NormalNum;
-					unsigned long UVNum;
+					unsigned long vertexNum;
+					unsigned long normalNum;
+					unsigned long uvNum;
 				};
 
-				std::string TargetMaterialName = "";
-				std::vector<ChPtr::Shared<Data>> Values;
+				std::string targetMaterialName = "";
+				std::vector<ChPtr::Shared<Data>> values;
 			};
 
-			std::vector<ChPtr::Shared<ChVec3>> VertexDatas;
-			std::vector<ChPtr::Shared<ChVec2>> UVDatas;
-			std::vector<ChPtr::Shared<ChVec3>> NormalDatas;
+			std::vector<ChPtr::Shared<ChVec3>> vertexDatas;
+			std::vector<ChPtr::Shared<ChVec2>> uvDatas;
+			std::vector<ChPtr::Shared<ChVec3>> normalDatas;
 
-			unsigned long SVertex = 0;
-			unsigned long SUV = 0;
-			unsigned long SNormal = 0;
+			unsigned long sVertex = 0;
+			unsigned long sUV = 0;
+			unsigned long sNormal = 0;
 
 			//std::vector<ChPtr::Shared<ObjFileModelData>> ChildObjects;
 			//ChPtr::Shared<ObjFileModelData> ParentObject = nullptr;
 
-			std::vector<ChPtr::Shared<MeshData>> MeshDatas;
-			std::string Objectname;
+			std::vector<ChPtr::Shared<MeshData>> meshDatas;
+			std::string objectName;
 		};
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
 		//モデルデータの読み込み口//
-		void CreateModel(const std::string& _FilePath)override;
+		void CreateModel(const std::string& _filePath)override;
 
-		void CreateObject(const std::string& _ObjectName);
+		void CreateObject(const std::string& _objectName);
 
-		void CreateMaterials(const std::string& _FileName);
+		void CreateMaterials(const std::string& _fileName);
 
-		void CreateMaterial(const std::string& _MatName);
+		void CreateMaterial(const std::string& _aatName);
 
-		void CreateChFrame(ChPtr::Shared<ChCpp::ModelFrame::Frame>& _Frame);
+		void CreateChFrame(ChPtr::Shared<ChCpp::ModelFrame::Frame>& _frame);
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
-		void OutModelFile(const std::string& _FilePath)override;
+		void OutModelFile(const std::string& _filePath)override;
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		void SetVertex(const std::string& _Line);
+		void SetVertex(const std::string& _line);
 
-		void SetUV(const std::string& _Line);
+		void SetUV(const std::string& _line);
 
-		void SetNormal(const std::string& _Line);
+		void SetNormal(const std::string& _line);
 
-		void SetFace(const std::string& _Line);
+		void SetFace(const std::string& _line);
 
-		void SetMateBlock(const std::string& _Line);
+		void SetMateBlock(const std::string& _line);
 
-		void SetMatAmbient(const std::string& _Line);
+		void SetMatAmbient(const std::string& _line);
 
-		void SetMatDiffuse(const std::string& _Line);
+		void SetMatDiffuse(const std::string& _line);
 
-		void SetMatSpecular(const std::string& _Line);
+		void SetMatSpecular(const std::string& _line);
 
-		void SetMatSpecularHighLight(const std::string& _Line);
+		void SetMatSpecularHighLight(const std::string& _line);
 
 		//Alpha値//
-		void SetMatDissolve(const std::string& _Line);
+		void SetMatDissolve(const std::string& _line);
 
 		//屈折率//
-		void SetMatODensity(const std::string& _Line);
+		void SetMatODensity(const std::string& _line);
 
-		void SetMatAmbientMap(const std::string& _Line);
+		void SetMatAmbientMap(const std::string& _line);
 
-		void SetMatDiffuseMap(const std::string& _Line);
+		void SetMatDiffuseMap(const std::string& _line);
 
-		void SetMatSpecularMap(const std::string& _Line);
+		void SetMatSpecularMap(const std::string& _line);
 
-		void SetMatSpecularHighLightMap(const std::string& _Line);
+		void SetMatSpecularHighLightMap(const std::string& _line);
 
-		void SetMatBumpMap(const std::string& _Line);
-		void SetMatBumpMap2(const std::string& _Line);
+		void SetMatBumpMap(const std::string& _line);
+		void SetMatBumpMap2(const std::string& _line);
 
-		void SetMatMetallicMap(const std::string& _Line);
-		void SetMatMetallicMap2(const std::string& _Line);
+		void SetMatMetallicMap(const std::string& _line);
+		void SetMatMetallicMap2(const std::string& _line);
 
-		void SetMatNormalMap(const std::string& _Line);
+		void SetMatNormalMap(const std::string& _line);
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
@@ -131,83 +131,83 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////////////
 		//LoadFunction//
 
-		std::string LoadTextureName(const std::string& _Line);
+		std::string LoadTextureName(const std::string& _line);
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
-		std::string FolderPath = "";
+		std::string folderPath = "";
 
-		std::vector<ChPtr::Shared<ObjFileModelData>>Objects;
+		std::vector<ChPtr::Shared<ObjFileModelData>>objects;
 
 		//std::map<std::string, ChPtr::Shared<ObjFileModelData>>ObjectMaps;
-		std::map<std::string, ChPtr::Shared<ObjFileMaterialData>>MaterialMaps;
+		std::map<std::string, ChPtr::Shared<ObjFileMaterialData>>materialMaps;
 
-		std::string BlockMaterial = "";
+		std::string blockMaterial = "";
 
-		ChPtr::Shared<ObjFileModelData>MakeObject = nullptr;
-		ChPtr::Shared<ObjFileMaterialData>TargetMaterial = nullptr;
+		ChPtr::Shared<ObjFileModelData>makeObject = nullptr;
+		ChPtr::Shared<ObjFileMaterialData>targetMaterial = nullptr;
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//Tags//
 		
-		const char CommentTags = '#';
+		const char commentTags = '#';
 
 		//ObjFileData//
-		const char UseMaterialFileNameTags[6] = { 'm','t','l','l','i','b' };
+		const char useMaterialFileNameTags[6] = { 'm','t','l','l','i','b' };
 
-		const char MaterialBlockTags[6] = { 'u','s','e','m','t','l' };
+		const char materialBlockTags[6] = { 'u','s','e','m','t','l' };
 
-		const char ObjectBlockTags = 'o';
+		const char objectBlockTags = 'o';
 
 		//const char GroupBlockTags = 'g';
 
 		//const std::string SmouthShadingBlockTags = "s ";
 
-		const char VertexTags = 'v';
+		const char vertexTags = 'v';
 
-		const char UVTags[2] = { 'v','t' };
+		const char uvTags[2] = { 'v','t' };
 
-		const char NormalTags[2] = { 'v','n' };
+		const char normalTags[2] = { 'v','n' };
 
-		const char MeshTags = 'f';
+		const char meshTags = 'f';
 
 		//const std::string LineTags = "l ";
 
 		//const std::string ParamVertexTags = "vp ";
 
 		//ObjFileMaterialData//
-		const char MatMaterialBlockTags[6] = { 'n','e','w','m','t','l' };
+		const char matMaterialBlockTags[6] = { 'n','e','w','m','t','l' };
 
-		const char MatAmbientTags[2] = { 'K','a' };
+		const char matAmbientTags[2] = { 'K','a' };
 			  
-		const char MatDiffuseTags[2] = { 'K','d' };
+		const char matDiffuseTags[2] = { 'K','d' };
 			  
-		const char MatSpecularTags[2] = { 'K','s' };
+		const char matSpecularTags[2] = { 'K','s' };
 
-		const char MatSpecularHighLightTags[2] = { 'N','s' };
+		const char matSpecularHighLightTags[2] = { 'N','s' };
 			  
-		const char MatDissolveTags = 'd';
+		const char matDissolveTags = 'd';
 		
 		//const std::string MatUnDissolveTags = "Tr ";
 
 		//屈折率//
-		const char MatODensityTags[2] = { 'N','i' };
+		const char matODensityTags[2] = { 'N','i' };
 
 		//const std::string MatLightObjectTags = "illum ";
 
 		//MaterialMapTags//
-		const char MatAmbientMapTags[6] = { 'm','a','p','_','K','a' };
+		const char matAmbientMapTags[6] = { 'm','a','p','_','K','a' };
 
-		const char MatDiffuseMapTags[6] = { 'm','a','p','_','K','d' };
+		const char matDiffuseMapTags[6] = { 'm','a','p','_','K','d' };
 
-		const char MatSpecularMapTags[6] = { 'm','a','p','_','K','s' };
+		const char matSpecularMapTags[6] = { 'm','a','p','_','K','s' };
 
-		const char MatSpecularHighLightMapTags[6] = { 'm','a','p','_','N','s' };
+		const char matSpecularHighLightMapTags[6] = { 'm','a','p','_','N','s' };
 
-		const char MatDissolveMapTags[5] = { 'm','a','p','_','d' };
+		const char matDissolveMapTags[5] = { 'm','a','p','_','d' };
 
-		const char MatBumpMapTags[8] =  { 'm','a','p','_','b','u','m','p' };
-		const char MatBumpMapTags2[4] = { 'b','u','m','p'};
+		const char matBumpMapTags[8] =  { 'm','a','p','_','b','u','m','p' };
+		const char matBumpMapTags2[4] = { 'b','u','m','p'};
 
 		//const std::string MatDisplateMapTags = "disp ";
 
@@ -215,8 +215,8 @@ namespace ChCpp
 
 		//const char MatRoughnessMapTags[2][6] = { { 'm','a','p','_','P','r' },{ 'P','r',0,0,0} };
 
-		const char MatMetallicMapTags[6] = { 'm','a','p','_','P','m' };
-		const char MatMetallicMapTags2[2] = { 'P','m'};
+		const char matMetallicMapTags[6] = { 'm','a','p','_','P','m' };
+		const char matMetallicMapTags2[2] = { 'P','m'};
 
 		//const std::string MatSheenMapTags[2] = { "map_Ps","Ps" };
 
@@ -230,7 +230,7 @@ namespace ChCpp
 
 		//const std::string MatAnisotropyRotateMapTags = "anisor ";
 
-		const char MatNormalMapTags[4] = { 'n','o','r','m' };
+		const char matNormalMapTags[4] = { 'n','o','r','m' };
 
 	};
 

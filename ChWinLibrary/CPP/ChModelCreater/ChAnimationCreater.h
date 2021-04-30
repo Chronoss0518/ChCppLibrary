@@ -18,11 +18,11 @@ namespace ChCpp
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
-		inline virtual void CreateMesh(const std::string& _FilePath) {};
+		inline virtual void CreateMesh(const std::string& _filePath) {};
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
-		inline virtual void OutMeshFile(const std::string& _FilePath) {};
+		inline virtual void OutMeshFile(const std::string& _filePath) {};
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
@@ -30,13 +30,13 @@ namespace ChCpp
 
 	protected:
 
-		void SetModel(ChPtr::Shared<ModelFrame> _Models);
+		void SetModel(ChPtr::Shared<ModelFrame> _models);
 
 	private:
 
-		void Init(ModelObject* _Model);
+		void Init(ModelObject* _model);
 
-		ModelObject* Model;
+		ModelObject* model;
 
 	};
 }

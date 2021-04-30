@@ -4,7 +4,7 @@
 
 namespace ChCpp
 {
-	namespace ChCp
+	namespace ClassPerts
 	{
 
 		//Œp³‚µ‚Ä—˜—p‚·‚é//

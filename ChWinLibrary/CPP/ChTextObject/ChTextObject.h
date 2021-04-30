@@ -8,12 +8,12 @@ namespace ChCpp
 	{
 	public:
 
-		std::string operator[](size_t _Index)const
+		std::string operator[](size_t _index)const
 		{
 
-			if (FileText.size() <= _Index)return "";
+			if (textLines.size() <= _index)return "";
 
-			return FileText[_Index];
+			return textLines[_index];
 		}
 
 
@@ -24,39 +24,39 @@ namespace ChCpp
 		std::string GetText()const;
 
 		//Textから一行読み取る//
-		std::string GetTextLine(const size_t _Index = 0)const;
+		std::string GetTextLine(const size_t _index = 0)const;
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
 		//Text全体を書き込む//
-		void SetText(const std::string _Str);
+		void SetText(const std::string _str);
 
 		//Textに一行書き込む//
 		void SetTextLine(
-			const std::string _Str
-			, const unsigned int _SetIndex = 0);
+			const std::string _str
+			, const unsigned int _setIndex = 0);
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
 		//指定した文字数分から文字列を取得//
 		std::string SubStr(
-			const unsigned int _StartPos = 0
-			, const unsigned int _EndPos = std::string::npos)const
+			const unsigned int _startPos = 0
+			, const unsigned int _endPos = std::string::npos)const
 		{
-			return GetText().substr(_StartPos, _EndPos);
+			return GetText().substr(_startPos, _endPos);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
 		//指定した文字数分から文字列を取得//
 		TextObject SubStrToFileObject(
-			const unsigned int _StartPos = 0
-			, const unsigned int _EndPos = std::string::npos)const
+			const unsigned int _startPos = 0
+			, const unsigned int _endPos = std::string::npos)const
 		{
 			TextObject out;
 
-			std::string str = GetText().substr(_StartPos, _EndPos);
+			std::string str = GetText().substr(_startPos, _endPos);
 
 			out.SetText(str);
 
@@ -82,7 +82,7 @@ namespace ChCpp
 
 		size_t LineCount()const
 		{
-			return FileText.size();
+			return textLines.size();
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////////
@@ -90,21 +90,21 @@ namespace ChCpp
 		//Textの中に指定した文字列を先頭より探し//
 		//初めに見つけた行の要素数を取得//
 		unsigned long FindLine(
-			const std::string& _FindStr
-			, const size_t _StartPos = 0)const;
+			const std::string& _findStr
+			, const size_t _startPos = 0)const;
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
 		//Textの中に指定した文字列を先頭より探し//
 		//初めに見つけた位置を取得//
 		unsigned long Find(
-			const std::string& _FindStr
-			, const size_t _StartPos = 0)const
+			const std::string& _findStr
+			, const size_t _startPos = 0)const
 		{
 
-			std::string Str = GetText();
+			std::string str = GetText();
 
-			return Str.find(_FindStr, _StartPos);
+			return str.find(_findStr, _startPos);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////////
@@ -112,7 +112,7 @@ namespace ChCpp
 
 	private:
 
-		std::vector<std::string> FileText;
+		std::vector<std::string> textLines;
 
 	};
 

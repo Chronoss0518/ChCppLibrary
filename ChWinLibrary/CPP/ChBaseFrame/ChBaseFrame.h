@@ -8,7 +8,7 @@ namespace ChCpp
 	class BaseFrame;
 
 	//BaseFrame管理用クラス//
-	class BaseFrameList:public ChCpp::ChCp::Initializer
+	class BaseFrameList:public ChCpp::ClassPerts::Initializer
 	{
 	public:
 
@@ -19,24 +19,24 @@ namespace ChCpp
 		//BaseFrameを継承しているもののみセットできる//
 		template<class T>
 		void SetFrame(typename std::enable_if
-			<std::is_base_of<BaseFrame, T>::value, const std::string&>::type _UseFrameName)
+			<std::is_base_of<BaseFrame, T>::value, const std::string&>::type _useFrameName)
 		{
-			if (FrameList.find(_UseFrameName) != FrameList.end())
+			if (frameList.find(_useFrameName) != frameList.end())
 			{
 				//ChSystem::ErrerMessage("このフレームはすでに登録されています", "警告");
 
 				return;
 			}
 
-			FrameList[_UseFrameName]
+			frameList[_useFrameName]
 				= []()-> ChPtr::Shared<BaseFrame>
 			{
 				return ChPtr::Make_S<T>(); 
 			};
 
-			if (NowFrame != nullptr)return;
+			if (nowFrame != nullptr)return;
 
-			ChengeFrame(_UseFrameName);
+			ChengeFrame(_useFrameName);
 
 			Chenges();
 		}
@@ -52,15 +52,15 @@ namespace ChCpp
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		void ChengeFrame(const std::string& _FrameName);
+		void ChengeFrame(const std::string& _frameName);
 
 		void Chenges();
 
-		std::map<std::string, std::function<ChPtr::Shared<BaseFrame>()>>FrameList;
+		std::map<std::string, std::function<ChPtr::Shared<BaseFrame>()>>frameList;
 
-		ChPtr::Shared<BaseFrame>NextFrame = nullptr;
+		ChPtr::Shared<BaseFrame>nextFrame = nullptr;
 
-		ChPtr::Shared<BaseFrame>NowFrame;
+		ChPtr::Shared<BaseFrame>nowFrame;
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//ConstructerDestructer//
@@ -73,8 +73,8 @@ namespace ChCpp
 
 		static BaseFrameList& GetIns()
 		{
-			static BaseFrameList Ins;
-			return Ins;
+			static BaseFrameList ins;
+			return ins;
 		}
 
 	};
@@ -84,7 +84,7 @@ namespace ChCpp
 	//ゲームシーンを簡易的生成を行うためのクラス//
 	//必要に応じて以下の関数をオーバーライドする//
 	//void Init(),void Release(),void Frame()//
-	class BaseFrame:public ChCpp::ChCp::Releaser
+	class BaseFrame:public ChCpp::ClassPerts::Releaser
 	{
 	public:
 
@@ -110,9 +110,9 @@ namespace ChCpp
 		virtual ~BaseFrame() { Release(); };
 
 		//登録されているフレームに移動する//
-		void ChangeFrame(const std::string& _FrameName)
+		void ChangeFrame(const std::string& _frameName)
 		{
-			FrameList().ChengeFrame(_FrameName);
+			FrameList().ChengeFrame(_frameName);
 		}
 
 	private:

@@ -10,7 +10,7 @@ using namespace ChCpp;
 std::map<
 	std::string
 	, ModelObject::Animation>
-	ModelObject::AnimatorList;
+	ModelObject::animatorList;
 
 ///////////////////////////////////////////////////////////////////////////////////////
 //ChModel Method//
@@ -18,8 +18,8 @@ std::map<
 
 void ModelObject::Release()
 {
-	Model = nullptr;
+	model = nullptr;
 
-	if(!AnimatorNames.empty())AnimatorNames.clear();
+	if(!animatorNames.empty())animatorNames.clear();
 
 }

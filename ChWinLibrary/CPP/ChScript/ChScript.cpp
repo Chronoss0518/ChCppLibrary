@@ -10,23 +10,23 @@ using namespace ChCpp;
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ScriptController::SetScript(
-	const std::function<void()> _Update
-	, const std::function<void()> _Draw
-	, const std::function<void()> _Enter
-	, const std::function<void()> _Exit)
+	const std::function<void()> _update
+	, const std::function<void()> _draw
+	, const std::function<void()> _enter
+	, const std::function<void()> _exit)
 {
 	auto TmpScr = ChPtr::Make_S<ChScript>();
 
-	TmpScr->Update = _Update;
-	TmpScr->Draw = _Draw;
-	TmpScr->Enter = _Enter;
-	TmpScr->Exit = _Exit;
+	TmpScr->update = _update;
+	TmpScr->draw = _draw;
+	TmpScr->enter = _enter;
+	TmpScr->exit = _exit;
 
-	TmpScr->MyNum = ScriptList.size();
+	TmpScr->myNum = scriptList.size();
 
-	ScriptList.push_back(TmpScr);
+	scriptList.push_back(TmpScr);
 
-	if (NowScript.lock() != nullptr)return;
+	if (nowScript.lock() != nullptr)return;
 
 	ChangeScript(0);
 

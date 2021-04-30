@@ -11,17 +11,19 @@ using namespace ChCpp;
 //ChBaseComponentƒƒ\ƒbƒh
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void BaseComponent::BaseInit(ChPtr::Shared<BaseObject> _Obj)
+void BaseComponent::BaseInit(ChPtr::Shared<BaseObject> _obj)
 {
-	Obj = _Obj;
+	obj = _obj;
+
+	Init();
 }
 
 void BaseComponent::Destroy()
 {
-	DFlg = true;
+	dFlg = true;
 }
 
 void BaseComponent::ObjectDestroy()
 {
-	Obj->Destroy();
+	obj->Destroy();
 }

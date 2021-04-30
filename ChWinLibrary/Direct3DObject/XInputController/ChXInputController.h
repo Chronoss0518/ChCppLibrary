@@ -4,7 +4,7 @@
 namespace ChD3D
 {
 
-	class XInputController:public ChCpp::ChCp::Initializer,public ChCpp::ChCp::Releaser
+	class XInputController:public ChCpp::ClassPerts::Initializer,public ChCpp::ClassPerts::Releaser
 	{
 	public:
 

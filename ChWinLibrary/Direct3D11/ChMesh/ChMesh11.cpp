@@ -55,11 +55,11 @@ namespace ChD3D11
 	{
 		if (_BaseModels.GetModel() == nullptr)return;
 		auto Model = _BaseModels.GetModel();
-		if (Model->ModelData == nullptr)return;
+		if (Model->modelData == nullptr)return;
 
-		CreateFrames(ModelData,*Model->ModelData);
+		CreateFrames(ModelData,*Model->modelData);
 
-		ModelData->FrameName = Model->ModelData->MyName;
+		ModelData->FrameName = Model->modelData->myName;
 
 	}
 
@@ -74,7 +74,7 @@ namespace ChD3D11
 		
 		CreatePrimitiveData(_Frames, _BaseModels);
 
-		for (auto&& Models : _BaseModels.ChildFrames)
+		for (auto&& Models : _BaseModels.childFrames)
 		{
 			ChPtr::Shared<FrameData11> Tmp;
 			CreateFrames(Tmp, *Models);
@@ -90,33 +90,33 @@ namespace ChD3D11
 		, const ChCpp::ModelFrame::Frame& _BaseModels)
 	{
 
-		if (_BaseModels.Meshs == nullptr)return;
+		if (_BaseModels.mesh == nullptr)return;
 
 
-		_Frames->BaseMat = _BaseModels.BaseMat;
+		_Frames->BaseMat = _BaseModels.baseMat;
 
 		auto SurfaceList = CreateSurfaceList(_BaseModels);
 
-		unsigned long MateNum = _BaseModels.Meshs->MaterialList.size();
+		unsigned long MateNum = _BaseModels.mesh->materialList.size();
 
 		if (MateNum <= 0)
 		{
 			auto Mate = ChPtr::Make_S<ChCpp::ModelFrame::Material>();
 
-			_BaseModels.Meshs->MaterialList.push_back(Mate);
+			_BaseModels.mesh->materialList.push_back(Mate);
 
-			Mate->Diffuse = ChVec4(1.0f);
-			Mate->MaterialName = "Material1";
-			Mate->Specular = ChVec4(0.0f);
-			Mate->SpePow = (0.0f);
-			Mate->AmbientPow = (0.0f);
+			Mate->diffuse = ChVec4(1.0f);
+			Mate->materialName = "Material1";
+			Mate->specular = ChVec4(0.0f);
+			Mate->spePow = (0.0f);
+			Mate->ambientPow = (0.0f);
 
-			MateNum = _BaseModels.Meshs->MaterialList.size();
+			MateNum = _BaseModels.mesh->materialList.size();
 		}
 
-		auto& MateList = _BaseModels.Meshs->MaterialList;
+		auto& MateList = _BaseModels.mesh->materialList;
 
-		auto& VerList = _BaseModels.Meshs->VertexList;
+		auto& VerList = _BaseModels.mesh->vertexList;
 
 		_Frames->PrimitiveCount = MateNum;
 
@@ -143,7 +143,7 @@ namespace ChD3D11
 			{
 
 				ChVec3_11 FaceNormal = 0.0f;
-				FaceNormal = Faces[FCount]->Normal;
+				FaceNormal = Faces[FCount]->normal;
 				//ChVec3_11 FaceNormal = 0.0f;
 				//FaceNormal += VerList[Faces[FCount]->VertexData[0].VertexNo]->Normal;
 				//FaceNormal += VerList[Faces[FCount]->VertexData[1].VertexNo]->Normal;
@@ -157,13 +157,13 @@ namespace ChD3D11
 
 					auto& Vertexs = (Prim->VertexArray[NowCount]);
 
-					Vertexs.Pos = VerList[Faces[FCount]->VertexData[j].VertexNo]->Pos;
-					Vertexs.Normal = VerList[Faces[FCount]->VertexData[j].VertexNo]->Normal;
+					Vertexs.Pos = VerList[Faces[FCount]->vertexData[j].vertexNo]->pos;
+					Vertexs.Normal = VerList[Faces[FCount]->vertexData[j].vertexNo]->normal;
 					Vertexs.FaceNormal = FaceNormal;
-					Vertexs.BlendPow = VerList[Faces[FCount]->VertexData[j].VertexNo]->BlendPow;
-					Vertexs.BlendIndex = VerList[Faces[FCount]->VertexData[j].VertexNo]->BoneNo;
+					Vertexs.BlendPow = VerList[Faces[FCount]->vertexData[j].vertexNo]->blendPow;
+					Vertexs.BlendIndex = VerList[Faces[FCount]->vertexData[j].vertexNo]->boneNo;
 
-					Vertexs.UVPos = Faces[FCount]->VertexData[j].UVPos;
+					Vertexs.UVPos = Faces[FCount]->vertexData[j].uvPos;
 
 					Prim->IndexArray[NowCount] = NowCount;
 
@@ -178,17 +178,17 @@ namespace ChD3D11
 
 			Prim->Mate = ChPtr::Make_S<Material11>();
 
-			Prim->Mate->Material.Ambient = ChVec4(MateList[i]->AmbientPow);
-			Prim->Mate->Material.Diffuse = MateList[i]->Diffuse;
-			Prim->Mate->Material.Specular = MateList[i]->Specular;
-			Prim->Mate->Material.Specular.a = MateList[i]->SpePow;
-			Prim->Mate->MaterialName = MateList[i]->MaterialName;
+			Prim->Mate->Material.Ambient = ChVec4(MateList[i]->ambientPow);
+			Prim->Mate->Material.Diffuse = MateList[i]->diffuse;
+			Prim->Mate->Material.Specular = MateList[i]->specular;
+			Prim->Mate->Material.Specular.a = MateList[i]->spePow;
+			Prim->Mate->MaterialName = MateList[i]->materialName;
 
-			Prim->Mate->Material.FrameMatrix = _BaseModels.BaseMat;
+			Prim->Mate->Material.FrameMatrix = _BaseModels.baseMat;
 
 			CreateContentBuffer<ShaderUseMaterial11>(&Prim->Mate->MBuffer);
 
-			for (auto TexName : MateList[i]->TextureNames)
+			for (auto TexName : MateList[i]->textureNames)
 			{
 				auto Tex = ChPtr::Make_S<Texture11>();
 
@@ -202,7 +202,7 @@ namespace ChD3D11
 			if (Prim->Mate->TextureList.size() <= 1)Prim->Mate->TextureList.push_back(NormalTex);
 
 
-			_Frames->PrimitiveDatas[MateList[i]->MaterialName] = Prim;
+			_Frames->PrimitiveDatas[MateList[i]->materialName] = Prim;
 
 		}
 
@@ -221,16 +221,16 @@ namespace ChD3D11
 
 		std::vector<std::vector<ChPtr::Shared<ChCpp::ModelFrame::SurFace>>>SurfaceList;
 
-		unsigned long MateNum = _BaseModels.Meshs->MaterialList.size();
+		unsigned long MateNum = _BaseModels.mesh->materialList.size();
 
 
 		if (MateNum < 2)
 		{
-			SurfaceList.push_back(_BaseModels.Meshs->FaceList);
+			SurfaceList.push_back(_BaseModels.mesh->faceList);
 			return SurfaceList;
 		}
 
-		unsigned long VerCount = _BaseModels.Meshs->FaceList.size();
+		unsigned long VerCount = _BaseModels.mesh->faceList.size();
 
 		for (unsigned long i = 0; i < MateNum; i++)
 		{
@@ -238,9 +238,9 @@ namespace ChD3D11
 
 			for (unsigned long j = 0; j < VerCount; j++)
 			{
-				if (_BaseModels.Meshs->FaceList[j]->Materials != i)continue;
+				if (_BaseModels.mesh->faceList[j]->materialNo != i)continue;
 
-				auto TmpFace = _BaseModels.Meshs->FaceList[j];
+				auto TmpFace = _BaseModels.mesh->faceList[j];
 
 				Tmp.push_back(TmpFace);
 			}

@@ -70,8 +70,8 @@ void Windows::Init(
 	, const int _nCmdShow)
 {
 
-	WindWidth = _WindWidth;
-	WindHeight = _WindHeight;
+	windSize.w = _WindWidth;
+	windSize.h = _WindHeight;
 
 	WNDCLASS wc;
 	wc.style = CS_HREDRAW | CS_VREDRAW;
@@ -109,8 +109,8 @@ void Windows::Init(
 	ShowWindow(hWnd, _nCmdShow);
 	UpdateWindow(hWnd);
 
-	ButtonList.SetSize((256 / 8) + 1);
-	IsNowPush.SetSize((256 / 8) + 1);
+	buttonList.SetSize((256 / 8) + 1);
+	isNowPush.SetSize((256 / 8) + 1);
 
 	SetInitFlg(true);
 
@@ -133,12 +133,12 @@ ChStd::Bool Windows::IsPushKey(const int _Key)
 {
 	SetKeyCode();
 
-	if (ButtonList.GetBitFlg(_Key))
+	if (buttonList.GetBitFlg(_Key))
 	{
-		IsNowPush.SetBitTrue(_Key);
+		isNowPush.SetBitTrue(_Key);
 		return true;
 	}
-	IsNowPush.SetBitFalse(_Key);
+	isNowPush.SetBitFalse(_Key);
 	return false;
 }
 
@@ -148,16 +148,16 @@ ChStd::Bool Windows::IsPushKeyNoHold(const int _Key)
 {
 	SetKeyCode();
 
-	if (ButtonList.GetBitFlg(_Key))
+	if (buttonList.GetBitFlg(_Key))
 	{
-		if (!IsNowPush.GetBitFlg(_Key))
+		if (!isNowPush.GetBitFlg(_Key))
 		{
-			IsNowPush.SetBitTrue(_Key);
+			isNowPush.SetBitTrue(_Key);
 			return true;
 		}
 		return false;
 	}
-	IsNowPush.SetBitFalse(_Key);
+	isNowPush.SetBitFalse(_Key);
 	return false;
 }
 
@@ -170,15 +170,15 @@ ChStd::Bool Windows::IsPause(const int _Key)
 	ChStd::Bool TmpFlg;
 	TmpFlg = IsPushKey(_Key);
 
-	if (TmpFlg && NowKey)return PauseFlg;
-	NowKey = false;
+	if (TmpFlg && nowKey)return pauseFlg;
+	nowKey = false;
 
-	if (!TmpFlg)return PauseFlg;
+	if (!TmpFlg)return pauseFlg;
 
-	PauseFlg = !PauseFlg;
-	NowKey = true;
+	pauseFlg = !pauseFlg;
+	nowKey = true;
 
-	return PauseFlg;
+	return pauseFlg;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -219,8 +219,8 @@ ChStd::Bool Windows::IsUpdate()
 		RECT Tmp;
 		GetClientRect(hWnd, &Tmp);
 
-		WindWidth = Tmp.right - Tmp.left;
-		WindHeight = Tmp.bottom - Tmp.top;
+		windSize.w = Tmp.right - Tmp.left;
+		windSize.h = Tmp.bottom - Tmp.top;
 
 	}
 
@@ -231,17 +231,17 @@ ChStd::Bool Windows::IsUpdate()
 
 void Windows::SetKeyCode()
 {
-	if (!System->IsUseSystemButtons())return;
+	if (!system->IsUseSystemButtons())return;
 	if (IsKeyUpdate)return;
 	unsigned char KeyCode[256];
 	int Tmp = GetKeyboardState(KeyCode);
-	ButtonList.SetAllDownFlg();
+	buttonList.SetAllDownFlg();
 
 	for (unsigned short i = 0; i < 256; i++)
 	{
 		if (!(KeyCode[i] & ChStd::MAX_CHAR_BIT))continue;
 
-		ButtonList.SetBitTrue((unsigned char)i);
+		buttonList.SetBitTrue((unsigned char)i);
 	}
 
 	IsKeyUpdate = true;

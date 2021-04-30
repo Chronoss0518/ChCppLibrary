@@ -114,7 +114,7 @@ namespace ChD3D11
 	};
 
 	template<class Vertex = Vertex11>
-	class ShaderObject:public ChCpp::ChCp::Releaser
+	class ShaderObject:public ChCpp::ClassPerts::Releaser
 	{
 	public:
 
