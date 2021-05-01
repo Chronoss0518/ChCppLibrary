@@ -492,8 +492,13 @@ using ChVec2 = ChVector2;
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-struct ChQuaternion : public ChMath::QuaternionBase
+struct ChQuaternion : public ChMath::Vector4Base<float>
 {
+
+	inline ChQuaternion& operator=(const ChQuaternion& _qua)
+	{
+		val.Set(_qua.val);
+	}
 
 	operator const D3DXQUATERNION() const;
 	operator const D3DXQUATERNION* () const;
@@ -535,13 +540,13 @@ struct ChQuaternion : public ChMath::QuaternionBase
 		z = _z;
 	}
 
-	inline ChQuaternion(const ChQuaternion& _Qua) { *this = _Qua; }
+	inline ChQuaternion(const ChQuaternion& _qua) { *this = _qua; }
 
 	inline ChQuaternion(const D3DXVECTOR3& _vec) { *this = _vec; }
 	inline ChQuaternion(const DirectX::XMFLOAT3& _vec) { *this = _vec; }
 
-	inline ChQuaternion(const D3DXQUATERNION& _Qua) { *this = _Qua; }
-	inline ChQuaternion(const DirectX::XMFLOAT4& _Qua) { *this = _Qua; }
+	inline ChQuaternion(const D3DXQUATERNION& _qua) { *this = _qua; }
+	inline ChQuaternion(const DirectX::XMFLOAT4& _qua) { *this = _qua; }
 
 	inline ChQuaternion(const D3DXMATRIX& _mat) { *this = _mat; }
 	inline ChQuaternion(const DirectX::XMFLOAT4X4& _mat) { *this = _mat; }
