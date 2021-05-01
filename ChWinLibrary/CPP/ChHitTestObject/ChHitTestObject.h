@@ -17,70 +17,70 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		inline void SetPosition(const ChVec3& _Pos) { Mat.SetPosition(_Pos); }
+		inline void SetPosition(const ChVec3& _pos) { mat.SetPosition(_pos); }
 
-		inline void SetRotation(const ChVec3& _Rot) { Mat.SetRotation(_Rot); }
+		inline void SetRotation(const ChVec3& _rot) { mat.SetRotation(_rot); }
 
-		inline void SetScalling(const ChVec3& _Scl) { Mat.SetScalling(_Scl); }
+		inline void SetScalling(const ChVec3& _scl) { mat.SetScalling(_scl); }
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
 		//衝突していた場合に中心から見てどの位置までめり込んでいたかの数値//
-		inline ChVec3 GetHitVectol() { return HitVector; }
+		inline ChVec3 GetHitVectol() { return hitVector; }
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
-		virtual ChStd::Bool IsHitPanel(
-			const HitTestPanel* _Target) = 0;
+		virtual ChStd::Bool IsHit(
+			HitTestPanel* _target) = 0;
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
-		virtual ChStd::Bool IsHitBox(
-			const HitTestBox* _Target) = 0;
+		virtual ChStd::Bool IsHit(
+			HitTestBox* _target) = 0;
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
-		virtual ChStd::Bool IsHitSphere(
-			const HitTestSphere* _Target) = 0;
+		virtual ChStd::Bool IsHit(
+			HitTestSphere* _target) = 0;
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
-		virtual ChStd::Bool IsHitMesh(
-			const HitTestMesh* _Target) = 0;
+		virtual ChStd::Bool IsHit(
+			HitTestMesh* _target) = 0;
 
 		//対象のオブジェクトがオブジェクト内から衝突しているかの判定//
-		virtual ChStd::Bool IsInnerHitBox(
-			const HitTestBox* _Target) = 0;
+		virtual ChStd::Bool IsInnerHit(
+			HitTestBox* _target) = 0;
 
 		//対象のオブジェクトがオブジェクト内から衝突しているかの判定//
-		virtual ChStd::Bool IsInnerHitSphere(
-			const HitTestSphere* _Target) = 0;
+		virtual ChStd::Bool IsInnerHit(
+			HitTestSphere* _target) = 0;
 
 	protected:
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		inline void SetHitVector(const ChVec3& _Vec) { HitVector = _Vec; }
+		inline void SetHitVector(const ChVec3& _vec) { hitVector = _vec; }
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
-		inline ChVec3 GetPos() const { return Mat.GetPosition(); }
+		inline ChVec3 GetPos() const { return mat.GetPosition(); }
 
-		inline ChVec3 GetRot()const { return Mat.GetRotation(); }
+		inline ChVec3 GetRot()const { return mat.GetRotation(); }
 
-		inline ChVec3 GetScl()const { return Mat.GetScalling(); }
+		inline ChVec3 GetScl()const { return mat.GetScalling(); }
 
-		inline ChLMat GetLMat()const { return Mat; }
+		inline ChLMat GetLMat()const { return mat; }
 
 		inline ~HitTestObject() {}
 
 	private:
 
-		ChLMat Mat;
+		ChLMat mat;
 
-		ChVec3 HitVector = 0.0f;
+		ChVec3 hitVector = 0.0f;
 
 	};
 

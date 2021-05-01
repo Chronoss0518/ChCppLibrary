@@ -22,48 +22,48 @@ const std::map<HitTestRayDirctionAxis, std::function<ChVec3()>>HitTestRay::GetRa
 //HitTestRay Method//
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool HitTestRay::IsHitPanel(
-	const HitTestPanel* _Target)
+ChStd::Bool HitTestRay::IsHit(
+	HitTestPanel* _target)
 {
 	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool HitTestRay::IsHitBox(
-	const HitTestBox* _Target)
+ChStd::Bool HitTestRay::IsHit(
+	HitTestBox* _target)
 {
 	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  HitTestRay::IsHitSphere(
-	const HitTestSphere* _Target)
+ChStd::Bool  HitTestRay::IsHit(
+	HitTestSphere* _target)
 {
 	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  HitTestRay::IsHitMesh(
-	const HitTestMesh* _Target)
+ChStd::Bool  HitTestRay::IsHit(
+	HitTestMesh* _target)
 {
 	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  HitTestRay::IsInnerHitBox(
-	const HitTestBox* _Target)
+ChStd::Bool  HitTestRay::IsInnerHit(
+	HitTestBox* _target)
 {
 	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  HitTestRay::IsInnerHitSphere(
-	const HitTestSphere* _Target)
+ChStd::Bool  HitTestRay::IsInnerHit(
+	HitTestSphere* _target)
 {
 	return false;
 }
@@ -72,48 +72,48 @@ ChStd::Bool  HitTestRay::IsInnerHitSphere(
 //HitTestPanel Method//
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool HitTestPanel::IsHitPanel(
-	const HitTestPanel* _Target)
+ChStd::Bool HitTestPanel::IsHit(
+	HitTestPanel* _target)
 {
 	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool HitTestPanel::IsHitBox(
-	const HitTestBox* _Target)
+ChStd::Bool HitTestPanel::IsHit(
+	HitTestBox* _target)
 {
 	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  HitTestPanel::IsHitSphere(
-	const HitTestSphere* _Target)
+ChStd::Bool  HitTestPanel::IsHit(
+	HitTestSphere* _target)
 {
 	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  HitTestPanel::IsHitMesh(
-	const HitTestMesh* _Target)
+ChStd::Bool  HitTestPanel::IsHit(
+	HitTestMesh* _target)
 {
 	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  HitTestPanel::IsInnerHitBox(
-	const HitTestBox* _Target)
+ChStd::Bool  HitTestPanel::IsInnerHit(
+	HitTestBox* _target)
 {
 	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  HitTestPanel::IsInnerHitSphere(
-	const HitTestSphere* _Target)
+ChStd::Bool  HitTestPanel::IsInnerHit(
+	HitTestSphere* _target)
 {
 	return false;
 }
@@ -122,48 +122,48 @@ ChStd::Bool  HitTestPanel::IsInnerHitSphere(
 //HitTestBox Method//
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool HitTestBox::IsHitPanel(
-	const HitTestPanel* _Target)
+ChStd::Bool HitTestBox::IsHit(
+	HitTestPanel* _target)
 {
 	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool HitTestBox::IsHitBox(
-	const HitTestBox* _Target)
+ChStd::Bool HitTestBox::IsHit(
+	HitTestBox* _target)
 {
 	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  HitTestBox::IsHitSphere(
-	const HitTestSphere* _Target)
+ChStd::Bool  HitTestBox::IsHit(
+	HitTestSphere* _target)
 {
 	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  HitTestBox::IsHitMesh(
-	const HitTestMesh* _Target)
+ChStd::Bool  HitTestBox::IsHit(
+	HitTestMesh* _target)
 {
 	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  HitTestBox::IsInnerHitBox(
-	const HitTestBox* _Target)
+ChStd::Bool  HitTestBox::IsInnerHit(
+	HitTestBox* _target)
 {
 	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  HitTestBox::IsInnerHitSphere(
-	const HitTestSphere* _Target)
+ChStd::Bool  HitTestBox::IsInnerHit(
+	HitTestSphere* _target)
 {
 	return false;
 }
@@ -172,59 +172,59 @@ ChStd::Bool  HitTestBox::IsInnerHitSphere(
 //HitTestSphere Method//
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool HitTestSphere::IsHitPanel(
-	const HitTestPanel* _Target)
+ChStd::Bool HitTestSphere::IsHit(
+	HitTestPanel* _target)
 {
 	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool HitTestSphere::IsHitBox(
-	const HitTestBox* _Target)
+ChStd::Bool HitTestSphere::IsHit(
+	HitTestBox* _target)
 {
 	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  HitTestSphere::IsHitSphere(
-	const HitTestSphere* _Target)
+ChStd::Bool  HitTestSphere::IsHit(
+	HitTestSphere* _target)
 {
-	ChLMatrix TmpMat = GetLMat();
+	ChLMatrix tmpMat = GetLMat();
 
-	TmpMat.Inverse();
+	tmpMat.Inverse();
 
 	//Ž©g‚ÌÀ•WŒn‚©‚çŒ©‚½Target‚ÌÀ•WŒn//
-	TmpMat = TmpMat * _Target->GetLMat();
+	tmpMat = tmpMat * _target->GetLMat();
 
-	ChVec3 BSize = GetLen();
+	ChVec3 bSize = GetLen();
 
-	ChVec3 TSize = _Target->GetLen();
-	TSize = TSize * TmpMat.GetScalling();
+	ChVec3 tSize = _target->GetLen();
+	tSize = tSize * tmpMat.GetScalling();
 
 
-	ChVec3 TmpDir = TmpMat.GetPosition();
+	ChVec3 tmpDir = tmpMat.GetPosition();
 	
-	float Length = TmpDir.Len();
+	float length = tmpDir.Len();
 
-	TmpDir.Normalize();
+	tmpDir.Normalize();
 
-	TSize *= TmpDir;
+	tSize *= tmpDir;
 
-	TSize.Abs();
+	tSize.Abs();
 
-	BSize *= TmpDir;
+	bSize *= tmpDir;
 
-	BSize.Abs();
+	bSize.Abs();
 
-	float TmpSize = (TSize.Len() + BSize.Len());
+	float tmpSize = (tSize.Len() + bSize.Len());
 
-	ChStd::Bool HitFlg = Length <= TmpSize;
+	ChStd::Bool HitFlg = length <= tmpSize;
 	
 	if (HitFlg)
 	{
-		SetHitVector((TmpDir * (TmpSize - Length)));
+		SetHitVector((tmpDir * (tmpSize - length)));
 	}
 
 	return HitFlg;
@@ -232,24 +232,24 @@ ChStd::Bool  HitTestSphere::IsHitSphere(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  HitTestSphere::IsHitMesh(
-	const HitTestMesh* _Target)
+ChStd::Bool  HitTestSphere::IsHit(
+	HitTestMesh* _target)
 {
 	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  HitTestSphere::IsInnerHitBox(
-	const HitTestBox* _Target)
+ChStd::Bool  HitTestSphere::IsInnerHit(
+	HitTestBox* _target)
 {
 	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  HitTestSphere::IsInnerHitSphere(
-	const HitTestSphere* _Target)
+ChStd::Bool  HitTestSphere::IsInnerHit(
+	HitTestSphere* _target)
 {
 	return false;
 }
@@ -258,48 +258,48 @@ ChStd::Bool  HitTestSphere::IsInnerHitSphere(
 //HitTestMesh Method//
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool HitTestMesh::IsHitPanel(
-	const HitTestPanel* _Target)
+ChStd::Bool HitTestMesh::IsHit(
+	HitTestPanel* _target)
 {
 	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool HitTestMesh::IsHitBox(
-	const HitTestBox* _Target)
+ChStd::Bool HitTestMesh::IsHit(
+	HitTestBox* _target)
 {
 	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  HitTestMesh::IsHitSphere(
-	const HitTestSphere* _Target)
+ChStd::Bool  HitTestMesh::IsHit(
+	HitTestSphere* _target)
 {
 	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  HitTestMesh::IsHitMesh(
-	const HitTestMesh* _Target)
+ChStd::Bool  HitTestMesh::IsHit(
+	HitTestMesh* _target)
 {
 	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  HitTestMesh::IsInnerHitBox(
-	const HitTestBox* _Target)
+ChStd::Bool  HitTestMesh::IsInnerHit(
+	HitTestBox* _target)
 {
 	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  HitTestMesh::IsInnerHitSphere(
-	const HitTestSphere* _Target)
+ChStd::Bool  HitTestMesh::IsInnerHit(
+	HitTestSphere* _target)
 {
 	return false;
 }

@@ -18,9 +18,9 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		inline void SetPosition(const HitTestBoxVertexs& _VertexNum, const ChVec3& _Pos)
+		inline void SetPosition(const HitTestBoxVertexs& _vertexNum, const ChVec3& _pos)
 		{
-			VPos[ChStd::EnumCast(_VertexNum)] = _Pos;
+			vPos[ChStd::EnumCast(_vertexNum)] = _pos;
 		}
 
 		//R=Right,L=Left,T=Top,D=Down,F=Front,B=Back//
@@ -34,46 +34,46 @@ namespace ChCpp
 			const ChVec3& _LDF,
 			const ChVec3& _LDB)
 		{
-			VPos[0] = _RTF;
-			VPos[1] = _RTB;
-			VPos[2] = _LTF;
-			VPos[3] = _LTB;
-			VPos[4] = _RDF;
-			VPos[5] = _RDB;
-			VPos[6] = _LDF;
-			VPos[7] = _LDB;
+			vPos[0] = _RTF;
+			vPos[1] = _RTB;
+			vPos[2] = _LTF;
+			vPos[3] = _LTB;
+			vPos[4] = _RDF;
+			vPos[5] = _RDB;
+			vPos[6] = _LDF;
+			vPos[7] = _LDB;
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
-		ChStd::Bool IsHitPanel(
-			const HitTestPanel* _Target)override;
+		ChStd::Bool IsHit(
+			HitTestPanel* _target)override;
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
-		ChStd::Bool IsHitBox(
-			const HitTestBox* _Target)override;
+		ChStd::Bool IsHit(
+			HitTestBox* _target)override;
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
-		ChStd::Bool IsHitSphere(
-			const HitTestSphere* _Target)override;
+		ChStd::Bool IsHit(
+			HitTestSphere* _target)override;
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
-		ChStd::Bool IsHitMesh(
-			const HitTestMesh* _Target)override;
+		ChStd::Bool IsHit(
+			HitTestMesh* _target)override;
 
 		//対象のオブジェクトがオブジェクト内から衝突しているかの判定//
-		ChStd::Bool IsInnerHitBox(
-			const HitTestBox* _Target)override;
+		ChStd::Bool IsInnerHit(
+			HitTestBox* _target)override;
 
 		//対象のオブジェクトがオブジェクト内から衝突しているかの判定//
-		ChStd::Bool IsInnerHitSphere(
-			const HitTestSphere* _Target)override;
+		ChStd::Bool IsInnerHit(
+			HitTestSphere* _target)override;
 
 	private:
 
-		ChVec3 VPos[8];
+		ChVec3 vPos[8];
 
 
 	};

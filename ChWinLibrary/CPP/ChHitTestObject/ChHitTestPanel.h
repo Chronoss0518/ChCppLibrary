@@ -20,54 +20,54 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		inline void SetPosition(const HitTestPanelVertexs& _VertexNum, const ChVec3& _Pos)
+		inline void SetPosition(const HitTestPanelVertexs& _vertexNum, const ChVec3& _pos)
 		{
-			VPos[ChStd::EnumCast(_VertexNum)] = _Pos;
+			vPos[ChStd::EnumCast(_vertexNum)] = _pos;
 		}
 
 		//R=Right,L=Left,T=Top,D=Down//
 		inline void SetPosition(
-			const ChVec3& _RT,
-			const ChVec3& _LT,
-			const ChVec3& _RD,
-			const ChVec3& _LD)
+			const ChVec3& _rt,
+			const ChVec3& _lt,
+			const ChVec3& _rd,
+			const ChVec3& _ld)
 		{
-			VPos[0] = _RT;
-			VPos[1] = _LT;
-			VPos[2] = _RD;
-			VPos[3] = _LD;
+			vPos[0] = _rt;
+			vPos[1] = _lt;
+			vPos[2] = _rd;
+			vPos[3] = _ld;
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
-		ChStd::Bool IsHitPanel(
-			const HitTestPanel* _Target)override;
+		ChStd::Bool IsHit(
+			HitTestPanel* _target)override;
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
-		ChStd::Bool IsHitBox(
-			const HitTestBox* _Target)override;
+		ChStd::Bool IsHit(
+			HitTestBox* _target)override;
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
-		ChStd::Bool IsHitSphere(
-			const HitTestSphere* _Target)override;
+		ChStd::Bool IsHit(
+			HitTestSphere* _target)override;
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
-		ChStd::Bool IsHitMesh(
-			const HitTestMesh* _Target)override;
+		ChStd::Bool IsHit(
+			HitTestMesh* _target)override;
 
 		//対象のオブジェクトがオブジェクト内から衝突しているかの判定//
-		ChStd::Bool IsInnerHitBox(
-			const HitTestBox* _Target)override;
+		ChStd::Bool IsInnerHit(
+			HitTestBox* _target)override;
 
 		//対象のオブジェクトがオブジェクト内から衝突しているかの判定//
-		ChStd::Bool IsInnerHitSphere(
-			const HitTestSphere* _Target)override;
+		ChStd::Bool IsInnerHit(
+			HitTestSphere* _target)override;
 
 	private:
 
-		ChVec3 VPos[4];
+		ChVec3 vPos[4];
 
 
 	};

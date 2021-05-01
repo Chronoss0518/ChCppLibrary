@@ -12,43 +12,43 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		inline void SetLen(const float& _Len) { Len = _Len; }
+		inline void SetLen(const float& _len) { len = _len; }
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
-		inline float GetLen()const { return Len; }
+		inline float GetLen()const { return len; }
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
-		ChStd::Bool IsHitPanel(
-			const HitTestPanel* _Target)override;
+		ChStd::Bool IsHit(
+			HitTestPanel* _target)override;
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
-		ChStd::Bool IsHitBox(
-			const HitTestBox* _Target)override;
+		ChStd::Bool IsHit(
+			HitTestBox* _target)override;
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
-		ChStd::Bool IsHitSphere(
-			const HitTestSphere* _Target)override;
+		ChStd::Bool IsHit(
+			HitTestSphere* _target)override;
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
-		ChStd::Bool IsHitMesh(
-			const HitTestMesh* _Target)override;
+		ChStd::Bool IsHit(
+			HitTestMesh* _target)override;
 
 		//対象のオブジェクトがオブジェクト内から衝突しているかの判定//
-		ChStd::Bool IsInnerHitBox(
-			const HitTestBox* _Target)override;
+		ChStd::Bool IsInnerHit(
+			HitTestBox* _target)override;
 
 		//対象のオブジェクトがオブジェクト内から衝突しているかの判定//
-		ChStd::Bool IsInnerHitSphere(
-			const HitTestSphere* _Target)override;
+		ChStd::Bool IsInnerHit(
+			HitTestSphere* _target)override;
 
 	private:
 
-		float Len = 0.0f;
+		float len = 0.0f;
 
 
 	};
