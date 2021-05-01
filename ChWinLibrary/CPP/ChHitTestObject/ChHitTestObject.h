@@ -17,11 +17,11 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		inline void SetPosition(const ChVec3& _pos) { mat.SetPosition(_pos); }
+		inline void SetPosition(const ChVec3& _pos) { pos = _pos; }
 
-		inline void SetRotation(const ChVec3& _rot) { mat.SetRotation(_rot); }
+		inline void SetRotation(const ChVec3& _rot) { rot = _rot; }
 
-		inline void SetScalling(const ChVec3& _scl) { mat.SetScalling(_scl); }
+		inline void SetScalling(const ChVec3& _scl) { scl = _scl;; }
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
@@ -66,19 +66,19 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
-		inline ChVec3 GetPos() const { return mat.GetPosition(); }
+		inline ChVec3 GetPos() const { return pos; }
 
-		inline ChVec3 GetRot()const { return mat.GetRotation(); }
+		inline ChVec3 GetRot()const { return rot; }
 
-		inline ChVec3 GetScl()const { return mat.GetScalling(); }
-
-		inline ChLMat GetLMat()const { return mat; }
+		inline ChVec3 GetScl()const { return scl; }
 
 		inline ~HitTestObject() {}
 
 	private:
 
-		ChLMat mat;
+		ChVec3 pos;
+		ChVec3 rot;
+		ChVec3 scl;
 
 		ChVec3 hitVector = 0.0f;
 

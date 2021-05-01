@@ -191,43 +191,10 @@ ChStd::Bool HitTestSphere::IsHit(
 ChStd::Bool  HitTestSphere::IsHit(
 	HitTestSphere* _target)
 {
-	ChLMatrix tmpMat = GetLMat();
-
-	tmpMat.Inverse();
-
-	//Ž©g‚ÌÀ•WŒn‚©‚çŒ©‚½Target‚ÌÀ•WŒn//
-	tmpMat = tmpMat * _target->GetLMat();
-
-	ChVec3 bSize = GetLen();
-
-	ChVec3 tSize = _target->GetLen();
-	tSize = tSize * tmpMat.GetScalling();
 
 
-	ChVec3 tmpDir = tmpMat.GetPosition();
-	
-	float length = tmpDir.Len();
 
-	tmpDir.Normalize();
-
-	tSize *= tmpDir;
-
-	tSize.Abs();
-
-	bSize *= tmpDir;
-
-	bSize.Abs();
-
-	float tmpSize = (tSize.Len() + bSize.Len());
-
-	ChStd::Bool HitFlg = length <= tmpSize;
-	
-	if (HitFlg)
-	{
-		SetHitVector((tmpDir * (tmpSize - length)));
-	}
-
-	return HitFlg;
+	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
