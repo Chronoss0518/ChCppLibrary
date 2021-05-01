@@ -10,20 +10,20 @@
 
 using namespace ChD3D;
 
-ChCpp::BitBool XInputController::ControllerFlgs;
+ChCpp::BitBool XInputController::controllerFlgs;
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void XInputController::Init()
 {
-	unsigned char Tmp = 0;
+	unsigned char tmp = 0;
 
 	for (unsigned char i = 0; i < 4; i++)
 	{
-		if (ControllerFlgs.GetBitFlg(i))continue;
+		if (controllerFlgs.GetBitFlg(i))continue;
 
-		MyNo = i;
-		ControllerFlgs.SetBitTrue(i);
+		myNo = i;
+		controllerFlgs.SetBitTrue(i);
 		break;
 	}
 
@@ -35,16 +35,16 @@ void XInputController::Init()
 
 void XInputController::Release()
 {
-	State.Gamepad.bLeftTrigger = 0;
-	State.Gamepad.bRightTrigger = 0;
-	State.Gamepad.sThumbLX = 0;
-	State.Gamepad.sThumbLY = 0;
-	State.Gamepad.sThumbRX = 0;
-	State.Gamepad.sThumbRY = 0;
-	State.Gamepad.wButtons = 0;
+	state.Gamepad.bLeftTrigger = 0;
+	state.Gamepad.bRightTrigger = 0;
+	state.Gamepad.sThumbLX = 0;
+	state.Gamepad.sThumbLY = 0;
+	state.Gamepad.sThumbRX = 0;
+	state.Gamepad.sThumbRY = 0;
+	state.Gamepad.wButtons = 0;
 
-	ControllerFlgs.SetBitFalse(MyNo);
-	MyNo = 5;
+	controllerFlgs.SetBitFalse(myNo);
+	myNo = 5;
 
 	SetInitFlg(false);
 }
@@ -55,26 +55,11 @@ void XInputController::Update()
 {
 	if (!*this) return;
 
-	ZeroMemory(&State, sizeof(XINPUT_STATE));
+	ZeroMemory(&state, sizeof(XINPUT_STATE));
 
-	XInputGetState(MyNo, &State);
+	XInputGetState(myNo, &state);
 
-	//auto LTest = XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE;
-	//auto RTest = XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE;
-
-	//State.Gamepad.sThumbLX = State.Gamepad.sThumbLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE ? 0 : State.Gamepad.sThumbLX;
-	//State.Gamepad.sThumbLX = State.Gamepad.sThumbLX < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE ? 0 : State.Gamepad.sThumbLX;
-
-	//State.Gamepad.sThumbLY = State.Gamepad.sThumbLY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE ? 0 : State.Gamepad.sThumbLY;
-	//State.Gamepad.sThumbLY = State.Gamepad.sThumbLY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE ? 0 : State.Gamepad.sThumbLY;
-
-	//State.Gamepad.sThumbRX = State.Gamepad.sThumbRX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE ? 0 : State.Gamepad.sThumbRX;
-	//State.Gamepad.sThumbRX = State.Gamepad.sThumbRX < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE ? 0 : State.Gamepad.sThumbRX;
-
-	//State.Gamepad.sThumbRY = State.Gamepad.sThumbRY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE ? 0 : State.Gamepad.sThumbRY;
-	//State.Gamepad.sThumbRY = State.Gamepad.sThumbRY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE ? 0 : State.Gamepad.sThumbRY;
-
-	XInputSetState(MyNo, &VibFlgs);
+	XInputSetState(myNo, &vibFlgs);
 
 }
 

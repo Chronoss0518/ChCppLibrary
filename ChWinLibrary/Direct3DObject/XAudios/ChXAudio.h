@@ -18,13 +18,13 @@ namespace ChD3D
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		void SetLoopFlg(const ChStd::Bool _Flg) { LoopFlg = _Flg; }
+		void SetLoopFlg(const ChStd::Bool _Flg) { loopFlg = _Flg; }
 
-		void SetLoopStartPos(const unsigned long _Pos) { LoopStartPos = _Pos; }
+		void SetLoopStartPos(const unsigned long _pos) { loopStartPos = _pos; }
 
-		void SetLoopEndPos(const unsigned long _Pos) { LoopEndPos = _Pos; }
+		void SetLoopEndPos(const unsigned long _pos) { loopEndPos = _pos; }
 
-		void SetPlayTime(const unsigned long _Time) { NowPos = _Time; }
+		void SetPlayTime(const unsigned long _Time) { nowPos = _Time; }
 
 		void SetVolume(const float _Volume);
 
@@ -33,11 +33,11 @@ namespace ChD3D
 		///////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
-		unsigned long GetLoopStartPos() { return LoopStartPos; }
+		unsigned long GetLoopStartPos() { return loopStartPos; }
 
-		unsigned long GetLoopEndPos() { return LoopEndPos; }
+		unsigned long GetLoopEndPos() { return loopEndPos; }
 
-		unsigned long GetPlayTime() { return NowPos; }
+		unsigned long GetPlayTime() { return nowPos; }
 
 		float GetVolume();
 
@@ -58,12 +58,12 @@ namespace ChD3D
 		friend XAudio2Manager;
 	private:
 
-		IXAudio2SourceVoice* Voice = nullptr;
-		std::string FileName = "";
-		ChStd::Bool LoopFlg = false;
-		unsigned long NowPos = 1;
-		unsigned long LoopStartPos = 0;
-		unsigned long LoopEndPos = -1;
+		IXAudio2SourceVoice* voice = nullptr;
+		std::string fileName = "";
+		ChStd::Bool loopFlg = false;
+		unsigned long nowPos = 1;
+		unsigned long loopStartPos = 0;
+		unsigned long loopEndPos = -1;
 
 	};
 
@@ -73,20 +73,18 @@ namespace ChD3D
 
 	public :
 
-
-
 		friend XAudio2Manager;
 
 	private:
 
-		ChVec3 Pos;
+		ChVec3 pos;
 
 	};
 
 	struct ChXAUDIO2_BUFFER :public XAUDIO2_BUFFER
 	{
 
-		std::vector<unsigned char> AudioDataVector;
+		std::vector<unsigned char> audioDataVector;
 	};
 
 	class XAudio2Manager:public ChCpp::ClassPerts::Initializer,public ChCpp::ClassPerts::Releaser
@@ -103,19 +101,19 @@ namespace ChD3D
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		inline void SetPos(const ChVec3& _Pos)
+		inline void SetPos(const ChVec3& _pos)
 		{
-			Pos = _Pos;
+			pos = _pos;
 		}
 
-		inline void SetDir(const ChVec3& _Dir)
+		inline void SetDir(const ChVec3& _dir)
 		{
-			Dir = _Dir;
+			dir = _dir;
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		void CreateSound(AudioObject* _Object,const std::string& _Str);
+		void CreateSound(AudioObject* _object,const std::string& _str);
 
 		///////////////////////////////////////////////////////////////////////////////////
 
@@ -130,21 +128,21 @@ namespace ChD3D
 
 		XAudio2Manager(){}
 		
-		std::map<std::string, std::vector<XAUDIO2_BUFFER*>>AudioDatas;
+		std::map<std::string, std::vector<XAUDIO2_BUFFER*>>audioDatas;
 
-		std::vector<AudioObject*>Audios;
+		std::vector<AudioObject*>audios;
 		IXAudio2* audio = nullptr;
 		IXAudio2MasteringVoice* audioMV = nullptr;
 
-		ChVec3 Pos;
-		ChVec3 Dir;
+		ChVec3 pos;
+		ChVec3 dir;
 
 	public:
 
 		static XAudio2Manager& GetIns()
 		{
-			static XAudio2Manager Ins;
-			return Ins;
+			static XAudio2Manager ins;
+			return ins;
 		}
 
 	};
