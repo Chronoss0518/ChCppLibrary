@@ -41,7 +41,7 @@ namespace ChWin
 			, const ChStd::Bool& _ULFlg);
 
 		//•`‰æ‚·‚é•¶š—ñ‚ÌFİ’è//
-		inline void SetTexColor(const ChVec4& _color)
+		inline void SetTexColor(const ChMath::Vector4Base<unsigned char>& _color)
 		{
 			fontColor.a = _color.a * 255;
 			fontColor.r = _color.r * 255;
@@ -50,7 +50,7 @@ namespace ChWin
 		}
 
 		//•`‰æ‚·‚é•¶š—ñ‚Ì”wŒiFİ’è//
-		inline void SetTexBackColor(const ChVec4& _color)
+		inline void SetTexBackColor(const ChMath::Vector4Base<unsigned char>& _color)
 		{
 			backColor.a = _color.a * 255;
 			backColor.r = _color.r * 255;
