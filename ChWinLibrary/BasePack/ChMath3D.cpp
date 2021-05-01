@@ -656,20 +656,20 @@ ChVector2& ChVec2::operator= (const float& _num)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector2& ChVec2::operator *= (const ChVector2& _Vec)
+ChVector2& ChVec2::operator += (const ChVector2& _Vec)
 {
-	val.Mul(_Vec.val);
+	val.Add(_Vec.val);
 
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector2 ChVec2::operator * (const ChVector2& _Vec)const
+ChVector2 ChVec2::operator + (const ChVector2& _Vec)const
 {
 	ChVector2 tmpVec = *this;
 
-	tmpVec *= _Vec;
+	tmpVec += _Vec;
 
 	return tmpVec;
 }
@@ -696,20 +696,40 @@ ChVector2 ChVec2::operator - (const ChVector2& _Vec)const
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector2& ChVec2::operator += (const ChVector2& _Vec)
+ChVector2& ChVec2::operator *= (const ChVector2& _Vec)
 {
-	val.Add(_Vec.val);
+	val.Mul(_Vec.val);
 
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector2 ChVec2::operator + (const ChVector2& _Vec)const
+ChVector2 ChVec2::operator * (const ChVector2& _Vec)const
 {
 	ChVector2 tmpVec = *this;
 
-	tmpVec += _Vec;
+	tmpVec *= _Vec;
+
+	return tmpVec;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector2& ChVec2::operator /= (const ChVector2& _Vec)
+{
+	val.Div(_Vec.val);
+
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector2 ChVec2::operator / (const ChVector2& _Vec)const
+{
+	ChVector2 tmpVec = *this;
+
+	tmpVec /= _Vec;
 
 	return tmpVec;
 }
@@ -839,7 +859,6 @@ void ChVec2::Cross(
 	, const ChVector2& _Vec2)
 {
 	*this = GetCross(_Vec1, _Vec2);
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -850,18 +869,7 @@ std::string ChQua::Serialize(
 	const std::string& _cutChar
 	, const std::string& _endChar)
 {
-	std::string tmp = "";
-	for (unsigned char i = 0; i < 4; i++)
-	{
-		if (i == 3)break;
-		tmp += std::to_string(val[i]);
-		tmp += _cutChar;
-	}
-
-	tmp += std::to_string(val[3]);
-	tmp += _endChar;
-
-	return tmp;
+	return val.Serialize(_cutChar, _endChar);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -873,47 +881,7 @@ void ChQua::Deserialize(
 	, const std::string& _endChar
 	, const unsigned int _digit)
 {
-
-	std::string tmpStr = _str;
-
-	size_t tmpFPos = _fPos;
-
-	size_t EPos = tmpStr.find(_endChar, tmpFPos);
-
-	if (EPos == tmpStr.npos)EPos = tmpStr.size();
-
-	tmpStr = tmpStr.substr(tmpFPos, EPos - tmpFPos);
-
-	tmpStr = ChStr::RemoveToWhiteSpaceChars(tmpStr);
-
-	tmpFPos = 0;
-
-	EPos = tmpStr.length();
-
-	size_t tmp = tmpFPos;
-
-	for (unsigned char i = 0; i < 4; i++)
-	{
-		size_t Test = tmpStr.find(_cutChar, tmp);
-		if (Test > EPos)Test = EPos;
-		{
-			tmpFPos = Test;
-
-			std::string num = tmpStr.substr(tmp, tmpFPos - tmp);
-
-			val[i] = (float)std::atof(num.c_str());
-
-			val[i] = ChMath::Round(val[i], _digit);
-
-			tmp += num.length();
-			tmp += 1;
-
-		}
-
-		if (Test >= EPos)return;
-	}
-
-
+	val.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

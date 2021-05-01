@@ -1,0 +1,191 @@
+#include"../../BaseIncluder/ChBase.h"
+#include"ChNetWork.h"
+#include"ChSockBase.h"
+#include"ChInternetProtocol.h"
+
+namespace ChCpp
+{
+	///////////////////////////////////////////////////////////////////////////////
+	//Serverメソッド//
+	///////////////////////////////////////////////////////////////////////////////
+
+	void Server::Init(const unsigned short _portNo)
+	{
+
+		//アドレスファミリの指定
+		addr.sin_family = AF_INET;
+
+		//サーバのIPアドレス
+		//htonl:ネットワークバイトオーダーからホストバイトオーダーへ変換する//
+		addr.sin_addr.s_addr = htonl(INADDR_ANY);
+
+		//サーバのポート番号//
+		//htons:ホストバイトオーダーからネットワークバイトオーダーへ変換する//
+		addr.sin_port = htons(_portNo);
+	}
+
+	void Server::Release()
+	{
+
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+
+	void Server::SetLinkSocket(const std::vector<SOCKET>& _linkSock)
+	{
+		if (_linkSock.empty())return;
+
+		if (!_linkSock.empty())
+		{
+			linkSock.clear();
+		}
+
+		linkSock = _linkSock;
+
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+
+	void Server::Update()
+	{
+
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+
+	void Server::Link()
+	{
+
+	}
+
+
+	///////////////////////////////////////////////////////////////////////////////
+	//Clientメソッド//
+	///////////////////////////////////////////////////////////////////////////////
+
+	void Client::Release()
+	{
+
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+
+	void Client::Link()
+	{
+
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	//IP_TCPメソッド//
+	///////////////////////////////////////////////////////////////////////////////
+
+	ChStd::Bool IP_TCP::Init(NetWorkBase::SockBase* _base)
+	{
+
+		InternetProtocol::Init(_base);
+
+		SOCKET test;
+
+		test = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+
+		if (test == SOCKET_ERROR)
+		{
+			ChFIO::OutToErrorText(
+				"NetWorkProgrammError"
+				, "ソケットの生成(socket())に失敗しました。"
+				, ChFIO::OTEAddType::AfterFirst);
+
+			return false;
+		}
+
+		InsSocket(*_base);
+
+
+		test = bind(InsSocket(
+			*_base)
+			, InsSockAddr(*_base)
+			, sizeof(InsSockAddr_In(*_base)));
+
+
+		if (test == SOCKET_ERROR)
+		{
+			ChFIO::OutToErrorText(
+				"NetWorkProgrammError"
+				, "紐づけ(bind())に失敗しました。"
+				, ChFIO::OTEAddType::AfterFirst);
+
+			return false;
+		}
+
+
+		return true;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+
+	ChStd::Bool IP_TCP::Send(
+		const std::string& _str)
+	{
+		return true;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+
+	ChStd::Bool IP_TCP::Receve()
+	{
+
+		return true;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+
+	std::string IP_TCP::TargetSend(
+		const SOCKET& _targetSocket
+		, const std::string& _str)
+	{
+
+		return "";
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+
+	std::string IP_TCP::TargetReceve(
+		const SOCKET& _targetSocket)
+	{
+
+		return "";
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	//IP_UDPメソッド//
+	///////////////////////////////////////////////////////////////////////////////
+
+
+	ChStd::Bool IP_UDP::Init(NetWorkBase::SockBase* _base)
+	{
+
+		InternetProtocol::Init(_base);
+
+
+
+		SetInitFlg(true);
+		return true;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+
+	ChStd::Bool IP_UDP::Send(const std::string& _str)
+	{
+
+		return true;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+
+	ChStd::Bool IP_UDP::Receve()
+	{
+
+		return true;
+	}
+
+}

@@ -96,38 +96,26 @@ namespace ChMath
 
 		VectorBase operator +(const VectorBase& _Array)const
 		{
-			VectorBase out;
-
-			out = *this;
+			VectorBase out= *this;
 			out.Add(_Array);
-
 			return out;
 		}
 		VectorBase operator -(const VectorBase& _Array)const
 		{
-			VectorBase out;
-
-			out = *this;
+			VectorBase out = *this;
 			out.Sub(_Array);
-
 			return out;
 		}
 		VectorBase operator *(const VectorBase& _Array)const
 		{
-			VectorBase out;
-
-			out = *this;
+			VectorBase out= *this;
 			out.Mul(_Array);
-
 			return out;
 		}
 		VectorBase operator /(const VectorBase& _Array)const
 		{
-			VectorBase<T, Array> out;
-
-			out = *this;
+			VectorBase<T, Array> out = *this;
 			out.Div(_Array);
-
 			return out;
 		}
 
@@ -154,34 +142,26 @@ namespace ChMath
 
 		VectorBase operator +(const T& _val)const
 		{
-			VectorBase<T, Array> out;
-			out = *this;
+			VectorBase<T, Array> out = *this;
 			out.Add(_val);
-
 			return out;
 		}
 		VectorBase operator -(const T& _val)const
 		{
-			VectorBase<T, Array> out;
-			out = *this;
+			VectorBase<T, Array> out = *this;
 			out.Sub(_val);
-
 			return out;
 		}
 		VectorBase operator *(const T& _val)const
 		{
-			VectorBase<T, Array> out;
-			out = *this;
+			VectorBase<T, Array> out = *this;
 			out.Mul(_val);
-
 			return out;
 		}
 		VectorBase operator /(const T& _val)const
 		{
-			VectorBase<T, Array> out;
-			out = *this;
+			VectorBase<T, Array> out = *this;
 			out.Div(_val);
-
 			return out;
 		}
 
@@ -324,7 +304,6 @@ namespace ChMath
 			const std::string& _cutChar = ","
 			, const std::string& _endChar = ";")
 		{
-
 			std::string tmp = "";
 			for (unsigned char i = 0; i < Array; i++)
 			{
@@ -373,7 +352,7 @@ namespace ChMath
 
 					val[i] = static_cast<T>(ChStr::GetFloatingFromText<float>(Num));
 
-					//					val[i] = ChMath::Round(val[i], _digit);
+					//val[i] = ChMath::Round(val[i], _digit);
 
 					tmp += Num.length();
 					tmp += 1;
@@ -401,7 +380,6 @@ namespace ChMath
 			}
 
 			return Len;
-
 		}
 
 		T GetCos(
@@ -1152,7 +1130,6 @@ namespace ChMath
 	template<typename T>
 	struct Vector4Base
 	{
-
 		union {
 			struct
 			{
@@ -1168,12 +1145,33 @@ namespace ChMath
 			};
 			VectorBase<T, 4> val;
 		};
+
+		inline Vector4Base()
+		{
+			val.Identity();
+		}
+
+		inline Vector4Base(const T _num)
+		{
+			val.Set(_num);
+		}
+
+		inline Vector4Base(
+			const T _x, const T _y,const T _z,const T _w)
+		{
+			x = _x;
+			y = _y;
+			z = _z;
+			w = _w;
+		}
+
+		inline Vector4Base(const Vector4Base& _vec) { val = _vec.val; }
+
 	};
 
 	template<typename T>
 	struct Vector3Base
 	{
-
 		union {
 			struct
 			{
@@ -1185,12 +1183,32 @@ namespace ChMath
 			};
 			VectorBase<T, 3> val;
 		};
+
+		inline Vector3Base()
+		{
+			val.Identity();
+		}
+
+		inline Vector3Base(const T _num)
+		{
+			val.Set(_num);
+		}
+
+		inline Vector3Base(
+			const T _x, const T _y, const T _z)
+		{
+			x = _x;
+			y = _y;
+			z = _z;
+		}
+
+		inline Vector3Base(const Vector3Base& _vec) { val = _vec.val; }
+
 	};
 
 	template<typename T>
 	struct Vector2Base
 	{
-
 		union {
 			struct
 			{
@@ -1202,18 +1220,26 @@ namespace ChMath
 			};
 			VectorBase<T, 2> val;
 		};
-	};
 
-	struct QuaternionBase
-	{
+		inline Vector2Base()
+		{
+			val.Identity();
+		}
 
-		union {
-			struct
-			{
-				float x, y, z, w;
-			};
-			float val[4]{ 0, 0, 0, 0 };
-		};
+		inline Vector2Base(const T _num)
+		{
+			val.Set(_num);
+		}
+
+		inline Vector2Base(
+			const T _x, const T _y)
+		{
+			x = _x;
+			y = _y;
+		}
+
+		inline Vector2Base(const Vector2Base& _vec) { val = _vec.val; }
+
 	};
 
 	template<typename T>
@@ -1235,16 +1261,21 @@ namespace ChMath
 				T r_12, r_22;
 
 			};
-			T m[2][2];
+			MatrixBase<T, 2, 2> m;
 		};
+
+		inline BaseMatrix2x2()
+		{
+			m.Identity();
+		}
+
+		inline BaseMatrix2x2(const BaseMatrix2x2& _mat) { m = _mat.val; }
 
 	};
 
 	template<typename T>
 	struct BaseMatrix3x3
 	{
-
-
 		union
 		{
 			struct
@@ -1265,6 +1296,13 @@ namespace ChMath
 			};
 			MatrixBase<T, 3, 3> m;
 		};
+
+		inline BaseMatrix3x3()
+		{
+			m.Identity();
+		}
+
+		inline BaseMatrix3x3(const BaseMatrix3x3& _mat) { m = _mat.val; }
 
 	};
 
@@ -1293,6 +1331,13 @@ namespace ChMath
 			};
 			MatrixBase<T, 4, 4> m;
 		};
+
+		inline BaseMatrix4x4()
+		{
+			m.Identity();
+		}
+
+		inline BaseMatrix4x4(const BaseMatrix4x4& _mat) { m = _mat.val; }
 
 	};
 
