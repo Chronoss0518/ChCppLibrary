@@ -48,7 +48,7 @@ namespace ChCpp
 
 	private:
 
-		float len = 0.0f;
+		float                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               len = 0.0f;
 
 
 	};

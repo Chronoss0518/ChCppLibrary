@@ -191,8 +191,29 @@ ChStd::Bool HitTestSphere::IsHit(
 ChStd::Bool  HitTestSphere::IsHit(
 	HitTestSphere* _target)
 {
+	//ˆÊ’uî•ñ‚¾‚¯‚Ì“–‚½‚è”»’è//
 
+	auto tPos = _target->GetPos();
+	auto pos = GetPos();
 
+	auto tmpVec = pos - tPos;
+
+	auto tmpLen = tmpVec.Len();
+
+	if (tmpLen < (_target->GetLen() + len))
+	{
+		tmpVec.Normalize();
+
+		float moveSize = tmpLen - len;
+
+		moveSize = _target->GetLen() - moveSize;
+
+		SetHitVector(tmpVec * moveSize);
+
+		_target->SetHitVector(tmpVec * (-moveSize));
+
+		return true;
+	}
 
 	return false;
 }
@@ -218,6 +239,32 @@ ChStd::Bool  HitTestSphere::IsInnerHit(
 ChStd::Bool  HitTestSphere::IsInnerHit(
 	HitTestSphere* _target)
 {
+
+	//ˆÊ’uî•ñ‚¾‚¯‚Ì“–‚½‚è”»’è//
+
+	auto tPos = _target->GetPos();
+	auto pos = GetPos();
+
+
+	auto tmpVec = pos - tPos;
+
+	auto tmpLen = tmpVec.Len();
+
+	if (tmpLen + len > _target->GetLen())
+	{
+		tmpVec.Normalize();
+
+		float moveSize = tmpLen + len;
+
+		moveSize = moveSize - _target->GetLen();
+
+		SetHitVector(tmpVec * -moveSize);
+
+		_target->SetHitVector(tmpVec * (moveSize));
+
+		return true;
+	}
+
 	return false;
 }
 

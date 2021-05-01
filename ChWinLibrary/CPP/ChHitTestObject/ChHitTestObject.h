@@ -8,7 +8,8 @@ namespace ChCpp
 	class HitTestBox;
 	class HitTestSphere;
 	class HitTestMesh;
-
+	
+	//引数として与えた物体から見て当たり判定を行うクラス//
 	class HitTestObject
 	{
 
@@ -32,27 +33,27 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
 
-		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
+		//対象のオブジェクトの外から衝突しているかの判定//
 		virtual ChStd::Bool IsHit(
 			HitTestPanel* _target) = 0;
 
-		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
+		//対象のオブジェクトの外から衝突しているかの判定//
 		virtual ChStd::Bool IsHit(
 			HitTestBox* _target) = 0;
 
-		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
+		//対象のオブジェクトの外から衝突しているかの判定//
 		virtual ChStd::Bool IsHit(
 			HitTestSphere* _target) = 0;
 
-		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
+		//対象のオブジェクトの外から衝突しているかの判定//
 		virtual ChStd::Bool IsHit(
 			HitTestMesh* _target) = 0;
 
-		//対象のオブジェクトがオブジェクト内から衝突しているかの判定//
+		//対象のオブジェクト内から衝突しているかの判定//
 		virtual ChStd::Bool IsInnerHit(
 			HitTestBox* _target) = 0;
 
-		//対象のオブジェクトがオブジェクト内から衝突しているかの判定//
+		//対象のオブジェクト内から衝突しているかの判定//
 		virtual ChStd::Bool IsInnerHit(
 			HitTestSphere* _target) = 0;
 
@@ -80,6 +81,7 @@ namespace ChCpp
 		ChVec3 rot;
 		ChVec3 scl;
 
+		//どのくらい入り込んでいるかのベクトル//
 		ChVec3 hitVector = 0.0f;
 
 	};
