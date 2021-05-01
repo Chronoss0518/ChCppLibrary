@@ -61,25 +61,19 @@ ChVec2 ChWin::MouseController::GetNowProPosToChVec2()
 {
 	if (!*this)return { 0.0f,0.0f };
 
-	float tmpX, tmpY;
-	tmpX = static_cast<float>(windSize.w);
-	tmpY = static_cast<float>(windSize.h);
+	ChVec2 tmpWSize;
+
+	tmpWSize.val = windSize.val;
 
 	ChVec2 tmpVec;
 	tmpVec.x = static_cast<float>(nowPos.x);
 	tmpVec.y = static_cast<float>(nowPos.y);
 
-
-	tmpVec.x /= (tmpX);
-	tmpVec.y /= (tmpY);
+	tmpVec /= tmpWSize;
 
 	tmpVec *= 2.0f;
-
 	tmpVec -= 1.0f;
-
 	tmpVec.y *= -1.0f;
-
-
 
 	return tmpVec;
 }
@@ -134,7 +128,6 @@ void ChWin::MouseController::Update()
 		SetCursorPos(tmp.x, tmp.y);
 	}
 
-
 	RECT Rec;
 
 	GetClientRect(hWnd, &Rec);
@@ -144,8 +137,8 @@ void ChWin::MouseController::Update()
 
 	if (setCenterPosFlg)
 	{
-		centerPos.x = static_cast<float>((Rec.right - Rec.left) / 2);
-		centerPos.y = static_cast<float>((Rec.bottom - Rec.top) / 2);
+		centerPos.x = static_cast<long>((Rec.right - Rec.left) / 2);
+		centerPos.y = static_cast<long>((Rec.bottom - Rec.top) / 2);
 	}
 
 }

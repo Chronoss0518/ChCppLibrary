@@ -656,20 +656,20 @@ ChVector2& ChVec2::operator= (const float& _num)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector2& ChVec2::operator *= (const ChVector2& _Vec)
+ChVector2& ChVec2::operator += (const ChVector2& _Vec)
 {
-	val.Mul(_Vec.val);
+	val.Add(_Vec.val);
 
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector2 ChVec2::operator * (const ChVector2& _Vec)const
+ChVector2 ChVec2::operator + (const ChVector2& _Vec)const
 {
 	ChVector2 tmpVec = *this;
 
-	tmpVec *= _Vec;
+	tmpVec += _Vec;
 
 	return tmpVec;
 }
@@ -696,20 +696,40 @@ ChVector2 ChVec2::operator - (const ChVector2& _Vec)const
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector2& ChVec2::operator += (const ChVector2& _Vec)
+ChVector2& ChVec2::operator *= (const ChVector2& _Vec)
 {
-	val.Add(_Vec.val);
+	val.Mul(_Vec.val);
 
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector2 ChVec2::operator + (const ChVector2& _Vec)const
+ChVector2 ChVec2::operator * (const ChVector2& _Vec)const
 {
 	ChVector2 tmpVec = *this;
 
-	tmpVec += _Vec;
+	tmpVec *= _Vec;
+
+	return tmpVec;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector2& ChVec2::operator /= (const ChVector2& _Vec)
+{
+	val.Div(_Vec.val);
+
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector2 ChVec2::operator / (const ChVector2& _Vec)const
+{
+	ChVector2 tmpVec = *this;
+
+	tmpVec /= _Vec;
 
 	return tmpVec;
 }
