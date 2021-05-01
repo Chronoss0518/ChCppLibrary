@@ -26,7 +26,7 @@ using namespace ChD3D;
 void AudioObject::SetVolume(const float _Volume)
 {
 	if (!*this)return;
-	Voice->SetVolume(_Volume);
+	voice->SetVolume(_Volume);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -37,7 +37,7 @@ float AudioObject::GetVolume()
 
 	if (!*this)return outVol;
 
-	Voice->GetVolume(&outVol);
+	voice->GetVolume(&outVol);
 
 	return outVol;
 }
@@ -48,7 +48,7 @@ void AudioObject::Play()
 {
 	if (!*this)return;
 
-	Voice->Start(0);
+	voice->Start(0);
 
 }
 
@@ -59,7 +59,7 @@ void AudioObject::Pause()
 
 	if (!*this)return;
 
-	Voice->Stop();
+	voice->Stop();
 	
 }
 
@@ -69,14 +69,14 @@ void AudioObject::Stop()
 {
 	if (!*this)return;
 
-	Voice->Stop();
+	voice->Stop();
 
-	Voice->FlushSourceBuffers();
+	voice->FlushSourceBuffers();
 
-	Voice->SubmitSourceBuffer(XAudioManager().AudioDatas[FileName][0]);
-	Voice->SubmitSourceBuffer(XAudioManager().AudioDatas[FileName][1]);
+	voice->SubmitSourceBuffer(XAudioManager().audioDatas[fileName][0]);
+	voice->SubmitSourceBuffer(XAudioManager().audioDatas[fileName][1]);
 
-	NowPos = 1;
+	nowPos = 1;
 
 }
 
@@ -86,15 +86,15 @@ void AudioObject::Release()
 {
 	if (!*this)return;
 
-	Voice->DestroyVoice();
+	voice->DestroyVoice();
 
-	Voice = nullptr;
+	voice = nullptr;
 
-	auto& Audios = XAudioManager().Audios;
+	auto& audios = XAudioManager().audios;
 
-	auto Thiss = std::find(Audios.begin(), Audios.end(), this);
+	auto thiss = std::find(audios.begin(), audios.end(), this);
 
-	Audios.erase(Thiss);
+	audios.erase(thiss);
 
 	SetInitFlg(false);
 }
@@ -129,7 +129,7 @@ void XAudio2Manager::Release()
 
 	if (!*this)return;
 
-	for (auto&& data : AudioDatas)
+	for (auto&& data : audioDatas)
 	{
 		for (auto&& buffer : data.second)
 		{
@@ -137,7 +137,7 @@ void XAudio2Manager::Release()
 		}
 	}
 
-	for (auto&& aObject : Audios)
+	for (auto&& aObject : audios)
 	{
 		aObject->Release();
 	}
@@ -153,18 +153,18 @@ void XAudio2Manager::Release()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void XAudio2Manager::CreateSound(AudioObject* _Object, const std::string& _FileName)
+void XAudio2Manager::CreateSound(AudioObject* _Object, const std::string& _fileName)
 {
 
 	if (ChPtr::NullCheck(_Object))return;
 
-	IMFSourceReader* Reader;
+	IMFSourceReader* reader;
 	MFCreateSourceReaderFromURL(
-		ChStr::ToWString(_FileName).c_str(),
+		ChStr::ToWString(_fileName).c_str(),
 		nullptr,
-		&Reader);
+		&reader);
 
-	if (ChPtr::NullCheck(Reader))
+	if (ChPtr::NullCheck(reader))
 	{
 		
 
@@ -172,38 +172,38 @@ void XAudio2Manager::CreateSound(AudioObject* _Object, const std::string& _FileN
 	}
 
 
-	IMFMediaType* MType;
-	MFCreateMediaType(&MType);
+	IMFMediaType* mType;
+	MFCreateMediaType(&mType);
 
-	MType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
-	MType->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_PCM);
+	mType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
+	mType->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_PCM);
 
-	Reader->SetCurrentMediaType((MF_SOURCE_READER_FIRST_AUDIO_STREAM), 0, MType);
+	reader->SetCurrentMediaType((MF_SOURCE_READER_FIRST_AUDIO_STREAM), 0, mType);
 
-	MType->Release();
+	mType->Release();
 
-	Reader->GetCurrentMediaType((MF_SOURCE_READER_FIRST_AUDIO_STREAM), &MType);
+	reader->GetCurrentMediaType((MF_SOURCE_READER_FIRST_AUDIO_STREAM), &mType);
 
-	WAVEFORMATEX* WaveFormat;
+	WAVEFORMATEX* waveFormat;
 
 	{
 
 		UINT32 size = 0;
 
-		MFCreateWaveFormatExFromMFMediaType(MType, &WaveFormat, &size);
+		MFCreateWaveFormatExFromMFMediaType(mType, &waveFormat, &size);
 
 	}
 
-	DWORD StreamFlg = 0;
-	LONGLONG StreamLen = 0;
+	DWORD streamFlg = 0;
+	LONGLONG streamLen = 0;
 
-	std::vector<XAUDIO2_BUFFER*> FileDatas;
+	std::vector<XAUDIO2_BUFFER*> fileDatas;
 
 	while (true)
 	{
 		IMFSample* sample;
 
-		Reader->ReadSample(MF_SOURCE_READER_FIRST_AUDIO_STREAM, 0, nullptr, &StreamFlg, &StreamLen, &sample);
+		reader->ReadSample(MF_SOURCE_READER_FIRST_AUDIO_STREAM, 0, nullptr, &streamFlg, &streamLen, &sample);
 
 
 		if (ChPtr::NullCheck(sample))break;
@@ -214,26 +214,26 @@ void XAudio2Manager::CreateSound(AudioObject* _Object, const std::string& _FileN
 
 		BYTE* Data;
 
-		DWORD MaxStreamLen;
-		DWORD CurrentLen;
+		DWORD maxStreamLen;
+		DWORD currentLen;
 
-		mediaBuffer->GetMaxLength(&MaxStreamLen);
-		mediaBuffer->GetCurrentLength(&CurrentLen);
+		mediaBuffer->GetMaxLength(&maxStreamLen);
+		mediaBuffer->GetCurrentLength(&currentLen);
 
-		mediaBuffer->Lock(&Data, &MaxStreamLen, &CurrentLen);
+		mediaBuffer->Lock(&Data, &maxStreamLen, &currentLen);
 
-		auto FileData = new ChXAUDIO2_BUFFER();
+		auto fileData = new ChXAUDIO2_BUFFER();
 
-		for (DWORD i = 0; i < MaxStreamLen; i++)
+		for (DWORD i = 0; i < maxStreamLen; i++)
 		{
-			FileData->AudioDataVector.push_back(Data[i]);
+			fileData->audioDataVector.push_back(Data[i]);
 		}
 
-		FileData->AudioBytes = MaxStreamLen;
-		FileData->pAudioData = &FileData->AudioDataVector[0];
-		FileData->Flags = XAUDIO2_END_OF_STREAM;
+		fileData->AudioBytes = maxStreamLen;
+		fileData->pAudioData = &fileData->audioDataVector[0];
+		fileData->Flags = XAUDIO2_END_OF_STREAM;
 
-		FileDatas.push_back(FileData);
+		fileDatas.push_back(fileData);
 
 		mediaBuffer->Unlock();
 
@@ -244,22 +244,22 @@ void XAudio2Manager::CreateSound(AudioObject* _Object, const std::string& _FileN
 
 	}
 
-	audio->CreateSourceVoice(&_Object->Voice, WaveFormat);
+	audio->CreateSourceVoice(&_Object->voice, waveFormat);
 
-	_Object->Voice->SubmitSourceBuffer(FileDatas[0]);
-	_Object->Voice->SubmitSourceBuffer(FileDatas[1]);
+	_Object->voice->SubmitSourceBuffer(fileDatas[0]);
+	_Object->voice->SubmitSourceBuffer(fileDatas[1]);
 
-	_Object->FileName = _FileName;
-	AudioDatas[_Object->FileName] = FileDatas;
+	_Object->fileName = _fileName;
+	audioDatas[_Object->fileName] = fileDatas;
 	_Object->SetInitFlg(true);
 
-	Audios.push_back(_Object);
+	audios.push_back(_Object);
 
-	CoTaskMemFree(WaveFormat);
+	CoTaskMemFree(waveFormat);
 
-	MType->Release();
+	mType->Release();
 
-	Reader->Release();
+	reader->Release();
 
 }
 
@@ -268,29 +268,29 @@ void XAudio2Manager::CreateSound(AudioObject* _Object, const std::string& _FileN
 void XAudio2Manager::Update()
 {
 
-	for (auto&& audio : Audios)
+	for (auto&& audio : audios)
 	{
 
-		audio->LoopEndPos = audio->LoopEndPos >= AudioDatas[audio->FileName].size() ? AudioDatas[audio->FileName].size() : audio->LoopEndPos;
+		audio->loopEndPos = audio->loopEndPos >= audioDatas[audio->fileName].size() ? audioDatas[audio->fileName].size() : audio->loopEndPos;
 
-		audio->LoopStartPos = audio->LoopStartPos >= audio->LoopEndPos ? 0 : audio->LoopStartPos;
+		audio->loopStartPos = audio->loopStartPos >= audio->loopEndPos ? 0 : audio->loopStartPos;
 
 
-		XAUDIO2_VOICE_STATE State;
-		audio->Voice->GetState(&State);
+		XAUDIO2_VOICE_STATE state;
+		audio->voice->GetState(&state);
 
-		if (State.BuffersQueued >= 2)continue;
-		ChStd::Bool LoopFlg = false;
-		unsigned long NowPos = 0;
-		NowPos = audio->NowPos + 1 >= audio->LoopEndPos ? audio->LoopStartPos : audio->NowPos + 1;
+		if (state.BuffersQueued >= 2)continue;
+		ChStd::Bool loopFlg = false;
+		unsigned long nowPos = 0;
+		nowPos = audio->nowPos + 1 >= audio->loopEndPos ? audio->loopStartPos : audio->nowPos + 1;
 		
-		if (NowPos <= 0)LoopFlg = true;
+		if (nowPos <= 0)loopFlg = true;
 
-		if (!audio->LoopFlg && LoopFlg)continue;
+		if (!audio->loopFlg && loopFlg)continue;
 
-		audio->NowPos = NowPos;
+		audio->nowPos = nowPos;
 
-		audio->Voice->SubmitSourceBuffer(AudioDatas[audio->FileName][NowPos]);
+		audio->voice->SubmitSourceBuffer(audioDatas[audio->fileName][nowPos]);
 
 	}
 }
