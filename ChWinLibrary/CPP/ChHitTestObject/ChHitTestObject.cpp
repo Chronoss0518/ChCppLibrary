@@ -133,6 +133,18 @@ ChStd::Bool HitTestBox::IsHit(
 ChStd::Bool HitTestBox::IsHit(
 	HitTestBox* _target)
 {
+
+
+	//ˆÊ’uî•ñ‚¾‚¯‚Ì“–‚½‚è”»’è//
+
+	auto tPos = _target->GetPos();
+	auto pos = GetPos();
+
+	auto tmpVec = pos - tPos;
+
+
+
+
 	return false;
 }
 
@@ -194,6 +206,7 @@ ChStd::Bool  HitTestSphere::IsHit(
 	//ˆÊ’uî•ñ‚¾‚¯‚Ì“–‚½‚è”»’è//
 
 	auto tPos = _target->GetPos();
+
 	auto pos = GetPos();
 
 	auto tmpVec = pos - tPos;

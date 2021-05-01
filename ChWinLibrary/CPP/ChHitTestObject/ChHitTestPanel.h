@@ -6,12 +6,7 @@
 namespace ChCpp
 {
 
-	//R=Right,L=Left,T=Top,D=Down//
-	enum class HitTestPanelVertexs :unsigned char
-	{
-		RT, LT, RD, LD, None
-	};
-
+	//äÓñ{ìIÇ…è„å¸Ç´//
 	class HitTestPanel :public HitTestObject
 	{
 
@@ -20,22 +15,9 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		inline void SetPosition(const HitTestPanelVertexs& _vertexNum, const ChVec3& _pos)
+		inline void SetSize(const ChVec2& _size)
 		{
-			vPos[ChStd::EnumCast(_vertexNum)] = _pos;
-		}
-
-		//R=Right,L=Left,T=Top,D=Down//
-		inline void SetPosition(
-			const ChVec3& _rt,
-			const ChVec3& _lt,
-			const ChVec3& _rd,
-			const ChVec3& _ld)
-		{
-			vPos[0] = _rt;
-			vPos[1] = _lt;
-			vPos[2] = _rd;
-			vPos[3] = _ld;
+			size = _size;
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////////
@@ -67,8 +49,7 @@ namespace ChCpp
 
 	private:
 
-		ChVec3 vPos[4];
-
+		ChVec2 size;
 
 	};
 
