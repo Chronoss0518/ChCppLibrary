@@ -8,7 +8,7 @@ namespace ChCpp
 	class ModelObject;
 	struct ModelFrame;
 
-	class ModelCreater
+	class ModelLoader
 	{
 
 	public:

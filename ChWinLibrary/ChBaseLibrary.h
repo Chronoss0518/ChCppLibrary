@@ -32,8 +32,8 @@
 #include"CPP/ChBaseObject/ChBaseObject.h"
 #include"CPP/ChModel/ChModelObject.h"
 
-#include"CPP/ChModelCreater/ChCMXFileMesh.h"
-#include"CPP/ChModelCreater/ChCMObjFileMesh.h"
+#include"CPP/ChModelLoader/ChLMXFile.h"
+#include"CPP/ChModelLoader/ChLMObjFile.h"
 
 #include"BaseSystem/ChBaseSystem/ChBaseSystem.h"
 
