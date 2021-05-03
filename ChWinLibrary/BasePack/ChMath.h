@@ -188,7 +188,10 @@ namespace ChMath
 		///////////////////////////////////////////////////////////////////////////////////////
 		//ConstructorDestructor//
 
-		VectorBase() = default;
+		VectorBase()
+		{
+			Identity();
+		}
 
 		VectorBase(const T(&_val)[Array]) :val(_val) {}
 
@@ -366,7 +369,6 @@ namespace ChMath
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
-
 
 		unsigned long GetArray() { return Array; }
 
@@ -549,6 +551,12 @@ namespace ChMath
 	{
 	public:
 
+		struct ULMatrix
+		{
+			MatrixBase uMat;
+			MatrixBase lMat;
+		};
+
 		///////////////////////////////////////////////////////////////////////////////////////
 		//Operator//
 
@@ -700,7 +708,10 @@ namespace ChMath
 		///////////////////////////////////////////////////////////////////////////////////////
 		//ConstructorDestructor//
 
-		MatrixBase() = default;
+		MatrixBase()
+		{
+			Identity();
+		}
 
 		MatrixBase(const MatrixBase& _Mat)
 		{
@@ -713,13 +724,13 @@ namespace ChMath
 		///////////////////////////////////////////////////////////////////////////////////
 		//OperatorMathFunction//
 
-		void Set(const MatrixBase& _Mat)
+		void Set(const MatrixBase& _mat)
 		{
 			for (unsigned long i = 0; i < Column; i++)
 			{
 				for (unsigned long j = 0; j < Row; j++)
 				{
-					m[i][j] = _Mat.m[i][j];
+					m[i][j] = _mat.m[i][j];
 				}
 			}
 		}
@@ -735,29 +746,29 @@ namespace ChMath
 			}
 		}
 
-		void Add(const MatrixBase& _Mat)
+		void Add(const MatrixBase& _mat)
 		{
 			for (unsigned long i = 0; i < Column; i++)
 			{
 				for (unsigned long j = 0; j < Row; j++)
 				{
-					m[i][j] += _Mat.m[i][j];
+					m[i][j] += _mat.m[i][j];
 				}
 			}
 		}
 
-		void Sub(const MatrixBase& _Mat)
+		void Sub(const MatrixBase& _mat)
 		{
 			for (unsigned long i = 0; i < Column; i++)
 			{
 				for (unsigned long j = 0; j < Row; j++)
 				{
-					m[i][j] -= _Mat.m[i][j];
+					m[i][j] -= _mat.m[i][j];
 				}
 			}
 		}
 
-		void Mul(const MatrixBase& _Mat)
+		void Mul(const MatrixBase& _mat)
 		{
 			for (unsigned long i = 0; i < Column; i++)
 			{
@@ -769,11 +780,11 @@ namespace ChMath
 
 				for (unsigned char j = 0; j < Column; j++)
 				{
-					m[i][j] = tmp[0] * _Mat.m[0][j];
+					m[i][j] = tmp[0] * _mat.m[0][j];
 
 					for (unsigned char k = 1; k < Row; k++)
 					{
-						m[i][j] += tmp[k] * _Mat.m[k][j];
+						m[i][j] += tmp[k] * _mat.m[k][j];
 					}
 				}
 			}
@@ -831,10 +842,10 @@ namespace ChMath
 
 		}
 
-		void Div(const MatrixBase& _Mat)
+		void Div(const MatrixBase& _mat)
 		{
 			MatrixBase tmpMat;
-			tmpMat = _Mat;
+			tmpMat = _mat;
 
 			tmpMat.Inverse();
 
@@ -947,7 +958,7 @@ namespace ChMath
 		T GetLen()const
 		{
 			T out = static_cast<T>(0.0f);
-
+			unsigned long tmpNum;
 			for (unsigned long i = 0; i < Column; i++)
 			{
 				T add = static_cast<T>(1.0f);
@@ -956,9 +967,11 @@ namespace ChMath
 				for (unsigned long j = 0; j < Row; j++)
 				{
 					if (i == j)continue;
+					tmpNum = i + j;
+					add *= m[j % Column][tmpNum % Row];
 
-					add *= m[j % Column][(i + j) % Row];
-					sub *= m[j % Column][std::abs(i - j) % Row];
+					tmpNum = i - j < 0 ? j - i : i - j;
+					sub *= m[j % Column][tmpNum % Row];
 				}
 
 				out = out + add - sub;
@@ -968,9 +981,9 @@ namespace ChMath
 			return out;
 		}
 
-		MatrixBase<T, Row, Column> GetCofactor(const unsigned long _Row, const unsigned long _Col)const
+		MatrixBase GetCofactor(const unsigned long _Row, const unsigned long _Col)const
 		{
-			MatrixBase<T, Row - 1, Column - 1> out;
+			MatrixBase out;
 
 			if (_Row >= Row || _Col >= Column)return out;
 
@@ -996,68 +1009,89 @@ namespace ChMath
 			return GetLen();
 		}
 
-		MatrixBase<T, Row, Column> GetInverse()const
+		//掃き出し法による逆行列//
+		MatrixBase GetInverse()const
 		{
-			T Len = GetCofactor();
+			if(Row != Column)return *this;
 
-			if (GetLen() == static_cast<T>(0.0f))return;
+			if (GetLen() == static_cast<T>(0.0f))return *this;
 
-			MatrixBase<T, Row - 1, Column - 1> tmpDetMat[Row][Column];
+			MatrixBase tmpMat = *this;
+
+			MatrixBase out;
 
 			for (unsigned long i = 0; i < Column; i++)
 			{
+
+				T basicNum = tmpMat.m[i][i];
+				VectorBase<T, Row> basicOutVec = out.m[i];
+				VectorBase<T, Row> subVec = tmpMat.m[i];
+				out.m[i] /= basicNum;
+				tmpMat.m[i] /= basicNum;
+
 				for (unsigned long j = 0; j < Row; j++)
 				{
+					if (i == j)continue;
+
+					T num = tmpMat.m[j][i];
+
+					if (num == static_cast<T>(0.0f))continue;
+
+					num = num /basicNum;
+
+					VectorBase<T, Row> tmpVec;
+
+					tmpVec = basicOutVec * num;
+
+					out.m[j] -= tmpVec;
+
+					tmpVec = subVec * num;
+					tmpMat.m[j] -= tmpVec;
 
 				}
+
 			}
+
+			return out;
+
 		}
 
-		//ドゥーリトル法上三角行列//
-		MatrixBase<T, Row, Column> GetDLUMatrix()const
+		//ドゥーリトル法三角行列//
+		ULMatrix GetDLUMatrix()const
 		{
-			MatrixBase<T, Row, Column> LUMat;
 
+			ULMatrix luMat;
+
+			if (Row != Column)return luMat;
+
+			luMat.uMat.Set(*this);
+
+
+			for (unsigned long i = 1; i < Row; i++)
 			{
-				unsigned long maxNum = (Row > Column) ? Row : Column;
+				auto col = luMat.uMat[i - 1];
 
-				T tmp = static_cast<T>(0.0f);
-
-				for (unsigned long i = 0; i < maxNum; i++)
+				for (unsigned long j = i; j < Row; j++)
 				{
-					tmp *= m[i % Column][i % Row];
+					if (luMat.uMat[j][i - 1] == 0.0f)continue;
+					if (col[i - 1] == 0.0f)continue;
+
+					T k = luMat.uMat[j][i - 1] / col[i - 1];
+
+					auto tmpCol = col;
+
+					tmpCol *= k;
+
+					luMat.lMat[j][i - 1] = tmpCol[i - 1];
+
+					luMat.uMat[j] -= tmpCol;
+
 				}
 
-				if (tmp == 0.0f)return LUMat;
 			}
 
-			MatrixBase<T, Row, Column> LMat;
-			MatrixBase<T, Row, Column> UMat;
 
-			LMat.Set(static_cast<T>(0.0f));
-			UMat.Set(static_cast<T>(0.0f));
-
-			for (unsigned long i = 0; i < Column; i++)
-			{
-				for (unsigned long j = 0; j < Row; j++)
-				{
-					for (unsigned long k = i; k < Row - 1; k++)
-					{
-						UMat.m[i][j] += LMat.m[i][k] * UMat.m[k % Column][j];
-					}
-
-					UMat.m[i][j] = m[i][j] - UMat.m[i][j];
-
-					for (unsigned long k = j + 1; k < Column - 1; k++)
-					{
-						LMat.m[i][j] += LMat.m[i][k % Row] * UMat.m[k][j];
-					}
-
-					LMat.m[i][j] /= UMat[i][i % Row];
-					LMat.m[i][j] = m[i][j] - LMat.m[i][j];
-				}
-			}
-			LUMat.Set(LMat + UMat);
+			return luMat;
 		}
 
 		/*
@@ -1084,41 +1118,27 @@ namespace ChMath
 
 		void Identity()
 		{
-
-			for (unsigned char i = 0; i < Column; i++)
+			for (unsigned long i = 0; i < Column;i++)
 			{
-				for (unsigned char j = 0; j < Row; j++)
+				for (unsigned long j = 0; j < Row; j++)
 				{
 					m[i][j] = static_cast<T>(i != j ? 0.0f : 1.0f);
 				}
 			}
-
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		void Inverse()
 		{
-			Inverse(*this);
+			Set(GetInverse());
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		void Inverse(const MatrixBase<T, Row, Column>& _Mat)
+		void Inverse(const MatrixBase<T, Row, Column>& _mat)
 		{
-			T Len = GetCofactor();
-
-			if (GetLen() == static_cast<T>(0.0f))return;
-
-			MatrixBase<T, Row - 1, Column - 1> tmpDetMat[Row][Column];
-
-			for (unsigned long i = 0; i < Column; i++)
-			{
-				for (unsigned long j = 0; j < Row; j++)
-				{
-
-				}
-			}
+			Set(_mat.GetInverse());
 		}
 
 	private:
