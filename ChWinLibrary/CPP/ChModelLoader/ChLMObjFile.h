@@ -10,7 +10,7 @@ namespace ChCpp
 
 	class TextObject;
 
-	class CMObjFile :public ModelCreater
+	class LMObjFile :public ModelLoader
 	{
 	protected:
 
