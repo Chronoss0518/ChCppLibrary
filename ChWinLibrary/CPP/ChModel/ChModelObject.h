@@ -2,8 +2,8 @@
 #define Ch_CPP_MObj_h
 
 #include"../ChModel/ChModel.h"
-#include"../ChModelCreater/ChModelCreater.h"
-#include"../ChModelCreater/ChAnimationCreater.h"
+#include"../ChModelLoader/ChModelLoader.h"
+#include"../ChModelLoader/ChAnimationCreater.h"
 
 
 namespace ChCpp
@@ -40,11 +40,11 @@ namespace ChCpp
 
 		template<class T>
 		auto CreateModel(const std::string& _filePath)->typename std::enable_if<
-			std::is_base_of<ModelCreater, T>::value, void>::type
+			std::is_base_of<ModelLoader, T>::value, void>::type
 		{
 			Release();
 
-			ChPtr::Shared<ModelCreater> creater;
+			ChPtr::Shared<ModelLoader> creater;
 			creater = ChPtr::Make_S<T>();
 
 			creater->Init(this);
@@ -56,12 +56,12 @@ namespace ChCpp
 
 		template<class T>
 		auto OutModelFile(const std::string& _filePath)->typename std::enable_if<
-			std::is_base_of<ModelCreater, T>::value, void>::type
+			std::is_base_of<ModelLoader, T>::value, void>::type
 		{
 
 		}
 
-		friend ModelCreater;
+		friend ModelLoader;
 		friend AnimationCreater;
 
 	protected:

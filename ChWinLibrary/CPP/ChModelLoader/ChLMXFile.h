@@ -1,11 +1,11 @@
 #ifndef Ch_CPP_XMesh_h
 #define Ch_CPP_XMesh_h
 
-#include"ChModelCreater.h"
+#include"ChModelLoader.h"
 
 namespace ChCpp
 {
-	class CMXFile :public ModelCreater
+	class LMXFile :public ModelLoader
 	{
 	protected:
 
