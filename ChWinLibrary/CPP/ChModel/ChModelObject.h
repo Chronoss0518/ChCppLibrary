@@ -40,11 +40,11 @@ namespace ChCpp
 
 		template<class T>
 		auto CreateModel(const std::string& _filePath)->typename std::enable_if<
-			std::is_base_of<ModelLoader, T>::value, void>::type
+			std::is_base_of<ModelLoaderBase, T>::value, void>::type
 		{
 			Release();
 
-			ChPtr::Shared<ModelLoader> creater;
+			ChPtr::Shared<ModelLoaderBase> creater;
 			creater = ChPtr::Make_S<T>();
 
 			creater->Init(this);
@@ -56,12 +56,12 @@ namespace ChCpp
 
 		template<class T>
 		auto OutModelFile(const std::string& _filePath)->typename std::enable_if<
-			std::is_base_of<ModelLoader, T>::value, void>::type
+			std::is_base_of<ModelLoaderBase, T>::value, void>::type
 		{
 
 		}
 
-		friend ModelLoader;
+		friend ModelLoaderBase;
 		friend AnimationCreater;
 
 	protected:
