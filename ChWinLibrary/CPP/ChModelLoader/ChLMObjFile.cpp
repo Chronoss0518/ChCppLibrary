@@ -11,7 +11,7 @@
 //ChCMObjeFile Method//
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::LMObjFile::CreateModel(const std::string& _filePath)
+void ChCpp::ModelLoader::ObjFile::CreateModel(const std::string& _filePath)
 {
 	if (_filePath.size() <= 0)return;
 
@@ -72,10 +72,9 @@ void ChCpp::LMObjFile::CreateModel(const std::string& _filePath)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::LMObjFile::CreateObject(const std::string& _objectName)
+void ChCpp::ModelLoader::ObjFile::CreateObject(const std::string& _objectName)
 {
 	if (_objectName.size() < 3)return;
-	if (_objectName[2] != ' ')return;
 	if (_objectName[1] != ' ')return;
 	if (_objectName[0] != objectBlockTags)return;
 
@@ -97,7 +96,7 @@ void ChCpp::LMObjFile::CreateObject(const std::string& _objectName)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::LMObjFile::CreateMaterials(const std::string& _fileName)
+void ChCpp::ModelLoader::ObjFile::CreateMaterials(const std::string& _fileName)
 {
 	if (_fileName.size() < 8)return;
 	if (_fileName[6] != ' ')return;
@@ -156,7 +155,7 @@ void ChCpp::LMObjFile::CreateMaterials(const std::string& _fileName)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::LMObjFile::CreateMaterial(const std::string& _matName)
+void ChCpp::ModelLoader::ObjFile::CreateMaterial(const std::string& _matName)
 {
 
 	if (_matName.size() < 7)return;
@@ -177,7 +176,7 @@ void ChCpp::LMObjFile::CreateMaterial(const std::string& _matName)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::LMObjFile::CreateChFrame(ChPtr::Shared<ChCpp::ModelFrame::Frame>& _frame)
+void ChCpp::ModelLoader::ObjFile::CreateChFrame(ChPtr::Shared<ChCpp::ModelFrame::Frame>& _frame)
 {
 
 	//for (auto&& Obj : ObjectMaps)
@@ -338,7 +337,7 @@ void ChCpp::LMObjFile::CreateChFrame(ChPtr::Shared<ChCpp::ModelFrame::Frame>& _f
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::LMObjFile::OutModelFile(const std::string& _filePath)
+void ChCpp::ModelLoader::ObjFile::OutModelFile(const std::string& _filePath)
 {
 	if (_filePath.size() <= 0)return;
 	if (_filePath.rfind(".") == std::string::npos)return;
@@ -347,7 +346,7 @@ void ChCpp::LMObjFile::OutModelFile(const std::string& _filePath)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::LMObjFile::SetVertex(const std::string& _line)
+void ChCpp::ModelLoader::ObjFile::SetVertex(const std::string& _line)
 {
 	if (_line.size() < 2)return;
 	if (_line[1] != ' ')return;
@@ -362,7 +361,7 @@ void ChCpp::LMObjFile::SetVertex(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::LMObjFile::SetUV(const std::string& _line)
+void ChCpp::ModelLoader::ObjFile::SetUV(const std::string& _line)
 {
 	if (_line.size() < 3)return;
 	if (_line[2] != ' ')return;
@@ -378,7 +377,7 @@ void ChCpp::LMObjFile::SetUV(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::LMObjFile::SetNormal(const std::string& _line)
+void ChCpp::ModelLoader::ObjFile::SetNormal(const std::string& _line)
 {
 	if (_line.size() < 3)return;
 	if (_line[2] != ' ')return;
@@ -394,7 +393,7 @@ void ChCpp::LMObjFile::SetNormal(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::LMObjFile::SetFace(const std::string& _line)
+void ChCpp::ModelLoader::ObjFile::SetFace(const std::string& _line)
 {
 	if (_line.size() < 2)return;
 	if (_line[1] != ' ')return;
@@ -406,7 +405,7 @@ void ChCpp::LMObjFile::SetFace(const std::string& _line)
 
 	unsigned long end = 0;
 
-	auto data = ChPtr::Make_S<ChCpp::LMObjFile::ObjFileModelData::MeshData>();
+	auto data = ChPtr::Make_S<ChCpp::ModelLoader::ObjFile::ObjFileModelData::MeshData>();
 
 	data->targetMaterialName = blockMaterial;
 
@@ -425,7 +424,7 @@ void ChCpp::LMObjFile::SetFace(const std::string& _line)
 			tmpPos = _line.size();
 		}
 
-		auto mdata = ChPtr::Make_S<ChCpp::LMObjFile::ObjFileModelData::MeshData::Data>();
+		auto mdata = ChPtr::Make_S<ChCpp::ModelLoader::ObjFile::ObjFileModelData::MeshData::Data>();
 
 
 		std::string tmp = _line.substr(pos, tmpPos - pos);
@@ -472,7 +471,7 @@ void ChCpp::LMObjFile::SetFace(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::LMObjFile::SetMateBlock(const std::string& _line)
+void ChCpp::ModelLoader::ObjFile::SetMateBlock(const std::string& _line)
 {
 
 	if (_line.size() < 7)return;
@@ -490,7 +489,7 @@ void ChCpp::LMObjFile::SetMateBlock(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::LMObjFile::SetMatAmbient(const std::string& _line)
+void ChCpp::ModelLoader::ObjFile::SetMatAmbient(const std::string& _line)
 {
 	if (_line.size() < 3)return;
 	if (_line[2] != ' ')return;
@@ -502,7 +501,7 @@ void ChCpp::LMObjFile::SetMatAmbient(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::LMObjFile::SetMatDiffuse(const std::string& _line)
+void ChCpp::ModelLoader::ObjFile::SetMatDiffuse(const std::string& _line)
 {
 
 	if (_line.size() < 3)return;
@@ -516,7 +515,7 @@ void ChCpp::LMObjFile::SetMatDiffuse(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::LMObjFile::SetMatSpecular(const std::string& _line)
+void ChCpp::ModelLoader::ObjFile::SetMatSpecular(const std::string& _line)
 {
 
 	if (_line.size() < 3)return;
@@ -530,7 +529,7 @@ void ChCpp::LMObjFile::SetMatSpecular(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::LMObjFile::SetMatSpecularHighLight(const std::string& _line)
+void ChCpp::ModelLoader::ObjFile::SetMatSpecularHighLight(const std::string& _line)
 {
 
 	if (_line.size() < 3)return;
@@ -544,7 +543,7 @@ void ChCpp::LMObjFile::SetMatSpecularHighLight(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::LMObjFile::SetMatDissolve(const std::string& _line)
+void ChCpp::ModelLoader::ObjFile::SetMatDissolve(const std::string& _line)
 {
 
 	if (_line.size() < 2)return;
@@ -557,7 +556,7 @@ void ChCpp::LMObjFile::SetMatDissolve(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::LMObjFile::SetMatODensity(const std::string& _line)
+void ChCpp::ModelLoader::ObjFile::SetMatODensity(const std::string& _line)
 {
 	if (_line.size() < 3)return;
 
@@ -571,7 +570,7 @@ void ChCpp::LMObjFile::SetMatODensity(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::LMObjFile::SetMatAmbientMap(const std::string& _line)
+void ChCpp::ModelLoader::ObjFile::SetMatAmbientMap(const std::string& _line)
 {
 	if (_line.size() < 7)return;
 
@@ -589,7 +588,7 @@ void ChCpp::LMObjFile::SetMatAmbientMap(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::LMObjFile::SetMatDiffuseMap(const std::string& _line)
+void ChCpp::ModelLoader::ObjFile::SetMatDiffuseMap(const std::string& _line)
 {
 
 	if (_line.size() < 7)return;
@@ -608,7 +607,7 @@ void ChCpp::LMObjFile::SetMatDiffuseMap(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::LMObjFile::SetMatSpecularMap(const std::string& _line)
+void ChCpp::ModelLoader::ObjFile::SetMatSpecularMap(const std::string& _line)
 {
 
 	if (_line.size() < 7)return;
@@ -627,7 +626,7 @@ void ChCpp::LMObjFile::SetMatSpecularMap(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::LMObjFile::SetMatSpecularHighLightMap(const std::string& _line)
+void ChCpp::ModelLoader::ObjFile::SetMatSpecularHighLightMap(const std::string& _line)
 {
 
 	if (_line.size() < 7)return;
@@ -646,7 +645,7 @@ void ChCpp::LMObjFile::SetMatSpecularHighLightMap(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::LMObjFile::SetMatBumpMap(const std::string& _line)
+void ChCpp::ModelLoader::ObjFile::SetMatBumpMap(const std::string& _line)
 {
 
 	if (_line.size() < 9)return;
@@ -667,7 +666,7 @@ void ChCpp::LMObjFile::SetMatBumpMap(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::LMObjFile::SetMatBumpMap2(const std::string& _line)
+void ChCpp::ModelLoader::ObjFile::SetMatBumpMap2(const std::string& _line)
 {
 	if (_line.size() < 5)return;
 
@@ -683,7 +682,7 @@ void ChCpp::LMObjFile::SetMatBumpMap2(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::LMObjFile::SetMatMetallicMap(const std::string& _line)
+void ChCpp::ModelLoader::ObjFile::SetMatMetallicMap(const std::string& _line)
 {
 
 	if (_line.size() < 7)return;
@@ -702,7 +701,7 @@ void ChCpp::LMObjFile::SetMatMetallicMap(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::LMObjFile::SetMatMetallicMap2(const std::string& _line)
+void ChCpp::ModelLoader::ObjFile::SetMatMetallicMap2(const std::string& _line)
 {
 
 	if (_line.size() < 3)return;
@@ -717,7 +716,7 @@ void ChCpp::LMObjFile::SetMatMetallicMap2(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::LMObjFile::SetMatNormalMap(const std::string& _line)
+void ChCpp::ModelLoader::ObjFile::SetMatNormalMap(const std::string& _line)
 {
 
 	if (_line.size() < 5)return;
@@ -734,7 +733,7 @@ void ChCpp::LMObjFile::SetMatNormalMap(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-std::string ChCpp::LMObjFile::LoadTextureName(const std::string& _line)
+std::string ChCpp::ModelLoader::ObjFile::LoadTextureName(const std::string& _line)
 {
 
 	ChStd::Bool loadFlg = false;

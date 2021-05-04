@@ -17,21 +17,9 @@ public:
 	ChQuaternion_11&operator/=(const DirectX::XMFLOAT4& _cm);
 	ChQuaternion_11 operator/(const DirectX::XMFLOAT4& _cm)const;
 
-	ChQuaternion_11&operator=(const float& _cm);
-	ChQuaternion_11&operator+=(const float& _cm);
-	ChQuaternion_11 operator+(const float& _cm)const;
-	ChQuaternion_11&operator-=(const float& _cm);
-	ChQuaternion_11 operator-(const float& _cm)const;
-	ChQuaternion_11&operator*=(const float& _cm);
-	ChQuaternion_11 operator*(const float& _cm)const;
-	ChQuaternion_11&operator/=(const float& _cm);
-	ChQuaternion_11 operator/(const float& _cm)const;
-
 	ChQuaternion_11&operator=(const DirectX::XMVECTOR& _cm);
 
 	operator DirectX::XMVECTOR()const;
-
-	operator DirectX::XMFLOAT4()const;
 
 	ChQuaternion_11&operator = (const DirectX::XMFLOAT3& _vec);
 
@@ -44,6 +32,8 @@ public:
 	{
 		Identity();
 	}
+
+	ChQuaternion_11(const DirectX::XMFLOAT4& _cm) :DirectX::XMFLOAT4(_cm) {}
 
 	ChQuaternion_11(const DirectX::XMFLOAT4X4& _cm)
 	{

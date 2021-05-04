@@ -13,93 +13,71 @@
 
 ChMatrix_11&ChMatrix_11::operator=(const DirectX::XMFLOAT4X4& _cm)
 {
-	for (unsigned char i = 0; i < 4; i++)
-	{
-		for (unsigned char j = 0; j < 4; j++)
-		{
-			m[i][j] = _cm.m[i][j];
-		}
-	}
-
+	if (this == &_cm)return *this;
+	DirectX::XMFLOAT4X4::operator=(_cm);
 	return *this;
 }
 
 ChMatrix_11&ChMatrix_11::operator+=(const DirectX::XMFLOAT4X4& _cm)
 {
-	*this = *this + _cm;
-
+	for (unsigned char i = 0; i < 4; i++)
+	{
+		for (unsigned char j = 0; j < 4; j++)
+		{
+			m[i][j] += _cm.m[i][j];
+		}
+	}
 	return *this;
 }
 
 ChMatrix_11 ChMatrix_11::operator+(const DirectX::XMFLOAT4X4& _cm)const
 {
-	DirectX::XMFLOAT4X4 tmpMat;
-	for (unsigned char i = 0; i < 4; i++)
-	{
-		for (unsigned char j = 0; j < 4; j++)
-		{
-			tmpMat.m[i][j] += _cm.m[i][j];
-		}
-	}
-
-	return tmpMat;
+	ChMatrix_11 out = *this;
+	out += _cm;
+	return out;
 }
 
 ChMatrix_11&ChMatrix_11::operator-=(const DirectX::XMFLOAT4X4& _cm)
 {
 
-	*this = *this - _cm;
-
+	for (unsigned char i = 0; i < 4; i++)
+	{
+		for (unsigned char j = 0; j < 4; j++)
+		{
+			m[i][j] -= _cm.m[i][j];
+		}
+	}
 	return *this;
 }
 
 ChMatrix_11 ChMatrix_11::operator-(const DirectX::XMFLOAT4X4& _cm)const
 {
-	ChMatrix_11 tmpMat;
-	for (unsigned char i = 0; i < 4; i++)
-	{
-		for (unsigned char j = 0; j < 4; j++)
-		{
-			tmpMat.m[i][j] += _cm.m[i][j];
-		}
-	}
-
-	return tmpMat;
+	ChMatrix_11 out = *this;
+	out -= _cm;
+	return out;
 }
 
 ChMatrix_11&ChMatrix_11::operator*=(const DirectX::XMFLOAT4X4& _cm)
 {
-	*this = *this * _cm;
-	return *this;
-}
-
-ChMatrix_11 ChMatrix_11::operator*(const DirectX::XMFLOAT4X4& _cm)const
-{
-
-	ChMatrix_11 tmpMat;
 	DirectX::XMMATRIX tmpMat1, tmpMat2;
 
 	tmpMat1 = DirectX::XMLoadFloat4x4(&_cm);
 	tmpMat2 = *this;
 
-	tmpMat = DirectX::XMMatrixMultiply(tmpMat1, tmpMat2);
+	*this = DirectX::XMMatrixMultiply(tmpMat1, tmpMat2);
 
-	
+	return *this;
+}
 
-	return tmpMat;
-
+ChMatrix_11 ChMatrix_11::operator*(const DirectX::XMFLOAT4X4& _cm)const
+{
+	ChMatrix_11 out = *this;
+	out *= _cm;
+	return out;
 }
 
 ChMatrix_11&ChMatrix_11::operator/=(const DirectX::XMFLOAT4X4& _cm)
 {
-	*this = *this / _cm;
-	return *this;
-}
-
-ChMatrix_11 ChMatrix_11::operator/(const DirectX::XMFLOAT4X4& _cm)const
-{
-
-	ChMatrix_11 tmpMat;
 	DirectX::XMMATRIX tmpMat1, tmpMat2;
 
 	tmpMat1 = DirectX::XMLoadFloat4x4(&_cm);
@@ -107,82 +85,86 @@ ChMatrix_11 ChMatrix_11::operator/(const DirectX::XMFLOAT4X4& _cm)const
 
 	tmpMat2 = DirectX::XMMatrixInverse(nullptr, tmpMat2);
 
-	tmpMat = tmpMat2 * tmpMat1;
+	*this = tmpMat2 * tmpMat1;
+	return *this;
+}
 
-	return tmpMat;
+ChMatrix_11 ChMatrix_11::operator/(const DirectX::XMFLOAT4X4& _cm)const
+{
+
+	ChMatrix_11 out = *this;
+	out /= _cm;
+	return out;
 
 }
 
-ChMatrix_11&ChMatrix_11::ChMatrix_11::operator=(const float& _cm)
+ChMatrix_11& ChMatrix_11::operator=(const float& _num)
 {
-
 	for (unsigned char i = 0; i < 4; i++)
 	{
 		for (unsigned char j = 0; j < 4; j++)
 		{
-			m[i][j] = _cm;
+			m[i][j] = _num;
 		}
 	}
 	return *this;
 }
 
-ChMatrix_11&ChMatrix_11::ChMatrix_11::operator*=(const float& _cm)
+ChMatrix_11& ChMatrix_11::operator*=(const float& _num)
 {
-	*this = *this * _cm;
-	return *this;
-}
-
-ChMatrix_11 ChMatrix_11::ChMatrix_11::operator*(const float& _cm)const
-{
-
-	ChMatrix_11 tmpMat;
 	for (unsigned char i = 0; i < 4; i++)
 	{
 		for (unsigned char j = 0; j < 4; j++)
 		{
-			tmpMat.m[i][j] *= _cm;
+			m[i][j] *= _num;
 		}
 	}
-
-	return tmpMat;
-}
-
-ChMatrix_11&ChMatrix_11::ChMatrix_11::operator/=(const float& _cm)
-{
-
-	*this = *this / _cm;
 	return *this;
 }
 
-ChMatrix_11 ChMatrix_11::ChMatrix_11::operator/(const float& _cm)const
+ChMatrix_11 ChMatrix_11::ChMatrix_11::operator*(const float& _num)const
 {
 
-	ChMatrix_11 tmpMat;
+	ChMatrix_11 out = *this;
+	out *= _num;
+	return out;
+}
+
+ChMatrix_11&ChMatrix_11::ChMatrix_11::operator/=(const float& _num)
+{
+
+	if (_num == 0.0f)return *this;
 	for (unsigned char i = 0; i < 4; i++)
 	{
 		for (unsigned char j = 0; j < 4; j++)
 		{
-			if (_cm == 0.0f)continue;
-			tmpMat.m[i][j] /= _cm;
+			if (_num == 0.0f)continue;
+			m[i][j] /= _num;
 		}
 	}
-
-	return tmpMat;
+	return *this;
 }
 
-ChMatrix_11&ChMatrix_11::operator=(const DirectX::XMMATRIX& _cm)
+ChMatrix_11 ChMatrix_11::ChMatrix_11::operator/(const float& _num)const
 {
 
-	DirectX::XMStoreFloat4x4(this, _cm);
+	ChMatrix_11 out = *this;
+	out /= _num;
+	return out;
+}
+
+ChMatrix_11& ChMatrix_11::operator=(const DirectX::XMMATRIX& _mat)
+{
+
+	DirectX::XMStoreFloat4x4(this, _mat);
 	return *this;
 }
 
 ChMatrix_11::operator DirectX::XMMATRIX()const
 {
-	DirectX::XMMATRIX tmpMat;
-	tmpMat = DirectX::XMLoadFloat4x4(this);
-
-	return tmpMat;
+	DirectX::XMMATRIX out;
+	out = DirectX::XMLoadFloat4x4(this);
+	return out;
 }
 
 ChMatrix_11::operator DirectX::XMFLOAT4X4()const
@@ -208,8 +190,6 @@ ChMatrix_11&ChMatrix_11::operator = (const DirectX::XMFLOAT3& _vec)
 
 ChMatrix_11&ChMatrix_11::operator =(const DirectX::XMFLOAT4& _qua)
 {
-
-
 	DirectX::XMVECTOR tmpVec;
 	tmpVec = DirectX::XMLoadFloat4(&_qua);
 	*this = DirectX::XMMatrixRotationQuaternion(tmpVec);

@@ -9,21 +9,21 @@
 //ChModelLoader Method//
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::ModelLoader::Init(ModelObject* _model)
+void ChCpp::ModelLoaderBase::Init(ModelObject* _model)
 {
 	oModel = _model;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::ModelLoader::SetModel(ChPtr::Shared<ModelFrame> _models)
+void ChCpp::ModelLoaderBase::SetModel(ChPtr::Shared<ModelFrame> _models)
 {
 	oModel->model = _models;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-std::string ChCpp::ModelLoader::GetRoutePath(const std::string& _filePath)
+std::string ChCpp::ModelLoaderBase::GetRoutePath(const std::string& _filePath)
 {
 
 	if (_filePath.find("\\") == _filePath.find("/"))return "";

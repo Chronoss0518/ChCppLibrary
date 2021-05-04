@@ -10,7 +10,7 @@
 //ChXFileMesh Method//
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::LMXFile::CreateModel(const std::string& _filePath)
+void ChCpp::ModelLoader::XFile::CreateModel(const std::string& _filePath)
 {
 	if (_filePath.size() <= 0)return;
 
@@ -82,14 +82,14 @@ void ChCpp::LMXFile::CreateModel(const std::string& _filePath)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::LMXFile::OutModelFile(const std::string& _filePath)
+void ChCpp::ModelLoader::XFile::OutModelFile(const std::string& _filePath)
 {
 
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ChCpp::LMXFile::SetFrame(
+ChStd::Bool ChCpp::ModelLoader::XFile::SetFrame(
 	ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 	, const ChPtr::Shared<TemplateRange>& _targetTemplate
 	, const std::string& _text)
@@ -134,7 +134,7 @@ ChStd::Bool ChCpp::LMXFile::SetFrame(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ChCpp::LMXFile::SetFremeTransformMatrix(
+ChStd::Bool ChCpp::ModelLoader::XFile::SetFremeTransformMatrix(
 	ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 	, const ChPtr::Shared<TemplateRange>& _targetTemplate
 	, const std::string& _text)
@@ -160,7 +160,7 @@ ChStd::Bool ChCpp::LMXFile::SetFremeTransformMatrix(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ChCpp::LMXFile::SetMesh(
+ChStd::Bool ChCpp::ModelLoader::XFile::SetMesh(
 	ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 	, const ChPtr::Shared<TemplateRange>& _targetTemplate
 	, const std::string& _text)
@@ -236,7 +236,7 @@ ChStd::Bool ChCpp::LMXFile::SetMesh(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ChCpp::LMXFile::SetMeshNormal(
+ChStd::Bool ChCpp::ModelLoader::XFile::SetMeshNormal(
 	ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 	, const ChPtr::Shared<TemplateRange>& _targetTemplate
 	, const std::string& _text)
@@ -279,7 +279,7 @@ ChStd::Bool ChCpp::LMXFile::SetMeshNormal(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ChCpp::LMXFile::SetMeshTextureCoords(
+ChStd::Bool ChCpp::ModelLoader::XFile::SetMeshTextureCoords(
 	ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 	, const ChPtr::Shared<TemplateRange>& _targetTemplate
 	, const std::string& _text)
@@ -309,7 +309,7 @@ ChStd::Bool ChCpp::LMXFile::SetMeshTextureCoords(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ChCpp::LMXFile::SetMeshMaterialList(
+ChStd::Bool ChCpp::ModelLoader::XFile::SetMeshMaterialList(
 	ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 	, const ChPtr::Shared<TemplateRange>& _targetTemplate
 	, const std::string& _text)
@@ -345,7 +345,7 @@ ChStd::Bool ChCpp::LMXFile::SetMeshMaterialList(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ChCpp::LMXFile::SetMaterial(
+ChStd::Bool ChCpp::ModelLoader::XFile::SetMaterial(
 	ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 	, const ChPtr::Shared<TemplateRange>& _targetTemplate
 	, const std::string& _text)
@@ -462,7 +462,7 @@ ChStd::Bool ChCpp::LMXFile::SetMaterial(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ChCpp::LMXFile::SetSkinWeights(
+ChStd::Bool ChCpp::ModelLoader::XFile::SetSkinWeights(
 	ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 	, const ChPtr::Shared<TemplateRange>& _targetTemplate
 	, const std::string& _text)
@@ -534,7 +534,7 @@ ChStd::Bool ChCpp::LMXFile::SetSkinWeights(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ChCpp::LMXFile::IsTags(
+ChStd::Bool ChCpp::ModelLoader::XFile::IsTags(
 	size_t& _outTagPos
 	, const std::string& _TagName
 	, const ChPtr::Shared<TemplateRange> _LookTemplate
@@ -566,7 +566,7 @@ ChStd::Bool ChCpp::LMXFile::IsTags(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::LMXFile::LoadToTemplates(
+void ChCpp::ModelLoader::XFile::LoadToTemplates(
 	ChPtr::Shared<TemplateRange>& _templates
 	, const size_t& _offset
 	, const std::string& _text)
@@ -631,7 +631,7 @@ void ChCpp::LMXFile::LoadToTemplates(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::LMXFile::SetToTemplate(
+void ChCpp::ModelLoader::XFile::SetToTemplate(
 	ChPtr::Shared<TemplateRange>& _tmp
 	, size_t& _bCnt
 	, size_t& _eCnt
@@ -686,7 +686,7 @@ void ChCpp::LMXFile::SetToTemplate(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::LMXFile::XFrameToChFrame(
+void ChCpp::ModelLoader::XFile::XFrameToChFrame(
 	ChPtr::Shared<ModelFrame::Frame>& _chFrame
 	, const ChPtr::Shared<XFileModelFrame::XFrame>& _xFrame)
 {
@@ -747,7 +747,7 @@ void ChCpp::LMXFile::XFrameToChFrame(
 			auto chVertex = ChPtr::Make_S<ModelFrame::VertexData>();
 
 			chVertex->pos = xVertexList[i]->pos;
-			chVertex->normal += chVertexList[i]->normal;
+			chVertex->normal += xVertexList[i]->normal;
 
 			chVertexList.push_back(chVertex);
 

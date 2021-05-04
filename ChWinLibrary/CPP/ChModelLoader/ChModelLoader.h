@@ -1,6 +1,6 @@
 
-#ifndef Ch_CPP_CMesh_h
-#define Ch_CPP_CMesh_h
+#ifndef Ch_CPP_MLoader_h
+#define Ch_CPP_MLoader_h
 
 namespace ChCpp
 {
@@ -8,7 +8,7 @@ namespace ChCpp
 	class ModelObject;
 	struct ModelFrame;
 
-	class ModelLoader
+	class ModelLoaderBase
 	{
 
 	public:

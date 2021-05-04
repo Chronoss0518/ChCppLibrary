@@ -31,20 +31,14 @@ public:
 
 	operator DirectX::XMVECTOR()const;
 
-	operator DirectX::XMFLOAT3()const;
-
 	ChVector3_11&operator = (const DirectX::XMFLOAT4& _qua);
-
 	ChVector3_11&operator =(const DirectX::XMFLOAT4X4& _mat);
 
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//ConstructerDestructer//
 
-	ChVector3_11(const DirectX::XMFLOAT3&_cm)
-	{
-		*this = _cm;
-	}
+	ChVector3_11(const DirectX::XMFLOAT3& _cm) :DirectX::XMFLOAT3(_cm){}
 
 	ChVector3_11()
 	{

@@ -12,170 +12,138 @@
 
 ChVector3_11& ChVector3_11::operator=(const DirectX::XMFLOAT3& _cm)
 {
-	x = _cm.x;
-	y = _cm.y;
-	z = _cm.z;
+	if (this == &_cm)return *this;
+	DirectX::XMFLOAT3::operator=(_cm);
 	return *this;
 }
 
 ChVector3_11& ChVector3_11::operator+=(const DirectX::XMFLOAT3& _cm)
 {
-	*this = *this + _cm;
-
+	x += _cm.x;
+	y += _cm.y;
+	z += _cm.z;
 	return *this;
 }
 
 ChVector3_11 ChVector3_11::operator+(const DirectX::XMFLOAT3& _cm)const
 {
-
-	ChVector3_11 tmp;
-	tmp = *this;
-	tmp.x += _cm.x;
-	tmp.y += _cm.y;
-	tmp.z += _cm.z;
-
-	return tmp;
+	ChVector3_11 out = *this;
+	out += _cm;
+	return out;
 }
 
 ChVector3_11& ChVector3_11::operator-=(const DirectX::XMFLOAT3& _cm)
 {
-	*this = *this - _cm;
-
+	x -= _cm.x;
+	y -= _cm.y;
+	z -= _cm.z;
 	return *this;
 }
 
 ChVector3_11 ChVector3_11::operator-(const DirectX::XMFLOAT3& _cm)const
 {
-	ChVector3_11 tmp;
-	tmp = *this;
-	tmp.x -= _cm.x;
-	tmp.y -= _cm.y;
-	tmp.z -= _cm.z;
-
-	return tmp;
+	ChVector3_11 out = *this;
+	out -= _cm;
+	return out;
 }
 
 ChVector3_11& ChVector3_11::operator*=(const DirectX::XMFLOAT3& _cm)
 {
-
-	*this = *this * _cm;
-
+	x *= _cm.x;
+	y *= _cm.y;
+	z *= _cm.z;
 	return *this;
 }
 
 ChVector3_11 ChVector3_11::operator*(const DirectX::XMFLOAT3& _cm)const
 {
-	ChVector3_11 tmp;
-	tmp = *this;
-	tmp.x *= _cm.x;
-	tmp.y *= _cm.y;
-	tmp.z *= _cm.z;
-
-	return tmp;
+	ChVector3_11 out = *this;
+	out *= _cm;
+	return out;
 }
 
 ChVector3_11& ChVector3_11::operator/=(const DirectX::XMFLOAT3& _cm)
 {
-
-	*this = *this / _cm;
+	x /= _cm.x != 0.0f ? _cm.x : 1.0f;
+	y /= _cm.y != 0.0f ? _cm.y : 1.0f;
+	z /= _cm.z != 0.0f ? _cm.z : 1.0f;
 	return *this;
 }
 
 ChVector3_11 ChVector3_11::operator/(const DirectX::XMFLOAT3& _cm)const
 {
-
-	ChVector3_11 tmp;
-	tmp = *this;
-
-	if (_cm.x != 0.0f)tmp.x /= _cm.x;
-	if (_cm.y != 0.0f)tmp.y /= _cm.y;
-	if (_cm.z != 0.0f)tmp.z /= _cm.z;
-	return tmp;
+	ChVector3_11 out = *this;
+	out /= _cm;
+	return out;
 }
 
 ChVector3_11& ChVector3_11::operator=(const float& _cm)
 {
-
 	x = _cm;
 	y = _cm;
 	z = _cm;
 	return *this;
 }
 
-ChVector3_11& ChVector3_11::operator+=(const float& _cm)
+ChVector3_11& ChVector3_11::operator+=(const float& _num)
 {
-
-	*this = *this - _cm;
+	x += _num;
+	y += _num;
+	z += _num;
 	return *this;
 }
 
-ChVector3_11 ChVector3_11::operator+(const float& _cm)const
+ChVector3_11 ChVector3_11::operator+(const float& _num)const
 {
-	ChVector3_11 tmp;
-
-	tmp = *this;
-	tmp += _cm;
-	return tmp;
-
+	ChVector3_11 out = *this;
+	out += _num;
+	return out;
 }
 
-ChVector3_11& ChVector3_11::operator-=(const float& _cm)
+ChVector3_11& ChVector3_11::operator-=(const float& _num)
 {
-	*this = *this - _cm;
+	x -= _num;
+	y -= _num;
+	z -= _num;
 	return *this;
 }
 
-ChVector3_11 ChVector3_11::operator-(const float& _cm)const
+ChVector3_11 ChVector3_11::operator-(const float& _num)const
 {
-
-	ChVector3_11 tmp;
-
-	tmp = *this;
-	tmp.x -= _cm;
-	tmp.y -= _cm;
-	tmp.z -= _cm;
-	return tmp;
-
+	ChVector3_11 out = *this;
+	out -= _num;
+	return out;
 }
 
-ChVector3_11& ChVector3_11::operator*=(const float& _cm)
+ChVector3_11& ChVector3_11::operator*=(const float& _num)
 {
-
-	*this = *this * _cm;
+	x *= _num;
+	y *= _num;
+	z *= _num;
 	return *this;
 }
 
-ChVector3_11 ChVector3_11::operator*(const float& _cm)const
+ChVector3_11 ChVector3_11::operator*(const float& _num)const
 {
-
-	ChVector3_11 tmp;
-
-	tmp = *this;
-	tmp.x *= _cm;
-	tmp.y *= _cm;
-	tmp.z *= _cm;
-	return tmp;
-
+	ChVector3_11 out = *this;
+	out *= _num;
+	return out;
 }
 
-ChVector3_11& ChVector3_11::operator/=(const float& _cm)
+ChVector3_11& ChVector3_11::operator/=(const float& _num)
 {
-
-	*this = *this / _cm;
+	if (_num == 0.0f)return *this;
+	x /= _num;
+	y /= _num;
+	z /= _num;
 	return *this;
 }
 
-ChVector3_11 ChVector3_11::operator/(const float& _cm)const
+ChVector3_11 ChVector3_11::operator/(const float& _num)const
 {
-
-	ChVector3_11 tmp;
-
-	tmp = *this;
-	tmp.x /= _cm != 0.0f ?_cm : 1.0f;
-	tmp.y /= _cm != 0.0f ?_cm : 1.0f;
-	tmp.z /= _cm != 0.0f ?_cm : 1.0f;
-	return tmp;
-
+	ChVector3_11 out = *this;
+	out /= _num;
+	return out;
 }
 
 ChVector3_11& ChVector3_11::operator=(const DirectX::XMVECTOR& _cm)
@@ -191,19 +159,6 @@ ChVector3_11::operator DirectX::XMVECTOR()const
 	tmp = DirectX::XMLoadFloat3(this);
 
 	return tmp;
-}
-
-ChVector3_11::operator DirectX::XMFLOAT3()const
-{
-
-	DirectX::XMFLOAT3 tmpVec;
-
-	tmpVec.x = x;
-	tmpVec.y = y;
-	tmpVec.z = z;
-
-	return tmpVec;
-
 }
 
 ChVector3_11& ChVector3_11::operator = (const DirectX::XMFLOAT4&  _qua)
