@@ -37,10 +37,7 @@ public:
 	///////////////////////////////////////////////////////////////////////////////////
 	//ConstructerDestructer//
 
-	inline ChMatrix_11(const DirectX::XMFLOAT4X4 &_cm)
-	{
-		*this = _cm;
-	}
+	inline ChMatrix_11(const DirectX::XMFLOAT4X4& _cm) : DirectX::XMFLOAT4X4(_cm) {}
 
 	inline ChMatrix_11(const DirectX::XMMATRIX &_cm)
 	{
