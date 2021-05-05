@@ -941,6 +941,7 @@ void ChQua::RotYPR(
 
 ChLMatrix& ChLMatrix::operator =(const ChLMatrix& _mat)
 {
+	if (this == &_mat)return *this;
 	m.Set(_mat.m);
 	return *this;
 }
