@@ -78,54 +78,39 @@ void ObjectManager::Update()
 
 void ObjectManager::ObjectUpdateBegin()
 {
-
-	for (auto&& obj : rootObjects)
+	for (auto&& gObj : objectList)
 	{
-		obj->UpdateBeginFunction();
+		for (auto&& obj : gObj.second)
+		{
+			if (obj->parent.lock() != nullptr)continue;
+			obj->UpdateBeginFunction();
+		}
 	}
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
 void ObjectManager::ObjectUpdate()
 {
-	for (auto&& objGloap : objectList)
+	for (auto&& gObj : objectList)
 	{
-		auto obj = objGloap.second.begin();
-		while (obj != objGloap.second.end())
+		auto obj = gObj.second.begin();
+
+		while (obj != gObj.second.end())
 		{
-			if ((*obj) != nullptr)
+
+			if ((*obj)->dFlg)
 			{
-
-				if (!(*obj)->dFlg)
-				{
-					(*obj)->IsReleasComponent();
-					obj++;
-					continue;
-				}
+				gObj.second.erase(obj);
+				continue;
 			}
-			objGloap.second.erase(obj);
 
+			if ((*obj)->parent.lock() != nullptr)continue;
+
+			(*obj)->UpdateFunction();
+
+			obj++;
 		}
-	}
-
-	if (rootObjects.empty())return;
-
-	auto obj = rootObjects.begin();
-
-	while (obj != rootObjects.end())
-	{
-
-		if ((*obj)->dFlg)
-		{
-			rootObjects.erase(obj);
-			continue;
-		}
-
-		(*obj)->UpdateFunction();
-
-		obj++;
 	}
 
 }
@@ -134,9 +119,13 @@ void ObjectManager::ObjectUpdate()
 
 void ObjectManager::ObjectUpdateEnd()
 {
-	for (auto&& obj : rootObjects)
+	for (auto&& gObj : objectList)
 	{
-		obj->UpdateEndFunction();
+		for (auto&& obj : gObj.second)
+		{
+			if (obj->parent.lock() != nullptr)continue;
+			obj->UpdateEndFunction();
+		}
 	}
 }
 
@@ -155,9 +144,13 @@ void ObjectManager::Move()
 
 void ObjectManager::ObjectMoveBegin()
 {
-	for (auto&& obj : rootObjects)
+	for (auto&& gObj : objectList)
 	{
-		obj->MoveBeginFunction();
+		for (auto&& obj : gObj.second)
+		{
+			if (obj->parent.lock() != nullptr)continue;
+			obj->MoveBeginFunction();
+		}
 	}
 }
 
@@ -165,9 +158,13 @@ void ObjectManager::ObjectMoveBegin()
 
 void ObjectManager::ObjectMove()
 {
-	for (auto&& obj : rootObjects)
+	for (auto&& gObj : objectList)
 	{
-		obj->MoveFunction();
+		for (auto&& obj : gObj.second)
+		{
+			if (obj->parent.lock() != nullptr)continue;
+			obj->MoveFunction();
+		}
 	}
 }
 
@@ -175,9 +172,13 @@ void ObjectManager::ObjectMove()
 
 void ObjectManager::ObjectMoveEnd()
 {
-	for (auto&& obj : rootObjects)
+	for (auto&& gObj : objectList)
 	{
-		obj->MoveEndFunction();
+		for (auto&& obj : gObj.second)
+		{
+			if (obj->parent.lock() != nullptr)continue;
+			obj->MoveEndFunction();
+		}
 	}
 }
 
@@ -185,13 +186,16 @@ void ObjectManager::ObjectMoveEnd()
 
 void ObjectManager::ClearObject()
 {
-	for (auto&& obj : rootObjects)
+	for (auto&& gObj : objectList)
 	{
-		obj->BaseRelease();
+		for (auto&& obj : gObj.second)
+		{
+			if (obj->parent.lock() != nullptr)continue;
+			obj->BaseRelease();
+		}
 	}
 
 	if (!objectList.empty())objectList.clear();
-	if (!rootObjects.empty())rootObjects.clear();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -253,9 +257,13 @@ void ObjectManager::Draw()
 
 void ObjectManager::ObjectDrawBegin()
 {
-	for (auto&& obj : rootObjects)
+	for (auto&& gObj : objectList)
 	{
-		obj->DrawBeginFunction();
+		for (auto&& obj : gObj.second)
+		{
+			if (obj->parent.lock() != nullptr)continue;
+			obj->DrawBeginFunction();
+		}
 	}
 }
 
@@ -263,9 +271,13 @@ void ObjectManager::ObjectDrawBegin()
 
 void ObjectManager::ObjectDraw2D()
 {
-	for (auto&& obj : rootObjects)
+	for (auto&& gObj : objectList)
 	{
-		obj->Draw3DFunction();
+		for (auto&& obj : gObj.second)
+		{
+			if (obj->parent.lock() != nullptr)continue;
+			obj->Draw3DFunction();
+		}
 	}
 }
 
@@ -273,9 +285,13 @@ void ObjectManager::ObjectDraw2D()
 
 void ObjectManager::ObjectDraw3D()
 {
-	for (auto&& obj : rootObjects)
+	for (auto&& gObj : objectList)
 	{
-		obj->Draw2DFunction();
+		for (auto&& obj : gObj.second)
+		{
+			if (obj->parent.lock() != nullptr)continue;
+			obj->UpdateEndFunction();
+		}
 	}
 }
 
@@ -283,8 +299,12 @@ void ObjectManager::ObjectDraw3D()
 
 void ObjectManager::ObjectDrawEnd()
 {
-	for (auto&& obj : rootObjects)
+	for (auto&& gObj : objectList)
 	{
-		obj->DrawEndFunction();
+		for (auto&& obj : gObj.second)
+		{
+			if (obj->parent.lock() != nullptr)continue;
+			obj->DrawEndFunction();
+		}
 	}
 }

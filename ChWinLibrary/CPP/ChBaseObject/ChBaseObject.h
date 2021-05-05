@@ -125,7 +125,6 @@ namespace ChCpp
 		{
 			ChPtr::Shared<BaseObject> obj = ChPtr::SharedSafeCast<T>(_childObject);
 			childList.push_back(obj);
-			EraseRootObj(obj);
 
 			obj->Parent = shared_from_this();
 
@@ -212,11 +211,6 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////////
 		//ConstructerDestructer//
 
-		virtual ~BaseObject()
-		{
-			BaseRelease();
-		}
-
 		BaseObject() {};
 
 		ChStd::Bool useFlg = true;
@@ -236,10 +230,6 @@ namespace ChCpp
 		//Component//
 
 		void IsReleasComponent();
-
-		///////////////////////////////////////////////////////////////////////////////////
-
-		void EraseRootObj(const ChPtr::Shared<BaseObject> _obj);
 
 		///////////////////////////////////////////////////////////////////////////////////
 

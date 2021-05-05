@@ -42,7 +42,6 @@ namespace ChCpp
 			tmpObj->Init();
 
 			objectList[_tag].push_back(tmpObj);
-			rootObjects.push_back(tmpObj);
 
 			return ChPtr::SharedSafeCast<T>(tmpObj);
 		}
@@ -116,8 +115,6 @@ namespace ChCpp
 	private:
 
 		std::map<std::string, std::vector<ChPtr::Shared<BaseObject>>>objectList;
-
-		std::vector<ChPtr::Shared<BaseObject>>rootObjects;
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//CostructerDestructer//

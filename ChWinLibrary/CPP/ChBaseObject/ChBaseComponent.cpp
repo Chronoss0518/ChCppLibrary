@@ -11,7 +11,7 @@ using namespace ChCpp;
 //ChBaseComponentƒƒ\ƒbƒh
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void BaseComponent::BaseInit(ChPtr::Shared<BaseObject> _obj)
+void BaseComponent::BaseInit(ChPtr::Shared<BaseObject>& _obj)
 {
 	obj = _obj;
 
@@ -25,5 +25,7 @@ void BaseComponent::Destroy()
 
 void BaseComponent::ObjectDestroy()
 {
-	obj->Destroy();
+	auto tmpObj = obj.lock();
+	if (tmpObj == nullptr)return;
+	tmpObj->Destroy();
 }
