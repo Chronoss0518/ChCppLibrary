@@ -11,7 +11,7 @@ using namespace ChCpp;
 //ChBaseComponentÉÅÉ\ÉbÉh
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void BaseComponent::BaseInit(ChPtr::Shared<BaseObject>& _obj)
+void BaseComponent::BaseInit(ChPtr::Shared<BaseObject> _obj)
 {
 	obj = _obj;
 
