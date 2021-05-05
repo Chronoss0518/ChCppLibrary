@@ -112,8 +112,11 @@ void ObjectManager::ObjectUpdate()
 
 	if (rootObjects.empty())return;
 
-	for (auto&& obj = rootObjects.begin(); obj != rootObjects.end(); obj)
+	auto obj = rootObjects.begin();
+
+	while (obj != rootObjects.end())
 	{
+
 		if ((*obj)->dFlg)
 		{
 			rootObjects.erase(obj);
@@ -176,6 +179,19 @@ void ObjectManager::ObjectMoveEnd()
 	{
 		obj->MoveEndFunction();
 	}
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+void ObjectManager::ClearObject()
+{
+	for (auto&& obj : rootObjects)
+	{
+		obj->BaseRelease();
+	}
+
+	if (!objectList.empty())objectList.clear();
+	if (!rootObjects.empty())rootObjects.clear();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
