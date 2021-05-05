@@ -939,32 +939,16 @@ void ChQua::RotYPR(
 //ChLMatrix Method//
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChLMatrix& ChLMatrix::operator =(const ChLMatrix _mat)
+ChLMatrix& ChLMatrix::operator =(const ChLMatrix& _mat)
 {
+	if (this == &_mat)return *this;
 	m.Set(_mat.m);
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChLMatrix& ChLMatrix::operator *= (const ChLMatrix _mat)
-{
-	m.Mul(_mat.m);
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChLMatrix const ChLMatrix::operator * (const ChLMatrix _mat)const
-{
-	ChLMatrix out = *this;
-	out *= _mat;
-	return out;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChLMatrix& ChLMatrix::operator += (const ChLMatrix _mat)
+ChLMatrix& ChLMatrix::operator += (const ChLMatrix& _mat)
 {
 	m.Add(_mat.m);
 	return *this;
@@ -972,7 +956,7 @@ ChLMatrix& ChLMatrix::operator += (const ChLMatrix _mat)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChLMatrix const ChLMatrix::operator + (const ChLMatrix _mat)const
+ChLMatrix const ChLMatrix::operator + (const ChLMatrix& _mat)const
 {
 	ChLMatrix out = *this;
 	out += _mat;
@@ -981,7 +965,7 @@ ChLMatrix const ChLMatrix::operator + (const ChLMatrix _mat)const
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChLMatrix& ChLMatrix::operator -= (const ChLMatrix _mat)
+ChLMatrix& ChLMatrix::operator -= (const ChLMatrix& _mat)
 {
 	m.Sub(_mat.m);
 	return *this;
@@ -989,10 +973,44 @@ ChLMatrix& ChLMatrix::operator -= (const ChLMatrix _mat)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChLMatrix const ChLMatrix::operator - (const ChLMatrix _mat)const
+ChLMatrix const ChLMatrix::operator - (const ChLMatrix& _mat)const
 {
 	ChLMatrix out = *this;
 	out -= _mat;
+	return out;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChLMatrix& ChLMatrix::operator *= (const ChLMatrix& _mat)
+{
+	m.Mul(_mat.m);
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChLMatrix const ChLMatrix::operator * (const ChLMatrix& _mat)const
+{
+	ChLMatrix out = *this;
+	out *= _mat;
+	return out;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChLMatrix& ChLMatrix::operator /= (const ChLMatrix& _mat)
+{
+	m.Div(_mat.m);
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChLMatrix const ChLMatrix::operator / (const ChLMatrix& _mat)const
+{
+	ChLMatrix out = *this;
+	out /= _mat;
 	return out;
 }
 
@@ -1175,24 +1193,6 @@ ChVec3 ChLMatrix::GetRotation()const
 ChVec3 ChLMatrix::GetScalling()const
 {
 	return ChVec3(m[0].GetLen(), m[1].GetLen(), m[2].GetLen());
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::BaseMatrix3x3<float> ChLMatrix::GetRotMatrix()const
-{
-	ChMath::MatrixBase3x3 out;
-
-	for (unsigned char i = 0; i < 3; i++)
-	{
-		for (unsigned char j = 0; j < 3; j++)
-		{
-			out[i][j] = m[i][j];
-		}
-	}
-
-	return out;
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
