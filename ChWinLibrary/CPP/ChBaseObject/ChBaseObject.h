@@ -147,9 +147,6 @@ namespace ChCpp
 		//Tag•ÏX‚É‘–‚ç‚¹‚éŠÖ”//
 		void ChengeTag(const std::string& _newTag);
 
-	protected:
-
-
 	public:
 
 		///////////////////////////////////////////////////////////////////////////////////////
