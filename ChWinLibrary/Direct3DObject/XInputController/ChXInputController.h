@@ -98,7 +98,7 @@ namespace ChD3D
 
 		inline ChStd::Bool GetL1Flg() 
 		{
-			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB) > 0;
+			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) > 0;
 		}
 
 		inline float GetL2Trigger()
@@ -106,14 +106,24 @@ namespace ChD3D
 			return RL2DeadZoneTest(state.Gamepad.bLeftTrigger);
 		}
 
-		inline ChStd::Bool GetR1Flg() 
+		inline ChStd::Bool GetL3Flg()
 		{
-			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB) > 0;
+			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB) > 0;
+		}
+
+		inline ChStd::Bool GetR1Flg()
+		{
+			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) > 0;
 		}
 
 		inline float GetR2Trigger() 
 		{
 			return RL2DeadZoneTest(state.Gamepad.bRightTrigger);
+		}
+
+		inline ChStd::Bool GetR3Flg()
+		{
+			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB) > 0;
 		}
 
 		inline float GetLXStick()
