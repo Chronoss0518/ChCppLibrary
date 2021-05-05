@@ -55,12 +55,12 @@ struct ChVector4 : public ChMath::Vector4Base<float>
 
 	bool operator==(const ChVector4& _vec)const
 	{
-		return (x == _vec.x && y == _vec.y && z == _vec.z && w == _vec.w);
+		return val == _vec.val;
 	}
 
 	bool operator!=(const ChVector4& _vec)const
 	{
-		return (x != _vec.x || y != _vec.y || z != _vec.z || w != _vec.w);
+		return val != _vec.val;
 	}
 
 	operator const ChVector3() const;
@@ -217,12 +217,12 @@ struct ChVector3 : public ChMath::Vector3Base<float>
 
 	bool operator==(const ChVector3& _vec)const
 	{
-		return (x == _vec.x && y == _vec.y && z == _vec.z);
+		return val == _vec.val;
 	}
 
 	bool operator!=(const ChVector3& _vec)const
 	{
-		return (x != _vec.x || y != _vec.y || z != _vec.z);
+		return val != _vec.val;
 	}
 
 	operator const ChVector4() const;
@@ -374,12 +374,12 @@ struct ChVector2 : public ChMath::Vector2Base<float>
 
 	bool operator==(const ChVector2& _vec)const
 	{
-		return (x == _vec.x && y == _vec.y);
+		return val == _vec.val;
 	}
 
 	bool operator!=(const ChVector2& _vec)const
 	{
-		return (x != _vec.x || y != _vec.y);
+		return val != _vec.val;
 	}
 
 	operator const ChVector4() const;
@@ -707,67 +707,7 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 
 	void Inverse()
 	{
-
-		ChLMatrix TmpMat = *this;
-		ChLMatrix Addl;
-
-		float Tmp[24];
-
-		unsigned char Count = 0;
-
-		//for (unsigned char i = 0; i < 4; i++)
-		//{
-		//	for (unsigned char j = 0; j < 4; j++)
-		//	{
-		//		for (unsigned char k = 0; k < 4; k++)
-		//		{
-		//			for (unsigned char l = 0; l < 4; l++)
-		//			{
-
-		//				if (j != i && j != k && i != k && j != l && i != l && k != l)
-		//				{
-		//					Tmp[Count] = m[0][i] * m[1][j] * m[2][k] * m[3][l];
-
-		//					Count++;
-		//				}
-		//				
-
-
-
-		//			}
-		//		}
-		//	}
-		//}
-
-		for (unsigned char i = 0; i < 4; i++)
-		{
-			for (unsigned char j = 0; j < 3; j++)
-			{
-				for (unsigned char k = 0; k < 2; k++)
-				{
-					Tmp[Count] = m[0][j] *
-						m[1][j] *
-						m[2][k] *
-						m[3][0];
-
-					Count++;
-				}
-			}
-		}
-
-		float Sum = Tmp[0];
-		ChStd::Bool Flg = true;
-
-		for (unsigned char i = 0; i < 23; i++)
-		{
-			Sum = (Flg) ? Sum - Tmp[i + 1] : Sum + Tmp[i + 1];
-
-			Flg = (i + 1 % 2 == 0) ? -Flg : Flg;
-
-		}
-
-		if (Sum == 0.0f)return;
-
+		m.Inverse();
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
@@ -775,6 +715,7 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 	ChRMatrix ConvertAxis();
 
 };
+
 
 //RightHandAxisMatrix//
 struct ChRMatrix : public ChMath::BaseMatrix4x4<float>
