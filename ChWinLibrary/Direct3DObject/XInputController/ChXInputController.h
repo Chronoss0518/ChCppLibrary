@@ -48,57 +48,57 @@ namespace ChD3D
 
 		inline ChStd::Bool GetUpFlg() 
 		{
-			return state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP;
+			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP) > 0;
 		}
 
 		inline ChStd::Bool GetDownFlg() 
 		{
-			return state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN;
+			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN) > 0;
 		}
 
 		inline ChStd::Bool GetLeftFlg() 
 		{ 
-			return state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT;
+			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT) > 0;
 		}
 
 		inline ChStd::Bool GetRightFlg()
 		{
-			return state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT;
+			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT) > 0;
 		}
 
 		inline ChStd::Bool GetStartFlg() 
 		{
-			return state.Gamepad.wButtons & XINPUT_GAMEPAD_START;
+			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_START) > 0;
 		}
 
 		inline ChStd::Bool GetBackFlg() 
 		{
-			return state.Gamepad.wButtons & XINPUT_GAMEPAD_BACK;
+			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_BACK) > 0;
 		}
 
 		inline ChStd::Bool GetAFlg()
 		{
-			return state.Gamepad.wButtons & XINPUT_GAMEPAD_A;
+			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_A) > 0;
 		}
 
 		inline ChStd::Bool GetBFlg() 
 		{
-			return state.Gamepad.wButtons & XINPUT_GAMEPAD_B;
+			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_B) > 0;
 		}
 
 		inline ChStd::Bool GetXFlg() 
 		{
-			return state.Gamepad.wButtons & XINPUT_GAMEPAD_X;
+			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_X) > 0;
 		}
 
 		inline ChStd::Bool GetYFlg() 
 		{
-			return state.Gamepad.wButtons & XINPUT_GAMEPAD_Y;
+			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_Y) > 0;
 		}
 
 		inline ChStd::Bool GetL1Flg() 
 		{
-			return state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB;
+			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB) > 0;
 		}
 
 		inline float GetL2Trigger()
@@ -108,7 +108,7 @@ namespace ChD3D
 
 		inline ChStd::Bool GetR1Flg() 
 		{
-			return state.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB;
+			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB) > 0;
 		}
 
 		inline float GetR2Trigger() 
