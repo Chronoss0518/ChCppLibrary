@@ -14,12 +14,25 @@ ChCpp::BitBool XInputController::controllerFlgs;
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+XInputController::XInputController()
+{
+	ChStd::MZero(&state);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 void XInputController::Init()
 {
 	unsigned char tmp = 0;
 
 	for (unsigned char i = 0; i < 4; i++)
 	{
+		XINPUT_STATE tmp = { 0,{0,0,0,0,0,0,0} };
+
+		XInputGetState(i, &tmp);
+
+		if (tmp.dwPacketNumber <= 0)continue;
+
 		if (controllerFlgs.GetBitFlg(i))continue;
 
 		myNo = i;
@@ -35,13 +48,7 @@ void XInputController::Init()
 
 void XInputController::Release()
 {
-	state.Gamepad.bLeftTrigger = 0;
-	state.Gamepad.bRightTrigger = 0;
-	state.Gamepad.sThumbLX = 0;
-	state.Gamepad.sThumbLY = 0;
-	state.Gamepad.sThumbRX = 0;
-	state.Gamepad.sThumbRY = 0;
-	state.Gamepad.wButtons = 0;
+	ChStd::MZero(&state);
 
 	controllerFlgs.SetBitFalse(myNo);
 	myNo = 5;
@@ -55,7 +62,7 @@ void XInputController::Update()
 {
 	if (!*this) return;
 
-	ZeroMemory(&state, sizeof(XINPUT_STATE));
+	ChStd::MZero(&state);
 
 	XInputGetState(myNo, &state);
 
@@ -78,6 +85,13 @@ float XInputController::RDeadZoneTest(const float _sThumb)
 {
 
 	float Out = std::abs(_sThumb) < XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE ? 0.0f : _sThumb / 32767.0f;
+
+	return Out;
+}
+
+float XInputController::RL2DeadZoneTest(const unsigned char _sButton)
+{
+	float Out = std::abs(_sButton) < XINPUT_GAMEPAD_TRIGGER_THRESHOLD ? 0.0f : _sButton / 255.0f;
 
 	return Out;
 }
