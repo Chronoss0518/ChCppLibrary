@@ -64,18 +64,18 @@ ChVector4& ChVec4::operator= (const float& _num)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector4& ChVector4::operator=(const ChVector4& _Vec)
+ChVector4& ChVector4::operator=(const ChVector4& _vec)
 {
-	val.Set(_Vec.val);
+	val.Set(_vec.val);
 
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector4& ChVec4::operator *= (const ChVector4& _Vec)
+ChVector4& ChVec4::operator *= (const ChVector4& _vec)
 {
-	val.Mul(_Vec.val);
+	val.Mul(_vec.val);
 
 	if (w < -1.0f)w = -1.0f;
 	if (w > 1.0f)w = 1.0f;
@@ -84,20 +84,20 @@ ChVector4& ChVec4::operator *= (const ChVector4& _Vec)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector4 ChVec4::operator * (const ChVector4& _Vec)const
+ChVector4 ChVec4::operator * (const ChVector4& _vec)const
 {
 	ChVector4 tmpVec = *this;
 
-	tmpVec *= _Vec;
+	tmpVec *= _vec;
 
 	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector4& ChVec4::operator /= (const ChVector4& _Vec)
+ChVector4& ChVec4::operator /= (const ChVector4& _vec)
 {
-	val.Div(_Vec.val);
+	val.Div(_vec.val);
 
 	if (w < -1.0f)w = -1.0f;
 	if (w > 1.0f)w = 1.0f;
@@ -106,21 +106,21 @@ ChVector4& ChVec4::operator /= (const ChVector4& _Vec)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector4 ChVec4::operator / (const ChVector4& _Vec)const
+ChVector4 ChVec4::operator / (const ChVector4& _vec)const
 {
 	ChVector4 tmpVec = *this;
 
-	tmpVec /= _Vec;
+	tmpVec /= _vec;
 
 	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector4& ChVec4::operator -= (const ChVector4& _Vec)
+ChVector4& ChVec4::operator -= (const ChVector4& _vec)
 {
 
-	val.Sub(_Vec.val);
+	val.Sub(_vec.val);
 
 	if (w < -1.0f)w = -1.0f;
 	if (w > 1.0f)w = 1.0f;
@@ -129,21 +129,21 @@ ChVector4& ChVec4::operator -= (const ChVector4& _Vec)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector4 ChVec4::operator - (const ChVector4& _Vec)const
+ChVector4 ChVec4::operator - (const ChVector4& _vec)const
 {
 	ChVector4 tmpVec = *this;
 
-	tmpVec -= _Vec;
+	tmpVec -= _vec;
 
 	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector4& ChVec4::operator += (const ChVector4& _Vec)
+ChVector4& ChVec4::operator += (const ChVector4& _vec)
 {
 
-	val.Add(_Vec.val);
+	val.Add(_vec.val);
 
 	if (w < -1.0f)w = -1.0f;
 	if (w > 1.0f)w = 1.0f;
@@ -152,11 +152,11 @@ ChVector4& ChVec4::operator += (const ChVector4& _Vec)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector4 ChVec4::operator + (const ChVector4& _Vec)const
+ChVector4 ChVec4::operator + (const ChVector4& _vec)const
 {
 	ChVector4 tmpVec = *this;
 
-	tmpVec += _Vec;
+	tmpVec += _vec;
 
 	return tmpVec;
 }
@@ -245,11 +245,11 @@ void ChVec4::DeserializeARGB(
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector4 ChVec4::GetCross(const ChVector4& _Vec1, const ChVector4& _Vec2)
+ChVector4 ChVec4::GetCross(const ChVector4& _vec1, const ChVector4& _vec2)
 {
 	ChVector4 tmpVec;
 
-	tmpVec.val.Cross(_Vec1.val, _Vec2.val);
+	tmpVec.val.Cross(_vec1.val, _vec2.val);
 
 	return tmpVec;
 
@@ -257,23 +257,23 @@ ChVector4 ChVec4::GetCross(const ChVector4& _Vec1, const ChVector4& _Vec2)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-float ChVec4::GetCos(const ChVector4& _Vec1, const ChVector4& _Vec2)
+float ChVec4::GetCos(const ChVector4& _vec1, const ChVector4& _vec2)
 {
-	return _Vec1.val.GetCos(_Vec2.val);
+	return _vec1.val.GetCos(_vec2.val);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-float ChVec4::GetRadian(const ChVector4& _Vec1, const ChVector4& _Vec2)
+float ChVec4::GetRadian(const ChVector4& _vec1, const ChVector4& _vec2)
 {
-	return _Vec1.val.GetRadian(_Vec2.val);
+	return _vec1.val.GetRadian(_vec2.val);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-float ChVec4::GetDot(const ChVector4& _Vec1, const ChVector4& _Vec2)
+float ChVec4::GetDot(const ChVector4& _vec1, const ChVector4& _vec2)
 {
-	return _Vec1.val.GetDot(_Vec2.val);
+	return _vec1.val.GetDot(_vec2.val);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -296,11 +296,11 @@ ChVector4 ChVec4::GetCorrection(const ChVector4& _start, const ChVector4& _end, 
 ///////////////////////////////////////////////////////////////////////////////////
 
 float ChVec4::GetLen(
-	const ChVector4& _Vec1
-	, const ChVector4& _Vec2)
+	const ChVector4& _vec1
+	, const ChVector4& _vec2)
 {
 
-	ChVec4 tmpVec = _Vec1 - _Vec2;
+	ChVec4 tmpVec = _vec1 - _vec2;
 
 	return  tmpVec.val.GetLen();
 }
@@ -318,10 +318,10 @@ void ChVec4::Normalize()
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChVec4::Cross(
-	const ChVector4& _Vec1
-	, const ChVector4& _Vec2)
+	const ChVector4& _vec1
+	, const ChVector4& _vec2)
 {
-	val.Cross(_Vec1.val, _Vec2.val);
+	val.Cross(_vec1.val, _vec2.val);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -381,89 +381,89 @@ ChVector3& ChVec3::operator= (const float& _num)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector3& ChVector3::operator=(const ChVector3& _Vec)
+ChVector3& ChVector3::operator=(const ChVector3& _vec)
 {
-	val.Set(_Vec.val);
+	val.Set(_vec.val);
 
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector3& ChVec3::operator *= (const ChVector3& _Vec)
+ChVector3& ChVec3::operator *= (const ChVector3& _vec)
 {
-	val.Mul(_Vec.val);
+	val.Mul(_vec.val);
 
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector3 ChVec3::operator * (const ChVector3& _Vec)const
+ChVector3 ChVec3::operator * (const ChVector3& _vec)const
 {
 	ChVector3 tmpVec = *this;
 
-	tmpVec *= _Vec;
+	tmpVec *= _vec;
 
 	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector3& ChVec3::operator /= (const ChVector3& _Vec)
+ChVector3& ChVec3::operator /= (const ChVector3& _vec)
 {
-	val.Div(_Vec.val);
+	val.Div(_vec.val);
 
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector3 ChVec3::operator / (const ChVector3& _Vec)const
+ChVector3 ChVec3::operator / (const ChVector3& _vec)const
 {
 	ChVector3 tmpVec = *this;
 
-	tmpVec /= _Vec;
+	tmpVec /= _vec;
 
 	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector3& ChVec3::operator -= (const ChVector3& _Vec)
+ChVector3& ChVec3::operator -= (const ChVector3& _vec)
 {
-	val.Sub(_Vec.val);
+	val.Sub(_vec.val);
 
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector3 ChVec3::operator - (const ChVector3& _Vec)const
+ChVector3 ChVec3::operator - (const ChVector3& _vec)const
 {
 	ChVector3 tmpVec = *this;
 
-	tmpVec -= _Vec;
+	tmpVec -= _vec;
 
 	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector3& ChVec3::operator += (const ChVector3& _Vec)
+ChVector3& ChVec3::operator += (const ChVector3& _vec)
 {
-	val.Add(_Vec.val);
+	val.Add(_vec.val);
 
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector3 ChVec3::operator + (const ChVector3& _Vec)const
+ChVector3 ChVec3::operator + (const ChVector3& _vec)const
 {
 	ChVector3 tmpVec = *this;
 
-	tmpVec += _Vec;
+	tmpVec += _vec;
 
 	return tmpVec;
 }
@@ -515,11 +515,11 @@ void ChVec3::Deserialize(
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector3 ChVec3::GetCross(const ChVector3& _Vec1, const ChVector3& _Vec2)
+ChVector3 ChVec3::GetCross(const ChVector3& _vec1, const ChVector3& _vec2)
 {
 	ChVector3 tmpVec;
 
-	tmpVec.val.Cross(_Vec1.val, _Vec2.val);
+	tmpVec.val.Cross(_vec1.val, _vec2.val);
 
 	return tmpVec;
 
@@ -527,23 +527,23 @@ ChVector3 ChVec3::GetCross(const ChVector3& _Vec1, const ChVector3& _Vec2)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-float ChVec3::GetCos(const ChVector3& _Vec1, const ChVector3& _Vec2)
+float ChVec3::GetCos(const ChVector3& _vec1, const ChVector3& _vec2)
 {
-	return _Vec1.val.GetCos(_Vec2.val);
+	return _vec1.val.GetCos(_vec2.val);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-float ChVec3::GetRadian(const ChVector3& _Vec1, const ChVector3& _Vec2)
+float ChVec3::GetRadian(const ChVector3& _vec1, const ChVector3& _vec2)
 {
-	return _Vec1.val.GetRadian(_Vec2.val);
+	return _vec1.val.GetRadian(_vec2.val);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-float ChVec3::GetDot(const ChVector3& _Vec1, const ChVector3& _Vec2)
+float ChVec3::GetDot(const ChVector3& _vec1, const ChVector3& _vec2)
 {
-	return _Vec1.val.GetDot(_Vec2.val);
+	return _vec1.val.GetDot(_vec2.val);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -566,11 +566,11 @@ ChVector3 ChVec3::GetCorrection(const ChVector3& _start, const ChVector3& _end, 
 ///////////////////////////////////////////////////////////////////////////////////
 
 float ChVec3::GetLen(
-	const ChVector3& _Vec1
-	, const ChVector3& _Vec2)
+	const ChVector3& _vec1
+	, const ChVector3& _vec2)
 {
 
-	ChVec3 tmpVec = _Vec1 - _Vec2;
+	ChVec3 tmpVec = _vec1 - _vec2;
 
 	return  tmpVec.val.GetLen();
 }
@@ -585,20 +585,20 @@ void ChVec3::Normalize()
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChVec3::Cross(
-	const ChVector3& _Vec1
-	, const ChVector3& _Vec2)
+	const ChVector3& _vec1
+	, const ChVector3& _vec2)
 {
-	*this = GetCross(_Vec1, _Vec2);
+	*this = GetCross(_vec1, _vec2);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 //ChVector2 Method//
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector2& ChVector2::operator=(const ChVector2& _Vec)
+ChVector2& ChVector2::operator=(const ChVector2& _vec)
 {
-	val.Set(_Vec.val);
-
+	if (this == &_vec)return *this;
+	val.Set(_vec.val);
 	return *this;
 }
 
@@ -607,7 +607,6 @@ ChVector2& ChVector2::operator=(const ChVector2& _Vec)
 ChVector2& ChVec2::operator*= (const float& _num)
 {
 	val.Mul(_num);
-
 	return *this;
 }
 
@@ -656,80 +655,80 @@ ChVector2& ChVec2::operator= (const float& _num)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector2& ChVec2::operator += (const ChVector2& _Vec)
+ChVector2& ChVec2::operator += (const ChVector2& _vec)
 {
-	val.Add(_Vec.val);
+	val.Add(_vec.val);
 
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector2 ChVec2::operator + (const ChVector2& _Vec)const
+ChVector2 ChVec2::operator + (const ChVector2& _vec)const
 {
 	ChVector2 tmpVec = *this;
 
-	tmpVec += _Vec;
+	tmpVec += _vec;
 
 	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector2& ChVec2::operator -= (const ChVector2& _Vec)
+ChVector2& ChVec2::operator -= (const ChVector2& _vec)
 {
-	val.Sub(_Vec.val);
+	val.Sub(_vec.val);
 
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector2 ChVec2::operator - (const ChVector2& _Vec)const
+ChVector2 ChVec2::operator - (const ChVector2& _vec)const
 {
 	ChVector2 tmpVec = *this;
 
-	tmpVec -= _Vec;
+	tmpVec -= _vec;
 
 	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector2& ChVec2::operator *= (const ChVector2& _Vec)
+ChVector2& ChVec2::operator *= (const ChVector2& _vec)
 {
-	val.Mul(_Vec.val);
+	val.Mul(_vec.val);
 
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector2 ChVec2::operator * (const ChVector2& _Vec)const
+ChVector2 ChVec2::operator * (const ChVector2& _vec)const
 {
 	ChVector2 tmpVec = *this;
 
-	tmpVec *= _Vec;
+	tmpVec *= _vec;
 
 	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector2& ChVec2::operator /= (const ChVector2& _Vec)
+ChVector2& ChVec2::operator /= (const ChVector2& _vec)
 {
-	val.Div(_Vec.val);
+	val.Div(_vec.val);
 
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector2 ChVec2::operator / (const ChVector2& _Vec)const
+ChVector2 ChVec2::operator / (const ChVector2& _vec)const
 {
 	ChVector2 tmpVec = *this;
 
-	tmpVec /= _Vec;
+	tmpVec /= _vec;
 
 	return tmpVec;
 }
@@ -781,11 +780,11 @@ void ChVec2::Deserialize(
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector2 ChVec2::GetCross(const ChVector2& _Vec1, const ChVector2& _Vec2)
+ChVector2 ChVec2::GetCross(const ChVector2& _vec1, const ChVector2& _vec2)
 {
 	ChVector2 tmpVec;
 
-	tmpVec.val.Cross(_Vec1.val, _Vec2.val);
+	tmpVec.val.Cross(_vec1.val, _vec2.val);
 
 	return tmpVec;
 
@@ -793,27 +792,27 @@ ChVector2 ChVec2::GetCross(const ChVector2& _Vec1, const ChVector2& _Vec2)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-float ChVec2::GetCos(const ChVector2& _Vec1, const ChVector2& _Vec2)
+float ChVec2::GetCos(const ChVector2& _vec1, const ChVector2& _vec2)
 {
 
-	return _Vec1.val.GetCos(_Vec2.val);
+	return _vec1.val.GetCos(_vec2.val);
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-float ChVec2::GetRadian(const ChVector2& _Vec1, const ChVector2& _Vec2)
+float ChVec2::GetRadian(const ChVector2& _vec1, const ChVector2& _vec2)
 {
 
-	return _Vec1.val.GetRadian(_Vec2.val);
+	return _vec1.val.GetRadian(_vec2.val);
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-float ChVec2::GetDot(const ChVector2& _Vec1, const ChVector2& _Vec2)
+float ChVec2::GetDot(const ChVector2& _vec1, const ChVector2& _vec2)
 {
-	return _Vec1.val.GetDot(_Vec2.val);
+	return _vec1.val.GetDot(_vec2.val);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -836,11 +835,11 @@ ChVector2 ChVec2::GetCorrection(const ChVector2& _start, const ChVector2& _end, 
 ///////////////////////////////////////////////////////////////////////////////////
 
 float ChVec2::GetLen(
-	const ChVector2& _Vec1
-	, const ChVector2& _Vec2)
+	const ChVector2& _vec1
+	, const ChVector2& _vec2)
 {
 
-	ChVec2 tmpVec = _Vec1 - _Vec2;
+	ChVec2 tmpVec = _vec1 - _vec2;
 
 	return  tmpVec.val.GetLen();
 }
@@ -855,10 +854,10 @@ void ChVec2::Normalize()
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChVec2::Cross(
-	const ChVector2& _Vec1
-	, const ChVector2& _Vec2)
+	const ChVector2& _vec1
+	, const ChVector2& _vec2)
 {
-	*this = GetCross(_Vec1, _Vec2);
+	*this = GetCross(_vec1, _vec2);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -940,75 +939,60 @@ void ChQua::RotYPR(
 //ChLMatrix Method//
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChLMatrix& ChLMatrix::operator =(const ChLMatrix _Mat)
+ChLMatrix& ChLMatrix::operator =(const ChLMatrix _mat)
 {
-	m.Set(_Mat.m);
-
+	m.Set(_mat.m);
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChLMatrix& ChLMatrix::operator *= (const ChLMatrix _Mat)
+ChLMatrix& ChLMatrix::operator *= (const ChLMatrix _mat)
 {
-
-	m.Mul(_Mat.m);
-
+	m.Mul(_mat.m);
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChLMatrix const ChLMatrix::operator * (const ChLMatrix _Mat)const
+ChLMatrix const ChLMatrix::operator * (const ChLMatrix _mat)const
 {
 	ChLMatrix out = *this;
-
-	out *= _Mat;
-
+	out *= _mat;
 	return out;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChLMatrix& ChLMatrix::operator += (const ChLMatrix _Mat)
+ChLMatrix& ChLMatrix::operator += (const ChLMatrix _mat)
 {
-
-	m.Add(_Mat.m);
-
+	m.Add(_mat.m);
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChLMatrix const ChLMatrix::operator + (const ChLMatrix _Mat)const
+ChLMatrix const ChLMatrix::operator + (const ChLMatrix _mat)const
 {
-
 	ChLMatrix out = *this;
-
-	out += _Mat;
-
+	out += _mat;
 	return out;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChLMatrix& ChLMatrix::operator -= (const ChLMatrix _Mat)
+ChLMatrix& ChLMatrix::operator -= (const ChLMatrix _mat)
 {
-
-	m.Sub(_Mat.m);
-
+	m.Sub(_mat.m);
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChLMatrix const ChLMatrix::operator - (const ChLMatrix _Mat)const
+ChLMatrix const ChLMatrix::operator - (const ChLMatrix _mat)const
 {
-
 	ChLMatrix out = *this;
-
-	out -= _Mat;
-
+	out -= _mat;
 	return out;
 }
 
@@ -1045,9 +1029,9 @@ void ChLMatrix::Deserialize(
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLMatrix::SetPosition(const ChVec3& _Vec)
+void ChLMatrix::SetPosition(const ChVec3& _vec)
 {
-	SetPosition(_Vec.x, _Vec.y, _Vec.z);
+	SetPosition(_vec.x, _vec.y, _vec.z);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -1061,9 +1045,9 @@ void ChLMatrix::SetPosition(const float _x, const float _y, const float _z)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLMatrix::ChLMatrix::SetRotation(const ChVec3& _Vec)
+void ChLMatrix::ChLMatrix::SetRotation(const ChVec3& _vec)
 {
-	SetRotation(_Vec.x, _Vec.y, _Vec.z);
+	SetRotation(_vec.x, _vec.y, _vec.z);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -1128,9 +1112,9 @@ void ChLMatrix::SetRotationZAxis(const float _z)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLMatrix::SetScalling(const ChVec3& _Vec)
+void ChLMatrix::SetScalling(const ChVec3& _vec)
 {
-	SetScalling(_Vec.x, _Vec.y, _Vec.z);
+	SetScalling(_vec.x, _vec.y, _vec.z);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -1194,22 +1178,22 @@ ChVec3 ChLMatrix::GetScalling()const
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
-//
-//ChMath::MatrixBase3x3 ChLMatrix::GetRotMatrix()const
-//{
-//	ChMath::MatrixBase3x3 out;
-//
-//	for (unsigned char i = 0; i < 3; i++)
-//	{
-//		for (unsigned char j = 0; j < 3; j++)
-//		{
-//			out[i][j] = m[i][j];
-//		}
-//	}
-//
-//	return out;
-//
-//}
+
+ChMath::BaseMatrix3x3<float> ChLMatrix::GetRotMatrix()const
+{
+	ChMath::MatrixBase3x3 out;
+
+	for (unsigned char i = 0; i < 3; i++)
+	{
+		for (unsigned char j = 0; j < 3; j++)
+		{
+			out[i][j] = m[i][j];
+		}
+	}
+
+	return out;
+
+}
 
 ///////////////////////////////////////////////////////////////////////////////////
 
@@ -1252,9 +1236,9 @@ ChRMatrix ChLMatrix::ConvertAxis()
 //ChRMatrix Method//
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChRMatrix& ChRMatrix::operator =(const ChRMatrix& _Mat)
+ChRMatrix& ChRMatrix::operator =(const ChRMatrix& _mat)
 {
-	m.Set(_Mat.m);
+	m.Set(_mat.m);
 
 	return *this;
 }
@@ -1263,9 +1247,9 @@ ChRMatrix& ChRMatrix::operator =(const ChRMatrix& _Mat)
 //ChUIMatrix Method//
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChUIMatrix& ChUIMatrix::operator =(const ChUIMatrix _Mat)
+ChUIMatrix& ChUIMatrix::operator =(const ChUIMatrix _mat)
 {
-	m.Set(_Mat.m);
+	m.Set(_mat.m);
 
 	return *this;
 }
