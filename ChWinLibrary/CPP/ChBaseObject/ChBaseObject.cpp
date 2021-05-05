@@ -39,7 +39,7 @@ void BaseObject::UpdateBeginFunction()
 
 	for (auto&& childs : childList)
 	{
-		childs->UpdateBegin();
+		childs->UpdateBeginFunction();
 	}
 
 }
@@ -60,7 +60,7 @@ void BaseObject::UpdateFunction()
 
 	for (auto&& childs : childList)
 	{
-		childs->Update();
+		childs->UpdateFunction();
 	}
 }
 
@@ -96,7 +96,7 @@ void BaseObject::MoveBeginFunction()
 
 	for (auto&& childs : childList)
 	{
-		childs->MoveBegin();
+		childs->MoveBeginFunction();
 	}
 }
 
@@ -114,7 +114,7 @@ void BaseObject::MoveFunction()
 
 	for (auto&& childs : childList)
 	{
-		childs->Move();
+		childs->MoveFunction();
 	}
 }
 
@@ -132,7 +132,7 @@ void BaseObject::MoveEndFunction()
 
 	for (auto&& childs : childList)
 	{
-		childs->MoveEnd();
+		childs->MoveEndFunction();
 	}
 }
 
@@ -150,7 +150,7 @@ void BaseObject::DrawBeginFunction()
 
 	for (auto&& childs : childList)
 	{
-		childs->DrawBegin();
+		childs->DrawBeginFunction();
 	}
 }
 
@@ -168,7 +168,7 @@ void BaseObject::Draw3DFunction()
 
 	for (auto&& childs : childList)
 	{
-		childs->Draw3D();
+		childs->Draw3DFunction();
 	}
 }
 
@@ -186,7 +186,7 @@ void BaseObject::Draw2DFunction()
 
 	for (auto&& childs : childList)
 	{
-		childs->Draw2D();
+		childs->Draw2DFunction();
 	}
 }
 
@@ -204,7 +204,7 @@ void BaseObject::DrawEndFunction()
 
 	for (auto&& childs : childList)
 	{
-		childs->DrawEnd();
+		childs->DrawEndFunction();
 	}
 }
 
@@ -212,6 +212,13 @@ void BaseObject::DrawEndFunction()
 
 void BaseObject::BaseRelease()
 {
+
+
+	for (auto com : comList)
+	{
+		com->Release();
+	}
+
 	if (!comList.empty())comList.clear();
 
 	for (auto&& childs : childList)
@@ -299,21 +306,6 @@ void BaseObject::IsReleasComponent()
 
 		if (comList.empty())break;
 
-	}
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-
-void BaseObject::EraseRootObj(const ChPtr::Shared<BaseObject> _Obj)
-{
-
-	{
-		auto It = std::find(
-			objMa->rootObjects.begin()
-			, objMa->rootObjects.end()
-			, _Obj);
-
-		objMa->rootObjects.erase(It);
 	}
 }
 
