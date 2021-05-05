@@ -9,6 +9,11 @@ namespace ChD3D
 	public:
 
 		///////////////////////////////////////////////////////////////////////////////////
+		//ConstructorDestructor//
+
+		XInputController();
+
+		///////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
 		void Init();
@@ -31,74 +36,84 @@ namespace ChD3D
 		///////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
+		inline unsigned char GetNo()
+		{
+			return myNo;
+		}
+
+		inline unsigned long GetUpdateCounts()
+		{
+			return state.dwPacketNumber;
+		}
+
 		inline ChStd::Bool GetUpFlg() 
 		{
-			return *this ? state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP : false;
+			return state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP;
 		}
 
 		inline ChStd::Bool GetDownFlg() 
 		{
-			return *this ? state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN : false;
+			return state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN;
 		}
 
 		inline ChStd::Bool GetLeftFlg() 
 		{ 
-			return *this ? state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT : false;
+			return state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT;
 		}
 
 		inline ChStd::Bool GetRightFlg()
 		{
-			return *this ? state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT : false;
+			return state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT;
 		}
 
 		inline ChStd::Bool GetStartFlg() 
 		{
-			return *this ? state.Gamepad.wButtons & XINPUT_GAMEPAD_START : false;
+			return state.Gamepad.wButtons & XINPUT_GAMEPAD_START;
 		}
 
 		inline ChStd::Bool GetBackFlg() 
 		{
-			return *this ? state.Gamepad.wButtons & XINPUT_GAMEPAD_BACK : false;
+			return state.Gamepad.wButtons & XINPUT_GAMEPAD_BACK;
 		}
 
 		inline ChStd::Bool GetAFlg()
 		{
-			return *this ? state.Gamepad.wButtons & XINPUT_GAMEPAD_A : false;
+			return state.Gamepad.wButtons & XINPUT_GAMEPAD_A;
 		}
 
 		inline ChStd::Bool GetBFlg() 
 		{
-			return *this ? state.Gamepad.wButtons & XINPUT_GAMEPAD_B : false;
+			return state.Gamepad.wButtons & XINPUT_GAMEPAD_B;
 		}
 
 		inline ChStd::Bool GetXFlg() 
 		{
-			return *this ? state.Gamepad.wButtons & XINPUT_GAMEPAD_X : false;
+			return state.Gamepad.wButtons & XINPUT_GAMEPAD_X;
 		}
 
 		inline ChStd::Bool GetYFlg() 
 		{
-			return *this ? state.Gamepad.wButtons & XINPUT_GAMEPAD_Y : false;
+			return state.Gamepad.wButtons & XINPUT_GAMEPAD_Y;
 		}
 
 		inline ChStd::Bool GetL1Flg() 
 		{
-			return *this ? state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB : false;
+			return state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB;
 		}
 
-		inline ChStd::Bool GetL2Flg()
+		inline float GetL2Trigger()
 		{
-			return *this ? state.Gamepad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD : false;
+			return RL2DeadZoneTest(state.Gamepad.bLeftTrigger);
 		}
 
 		inline ChStd::Bool GetR1Flg() 
 		{
-			return *this ? state.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB : false;
+			return state.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB;
 		}
 
-		inline ChStd::Bool GetR2Flg() 
+		inline float GetR2Trigger() 
 		{
-			return *this ? state.Gamepad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD : false;
+			return RL2DeadZoneTest(state.Gamepad.bRightTrigger);
 		}
 
 		inline float GetLXStick()
@@ -131,6 +146,8 @@ namespace ChD3D
 		float RDeadZoneTest(const float _sThumb);
 
 		float LDeadZoneTest(const float _sThumb);
+
+		float RL2DeadZoneTest(const unsigned char _sButton);
 
 		///////////////////////////////////////////////////////////////////////////////////
 
