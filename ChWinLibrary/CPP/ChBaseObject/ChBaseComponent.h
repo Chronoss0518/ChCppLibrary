@@ -9,7 +9,7 @@ namespace ChCpp
 	class BaseObject;
 
 	//ChBaseObjectに対するコンポーネントシステム//
-	 class BaseComponent :public  std::enable_shared_from_this<BaseComponent>,public ChCpp::ClassPerts::Releaser
+	 class BaseComponent :public  std::enable_shared_from_this<BaseComponent>
 	{
 	public:
 
@@ -44,8 +44,6 @@ namespace ChCpp
 
 		ChStd::Bool IsUse() { return useFlg; }
 
-	private:
-
 	protected:
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -57,7 +55,7 @@ namespace ChCpp
 			std::enable_if<std::is_base_of<BaseObject, Class>::value, ChPtr::Shared<Class>>::type _out)
 			
 		{
-			auto testObj = ChPtr::SharedSafeCast<Class>(obj);
+			auto testObj = ChPtr::SharedSafeCast<Class>(obj.lock());
 
 			if (testObj == nullptr)return false;
 
@@ -73,7 +71,7 @@ namespace ChCpp
 			typename std::enable_if<std::is_base_of<BaseObject, Class>::value, ChPtr::Shared<Class>>::type
 
 		{
-			return ChPtr::SharedSafeCast<Class>(obj);
+			return ChPtr::SharedSafeCast<Class>(obj.lock());
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -107,12 +105,12 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//セットされる際に呼ばれる//
-		void BaseInit(ChPtr::Shared<BaseObject> _obj);
+		void BaseInit(ChPtr::Shared<BaseObject>& _obj);
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 
-		ChPtr::Shared<BaseObject> obj = nullptr;
+		ChPtr::Weak<BaseObject> obj;
 
 		ChStd::Bool dFlg = false;
 

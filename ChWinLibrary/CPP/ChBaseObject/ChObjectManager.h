@@ -42,7 +42,6 @@ namespace ChCpp
 			tmpObj->Init();
 
 			objectList[_tag].push_back(tmpObj);
-			rootObjects.push_back(tmpObj);
 
 			return ChPtr::SharedSafeCast<T>(tmpObj);
 		}
@@ -83,25 +82,6 @@ namespace ChCpp
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
-		//保持しているすべてのオブジェクトを削除する。
-		inline void ClearObject()
-		{
-			if (!objectList.empty())objectList.clear();
-		}
-
-		//選択されたタグのオブジェクトをすべて消去する//
-		void ClearObjectForTag(const std::string& _tags);
-
-		//選択された名前のオブジェクトをすべて消去する//
-		void ClearObjectForName(const std::string& _name);
-
-		//選択されたタグと関連する名前のオブジェクトをすべて消去する//
-		void ClearObjectForTagAndName(
-			const std::string& _name,
-			const std::string& _tags);
-
-		///////////////////////////////////////////////////////////////////////////////////////
-
 		//登録されているオブジェクトを描画する。
 		void Draw();
 
@@ -116,12 +96,25 @@ namespace ChCpp
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
+		//保持しているすべてのオブジェクトを削除する。
+		void ClearObject();
+
+		//選択されたタグのオブジェクトをすべて消去する//
+		void ClearObjectForTag(const std::string& _tags);
+
+		//選択された名前のオブジェクトをすべて消去する//
+		void ClearObjectForName(const std::string& _name);
+
+		//選択されたタグと関連する名前のオブジェクトをすべて消去する//
+		void ClearObjectForTagAndName(
+			const std::string& _name,
+			const std::string& _tags);
+
+		///////////////////////////////////////////////////////////////////////////////////////
+
 	private:
 
 		std::map<std::string, std::vector<ChPtr::Shared<BaseObject>>>objectList;
-
-		std::vector<ChPtr::Shared<BaseObject>>rootObjects;
-
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//CostructerDestructer//
