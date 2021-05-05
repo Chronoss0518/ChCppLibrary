@@ -593,16 +593,19 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 	///////////////////////////////////////////////////////////////////////////////////
 	//Operator//
 
-	ChLMatrix& operator =(const ChLMatrix _mat);
+	ChLMatrix& operator =(const ChLMatrix& _mat);
 
-	ChLMatrix& operator *= (const ChLMatrix _mat);
-	ChLMatrix const operator * (const ChLMatrix _mat)const;
+	ChLMatrix& operator += (const ChLMatrix& _mat);
+	ChLMatrix const operator + (const ChLMatrix& _mat)const;
 
-	ChLMatrix& operator += (const ChLMatrix _mat);
-	ChLMatrix const operator + (const ChLMatrix _mat)const;
+	ChLMatrix& operator -= (const ChLMatrix& _mat);
+	ChLMatrix const operator - (const ChLMatrix& _mat)const;
 
-	ChLMatrix& operator -= (const ChLMatrix _mat);
-	ChLMatrix const operator - (const ChLMatrix _mat)const;
+	ChLMatrix& operator *= (const ChLMatrix& _mat);
+	ChLMatrix const operator * (const ChLMatrix& _mat)const;
+
+	ChLMatrix& operator /= (const ChLMatrix& _mat);
+	ChLMatrix const operator / (const ChLMatrix& _mat)const;
 
 	operator const D3DXMATRIX() const;
 	operator const D3DXMATRIX* () const;
@@ -687,8 +690,6 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 	ChVec3 GetRotation()const;
 
 	ChVec3 GetScalling()const;
-
-	ChMath::MatrixBase<float, 3, 3> GetRotMatrix()const;
 
 	///////////////////////////////////////////////////////////////////////////////////
 
