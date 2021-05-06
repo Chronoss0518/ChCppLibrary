@@ -6,16 +6,13 @@
 namespace ChCpp
 {
 
-	enum class HitTestRayDirctionAxis
-	{
-		Top, Down, Front, Back, Right, Left
-	};
-
 	class HitTestRay :public HitTestObject
 	{
 	public:
 		///////////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
+
+		inline void SetDirection(const ChVec3& _dir) { dir = _dir; }
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
@@ -46,9 +43,7 @@ namespace ChCpp
 
 	private:
 
-		const static std::map<HitTestRayDirctionAxis, std::function<ChVec3()>>GetRayAxis;
-
-		HitTestRayDirctionAxis rayAxis;
+		ChVec3 dir;
 
 		float maxLen = FLT_MAX;
 

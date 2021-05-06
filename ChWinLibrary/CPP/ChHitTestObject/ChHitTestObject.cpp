@@ -8,16 +8,6 @@
 
 using namespace ChCpp;
 
-const std::map<HitTestRayDirctionAxis, std::function<ChVec3()>>HitTestRay::GetRayAxis
-{
-	{HitTestRayDirctionAxis::Top,[]()->ChVec3 {return ChVec3(0.0f,1.0f,0.0f); }},
-	{HitTestRayDirctionAxis::Down,[]()->ChVec3 {return ChVec3(0.0f,-1.0f,0.0f); }},
-	{HitTestRayDirctionAxis::Front,[]()->ChVec3 {return ChVec3(0.0f,0.0f,1.0f); }},
-	{HitTestRayDirctionAxis::Back,[]()->ChVec3 {return ChVec3(0.0f,0.0f,-1.0f); }},
-	{HitTestRayDirctionAxis::Right,[]()->ChVec3 {return ChVec3(1.0f,0.0f,0.0f); }},
-	{HitTestRayDirctionAxis::Left,[]()->ChVec3 {return ChVec3(-1.0f,0.0f,0.0f); }}
-};
-
 ///////////////////////////////////////////////////////////////////////////////////////
 //HitTestRay Method//
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -141,9 +131,6 @@ ChStd::Bool HitTestBox::IsHit(
 	auto pos = GetPos();
 
 	auto tmpVec = pos - tPos;
-
-
-
 
 	return false;
 }
