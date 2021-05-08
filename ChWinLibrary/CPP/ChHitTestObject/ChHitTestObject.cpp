@@ -1,4 +1,5 @@
 #include"../../BaseIncluder/ChBase.h"
+
 #include"ChHitTestObject.h"
 #include"ChHitTestRay.h"
 #include"ChHitTestPanel.h"
@@ -127,12 +128,30 @@ ChStd::Bool HitTestBox::IsHit(
 
 	//位置情報だけの当たり判定//
 
-	auto tPos = _target->GetPos();
-	auto pos = GetPos();
+	ChVec3 tPos = _target->GetPos();
+	ChVec3 mPos = GetPos();
 
-	auto tmpVec = pos - tPos;
+	ChVec3 tmpVec = mPos - tPos;
+	ChVec3 tSize = _target->GetSize();
+	ChVec3 mSize = size;
 
-	return false;
+	ChVec3 testVec = tmpVec;
+	testVec.Abs();
+
+
+	if (tSize.x + mSize.x < testVec.x)return false;
+	if (tSize.y + mSize.y < testVec.y)return false;
+	if (tSize.z + mSize.z < testVec.z)return false;
+
+	ChVec3 moveSize = testVec - (tSize + mSize);
+
+	tmpVec *= moveSize;
+
+	SetHitVector(tmpVec);
+
+	_target->SetHitVector(tmpVec * -1.0f);
+
+	return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -156,7 +175,36 @@ ChStd::Bool  HitTestBox::IsHit(
 ChStd::Bool  HitTestBox::IsInnerHit(
 	HitTestBox* _target)
 {
-	return false;
+
+	//位置情報だけの当たり判定//
+
+	ChVec3 tPos = _target->GetPos();
+	ChVec3 mPos = GetPos();
+
+	ChVec3 tSize = _target->GetSize();
+	ChVec3 mSize = size;
+
+	ChVec3 testVec = mPos - tPos;
+	testVec.Abs();
+
+
+	ChVec3 hitFlgs = 0.0f;
+
+	{
+
+		if (tSize.x < testVec.x + mSize.x)hitFlgs.x = testVec.x + mSize.x - tSize.x;
+		if (tSize.y < testVec.y + mSize.y)hitFlgs.y = testVec.y + mSize.y - tSize.y;
+		if (tSize.z < testVec.z + mSize.z)hitFlgs.z = testVec.z + mSize.z - tSize.z;
+
+
+		if (hitFlgs.Len() <= 0.0f)return false;
+	}
+
+	SetHitVector(hitFlgs);
+
+	_target->SetHitVector(hitFlgs * -1.0f);
+
+	return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -192,30 +240,27 @@ ChStd::Bool  HitTestSphere::IsHit(
 {
 	//位置情報だけの当たり判定//
 
-	auto tPos = _target->GetPos();
+	ChVec3 tPos = _target->GetPos();
 
-	auto pos = GetPos();
+	ChVec3 mPos = GetPos();
 
-	auto tmpVec = pos - tPos;
+	ChVec3 tmpVec = mPos - tPos;
 
-	auto tmpLen = tmpVec.Len();
+	float tmpLen = tmpVec.Len();
 
-	if (tmpLen < (_target->GetLen() + len))
-	{
-		tmpVec.Normalize();
+	if (tmpLen >= (_target->GetLen() + len))return false;
 
-		float moveSize = tmpLen - len;
+	tmpVec.Normalize();
 
-		moveSize = _target->GetLen() - moveSize;
+	float moveSize = tmpLen - len;
 
-		SetHitVector(tmpVec * moveSize);
+	moveSize = _target->GetLen() - moveSize;
 
-		_target->SetHitVector(tmpVec * (-moveSize));
+	SetHitVector(tmpVec * moveSize);
 
-		return true;
-	}
+	_target->SetHitVector(tmpVec * (-moveSize));
 
-	return false;
+	return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -242,30 +287,28 @@ ChStd::Bool  HitTestSphere::IsInnerHit(
 
 	//位置情報だけの当たり判定//
 
-	auto tPos = _target->GetPos();
-	auto pos = GetPos();
+	ChVec3 tPos = _target->GetPos();
+	ChVec3 mPos = GetPos();
 
 
-	auto tmpVec = pos - tPos;
+	ChVec3 tmpVec = mPos - tPos;
 
-	auto tmpLen = tmpVec.Len();
+	float tmpLen = tmpVec.Len();
 
-	if (tmpLen + len > _target->GetLen())
-	{
-		tmpVec.Normalize();
+	if (tmpLen + len <= _target->GetLen())return false;
 
-		float moveSize = tmpLen + len;
+	tmpVec.Normalize();
 
-		moveSize = moveSize - _target->GetLen();
+	float moveSize = tmpLen + len;
 
-		SetHitVector(tmpVec * -moveSize);
+	moveSize = moveSize - _target->GetLen();
 
-		_target->SetHitVector(tmpVec * (moveSize));
+	SetHitVector(tmpVec * -moveSize);
 
-		return true;
-	}
+	_target->SetHitVector(tmpVec * (moveSize));
 
-	return false;
+	return true;
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
