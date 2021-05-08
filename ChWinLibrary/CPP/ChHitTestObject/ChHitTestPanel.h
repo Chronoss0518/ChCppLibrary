@@ -6,7 +6,7 @@
 namespace ChCpp
 {
 
-	//基本的に上向き//
+	//基本的に面は上向き//
 	class HitTestPanel :public HitTestObject
 	{
 

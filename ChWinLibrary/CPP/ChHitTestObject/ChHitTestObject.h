@@ -81,7 +81,7 @@ namespace ChCpp
 		ChVec3 rot;
 		ChVec3 scl;
 
-		//どのくらい入り込んでいるかのベクトル//
+		//この数値文移動させれば衝突から免れる移動数値//
 		ChVec3 hitVector = 0.0f;
 
 	};
