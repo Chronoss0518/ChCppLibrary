@@ -15,7 +15,10 @@
 
 # 内容
 
-ライブラリは大きく分けて5つ存在します。
+ライブラリは大きく分けて6つ存在します。
+
+##### ChBase
+Chライブラリの根幹を担う機能をまとめたライブラリ<br>
 
 ##### ChCpp
 C++の機能のみで利用することが可能なライブラリ
@@ -40,7 +43,25 @@ ChD3D9ライブラリやChD3D11ライブラリを呼ぶ際に同時に呼ばれる。
 
 # 使用方法
 
-<a herf="ChWinLibrary\CPP\README.md">ChCppライブラリ</a>
+最上位に度のライブラリでも利用することができる機能群(以降はChBaseと呼称する)があり、その下にChCpp,ChWin,ChD3D9,ChD3D11,ChD3D,ChImGuiとなっている。<br>
+
+※ChBaseはChStd,ChPtr,ChFIO,ChMath,Ch3DMath,ChStrの6種類で構成されている。
+
+以下にそれぞれの使い方を記述していく。
+
+[ChBaseライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/BasePack)
+
+[ChCppライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/CPP)
+
+[ChWinライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/WindowsObject)
+
+[ChD3D9ライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/Direct3D9)
+
+[ChD3D11ライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/Direct3D11)
+
+[ChD3Dライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/Direct3DObject)
+
+[ChImGuiライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/ImGUIAPI)
 
 # 予定(上から順に行う予定)
 
