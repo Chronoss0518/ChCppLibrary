@@ -62,6 +62,7 @@ ChD3D9ライブラリやChD3D11ライブラリを呼ぶ際に同時に呼ばれる。
 
 # 予定(上から順に行う予定)
 
+- ChBaseライブラリとChCppライブラリを調整する。
 - ClassPertsをChCpライブラリとしてChCppからChBaseへ移行する。
 - ChWinライブラリを大規模修正
 - ChD3D11の大規模修正
