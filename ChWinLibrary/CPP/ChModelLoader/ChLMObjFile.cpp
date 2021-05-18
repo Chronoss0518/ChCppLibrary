@@ -1,5 +1,7 @@
 #include"../../BaseIncluder/ChBase.h"
 
+#include"../ChFile/ChFile.h"
+
 #include"../ChTextObject/ChTextObject.h"
 #include"../ChModel/ChModelObject.h"
 
@@ -20,7 +22,7 @@ void ChCpp::ModelLoader::ObjFile::CreateModel(const std::string& _filePath)
 	{
 		std::string tmp;
 
-		ChFIO::File files;
+		ChCpp::File files;
 
 		files.FileOpen(_filePath);
 
@@ -114,7 +116,7 @@ void ChCpp::ModelLoader::ObjFile::CreateMaterials(const std::string& _fileName)
 	{
 		std::string tmp;
 
-		ChFIO::File files;
+		ChCpp::File files;
 
 		files.FileOpen(folderPath + fileName);
 

@@ -4,6 +4,8 @@
 
 #include"../../CPP/ChBitBool/ChBitBool.h"
 
+#include"../../CPP/ChFile/ChFile.h"
+
 #include"../../BaseIncluder/ChD3D9I.h"
 
 #include"../ChAnimationObject/ChAnimationObject9.h"
@@ -91,7 +93,7 @@ void BaseMesh9::CreateEasyFaceList()
 void BaseMesh9::SetMaterialName(const std::string& _fileName)
 {
 
-	ChFIO::File file;
+	ChCpp::File file;
 	file.FileOpen(_fileName);
 
 	std::string tmpStr;
@@ -579,7 +581,7 @@ void SXFileMesh9::OpenFile(
 		std::string fStr;
 		{
 
-			ChFIO::File file;
+			ChCpp::File file;
 			file.FileOpen(_pathName + _fileName);
 			fStr = file.FileRead();
 			file.FileClose();

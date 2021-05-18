@@ -160,7 +160,7 @@ void XAudio2Manager::CreateSound(AudioObject* _Object, const std::string& _fileN
 
 	IMFSourceReader* reader;
 	MFCreateSourceReaderFromURL(
-		ChStr::ToWString(_fileName).c_str(),
+		ChStr::UTF8ToWString(_fileName).c_str(),
 		nullptr,
 		&reader);
 

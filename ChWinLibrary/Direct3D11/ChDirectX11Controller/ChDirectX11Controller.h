@@ -6,7 +6,7 @@ namespace ChD3D11
 {
 
 	//Direct3D11‚ğ—˜—p‚·‚é‚½‚ß‚Éì‚ç‚ê‚½ƒNƒ‰ƒX//
-	class DirectX3D11:public ChCpp::ClassPerts::Initializer,ChCpp::ClassPerts::Releaser
+	class DirectX3D11:public ChCp::Initializer,public ChCp::Releaser
 	{
 	public:
 

@@ -30,7 +30,7 @@ namespace ChSystem
 
 	//Windowsで作成されたWindとWindowsに関する入出力などを管理した、//
 	//WIndows全体の管理クラス//
-	class Windows :public BaseSystem,public ChCpp::ClassPerts::Releaser
+	class Windows :public BaseSystem,public ChCp::Releaser
 	{
 	public:
 
