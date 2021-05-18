@@ -18,7 +18,7 @@ namespace ChSound
 	typedef class BackGroundMusic8 BGM8;
 	typedef class SoundEffect8 SE8;
 
-	class SoundManager8:public ChCpp::ClassPerts::Initializer,public ChCpp::ClassPerts::Releaser
+	class SoundManager8:public ChCp::Initializer,public ChCp::Releaser
 	{
 	public:
 

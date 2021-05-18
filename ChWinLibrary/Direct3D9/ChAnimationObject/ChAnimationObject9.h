@@ -4,7 +4,7 @@
 
 class ChAnimationSupporter9;
 
-typedef class ChAnimationObject9:public ChCpp::ClassPerts::Releaser
+typedef class ChAnimationObject9:public ChCp::Releaser
 {
 public:
 

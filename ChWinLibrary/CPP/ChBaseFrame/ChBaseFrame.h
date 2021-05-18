@@ -8,7 +8,7 @@ namespace ChCpp
 	class BaseFrame;
 
 	//BaseFrame管理用クラス//
-	class BaseFrameList:public ChCpp::ClassPerts::Initializer
+	class BaseFrameList:public ChCp::Initializer
 	{
 	public:
 
@@ -84,7 +84,7 @@ namespace ChCpp
 	//ゲームシーンを簡易的生成を行うためのクラス//
 	//必要に応じて以下の関数をオーバーライドする//
 	//void Init(),void Release(),void Frame()//
-	class BaseFrame:public ChCpp::ClassPerts::Releaser
+	class BaseFrame:public ChCp::Releaser
 	{
 	public:
 

@@ -18,7 +18,7 @@ namespace ChD3D11
 
 	//※LightはShader内のBaseLightとPointLightを利用してください//
 	//独自で構築しているShaderクラス//
-	class ShaderController11 final :public ChCpp::ClassPerts::Initializer,public ChCpp::ClassPerts::Releaser
+	class ShaderController11 final :public ChCp::Initializer,public ChCp::Releaser
 	{
 	public:
 

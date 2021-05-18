@@ -3,7 +3,7 @@
 
 namespace ChCpp
 {
-	class File :public ClassPerts::Releaser
+	class File :public ChCp::Releaser
 	{
 
 	public:
