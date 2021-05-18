@@ -1,6 +1,8 @@
 #include<Windows.h>
 
 #include"../../BaseIncluder/ChBase.h"
+#include"../../CPP/ChFile/ChFile.h"
+
 #include"../../BaseIncluder/ChD3D9I.h"
 
 #include"ChBaseTexture9.h"
@@ -236,7 +238,7 @@ template void BaseTexture9::SetTexColor(const D3DCOLOR& _color);
 void PngTex9::OpenFile(const std::string& _fileName)
 {
 
-	ChFIO::File file;
+	ChCpp::File file;
 
 	file.FileOpen(_fileName, std::ios::binary | std::ios::in | std::ios::out);
 
@@ -303,7 +305,7 @@ PngTex9::CIHDR PngTex9::SetChank(const std::string& _str)
 void JpegTex::OpenFile(const std::string& _fileName)
 {
 
-	ChFIO::File File;
+	ChCpp::File File;
 	File.FileOpen(_fileName , std::ios::binary | std::ios::in | std::ios::out);
 
 	std::string tmpStr;
