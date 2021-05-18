@@ -6,7 +6,7 @@ namespace ChCpp
 
 	//スクリプト全体を管理するクラス//
 	//これを各地に配置して利用する//
-	typedef class ScriptController:public ClassPerts::Releaser
+	typedef class ScriptController:public ChCp::Releaser
 	{
 
 	public:

@@ -12,7 +12,7 @@ namespace ChTex
 
 	typedef class BaseTexture9 Texture9;
 
-	typedef class StringController9:public ChCpp::ClassPerts::Initializer
+	typedef class StringController9:public ChCp::Initializer
 	{
 	public:
 

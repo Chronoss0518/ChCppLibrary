@@ -37,7 +37,7 @@ namespace ChMesh
 
 	//全体で利用されるシングルトン生成されたメッシュマネージャー//
 	//全体管理を行っているため、適度にClearしなければならない//
-	class MeshManager9:public ChCpp::ClassPerts::Initializer,public ChCpp::ClassPerts::Releaser
+	class MeshManager9:public ChCp::Initializer,public ChCp::Releaser
 	{
 	public:
 

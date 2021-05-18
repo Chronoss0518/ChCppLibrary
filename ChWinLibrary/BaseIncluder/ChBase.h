@@ -34,16 +34,15 @@
 #include"../BasePack/ChStd.h"
 #include"../BasePack/ChStr.h"
 #include"../BasePack/ChPtr.h"
-#include"../BasePack/ChFIO.h"
 
 #include"../BasePack/ChMath.h"
 #include"../BasePack/ChMath3D.h"
 #include"../BasePack/Ch3D.h"
 
-#include"../CPP/ChClassParts/ChCPInitializer.h"
-#include"../CPP/ChClassParts/ChCPClassNameGetter.h"
-#include"../CPP/ChClassParts/ChCPReleaser.h"
-#include"CPP/ChBitBool/ChBitBool.h"
+#include"../ClassParts/ChCPInitializer.h"
+#include"../ClassParts/ChCPClassNameGetter.h"
+#include"../ClassParts/ChCPReleaser.h"
 
+#include"../CPP/ChBitBool/ChBitBool.h"
 
 #endif

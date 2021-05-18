@@ -58,7 +58,7 @@ void Texture11::CreateTexture(const std::string& _texPath, ID3D11Device* _device
 
 	if (FAILED(DirectX::CreateWICTextureFromFile(
 		device
-		, ChStr::ToWString(_texPath).c_str()
+		, ChStr::UTF8ToWString(_texPath).c_str()
 		, (ID3D11Resource**)&baseTex
 		, &texView)))
 	{

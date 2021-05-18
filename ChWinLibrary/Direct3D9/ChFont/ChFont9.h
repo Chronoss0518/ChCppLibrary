@@ -5,7 +5,7 @@ namespace ChD3D9
 {
 
 	//標準機能で描画されるフォントクラス//
-	class DrawFont:public ChCpp::ClassPerts::Initializer,ChCpp::ClassPerts::Releaser
+	class DrawFont:public ChCp::Initializer,public ChCp::Releaser
 	{
 	public:
 

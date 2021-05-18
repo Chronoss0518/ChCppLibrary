@@ -8,7 +8,7 @@ namespace ChTex
 
 	//(シングルトンに対して改良中)
 	//スプライト描画を行うクラス//
-	class Sprite9 :public ChCpp::ClassPerts::Initializer,public ChCpp::ClassPerts::Releaser
+	class Sprite9 :public ChCp::Initializer,public ChCp::Releaser
 	{
 	public:
 

@@ -19,7 +19,7 @@ namespace ChD3D9
 
 	//Direct3D9‚ğ—˜—p‚·‚é‚½‚ß‚Éì‚ç‚ê‚½ƒNƒ‰ƒX//
 	//D3DX‚à“à‘ ‚³‚ê‚Ä‚¢‚é//
-	class DirectX3D9:public ChCpp::ClassPerts::Initializer
+	class DirectX3D9:public ChCp::Initializer
 	{
 	public:
 

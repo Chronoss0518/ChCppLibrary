@@ -37,7 +37,7 @@ namespace ChWin
 
 	 void WindSizeUpdate(const HWND _hWnd, LPARAM _lParam);
 
-	typedef class WindObject :public ChCpp::ClassPerts::Initializer,public ChCpp::ClassPerts::Releaser
+	typedef class WindObject :public ChCp::Initializer,public ChCp::Releaser
 	{
 	public:
 
