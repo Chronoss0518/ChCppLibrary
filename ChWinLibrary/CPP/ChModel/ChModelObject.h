@@ -9,7 +9,7 @@
 namespace ChCpp
 {
 
-	class ModelObject :public ClassPerts::Releaser
+	class ModelObject :public ChCp::Releaser
 	{
 	public:
 

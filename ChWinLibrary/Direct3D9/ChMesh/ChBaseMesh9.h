@@ -37,7 +37,7 @@ namespace ChMesh
 #endif
 
 	//D3DXMesh‚ğ‘€‚éŠî’êƒNƒ‰ƒX//
-	typedef class BaseMesh9:public ChCpp::ClassPerts::Releaser
+	typedef class BaseMesh9:public ChCp::Releaser
 	{
 	public:
 

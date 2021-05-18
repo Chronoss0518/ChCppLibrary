@@ -69,7 +69,7 @@ public:
 };
 
 //BGMクラス//
-typedef struct ChMainSound9 : public ChCpp::ClassPerts::Releaser
+typedef struct ChMainSound9 : public ChCp::Releaser
 {
 	LPDIRECTSOUNDBUFFER8 sound;
 	LPDIRECTSOUND3DBUFFER8 dSound;
@@ -104,7 +104,7 @@ typedef struct ChMainSound9 : public ChCpp::ClassPerts::Releaser
 ///////////////////////////////////////////////////////////////////////////////////
 
 //SEクラス//
-typedef struct ChSubSound9:public ChCpp::ClassPerts::Releaser
+typedef struct ChSubSound9:public ChCp::Releaser
 {
 
 	LPDIRECTSOUNDBUFFER8 sound;

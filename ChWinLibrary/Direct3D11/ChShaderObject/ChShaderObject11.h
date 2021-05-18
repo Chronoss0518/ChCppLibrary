@@ -3,7 +3,7 @@
 
 namespace ChD3D11
 {
-	class ShaderObject11:public ChCpp::ClassPerts::Initializer,public ChCpp::ClassPerts::Releaser
+	class ShaderObject11:public ChCp::Initializer,public ChCp::Releaser
 	{
 	public:
 

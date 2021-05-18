@@ -6,7 +6,7 @@ namespace ChSystem
 {
 	class SystemManager;
 
-	class BaseSystem : public ChCpp::ClassPerts::Initializer
+	class BaseSystem : public ChCp::Initializer
 	{
 
 	public:
@@ -70,7 +70,7 @@ namespace ChSystem
 
 	};
 
-	class SystemManager :public ChCpp::ClassPerts::Initializer,public ChCpp::ClassPerts::Releaser
+	class SystemManager :public ChCp::Initializer,public ChCp::Releaser
 	{
 	public:
 
