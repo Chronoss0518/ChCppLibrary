@@ -64,6 +64,7 @@ ChD3D9ライブラリやChD3D11ライブラリを呼ぶ際に同時に呼ばれる。
 
 - ChBaseライブラリとChCppライブラリを調整する。
 - ClassPertsをChCpライブラリとしてChCppからChBaseへ移行する。
+- ChTextObjectを改修
 - ChWinライブラリを大規模修正
 - ChD3D11の大規模修正
 - NetWork関連の機能の追加
