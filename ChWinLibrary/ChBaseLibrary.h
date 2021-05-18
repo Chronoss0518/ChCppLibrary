@@ -25,6 +25,7 @@
 //#include"CPP/ChHitTestObject/ChHitTestSphere.h"
 //#include"CPP/ChHitTestObject/ChHitTestMesh.h"
 //#include"CPP/ChCollider/ChCollider.h"
+#include"CPP/ChFile/ChFile.h"
 #include"CPP/ChModel/ChModel.h"
 #include"CPP/ChScript/ChScript.h"
 #include"CPP/ChBaseFrame/ChBaseFrame.h"
