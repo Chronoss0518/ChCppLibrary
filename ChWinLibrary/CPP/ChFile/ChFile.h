@@ -1,12 +1,29 @@
-#ifndef Ch_CPP_FIO_h
-#define Ch_CPP_FIO_h
+#ifndef Ch_CPP_File_h
+#define Ch_CPP_File_h
 
-namespace ChFIO
+namespace ChCpp
 {
-	class File
+	class File :public ClassPerts::Releaser
 	{
 
 	public:
+
+		const enum class OTEAddType :unsigned char
+		{
+			None, AfterFirst, All
+		};
+
+		///////////////////////////////////////////////////////////////////////////////////
+		//StaticFunction//
+
+		//専用エラーファイルを出力する//
+		static void OutToErrorText(
+			const std::string& _errorName
+			, const std::string& _errorDitails
+			, const OTEAddType _addFlg = OTEAddType::None);
+
+		///////////////////////////////////////////////////////////////////////////////////
+		//ConstructorDestructor//
 
 		inline File() {}
 
@@ -16,7 +33,9 @@ namespace ChFIO
 			FileOpen(_fileName);
 		}
 
-		inline ~File()
+		///////////////////////////////////////////////////////////////////////////////////////
+
+		inline void Release()override
 		{
 			FileClose();
 		}
@@ -24,24 +43,9 @@ namespace ChFIO
 		///////////////////////////////////////////////////////////////////////////////////////
 
 		//Fileを開く//
-		inline void FileOpen(
+		void FileOpen(
 			const std::string& _fileName
-			, unsigned int _openMode = std::ios::in | std::ios::out)
-		{
-			if (_fileName.length() <= 0)return;
-
-			if (_openMode & std::ios::in)
-			{
-
-				std::ofstream tmp;
-				tmp.open(_fileName, std::ios::app);
-				tmp.close();
-			}
-
-			flg = _openMode;
-			openFileName = _fileName;
-			stream.open(_fileName, flg);
-		}
+			, unsigned int _openMode = std::ios::in | std::ios::out);
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
@@ -55,24 +59,7 @@ namespace ChFIO
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//Fileから読み出す//
-		inline std::string FileRead()
-		{
-			std::string out = "";
-
-			if (!stream.is_open())return out;
-
-			std::stringstream tmpSS;
-
-			tmpSS << stream.rdbuf();
-
-			out = tmpSS.str();
-
-			stream.clear();
-			stream.seekp(std::ios::beg, static_cast<std::ios_base::seekdir>(0));
-
-			return out;
-
-		}
+		std::string FileRead();
 
 		///////////////////////////////////////////////////////////////////////////////////
 
@@ -132,50 +119,6 @@ namespace ChFIO
 
 	};
 
-	const enum class OTEAddType :unsigned char
-	{
-		None, AfterFirst, All
-	};
-
-	///////////////////////////////////////////////////////////////////////////////////
-
-	//専用エラーファイルを出力する//
-	inline static void OutToErrorText(
-		const std::string& _errorName
-		, const std::string& _errorDitails
-		, const OTEAddType _addFlg = OTEAddType::None)
-	{
-		File outFiles;
-		std::string outData = "";
-		std::string outFileName = "";
-		outFileName = _errorName + ".txt";
-		outFiles.FileOpen(outFileName);
-
-		if (_addFlg == OTEAddType::All)
-		{
-			outData = outFiles.FileRead();
-			outData = outData + "\n";
-		}
-
-		if (_addFlg == OTEAddType::AfterFirst)
-		{
-			static ChStd::Bool Flgs = false;
-			if (Flgs)
-			{
-				outData = outFiles.FileRead();
-				outData = outData + "\n";
-			}
-			Flgs = true;
-		}
-
-		outData = outData + _errorDitails;
-
-		outFiles.FileWrite(outData);
-
-		return;
-
-
-	}
 
 }
 
