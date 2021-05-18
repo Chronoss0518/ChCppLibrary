@@ -62,7 +62,7 @@ ChD3D9ライブラリやChD3D11ライブラリを呼ぶ際に同時に呼ばれる。
 
 # 予定(上から順に行う予定)
 
-- ChBaseライブラリとChCppライブラリを調整する。
+
 - ClassPertsをChCpライブラリとしてChCppからChBaseへ移行する。
 - ChTextObjectを改修
 - ChWinライブラリを大規模修正
@@ -73,6 +73,10 @@ ChD3D9ライブラリやChD3D11ライブラリを呼ぶ際に同時に呼ばれる。
 - BaseObjectの継承方法の変更
 - XWindowSystemのパック化ライブラリの追加
 - OpenGLのパック化ライブラリの追加
+
+# 更新(予定から移動したもの)
+
+- ChBaseライブラリとChCppライブラリを調整する。
 
 # 歴史
 

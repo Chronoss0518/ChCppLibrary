@@ -11,7 +11,7 @@ namespace ChCpp
 
 	
 
-	class ObjectManager:public ClassPerts::Releaser
+	class ObjectManager:public ChCp::Releaser
 	{
 	public:
 

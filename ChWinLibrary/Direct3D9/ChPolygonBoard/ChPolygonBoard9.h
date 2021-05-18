@@ -6,7 +6,7 @@ namespace ChTex
 	typedef class BaseTexture9 Texture9;
 
 	//板ポリゴン管理用クラス//
-	class PolygonBoard9:public ChCpp::ClassPerts::Initializer
+	class PolygonBoard9:public ChCp::Initializer
 	{
 	public:
 

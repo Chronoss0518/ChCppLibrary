@@ -6,7 +6,7 @@ namespace ChD3D
 	class XAudio2Manager;
 
 
-	class AudioObject :public ChCpp::ClassPerts::Initializer,public ChCpp::ClassPerts::Releaser
+	class AudioObject :public ChCp::Initializer,public ChCp::Releaser
 	{
 	public:
 
@@ -87,7 +87,7 @@ namespace ChD3D
 		std::vector<unsigned char> audioDataVector;
 	};
 
-	class XAudio2Manager:public ChCpp::ClassPerts::Initializer,public ChCpp::ClassPerts::Releaser
+	class XAudio2Manager:public ChCp::Initializer,public ChCp::Releaser
 	{
 	public:
 

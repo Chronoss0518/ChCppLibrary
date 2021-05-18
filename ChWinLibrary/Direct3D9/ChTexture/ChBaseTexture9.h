@@ -4,7 +4,7 @@
 namespace ChTex
 {
 
-	typedef class BaseTexture9:public ChCpp::ClassPerts::Releaser
+	typedef class BaseTexture9:public ChCp::Releaser
 	{
 	public:
 

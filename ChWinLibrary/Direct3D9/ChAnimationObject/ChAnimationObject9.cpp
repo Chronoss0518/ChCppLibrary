@@ -2,6 +2,7 @@
 #include<Windows.h>
 #include"../../BaseIncluder/ChBase.h"
 
+#include"../../CPP/ChFile/ChFile.h"
 #include"../../CPP/ChBitBool/ChBitBool.h"
 #include"../../BaseSystem/ChBaseSystem/ChBaseSystem.h"
 #include"../../BaseSystem/ChWindows/ChWindows.h"
@@ -143,7 +144,7 @@ void ChAnimationSupporter9::CreateFunction()
 
 		std::string Datas;
 		{
-			ChFIO::File File;
+			ChCpp::File File;
 			File.FileOpen(_FileName);
 			Datas = File.FileRead();
 			File.FileClose();
