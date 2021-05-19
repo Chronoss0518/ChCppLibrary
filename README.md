@@ -65,6 +65,8 @@ ChD3D9ライブラリやChD3D11ライブラリを呼ぶ際に同時に呼ばれる。
 - ChTextObjectを改修
 - ChWinライブラリを大規模修正
 - ChD3D11の大規模修正
+- HitTestObject関連の機能の追加
+- Collider関連の機能の追加
 - NetWork関連の機能の追加
 - Compresser(可逆圧縮)機能の追加
 - FBXモデルのロード機能の追加
