@@ -63,12 +63,12 @@ ChD3D9ライブラリやChD3D11ライブラリを呼ぶ際に同時に呼ばれる。
 # 予定(上から順に行う予定)
 
 - ChTextObjectを改修
-- ChD3D11の大規模修正
 - HitTestObject関連の機能の追加
 - Collider関連の機能の追加
 - NetWork関連の機能の追加
 - Compresser(可逆圧縮)機能の追加
 - FBXモデルのロード機能の追加
+- ChD3D11の大規模修正
 - ChWinライブラリを大規模修正※(作業量が大きいためペンディング)
 - BaseObjectの継承方法の変更
 - XWindowSystemのパック化ライブラリの追加
