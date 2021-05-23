@@ -11,12 +11,14 @@ namespace ChStr
 	template<typename T>
 	static inline void StrBinaryToNum(
 		T& _setData
-		, const std::string& _str
+		, const char* const _str
 		, const size_t& _sPos = 0)
 	{
 		_setData = 0;
 		for (unsigned char i = 0; i < sizeof(T); i++)
 		{
+			if (_str[_sPos + i] == '\0')break;
+
 			unsigned char Test = _str[_sPos + i];
 			if (Test <= 0)continue;
 			_setData += (T)(Test << 8 * ((sizeof(T) - 1) - i));
