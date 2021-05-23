@@ -79,7 +79,7 @@ namespace ChSystem
 		///////////////////////////////////////////////////////////////////////////////////s
 		//InitiarizeAndRelease//
 
-		//初期化を行う(戻り値は、マネージャーが扱うシステムのSharedPointer)//
+		//初期化を行う(戻り値は、マネージャーが扱うシステムのPointer)//
 		template<class C>
 		auto Init()
 			->typename std::enable_if
