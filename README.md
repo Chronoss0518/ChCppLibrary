@@ -62,10 +62,8 @@ ChD3D9ライブラリやChD3D11ライブラリを呼ぶ際に同時に呼ばれる。
 
 # 予定(上から順に行う予定)
 
-- ChCppライブラリのFileクラスの改修
 - FBXモデルのロード機能の追加
 - HitTestObject関連の機能の追加
-- QuickStarterの作成
 - Collider関連の機能の追加
 - NetWork関連の機能の追加
 - Compresser(可逆圧縮)機能の追加
