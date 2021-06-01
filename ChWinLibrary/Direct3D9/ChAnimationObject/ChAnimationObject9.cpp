@@ -144,9 +144,9 @@ void ChAnimationSupporter9::CreateFunction()
 
 		std::string Datas;
 		{
-			ChCpp::File File;
+			ChCpp::File<> File;
 			File.FileOpen(_FileName);
-			Datas = File.FileRead();
+			Datas = File.FileReadText();
 			File.FileClose();
 		}
 

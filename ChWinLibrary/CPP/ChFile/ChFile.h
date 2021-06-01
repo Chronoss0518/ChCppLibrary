@@ -3,6 +3,7 @@
 
 namespace ChCpp
 {
+	template<typename chara_set = char>
 	class File :public ChCp::Releaser
 	{
 
@@ -17,10 +18,40 @@ namespace ChCpp
 		//StaticFunction//
 
 		//専用エラーファイルを出力する//
-		static void OutToErrorText(
-			const std::string& _errorName
-			, const std::string& _errorDitails
-			, const OTEAddType _addFlg = OTEAddType::None);
+		static inline void OutToErrorText(
+			const std::basic_string<chara_set>& _errorName
+			, const std::basic_string<chara_set>& _errorDitails
+			, const OTEAddType _addFlg = OTEAddType::None)
+		{
+			File outFiles;
+			std::basic_string<chara_set> outData = "";
+			std::basic_string<chara_set> outFileName = "";
+			outFileName = _errorName + ".txt";
+			outFiles.FileOpen(outFileName);
+
+			if (_addFlg == OTEAddType::All)
+			{
+				outData = outFiles.FileReadText();
+				outData = outData + "\n";
+			}
+
+			if (_addFlg == OTEAddType::AfterFirst)
+			{
+				static ChStd::Bool Flgs = false;
+				if (Flgs)
+				{
+					outData = outFiles.FileReadText();
+					outData = outData + "\n";
+				}
+				Flgs = true;
+			}
+
+			outData = outData + _errorDitails;
+
+			outFiles.FileWriteText(outData);
+
+			return;
+		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//ConstructorDestructor//
@@ -28,12 +59,13 @@ namespace ChCpp
 		inline File() {}
 
 		inline File(
-			const std::string& _fileName)
+			const std::basic_string<chara_set>& _fileName)
 		{
 			FileOpen(_fileName);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////////
+		//InitAndRelease//
 
 		inline void Release()override
 		{
@@ -41,11 +73,49 @@ namespace ChCpp
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////////
+		//GetFunction//
+
+		inline unsigned long GetLength()
+		{
+			unsigned long out = 0;
+
+			if (!stream.is_open())return out;
+
+			std::basic_ifstream<chara_set>* istream = dynamic_cast<std::basic_ifstream<chara_set>*>(&stream);
+			istream->seekg(0,std::ios::end);
+
+			out = static_cast<unsigned long>(istream->tellg());
+
+			istream->seekg(0, std::ios::beg);
+
+			return out;
+			
+
+		}
+
+		///////////////////////////////////////////////////////////////////////////////////////
 
 		//Fileを開く//
-		void FileOpen(
-			const std::string& _fileName
-			, unsigned int _openMode = std::ios::in | std::ios::out);
+		inline void FileOpen(
+			const std::basic_string<chara_set>& _fileName
+			, unsigned int _openMode = std::ios::in | std::ios::out)
+
+		{
+			if (_fileName.length() <= 0)return;
+
+			if (_openMode & std::ios::in)
+			{
+
+				std::basic_ofstream<chara_set> tmp;
+				tmp.open(_fileName, std::ios::app);
+				tmp.close();
+			}
+
+			flg = _openMode;
+			openFileName = _fileName;
+			stream.open(_fileName, flg);
+		}
+
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
@@ -59,14 +129,52 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//Fileから読み出す//
-		std::string FileRead();
+		inline std::basic_string<chara_set> FileReadText()
+		{
+			std::basic_string<chara_set> out = "";
+
+			if (!stream.is_open())return out;
+
+			if ((flg & std::ios::binary))return out;
+
+			std::stringstream tmpSS;
+
+			tmpSS << stream.rdbuf();
+
+			out = tmpSS.str();
+
+			stream.clear();
+			stream.seekp(0, std::ios::beg);
+
+			return out;
+
+		}
+
+		//Fileから読み出す//
+		inline char* FileReadBinary()
+		{
+			char* out = nullptr;
+
+			if (!stream.is_open())return out;
+
+			if (!(flg & std::ios::binary))return out;
+
+			auto istream = dynamic_cast<std::basic_istream<chara_set>*>(&stream);
+
+			istream->read(out, GetLength() + 1);
+
+			istream->seekg(0, std::ios::beg);
+
+			return out;
+
+		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//Fileに書き込む//
 		template<class... _Types>
-		inline std::string FileWrite(
-			const std::string& _writeStr
+		inline std::basic_string<chara_set> FileWriteText(
+			const std::basic_string<chara_set>& _writeStr
 			, _Types&&... _args)
 		{
 
@@ -83,8 +191,10 @@ namespace ChCpp
 				stream.open(openFileName.c_str(),flg);
 			}
 
-			std::string tmpStr = _writeStr;
+			std::basic_string<chara_set> tmpStr = _writeStr;
 #ifdef _WIN32
+			::sscanf_s(&tmpStr[0], &tmpStr[0], _args...);
+#elif _WIN64
 			::sscanf_s(&tmpStr[0], &tmpStr[0], _args...);
 #else
 			std::sscanf(tmpStr.c_str(), tmpStr.c_str(), _Args...);
@@ -94,14 +204,38 @@ namespace ChCpp
 
 		}
 
+		//Fileに書き込む//
+		inline std::basic_string<chara_set> FileWriteBinary(
+			const std::basic_string<chara_set>& _writeStr)
+		{
+
+			if (!stream.is_open())return "";
+
+			if (flg & std::ios::binary)return "";
+
+			if (!(flg & std::ios::app))
+			{
+				stream.close();
+				stream.open(openFileName.c_str(), std::ios::out | std::ios::trunc);
+
+				stream.close();
+				stream.open(openFileName.c_str(), flg);
+			}
+
+			std::basic_string<chara_set> tmpStr = _writeStr;
+
+			return Writer(tmpStr);
+
+		}
+
 		///////////////////////////////////////////////////////////////////////////////////
 
 	private:
 
-		std::string Writer(const std::string& _str)
+		std::basic_string<chara_set> Writer(const std::basic_string<chara_set>& _str)
 		{
 
-			std::ofstream tmpStream;
+			std::basic_ofstream<chara_set> tmpStream;
 
 			tmpStream.set_rdbuf(stream.rdbuf());
 
@@ -113,12 +247,12 @@ namespace ChCpp
 	protected:
 
 		std::ios_base::openmode flg{ 0 };
-		std::string openFileName{ "" };
-		std::fstream stream;
+		std::basic_string<chara_set> openFileName{ "" };
+		std::basic_fstream<chara_set> stream;
 
 
 	};
-
+	template class File<char>;
 
 }
 
