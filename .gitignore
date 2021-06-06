@@ -1,4 +1,3 @@
-*.lib
 *.txt
 *.sln
 *.vcxproj
@@ -6,5 +5,4 @@
 *.vcxproj.user
 
 *.vs
-*.idb
 *.pdb
