@@ -9,8 +9,6 @@
 namespace ChCpp
 {
 
-	class TextObject;
-
 	namespace ModelLoader
 	{
 
@@ -30,20 +28,60 @@ namespace ChCpp
 			///////////////////////////////////////////////////////////////////////////////////////
 
 			unsigned long filePos = 0;
+			ChStd::Bool errorFlg = false;
+
+
+			struct BaseType
+			{
+
+			};
+
+			struct FBXFloatingByte4 :public BaseType
+			{
+				float value;
+			};
+
+			struct FBXFloatingByte8 :public BaseType
+			{
+				double value;
+			};
+
+			struct FBXIntegerByte2 :public BaseType
+			{
+				short value;
+			};
+
+			struct FBXIntegerByte4 :public BaseType
+			{
+				long value;
+			};
+
+			struct FBXIntegerByte8 :public BaseType
+			{
+				long value;
+			};
+
+			struct FBXIntegerByte1 :public BaseType
+			{
+				unsigned char value;
+			};
+
+			struct FBXString :public BaseType
+			{
+				std::string value;
+			};
+
+			struct FBXBinary :public BaseType
+			{
+				std::vector<char> value;
+			};
 
 			//Binarys//
 			struct SpecialDataRecode
 			{
-				unsigned long Length;
-				union
-				{
-					std::string string = "";
-					std::vector<char> binary;
+				unsigned long length = 0;
 
-				};
-
-				SpecialDataRecode(){}
-				~SpecialDataRecode();
+				ChPtr::Shared<BaseType> value = nullptr;
 
 			};
 
@@ -53,17 +91,8 @@ namespace ChCpp
 				unsigned long encoding = 0;
 				unsigned long conpressedLength = 0;
 
-				union
-				{
-					ChPtr::Shared<float> fData = nullptr;
-					ChPtr::Shared<long double> dData;
-					ChPtr::Shared<long long> lData;
-					ChPtr::Shared<long> iData;
-					ChPtr::Shared<unsigned char> bData;
-				};
+				std::vector<ChPtr::Shared<BaseType>> values;
 
-				ArrayListDataRecord(){}
-				~ArrayListDataRecord();
 			};
 
 			struct PropertyRecord
@@ -72,19 +101,14 @@ namespace ChCpp
 
 				union
 				{
-					ChPtr::Shared<short> YData = nullptr;
-					ChPtr::Shared<unsigned char> bData;
-					ChPtr::Shared<long> IData;
-					ChPtr::Shared<float> FData;
-					ChPtr::Shared<long double> DData;
-					ChPtr::Shared<long long> LData;
+					ChPtr::Shared<BaseType> value = nullptr;
 
 					ChPtr::Shared<ArrayListDataRecord> arrayData;
 					ChPtr::Shared<SpecialDataRecode> specialData;
 				};
 
 				PropertyRecord(){}
-				~PropertyRecord();
+				~PropertyRecord() {};
 			};
 
 			struct Node
@@ -109,17 +133,80 @@ namespace ChCpp
 
 			void LoadFBXBinary(const std::string& _filePath);
 
-			void BuildBinary(Node& _node, std::vector<char>& _binarys);
+			void BuildBinary(Node& _node,const std::vector<char>& _binarys);
 			
-			void CreatePropetyRecord(ChPtr::Shared<PropertyRecord>& _recode, std::vector<char>& _binarys);
+			void CreatePropetyRecord(PropertyRecord& _recode, const std::vector<char>& _binarys);
 
-			void CreateArrayRecord(ChPtr::Shared<ArrayListDataRecord>& _recode, std::vector<char>& _binarys);
-			void CreateBaseTypeRecord(ChPtr::Shared<PropertyRecord>& _recode, std::vector<char>& _binarys);
-			void CreateSpecialTypeRecord(ChPtr::Shared<SpecialDataRecode>& _recode, std::vector<char>& _binarys);
+			void CreateArrayRecord(ArrayListDataRecord& _recode, const std::vector<char>& _binarys,const char _type);
+
+			void CreateSpecialTypeRecord(SpecialDataRecode& _recode, const std::vector<char>& _binarys, const char _type);
 
 			void LoadFBXText(const std::string& _filePath);
 
 			void BuildObjects(Objects& _obj);
+
+			template<typename T = unsigned char,class FBXBaseType = FBXIntegerByte1>
+			void MakeBaseType(PropertyRecord& _recode,const std::vector<char>& _binarys,unsigned long& _filePos)
+			{
+				auto tmp = ChPtr::Make_S<FBXBaseType>();
+
+				tmp->value = ChStd::BinaryToNumWithLittleEndian<T>(_binarys, _filePos);
+
+				_filePos += sizeof(T);
+
+				_recode.value = tmp;
+
+			}
+
+			template<typename T = unsigned char, class FBXBaseType = FBXIntegerByte1>
+			void MakeArrayType(ArrayListDataRecord& _recode, const std::vector<char>& _binarys, unsigned long& _filePos)
+			{
+				if (_recode.encoding == 0)
+				{
+					for (unsigned long i = 0; i < _recode.arrayLen; i++)
+					{
+						auto tmp = ChPtr::Make_S<FBXBaseType>();
+
+						tmp->value = ChStd::BinaryToNumWithLittleEndian<T>(_binarys, filePos);
+
+						_recode.values.push_back(tmp);
+
+						filePos += sizeof(T);
+					}
+					return;
+
+				}
+
+
+
+
+			}
+
+			template<class FBXBaseType = FBXBinary>
+			ChPtr::Shared<BaseType> MakeSpecialType(unsigned long _len,const std::vector<char>& _binarys, unsigned long& _filePos)
+			{
+				auto tmp = ChPtr::Make_S<FBXBaseType>();
+
+				for (unsigned long i = 0; i < _len; i++)
+				{
+					tmp->value.push_back(_binarys[i + filePos]);
+				}
+				_filePos += _len;
+
+				return tmp;
+
+			}
+
+			ChStd::Bool IsNullRecode(const std::vector<char>& _binarys, unsigned long& _filePos)
+			{
+				for (unsigned char i = 0; i < 13; i++)
+				{
+					if (_binarys[(13 - i) + _filePos] != '\0')continue;
+					return false;
+				}
+				_filePos += 13;
+				return true;
+			}
 
 			const char prefix[21] = { (char)0x4b,(char)0x61,(char)0x79,(char)0x64,(char)0x61,(char)0x72,(char)0x61,(char)0x20,(char)0x46,(char)0x42,(char)0x58,(char)0x20,(char)0x42,(char)0x69,(char)0x6e,(char)0x61,(char)0x72,(char)0x79,(char)0x20,(char)0x20,(char)0x00 };
 
