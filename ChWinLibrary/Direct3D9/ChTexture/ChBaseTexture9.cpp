@@ -244,7 +244,15 @@ void PngTex9::OpenFile(const std::string& _fileName)
 
 	std::string tmpStr;
 
-	tmpStr = file.FileReadBinary();
+	{
+
+		std::vector<char> tmp;
+
+		file.FileReadBinary(tmp);
+
+		tmpStr = &tmp[0];
+
+	}
 
 	file.FileClose();
 
@@ -309,7 +317,18 @@ void JpegTex::OpenFile(const std::string& _fileName)
 	File.FileOpen(_fileName , std::ios::binary | std::ios::in | std::ios::out);
 
 	std::string tmpStr;
-	tmpStr = File.FileReadBinary();
+
+	{
+
+		std::vector<char> tmp;
+
+		tmp.resize(File.GetLength());
+
+		File.FileReadBinary(tmp);
+
+		tmpStr = &tmp[0];
+
+	}
 
 	File.FileClose();
 

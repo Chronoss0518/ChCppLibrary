@@ -81,7 +81,7 @@ namespace ChCpp
 
 			if (!stream.is_open())return out;
 
-			std::basic_ifstream<chara_set>* istream = dynamic_cast<std::basic_ifstream<chara_set>*>(&stream);
+			auto istream = dynamic_cast<std::basic_istream<chara_set>*>(&stream);
 			istream->seekg(0,std::ios::end);
 
 			out = static_cast<unsigned long>(istream->tellg());
@@ -151,21 +151,22 @@ namespace ChCpp
 		}
 
 		//File‚©‚ç“Ç‚İo‚·//
-		inline char* FileReadBinary()
+		inline void FileReadBinary(std::vector<char>& _binary)
 		{
-			char* out = nullptr;
 
-			if (!stream.is_open())return out;
+			if (!stream.is_open())return;
 
-			if (!(flg & std::ios::binary))return out;
+			if (!(flg & std::ios::binary))return;
+
+			_binary.resize(GetLength());
 
 			auto istream = dynamic_cast<std::basic_istream<chara_set>*>(&stream);
 
-			istream->read(out, GetLength() + 1);
+			istream->read(&_binary[0], GetLength());
 
 			istream->seekg(0, std::ios::beg);
 
-			return out;
+			return;
 
 		}
 

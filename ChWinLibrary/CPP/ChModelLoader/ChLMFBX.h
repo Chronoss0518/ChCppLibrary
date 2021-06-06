@@ -1,5 +1,5 @@
-#ifndef Ch_CPP_ObjMesh_h
-#define Ch_CPP_ObjMesh_h
+#ifndef Ch_CPP_FBXMesh_h
+#define Ch_CPP_FBXMesh_h
 
 #ifndef Ch_CPP_MLoader_h
 #include"ChModelLoader.h"
@@ -29,14 +29,7 @@ namespace ChCpp
 
 			///////////////////////////////////////////////////////////////////////////////////////
 
-			void LoadFBXBinary(const std::string& _filePath);
-
-			void LoadFBXText(const std::string& _filePath);
-
-
-			const char prefix[21] = { (char)0x4b,(char)0x61,(char)0x79,(char)0x64,(char)0x61,(char)0x72,(char)0x61,(char)0x20,(char)0x46,(char)0x42,(char)0x58,(char)0x20,(char)0x42,(char)0x69,(char)0x6e,(char)0x61,(char)0x72,(char)0x79,(char)0x20,(char)0x20,(char)0x00 };
-
-			ChStd::Bool binaryFlg = false;
+			unsigned long filePos = 0;
 
 			//Binarys//
 			struct SpecialDataRecode
@@ -44,10 +37,14 @@ namespace ChCpp
 				unsigned long Length;
 				union
 				{
-					char* binary = nullptr;
-					char* string;
+					std::string string = "";
+					std::vector<char> binary;
 
 				};
+
+				SpecialDataRecode(){}
+				~SpecialDataRecode();
+
 			};
 
 			struct ArrayListDataRecord
@@ -58,12 +55,15 @@ namespace ChCpp
 
 				union
 				{
-					float* fData = nullptr;
-					long double* dData;
-					long long* lData;
-					long* iData;
-					unsigned char* bData;
+					ChPtr::Shared<float> fData = nullptr;
+					ChPtr::Shared<long double> dData;
+					ChPtr::Shared<long long> lData;
+					ChPtr::Shared<long> iData;
+					ChPtr::Shared<unsigned char> bData;
 				};
+
+				ArrayListDataRecord(){}
+				~ArrayListDataRecord();
 			};
 
 			struct PropertyRecord
@@ -72,17 +72,19 @@ namespace ChCpp
 
 				union
 				{
-					short* YData = nullptr;
-					unsigned char* bData;
-					long* IData;
-					float* FData;
-					long double* DData;
-					long long* LData;
-					
-					ArrayListDataRecord* arrayData;
+					ChPtr::Shared<short> YData = nullptr;
+					ChPtr::Shared<unsigned char> bData;
+					ChPtr::Shared<long> IData;
+					ChPtr::Shared<float> FData;
+					ChPtr::Shared<long double> DData;
+					ChPtr::Shared<long long> LData;
 
-					SpecialDataRecode* specialData;
+					ChPtr::Shared<ArrayListDataRecord> arrayData;
+					ChPtr::Shared<SpecialDataRecode> specialData;
 				};
+
+				PropertyRecord(){}
+				~PropertyRecord();
 			};
 
 			struct Node
@@ -91,20 +93,37 @@ namespace ChCpp
 				unsigned long numProperty = 0;
 				unsigned long propertyListLen = 0;
 				unsigned char nameLen = 0;
-				char* name = nullptr;
-				PropertyRecord* propertys = nullptr;
-				Node* childNode = nullptr;
+				std::string name = "";
+				std::vector<ChPtr::Shared<PropertyRecord>> propertys;
+				std::vector<ChPtr::Shared<Node>> childNode;
 			};
 
 			//Texts//
 
 			struct Objects
 			{
-				char* propetyName = nullptr;
-				char* propertyValue = nullptr;
-				Objects* childObject = nullptr;
+				std::string propetyName = "";
+				std::string propertyValue = "";
+				std::vector<Objects*> childObject;
 			};
 
+			void LoadFBXBinary(const std::string& _filePath);
+
+			void BuildBinary(Node& _node, std::vector<char>& _binarys);
+			
+			void CreatePropetyRecord(ChPtr::Shared<PropertyRecord>& _recode, std::vector<char>& _binarys);
+
+			void CreateArrayRecord(ChPtr::Shared<ArrayListDataRecord>& _recode, std::vector<char>& _binarys);
+			void CreateBaseTypeRecord(ChPtr::Shared<PropertyRecord>& _recode, std::vector<char>& _binarys);
+			void CreateSpecialTypeRecord(ChPtr::Shared<SpecialDataRecode>& _recode, std::vector<char>& _binarys);
+
+			void LoadFBXText(const std::string& _filePath);
+
+			void BuildObjects(Objects& _obj);
+
+			const char prefix[21] = { (char)0x4b,(char)0x61,(char)0x79,(char)0x64,(char)0x61,(char)0x72,(char)0x61,(char)0x20,(char)0x46,(char)0x42,(char)0x58,(char)0x20,(char)0x42,(char)0x69,(char)0x6e,(char)0x61,(char)0x72,(char)0x79,(char)0x20,(char)0x20,(char)0x00 };
+
+			ChStd::Bool binaryFlg = false;
 
 		};
 

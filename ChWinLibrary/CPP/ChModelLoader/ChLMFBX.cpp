@@ -11,7 +11,9 @@ using namespace ChCpp::ModelLoader;
 
 void FBX::CreateModel(const std::string& _filePath)
 {
-	LoadFBXBinary(binarys);
+	LoadFBXBinary(_filePath);
+
+	LoadFBXText(_filePath);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -26,23 +28,23 @@ void FBX::OutModelFile(const std::string& _filePath)
 void FBX::LoadFBXBinary(const std::string& _filePath)
 {
 
-	char* binarys = nullptr;
+	std::vector<char> binarys;
 
 	{
 
 		ChCpp::File<> file;
 		file.FileOpen(_filePath, std::ios::in | std::ios::binary);
 
-		binarys = file.FileReadBinary();
+		file.FileReadBinary(binarys);
 
 		file.FileClose();
 	}
 
 	binaryFlg = true;
 
-	for (unsigned char i = 20; i >= 0; i--)
+	for (char i = 20; i >= 0; i--)
 	{
-		if (prefix[i] != binarys[i])continue;
+		if (prefix[i] == binarys[i])continue;
 		binaryFlg = false;
 		break;
 	}
@@ -51,6 +53,7 @@ void FBX::LoadFBXBinary(const std::string& _filePath)
 
 	Node root;
 
+	BuildBinary(root, binarys);
 
 }
 
@@ -75,5 +78,19 @@ void FBX::LoadFBXText(const std::string& _filePath)
 
 	Objects root;
 
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+void FBX::BuildBinary(Node& _node, std::vector<char>& _binarys)
+{
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+void FBX::BuildObjects(Objects& _obj)
+{
 
 }
