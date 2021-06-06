@@ -2,7 +2,6 @@
 
 #include"../ChFile/ChFile.h"
 
-#include"../ChTextObject/ChTextObject.h"
 #include"../ChModel/ChModelObject.h"
 
 #include"ChModelLoader.h"
