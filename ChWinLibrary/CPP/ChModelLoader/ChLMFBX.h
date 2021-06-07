@@ -178,8 +178,17 @@ namespace ChCpp
 				}
 
 
+				std::vector<char>encordingData;
+
+				for (unsigned long i = 0; i < _recode.conpressedLength; i++)
+				{
+					
+					encordingData.push_back(ChStd::BinaryToNumWithLittleEndian<char>(_binarys, filePos));
 
 
+				}
+
+				filePos += _recode.conpressedLength;
 			}
 
 			template<class FBXBaseType = FBXBinary>

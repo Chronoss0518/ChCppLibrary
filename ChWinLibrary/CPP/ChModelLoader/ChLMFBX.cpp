@@ -119,6 +119,8 @@ void FBX::BuildBinary(Node& _node, const std::vector<char>& _binarys)
 		_node.childNode.push_back(node);
 	}
 
+	filePos = _node.endOffset;
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
