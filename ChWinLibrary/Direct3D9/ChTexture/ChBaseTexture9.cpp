@@ -238,13 +238,21 @@ template void BaseTexture9::SetTexColor(const D3DCOLOR& _color);
 void PngTex9::OpenFile(const std::string& _fileName)
 {
 
-	ChCpp::File file;
+	ChCpp::File<> file;
 
 	file.FileOpen(_fileName, std::ios::binary | std::ios::in | std::ios::out);
 
 	std::string tmpStr;
 
-	tmpStr = file.FileRead();
+	{
+
+		std::vector<char> tmp;
+
+		file.FileReadBinary(tmp);
+
+		tmpStr = &tmp[0];
+
+	}
 
 	file.FileClose();
 
@@ -305,11 +313,22 @@ PngTex9::CIHDR PngTex9::SetChank(const std::string& _str)
 void JpegTex::OpenFile(const std::string& _fileName)
 {
 
-	ChCpp::File File;
+	ChCpp::File<> File;
 	File.FileOpen(_fileName , std::ios::binary | std::ios::in | std::ios::out);
 
 	std::string tmpStr;
-	tmpStr = File.FileRead();
+
+	{
+
+		std::vector<char> tmp;
+
+		tmp.resize(File.GetLength());
+
+		File.FileReadBinary(tmp);
+
+		tmpStr = &tmp[0];
+
+	}
 
 	File.FileClose();
 
