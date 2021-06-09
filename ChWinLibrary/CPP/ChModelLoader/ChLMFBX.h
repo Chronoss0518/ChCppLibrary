@@ -30,7 +30,6 @@ namespace ChCpp
 			unsigned long filePos = 0;
 			ChStd::Bool errorFlg = false;
 
-
 			struct BaseType
 			{
 
