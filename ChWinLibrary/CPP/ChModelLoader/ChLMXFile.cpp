@@ -2,7 +2,6 @@
 
 #include"../ChFile/ChFile.h"
 
-#include"../ChTextObject/ChTextObject.h"
 #include"../ChModel/ChModelObject.h"
 
 #include"ChModelLoader.h"
@@ -19,11 +18,11 @@ void ChCpp::ModelLoader::XFile::CreateModel(const std::string& _filePath)
 	std::string text;
 	{
 
-		ChCpp::File files;
+		ChCpp::File<> files;
 
 		files.FileOpen(_filePath);
 
-		text = files.FileRead();
+		text = files.FileReadText();
 
 		files.FileClose();
 
