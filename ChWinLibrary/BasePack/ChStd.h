@@ -35,15 +35,6 @@ namespace ChStd
 	const static unsigned int W_MAX_INT_BIT = 0x8000;
 #endif
 
-	//開始時に使用し、ランダムな値をセットする//
-	static inline void SetRand(const unsigned long _useNo) { srand(_useNo); }
-
-	//SetRand使用後rand関数から値を取り出す//
-	static inline unsigned short GetRand(const unsigned short _useNumCount)
-	{
-		return rand() % _useNumCount;
-	}
-
 	//EnumClassを基底型へキャストするためのクラス//
 	template<typename Enum>
 	static inline auto EnumCast(Enum _enum)->typename std::enable_if
@@ -75,6 +66,50 @@ namespace ChStd
 		{
 			*(static_cast<char*>(tmpCopy) + i) = *(static_cast<char*>(tmpBase) + i);
 		}
+	}
+
+	template<typename Type>
+	static inline Type BinaryToNumWithLittleEndian(const std::vector<char>& _binary, unsigned long _filePos = 0)
+	{
+
+		Type Num = 0;
+
+		if (_filePos + sizeof(Type) >= _binary.size())return Num;
+
+		void* tmp = &Num;
+
+		for (unsigned long i = 0; i < sizeof(Type); i++)
+		{
+			auto& test = reinterpret_cast<char*>(tmp)[i];
+
+			test = (_binary[i + _filePos]);
+		}
+
+		return Num;
+
+	}
+
+	template<typename Type>
+	static inline Type BinaryToNumWithBigEndian(const std::vector<char>& _binary, unsigned long _filePos = 0)
+	{
+
+		Type Num = 0;
+
+		if (_filePos + sizeof(Type) >= _binary.size())return Num;
+
+		void* tmp = &Num;
+
+		for (unsigned long i = sizeof(Type) - 1; i >= 0; i--)
+		{
+			auto& test = reinterpret_cast<char*>(tmp)[sizeof(Type) - i - 1];
+
+			test = (_binary[i + _filePos]);
+
+			if (i == 0)break;
+		}
+
+		return Num;
+
 	}
 
 }

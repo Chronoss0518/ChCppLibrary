@@ -155,7 +155,7 @@ namespace ChTex
 			, size_t& _fPos)
 		{
 			if (_fPos > _str.size())return;
-			ChStr::StrBinaryToNum(_setData, _str, _fPos);
+			ChStr::StrBinaryToNum(_setData, _str.c_str(), _fPos);
 			_fPos += sizeof(T);
 
 		}

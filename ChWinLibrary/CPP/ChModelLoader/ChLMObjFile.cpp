@@ -22,11 +22,11 @@ void ChCpp::ModelLoader::ObjFile::CreateModel(const std::string& _filePath)
 	{
 		std::string tmp;
 
-		ChCpp::File files;
+		ChCpp::File<> files;
 
 		files.FileOpen(_filePath);
 
-		tmp = files.FileRead();
+		tmp = files.FileReadText();
 
 		files.FileClose();
 
@@ -116,11 +116,11 @@ void ChCpp::ModelLoader::ObjFile::CreateMaterials(const std::string& _fileName)
 	{
 		std::string tmp;
 
-		ChCpp::File files;
+		ChCpp::File<> files;
 
 		files.FileOpen(folderPath + fileName);
 
-		tmp = files.FileRead();
+		tmp = files.FileReadText();
 
 		files.FileClose();
 
