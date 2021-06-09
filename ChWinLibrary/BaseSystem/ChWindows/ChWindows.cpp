@@ -13,38 +13,6 @@
 
 using namespace ChSystem;
 
-namespace ChWin
-{
-
-	static const std::map<int, std::string>windowsKeyName
-	{
-		{(int)'\0',"None" },{(int)'A',"A Key"},{(int)'B',"B Key"}
-		,{(int)'C',"C Key"},{(int)'D',"D Key"},{(int)'E',"E Key"}
-		,{(int)'F',"F Key"},{(int)'G',"G Key"},{(int)'H',"H Key"}
-		,{(int)'I',"I Key"},{(int)'J',"J Key"},{(int)'K',"K Key"}
-		,{(int)'L',"L Key"},{(int)'M',"M Key"},{(int)'N',"N Key"}
-		,{(int)'O',"O Key"},{(int)'P',"P Key"},{(int)'Q',"Q Key"}
-		,{(int)'R',"R Key"},{(int)'S',"S Key"},{(int)'T',"T Key"}
-		,{(int)'U',"U Key"},{(int)'V',"V Key"},{(int)'W',"W Key"}
-		,{(int)'X',"X Key"},{(int)'Y',"Y Key"},{(int)'Z',"Z Key"}
-		,{(int)'1',"1 Key"},{(int)'2',"2 Key"},{(int)'3',"3 Key"}
-		,{(int)'4',"4 Key"},{(int)'5',"5 Key"},{(int)'6',"6 Key"}
-		,{(int)'7',"7 Key"},{(int)'8',"8 Key"},{(int)'9',"9 Key"}
-		,{(int)'0',"0 Key"},{VK_SHIFT,"Shift Key"},{VK_SPACE,"Space Key"}
-		,{VK_ESCAPE,"Escape Key"},{VK_RETURN,"Enter Key"}
-		,{VK_UP,"Up Key"},{VK_DOWN,"Down Key"}
-		,{VK_LEFT,"Left Key"},{VK_RIGHT,"Right Key"}
-		,{VK_RBUTTON,"Mouse_R Button"}
-		,{VK_LBUTTON,"Mouse_L Button"}
-		,{VK_MBUTTON,"Mouse_Center Button"}
-	};
-
-	std::map<int, std::string> GetWindowsKeyName()
-	{
-		return windowsKeyName;
-	}
-}
-
 ChStd::Bool BaseWndProcs(
 	const HWND _hWnd
 	, const UINT _uMsg
