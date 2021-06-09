@@ -9,8 +9,6 @@
 namespace ChWin
 {
 
-	std::map<int, std::string> GetWindowsKeyName();
-
 	class WindObject;
 }
 
