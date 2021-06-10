@@ -3,8 +3,8 @@
 #include"../../BaseIncluder/ChBase.h"
 #include"../../BaseIncluder/ChD3D11I.h"
 
-#include<DirectXTex.h>
-#include<WICTextureLoader11.h>
+#include"../../External/ExternalLibrarys/DirectXTex/Include/DirectXTex.h"
+#include"../../External/ExternalLibrarys/DirectXTex/Include/WICTextureLoader11.h"
 
 #ifdef _DEBUG
 
