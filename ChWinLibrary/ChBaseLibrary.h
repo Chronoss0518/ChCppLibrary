@@ -36,7 +36,7 @@
 #include"CPP/ChModelLoader/ChLMXFile.h"
 #include"CPP/ChModelLoader/ChLMObjFile.h"
 
-#include"BaseSystem/ChBaseSystem/ChBaseSystem.h"
+#include"CPP/BaseSystem/ChBaseSystem/ChBaseSystem.h"
 
 
 #ifndef Ch_Library_Create
