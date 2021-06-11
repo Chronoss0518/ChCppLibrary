@@ -7,22 +7,18 @@ namespace ChCpp
 {
 	namespace Cmp
 	{
-		 class Rungless:public BaseComp
+		class Rungless :public BaseCompressor
 		{
 		public:
 
-			std::string Press(const std::string& _pressBase)override;
+			std::vector<char> Press(const std::vector<char>& _pressBase)override;
 
-			std::string Thaw(const std::string& _thawBase)override;
+			std::vector<char> Thaw(const std::vector<char>& _thawBase)override;
 
 		private:
 
-			
-
 		};
 
-
-		 using Rung = Rungless;
 	}
 }
 
