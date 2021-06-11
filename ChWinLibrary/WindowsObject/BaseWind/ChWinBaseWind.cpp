@@ -3,7 +3,7 @@
 #include"../../BaseIncluder/ChBase.h"
 #include"../SubWind/ChWinSubWind.h"
 #include"ChWinBaseWind.h"
-#include"../../BaseSystem/ChWindows/ChWindows.h"
+#include"../../CPP/BaseSystem/ChWindows/ChWindows.h"
 
 std::map<unsigned long, ChWin::WindObject*>ChWin::WindObject::objList;
 
