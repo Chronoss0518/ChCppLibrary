@@ -7,3 +7,6 @@
 [submodule "ChCppLibrary/External/ExternalLibrarys/ImGUI"]
 	path = ChCppLibrary/External/ExternalLibrarys/ImGUI
 	url = https://github.com/ocornut/imgui
+[submodule "ChCppLibrary/External/ExternalLibrarys/zlib"]
+	path = ChCppLibrary/External/ExternalLibrarys/zlib
+	url = https://github.com/madler/zlib
