@@ -1,0 +1,3 @@
+[submodule "ChCppLibrary/External/ExternalLibrarys/zlib"]
+	path = ChCppLibrary/External/ExternalLibrarys/zlib
+	url = https://github.com/madler/zlib
