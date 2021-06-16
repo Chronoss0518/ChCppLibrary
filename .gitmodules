@@ -4,3 +4,6 @@
 [submodule "ChCppLibrary/External/ExternalLibrarys/DirectXTex"]
 	path = ChCppLibrary/External/ExternalLibrarys/DirectXTex
 	url = https://github.com/microsoft/DirectXTex
+[submodule "ChCppLibrary/External/ExternalLibrarys/ImGUI"]
+	path = ChCppLibrary/External/ExternalLibrarys/ImGUI
+	url = https://github.com/ocornut/imgui
