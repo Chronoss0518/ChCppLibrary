@@ -1,12 +1,16 @@
 [submodule "ChCppLibrary/External/ExternalLibrarys/LegacyDirectX"]
 	path = ChCppLibrary/External/ExternalLibrarys/LegacyDirectX
 	url = https://github.com/Chronoss0518/DirectX-End-User-Runtime
+	ignore = dirty
 [submodule "ChCppLibrary/External/ExternalLibrarys/DirectXTex"]
 	path = ChCppLibrary/External/ExternalLibrarys/DirectXTex
 	url = https://github.com/microsoft/DirectXTex
+	ignore = dirty
 [submodule "ChCppLibrary/External/ExternalLibrarys/ImGUI"]
 	path = ChCppLibrary/External/ExternalLibrarys/ImGUI
 	url = https://github.com/ocornut/imgui
+	ignore = dirty
 [submodule "ChCppLibrary/External/ExternalLibrarys/zlib"]
 	path = ChCppLibrary/External/ExternalLibrarys/zlib
 	url = https://github.com/madler/zlib
+	ignore = dirty
