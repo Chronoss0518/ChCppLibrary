@@ -7,3 +7,6 @@
 [submodule "ChCppLibrary/External/zlib"]
 	path = ChCppLibrary/External/zlib
 	url = https://github.com/madler/zlib
+[submodule "ChCppLibrary/External/DirectXTex"]
+	path = ChCppLibrary/External/DirectXTex
+	url = https://github.com/microsoft/DirectXTex
