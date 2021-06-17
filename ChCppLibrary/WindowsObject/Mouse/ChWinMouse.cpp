@@ -2,7 +2,7 @@
 #include<Windows.h>
 #include"../../BaseIncluder/ChBase.h"
 #include"../../CPP/ChBitBool/ChBitBool.h"
-#include"../../CPP/BaseSystem/ChWindows/ChWindows.h"
+#include"../../BaseSystem/ChWindows/ChWindows.h"
 #include"ChWinMouse.h"
 
 ///////////////////////////////////////////////////////////////////////////////////
