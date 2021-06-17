@@ -1,11 +1,11 @@
 
-#include"../../ImGUILibrary/imgui.h"
-#include"../../ImGUILibrary/imconfig.h"
+#include"../../External/imgui/imgui.h"
+#include"../../External/imgui/imconfig.h"
 
 #include"../../BaseIncluder/ChBase.h"
 #include"../../CPP/ChBitBool/ChBitBool.h"
 
-#include"ChImBaseWind.h"
+#include"ChImGUIBaseWind.h"
 
 
 ChStd::Bool ChImGui::BaseWind::BaseInitFlgment = false;

@@ -33,7 +33,7 @@ LRESULT ImGui_ImplWin32_WndProcHandler(
 namespace ChImGui
 {
 
-	class BaseWind : public ChCpp::ClassPerts::Initializer
+	class BaseWind : public ChCp::Initializer
 	{
 	public:
 
@@ -529,7 +529,7 @@ namespace ChImGui
 			, const std::string& _Label);
 
 		inline void EditColor(
-			ChMath::ChVector4Base<float> _Vec
+			ChMath::Vector4Base<float> _Vec
 			, const std::string& _Label
 			, const float _Min = 0.0f
 			, const float _Max = 0.0f)
@@ -548,7 +548,7 @@ namespace ChImGui
 		}
 
 		inline void EditColor(
-			ChMath::ChVector4Base<float>& _Col
+			ChMath::Vector4Base<float>& _Col
 			, const std::string& _Label)
 		{
 			if (!IsBaseInit())return;
@@ -565,13 +565,13 @@ namespace ChImGui
 		}
 
 		inline void EditColor(
-			ChMath::ChVector4Base<char>& _Col
+			ChMath::Vector4Base<char>& _Col
 			, const std::string& _Label)
 		{
 			if (!IsBaseInit())return;
 			if (!GetFlgManager().IsWindOpen())return;
 
-			ChMath::ChVector4Base<float> TmpCol;
+			ChMath::Vector4Base<float> TmpCol;
 			_Col.val.Mul(255);
 
 			TmpCol.val.Set(_Col.val);
@@ -637,7 +637,7 @@ namespace ChImGui
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//全体フラグ管理クラス//
-		class ImGuiFlagBase :public ChCpp::ClassPerts::Initializer
+		class ImGuiFlagBase :public ChCp::Initializer
 		{
 		public:
 
