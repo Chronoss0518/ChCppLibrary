@@ -1,15 +1,14 @@
 
 #include<windows.h>
 
-#include"../../../BaseIncluder/ChBase.h"
+#include"../../BaseIncluder/ChBase.h"
 
-#include"../../ChBitBool/ChBitBool.h"
+#include"../../CPP/ChBitBool/ChBitBool.h"
 
-#include"../../ChBitBool/ChBitBool.h"
 #include"../ChBaseSystem/ChBaseSystem.h"
 #include"ChWindows.h"
-#include"../../../WindowsObject/BaseWind/ChWinBaseWind.h"
-#include"../../../WindowsObject/Mouse/ChWinMouse.h"
+#include"../../WindowsObject/BaseWind/ChWinBaseWind.h"
+#include"../../WindowsObject/Mouse/ChWinMouse.h"
 
 using namespace ChSystem;
 
