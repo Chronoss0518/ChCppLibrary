@@ -4,7 +4,7 @@
 #define Ch_Game_Windows_h
 
 #include"../ChBaseSystem/ChBaseSystem.h"
-#include"../../../WindowsObject/BaseWind/ChWinBaseWind.h"
+#include"../../WindowsObject/BaseWind/ChWinBaseWind.h"
 
 namespace ChWin
 {

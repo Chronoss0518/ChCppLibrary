@@ -1,12 +1,12 @@
-[submodule "ChCppLibrary/External/ExternalLibrarys/zlib"]
-	path = ChCppLibrary/External/ExternalLibrarys/zlib
-	url = https://github.com/madler/zlib
-[submodule "ChCppLibrary/External/ExternalLibrarys/imgui"]
-	path = ChCppLibrary/External/ExternalLibrarys/imgui
-	url = https://github.com/ocornut/imgui
-[submodule "ChCppLibrary/External/ExternalLibrarys/LegacyDirectX"]
-	path = ChCppLibrary/External/ExternalLibrarys/LegacyDirectX
+[submodule "ChCppLibrary/External/LegacyDirectX"]
+	path = ChCppLibrary/External/LegacyDirectX
 	url = https://github.com/Chronoss0518/DirectX-End-User-Runtime
-[submodule "ChCppLibrary/External/ExternalLibrarys/DirectXTex"]
-	path = ChCppLibrary/External/ExternalLibrarys/DirectXTex
+[submodule "ChCppLibrary/External/imgui"]
+	path = ChCppLibrary/External/imgui
+	url = https://github.com/ocornut/imgui
+[submodule "ChCppLibrary/External/zlib"]
+	path = ChCppLibrary/External/zlib
+	url = https://github.com/madler/zlib
+[submodule "ChCppLibrary/External/DirectXTex"]
+	path = ChCppLibrary/External/DirectXTex
 	url = https://github.com/microsoft/DirectXTex
