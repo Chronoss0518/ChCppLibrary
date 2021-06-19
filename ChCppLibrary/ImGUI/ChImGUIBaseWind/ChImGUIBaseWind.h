@@ -1,24 +1,12 @@
 #ifndef Ch_ImGui_BaWind_h
 #define Ch_ImGui_BaWind_h
 
-#include"../../BaseIncluder/ChBase.h"
+#ifndef IMGUI_VERSION
 
-#ifdef _WINDOWS_
-
-#include"../../ImGUILibrary/imgui_impl_win32.h"
-
-#ifdef _D3D9_H_
-
-#include"../../ImGUILibrary/imgui_impl_dx9.h"
-#endif //D3D9//
-
-#ifdef __d3d11_h__
-#include"../../ImGUILibrary/imgui_impl_dx11.h"
-
-#endif //D3D11//
+#include"../../External/imgui/imgui.h"
+#include"../../External/imgui/imconfig.h"
 
 #endif
-
 
 #ifdef _WINDOWS_
 
@@ -29,6 +17,18 @@ LRESULT ImGui_ImplWin32_WndProcHandler(
 	, LPARAM lParam);
 
 #endif
+
+bool ImGui_ImplWin32_Init(void*);
+void ImGui_ImplWin32_Shutdown();
+void ImGui_ImplWin32_NewFrame();
+bool ImGui_ImplDX9_Init(IDirect3DDevice9*);
+void ImGui_ImplDX9_Shutdown();
+void ImGui_ImplDX9_NewFrame();
+void ImGui_ImplDX9_RenderDrawData(ImDrawData*);
+bool ImGui_ImplDX11_Init(ID3D11Device*, ID3D11DeviceContext*);
+void ImGui_ImplDX11_Shutdown();
+void ImGui_ImplDX11_NewFrame();
+void ImGui_ImplDX11_RenderDrawData(ImDrawData*);
 
 namespace ChImGui
 {
@@ -88,7 +88,8 @@ namespace ChImGui
 			ImGui_ImplDX9_Init(_lpDevice);
 
 			GetFlgManager().D3D9Release = []()
-			{ImGui_ImplDX9_Shutdown();
+			{
+				ImGui_ImplDX9_Shutdown();
 			};
 
 			GetFlgManager().D3D9DrawSetting = []()
