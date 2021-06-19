@@ -3,17 +3,18 @@
 
 #include"../../BaseIncluder/ChBase.h"
 
+
 #ifdef _WINDOWS_
 
-#include"../../ImGUILibrary/imgui_impl_win32.h"
+#include"../../External/imgui/backends/imgui_impl_win32.h"
 
 #ifdef _D3D9_H_
 
-#include"../../ImGUILibrary/imgui_impl_dx9.h"
+#include"../../External/imgui/backends/imgui_impl_dx9.h"
 #endif //D3D9//
 
 #ifdef __d3d11_h__
-#include"../../ImGUILibrary/imgui_impl_dx11.h"
+#include"../../External/imgui/backends/imgui_impl_dx11.h"
 
 #endif //D3D11//
 
