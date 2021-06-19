@@ -42,6 +42,16 @@ ChD3D9ライブラリやChD3D11ライブラリを呼ぶ際に同時に呼ばれる。
 3D環境でOSや3DLibraryに依存しないWindowを表示させるライブラリをパック化したライブラリ。
 ※現在更新予定なし
 
+# ExternulLibrary
+このライブラリで使用する外部のライブラリを含みます。<br>
+外部ライブラリは以下の通りです。
+
+- MIT license | DirectX | Microsoft | [DownloadSite「https://www.microsoft.com/ja-JP/download/details.aspx?id=6812」](https://www.microsoft.com/ja-JP/download/details.aspx?id=6812)
+- MIT license | DirectXTex | Microsoft | [GitHub「https://github.com/microsoft/DirectXTex」](https://github.com/microsoft/DirectXTex)
+- zlib license | zlib | Jean-loup Gailly And Mark Adler | [GitHub「https://github.com/madler/zlib」](https://github.com/madler/zlib) And [HomePage「https://zlib.net/」](https://zlib.net/)
+- MIT license | imgui | ocornut | [GitHub「https://github.com/ocornut/imgui」](https://github.com/ocornut/imgui)
+
+
 # 使用方法
 
 以下にそれぞれの使い方を記述していく。
@@ -60,10 +70,11 @@ ChD3D9ライブラリやChD3D11ライブラリを呼ぶ際に同時に呼ばれる。
 
 [ChImGuiライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/ImGUIAPI)
 
+[ExternulLibrary](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/Externul)
+
 # 予定(上から順に行う予定)
 
-- 外部ライブラリを容易に追加することができる機能を追加
-- FBXモデルのロード機能の追加(※上記の内容必須)
+- FBXモデルのロード機能の追加
 - HitTestObject関連の機能の追加
 - Collider関連の機能の追加
 - NetWork関連の機能の追加
@@ -79,6 +90,7 @@ ChD3D9ライブラリやChD3D11ライブラリを呼ぶ際に同時に呼ばれる。
 
 - ChBaseライブラリとChCppライブラリを調整する。
 - ClassPertsをChCpライブラリとしてChCppからChBaseへ移行する。
+- 外部ライブラリを容易に追加することができる機能を追加
 
 # このライブラリのコンセプト
 

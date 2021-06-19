@@ -1,7 +1,7 @@
 
-#include"../../../BaseIncluder/ChBase.h"
+#include"../../BaseIncluder/ChBase.h"
 
-#include"../../ChBitBool/ChBitBool.h"
+#include"../../CPP/ChBitBool/ChBitBool.h"
 
 #include"ChBaseSystem.h"
 
