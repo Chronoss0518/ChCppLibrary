@@ -70,7 +70,7 @@ ChD3D9ライブラリやChD3D11ライブラリを呼ぶ際に同時に呼ばれる。
 
 [ChImGuiライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/ImGUIAPI)
 
-[ExternulLibrary](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/Externul)
+[ExternulLibrary(https://github.com/Chronoss0518/ChCppLibrary/tree/master/ChCppLibrary/External)
 
 # 予定(上から順に行う予定)
 
