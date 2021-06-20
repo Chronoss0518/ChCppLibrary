@@ -1,3 +1,6 @@
+# ライセンス
+This software is released under the MIT License, see LICENSE.txt.
+
 # ゲーム開発用ライブラリ
 
 このライブラリは基本的にゲーム開発を補助するためのライブラリです。<br>
