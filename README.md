@@ -43,10 +43,10 @@ ChD3D9ライブラリやChD3D11ライブラリを呼ぶ際に同時に呼ばれる。
 
 ##### ChImGui
 3D環境でOSや3DLibraryに依存しないWindowを表示させるライブラリをパック化したライブラリ。
-※現在更新予定なし
+※現在更新予定なし。
 
-# ExternulLibrary
-このライブラリで使用する外部のライブラリを含みます。<br>
+# ExternalLibrary
+このライブラリで使用する外部のライブラリです。<br>
 外部ライブラリは以下の通りです。
 
 - OSS license | DirectX | Microsoft | [DownloadSite「https://www.microsoft.com/ja-JP/download/details.aspx?id=6812」](https://www.microsoft.com/ja-JP/download/details.aspx?id=6812)
@@ -73,7 +73,7 @@ ChD3D9ライブラリやChD3D11ライブラリを呼ぶ際に同時に呼ばれる。
 
 [ChImGuiライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/ImGUIAPI)
 
-[ExternulLibrary(https://github.com/Chronoss0518/ChCppLibrary/tree/master/ChCppLibrary/External)
+[ExternalLibrary(https://github.com/Chronoss0518/ChCppLibrary/tree/master/ChCppLibrary/External)
 
 # 予定(上から順に行う予定)
 
