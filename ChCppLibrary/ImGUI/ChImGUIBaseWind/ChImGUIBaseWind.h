@@ -42,6 +42,14 @@ LRESULT ImGui_ImplWin32_WndProcHandler(
 	, WPARAM wParam
 	, LPARAM lParam);
 
+#else
+
+struct HWND;
+
+struct IDirect3DDevice9;
+struct ID3D11Device;
+struct ID3D11DeviceContext;
+
 #endif
 
 bool ImGui_ImplWin32_Init(void*);
