@@ -1,23 +1,20 @@
 
-#include<Windows.h>
-#include<d3d9.h>
-#include<d3d11.h>
 
 #ifdef _WINDOWS_
 
-#include"../../External/imgui/backends/imgui_impl_win32.h"
-
 #ifdef _D3D9_H_
 
-#include"../../External/imgui/backends/imgui_impl_dx9.h"
 #endif //D3D9//
 
 #ifdef __d3d11_h__
-#include"../../External/imgui/backends/imgui_impl_dx11.h"
 
 #endif //D3D11//
 
 #endif
+
+#include"../../External/imgui/backends/imgui_impl_win32.h"
+#include"../../External/imgui/backends/imgui_impl_dx9.h"
+#include"../../External/imgui/backends/imgui_impl_dx11.h"
 
 #include"../../BaseIncluder/ChBase.h"
 
