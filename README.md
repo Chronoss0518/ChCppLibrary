@@ -75,13 +75,13 @@ ChD3D9ライブラリやChD3D11ライブラリを呼ぶ際に同時に呼ばれる。
 
 [ExternalLibrary(https://github.com/Chronoss0518/ChCppLibrary/tree/master/ChCppLibrary/External)
 
-# 予定(上から順に行う予定)
+# 予定(優先度の高い順)
 
-- JsonObjectクラスの作成(急遽Web関連で必要になったため)
 - Compresser(可逆圧縮)機能の追加(Deflate32,Deflate64を主に作成)
 - FBXモデルのロード機能の追加
 - HitTestObject関連の機能の追加
 - Collider関連の機能の追加
+- JsonObjectクラスの作成(Web関連で必要になったため)
 - NetWork関連の機能の追加
 - ChTextObjectを改修
 - ChD3D11の大規模修正
