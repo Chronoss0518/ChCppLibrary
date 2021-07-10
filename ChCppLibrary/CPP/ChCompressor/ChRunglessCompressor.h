@@ -17,6 +17,8 @@ namespace ChCpp
 
 		private:
 
+
+
 		};
 
 	}
