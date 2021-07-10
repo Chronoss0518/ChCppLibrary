@@ -77,6 +77,7 @@ ChD3D9ライブラリやChD3D11ライブラリを呼ぶ際に同時に呼ばれる。
 
 # 予定(上から順に行う予定)
 
+- JsonObjectクラスの作成(急遽Web関連で必要になったため)
 - Compresser(可逆圧縮)機能の追加(Deflate32,Deflate64を主に作成)
 - FBXモデルのロード機能の追加
 - HitTestObject関連の機能の追加
