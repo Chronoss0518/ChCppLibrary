@@ -75,8 +75,10 @@ ChD3D9ライブラリやChD3D11ライブラリを呼ぶ際に同時に呼ばれる。
 
 [ExternalLibrary(https://github.com/Chronoss0518/ChCppLibrary/tree/master/ChCppLibrary/External)
 
-# 予定(優先度の高い順)
+# 予定
 
+- ChWinライブラリを大規模修正※(作業量が大きいためペンディング)
+- TextObjectを修正(動作が少し重いため)
 - Compresser(可逆圧縮)機能の追加(Deflate32,Deflate64を主に作成)
 - FBXモデルのロード機能の追加
 - HitTestObject関連の機能の追加
@@ -85,10 +87,12 @@ ChD3D9ライブラリやChD3D11ライブラリを呼ぶ際に同時に呼ばれる。
 - NetWork関連の機能の追加
 - ChTextObjectを改修
 - ChD3D11の大規模修正
-- ChWinライブラリを大規模修正※(作業量が大きいためペンディング)
 - BaseObjectの継承方法の変更
 - XWindowSystemのパック化ライブラリの追加
 - OpenGLのパック化ライブラリの追加
+- Vulkanのパック化ライブラリの追加
+- CentOSで利用可能にする
+
 
 # 更新(予定から移動したもの)
 
@@ -98,7 +102,7 @@ ChD3D9ライブラリやChD3D11ライブラリを呼ぶ際に同時に呼ばれる。
 
 # このライブラリのコンセプト
 
-- できる限り他のライブラリを使わずに独立させたい
+- できる限り他のライブラリを使わずに独立させたい(標準ライブラリを含む)
 - 様々なソフト開発を容易にしたい
 - あれば便利というものをまとめておきたい
 - プラットフォーム関係なく開発できるようにしたい
