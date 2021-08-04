@@ -117,6 +117,14 @@ namespace ChStd
 
 	}
 
+	template<typename Type>
+	static inline std::map<Type,unsigned long> CreateHuffmanTree(const std::vector<Type>& _binary)
+	{
+		std::map<Type, unsigned long>out;
+
+		return out;
+	}
+
 }
 
 #endif

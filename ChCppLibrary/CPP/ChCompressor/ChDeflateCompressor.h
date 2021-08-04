@@ -1,5 +1,5 @@
-#ifndef Ch_CPP_Cmp_Dic_h
-#define Ch_CPP_Cmp_Dic_h
+#ifndef Ch_CPP_Cmp_Def_h
+#define Ch_CPP_Cmp_Def_h
 
 #include"ChBaseCompressor.h"
 
@@ -9,11 +9,10 @@ namespace ChCpp
 
 	namespace Cmp
 	{
-		class Huffman :public BaseCompressor
+
+		class Deflate :public BaseCompressor
 		{
 		public:
-
-
 
 			std::vector<char> Press(const std::vector<char>& _pressBase)override;
 
@@ -21,10 +20,9 @@ namespace ChCpp
 
 		private:
 
-			void CreateHuffmanTree(std::map<char, ChPtr::Shared<BitBool>>& _tree,const std::vector<char>& _pressBase);
+
 
 		};
-
 	}
 }
 

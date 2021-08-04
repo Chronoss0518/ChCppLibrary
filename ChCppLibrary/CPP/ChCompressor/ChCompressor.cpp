@@ -3,7 +3,7 @@
 #include"../ChBitBool/ChBitBool.h"
 
 #include"ChBaseCompressor.h"
-#include"ChHuffmanCompressor.h"
+#include"ChDeflateCompressor.h"
 #include"ChRunglessCompressor.h"
 
 using namespace ChCpp;
@@ -13,15 +13,13 @@ using namespace Cmp;
 //DictionaryCompressorメソッド
 ///////////////////////////////////////////////////////////////////////////////////
 
-std::vector<char> Huffman::Press(const std::vector<char>& _pressBase)
+std::vector<char> Deflate::Press(const std::vector<char>& _pressBase)
 {
 	if (_pressBase.size() <= 0)return _pressBase;
 
 	std::map<char, ChPtr::Shared<BitBool>> tree;
 
 	std::vector<char> out;
-
-	CreateHuffmanTree(tree,_pressBase);
 
 	for (unsigned long i = 0; i < _pressBase.size(); i++)
 	{
@@ -33,7 +31,7 @@ std::vector<char> Huffman::Press(const std::vector<char>& _pressBase)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-std::vector<char> Huffman::Thaw(const std::vector<char>& _thawBase)
+std::vector<char> Deflate::Thaw(const std::vector<char>& _thawBase)
 {
 	if (_thawBase.size() <= 0)return _thawBase;
 
@@ -47,22 +45,6 @@ std::vector<char> Huffman::Thaw(const std::vector<char>& _thawBase)
 	return out;
 }
 
-
-void Huffman::CreateHuffmanTree(std::map<char, ChPtr::Shared<BitBool>>& _tree, const std::vector<char>& _pressBase)
-{
-	char test = 0;
-	std::map<char, unsigned long> testTree;
-	for (unsigned long i = 0; i < _pressBase.size(); i++)
-	{
-		test = _pressBase[i];
-		if (testTree.find(test) == testTree.end())testTree[test] = 0;
-		testTree[test] += 1;
-	}
-
-
-
-
-}
 
 ///////////////////////////////////////////////////////////////////////////////////
 //RunglessCompressorメソッド
