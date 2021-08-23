@@ -1,5 +1,5 @@
-#ifndef Ch_CPP_Cmp_Def_h
-#define Ch_CPP_Cmp_Def_h
+#ifndef Ch_CPP_Cmp_Huf_h
+#define Ch_CPP_Cmp_Huf_h
 
 #include"ChBaseCompressor.h"
 
@@ -10,7 +10,7 @@ namespace ChCpp
 	namespace Cmp
 	{
 
-		class Deflate :public BaseCompressor
+		class HuffmanTree :public BaseCompressor
 		{
 		public:
 

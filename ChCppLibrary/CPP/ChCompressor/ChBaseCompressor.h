@@ -12,12 +12,12 @@ namespace ChCpp
 			///////////////////////////////////////////////////////////////////////////////////
 			
 			//à≥èkä÷êî//
-			virtual std::vector<char> Press(const std::vector<char>& _pressBase) = 0;
+			virtual std::vector<unsigned char> Press(const std::vector<unsigned char>& _pressBase) = 0;
 
 			///////////////////////////////////////////////////////////////////////////////////
 
 			//âìÄä÷êî//
-			virtual std::vector<char> Thaw(const std::vector<char>& _thawBase) = 0;
+			virtual std::vector<unsigned char> Thaw(const std::vector<unsigned char>& _thawBase) = 0;
 
 			///////////////////////////////////////////////////////////////////////////////////
 

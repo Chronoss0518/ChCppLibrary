@@ -11,9 +11,9 @@ namespace ChCpp
 		{
 		public:
 
-			std::vector<char> Press(const std::vector<char>& _pressBase)override;
+			std::vector<unsigned char> Press(const std::vector<unsigned char>& _pressBase)override;
 
-			std::vector<char> Thaw(const std::vector<char>& _thawBase)override;
+			std::vector<unsigned char> Thaw(const std::vector<unsigned char>& _thawBase)override;
 
 		private:
 
