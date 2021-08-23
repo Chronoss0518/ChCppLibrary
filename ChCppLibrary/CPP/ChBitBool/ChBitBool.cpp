@@ -36,9 +36,6 @@ void BitBool::SetBitFalse(const unsigned char _argsNum)
 	if (!GetBitFlg(_argsNum))return;
 
 	flgs[_argsNum / 8]-= GetFlgNum(_argsNum);
-
-
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////

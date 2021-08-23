@@ -1,131 +1,132 @@
-# ���C�Z���X
+# ライセンス
 This software is released under the MIT License, see LICENSE.txt.
 
-# �Q�[���J���p���C�u����
+# ゲーム開発用ライブラリ
 
-���̃��C�u�����͊�{�I�ɃQ�[���J����⏕���邽�߂̃��C�u�����ł��B<br>
-�����I�ɍs���Ă��邱�Ƃ�DirectX��OpenGL(������)�Ȃǂ̋@�\���p�b�N�������`�ɂȂ�܂��B
+このライブラリは基本的にゲーム開発を補助するためのライブラリです。<br>
+内部的に行われていることはDirectXやOpenGL(未実装)などの機能をパック化した形になります。
 
-# �g�p��
+# 使用環境
 
-##### ���ݓ���m�F�ςݎg�p����
+##### 現在動作確認済み使用言語
 
 - c++14
 
-##### ���ݓ���m�F�ς�OS
+##### 現在動作確認済みOS
 
 - Windows10
 
-# ���e
+# 内容
 
-���C�u�����͑傫��������7���݂��܂��B
+ライブラリは大きく分けて7つ存在します。
 
 ##### ChBase
-Ch���C�u�����̍�����S���@�\���܂Ƃ߂����C�u����<br>
+Chライブラリの根幹を担う機能をまとめたライブラリ<br>
 
 ##### ChCpp
-C++�̋@�\�݂̂ŗ��p���邱�Ƃ��\�ȃ��C�u����<br>
-���̃v���b�g�t�H�[���֎����čs���A�R���p�C�����ė��p���邱�Ƃ��ł���B<br>
+C++の機能のみで利用することが可能なライブラリ<br>
+他のプラットフォームへ持って行き、コンパイルして利用することができる。<br>
 
 ##### ChWin
-WinAPI���ŗ��p����ۂɕ֗��ȋ@�\���܂Ƃ߂����C�u����<br>
+WinAPIをで利用する際に便利な機能をまとめたライブラリ<br>
 
 ##### ChD3D9
-Direct3D9�𗘗p����ۂɕ֗��ȋ@�\���܂Ƃ߂����C�u����<br>
-�����ݍX�V�\��Ȃ�(�݊������������Ă������ߍX�V�͂���)
+Direct3D9を利用する際に便利な機能をまとめたライブラリ<br>
+※現在更新予定なし(互換性を持たせておくため更新はあり)
 
 ##### ChD3D11
-Direct3D11�𗘗p����ۂɕ֗��ȋ@�\���܂Ƃ߂����C�u����
+Direct3D11を利用する際に便利な機能をまとめたライブラリ
 
 ##### ChD3D
-Direct3D�̋@�\�ł͂�����̂�Direct3D��Device�Ɉˑ����邱�ƂȂ����p���邱�Ƃ��ł���Ɨ��������C�u�����B<br>
-ChD3D9���C�u������ChD3D11���C�u�������Ăԍۂɓ����ɌĂ΂��B
+Direct3Dの機能ではあるもののDirect3DのDeviceに依存することなく利用することができる独立したライブラリ。<br>
+ChD3D9ライブラリやChD3D11ライブラリを呼ぶ際に同時に呼ばれる。
 
 ##### ChImGui
-3D����OS��3DLibrary�Ɉˑ����Ȃ�Window��\�������郉�C�u�������p�b�N���������C�u�����B
-�����ݍX�V�\��Ȃ��B
+3D環境でOSや3DLibraryに依存しないWindowを表示させるライブラリをパック化したライブラリ。
+※現在更新予定なし。
 
 # ExternalLibrary
-���̃��C�u�����Ŏg�p����O���̃��C�u�����ł��B<br>
-�O�����C�u�����͈ȉ��̒ʂ�ł��B
+このライブラリで使用する外部のライブラリです。<br>
+外部ライブラリは以下の通りです。
 
-- OSS license | DirectX | Microsoft | [DownloadSite�uhttps://www.microsoft.com/ja-JP/download/details.aspx?id=6812�v](https://www.microsoft.com/ja-JP/download/details.aspx?id=6812)
-- MIT license | DirectXTex | Microsoft | [GitHub�uhttps://github.com/microsoft/DirectXTex�v](https://github.com/microsoft/DirectXTex)
-- zlib license | zlib | Jean-loup Gailly And Mark Adler | [GitHub�uhttps://github.com/madler/zlib�v](https://github.com/madler/zlib) And [HomePage�uhttps://zlib.net/�v](https://zlib.net/)
-- MIT license | imgui | ocornut | [GitHub�uhttps://github.com/ocornut/imgui�v](https://github.com/ocornut/imgui)
+- OSS license | DirectX | Microsoft | [DownloadSite「https://www.microsoft.com/ja-JP/download/details.aspx?id=6812」](https://www.microsoft.com/ja-JP/download/details.aspx?id=6812)
+- MIT license | DirectXTex | Microsoft | [GitHub「https://github.com/microsoft/DirectXTex」](https://github.com/microsoft/DirectXTex)
+- zlib license | zlib | Jean-loup Gailly And Mark Adler | [GitHub「https://github.com/madler/zlib」](https://github.com/madler/zlib) And [HomePage「https://zlib.net/」](https://zlib.net/)
+- MIT license | imgui | ocornut | [GitHub「https://github.com/ocornut/imgui」](https://github.com/ocornut/imgui)
 
 
-# �g�p���@
+# 使用方法
 
-�ȉ��ɂ��ꂼ��̎g�������L�q���Ă����B
+以下にそれぞれの使い方を記述していく。
 
-[ChBase���C�u����](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/BasePack)
+[ChBaseライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/BasePack)
 
-[ChCpp���C�u����](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/CPP)
+[ChCppライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/CPP)
 
-[ChWin���C�u����](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/WindowsObject)
+[ChWinライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/WindowsObject)
 
-[ChD3D9���C�u����](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/Direct3D9)
+[ChD3D9ライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/Direct3D9)
 
-[ChD3D11���C�u����](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/Direct3D11)
+[ChD3D11ライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/Direct3D11)
 
-[ChD3D���C�u����](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/Direct3DObject)
+[ChD3Dライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/Direct3DObject)
 
-[ChImGui���C�u����](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/ImGUIAPI)
+[ChImGuiライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/ImGUIAPI)
 
 [ExternalLibrary(https://github.com/Chronoss0518/ChCppLibrary/tree/master/ChCppLibrary/External)
 
-# �\��
+# 予定
 
-- ChWin���C�u�������K�͏C����(��Ɨʂ��傫�����߃y���f�B���O)
-- TextObject���C��(���삪�����d������)
-- Compresser(�t���k)�@�\�̒ǉ�(Deflate32,Deflate64����ɍ쐬)
-- FBX���f���̃��[�h�@�\�̒ǉ�
-- HitTestObject�֘A�̋@�\�̒ǉ�
-- Collider�֘A�̋@�\�̒ǉ�
-- JsonObject�N���X�̍쐬(Web�֘A�ŕK�v�ɂȂ�������)
-- NetWork�֘A�̋@�\�̒ǉ�
-- ChTextObject�����C
-- ChD3D11�̑�K�͏C��
-- BaseObject�̌p�����@�̕ύX
-- XWindowSystem�̃p�b�N�����C�u�����̒ǉ�
-- OpenGL�̃p�b�N�����C�u�����̒ǉ�
-- Vulkan�̃p�b�N�����C�u�����̒ǉ�
-- CentOS�ŗ��p�\�ɂ���
+- ChCppなどの各種QuickStarterを開発。
+- ChWinライブラリを大規模修正※(作業量が大きいためペンディング)
+- TextObjectを修正(動作が少し重いため)
+- Compresser(可逆圧縮)機能の追加(Deflate32,Deflate64を主に作成)
+- FBXモデルのロード機能の追加
+- HitTestObject関連の機能の追加
+- Collider関連の機能の追加
+- JsonObjectクラスの作成(Web関連で必要になったため)
+- NetWork関連の機能の追加
+- ChTextObjectを改修
+- ChD3D11の大規模修正
+- BaseObjectの継承方法の変更
+- XWindowSystemのパック化ライブラリの追加
+- OpenGLのパック化ライブラリの追加
+- Vulkanのパック化ライブラリの追加
+- CentOSで利用可能にする
 
 
-# �X�V(�\�肩��ړ���������)
+# 更新(予定から移動したもの)
 
-- ChBase���C�u������ChCpp���C�u�����𒲐�����B
-- ClassPerts��ChCp���C�u�����Ƃ���ChCpp����ChBase�ֈڍs����B
-- �O�����C�u������e�Ղɒǉ����邱�Ƃ��ł���@�\��ǉ�
+- ChBaseライブラリとChCppライブラリを調整する。
+- ClassPertsをChCpライブラリとしてChCppからChBaseへ移行する。
+- 外部ライブラリを容易に追加することができる機能を追加
 
-# ���̃��C�u�����̃R���Z�v�g
+# このライブラリのコンセプト
 
-- �ł�����葼�̃��C�u�������g�킸�ɓƗ���������(�W�����C�u�������܂�)
-- �l�X�ȃ\�t�g�J����e�Ղɂ�����
-- ����Ε֗��Ƃ������̂��܂Ƃ߂Ă�������
-- �v���b�g�t�H�[���֌W�Ȃ��J���ł���悤�ɂ�����
-- ������̃��C�u�����J���ɂ��l�����𗘗p������
+- できる限り他のライブラリを使わずに独立させたい(標準ライブラリを含む)
+- 様々なソフト開発を容易にしたい
+- あれば便利というものをまとめておきたい
+- プラットフォーム関係なく開発できるようにしたい
+- 他言語のライブラリ開発にも考え方を利用したい
 
-# ���j
+# 歴史
 
-�w������Ƀ������̉���Y���菇�̊ԈႢ�𖳂�����Ηǂ��Ƃ����l���ł̂݃��C�u�����̊J�����n�߂܂����B<br>
-�J�������͗��p����DirectX9���������߁ADirectX9���p�b�N�������Ȍ��ȃ��C�u�����ƂȂ��Ă���܂����B<br>
-�w�N���オ�����֌W�Ŏg�p����DirectX9����DirectX11�ɕς��A���܂Œ��߂Ă����@�\���Ăяo�������ł͗��p���邱�Ƃ��s�\�ƂȂ��Ă��܂������߁A���C�u�����̊J�����@����V���܂����B<br>
-���݂͈ȉ��̎���ړI�Ƃ��ĊJ������悤�ɂ��Ă���܂��B
+学生時代にメモリの解放忘れや手順の間違いを無くせれば良いという考えでのみライブラリの開発を始めました。<br>
+開発当時は利用環境がDirectX9だったため、DirectX9をパック化した簡潔なライブラリとなっておりました。<br>
+学年が上がった関係で使用環境がDirectX9からDirectX11に変わり、今まで貯めていた機能を呼び出すだけでは利用することが不可能となってしまったため、ライブラリの開発方法を一新しました。<br>
+現在は以下の事を目的として開発するようにしております。
 
-1. �K�v�Ȏ菇��1�ɂ܂Ƃ߂�B<br>
-����:D3DXIntersect���s���ۂ�Ray�ɂ�������3DModel�����������̂悤�Ɍ����邽�߂̏�����g�ݍ��ށB<br>
-2. �������̉���Y���h���B<br>
-����:LPD3DXTEXTURE9�̉���Y��Ȃǂ�Release�֐��܂��̓f�X�g���N�^�Ő�΂ɊJ������悤�ɂ���B<br>
-3. �N���X�v���b�g�t�H�[�����\�Ƃ����J�����s���B
-4. �g��������������B<br>
-����:ClassPerts���p�������ėl�X�ȋ@�\��ǉ������N���X���쐬����B<br>
-5. ����������������B<br>
-����:XMFloat3�N���X���p�b�N������ChVec3_11�N���X�����݂��邪�A��{�I�Ɉ�����XMFloat3�𗘗p����B<br>
+1. 必要な手順を1つにまとめる。<br>
+※例:D3DXIntersectを行う際にRayにあたかも3DModelが動いたかのように見せるための処理を組み込む。<br>
+2. メモリの解放忘れを防ぐ。<br>
+※例:LPD3DXTEXTURE9の解放忘れなどをRelease関数またはデストラクタで絶対に開放するようにする。<br>
+3. クロスプラットフォームを可能とした開発を行う。
+4. 拡張性を持たせる。<br>
+※例:ClassPertsを継承させて様々な機能を追加したクラスを作成する。<br>
+5. 協調性を持たせる。<br>
+※例:XMFloat3クラスをパック化したChVec3_11クラスが存在するが、基本的に引数でXMFloat3を利用する。<br>
 
-�����݂͊J���ړI�̂���3��5�͎����ł��Ă��Ȃ��ӏ������݂��܂��B
+※現在は開発目的のうち3と5は実装できていない箇所が存在します。
 
 
 
