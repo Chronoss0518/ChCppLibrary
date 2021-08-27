@@ -5,7 +5,7 @@
 
 namespace ChWin
 {
-
+	//WindowsAPI‚Ì“àA•`‰æ‚ği‚éƒNƒ‰ƒX//
 	class WindDrawer
 	{
 	public:

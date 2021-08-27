@@ -12,6 +12,7 @@ namespace ChWin
 		, WPARAM _wParam
 		, LPARAM _lParam);
 
+	//WindowsAPIの内WindowClassを用いたオブジェクトを司るクラス//
 	class WindClassObject
 	{
 	public:

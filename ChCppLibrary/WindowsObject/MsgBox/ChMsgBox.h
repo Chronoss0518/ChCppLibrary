@@ -5,6 +5,7 @@
 
 namespace ChWin
 {
+	//WindowsAPIのメッセージボックスを容易に表示させるクラス//
 	class MsgBox
 	{
 	public:
