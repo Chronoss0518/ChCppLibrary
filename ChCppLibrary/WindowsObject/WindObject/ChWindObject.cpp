@@ -6,48 +6,182 @@
 using namespace ChWin;
 
 ///////////////////////////////////////////////////////////////////////////////////
+//WindStyle Method
+///////////////////////////////////////////////////////////////////////////////////
 
-void WindObject::Init(
-	const wchar_t* _appName,
-	const wchar_t* _windClassName,
-	const ChMath::Vector2Base<unsigned int> _windSize,
-	const HINSTANCE _hInst,
-	const int _nCmdShow)
+void WindStyle::SetBorder()
 {
-	hWnd = CreateWindowW(
-		_windClassName
-		, _appName
-		, WS_OVERLAPPEDWINDOW
-		| WS_CLIPCHILDREN
-		| WS_GROUP
-		, 10
-		, 10
-		, _windSize.x
-		, _windSize.y
-		, NULL
-		, NULL
-		, _hInst
-		, nullptr);
+	windStyle |= WS_BORDER;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void WindObject::Init(
+void WindStyle::SetCaption()
+{
+	windStyle |= WS_CAPTION;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void WindStyle::SetChild()
+{
+	windStyle |= WS_CHILD;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void WindStyle::SetClipChildren()
+{
+	windStyle |= WS_CLIPCHILDREN;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void WindStyle::SetClipSiblings()
+{
+	windStyle |= WS_CLIPSIBLINGS;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void WindStyle::SetDisabled()
+{
+	windStyle |= WS_DISABLED;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void WindStyle::SetDLGFrame()
+{
+	windStyle |= WS_DLGFRAME;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void WindStyle::SetGroup()
+{
+	windStyle |= WS_GROUP;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void WindStyle::SetHScroll()
+{
+	windStyle |= WS_HSCROLL;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void WindStyle::SetMaxmize()
+{
+	windStyle |= WS_MAXIMIZE;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void WindStyle::SetMaximaizeBox()
+{
+	windStyle |= WS_MAXIMIZEBOX;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void WindStyle::SetMinimize()
+{
+	windStyle |= WS_MINIMIZE;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void WindStyle::SetMinimizeBox()
+{
+	windStyle |= WS_MINIMIZEBOX;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void WindStyle::SetOverlapped()
+{
+	windStyle |= WS_OVERLAPPED;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void WindStyle::SetOverlappedWindow()
+{
+	windStyle |= WS_OVERLAPPEDWINDOW;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void WindStyle::SetPopup()
+{
+	windStyle |= WS_POPUP;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void WindStyle::SetPopupWindow()
+{
+	windStyle |= WS_POPUPWINDOW;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void WindStyle::SetSizeBox()
+{
+	windStyle |= WS_SIZEBOX;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void WindStyle::SetSysMenu()
+{
+	windStyle |= WS_SYSMENU;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void WindStyle::SetTabStop()
+{
+	windStyle |= WS_TABSTOP;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void WindStyle::SetVisible()
+{
+	windStyle |= WS_VISIBLE;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void WindStyle::SetVScroll()
+{
+	windStyle |= WS_VSCROLL;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+//WindowObject Method
+///////////////////////////////////////////////////////////////////////////////////
+
+void WindObject::CreateWindowWChar(
 	const wchar_t* _appName,
 	const wchar_t* _windClassName,
 	const unsigned int _windWidth,
 	const unsigned int _windHeight,
+	const unsigned long _windStyle,
 	const HINSTANCE _hInst,
-	const int _nCmdShow)
+	const unsigned int _windXPos,
+	const unsigned int _windYPos)
 {
+
 	hWnd = CreateWindowW(
 		_windClassName
 		, _appName
-		, WS_OVERLAPPEDWINDOW
-		| WS_CLIPCHILDREN
-		| WS_GROUP
-		, 10
-		, 10
+		, _windStyle
+		, _windXPos
+		, _windYPos
 		, _windWidth
 		, _windHeight
 		, NULL
@@ -58,53 +192,32 @@ void WindObject::Init(
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void WindObject::Init(
-	const char* _appName,
-	const char* _windClassName,
-	const ChMath::Vector2Base<unsigned int> _windSize,
-	const HINSTANCE _hInst,
-	const int _nCmdShow)
-{
-
-	hWnd = CreateWindowA(
-		_windClassName
-		, _appName
-		, WS_OVERLAPPEDWINDOW
-		| WS_CLIPCHILDREN
-		| WS_GROUP
-		, 10
-		, 10
-		, _windSize.x
-		, _windSize.y
-		, NULL
-		, NULL
-		, _hInst
-		, nullptr);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void WindObject::Init(
+void WindObject::CreateWindowChar(
 	const char* _appName,
 	const char* _windClassName,
 	const unsigned int _windWidth,
 	const unsigned int _windHeight,
+	const unsigned long _windStyle,
 	const HINSTANCE _hInst,
-	const int _nCmdShow)
+	const unsigned int _windXPos,
+	const unsigned int _windYPos)
 {
 
 	hWnd = CreateWindowA(
 		_windClassName
 		, _appName
-		, WS_OVERLAPPEDWINDOW
-		| WS_CLIPCHILDREN
-		| WS_GROUP
-		, 10
-		, 10
+		, _windStyle
+		, _windXPos
+		, _windYPos
 		, _windWidth
 		, _windHeight
 		, NULL
 		, NULL
 		, _hInst
 		, nullptr);
+}
+
+void WindObject::SetRegister()
+{
+
 }
