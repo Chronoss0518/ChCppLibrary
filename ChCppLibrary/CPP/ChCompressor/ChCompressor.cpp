@@ -121,7 +121,7 @@ std::vector<unsigned char> Rungless::Press(const std::vector<unsigned char>& _pr
 		out.push_back(static_cast<char*>(tmp)[byteSize - j - 1]);
 	}
 
-	return out;
+	return out.size() < _pressBase.size() ? out : _pressBase;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
