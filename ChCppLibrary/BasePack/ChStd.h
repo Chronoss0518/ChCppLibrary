@@ -69,7 +69,7 @@ namespace ChStd
 
 		for (unsigned long i = 0; i < sizeof(T); i++)
 		{
-			*(static_cast<char*>(tmpCopy) + i) = *(static_cast<char*>(tmpBase) + i);
+			*(static_cast<char*>(tmpCopy) + i) = *(static_cast<const char*>(tmpBase) + i);
 		}
 	}
 
