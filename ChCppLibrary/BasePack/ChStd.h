@@ -60,7 +60,7 @@ namespace ChStd
 		}
 	}
 
-	//指定したアドレス先を値0で初期化する//
+	//_baseの情報を_copyへコピーする//
 	template<class T>
 	static inline void MCopy(T* _copy, const T* _base)
 	{
