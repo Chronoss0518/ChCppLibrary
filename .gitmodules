@@ -1,6 +1,3 @@
-[submodule "ChCppLibrary/External/LegacyDirectX"]
-	path = ChCppLibrary/External/LegacyDirectX
-	url = https://github.com/Chronoss0518/DirectX-End-User-Runtime
 [submodule "ChCppLibrary/External/imgui"]
 	path = ChCppLibrary/External/imgui
 	url = https://github.com/ocornut/imgui
@@ -10,3 +7,6 @@
 [submodule "ChCppLibrary/External/DirectXTex"]
 	path = ChCppLibrary/External/DirectXTex
 	url = https://github.com/microsoft/DirectXTex
+[submodule "ChCppLibrary/External/LegacyDirectX"]
+	path = ChCppLibrary/External/LegacyDirectX
+	url = https://github.com/Chronoss0518/DirectX-End-User-Runtime
