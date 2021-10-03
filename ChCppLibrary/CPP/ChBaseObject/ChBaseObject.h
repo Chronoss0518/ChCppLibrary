@@ -10,6 +10,7 @@
 namespace ChCpp
 {
 	class ObjectManager;
+	class ObjectList;
 
 	//オブジェクトを生成する場合、このクラスを継承して作成する。//
 	//このクラスとクラスパーツ(ChCpp::OP)を継承した//
@@ -20,6 +21,7 @@ namespace ChCpp
 
 		friend BaseComponent;
 		friend ObjectManager;
+		friend ObjectList;
 
 	protected:
 
