@@ -138,9 +138,6 @@ namespace ChWin
 			return (PushButtonType)MessageBoxA(nullptr, _text, _title, uType);
 		}
 
-
-
-
 	};
 }
 

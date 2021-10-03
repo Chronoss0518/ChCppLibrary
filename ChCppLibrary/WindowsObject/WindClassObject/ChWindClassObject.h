@@ -1,7 +1,7 @@
 #ifdef _WINDOWS_
 
-#ifndef Ch_Win_BWind_h
-#define Ch_Win_BWind_h
+#ifndef Ch_Win_CWind_h
+#define Ch_Win_CWind_h
 
 namespace ChWin
 {
