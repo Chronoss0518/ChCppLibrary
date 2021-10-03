@@ -18,6 +18,7 @@
 //#include"CPP/ChMemoryManager/ChMemoryManager.h"
 #include"CPP/ChMultiThread/ChMultiThread.h"
 #include"CPP/ChBaseObject/ChObjectManager.h"
+#include"CPP/ChBaseObject/ChObjectList.h"
 //#include"CPP/ChHitTestObject/ChHitTestObject.h"
 
 //#include"CPP/ChHitTestObject/ChHitTestPanel.h"
