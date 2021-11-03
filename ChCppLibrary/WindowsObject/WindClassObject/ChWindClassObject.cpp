@@ -73,8 +73,8 @@ void WindClassObject::Init()
 	cls.hIcon = NULL;
 	cls.hCursor = LoadCursor(NULL, IDC_ARROW);
 	cls.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-	cls.lpszMenuName = '\0';
-	cls.lpszClassName = '\0';
+	cls.lpszMenuName = "\0";
+	cls.lpszClassName = "\0";
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
