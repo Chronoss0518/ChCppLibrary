@@ -86,6 +86,7 @@ ChD3D9ライブラリやChD3D11ライブラリを呼ぶ際に同時に呼ばれ�
 - JsonObjectクラスの作成(Web関連で必要になったため)
 - NetWork関連の機能の追加
 - ChTextObjectを改修
+- ModelObjectを共通化
 - ChD3D11の大規模修正
 - BaseObjectの継承方法の変更
 - XWindowSystemのパック化ライブラリの追加
