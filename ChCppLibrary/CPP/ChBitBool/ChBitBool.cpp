@@ -21,6 +21,7 @@ void BitBool::SetBitFlg(const unsigned char _argsNum, const ChStd::Bool _flg)
 
 }
 
+///////////////////////////////////////////////////////////////////////////////////////
 
 void BitBool::SetBitTrue(const unsigned char _argsNum)
 {
@@ -30,12 +31,22 @@ void BitBool::SetBitTrue(const unsigned char _argsNum)
 
 }
 
+///////////////////////////////////////////////////////////////////////////////////////
 
 void BitBool::SetBitFalse(const unsigned char _argsNum)
 {
 	if (!GetBitFlg(_argsNum))return;
 
 	flgs[_argsNum / 8]-= GetFlgNum(_argsNum);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+void BitBool::SetValue(const unsigned char _value, const unsigned long _byteCount)
+{
+	if (_byteCount >= flgs.size())return;
+
+	flgs[_byteCount] = _value;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
