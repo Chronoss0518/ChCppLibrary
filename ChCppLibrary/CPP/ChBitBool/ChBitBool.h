@@ -4,7 +4,7 @@
 namespace ChCpp
 {
 
-	 class BitBool
+	class BitBool
 	{
 	public:
 
@@ -32,7 +32,7 @@ namespace ChCpp
 
 		//第一引数はアドレス内の一番小さいビットから数えた数値を入力//
 		//例)アドレス位置が1000番,選択箇所1001番の場合は1を選択//
-		void SetBitFlg(const unsigned char _argsNum,const ChStd::Bool _flg);
+		void SetBitFlg(const unsigned char _argsNum, const ChStd::Bool _flg);
 
 		//引数で選択された位置のビットをtrueをセットする//
 		//第一引数はアドレス内の一番小さいビットから数えた数値を入力//
@@ -43,6 +43,11 @@ namespace ChCpp
 		//第一引数はアドレス内の一番小さいビットから数えた数値を入力//
 		//例)アドレス位置が1000番,選択箇所1001番の場合は1を選択//
 		void SetBitFalse(const unsigned char _argsNum);
+
+		//引数で選択された位置のByteをセットする//
+		//第一引数はセットする値//
+		//第二引数はアドレス内の一番小さいビットから数えた数値を入力//
+		void SetValue(const unsigned char _value, const unsigned long _byteCount = 0);
 
 		inline void SetAllDownFlg()
 		{
@@ -71,6 +76,12 @@ namespace ChCpp
 		inline unsigned long  GetSize()
 		{
 			return static_cast<unsigned long>(flgs.size() * 8);
+		}
+
+		inline unsigned char GetValue(const unsigned char _byteCount = 0)
+		{
+			if (_byteCount >= flgs.size())return 0;
+			return flgs[_byteCount];
 		}
 
 		//フラグ数の指定でのTrueの個数取得//
