@@ -3,12 +3,172 @@
 #include"../ChBitBool/ChBitBool.h"
 
 #include"ChBaseCompressor.h"
-#include"ChHuffmanTreeCompressor.h"
+#include"ChCharactorHuffmanTreeCompressor.h"
 #include"ChDeflateCompressor.h"
-#include"ChRunglessCompressor.h"
+#include"ChCharactorRunglessCompressor.h"
 
 using namespace ChCpp;
 using namespace Cmp;
+
+///////////////////////////////////////////////////////////////////////////////////
+//HuffmanTreeCompressorメソッド
+///////////////////////////////////////////////////////////////////////////////////
+
+std::vector<unsigned char> CharactorHuffmanTree::Press(const std::vector<unsigned char>& _pressBase)
+{
+	if (_pressBase.size() <= 0)return _pressBase;
+
+	std::map<unsigned char, unsigned long>trees;
+
+	unsigned long counter = 0;
+
+	for (unsigned long i = 0; i < _pressBase.size(); i++)
+	{
+		trees[_pressBase[i]]++;
+		counter++;
+	}
+
+	unsigned long maxBitSize = trees.size();
+
+	std::map<unsigned char,unsigned long>bitData;
+	std::vector<unsigned char>line;
+
+	{
+		unsigned char charas = 0;
+		unsigned long max = 0;
+
+		for (unsigned long i = 0; i < trees.size(); i++)
+		{
+			charas = 0;
+			max = 0;
+
+			for (auto&& obj : trees)
+			{
+				if (max > obj.second)continue;
+				charas = obj.first;
+				max = obj.second;
+			}
+
+			bitData[charas] = i + 1;
+			line.push_back(charas);
+
+			trees[charas] = 0;
+
+		}
+	}
+
+	std::vector<unsigned char> out;
+
+	{
+		unsigned char createObj = 0;
+		unsigned char pos = 0;
+		unsigned long size = 0;
+		for (unsigned long i = 0; i < _pressBase.size(); i++)
+		{
+			size = bitData[_pressBase[i]];
+			unsigned char now = _pressBase[i];
+
+			if (pos > 7)
+			{
+				out.push_back(createObj);
+				createObj = 0;
+				pos = 0;
+			}
+
+			unsigned char tmp = (8 - pos);
+
+			if (tmp >= size)
+			{
+				createObj <<= size;
+				createObj |= 1;
+				pos += size;
+				continue;
+			}
+
+			createObj <<= tmp;
+
+			out.push_back(createObj);
+
+			size -= (tmp);
+
+			for (unsigned long j = 0; j < static_cast<unsigned long>((size - 1) / 8); j++)
+			{
+				out.push_back(0);
+			}
+			
+			pos = size % 8 == 0 ? 8 : ((size) % 8);
+
+			createObj = 1;
+
+		}
+
+		createObj <<= (8 - pos);
+		
+		out.push_back(createObj);
+
+	}
+
+	out.push_back(0);
+
+	for (unsigned char i = 0;i< line.size();i++)
+	{
+		out.push_back(line[i]);
+	}
+
+	return out;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+std::vector<unsigned char> CharactorHuffmanTree::Thaw(const std::vector<unsigned char>& _thawBase)
+{
+	if (_thawBase.size() <= 0)return _thawBase;
+
+	unsigned long cutPos = 0;
+
+	for (unsigned long i = 0; i < _thawBase.size(); i++)
+	{
+		unsigned long tmp = _thawBase.size() - i - 1;
+		if (_thawBase[tmp] > 0)continue;
+		cutPos = tmp;
+		break;
+	}
+
+	std::vector<unsigned char>maps;
+
+	for (unsigned long i = cutPos + 1; i < _thawBase.size(); i++)
+	{
+		maps.push_back(_thawBase[i]);
+	}
+	
+	std::vector<unsigned char> out;
+
+	ChCpp::BitBool flgs;
+
+	unsigned long zeroCount = 0;
+	for (unsigned long i = 0; i < cutPos; i++)
+	{
+		unsigned char val = _thawBase[i];
+		flgs.SetValue(_thawBase[i]);
+		for (char j = 7; j >= 0; j--)
+		{
+			if (flgs.GetBitFlg(j))
+			{
+				out.push_back(maps[zeroCount]);
+
+				zeroCount = 0;
+
+			}
+			else
+			{
+				zeroCount++;
+			}
+		}
+	}
+
+
+	return out;
+}
 
 ///////////////////////////////////////////////////////////////////////////////////
 //DeflateCompressorメソッド
@@ -51,74 +211,57 @@ std::vector<unsigned char> Deflate::Thaw(const std::vector<unsigned char>& _thaw
 //RunglessCompressorメソッド
 ///////////////////////////////////////////////////////////////////////////////////
 
-std::vector<unsigned char> Rungless::Press(const std::vector<unsigned char>& _pressBase)
+std::vector<unsigned char> CharactorRungless::Press(const std::vector<unsigned char>& _pressBase)
 {
 
 	if (_pressBase.size() <= 0)return _pressBase;
 
-	char targetChar = 0;
-	unsigned long targetCharCount = 0;
+	ChPtr::Shared<Memo> memo = nullptr;
 
-	unsigned long maxSize = 0;
+	std::vector<ChPtr::Shared<Memo>>memos;
 
 	for (unsigned long i = 0; i < _pressBase.size(); i++)
 	{
 		if (i <= 0)
 		{
-			targetChar = _pressBase[i];
+			memo = nullptr;
+			memo = ChPtr::Make_S<Memo>();
+			memo->datas = _pressBase[i];
 		}
-		else if (targetChar != _pressBase[i])
+		else if (memo->datas != _pressBase[i])
 		{
-			maxSize = targetCharCount > maxSize ? targetCharCount : maxSize;
-
-			targetChar = _pressBase[i];
-			targetCharCount = 0;
+			memos.push_back(memo);
+			memo = nullptr;
+			memo = ChPtr::Make_S<Memo>();
+			memo->datas = _pressBase[i];
 		}
-		targetCharCount++;
+		memo->count++;
 	}
-
-	char byteSize = maxSize < 0xff ? 1 : maxSize < 0xffff ? 2 : maxSize < 0xffffffff ? 4 : 8;
+	memos.push_back(memo);
 
 	std::vector<unsigned char> out;
 
-	out.push_back(byteSize);
-	out.push_back('\0');
 
-
-	targetChar = 0;
-	targetCharCount = 0;
-
-
-	for (unsigned long i = 0; i < _pressBase.size(); i++)
+	for (auto&& obj : memos)
 	{
-		if (i <= 0)
+		if (obj->count <= 1)
 		{
-			targetChar = _pressBase[i];
+			out.push_back(obj->datas);
+			continue;
 		}
-		else if (targetChar != _pressBase[i])
+
+		unsigned char byteSize = obj->count < 0xffU ? 1 : obj->count < 0xffffU ? 2 : 4;
+
+		out.push_back(128 + (byteSize - 1));
+
+		void* tmp = &obj->count;
+
+		for (char i = byteSize - 1; i >= 0; i--)
 		{
-			out.push_back(targetChar);
-
-			void* tmp = &targetCharCount;
-
-			for (unsigned char j = 0; j < byteSize; j++)
-			{
-				out.push_back(static_cast<unsigned char*>(tmp)[byteSize - j - 1]);
-			}
-
-			targetChar = _pressBase[i];
-			targetCharCount = 0;
+			out.push_back(*(static_cast<unsigned char*>(tmp) + i));
 		}
-		targetCharCount++;
-	}
 
-	out.push_back(targetChar);
-
-	void* tmp = &targetCharCount;
-
-	for (unsigned char j = 0; j < byteSize; j++)
-	{
-		out.push_back(static_cast<char*>(tmp)[byteSize - j - 1]);
+		out.push_back(obj->datas);
 	}
 
 	return out.size() < _pressBase.size() ? out : _pressBase;
@@ -126,35 +269,41 @@ std::vector<unsigned char> Rungless::Press(const std::vector<unsigned char>& _pr
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-std::vector<unsigned char> Rungless::Thaw(const std::vector<unsigned char>& _thawBase)
+std::vector<unsigned char> CharactorRungless::Thaw(const std::vector<unsigned char>& _thawBase)
 {
-	if (_thawBase.size() <= 1 || (_thawBase.size() % 2) != 0)return _thawBase;
-
-
+	if (_thawBase.size() < 3)return _thawBase;
 
 	std::vector<unsigned char> out;
 
-	char byteSize = _thawBase[0];
-
-	if (byteSize <= 0 || byteSize > 4)return _thawBase;
-
-	for (unsigned long i = 2; i < _thawBase.size(); i += byteSize + 1)
+	for (unsigned long i = 0; i < _thawBase.size(); i++)
 	{
-		unsigned long dataLen = 0;
-		unsigned char chara = _thawBase[i];
-
-
-		for (unsigned char j = 0; j < byteSize; j++)
+		if (_thawBase[i] < 128 || _thawBase[i] > 131)
 		{
-			dataLen |= _thawBase[i + j + 1] << j;
+			out.push_back(_thawBase[i]);
+			continue;
 		}
 
-		for (unsigned long j = 0; j < dataLen; j++)
+		unsigned char byteSize = (_thawBase[i] & (3)) + 1;
+
+		i++;
+
+		unsigned long count = 0;
+
+		void* tmp = &count;
+		for (char j = 0; j < byteSize; j++)
 		{
-			out.push_back(chara);
+			*(static_cast<unsigned char*>(tmp) + (byteSize - j - 1)) = _thawBase[i + j];
 		}
-		
+
+		i += byteSize;
+		unsigned char datas = _thawBase[i];
+
+		for (unsigned long j = 0; j < count; j++)
+		{
+			out.push_back(datas);
+		}
 	}
+
 
 	return out;
 }

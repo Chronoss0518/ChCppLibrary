@@ -1,16 +1,13 @@
-#ifndef Ch_CPP_Cmp_Huf_h
-#define Ch_CPP_Cmp_Huf_h
+#ifndef Ch_CPP_Cmp_Run_h
+#define Ch_CPP_Cmp_Run_h
 
 #include"ChBaseCompressor.h"
 
 namespace ChCpp
 {
-	class BitBool;
-
 	namespace Cmp
 	{
-
-		class HuffmanTree :public BaseCompressor
+		class CharactorRungless :public BaseCompressor
 		{
 		public:
 
@@ -18,11 +15,17 @@ namespace ChCpp
 
 			std::vector<unsigned char> Thaw(const std::vector<unsigned char>& _thawBase)override;
 
+
 		private:
 
-
+			struct Memo
+			{
+				unsigned char datas = 0;
+				unsigned long count = 0;
+			};
 
 		};
+
 	}
 }
 
