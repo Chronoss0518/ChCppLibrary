@@ -1,7 +1,7 @@
 #ifndef Ch_CPP_Cmp_Run_h
 #define Ch_CPP_Cmp_Run_h
 
-#include"ChBaseCompressor.h"
+#include"../ChBaseCompressor.h"
 
 namespace ChCpp
 {
