@@ -189,7 +189,7 @@ namespace ChSystem
 
 			if (tmp < 1000 / FPS)return false;
 
-			lastFPSPoint = tmp * FPS * 0.0001f;
+			lastFPSPoint = tmp * FPS * FPS * 0.0001;
 			lastFPSTime = nowTime;
 
 			return true;
