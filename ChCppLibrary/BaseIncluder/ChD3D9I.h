@@ -2,7 +2,6 @@
 #define Ch_BD9I_h
 
 #ifdef _WINDEF_
-#include<d3d9.h>
 #include<dsound.h>
 
 #pragma comment(lib,"d3d9.lib")
