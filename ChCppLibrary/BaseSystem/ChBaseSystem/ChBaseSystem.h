@@ -115,7 +115,7 @@ namespace ChSystem
 		//全体で利用するFPSを管理//
 		inline void SetFPS(const unsigned long _FPS) { FPS = _FPS; }
 
-		inline void SetNowTime(const unsigned long _time) { nowTime = _time; }
+		inline void SetNowTime(const unsigned long _time) { lastFPSPoint = _time; }
 
 		inline void SetUseSystemButtons(const ChStd::Bool _button) { useSystemButton = _button; }
 
@@ -123,7 +123,9 @@ namespace ChSystem
 		//GetFunction//
 
 		//FPSカウントの取得//
-		const inline unsigned long GetFPSCnt() const { return FPS; }
+		const inline unsigned long GetFPS() const { return FPS; }
+
+		const inline long double GetNowFPSPoint()const { return lastFPSPoint; }
 
 		//ウィンドシステム(BaseSystem継承)を取得する//
 		template<class T>
@@ -167,7 +169,7 @@ namespace ChSystem
 		ChStd::Bool IsUpdate()
 		{
 			if (baseSystems == nullptr)return false;
-			nowTime = baseSystems->GetNowTime();
+
 			return baseSystems->IsUpdate();
 		}
 
@@ -182,11 +184,14 @@ namespace ChSystem
 			if (!*this)return false;
 			if (baseSystems == nullptr)return false;
 
-			nowTime = baseSystems->GetNowTime();
+			unsigned long nowTime = baseSystems->GetNowTime();
+			unsigned long tmp = nowTime - lastFPSTime;
 
-			static unsigned long FPSTime;
-			if (nowTime - FPSTime < 1000 / FPS)return false;
-			FPSTime = nowTime;
+			if (tmp < 1000 / FPS)return false;
+
+			lastFPSPoint = tmp * FPS * 0.0001f;
+			lastFPSTime = nowTime;
+
 			return true;
 		}
 
@@ -196,7 +201,8 @@ namespace ChSystem
 
 		SystemManager() {}
 		unsigned long FPS = 60;
-		unsigned long nowTime = 0;
+		long double lastFPSPoint = 0;
+		unsigned long lastFPSTime = 0;
 
 		ChStd::Bool useSystemButton = true;
 
