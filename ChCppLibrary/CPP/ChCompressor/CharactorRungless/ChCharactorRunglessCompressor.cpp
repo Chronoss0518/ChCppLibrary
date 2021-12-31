@@ -13,29 +13,29 @@ using namespace Cmp;
 //RunglessCompressorÉÅÉ\ÉbÉh
 ///////////////////////////////////////////////////////////////////////////////////
 
-std::vector<unsigned char> CharactorRungless::Press(const std::vector<unsigned char>& _pressBase)
+std::vector<unsigned char> CharactorRungless::Compress(const std::vector<unsigned char>& _compressBase)
 {
 
-	if (_pressBase.size() <= 0)return _pressBase;
+	if (_compressBase.size() <= 0)return _compressBase;
 
 	ChPtr::Shared<Memo> memo = nullptr;
 
 	std::vector<ChPtr::Shared<Memo>>memos;
 
-	for (unsigned long i = 0; i < _pressBase.size(); i++)
+	for (unsigned long i = 0; i < _compressBase.size(); i++)
 	{
 		if (i <= 0)
 		{
 			memo = nullptr;
 			memo = ChPtr::Make_S<Memo>();
-			memo->datas = _pressBase[i];
+			memo->datas = _compressBase[i];
 		}
-		else if (memo->datas != _pressBase[i])
+		else if (memo->datas != _compressBase[i])
 		{
 			memos.push_back(memo);
 			memo = nullptr;
 			memo = ChPtr::Make_S<Memo>();
-			memo->datas = _pressBase[i];
+			memo->datas = _compressBase[i];
 		}
 		memo->count++;
 	}
@@ -66,26 +66,26 @@ std::vector<unsigned char> CharactorRungless::Press(const std::vector<unsigned c
 		out.push_back(obj->datas);
 	}
 
-	return out.size() < _pressBase.size() ? out : _pressBase;
+	return out.size() < _compressBase.size() ? out : _compressBase;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-std::vector<unsigned char> CharactorRungless::Thaw(const std::vector<unsigned char>& _thawBase)
+std::vector<unsigned char> CharactorRungless::Decompress(const std::vector<unsigned char>& _decompressBase)
 {
-	if (_thawBase.size() < 3)return _thawBase;
+	if (_decompressBase.size() < 3)return _decompressBase;
 
 	std::vector<unsigned char> out;
 
-	for (unsigned long i = 0; i < _thawBase.size(); i++)
+	for (unsigned long i = 0; i < _decompressBase.size(); i++)
 	{
-		if (_thawBase[i] < 128 || _thawBase[i] > 131)
+		if (_decompressBase[i] < 128 || _decompressBase[i] > 131)
 		{
-			out.push_back(_thawBase[i]);
+			out.push_back(_decompressBase[i]);
 			continue;
 		}
 
-		unsigned char byteSize = (_thawBase[i] & (3)) + 1;
+		unsigned char byteSize = (_decompressBase[i] & (3)) + 1;
 
 		i++;
 
@@ -94,11 +94,11 @@ std::vector<unsigned char> CharactorRungless::Thaw(const std::vector<unsigned ch
 		void* tmp = &count;
 		for (char j = 0; j < byteSize; j++)
 		{
-			*(static_cast<unsigned char*>(tmp) + (byteSize - j - 1)) = _thawBase[i + j];
+			*(static_cast<unsigned char*>(tmp) + (byteSize - j - 1)) = _decompressBase[i + j];
 		}
 
 		i += byteSize;
-		unsigned char datas = _thawBase[i];
+		unsigned char datas = _decompressBase[i];
 
 		for (unsigned long j = 0; j < count; j++)
 		{

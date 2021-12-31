@@ -3,44 +3,41 @@
 #include"../ChBitBool/ChBitBool.h"
 
 #include"ChBaseCompressor.h"
-#include"ChDeflateCompressor.h"
 
 using namespace ChCpp;
 using namespace Cmp;
 
 ///////////////////////////////////////////////////////////////////////////////////
-//DeflateCompressorÉÅÉ\ÉbÉh
+//CompressorFunction
 ///////////////////////////////////////////////////////////////////////////////////
 
-std::vector<unsigned char> Deflate::Press(const std::vector<unsigned char>& _pressBase)
+unsigned long Cmp::CreateAdler32(const std::vector<unsigned char>& _base)
 {
-	if (_pressBase.size() <= 0)return _pressBase;
-
-	std::map<unsigned char, ChPtr::Shared<BitBool>> tree;
-
-	std::vector<unsigned char> out;
-
-	for (unsigned long i = 0; i < _pressBase.size(); i++)
+	unsigned short a = 1;
+	for (auto&& num : _base)
 	{
-
+		unsigned long tmp = a;
+		tmp += num;
+		tmp %= 0xffff;
+		a = tmp;
 	}
+
+	unsigned short b = 0;
+	for (unsigned long i = 0;i<_base.size();i++)
+	{
+		unsigned long tmp = b;
+
+		tmp += 1;
+		for (unsigned long j = 0; j <= i; j++)
+		{
+			tmp += _base[j];
+		}
+
+		tmp %= 0xffff;
+		b = tmp;
+	}
+
+	unsigned long out = (b << 16) + a;
 
 	return out;
 }
-
-///////////////////////////////////////////////////////////////////////////////////
-
-std::vector<unsigned char> Deflate::Thaw(const std::vector<unsigned char>& _thawBase)
-{
-	if (_thawBase.size() <= 0)return _thawBase;
-
-	std::vector<unsigned char> out;
-
-	for (unsigned long i = 0; i < _thawBase.size(); i++)
-	{
-
-	}
-
-	return out;
-}
-

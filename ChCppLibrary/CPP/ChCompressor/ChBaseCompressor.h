@@ -5,6 +5,9 @@ namespace ChCpp
 {
 	namespace Cmp
 	{
+		unsigned long CreateAdler32(const std::vector<unsigned char>& _base);
+
+
 		 class BaseCompressor
 		{
 		public:
@@ -12,12 +15,12 @@ namespace ChCpp
 			///////////////////////////////////////////////////////////////////////////////////
 			
 			//à≥èkä÷êî//
-			virtual std::vector<unsigned char> Press(const std::vector<unsigned char>& _pressBase) = 0;
+			virtual std::vector<unsigned char> Compress(const std::vector<unsigned char>& _compressBase) = 0;
 
 			///////////////////////////////////////////////////////////////////////////////////
 
 			//âìÄä÷êî//
-			virtual std::vector<unsigned char> Thaw(const std::vector<unsigned char>& _thawBase) = 0;
+			virtual std::vector<unsigned char> Decompress(const std::vector<unsigned char>& _decompressBase) = 0;
 
 			///////////////////////////////////////////////////////////////////////////////////
 
