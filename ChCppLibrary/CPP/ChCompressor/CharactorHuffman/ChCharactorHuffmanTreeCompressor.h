@@ -62,7 +62,14 @@ namespace ChCpp
 				};
 			};
 
-			void CreateDictionary(std::vector<unsigned char>& _out, BitBool& _nowByte, unsigned char& _nowCount,const std::map<unsigned char, FlgObject>& _fObject, const unsigned char _maxByteSize);
+			/*
+			//Header First 3 Byte//
+			ÅEFIrstFlgment
+			ÅEDictionaryAnnotation
+			ÅEAnnotationCountInDictionary
+			*/
+
+			void CreateDictionary(std::vector<unsigned char>& _out,unsigned char& _annotationInDictionary, BitBool& _nowByte, unsigned char& _nowCount,const std::map<unsigned char, FlgObject>& _fObject, const unsigned char _maxByteSize);
 
 			void CreateMaps(std::map<unsigned char, FlgObject>& _maps,const std::vector<unsigned char>& _compressBase);
 
@@ -72,6 +79,7 @@ namespace ChCpp
 
 			bool ChangeByteTest(BitBool& _nowByte, unsigned char& _readByteCount, unsigned long& _readBytePos, std::vector<unsigned char>& _dictionaryByte, const bool _dictionaryFirstFlg);
 
+			void LoadDictionary(std::map<unsigned char, FlgObject>& _dictionary,unsigned long& _startPos, unsigned long& _endPos,const std::vector<unsigned char>& _decompressBase,const FirstFlgment _fFlgs,const unsigned char _annotatino,const unsigned char _annotationCountInDictionary = 0);
 
 			ChStd::Bool highToZeroFlg = true;
 			unsigned char dictionaryAnnotation = 0;

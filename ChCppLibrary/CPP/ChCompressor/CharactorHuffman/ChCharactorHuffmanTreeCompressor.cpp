@@ -21,7 +21,7 @@ std::vector<unsigned char> CharactorHuffmanTree::Compress(const std::vector<unsi
 	CreateMaps(dictionary, _compressBase);
 
 	std::vector<unsigned char> out;
-	std::vector<unsigned char>pressData;
+	std::vector<unsigned char> dictionaryByte;
 
 	unsigned char maxByteSize = 0;
 
@@ -33,10 +33,13 @@ std::vector<unsigned char> CharactorHuffmanTree::Compress(const std::vector<unsi
 			maxCodeSize = chara.first > maxCodeSize ? chara.first : maxCodeSize;
 		}
 
+		BitBool maxByte = BitBool(1);
+		maxByte.SetValue(maxCodeSize);
 		for (unsigned char i = 0; i < 8; i++)
 		{
-			if(!(maxCodeSize & (1 << i)))continue;
-			maxByteSize = i + 1;
+			if(!(maxByte.GetBitFlg(7 - i)))continue;
+			maxByteSize = 8 - i;
+			break;
 		}
 
 	}
@@ -51,20 +54,34 @@ std::vector<unsigned char> CharactorHuffmanTree::Compress(const std::vector<unsi
 	}
 
 	{
+
+
 		BitBool createByte = BitBool(1);
 
 		unsigned char nowCount = 0;
 
+		unsigned char AnnotationCount = 0;
 
+		{
+			createByte.SetAllDownFlg();
+
+			CreateDictionary(dictionaryByte, AnnotationCount, createByte, nowCount, dictionary, maxByteSize);
+
+			nowCount = 0;
+		}
+
+		out.push_back(firstFlgment.value);
+		out.push_back(dictionaryAnnotation);
+		out.push_back(AnnotationCount);
 
 		if (dictionaryFirstFlg)
 		{
+			for (auto&& byte : dictionaryByte)
+			{
+				out.push_back(byte);
+			}
 
-			CreateDictionary(pressData, createByte, nowCount, dictionary, maxByteSize);
-
-			pressData.push_back(dictionaryAnnotation);
-
-			nowCount = 0;
+			out.push_back(dictionaryAnnotation);
 
 		}
 
@@ -77,33 +94,25 @@ std::vector<unsigned char> CharactorHuffmanTree::Compress(const std::vector<unsi
 
 				if (nowCount < 7)continue;
 
-				pressData.push_back(createByte.GetValue());
+				out.push_back(createByte.GetValue());
 
 				nowCount = 0;
 				createByte.SetAllDownFlg();
 			}
 		}
 
-		pressData.push_back(createByte.GetValue());
+		if(createByte.GetValue() > 0)out.push_back(createByte.GetValue());
 
 		firstFlgment.unUsedLastByte = (7 - nowCount);
 
 		if (!dictionaryFirstFlg)
 		{
-			pressData.push_back(dictionaryAnnotation);
+			out.push_back(dictionaryAnnotation);
 
-			nowCount = 0;
-
-			CreateDictionary(pressData, createByte, nowCount, dictionary, maxByteSize);
-
-		}
-
-		out.push_back(firstFlgment.value);
-		out.push_back(dictionaryAnnotation);
-
-		for (auto&& byte : pressData)
-		{
-			out.push_back(byte);
+			for (auto&& byte : dictionaryByte)
+			{
+				out.push_back(byte);
+			}
 		}
 
 	}
@@ -121,90 +130,14 @@ std::vector<unsigned char> CharactorHuffmanTree::Decompress(const std::vector<un
 
 	firstFlgment.value = _decompressBase[0];
 	unsigned char dAnnotation = _decompressBase[1];
+	unsigned char annotationCountInDictionary = _decompressBase[2];
 	std::map<unsigned char, FlgObject>dictionary;
 
 
-	unsigned long startPos = 2;
+	unsigned long startPos = 3;
 	unsigned long endPos = _decompressBase.size();
 
-	{
-
-		std::vector<unsigned char>dictionaryByte;
-
-		if (firstFlgment.dictionaryFirstFlg)
-		{
-			for (long long i = 2; i < _decompressBase.size(); i++)
-			{
-				dictionaryByte.push_back(_decompressBase[i]);
-				if (_decompressBase[i] != dAnnotation) continue;
-				startPos = i;
-				dictionaryByte.pop_back();
-				break;
-			}
-
-		}
-		else
-		{
-			for (long long i = _decompressBase.size(); i >= 0; i--)
-			{
-				dictionaryByte.push_back(_decompressBase[i]);
-				if (_decompressBase[i] != dAnnotation) continue;
-				endPos = i;
-				dictionaryByte.pop_back();
-				break;
-			}
-		}
-
-		BitBool nowByte;
-		unsigned char readByteCount = 0;
-		unsigned long readBytePos = 0;
-
-
-
-		nowByte.SetValue(firstFlgment.dictionaryFirstFlg ? dictionaryByte[readBytePos] : dictionaryByte[(dictionaryByte.size() - readBytePos - 1)]);
-
-		{
-
-			bool endFlg = false;
-
-			while (!endFlg)
-			{
-				unsigned char chara = 0;
-
-				FlgObject charaSize;
-
-				for (unsigned char i = 0; i < firstFlgment.charaMaxByte; i++)
-				{
-					if (endFlg)break;
-					chara |= (nowByte.GetBitFlg(firstFlgment.charaMaxByte - i - 1) ? 1 : 0) << (firstFlgment.charaMaxByte - i - 1);
-
-					endFlg = ChangeByteTest(nowByte, readByteCount, readBytePos, dictionaryByte, firstFlgment.dictionaryFirstFlg);
-				}
-
-				for (unsigned char i = 0; i < 8; i++)
-				{
-					if (endFlg)break;
-					charaSize.bitSize |= (nowByte.GetBitFlg(8 - i - 1) ? 1 : 0) << (8 - i - 1);
-
-					endFlg = ChangeByteTest(nowByte, readByteCount, readBytePos, dictionaryByte, firstFlgment.dictionaryFirstFlg);
-				}
-				for (unsigned char i = 0; i < charaSize.bitSize; i++)
-				{
-					if (readBytePos >= dictionaryByte.size())break;
-					charaSize.value |= (nowByte.GetBitFlg(charaSize.bitSize - i - 1) ? 1 : 0) << (charaSize.bitSize - i - 1);
-
-					endFlg = ChangeByteTest(nowByte, readByteCount, readBytePos, dictionaryByte, firstFlgment.dictionaryFirstFlg);
-				}
-
-				if (endFlg)break;
-				dictionary[chara] = charaSize;
-			}
-		}
-		int test = 0;
-		test = 1;
-
-	}
-
+	LoadDictionary(dictionary, startPos, endPos, _decompressBase, firstFlgment, dAnnotation, annotationCountInDictionary);
 
 	std::vector<unsigned char>out;
 
@@ -311,6 +244,7 @@ void CharactorHuffmanTree::SetTreeBranchs(std::map<unsigned char, FlgObject>& _m
 
 void CharactorHuffmanTree::CreateDictionary(
 	std::vector<unsigned char>& _out,
+	unsigned char& _annotationInDictionary,
 	BitBool& _nowByte,
 	unsigned char& _nowCount,
 	const std::map<unsigned char, FlgObject>& _fObject,
@@ -320,13 +254,14 @@ void CharactorHuffmanTree::CreateDictionary(
 	for (auto&& dictionary : _fObject)
 	{
 
-
-		for (unsigned long i = 0; i < _maxByteSize - 1; i++)
+		for (unsigned long i = 0; i < _maxByteSize; i++)
 		{
 			_nowByte.SetBitFlg((7 - _nowCount), (dictionary.first & (1 << (_maxByteSize - i - 1))));
 			_nowCount++;
 
-			if (_nowCount < 7)continue;
+			if (_nowCount < 8)continue;
+
+			if (_nowByte.GetValue() == dictionaryAnnotation)_annotationInDictionary++;
 
 			_out.push_back(_nowByte.GetValue());
 
@@ -336,10 +271,12 @@ void CharactorHuffmanTree::CreateDictionary(
 
 		for (unsigned long i = 0; i < 8; i++)
 		{
-			_nowByte.SetBitFlg((7 - _nowCount), (dictionary.first & (1 << (8 - i - 1))));
+			_nowByte.SetBitFlg((7 - _nowCount), (dictionary.second.bitSize & (1 << (8 - i - 1))));
 			_nowCount++;
 
-			if (_nowCount < 7)continue;
+			if (_nowCount < 8)continue;
+
+			if (_nowByte.GetValue() == dictionaryAnnotation)_annotationInDictionary++;
 
 			_out.push_back(_nowByte.GetValue());
 
@@ -352,7 +289,9 @@ void CharactorHuffmanTree::CreateDictionary(
 			_nowByte.SetBitFlg((7 - _nowCount), (dictionary.second.value & (1 << (dictionary.second.bitSize - i - 1))));
 			_nowCount++;
 
-			if (_nowCount < 7)continue;
+			if (_nowCount < 8)continue;
+
+			if (_nowByte.GetValue() == dictionaryAnnotation)_annotationInDictionary++;
 
 			_out.push_back(_nowByte.GetValue());
 
@@ -364,6 +303,7 @@ void CharactorHuffmanTree::CreateDictionary(
 	if(_nowCount > 0)_out.push_back(_nowByte.GetValue());
 }
 
+///////////////////////////////////////////////////////////////////////////////////
 
 bool CharactorHuffmanTree::ChangeByteTest(
 	BitBool& _nowByte,
@@ -374,7 +314,7 @@ bool CharactorHuffmanTree::ChangeByteTest(
 {
 
 	_readByteCount++;
-	if (_readByteCount < 7)return false;
+	if (_readByteCount < 8)return false;
 
 	_readByteCount = 0;
 	_readBytePos++;
@@ -383,4 +323,91 @@ bool CharactorHuffmanTree::ChangeByteTest(
 	_nowByte.SetValue(_dictionaryFirstFlg ? _dictionaryByte[_readBytePos] : _dictionaryByte[(_dictionaryByte.size() - _readBytePos - 1)]);
 
 	return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void CharactorHuffmanTree::LoadDictionary(
+	std::map<unsigned char, FlgObject>& _dictionary,
+	unsigned long& _startPos,
+	unsigned long& _endPos,
+	const std::vector<unsigned char>& _decompressBase,
+	const FirstFlgment _fFlgs,
+	const unsigned char _annotatino ,
+	const unsigned char _annotationCountInDictionary)
+{
+
+	std::vector<unsigned char>dictionaryByte;
+	unsigned char annotationCount = 0;
+	if (_fFlgs.dictionaryFirstFlg)
+	{
+		for (unsigned long i = _startPos; i < _endPos; i++)
+		{
+			dictionaryByte.push_back(_decompressBase[i]);
+			if (_decompressBase[i] != _annotatino) continue;
+			if (_annotationCountInDictionary > annotationCount++)continue;
+			_startPos = i + 1;
+			dictionaryByte.pop_back();
+			break;
+		}
+
+	}
+	else
+	{
+		for (unsigned long i = _endPos; i >= _startPos; i--)
+		{
+			dictionaryByte.push_back(_decompressBase[i]);
+			if (_decompressBase[i] != _annotatino) continue;
+			if (_annotationCountInDictionary > annotationCount++)continue;
+			_endPos = i - 1;
+			dictionaryByte.pop_back();
+			break;
+		}
+	}
+
+	BitBool nowByte;
+	unsigned char readByteCount = 0;
+	unsigned long readBytePos = 0;
+
+	nowByte.SetValue(_fFlgs.dictionaryFirstFlg ? dictionaryByte[readBytePos] : dictionaryByte[(dictionaryByte.size() - readBytePos - 1)]);
+
+	{
+
+		bool endFlg = false;
+
+		while (!endFlg)
+		{
+			unsigned char chara = 0;
+
+			FlgObject charaSize;
+
+			for (unsigned char i = 0; i < _fFlgs.charaMaxByte; i++)
+			{
+				if (endFlg)break;
+				chara |= (nowByte.GetBitFlg(7 - readByteCount) ? 1 : 0) << (_fFlgs.charaMaxByte - i - 1);
+
+				endFlg = ChangeByteTest(nowByte, readByteCount, readBytePos, dictionaryByte, _fFlgs.dictionaryFirstFlg);
+			}
+
+			for (unsigned char i = 0; i < 8; i++)
+			{
+				if (endFlg)break;
+				charaSize.bitSize |= (nowByte.GetBitFlg(7 - readByteCount) ? 1 : 0) << (7 - i);
+
+				endFlg = ChangeByteTest(nowByte, readByteCount, readBytePos, dictionaryByte, _fFlgs.dictionaryFirstFlg);
+			}
+
+			for (unsigned long i = 0; i < charaSize.bitSize; i++)
+			{
+				if (endFlg)break;
+				if (readBytePos >= dictionaryByte.size())break;
+				charaSize.value |= (nowByte.GetBitFlg(7 - readByteCount) ? 1 : 0) << (charaSize.bitSize - i - 1);
+
+				endFlg = ChangeByteTest(nowByte, readByteCount, readBytePos, dictionaryByte, _fFlgs.dictionaryFirstFlg);
+			}
+
+			if (endFlg)break;
+			_dictionary[chara] = charaSize;
+		}
+	}
 }
