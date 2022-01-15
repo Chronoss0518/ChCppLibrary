@@ -1,7 +1,9 @@
 #ifndef Ch_CPP_3D_h
 #define Ch_CPP_3D_h
 
-#include"../BaseIncluder/ChBase.h"
+#include<string>
+#include"ChMath.h"
+#include"ChMath3D.h"
 
 namespace Ch3D
 {
