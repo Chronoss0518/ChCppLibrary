@@ -1238,6 +1238,14 @@ namespace ChMath
 			{
 				T w, h;
 			};
+			struct
+			{
+				T start, end;
+			};
+			struct
+			{
+				T high, low;
+			};
 			VectorBase<T, 2> val;
 		};
 
