@@ -18,6 +18,9 @@ std::string TextObject::GetText()const
 		out += text + "\n";
 	}
 
+	out.pop_back();
+	out.pop_back();
+
 	return out;
 
 }
