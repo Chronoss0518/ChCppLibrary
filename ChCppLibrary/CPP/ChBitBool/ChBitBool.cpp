@@ -64,14 +64,14 @@ unsigned char (*BitBool::getBitFlgFunc[])(BitBool::BitFlgObject&)
 
 void BitBool::BitFlgObject::SetFlg(const unsigned long _num, const bool _flg)
 {
-	setBitFlgFunc[_num](*this,_flg);
+	setBitFlgFunc[_num % 8](*this,_flg);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
 bool BitBool::BitFlgObject::GetFlg(const unsigned long _num)
 {
-	return getBitFlgFunc[_num](*this);
+	return getBitFlgFunc[_num % 8](*this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
