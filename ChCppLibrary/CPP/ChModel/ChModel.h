@@ -45,11 +45,20 @@ namespace ChCpp
 		struct Material
 		{
 			std::string materialName = "";
-			ChVec4 diffuse = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
-			ChVec3 specular = ChVec3(1.0f, 1.0f, 1.0f);
-			float ambientPow = 0.0f;
-			float spePow = 1.0f;
-			std::vector<std::string>textureNames;
+			ChVec4 diffuse = ChVec4(1.0f);
+			ChVec4 specular = ChVec4(1.0f);
+			ChVec4 ambient = ChVec4(0.0f);
+			std::vector<std::string>textureNames = std::vector<std::string>(0);
+
+			//std::string diffuseMap;
+			//std::string ambientMap;
+			//std::string specularMap;
+			//std::string specularHighLightMap;
+			//std::string bumpMap;
+			//std::string alphaMap;
+			//std::string normalMap;
+			//std::string metallicMap;
+
 		};
 
 		struct SurFace
@@ -91,11 +100,21 @@ namespace ChCpp
 
 		struct Frame
 		{
-			ChLMatrix baseMat;
-			std::string myName;
-			ChPtr::Shared<Mesh>mesh;
-			ChPtr::Shared<Frame>parent;
+			union
+			{
+				ChLMatrix baseLMat = ChLMat();
+				ChRMatrix baseRMat;
+			};
+
+			std::string myName = "";
+			ChPtr::Shared<Mesh>mesh = nullptr;
+			ChPtr::Weak<Frame>parent;
 			std::vector<ChPtr::Shared<Frame>>childFrames;
+
+			Frame()
+			{
+
+			}
 
 			~Frame()
 			{
@@ -108,9 +127,13 @@ namespace ChCpp
 
 		struct BoneTrees
 		{
+			union
+			{
+				ChLMat baseLMat = ChLMat();
+				ChRMat baseRMat;
+			};
 
-			ChLMat baseMat;
-			ChPtr::Shared<BoneTrees> parentBone = nullptr;
+			ChPtr::Weak<BoneTrees> parentBone;
 			std::vector<ChPtr::Shared<BoneTrees>>childBones;
 		};
 
