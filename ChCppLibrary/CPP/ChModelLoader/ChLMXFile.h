@@ -18,12 +18,11 @@ namespace ChCpp
 
 			struct XFileModelFrame
 			{
-
 				struct XVertex
 				{
 					ChVec3 pos;
-					ChVec3 normal;
 					ChVec2 uvPos;
+					ChVec3 normal;
 				};
 
 				struct XMaterial
