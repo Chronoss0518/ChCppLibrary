@@ -93,7 +93,7 @@ namespace ChD3D11
 		if (_baseModels.mesh == nullptr)return;
 
 
-		_frames->baseMat = _baseModels.baseMat;
+		_frames->baseMat = _baseModels.baseLMat;
 
 		auto surfaceList = CreateSurfaceList(_baseModels);
 
@@ -108,8 +108,7 @@ namespace ChD3D11
 			mate->diffuse = ChVec4(1.0f);
 			mate->materialName = "Material1";
 			mate->specular = ChVec4(0.0f);
-			mate->spePow = (0.0f);
-			mate->ambientPow = (0.0f);
+			mate->ambient = (0.0f);
 
 			mateNum = _baseModels.mesh->materialList.size();
 		}
@@ -178,13 +177,12 @@ namespace ChD3D11
 
 			prim->mate = ChPtr::Make_S<Material11>();
 
-			prim->mate->material.ambient = ChVec4(mateList[i]->ambientPow);
+			prim->mate->material.ambient = ChVec4(mateList[i]->ambient);
 			prim->mate->material.diffuse = mateList[i]->diffuse;
 			prim->mate->material.specular = mateList[i]->specular;
-			prim->mate->material.specular.a = mateList[i]->spePow;
 			prim->mate->materialName = mateList[i]->materialName;
 
-			prim->mate->material.frameMatrix = _baseModels.baseMat;
+			prim->mate->material.frameMatrix = _baseModels.baseLMat;
 
 			CreateContentBuffer<ShaderUseMaterial11>(&prim->mate->mBuffer);
 
