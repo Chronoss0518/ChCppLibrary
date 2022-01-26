@@ -10,38 +10,34 @@
 //外部行列
 //--------------------------
 
-//--------------------------
-//出力データ
-//--------------------------
+struct VS_IN
+{
+	float4 Pos : POSITION0;
+	float2 UV : TEXCOORD0;
+	float4 Color : COLOR0;
+	float3 Normal : NORMAL0;
+	float3 FaceNormal : NORMAL1;
+	float4 BlendPow[16] : BLENDWEIGHT0;
+};
 
 
 //頂点シェーダ(VertexShader)//
 //通常描画//
-VS_OUT main
-(
-	float4 Pos			: POSITION0,
-	float2 UV			: TEXCOORD0,
-	float4 Color		 : COLOR0,
-	float3 Normal		: NORMAL0,
-	float3 FaceNormal	: NORMAL1,
-	row_major uint4x4 Blend		: BLENDINDEX0,
-	row_major float4x4 BlendPow	: BLENDWEIGHT0,
-	uint BlendNum		: BLENDINDEX4
-)
+VS_OUT main(VS_IN _in)
 {
 
 	VS_OUT Out;
 
-	Out.Pos = Pos;
+	Out.Pos = _in.Pos;
 
-	float4x4 TmpMat
-		= float4x4(
-			1.0f, 0.0f, 0.0f, 0.0f
-			, 0.0f, 1.0f, 0.0f, 0.0f
-			, 0.0f, 0.0f, 1.0f, 0.0f
-			, 0.0f, 0.0f, 0.0f, 1.0f);
+	BlendData bData;
 
-	//TmpMat = BlendNum > 0 ?  BlendMatrix(Blend, BlendPow, BlendNum) : TmpMat;
+	for (uint i = 0; i < 96; i++)
+	{
+		bData.blend[i] = _in.BlendPow[i / 16][i % 4];
+	}
+
+	float4x4 TmpMat = BlendMatrix(bData);
 
 	float4x4 WorldMat = mul(FrameMatrix, ModelMat);
 
@@ -59,15 +55,16 @@ VS_OUT main
 
 	Out.ProPos = Out.Pos;
 
-	Out.UV = UV;
+	Out.UV = _in.UV;
 
-	//Out.Normal = normalize(mul(Normal, (float3x3)ModelMat));
+	//Out.Normal = normalize(mul(_in.Normal, (float3x3)ModelMat));
 
 	float3x3 RotMat = WorldMat;
 
-	Out.Normal = normalize(mul(Normal, RotMat));
-	Out.FaceNormal = normalize(mul(FaceNormal, RotMat));
+	Out.Normal = normalize(mul(_in.Normal, RotMat));
+	Out.FaceNormal = normalize(mul(_in.FaceNormal, RotMat));
 
+	//Out.Color = _in.BlendPow[0][0];
 	Out.Color = 1.0f;
 
 	Out.Temperature = 1.0f;

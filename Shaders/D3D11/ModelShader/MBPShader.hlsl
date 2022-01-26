@@ -72,7 +72,7 @@ float4 main(VS_OUT In) :SV_Target0
 	//Color.rgb = BackBuffers.Sample(BackBufferSmp, In.Pos.xy).rgb * (1.0f - Color.a)
 	//	+ Color.rgb * Color.a;
 
-	//Color.a = 1.0f;
+	Color.a = 1.0f;
 
 	//for (int i = 0; i < 10; i++)
 	//{
