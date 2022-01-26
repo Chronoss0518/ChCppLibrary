@@ -120,12 +120,14 @@ ChStd::Bool ChCpp::ModelLoader::XFile::SetFrame(
 			{
 
 				tmpFrame->next.push_back(obj);
-
+				obj->parent = tmpFrame;
 				continue;
 			}
 		}
 
 		if (SetMesh(tmpFrame, tmp, _text)) continue;
+
+		
 	}
 
 	_frames = tmpFrame;
@@ -196,10 +198,10 @@ ChStd::Bool ChCpp::ModelLoader::XFile::SetMesh(
 
 		}
 
-	}
+		tmpPos =_text.find((values.empty() ?  ";": ";;"), tmpPos);
+		tmpPos += 2;
 
-	tmpPos = _text.find(";;", tmpPos);
-	tmpPos += 2;
+	}
 
 	{
 		auto values = GetArrayValues<XMESHFACE>(_text, tmpPos, ";,", ";;");
@@ -216,6 +218,10 @@ ChStd::Bool ChCpp::ModelLoader::XFile::SetMesh(
 			mesh->faceList.push_back(face);
 
 		}
+
+		tmpPos = _text.find((values.empty() ? ";" : ";;"), tmpPos);
+		tmpPos += 2;
+
 	}
 
 	_frames->mesh = mesh;
@@ -232,6 +238,7 @@ ChStd::Bool ChCpp::ModelLoader::XFile::SetMesh(
 		if (SetSkinWeights(_frames, tmp, _text)) continue;
 
 	}
+
 	return true;
 }
 
@@ -253,7 +260,7 @@ ChStd::Bool ChCpp::ModelLoader::XFile::SetMeshNormal(
 
 	auto normals = GetArrayValues<XVECTOR>(_text, tmpPos, ";,", ";;");
 
-	tmpPos = _text.find(";;", tmpPos);
+	tmpPos =  _text.find((normals.empty() ? ";" : ";;"), tmpPos);
 	tmpPos += 2;
 
 	auto faces = GetArrayValues<XMESHFACE>(_text, tmpPos, ";,", ";;");
@@ -512,12 +519,6 @@ ChStd::Bool ChCpp::ModelLoader::XFile::SetSkinWeights(
 
 	tmpOffMat.Deserialize(_text, tmpPos, ",", ";;");
 
-	auto skinWeight = ChPtr::Make_S<XFileModelFrame::XSkinWeights>();
-
-	skinWeight->boneOffset = tmpOffMat;
-
-	skinWeight->targetFrameName = boneName;
-
 	{
 		size_t weightingCount = vertexNo.size();
 
@@ -525,11 +526,14 @@ ChStd::Bool ChCpp::ModelLoader::XFile::SetSkinWeights(
 
 		for (unsigned long i = 0; i < weightingCount; i++)
 		{
-			skinWeight->weitPow[vertexNo[i]->value] = weightPow[i]->value;
+			//skinWeight->weitPow[vertexNo[i]->value] = weightPow[i]->value;
+			_frames->mesh->vertexList[vertexNo[i]->value]->skinWeight[boneName] = weightPow[i]->value;
 		}
 	}
-
-	_frames->skinWeightDatas.push_back(skinWeight);
+	auto bone = ChPtr::Make_S<XFileModelFrame::XSkinWeight>();
+	bone->skinWeightsName = boneName;
+	bone->frameToBone = tmpOffMat;
+	_frames->mesh->skinWeightsList.push_back(bone);
 
 	return true;
 }
@@ -713,9 +717,18 @@ void ChCpp::ModelLoader::XFile::XFrameToChFrame(
 
 	std::map<unsigned long, unsigned long>summarizeVertex;
 
+	if (_xFrame->mesh == nullptr)return;
+
 	auto mesh = ChPtr::Make_S<ModelFrame::Mesh>();
 
-	if (_xFrame->mesh == nullptr)return;
+	for (auto&& skinWeight : _xFrame->mesh->skinWeightsList)
+	{
+		auto skinData = ChPtr::Make_S<ModelFrame::SkinWeight>();
+		skinData->frameBoneName = skinWeight->skinWeightsName;
+		skinData->frameToBoneLMat = skinWeight->frameToBone;
+		mesh->boneList.push_back(skinData);
+	}
+
 	//SetVertexList//
 	{
 		auto& xVertexList = _xFrame->mesh->vertexList;
@@ -750,6 +763,11 @@ void ChCpp::ModelLoader::XFile::XFrameToChFrame(
 
 			chVertex->pos = xVertexList[i]->pos;
 			chVertex->normal += xVertexList[i]->normal;
+
+			for (auto&& sWeights : xVertexList[i]->skinWeight)
+			{
+				chVertex->skinWeight[sWeights.first] = sWeights.second;
+			}
 
 			chVertexList.push_back(chVertex);
 

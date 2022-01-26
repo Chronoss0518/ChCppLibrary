@@ -38,8 +38,8 @@ namespace ChCpp
 		{
 			ChVec3 pos;
 			ChVec3 normal;
-			ChUIMat boneNo;
-			ChLMat	blendPow;
+
+			std::map<std::string, float>skinWeight;
 		};
 
 		struct Material
@@ -81,12 +81,24 @@ namespace ChCpp
 			}
 		};
 
+		struct SkinWeight
+		{
+			std::string frameBoneName = "";
+
+			union
+			{
+				ChLMat frameToBoneLMat = ChLMat();
+				ChRMat frameToBoneRMat;
+			};
+		};
+
 		struct Mesh
 		{
 			std::vector<ChPtr::Shared<VertexData>>vertexList;
 			std::vector<ChPtr::Shared<Material>>materialList;
 			std::map<std::string, unsigned long> materialNo;
 			std::vector<ChPtr::Shared<SurFace>>faceList;
+			std::vector<ChPtr::Shared<SkinWeight>>boneList;
 
 			inline ~Mesh()
 			{
@@ -123,22 +135,6 @@ namespace ChCpp
 			}
 
 		};
-
-
-		struct BoneTrees
-		{
-			union
-			{
-				ChLMat baseLMat = ChLMat();
-				ChRMat baseRMat;
-			};
-
-			ChPtr::Weak<BoneTrees> parentBone;
-			std::vector<ChPtr::Shared<BoneTrees>>childBones;
-		};
-
-		std::map<std::string, unsigned long>boneNames;
-		std::vector<ChPtr::Shared<BoneTrees>>boneList;
 
 		ChPtr::Shared<Frame>modelData = nullptr;
 		std::string modelName;

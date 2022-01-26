@@ -7,11 +7,8 @@ namespace ChD3D11
 {
 	class Texture11;
 
-	struct ShaderUseMaterial11
+	struct ShaderUseMaterial11:public Ch3D::Material
 	{
-		ChVec4 diffuse = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
-		ChVec4 specular = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
-		ChVec4 ambient = ChVec4(0.3f, 0.3f, 0.3f, 1.0f);
 		ChMat_11 frameMatrix;
 	};
 
@@ -40,9 +37,7 @@ namespace ChD3D11
 	struct PrimitiveVertex11 : public MeshVertex11
 	{
 		ChVec3 faceNormal = ChVec3(0.0f,0.0f,-1.0f);
-		ChUIMat blendIndex;
-		ChLMat blendPow;
-		unsigned long blendNum = 0;
+		float blendPow[96];
 	};
 
 	template<class Vertex = Vertex11>
@@ -50,7 +45,6 @@ namespace ChD3D11
 	{
 		IndexBuffer indexs = nullptr;
 		VertexBuffer vertexs = nullptr;
-
 
 		typename std::enable_if<std::is_base_of<Vertex11, Vertex>::value, Vertex*>::type vertexArray = nullptr;
 		unsigned long* indexArray = nullptr;
@@ -103,6 +97,15 @@ namespace ChD3D11
 		{
 			Release();
 		}
+	};
+
+	struct BoneData11
+	{
+		unsigned long skinWeightCount = 0;
+		ChMath::Vector3Base<unsigned long> tmpBuffer;
+		ChMat_11 nowFrameMat[96];
+		ChMat_11 frameToBone[96];
+
 	};
 
 	template<class Vertex = Vertex11>
@@ -197,6 +200,7 @@ namespace ChD3D11
 		///////////////////////////////////////////////////////////////////////////////////
 
 	private:
+
 
 
 		ID3D11Device* device = nullptr;

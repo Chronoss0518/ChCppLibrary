@@ -16,6 +16,12 @@ namespace ChCpp
 		{
 		protected:
 
+			struct XAnimationData
+			{
+
+				unsigned long animTicksPerSecond;
+			};
+
 			struct XFileModelFrame
 			{
 				struct XVertex
@@ -23,6 +29,7 @@ namespace ChCpp
 					ChVec3 pos;
 					ChVec2 uvPos;
 					ChVec3 normal;
+					std::map<std::string, float>skinWeight;
 				};
 
 				struct XMaterial
@@ -44,20 +51,18 @@ namespace ChCpp
 					unsigned long mateNo = 0;
 				};
 
-				struct XSkinWeights
+				struct XSkinWeight
 				{
-					std::string targetFrameName = "";
-
-					std::map<unsigned long, float>weitPow;
-
-					ChLMat boneOffset;
-
+					std::string skinWeightsName;
+					ChLMat frameToBone;
 				};
+
 				struct XMesh
 				{
 					std::vector<ChPtr::Shared<XVertex>>vertexList;
 					std::vector<ChPtr::Shared<XMaterial>>materialList;
 					std::vector<ChPtr::Shared<XFace>>faceList;
+					std::vector<ChPtr::Shared<XSkinWeight>>skinWeightsList;
 				};
 
 				struct XFrame
@@ -65,13 +70,12 @@ namespace ChCpp
 					std::string fName;
 					ChPtr::Shared<XMesh> mesh;
 					std::vector<ChPtr::Shared<XFrame>>next;
-					std::vector<ChPtr::Shared<XSkinWeights>>skinWeightDatas;
+					ChPtr::Weak<XFrame> parent;
 					ChLMat frameMatrix;
 				};
 
-
 				ChPtr::Shared<XFrame> modelData = nullptr;
-				std::string modelName;
+				std::string modelName = "";
 
 			};
 
@@ -523,6 +527,8 @@ namespace ChCpp
 			};
 
 			///////////////////////////////////////////////////////////////////////////////////////
+
+			XFileModelFrame xModel;
 
 			ChStd::Bool exceptionFlg = false;
 

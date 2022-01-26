@@ -8,20 +8,45 @@ namespace ChD3D11
 {
 
 	class Texture11;
+	class Mesh11;
 
-	struct FrameData11
+	struct SkinWeight
 	{
+		std::string boneFrameName = "";
+		ChMat_11 frameToBone = ChMat_11();
+	};
+
+	struct FrameData11 :public ChCp::Releaser
+	{
+
 		std::map<std::string,ChPtr::Shared<PrimitiveData11<PrimitiveVertex11>>>primitiveDatas;
 
 		std::string frameName;
 
 		ChMat_11 baseMat;
 
-		ChPtr::Shared<FrameData11> parentFrame;
+		ChPtr::Weak<FrameData11> parentFrame;
 
 		std::vector<ChPtr::Shared<FrameData11>>childFrame;
 
 		unsigned long primitiveCount = 0;
+
+		std::vector<std::string>boneNameAddOrderList;
+		std::vector<ChPtr::Shared<SkinWeight>>skinDataList;
+
+		BoneData11 boneData;
+		ConstantBuffer boneBuffer = nullptr;
+
+		inline void Release()override
+		{
+
+			if (ChPtr::NotNullCheck(boneBuffer))
+			{
+				boneBuffer->Release();
+				boneBuffer = nullptr;
+			}
+
+		}
 
 	};
 
@@ -49,10 +74,19 @@ namespace ChD3D11
 		virtual void Create(const ChCpp::ModelObject& _baseModels);
 
 		///////////////////////////////////////////////////////////////////////////////////////
+		//SetFunction//
 
 		void SetDrawData(ID3D11DeviceContext* _dc)override;
 
 		void SetDrawData(ID3D11DeviceContext* _dc,const std::string& _frameName);
+
+		///////////////////////////////////////////////////////////////////////////////////////
+		//GetFunction//
+
+		std::map<std::string, ChPtr::Shared<FrameData11>>& GetFrameNames()
+		{
+			return frameNames;
+		}
 
 	protected:
 
@@ -72,7 +106,7 @@ namespace ChD3D11
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
-		void UpdateFrame();
+		void UpdateFrame(ID3D11DeviceContext* _dc);
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
@@ -81,13 +115,11 @@ namespace ChD3D11
 		using MaterialName = std::string;
 
 		std::map<std::string,ChPtr::Shared<FrameData11>>frameNames;
+		//std::map<std::string, ChPtr::Shared<FrameData11>>boneNames;
 
 		std::vector<ChPtr::Shared<FrameData11>>frameList;
 
 		ChPtr::Shared<FrameData11> modelData = nullptr;
-
-		ChMat_11* boneList = nullptr;
-
 
 	private:
 

@@ -45,6 +45,8 @@ namespace ChD3D11
 	void Mesh11::Release()
 	{
 		frameList.clear();
+
+
 		ShaderObject<PrimitiveVertex11>::Release();
 		modelData = nullptr;
 	}
@@ -81,6 +83,9 @@ namespace ChD3D11
 			_frames->childFrame.push_back(tmp);
 			tmp->parentFrame = _frames;
 		}
+		_frames->frameName = _baseModels.myName;
+
+		frameNames[_frames->frameName] = _frames;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -90,10 +95,27 @@ namespace ChD3D11
 		, const ChCpp::ModelFrame::Frame& _baseModels)
 	{
 
-		if (_baseModels.mesh == nullptr)return;
-
+		if (_baseModels.mesh == nullptr)
+		{
+			//boneNames[_frames->frameName] = _frames;
+			return;
+		}
 
 		_frames->baseMat = _baseModels.baseLMat;
+
+		for (auto&& skinWeight : _baseModels.mesh->boneList)
+		{
+			_frames->boneNameAddOrderList.push_back(skinWeight->frameBoneName);
+			auto bone = ChPtr::Make_S<ChD3D11::SkinWeight>();
+			bone->boneFrameName = skinWeight->frameBoneName;
+			bone->frameToBone = skinWeight->frameToBoneLMat;
+
+			_frames->skinDataList.push_back(bone);
+		}
+
+		_frames->boneData.skinWeightCount = _frames->skinDataList.size();
+
+		CreateContentBuffer<BoneData11>(&_frames->boneBuffer);
 
 		auto surfaceList = CreateSurfaceList(_baseModels);
 
@@ -130,7 +152,6 @@ namespace ChD3D11
 			prim->vertexNum = faces.size() * 3;
 			prim->indexNum = faces.size() * 3;
 
-
 			prim->vertexArray = new PrimitiveVertex11[prim->vertexNum];
 
 			prim->indexArray = new unsigned long[prim->indexNum];
@@ -159,10 +180,15 @@ namespace ChD3D11
 					vertexs.pos = verList[faces[fCount]->vertexData[j].vertexNo]->pos;
 					vertexs.normal = verList[faces[fCount]->vertexData[j].vertexNo]->normal;
 					vertexs.faceNormal = faceNormal;
-					vertexs.blendPow = verList[faces[fCount]->vertexData[j].vertexNo]->blendPow;
-					vertexs.blendIndex = verList[faces[fCount]->vertexData[j].vertexNo]->boneNo;
+					//vertexs.blendPow = verList[faces[fCount]->vertexData[j].vertexNo]->blendPow;
+					//vertexs.blendIndex = verList[faces[fCount]->vertexData[j].vertexNo]->boneNo;
 
 					vertexs.uvPos = faces[fCount]->vertexData[j].uvPos;
+
+					for (unsigned long i = 0;i<_frames->boneNameAddOrderList.size();i++)
+					{
+						vertexs.blendPow[i] = verList[faces[fCount]->vertexData[j].vertexNo]->skinWeight[_frames->boneNameAddOrderList[i]];
+					}
 
 					prim->indexArray[nowCount] = nowCount;
 
@@ -186,6 +212,7 @@ namespace ChD3D11
 
 			CreateContentBuffer<ShaderUseMaterial11>(&prim->mate->mBuffer);
 
+
 			for (auto texName : mateList[i]->textureNames)
 			{
 				auto tex = ChPtr::Make_S<Texture11>();
@@ -199,15 +226,11 @@ namespace ChD3D11
 			if (prim->mate->textureList.size() <= 0)prim->mate->textureList.push_back(whiteTex);
 			if (prim->mate->textureList.size() <= 1)prim->mate->textureList.push_back(normalTex);
 
-
 			_frames->primitiveDatas[mateList[i]->materialName] = prim;
 
 		}
 
 		frameList.push_back(_frames);
-
-
-
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -259,9 +282,17 @@ namespace ChD3D11
 		unsigned int strides = sizeof(PrimitiveVertex11);
 		unsigned int offsets = 0;
 
+		UpdateFrame(_dc);
 
 		for (auto&& frame : frameList)
 		{
+			if (!frame->boneNameAddOrderList.empty())
+			{
+				_dc->UpdateSubresource(frame->boneBuffer, 0, nullptr, &frame->boneData, 0, 0);
+
+				_dc->VSSetConstantBuffers(10, 1, &frame->boneBuffer);
+			}
+
 			for (auto&& prim : frame->primitiveDatas)
 			{
 				_dc->IASetVertexBuffers(0, 1, &prim.second->vertexs, &strides, &offsets);
@@ -284,11 +315,29 @@ namespace ChD3D11
 				_dc->VSSetConstantBuffers(2, 1, &prim.second->mate->mBuffer);
 				_dc->PSSetConstantBuffers(2, 1, &prim.second->mate->mBuffer);
 
+
 				_dc->DrawIndexed(prim.second->indexNum, 0, 0);
 
 			}
 		}
 
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////////
+
+	void Mesh11::UpdateFrame(ID3D11DeviceContext* _dc)
+	{
+
+		if (modelData == nullptr)return;
+		
+		for (auto&& frame : frameList)
+		{
+			if (frame->boneNameAddOrderList.size() <= 0)continue;
+			for (unsigned long i = 0; i < frame->boneNameAddOrderList.size(); i++)
+			{
+				frame->boneData.nowFrameMat[i] = frameNames[frame->boneNameAddOrderList[i]]->baseMat;
+			}
+		}
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
