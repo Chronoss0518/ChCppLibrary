@@ -32,18 +32,16 @@ VS_OUT main(VS_IN _in)
 
 	BlendData bData;
 
-	for (uint i = 0; i < 96; i++)
+	for (uint i = 0; i < skinWeightCount; i++)
 	{
 		bData.blend[i] = _in.BlendPow[i / 16][i % 4];
 	}
 
-	float4x4 TmpMat = BlendMatrix(bData);
-
-	float4x4 WorldMat = mul(FrameMatrix, ModelMat);
-
-	//WorldMat = mul(WorldMat, TmpMat);
+	row_major float4x4 WorldMat = mul(FrameMatrix, ModelMat);
 
 	Out.Pos = mul(Out.Pos, WorldMat);
+
+	Out.Pos = BlendMatrix(bData, Out.Pos);
 
 	Out.UsePos = Out.Pos;
 
@@ -59,7 +57,7 @@ VS_OUT main(VS_IN _in)
 
 	//Out.Normal = normalize(mul(_in.Normal, (float3x3)ModelMat));
 
-	float3x3 RotMat = WorldMat;
+	row_major float3x3 RotMat = WorldMat;
 
 	Out.Normal = normalize(mul(_in.Normal, RotMat));
 	Out.FaceNormal = normalize(mul(_in.FaceNormal, RotMat));

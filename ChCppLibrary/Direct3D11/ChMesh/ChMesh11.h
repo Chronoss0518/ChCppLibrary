@@ -10,20 +10,16 @@ namespace ChD3D11
 	class Texture11;
 	class Mesh11;
 
-	struct SkinWeight
-	{
-		std::string boneFrameName = "";
-		ChMat_11 frameToBone = ChMat_11();
-	};
-
 	struct FrameData11 :public ChCp::Releaser
 	{
 
-		std::map<std::string,ChPtr::Shared<PrimitiveData11<PrimitiveVertex11>>>primitiveDatas;
+		std::map<std::string,ChPtr::Shared<PrimitiveData11<SkinMeshVertex11>>>primitiveDatas;
 
 		std::string frameName;
 
 		ChMat_11 baseMat;
+		ChMat_11 animationMat;
+		ChMat_11 toWorldMat;
 
 		ChPtr::Weak<FrameData11> parentFrame;
 
@@ -32,7 +28,7 @@ namespace ChD3D11
 		unsigned long primitiveCount = 0;
 
 		std::vector<std::string>boneNameAddOrderList;
-		std::vector<ChPtr::Shared<SkinWeight>>skinDataList;
+		std::map<std::string,ChPtr::Shared<ChMat_11>>skinDataList;
 
 		BoneData11 boneData;
 		ConstantBuffer boneBuffer = nullptr;
@@ -94,7 +90,8 @@ namespace ChD3D11
 
 		void CreateFrames(
 			ChPtr::Shared<FrameData11>& _frames
-			, const ChCpp::ModelFrame::Frame& _baseModels);
+			, const ChCpp::ModelFrame::Frame& _baseModels
+			, const ChMat_11& _parentMat = ChMat_11());
 
 		void CreatePrimitiveData(
 			ChPtr::Shared<FrameData11>& _frames
@@ -107,6 +104,10 @@ namespace ChD3D11
 		///////////////////////////////////////////////////////////////////////////////////////
 
 		void UpdateFrame(ID3D11DeviceContext* _dc);
+
+		///////////////////////////////////////////////////////////////////////////////////////
+
+		ChMat_11 UpdateAnimation(const ChPtr::Shared<FrameData11> _frame);
 
 		///////////////////////////////////////////////////////////////////////////////////////
 

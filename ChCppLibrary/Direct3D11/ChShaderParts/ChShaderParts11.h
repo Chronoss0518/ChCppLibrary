@@ -80,9 +80,9 @@ namespace ChD3D11
 			//Structures//
 			struct DirectionalLight
 			{
-				ChVec3 dif;
+				ChVec3 dif = ChVec3(0.7f,0.7f,0.7f);
 				bool useLightFlg = false;
-				ChVec3 dir;
+				ChVec3 dir = ChVec3(0.5f, -0.5f, 0.0f);
 				float ambPow = 0.0f;
 			};
 

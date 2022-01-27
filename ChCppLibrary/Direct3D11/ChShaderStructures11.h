@@ -11,11 +11,10 @@ namespace ChD3D11
 	{
 		ChMat_11 frameMatrix;
 	};
-
+	
 	struct Material11
 	{
 		ShaderUseMaterial11 material;
-
 
 		ConstantBuffer mBuffer = nullptr;
 		std::string materialName;
@@ -37,6 +36,10 @@ namespace ChD3D11
 	struct PrimitiveVertex11 : public MeshVertex11
 	{
 		ChVec3 faceNormal = ChVec3(0.0f,0.0f,-1.0f);
+	};
+
+	struct SkinMeshVertex11 : public PrimitiveVertex11
+	{
 		float blendPow[96];
 	};
 
@@ -52,7 +55,7 @@ namespace ChD3D11
 		unsigned long vertexNum = 0;
 		unsigned long indexNum = 0;
 
-		ChPtr::Shared<Material11> mate;
+		ChPtr::Shared<Material11> mate = nullptr;
 
 		inline void Release()
 		{
@@ -103,8 +106,7 @@ namespace ChD3D11
 	{
 		unsigned long skinWeightCount = 0;
 		ChMath::Vector3Base<unsigned long> tmpBuffer;
-		ChMat_11 nowFrameMat[96];
-		ChMat_11 frameToBone[96];
+		ChMat_11 animationMat[96];
 
 	};
 

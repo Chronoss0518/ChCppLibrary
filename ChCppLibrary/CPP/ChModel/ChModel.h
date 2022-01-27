@@ -46,7 +46,7 @@ namespace ChCpp
 		{
 			std::string materialName = "";
 			ChVec4 diffuse = ChVec4(1.0f);
-			ChVec4 specular = ChVec4(1.0f);
+			ChVec4 specular = ChVec4(0.0f);
 			ChVec4 ambient = ChVec4(0.0f);
 			std::vector<std::string>textureNames = std::vector<std::string>(0);
 

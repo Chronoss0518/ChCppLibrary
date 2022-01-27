@@ -69,21 +69,26 @@ namespace ChD3D11
 
 	void Mesh11::CreateFrames(
 		ChPtr::Shared<FrameData11>& _frames
-		, const ChCpp::ModelFrame::Frame& _baseModels)
+		, const ChCpp::ModelFrame::Frame& _baseModels
+		, const ChMat_11& _parentMat)
 	{
 
 		_frames = ChPtr::Make_S<FrameData11>();
-		
+
 		CreatePrimitiveData(_frames, _baseModels);
+
+		_frames->toWorldMat = _frames->baseMat * _parentMat;
 
 		for (auto&& models : _baseModels.childFrames)
 		{
 			ChPtr::Shared<FrameData11> tmp;
-			CreateFrames(tmp, *models);
+			CreateFrames(tmp, *models,_frames->toWorldMat);
 			_frames->childFrame.push_back(tmp);
 			tmp->parentFrame = _frames;
 		}
 		_frames->frameName = _baseModels.myName;
+
+		_frames->toWorldMat.Inverse();
 
 		frameNames[_frames->frameName] = _frames;
 	}
@@ -95,22 +100,16 @@ namespace ChD3D11
 		, const ChCpp::ModelFrame::Frame& _baseModels)
 	{
 
-		if (_baseModels.mesh == nullptr)
-		{
-			//boneNames[_frames->frameName] = _frames;
-			return;
-		}
+		if (_baseModels.mesh == nullptr)return;
 
 		_frames->baseMat = _baseModels.baseLMat;
 
 		for (auto&& skinWeight : _baseModels.mesh->boneList)
 		{
 			_frames->boneNameAddOrderList.push_back(skinWeight->frameBoneName);
-			auto bone = ChPtr::Make_S<ChD3D11::SkinWeight>();
-			bone->boneFrameName = skinWeight->frameBoneName;
-			bone->frameToBone = skinWeight->frameToBoneLMat;
-
-			_frames->skinDataList.push_back(bone);
+			auto mat = ChPtr::Make_S<ChMat_11>();
+			*mat = skinWeight->frameToBoneLMat;
+			_frames->skinDataList[skinWeight->frameBoneName] = mat;
 		}
 
 		_frames->boneData.skinWeightCount = _frames->skinDataList.size();
@@ -281,17 +280,19 @@ namespace ChD3D11
 
 		unsigned int strides = sizeof(PrimitiveVertex11);
 		unsigned int offsets = 0;
-
+		BoneData11 tmpBoneData;
 		UpdateFrame(_dc);
 
 		for (auto&& frame : frameList)
 		{
+			_dc->UpdateSubresource(frame->boneBuffer, 0, nullptr, &tmpBoneData, 0, 0);
+
 			if (!frame->boneNameAddOrderList.empty())
 			{
 				_dc->UpdateSubresource(frame->boneBuffer, 0, nullptr, &frame->boneData, 0, 0);
-
-				_dc->VSSetConstantBuffers(10, 1, &frame->boneBuffer);
 			}
+
+			_dc->VSSetConstantBuffers(11, 1, &frame->boneBuffer);
 
 			for (auto&& prim : frame->primitiveDatas)
 			{
@@ -335,9 +336,40 @@ namespace ChD3D11
 			if (frame->boneNameAddOrderList.size() <= 0)continue;
 			for (unsigned long i = 0; i < frame->boneNameAddOrderList.size(); i++)
 			{
-				frame->boneData.nowFrameMat[i] = frameNames[frame->boneNameAddOrderList[i]]->baseMat;
+				auto boneFrame = frameNames[frame->boneNameAddOrderList[i]];
+
+				//ChMat_11 inversWorldMat = boneFrame->worldMat;
+				//inversWorldMat.Inverse();
+				ChMat_11 offMat = *frame->skinDataList[frame->boneNameAddOrderList[i]];
+
+				ChMat_11 aniMat = UpdateAnimation(boneFrame);
+				//frame->boneData.animationMat[i] = aniMat * inversWorldMat * offMat;
+				frame->boneData.animationMat[i] = aniMat * offMat;
 			}
 		}
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////////
+
+	ChMat_11 Mesh11::UpdateAnimation(const ChPtr::Shared<FrameData11> _frame)
+	{
+		ChMat_11 frameOffset = _frame->baseMat;
+		ChMat_11 aniMat = _frame->animationMat;
+		aniMat = frameOffset * aniMat;
+
+		auto parent = _frame->parentFrame.lock();
+
+		if (parent == nullptr)
+		{
+			return aniMat;
+		}
+
+		ChMat_11 parentMat = UpdateAnimation(parent);
+
+		aniMat = parentMat * aniMat;
+
+		return aniMat;
+
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
