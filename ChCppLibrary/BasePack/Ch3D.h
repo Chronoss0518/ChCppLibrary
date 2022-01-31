@@ -8,24 +8,6 @@
 
 namespace Ch3D
 {
-
-	struct DrawVertex
-	{
-		ChVec3 pos;
-		ChVec2 uv;
-		ChVec4 color = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
-	};
-
-	struct DrawPolyVertex : public DrawVertex
-	{
-		ChVec3 normal = ChVec3(0.0f, 0.0f, -1.0f);
-	};
-
-	struct DrawMeshVertex : public DrawPolyVertex
-	{
-		ChVec3 faceNormal = ChVec3(0.0f, 0.0f, -1.0f);
-	};
-
 	struct Vertex
 	{
 		ChVec3 pos;
@@ -42,7 +24,6 @@ namespace Ch3D
 		ChVec3 faceNormal = ChVec3(0.0f, 0.0f, -1.0f);
 	};
 
-
 	struct PolygonVertexData
 	{
 		unsigned long no = 0;
@@ -55,16 +36,17 @@ namespace Ch3D
 		 std::vector<ChPtr::Shared<PolygonVertexData>> vertexNo;
 	};
 
-	struct TryPolygon
-	{
-		PolygonVertexData vertexNo[3];
-	};
-
 	struct Material
 	{
 		ChVec4 diffuse = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
 		ChVec4 specular = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
 		ChVec4 ambient = ChVec4(0.3f, 0.3f, 0.3f, 1.0f);
+	};
+
+	struct SkinWeight
+	{
+		unsigned long vertexNo = 0;
+		float weightPow = 0.0f;
 	};
 
 	class CreateCallBack
@@ -79,14 +61,9 @@ namespace Ch3D
 	class Primitive :public CreateCallBack
 	{
 
-		std::vector<ChPtr::Shared<Polygon>> polygons = nullptr;
-		Vertex* vertexList = nullptr;
-
-		virtual void onCreated() = 0;
+		Polygon* polygons = nullptr;
 
 		Material mate;
-
-
 	};
 
 	template<class vertex = Vertex,class primitive = Primitive<vertex>>
@@ -96,6 +73,9 @@ namespace Ch3D
 
 		std::vector<ChPtr::Shared<primitive>> primitives = nullptr;
 		std::map<std::string, unsigned long>mateNames;
+
+		std::map<std::string, SkinWeight*>skinWeightList;
+		vertex* vertexList = nullptr;
 
 		std::vector<ChPtr::Shared<Frame<Vertex>>> parent;
 
