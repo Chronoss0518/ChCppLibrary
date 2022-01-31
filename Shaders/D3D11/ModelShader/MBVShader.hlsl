@@ -17,7 +17,7 @@ struct VS_IN
 	float4 Color : COLOR0;
 	float3 Normal : NORMAL0;
 	float3 FaceNormal : NORMAL1;
-	float4 BlendPow[16] : BLENDWEIGHT0;
+	float4 BlendPow[24] : BLENDWEIGHT0;
 };
 
 
@@ -32,16 +32,16 @@ VS_OUT main(VS_IN _in)
 
 	BlendData bData;
 
-	for (uint i = 0; i < skinWeightCount; i++)
+	for (uint i = 0; i < skinWeightCount / 4; i++)
 	{
-		bData.blend[i] = _in.BlendPow[i / 16][i % 4];
+		bData.blend[i] = _in.BlendPow[i];
 	}
 
 	row_major float4x4 WorldMat = mul(FrameMatrix, ModelMat);
 
 	Out.Pos = mul(Out.Pos, WorldMat);
 
-	Out.Pos = BlendMatrix(bData, Out.Pos);
+	//Out.Pos = BlendMatrix(bData, Out.Pos);
 
 	Out.UsePos = Out.Pos;
 

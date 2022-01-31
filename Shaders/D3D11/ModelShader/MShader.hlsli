@@ -29,12 +29,12 @@ cbuffer Material :register(b2)
 		, 0.0f, 0.0f, 0.0f, 1.0f);
 };
 
-texture2D ModelTex :register(t0);
+texture2D DiffuesTex :register(t0);
 
-texture2D NormalTex:register(t1);
+texture2D NormalMap:register(t1);
 
 //画像から1ピクセルの色を取得するための物//
-sampler ModelSmp:register(s0);
+sampler DiffuesSmp:register(s0);
 
 //画像から1ピクセルの色を取得するための物//
 sampler NormalSmp:register(s1);

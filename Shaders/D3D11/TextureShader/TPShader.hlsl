@@ -24,11 +24,12 @@ sampler Smp :register(s0);
 float4 main(VS_OUT In) : SV_Target0
 {
 	float4 Out = In.Color;
-	Out *= Tex.Sample(Smp, In.UV);
+	//Out *= Tex.Sample(Smp, In.UV);
+	Out = float4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	//Out = BaseColor;
 
-	clip(Out.a < 0.01f ? -1 : 1);
+	//clip(Out.a < 0.01f ? -1 : 1);
 
 	//float4 BackCol = BackBuffers.Sample(BackBufferSmp, In.Pos.xy);
 

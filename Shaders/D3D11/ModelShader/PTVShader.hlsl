@@ -5,20 +5,33 @@
 
 #include"MShader.hlsli"
 
+struct PolygonBoardVertex
+{
+
+	float4 pos;
+	float4 color;
+	float2 uv;
+	uint2 tmpBuf;
+	float3 normal;
+	uint tmpBuf2;
+};
+
+cbuffer PolygonBoardBuffer : register(b5)
+{
+	PolygonBoardVertex vertex[3];
+};
+
 //--------------------------
 //シェーダー
 //--------------------------
 //頂点シェダ(VertexShader)//
 //板ポリゴンバージョン//
 VS_OUT main(
-	float4 pos		: POSITION0
-	, float2 uv		: TEXCOORD0
-	, float4 color	: COLOR0
-	, float3 normal : NORMAL0
+	uint _no : BLENDINDICES0
 ) {
 	VS_OUT Out;
 
-	Out.Pos = pos;
+	Out.Pos = vertex[_no].pos;
 
 	Out.Pos = mul(Out.Pos, ModelMat);
 	//Out.Pos = mul(ModelMat, Out.Pos);
@@ -36,13 +49,13 @@ VS_OUT main(
 	Out.ProPos = Out.Pos;
 
 	//テクスチャマップ上の位置情報//
-	Out.UV = uv;
+	Out.UV = vertex[_no].uv;
 
 	//頂点の色情報//
-	Out.Color = color;
+	Out.Color = vertex[_no].color;
 
-	Out.Normal = normal;
-	Out.FaceNormal = normal;
+	Out.Normal = vertex[_no].normal;
+	Out.FaceNormal = vertex[_no].normal;
 
 	Out.Temperature = 0.0f;
 	//出力//

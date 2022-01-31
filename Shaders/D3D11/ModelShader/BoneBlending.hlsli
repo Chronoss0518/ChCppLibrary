@@ -1,5 +1,5 @@
 
-cbuffer BoneData :register(b11)
+cbuffer BoneDatas :register(b11)
 {
 	uint skinWeightCount = 0;
 	uint3 tmpBuffer;
@@ -8,7 +8,7 @@ cbuffer BoneData :register(b11)
 
 struct BlendData
 {
-	float blend[96];
+	float4 blend[24];
 };
 
 float4 BlendMatrix(BlendData _blendPow,float4 _pos)
@@ -17,7 +17,7 @@ float4 BlendMatrix(BlendData _blendPow,float4 _pos)
 
 	for (uint i = 0; i < skinWeightCount; i++)
 	{
-		pos += mul(_pos, animationMat[i] * _blendPow.blend[i]);
+		pos += mul(_pos, animationMat[i] * _blendPow.blend[i / 4][i % 4]);
 	}
 
 	return pos;
