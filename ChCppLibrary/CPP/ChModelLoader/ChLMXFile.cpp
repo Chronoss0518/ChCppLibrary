@@ -790,53 +790,21 @@ void ChCpp::ModelLoader::XFile::XFrameToChFrame(
 
 		for (auto&& xFace : xFaceList)
 		{
-			unsigned long counters[3];
-			counters[0] = 0;
-			counters[1] = 1;
-			counters[2] = xFace->vertexNos.size() - 1;
+			auto chFace = ChPtr::Make_S<ModelFrame::SurFace>();
 
-			ChStd::Bool upperFlg = true;
-
-			for (unsigned long i = 0; i < xFace->vertexNos.size() - 2; i++)
+			for (unsigned long i = 0; i < xFace->vertexNos.size(); i++)
 			{
-				auto chFace = ChPtr::Make_S<ModelFrame::SurFace>();
+				auto chVertexData = ChPtr::Make_S<ModelFrame::SurFace::SurFaceVertex>();
 
-				for (unsigned long j = 0; j < 3; j++)
-				{
+				unsigned long VertexNo = summarizeVertex[xFace->vertexNos[i]];
 
-					auto chVertexData = ChPtr::Make_S<ModelFrame::SurFace::SurFaceVertex>();
+				chVertexData->vertexNo = VertexNo;
+				chVertexData->uvPos = xVertexList[xFace->vertexNos[i]]->uvPos;
 
-					unsigned long VertexNo = summarizeVertex[xFace->vertexNos[counters[j]]];
-
-					chVertexData->vertexNo = VertexNo;
-					chVertexData->uvPos = xVertexList[xFace->vertexNos[counters[j]]]->uvPos;
-
-
-					chFace->vertexData[j].uvPos = chVertexData->uvPos;
-					chFace->vertexData[j].vertexNo = chVertexData->vertexNo;
-
-					//chFace->normal += xVertexList[xFace->vertexNos[counters[j]]]->normal;
-				}
-
-				chFace->normal.Normalize();
-
-				if (upperFlg)
-				{
-					counters[0] = counters[1];
-					counters[1] = counters[2] - 1;
-				}
-				else
-				{
-					counters[2] = counters[1];
-					counters[1] = counters[0] + 1;
-				}
-
-				upperFlg = !upperFlg;
-
-				chFace->materialNo = xFace->mateNo;
-
-				chFaceList.push_back(chFace);
+				chFace->vertexData.push_back(chVertexData);
+				//chFace->normal += xVertexList[xFace->vertexNos[counters[j]]]->normal;
 			}
+			chFaceList.push_back(chFace);
 		}
 
 
@@ -862,7 +830,7 @@ void ChCpp::ModelLoader::XFile::XFrameToChFrame(
 
 			for (unsigned long i = 0; i < xMate->textureNameList.size(); i++)
 			{
-				chMate->textureNames.push_back(xMate->textureNameList[i]);
+				chMate->diffuseMap = xMate->textureNameList[i];
 
 				//switch (i)
 				//{

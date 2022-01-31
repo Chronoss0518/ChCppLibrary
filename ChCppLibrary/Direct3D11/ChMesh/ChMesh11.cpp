@@ -20,14 +20,16 @@ namespace ChD3D11
 
 		Release();
 
-		SetDevice(_device);
-
 		normalTex = ChPtr::Make_S<Texture11>();
 		whiteTex = ChPtr::Make_S<Texture11>();
 
 		normalTex->CreateColorTexture(_device, ChVec4(0.5f, 1.0f, 0.5f, 1.0f), 1, 1);
 		whiteTex->CreateColorTexture(_device, ChVec4(1.0f), 1, 1);
 
+		mateBuffer.CreateBuffer(_device, ChStd::EnumCast(ModelConstantRegisterNo::Material));
+		boneData.CreateBuffer(_device, ChStd::EnumCast(ModelConstantRegisterNo::BoneDatas));
+
+		SetDevice(_device);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -37,7 +39,6 @@ namespace ChD3D11
 		if (!D3D11API().IsInit())return;
 
 		Init(D3D11Device());
-
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -46,8 +47,6 @@ namespace ChD3D11
 	{
 		frameList.clear();
 
-
-		ShaderObject<PrimitiveVertex11>::Release();
 		modelData = nullptr;
 	}
 
@@ -114,8 +113,6 @@ namespace ChD3D11
 
 		_frames->boneData.skinWeightCount = _frames->skinDataList.size();
 
-		CreateContentBuffer<BoneData11>(&_frames->boneBuffer);
-
 		auto surfaceList = CreateSurfaceList(_baseModels);
 
 		unsigned long mateNum = _baseModels.mesh->materialList.size();
@@ -146,12 +143,17 @@ namespace ChD3D11
 
 			auto& faces = surfaceList[i];
 			
-			auto prim = ChPtr::Make_S<PrimitiveData11<PrimitiveVertex11>>();
+			auto prim = ChPtr::Make_S<PrimitiveData11<SkinMeshVertex11>>();
 
-			prim->vertexNum = faces.size() * 3;
-			prim->indexNum = faces.size() * 3;
+			for (auto&& face : faces)
+			{
+				prim->vertexNum += face->vertexData.size();
 
-			prim->vertexArray = new PrimitiveVertex11[prim->vertexNum];
+			}
+
+			prim->indexNum = prim->vertexNum;
+
+			prim->vertexArray = new SkinMeshVertex11[prim->vertexNum];
 
 			prim->indexArray = new unsigned long[prim->indexNum];
 
@@ -171,22 +173,22 @@ namespace ChD3D11
 				//faceNormal.Normalize();
 
 				//VertexCount//
-				for (unsigned long j = 0; j < 3; j++)
+				for (unsigned long j = 0; j < faces[fCount]->vertexData.size(); j++)
 				{
 
 					auto& vertexs = (prim->vertexArray[nowCount]);
 
-					vertexs.pos = verList[faces[fCount]->vertexData[j].vertexNo]->pos;
-					vertexs.normal = verList[faces[fCount]->vertexData[j].vertexNo]->normal;
+					vertexs.pos = verList[faces[fCount]->vertexData[j]->vertexNo]->pos;
+					vertexs.normal = verList[faces[fCount]->vertexData[j]->vertexNo]->normal;
 					vertexs.faceNormal = faceNormal;
 					//vertexs.blendPow = verList[faces[fCount]->vertexData[j].vertexNo]->blendPow;
 					//vertexs.blendIndex = verList[faces[fCount]->vertexData[j].vertexNo]->boneNo;
 
-					vertexs.uvPos = faces[fCount]->vertexData[j].uvPos;
+					vertexs.uvPos = faces[fCount]->vertexData[j]->uvPos;
 
 					for (unsigned long i = 0;i<_frames->boneNameAddOrderList.size();i++)
 					{
-						vertexs.blendPow[i] = verList[faces[fCount]->vertexData[j].vertexNo]->skinWeight[_frames->boneNameAddOrderList[i]];
+						vertexs.blendPow[i] = verList[faces[fCount]->vertexData[j]->vertexNo]->skinWeight[_frames->boneNameAddOrderList[i]];
 					}
 
 					prim->indexArray[nowCount] = nowCount;
@@ -197,8 +199,9 @@ namespace ChD3D11
 
 			}
 
-			CreateVertexBuffer(*prim);
-			CreateIndexBuffer(*prim);
+			
+			prim->vertexBuffer.CreateBuffer(GetDevice(), prim->vertexArray, prim->vertexNum);
+			prim->indexBuffer.CreateBuffer(GetDevice(),prim->indexArray, prim->indexNum);
 
 			prim->mate = ChPtr::Make_S<Material11>();
 
@@ -209,21 +212,17 @@ namespace ChD3D11
 
 			prim->mate->material.frameMatrix = _baseModels.baseLMat;
 
-			CreateContentBuffer<ShaderUseMaterial11>(&prim->mate->mBuffer);
+			prim->mate->diffuseMap->CreateTexture(mateList[i]->diffuseMap, GetDevice());
+			prim->mate->ambientMap->CreateTexture(mateList[i]->ambientMap, GetDevice());
+			prim->mate->specularMap->CreateTexture(mateList[i]->specularMap, GetDevice());
+			prim->mate->specularHighLightMap->CreateTexture(mateList[i]->specularHighLightMap, GetDevice());
+			prim->mate->bumpMap->CreateTexture(mateList[i]->bumpMap, GetDevice());
+			prim->mate->alphaMap->CreateTexture(mateList[i]->alphaMap, GetDevice());
+			prim->mate->normalMap->CreateTexture(mateList[i]->normalMap, GetDevice());
+			prim->mate->metallicMap->CreateTexture(mateList[i]->metallicMap, GetDevice());
 
-
-			for (auto texName : mateList[i]->textureNames)
-			{
-				auto tex = ChPtr::Make_S<Texture11>();
-
-				tex->CreateTexture(texName,GetDevice());
-
-				prim->mate->textureList.push_back(tex);
-
-			}
-
-			if (prim->mate->textureList.size() <= 0)prim->mate->textureList.push_back(whiteTex);
-			if (prim->mate->textureList.size() <= 1)prim->mate->textureList.push_back(normalTex);
+			if (!prim->mate->diffuseMap->IsTex())prim->mate->diffuseMap = whiteTex;
+			if (prim->mate->normalMap->IsTex())prim->mate->normalMap = normalTex;
 
 			_frames->primitiveDatas[mateList[i]->materialName] = prim;
 
@@ -285,37 +284,29 @@ namespace ChD3D11
 
 		for (auto&& frame : frameList)
 		{
-			_dc->UpdateSubresource(frame->boneBuffer, 0, nullptr, &tmpBoneData, 0, 0);
+
+			boneData.UpdateResouce(_dc, &tmpBoneData);
 
 			if (!frame->boneNameAddOrderList.empty())
 			{
-				_dc->UpdateSubresource(frame->boneBuffer, 0, nullptr, &frame->boneData, 0, 0);
+				boneData.UpdateResouce(_dc, &frame->boneData);
 			}
 
-			_dc->VSSetConstantBuffers(11, 1, &frame->boneBuffer);
+			boneData.SetToVertexShader(_dc,1);
 
 			for (auto&& prim : frame->primitiveDatas)
 			{
-				_dc->IASetVertexBuffers(0, 1, &prim.second->vertexs, &strides, &offsets);
-				_dc->IASetIndexBuffer(prim.second->indexs, DXGI_FORMAT_R32_UINT, 0);
+				prim.second->vertexBuffer.SetVertexBuffer(_dc, offsets);
+				prim.second->indexBuffer.SetIndexBuffer(_dc);
 
-				_dc->UpdateSubresource(prim.second->mate->mBuffer,0, nullptr, &prim.second->mate->material, 0, 0);
+				mateBuffer.UpdateResouce(_dc, &prim.second->mate->material);
 
-				for (unsigned long i = 0; i < prim.second->mate->textureList.size(); i++)
-				{
-					ChPtr::Shared<Texture11> tex = prim.second->mate->textureList[i];
+				if(prim.second->mate->diffuseMap->IsTex())prim.second->mate->diffuseMap->SetDrawData(_dc, ChStd::EnumCast(TextureRegisterNo::DiffesTex));
 
-					if (!tex->IsTex())tex = whiteTex;
+				if (prim.second->mate->normalMap->IsTex())prim.second->mate->normalMap->SetDrawData(_dc, ChStd::EnumCast(TextureRegisterNo::NormalMap));
 
-					tex->SetDrawData(_dc, i);
-
-					if (i - 1 > 128)break;
-
-				}
-
-				_dc->VSSetConstantBuffers(2, 1, &prim.second->mate->mBuffer);
-				_dc->PSSetConstantBuffers(2, 1, &prim.second->mate->mBuffer);
-
+				mateBuffer.SetToVertexShader(_dc);
+				mateBuffer.SetToPixelShader(_dc);
 
 				_dc->DrawIndexed(prim.second->indexNum, 0, 0);
 
@@ -351,7 +342,7 @@ namespace ChD3D11
 
 	///////////////////////////////////////////////////////////////////////////////////////
 
-	ChMat_11 Mesh11::UpdateAnimation(const ChPtr::Shared<FrameData11> _frame)
+	ChMat_11 Mesh11::UpdateAnimation(const ChPtr::Shared<FrameData11>& _frame)
 	{
 		ChMat_11 frameOffset = _frame->baseMat;
 		ChMat_11 aniMat = _frame->animationMat;
@@ -369,7 +360,6 @@ namespace ChD3D11
 		aniMat = parentMat * aniMat;
 
 		return aniMat;
-
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////

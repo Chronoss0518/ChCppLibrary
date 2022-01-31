@@ -7,18 +7,24 @@ namespace ChD3D11
 {
 	class Texture11;
 
-	struct ShaderUseMaterial11:public Ch3D::Material
+	struct ShaderUseMaterial11 :public Ch3D::Material
 	{
 		ChMat_11 frameMatrix;
 	};
-	
+
 	struct Material11
 	{
 		ShaderUseMaterial11 material;
 
-		ConstantBuffer mBuffer = nullptr;
 		std::string materialName;
-		std::vector<ChPtr::Shared<Texture11>>textureList;
+		ChPtr::Shared<Texture11> diffuseMap = ChPtr::Make_S<Texture11>();
+		ChPtr::Shared<Texture11> ambientMap = ChPtr::Make_S<Texture11>();
+		ChPtr::Shared<Texture11> specularMap = ChPtr::Make_S<Texture11>();
+		ChPtr::Shared<Texture11> specularHighLightMap = ChPtr::Make_S<Texture11>();
+		ChPtr::Shared<Texture11> bumpMap = ChPtr::Make_S<Texture11>();
+		ChPtr::Shared<Texture11> alphaMap = ChPtr::Make_S<Texture11>();
+		ChPtr::Shared<Texture11> normalMap = ChPtr::Make_S<Texture11>();
+		ChPtr::Shared<Texture11> metallicMap = ChPtr::Make_S<Texture11>();
 	};
 
 	struct Vertex11
@@ -28,14 +34,14 @@ namespace ChD3D11
 		ChVec4 color = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
 	};
 
-	struct MeshVertex11: public Vertex11
+	struct MeshVertex11 : public Vertex11
 	{
 		ChVec3 normal = ChVec3(0.0f, 0.0f, -1.0f);
 	};
 
 	struct PrimitiveVertex11 : public MeshVertex11
 	{
-		ChVec3 faceNormal = ChVec3(0.0f,0.0f,-1.0f);
+		ChVec3 faceNormal = ChVec3(0.0f, 0.0f, -1.0f);
 	};
 
 	struct SkinMeshVertex11 : public PrimitiveVertex11
@@ -43,13 +49,248 @@ namespace ChD3D11
 		float blendPow[96];
 	};
 
-	template<class Vertex = Vertex11>
+	class ShaderObjectBase11 :public ChCp::Releaser, public ChCp::Initializer
+	{
+	public:
+
+		///////////////////////////////////////////////////////////////////////////////////////
+		//InitAndRelease//
+
+		inline void Release()override
+		{
+			SetInitFlg(false);
+			if (ChPtr::NullCheck(buf))return;
+			buf->Release();
+			buf = nullptr;
+		};
+
+		///////////////////////////////////////////////////////////////////////////////////////
+		//AddFunction//
+
+		inline void AddCPUAccessFlg(const D3D11_CPU_ACCESS_FLAG& _flg)
+		{
+			cpuAccessFlg |= _flg;
+		}
+
+		///////////////////////////////////////////////////////////////////////////////////////
+		//SetFunction//
+
+		inline void SetCPUAccessFlg(const D3D11_CPU_ACCESS_FLAG& _flg)
+		{
+			cpuAccessFlg = _flg;
+		}
+
+		///////////////////////////////////////////////////////////////////////////////////
+		//CreateFUnction//
+
+		template<class T>
+		inline D3D11_BUFFER_DESC CreateBufferDesc(const unsigned long _num)
+		{
+
+			D3D11_BUFFER_DESC desc;
+			desc.ByteWidth = sizeof(T) * _num;
+			desc.Usage = D3D11_USAGE_DEFAULT;
+			desc.BindFlags = bindFlg;
+			desc.CPUAccessFlags = cpuAccessFlg;
+			desc.MiscFlags = 0;
+			desc.StructureByteStride = 0;
+
+			return desc;
+		}
+
+		template<class T>
+		inline D3D11_SUBRESOURCE_DATA CreateSubresourceData(const T* _buf)
+		{
+			D3D11_SUBRESOURCE_DATA data;
+			data.pSysMem = _buf;
+			data.SysMemPitch = 0;
+			data.SysMemSlicePitch = 0;
+
+			return data;
+		}
+
+	protected:
+
+		inline void Init() { SetInitFlg(true); }
+
+		///////////////////////////////////////////////////////////////////////////////////
+
+		ID3D11Buffer* buf = nullptr;
+
+		unsigned int cpuAccessFlg = 0;
+		unsigned int usage = 0;
+		unsigned int bindFlg = 0;
+
+
+	};
+
+	class IndexBuffer11 : public ShaderObjectBase11
+	{
+	public:
+		///////////////////////////////////////////////////////////////////////////////////////
+		//CreateFunction//
+
+		inline void CreateBuffer(
+			ID3D11Device* _device,
+			const unsigned long* _indexBuffer,
+			const unsigned long _indexNum)
+		{
+			if (ChPtr::NullCheck(_device))return;
+
+			Release();
+
+			bindFlg = D3D11_BIND_INDEX_BUFFER;
+
+			D3D11_BUFFER_DESC desc = CreateBufferDesc<unsigned long>(_indexNum);
+
+			D3D11_SUBRESOURCE_DATA data = CreateSubresourceData(_indexBuffer);
+
+			_device->CreateBuffer(&desc, &data, &buf);
+
+			Init();
+		}
+
+		///////////////////////////////////////////////////////////////////////////////////////
+		//SetFunction//
+
+		inline void SetIndexBuffer(ID3D11DeviceContext* _dc)
+		{
+			if (*this)return;
+			if (ChPtr::NullCheck(_dc))return;
+
+			_dc->IASetIndexBuffer(buf, DXGI_FORMAT_R32_UINT, 0);
+		}
+
+	};
+
+	template<class vertex = Vertex11>
+	class VertexBuffer11 : public ShaderObjectBase11
+	{
+	public:
+
+		///////////////////////////////////////////////////////////////////////////////////////
+		//CreateFunction//
+
+		inline void CreateBuffer(
+			ID3D11Device* _device,
+			const vertex* _vertexArray,
+			const unsigned long _vertexNum)
+		{
+			if (ChPtr::NullCheck(_device))return;
+			if (ChPtr::NullCheck(_vertexArray))return;
+
+			Release();
+
+			bindFlg = D3D11_BIND_VERTEX_BUFFER;
+
+			D3D11_BUFFER_DESC desc = CreateBufferDesc<vertex>(_vertexNum);
+
+			D3D11_SUBRESOURCE_DATA data = CreateSubresourceData(_vertexArray);
+
+			_device->CreateBuffer(&desc, &data, &buf);
+
+			Init();
+		}
+
+		///////////////////////////////////////////////////////////////////////////////////////
+		//SetFunction//
+
+		inline void SetVertexBuffer(
+			ID3D11DeviceContext* _dc,
+			const unsigned int _offset)
+		{
+
+			if (*this)return;
+			if (ChPtr::NullCheck(_dc))return;
+
+			unsigned int strides = sizeof(vertex);
+
+			_dc->IASetVertexBuffers(0, 1, &buf, &strides, &_offset);
+		}
+
+	};
+
+	template<class content>
+	class ConstantBuffer11 :public ShaderObjectBase11
+	{
+	public:
+		///////////////////////////////////////////////////////////////////////////////////////
+		//CreateFunction//
+
+		inline void CreateBuffer(
+			ID3D11Device* _device,
+			const unsigned long _registerNo)
+		{
+			if (ChPtr::NullCheck(_device))return;
+
+			Release();
+
+			bindFlg = D3D11_BIND_CONSTANT_BUFFER;
+
+			D3D11_BUFFER_DESC desc = CreateBufferDesc<content>(1);
+
+			_device->CreateBuffer(&desc, nullptr, &buf);
+
+			registerNo = _registerNo;
+
+			Init();
+		}
+
+		///////////////////////////////////////////////////////////////////////////////////////
+		//UpdateFunction//
+
+		inline void UpdateResouce(
+			ID3D11DeviceContext* _dc,
+			const content* _content)
+		{
+
+			if (*this)return;
+			if (ChPtr::NullCheck(_dc))return;
+			if (ChPtr::NullCheck(_content))return;
+
+			_dc->UpdateSubresource(buf, 0, nullptr, &_content, 0, 0);
+		}
+
+		///////////////////////////////////////////////////////////////////////////////////////
+		//SetFunction//
+
+		inline void SetToVertexShader(
+			ID3D11DeviceContext* _dc,
+			const unsigned long updateCount = 1)
+		{
+			if (*this)return;
+			if (ChPtr::NullCheck(_dc))return;
+
+			_dc->VSSetConstantBuffers(registerNo, updateCount, &buf);
+
+		}
+
+		///////////////////////////////////////////////////////////////////////////////////////
+		//SetFunction//
+
+		inline void SetToPixelShader(
+			ID3D11DeviceContext* _dc,
+			const unsigned long updateCount = 1)
+		{
+			if (*this)return;
+			if (ChPtr::NullCheck(_dc))return;
+
+			_dc->PSSetConstantBuffers(registerNo, updateCount, &buf);
+
+		}
+
+	protected:
+
+		unsigned long registerNo = 0;
+	};
+
+	template<class vertex = Vertex11>
 	struct PrimitiveData11
 	{
-		IndexBuffer indexs = nullptr;
-		VertexBuffer vertexs = nullptr;
+		IndexBuffer11 indexBuffer;
+		VertexBuffer11<vertex> vertexBuffer;
 
-		typename std::enable_if<std::is_base_of<Vertex11, Vertex>::value, Vertex*>::type vertexArray = nullptr;
+		typename std::enable_if<std::is_base_of<Vertex11, vertex>::value, vertex*>::type vertexArray = nullptr;
 		unsigned long* indexArray = nullptr;
 
 		unsigned long vertexNum = 0;
@@ -57,49 +298,6 @@ namespace ChD3D11
 
 		ChPtr::Shared<Material11> mate = nullptr;
 
-		inline void Release()
-		{
-
-			if (ChPtr::NotNullCheck(indexs))
-			{
-				indexs->Release();
-				indexs = nullptr;
-			}
-
-			if (ChPtr::NotNullCheck(vertexs))
-			{
-				vertexs->Release();
-				vertexs = nullptr;
-			}
-
-			if (ChPtr::NotNullCheck(vertexArray))
-			{
-				delete[] vertexArray;
-				vertexArray = nullptr;
-			}
-
-			if (ChPtr::NotNullCheck(indexArray))
-			{
-				delete[] indexArray;
-				indexArray = nullptr;
-			}
-
-			if (mate != nullptr)
-			{
-
-				if (ChPtr::NotNullCheck(mate->mBuffer))
-				{
-					mate->mBuffer->Release();
-					mate->mBuffer = nullptr;
-				}
-			}
-
-		}
-
-		inline ~PrimitiveData11()
-		{
-			Release();
-		}
 	};
 
 	struct BoneData11
@@ -110,106 +308,6 @@ namespace ChD3D11
 
 	};
 
-	template<class Vertex = Vertex11>
-	class ShaderObject:public ChCp::Releaser
-	{
-	public:
-
-		///////////////////////////////////////////////////////////////////////////////////////
-		//InitAndRelease//
-
-		virtual void Release()override {};
-
-		///////////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
-
-		virtual void SetDrawData(ID3D11DeviceContext* _cd) = 0;
-
-		///////////////////////////////////////////////////////////////////////////////////////
-
-		auto CreateVertexBuffer(PrimitiveData11<Vertex>& _prim)
-			->typename std::enable_if<std::is_base_of<Vertex11, Vertex>::value, void>::type
-		{
-
-			D3D11_BUFFER_DESC desc;
-
-			desc.ByteWidth = sizeof(Vertex) * _prim.vertexNum;
-			desc.Usage = D3D11_USAGE_DEFAULT;
-			desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			desc.CPUAccessFlags = 0;
-			desc.MiscFlags = 0;
-			desc.StructureByteStride = 0;
-
-			D3D11_SUBRESOURCE_DATA data;
-			data.pSysMem = _prim.vertexArray;
-			data.SysMemPitch = 0;
-			data.SysMemSlicePitch = 0;
-
-			device->CreateBuffer(&desc, &data, &_prim.vertexs);
-
-		}
-
-		///////////////////////////////////////////////////////////////////////////////////
-
-		auto CreateIndexBuffer(PrimitiveData11<Vertex>& _prim)
-			->typename std::enable_if<std::is_base_of<Vertex11, Vertex>::value, void>::type
-		{
-
-			D3D11_BUFFER_DESC desc;
-			desc.ByteWidth = sizeof(unsigned long) * _prim.indexNum;
-			desc.Usage = D3D11_USAGE_DEFAULT;
-			desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-			desc.CPUAccessFlags = 0;
-			desc.MiscFlags = 0;
-			desc.StructureByteStride = 0;
-
-			D3D11_SUBRESOURCE_DATA data;
-			data.pSysMem = _prim.indexArray;
-			data.SysMemPitch = 0;
-			data.SysMemSlicePitch = 0;
-
-			device->CreateBuffer(&desc, &data, &_prim.indexs);
-
-		}
-
-		template<class T>
-		void CreateContentBuffer(ConstantBuffer* _buffer)
-		{
-
-			D3D11_BUFFER_DESC desc;
-			ZeroMemory(&desc, sizeof(D3D11_BUFFER_DESC));
-
-			desc.ByteWidth = sizeof(T);
-			desc.Usage = D3D11_USAGE_DEFAULT;
-			desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-			desc.CPUAccessFlags = 0;
-			desc.MiscFlags = 0;
-			desc.StructureByteStride = 0;
-
-			device->CreateBuffer(&desc, nullptr, _buffer);
-		}
-
-	protected:
-
-		///////////////////////////////////////////////////////////////////////////////////
-
-		ID3D11Device* GetDevice() { return device; }
-
-		///////////////////////////////////////////////////////////////////////////////////
-
-		void SetDevice(ID3D11Device* _device) { device = _device; }
-
-		///////////////////////////////////////////////////////////////////////////////////
-
-	private:
-
-
-
-		ID3D11Device* device = nullptr;
-
-
-
-	};
 
 }
 

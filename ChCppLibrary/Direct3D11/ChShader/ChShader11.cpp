@@ -3,7 +3,6 @@
 #include"../../BaseIncluder/ChBase.h"
 #include"../../BaseIncluder/ChD3D11I.h"
 
-
 #include"../ChTexture/ChTexture11.h"
 #include"../ChMesh/ChMesh11.h"
 #include"../ChPolygonBoard/ChPolygonBoard11.h"
@@ -85,16 +84,12 @@ void ShaderController11::InitShader()
 	{
 #include"PTVShader.inc"
 
-		D3D11_INPUT_ELEMENT_DESC Decl[4];
+		D3D11_INPUT_ELEMENT_DESC Decl;
 
 
-		Decl[0] = { "POSITION",  0, DXGI_FORMAT_R32G32B32_FLOAT,0, 0, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[1] = { "TEXCOORD",  0, DXGI_FORMAT_R32G32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[2] = { "COLOR",  0, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[3] = { "NORMAL",  0, DXGI_FORMAT_R32G32B32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-
-
-		pvTex.Init(device,Decl, 4, main, sizeof(main));
+		Decl = { "BLENDINDICES",  0, DXGI_FORMAT_R32_UINT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
+		
+		pvTex.Init(device,&Decl, 1, main, sizeof(main));
 
 	}
 
@@ -110,16 +105,11 @@ void ShaderController11::InitShader()
 	{
 #include"STVShader.inc"
 
-		D3D11_INPUT_ELEMENT_DESC Decl[3];
+		D3D11_INPUT_ELEMENT_DESC Decl;
 
-		//device->CreateVertexShader(&main, sizeof(main), nullptr, &spvTex);
+		Decl = { "BLENDINDICES",  0, DXGI_FORMAT_R32_UINT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
 
-		Decl[0] = { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[1] = { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[2] = { "COLOR",  0, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-
-
-		spvTex.Init(device,Decl, 3, main, sizeof(main));
+		spvTex.Init(device,&Decl, 1, main, sizeof(main));
 
 		//device->CreateInputLayout(SpDecl, ARRAYSIZE(SpDecl), &main, sizeof(main), &SpILayout);
 
@@ -190,6 +180,12 @@ void ShaderController11::Init(
 	
 	InitShader();
 
+	baseData.CreateBuffer(_device, ChStd::EnumCast(ModelConstantRegisterNo::DrawData));
+	charaData.CreateBuffer(_device, ChStd::EnumCast(ModelConstantRegisterNo::CharaData));
+	polygonData.CreateBuffer(_device, ChStd::EnumCast(TextureConstantRegisterNo::PolygonData));
+
+	polygonBoardObject.Init(_device);
+
 	whiteTex.CreateColorTexture(device, ChVec4(1.0f, 1.0f, 1.0f, 1.0f), 1, 1);
 
 	normalTex.CreateColorTexture(device, ChVec4(0.5f, 1.0f, 0.5f, 1.0f), 1, 1);
@@ -207,8 +203,6 @@ void ShaderController11::Init(
 		, ChVec3(0.0f, 1.0f, 0.0f));
 
 	bdObject.windSize = ChVec4(_width, _height, 0.0f, 0.0f);
-
-	BaseDataUpdate();
 
 	dsBuffer.CreateDepthBuffer(_device, _width, _height);
 
@@ -268,24 +262,6 @@ void ShaderController11::Release()
 
 	lightDatas.Release();
 	window.Release();
-
-	if (ChPtr::NotNullCheck(baseData))
-	{
-		baseData->Release();
-		baseData = nullptr;
-	}
-
-	if (ChPtr::NotNullCheck(charaData))
-	{
-		charaData->Release();
-		charaData = nullptr;
-	}
-
-	if (ChPtr::NotNullCheck(polygonData))
-	{
-		polygonData->Release();
-		polygonData = nullptr;
-	}
 
 	SetInitFlg(false);
 }
@@ -390,14 +366,14 @@ void ShaderController11::DrawStart()
 	if (bdUpdateFlg)
 	{
 
-		dc->UpdateSubresource(baseData, 0, nullptr, &bdObject, 0, 0);
+		baseData.UpdateResouce(dc, &bdObject);
 
 		bdUpdateFlg = false;
 	}
 
-	dc->VSSetConstantBuffers(0, 1, &baseData);
+	baseData.SetToVertexShader(dc);
 
-	dc->PSSetConstantBuffers(0, 1, &baseData);
+	baseData.SetToPixelShader(dc);
 
 	drawFlg = true;
 
@@ -421,16 +397,14 @@ void ShaderController11::DrawEnd()
 
 	window.SetDrawData(dc, nullptr);
 
-
 	spvTex.SetShader(dc);
 
 	bpTex.SetShader(dc);
 
+	polygonData.UpdateResouce(dc, &pdObject);
 
-	dc->UpdateSubresource(polygonData, 0, nullptr, &pdObject, 0, 0);
-
-	dc->VSSetConstantBuffers(1, 1, &polygonData);
-	dc->PSSetConstantBuffers(1, 1, &polygonData);
+	polygonData.SetToVertexShader(dc);
+	polygonData.SetToPixelShader(dc);
 
 	out3D.SetDrawData(dc, 0);
 
@@ -440,10 +414,10 @@ void ShaderController11::DrawEnd()
 
 	bpTex.SetShader(dc);
 
-	dc->UpdateSubresource(polygonData, 0, nullptr, &pdObject, 0, 0);
+	polygonData.UpdateResouce(dc, &pdObject);
 
-	dc->VSSetConstantBuffers(1, 1, &polygonData);
-	dc->PSSetConstantBuffers(1, 1, &polygonData);
+	polygonData.SetToVertexShader(dc);
+	polygonData.SetToPixelShader(dc);
 
 	out2D.SetDrawData(dc, 0);
 
@@ -474,10 +448,10 @@ void ShaderController11::Draw(
 
 	bpModel.SetShader(dc);
 
-	dc->UpdateSubresource(charaData, 0, nullptr, &cdObject, 0, 0);
+	charaData.UpdateResouce(dc, &cdObject);
 
-	dc->VSSetConstantBuffers(1, 1, &charaData);
-	dc->PSSetConstantBuffers(1, 1, &charaData);
+	charaData.SetToVertexShader(dc);
+	charaData.SetToPixelShader(dc);
 
 	if (!rtDrawFlg)
 	{
@@ -550,14 +524,56 @@ void ShaderController11::Draw(
 
 	bpModel.SetShader(dc);
 
-	dc->UpdateSubresource(charaData, 0, nullptr, &cdObject, 0, 0);
+	charaData.UpdateResouce(dc, &cdObject);
 
-	dc->VSSetConstantBuffers(1, 1, &charaData);
-	dc->PSSetConstantBuffers(1, 1, &charaData);
+	charaData.SetToVertexShader(dc);
+	charaData.SetToPixelShader(dc);
 
 	drawTex->SetDrawData(dc, 0);
 
 	_porygon.SetDrawData(dc);
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void ShaderController11::Draw(
+	Texture11& _tex
+	, const std::vector<ChPtr::Shared<PolygonBoardVertex>>& _vertex
+	, const ChMat_11& _mat)
+{
+
+	if (!*this)return;
+	if (!drawFlg)return;
+
+	if (!rtDrawFlg)
+	{
+		ID3D11RenderTargetView* tmp = out3D.GetRTView();
+		dc->OMSetRenderTargets(1, &tmp, dsBuffer.GetDSView());
+
+	}
+
+	polygonBoardObject.SetVertexs(_vertex);
+
+	//cdObject.modelMat = _mat.Transpose();
+	cdObject.modelMat = _mat;
+
+	ChD3D11::Texture11* drawTex = &_tex;
+
+	if (!drawTex->IsTex())drawTex = &whiteTex;
+
+	pvTex.SetShader(dc);
+
+	bpModel.SetShader(dc);
+
+	charaData.UpdateResouce(dc, &cdObject);
+
+	charaData.SetToVertexShader(dc);
+	charaData.SetToPixelShader(dc);
+
+	drawTex->SetDrawData(dc, 0);
+
+	polygonBoardObject.SetDrawData(dc);
 
 }
 
@@ -572,13 +588,21 @@ void ShaderController11::Draw(
 	if (!*this)return;
 	if (!drawFlg)return;
 
+
 	if (!rtDrawFlg)
 	{
-		ID3D11RenderTargetView* tmp = out2D.GetRTView();
-		dc->OMSetRenderTargets(1, &tmp, nullptr);
+		ID3D11RenderTargetView* tmp = out3D.GetRTView();
+		dc->OMSetRenderTargets(1, &tmp, dsBuffer.GetDSView());
 
-		out3D.SetDrawData(dc, 12);
 	}
+
+	//if (!rtDrawFlg)
+	//{
+	//	ID3D11RenderTargetView* tmp = out2D.GetRTView();
+	//	dc->OMSetRenderTargets(1, &tmp, nullptr);
+
+	//	out3D.SetDrawData(dc, 12);
+	//}
 
 	//pdObject.modelMat = _mat.Transpose();
 	pdObject.modelMat = _mat;
@@ -591,55 +615,13 @@ void ShaderController11::Draw(
 
 	bpTex.SetShader(dc);
 
-	dc->UpdateSubresource(polygonData, 0, nullptr, &pdObject, 0, 0);
+	charaData.UpdateResouce(dc, &cdObject);
 
-	dc->VSSetConstantBuffers(1, 1, &polygonData);
-	dc->PSSetConstantBuffers(1, 1, &polygonData);
+	charaData.SetToVertexShader(dc);
+	charaData.SetToPixelShader(dc);
 
 	drawTex->SetDrawData(dc, 0);
 
 	_sprite.SetDrawData(dc);
 
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ShaderController11::BaseDataUpdate()
-{
-
-
-
-	D3D11_BUFFER_DESC desc;
-	ZeroMemory(&desc, sizeof(D3D11_BUFFER_DESC));
-
-	desc.ByteWidth = sizeof(BaseDatas);
-	desc.Usage = D3D11_USAGE_DEFAULT;
-	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	desc.CPUAccessFlags = 0;
-	desc.MiscFlags = 0;
-	desc.StructureByteStride = 0;
-
-	device->CreateBuffer(&desc, nullptr, &baseData);
-
-	ZeroMemory(&desc, sizeof(D3D11_BUFFER_DESC));
-
-	desc.ByteWidth = sizeof(CharaDatas);
-	desc.Usage = D3D11_USAGE_DEFAULT;
-	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	desc.CPUAccessFlags = 0;
-	desc.MiscFlags = 0;
-	desc.StructureByteStride = 0;
-
-	device->CreateBuffer(&desc, nullptr, &charaData);
-
-	ZeroMemory(&desc, sizeof(D3D11_BUFFER_DESC));
-
-	desc.ByteWidth = sizeof(PolygonDatas);
-	desc.Usage = D3D11_USAGE_DEFAULT;
-	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	desc.CPUAccessFlags = 0;
-	desc.MiscFlags = 0;
-	desc.StructureByteStride = 0;
-
-	device->CreateBuffer(&desc, nullptr, &polygonData);
 }

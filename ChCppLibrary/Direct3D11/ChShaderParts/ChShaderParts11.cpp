@@ -100,17 +100,7 @@ void ChLightHeader::Init(ID3D11Device* _device)
 
 	device = _device;
 
-	D3D11_BUFFER_DESC Desc;
-	ZeroMemory(&Desc, sizeof(D3D11_BUFFER_DESC));
-
-	Desc.ByteWidth = sizeof(UseLightData);
-	Desc.Usage = D3D11_USAGE_DEFAULT;
-	Desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	Desc.CPUAccessFlags = 0;
-	Desc.MiscFlags = 0;
-	Desc.StructureByteStride = 0;
-
-	device->CreateBuffer(&Desc, nullptr, &buf);
+	buf.CreateBuffer(_device, ChStd::EnumCast(ModelConstantRegisterNo::LightData));
 
 	{
 		ChVec4 tmpCol[256];
@@ -142,12 +132,6 @@ void ChLightHeader::Init(ID3D11Device* _device)
 void ChLightHeader::Release()
 {
 	if (!*this)return;
-
-	if (ChPtr::NotNullCheck(buf))
-	{
-		buf->Release();
-		buf = nullptr;
-	}
 
 	SetInitFlg(false);
 }
@@ -279,7 +263,7 @@ void ChLightHeader::SetPSDrawData(ID3D11DeviceContext* _dc)
 
 	Update(_dc);
 
-	_dc->PSSetConstantBuffers(10, 1, &buf);
+	buf.SetToPixelShader(_dc);
 
 	SetTexture(_dc);
 }
@@ -292,7 +276,7 @@ void ChLightHeader::SetVSDrawData(ID3D11DeviceContext* _dc)
 
 	Update(_dc);
 
-	_dc->VSSetConstantBuffers(10, 1, &buf);
+	buf.SetToVertexShader(_dc);
 
 	SetTexture(_dc);
 }
@@ -306,8 +290,8 @@ void ChLightHeader::SetDrawData(ID3D11DeviceContext* _dc)
 
 	Update(_dc);
 
-	_dc->VSSetConstantBuffers(10, 1, &buf);
-	_dc->PSSetConstantBuffers(10, 1, &buf);
+	buf.SetToVertexShader(_dc);
+	buf.SetToPixelShader(_dc);
 
 	SetTexture(_dc);
 }
@@ -373,7 +357,7 @@ void ChLightHeader::Update(ID3D11DeviceContext* _dc)
 {
 	if (!updateFlg)return;
 
-	_dc->UpdateSubresource(buf, 0, nullptr, &lightDatas, 0, 0);
+	buf.UpdateResouce(_dc, &lightDatas);
 
 	updateFlg = false;
 }

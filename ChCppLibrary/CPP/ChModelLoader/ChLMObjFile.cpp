@@ -212,24 +212,24 @@ void ChCpp::ModelLoader::ObjFile::CreateChFrame(ChPtr::Shared<ChCpp::ModelFrame:
 
 				mate->ambient /= 3;
 
-				mate->textureNames.push_back(tmpMate->diffuseMap);
-				mate->textureNames.push_back(tmpMate->ambientMap);
-				mate->textureNames.push_back(tmpMate->specularMap);
-				mate->textureNames.push_back(tmpMate->specularHighLightMap);
-				mate->textureNames.push_back(tmpMate->bumpMap);
-				mate->textureNames.push_back(tmpMate->alphaMap);
-				mate->textureNames.push_back(tmpMate->normalMap);
-				mate->textureNames.push_back(tmpMate->metallicMap);
+				//mate->textureNames.push_back(tmpMate->diffuseMap);
+				//mate->textureNames.push_back(tmpMate->ambientMap);
+				//mate->textureNames.push_back(tmpMate->specularMap);
+				//mate->textureNames.push_back(tmpMate->specularHighLightMap);
+				//mate->textureNames.push_back(tmpMate->bumpMap);
+				//mate->textureNames.push_back(tmpMate->alphaMap);
+				//mate->textureNames.push_back(tmpMate->normalMap);
+				//mate->textureNames.push_back(tmpMate->metallicMap);
 
 
-				//mate->diffuseMap = tmpMate->diffuseMap;
-				//mate->ambientMap = tmpMate->ambientMap;
-				//mate->specularMap = tmpMate->specularMap;
-				//mate->specularHighLightMap = tmpMate->specularHighLightMap;
-				//mate->bumpMap = tmpMate->bumpMap;
-				//mate->alphaMap = tmpMate->alphaMap;
-				//mate->normalMap = tmpMate->normalMap;
-				//mate->metallicMap = tmpMate->metallicMap;
+				mate->diffuseMap = tmpMate->diffuseMap;
+				mate->ambientMap = tmpMate->ambientMap;
+				mate->specularMap = tmpMate->specularMap;
+				mate->specularHighLightMap = tmpMate->specularHighLightMap;
+				mate->bumpMap = tmpMate->bumpMap;
+				mate->alphaMap = tmpMate->alphaMap;
+				mate->normalMap = tmpMate->normalMap;
+				mate->metallicMap = tmpMate->metallicMap;
 
 
 				mesh->materialList.push_back(mate);
@@ -263,50 +263,18 @@ void ChCpp::ModelLoader::ObjFile::CreateChFrame(ChPtr::Shared<ChCpp::ModelFrame:
 				mesh->vertexList[nVertex]->normal += *obj->vertexNormalList[nNormal];
 			}
 
-			if (fVList.size() >= 3)
+			auto face = ChPtr::Make_S<ChCpp::ModelFrame::SurFace>();
+
+			for (unsigned long i = 0; i < fVList.size(); i++)
 			{
 
-				unsigned long counters[3];
-				counters[0] = 0;
-				counters[1] = 1;
-				counters[2] = fVList.size() - 1;
+				face->vertexData.push_back(fVList[fVList.size() - 1 - i]);
 
-				ChStd::Bool upperFlg = true;
-
-
-				for (unsigned long i = 0; i < fVList.size() - 2; i++)
-				{
-
-					auto face = ChPtr::Make_S<ChCpp::ModelFrame::SurFace>();
-
-					face->vertexData[0] = *fVList[counters[2]];
-					face->vertexData[1] = *fVList[counters[1]];
-					face->vertexData[2] = *fVList[counters[0]];
-
-					//face->VertexData[0] = *FVList[i];
-					//face->VertexData[1] = *FVList[i + 1];
-					//face->VertexData[2] = *FVList[i + 2];
-
-					face->materialNo = materialNo - 1;
-
-					if (upperFlg)
-					{
-						counters[0] = counters[1];
-						counters[1] = counters[2] - 1;
-					}
-					else
-					{
-						counters[2] = counters[1];
-						counters[1] = counters[0] + 1;
-					}
-
-					upperFlg = !upperFlg;
-
-					mesh->faceList.push_back(face);
-				}
+				face->materialNo = materialNo - 1;
 
 			}
 
+			mesh->faceList.push_back(face);
 
 			for (auto&& ver : mesh->vertexList)
 			{

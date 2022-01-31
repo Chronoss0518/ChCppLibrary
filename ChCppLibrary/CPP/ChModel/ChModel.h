@@ -48,16 +48,16 @@ namespace ChCpp
 			ChVec4 diffuse = ChVec4(1.0f);
 			ChVec4 specular = ChVec4(0.0f);
 			ChVec4 ambient = ChVec4(0.0f);
-			std::vector<std::string>textureNames = std::vector<std::string>(0);
+			//std::vector<std::string>textureNames = std::vector<std::string>(0);
 
-			//std::string diffuseMap;
-			//std::string ambientMap;
-			//std::string specularMap;
-			//std::string specularHighLightMap;
-			//std::string bumpMap;
-			//std::string alphaMap;
-			//std::string normalMap;
-			//std::string metallicMap;
+			std::string diffuseMap;
+			std::string ambientMap;
+			std::string specularMap;
+			std::string specularHighLightMap;
+			std::string bumpMap;
+			std::string alphaMap;
+			std::string normalMap;
+			std::string metallicMap;
 
 		};
 
@@ -71,7 +71,7 @@ namespace ChCpp
 			};
 
 
-			SurFaceVertex vertexData[3];
+			std::vector<ChPtr::Shared<SurFaceVertex>> vertexData;
 			unsigned long materialNo = 0;
 			ChVec3 normal;
 			

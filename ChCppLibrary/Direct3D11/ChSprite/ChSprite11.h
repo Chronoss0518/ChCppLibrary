@@ -5,13 +5,24 @@
 
 namespace ChD3D11
 {
+	struct SpriteVertex
+	{
+		ChVec2 pos;
+		ChVec2 uv;
+		ChVec4 color = ChVec4(1.0f);
+	};
+
+	struct SpriteVertexBuffer
+	{
+		SpriteVertex vertexs[4];
+	};
 
 	enum class SpritePositionName : unsigned char
 	{
-		LeftTop,RightTop,RightDown, LeftDown
+		LeftTop, RightTop, RightDown, LeftDown
 	};
 
-	class Sprite11 :public ShaderObject<Vertex11>
+	class Sprite11 :public DrawObject
 	{
 
 	public:
@@ -20,11 +31,8 @@ namespace ChD3D11
 		{
 			for (unsigned char i = 0; i < 4; i++)
 			{
-				poss[i] = _sp.poss[i];
-				uvPoss[i] = _sp.uvPoss[i];
+				vertexDatas.vertexs[i] = _sp.vertexDatas.vertexs[i];
 			}
-
-			updateFlg = true;
 
 			return *this;
 
@@ -35,9 +43,7 @@ namespace ChD3D11
 
 		void Init();
 
-		void Init(const ID3D11Device* _device);
-
-		void Release()override;
+		void Init(ID3D11Device* _device);
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
@@ -56,39 +62,58 @@ namespace ChD3D11
 
 		void SetUVPos(const unsigned char _posNames, const  ChVec2& _posData);
 
+		inline void SetColor(const SpritePositionName _posNames, const  ChVec4& _colorData)
+		{
+			SetColor(ChStd::EnumCast(_posNames), _colorData);
+		}
+
+		void SetColor(const unsigned char _posNames, const  ChVec4& _colorData);
+
 		///////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
 
 		inline ChVec2 GetPos(const SpritePositionName _posNames)
 		{
-			return poss[ChStd::EnumCast(_posNames)];
+			return GetPos(ChStd::EnumCast(_posNames));
 		}
 
 		inline ChVec2 GetPos(const unsigned char _num)
 		{
 			if (_num >= 4)return ChVec2();
 
-			return poss[_num];
+			return vertexDatas.vertexs[_num].pos;
 		}
 
-		inline ChVec2 GetPosUVPos(const SpritePositionName _posNames)
+		inline ChVec2 GetUVPos(const SpritePositionName _posNames)
 		{
-			return uvPoss[ChStd::EnumCast(_posNames)];
+			return GetUVPos(ChStd::EnumCast(_posNames));
 		}
 
-		ChVec2 GetPosUVPos(const unsigned char _num)
+		inline ChVec2 GetUVPos(const unsigned char _num)
 		{
 			if (_num >= 4)return ChVec2();
 
-			return uvPoss[_num];
+			return vertexDatas.vertexs[_num].uv;
+		}
+
+		inline ChVec4 GetColor(const SpritePositionName _posNames)
+		{
+			return GetColor(ChStd::EnumCast(_posNames));
+		}
+
+		inline ChVec4 GetColor(const unsigned char _num)
+		{
+			if (_num >= 4)return ChVec2();
+
+			return vertexDatas.vertexs[_num].color;
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
-		
+
 		inline void Move(const ChVec2& _vec) { Move(_vec.x, _vec.y); }
 
-		void Move(const float _x,const float _y);
+		void Move(const float _x, const float _y);
 
 		inline void MoveX(const float _x) { Move(_x, 0.0f); }
 
@@ -96,44 +121,25 @@ namespace ChD3D11
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		void SetDrawData(ID3D11DeviceContext* _dc)override;
+		void SetDrawData(ID3D11DeviceContext* _dc);
+
+		void SetDrawData(ID3D11DeviceContext* _dc, const SpriteVertexBuffer& _vertexs);
+
+		void SetInitPos();
+
+		void SetInitUV();
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 	protected:
 
-		void UpdateVertex();
+		unsigned long vertexNos[4] = { 0,1,2,3 };
+		unsigned long indexNums[6] = { 0,1,2,0,2,3 };
 
-		///////////////////////////////////////////////////////////////////////////////////
-
-		//ChVec2 Position[4] = 
-		//{
-		//	ChVec2(-1.0f,-1.0f)	//LeftTop//
-		//	,ChVec2(1.0f,-1.0f)	//RightTop//
-		//	,ChVec2(1.0f,1.0f)	//RightDown//
-		//	,ChVec2(-1.0f,1.0f)	//LeftDown//
-		//};
-
-		ChVec2 poss[4] =
-		{
-			ChVec2(-1.0f,1.0f)	//LeftTop//
-			,ChVec2(1.0f,1.0f)	//RightTop//
-			,ChVec2(1.0f,-1.0f)	//RightDown//
-			,ChVec2(-1.0f,-1.0f)	//LeftDown//
-		};
-
-		ChVec2 uvPoss[4] =
-		{
-			ChVec2(0.0f,0.0f)	//LeftTop//
-			,ChVec2(1.0f,0.0f)	//RightTop//
-			,ChVec2(1.0f,1.0f)	//RightDown//
-			,ChVec2(0.0f,1.0f)	//LeftDown//
-		};
-
-		ChStd::Bool updateFlg = true;
-
-		PrimitiveData11<Vertex11> primitives;
-
+		IndexBuffer11 indexBuffer;
+		VertexBuffer11<unsigned long> vertexBuffer;
+		SpriteVertexBuffer vertexDatas;
+		ConstantBuffer11<SpriteVertexBuffer>constantBuffer;
 	};
 
 }

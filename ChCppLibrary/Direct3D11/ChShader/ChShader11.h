@@ -16,6 +16,7 @@ namespace ChD3D11
 	using DLight = ShaderParts::ChLightHeader::DirectionalLight;
 	using PLight = ShaderParts::ChLightHeader::PointLight;
 
+
 	//※LightはShader内のBaseLightとPointLightを利用してください//
 	//独自で構築しているShaderクラス//
 	class ShaderController11 final :public ChCp::Initializer,public ChCp::Releaser
@@ -296,6 +297,11 @@ namespace ChD3D11
 			, PolygonBoard11& _polygon
 			, const ChMat_11& _mat = ChMat_11());
 
+		void Draw(
+			Texture11& _tex
+			, const std::vector<ChPtr::Shared<PolygonBoardVertex>>& _vertex
+			, const ChMat_11& _mat = ChMat_11());
+
 		//円形で指定範囲を描画//
 		void DrawToCircleParsec(
 			Texture11& _tex
@@ -351,10 +357,6 @@ namespace ChD3D11
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		void BaseDataUpdate();
-
-		///////////////////////////////////////////////////////////////////////////////////
-
 		//3Dモデル描画用シェーダー//
 		VertexShader11 bvModel;
 		PixelShader11 bpModel;
@@ -364,6 +366,9 @@ namespace ChD3D11
 		//板ポリゴンなどテクスチャ単体描画用シェーダー//
 		VertexShader11 spvTex;
 		PixelShader11 bpTex;
+
+		//板ポリゴン用Object//
+		PolygonBoard11 polygonBoardObject;
 
 		//ShadowMap生成用//
 		Texture11 depthShadowTex;
@@ -435,25 +440,16 @@ namespace ChD3D11
 			ChVec4 baseColor = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
 		};
 
-		struct BoneDatas
-		{
-			//スキンメッシュ用行列//
-			ChMat_11 skinWeightMat[1000];
-		};
-
 		ChStd::Bool bdUpdateFlg = true;
 
 		BaseDatas bdObject;
-		ConstantBuffer baseData = nullptr;
+		ConstantBuffer11<BaseDatas> baseData;
 
 		CharaDatas cdObject;
-		ConstantBuffer charaData = nullptr;
+		ConstantBuffer11<CharaDatas> charaData;
 
 		PolygonDatas pdObject;
-		ConstantBuffer polygonData = nullptr;
-
-		BoneDatas bodObject;
-		ConstantBuffer boneData = nullptr;
+		ConstantBuffer11<PolygonDatas> polygonData;
 
 		///////////////////////////////////////////////////////////////////////////////////
 

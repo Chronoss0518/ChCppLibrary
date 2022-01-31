@@ -31,22 +31,10 @@ namespace ChD3D11
 		std::map<std::string,ChPtr::Shared<ChMat_11>>skinDataList;
 
 		BoneData11 boneData;
-		ConstantBuffer boneBuffer = nullptr;
-
-		inline void Release()override
-		{
-
-			if (ChPtr::NotNullCheck(boneBuffer))
-			{
-				boneBuffer->Release();
-				boneBuffer = nullptr;
-			}
-
-		}
 
 	};
 
-	class Mesh11:public ShaderObject<PrimitiveVertex11>
+	class Mesh11:public DrawObject
 	{
 	public:
 
@@ -57,7 +45,7 @@ namespace ChD3D11
 
 		void Init();
 
-		void Release()override;
+		void Release();
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
@@ -72,7 +60,7 @@ namespace ChD3D11
 		///////////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		void SetDrawData(ID3D11DeviceContext* _dc)override;
+		void SetDrawData(ID3D11DeviceContext* _dc);
 
 		void SetDrawData(ID3D11DeviceContext* _dc,const std::string& _frameName);
 
@@ -107,7 +95,7 @@ namespace ChD3D11
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
-		ChMat_11 UpdateAnimation(const ChPtr::Shared<FrameData11> _frame);
+		ChMat_11 UpdateAnimation(const ChPtr::Shared<FrameData11>& _frame);
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
@@ -122,11 +110,13 @@ namespace ChD3D11
 
 		ChPtr::Shared<FrameData11> modelData = nullptr;
 
-	private:
+	protected:
 
 		ChPtr::Shared<Texture11>whiteTex = nullptr;
 		ChPtr::Shared<Texture11>normalTex = nullptr;
 
+		ConstantBuffer11<ShaderUseMaterial11>mateBuffer;
+		ConstantBuffer11<BoneData11> boneData;
 	};
 
 }
