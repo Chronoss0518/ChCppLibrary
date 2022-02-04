@@ -87,7 +87,7 @@ namespace ChD3D11
 		}
 
 		template<class T>
-		inline void SetDynamicBuffer(ID3D11DeviceContext* _dc, const T* _buf, const unsigned long _bufferCount)
+		inline void SetDynamicBuffer(ID3D11DeviceContext* _dc, const T* _buf, const unsigned long _bufSize)
 		{
 			if (!(usage & D3D11_USAGE::D3D11_USAGE_DYNAMIC))return;
 
@@ -97,7 +97,7 @@ namespace ChD3D11
 			//  Disable GPU access to the vertex buffer data.
 			_dc->Map(buf, 0, D3D11_MAP_WRITE_DISCARD, 0, &map);
 			//  Update the vertex buffer here.
-			memcpy(map.pData, _buf, sizeof(T) * _bufferCount);
+			memcpy(map.pData, _buf, _bufSize);
 			//  Reenable GPU access to the vertex buffer data.
 			_dc->Unmap(buf, 0);
 		}
@@ -288,8 +288,6 @@ namespace ChD3D11
 			ID3D11DeviceContext* _dc,
 			const unsigned long updateCount = 1)
 		{
-			if (!(usage & D3D11_USAGE::D3D11_USAGE_DEFAULT))return;
-
 			if (!*this)return;
 			if (ChPtr::NullCheck(_dc))return;
 

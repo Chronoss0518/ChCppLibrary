@@ -35,7 +35,7 @@ namespace ChD3D11
 			{
 				if (_num >= 4)return ChVec3();
 
-				return vertexs[_num].pos;
+				return primitives.vertexArray[_num].pos;
 
 			}
 
@@ -43,7 +43,7 @@ namespace ChD3D11
 			{
 				if (_num >= 4)return ChVec2();
 
-				return vertexs[_num].uvPos;
+				return primitives.vertexArray[_num].uvPos;
 
 			}
 
@@ -56,10 +56,11 @@ namespace ChD3D11
 
 		protected:
 
+			void UpdateVertex();
 
-			MeshVertex11 vertexs[4];
-			IndexBuffer11 indexBuf;
-			VertexBuffer11<MeshVertex11>vertexBuf;
+			///////////////////////////////////////////////////////////////////////////////////
+
+			ChStd::Bool updateFlg = true;
 
 			PrimitiveData11<MeshVertex11> primitives;
 	};
