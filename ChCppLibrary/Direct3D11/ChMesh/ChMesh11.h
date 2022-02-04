@@ -25,7 +25,7 @@ namespace ChD3D11
 
 	};
 
-	class Mesh11:public ShaderObject<PrimitiveVertex11>
+	class Mesh11
 	{
 	public:
 
@@ -36,7 +36,7 @@ namespace ChD3D11
 
 		void Init();
 
-		void Release()override;
+		void Release();
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
@@ -50,9 +50,13 @@ namespace ChD3D11
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
-		void SetDrawData(ID3D11DeviceContext* _dc)override;
+		void SetDrawData(ID3D11DeviceContext* _dc);
 
 		void SetDrawData(ID3D11DeviceContext* _dc,const std::string& _frameName);
+
+		///////////////////////////////////////////////////////////////////////////////////////
+
+		inline ID3D11Device* GetDevice() { return device; }
 
 	protected:
 
@@ -88,12 +92,14 @@ namespace ChD3D11
 
 		ChMat_11* boneList = nullptr;
 
+		ConstantBuffer11<ShaderUseMaterial11> materialBuffer;
 
 	private:
 
 		ChPtr::Shared<Texture11>whiteTex = nullptr;
 		ChPtr::Shared<Texture11>normalTex = nullptr;
 
+		ID3D11Device* device = nullptr;
 	};
 
 }

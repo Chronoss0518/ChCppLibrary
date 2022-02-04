@@ -164,7 +164,7 @@ namespace ChD3D11
 
 			UseLightData lightDatas;
 			ID3D11Device* device = nullptr;
-			ConstantBuffer buf = nullptr;
+			ConstantBuffer11<UseLightData> buf;
 			ChStd::Bool updateFlg = true;
 
 			Texture11 lightPow;

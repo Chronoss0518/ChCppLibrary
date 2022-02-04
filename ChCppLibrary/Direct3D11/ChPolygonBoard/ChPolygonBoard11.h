@@ -7,7 +7,7 @@ namespace ChD3D11
 {
 
 
-	class PolygonBoard11 :public ShaderObject<MeshVertex11>
+	class PolygonBoard11 
 	{
 
 		public:
@@ -19,50 +19,54 @@ namespace ChD3D11
 
 			void Init(ID3D11Device* _device);
 
-			void Release()override;
+			void Release();
 
 			///////////////////////////////////////////////////////////////////////////////////
 			//SetFunction//
 
+			void SetVertexList(const std::vector<ChPtr::Shared<MeshVertex11>>& _vertexList);
+
 			void SetPos(const unsigned char _posNo, const ChVec3& _posData);
 
-			void SetUVPos(const unsigned char _posNo, const ChVec2& _posData);
+			void SetUV(const unsigned char _posNo, const ChVec2& _posData);
+
+			void SetDrawData(ID3D11DeviceContext* _CD);
+
+			inline void SetInitTri()
+			{
+				vertexs.pop_back();
+			}
+
+			void SetInitSquare();
 
 			///////////////////////////////////////////////////////////////////////////////////
 			//GetFunction//
 
 			inline ChVec3 GetPos(const unsigned char _num)
 			{
-				if (_num >= 4)return ChVec3();
+				if (_num >= vertexs.size())return ChVec3();
 
-				return primitives.vertexArray[_num].pos;
+				return vertexs[_num]->pos;
 
 			}
 
 			inline ChVec2 GetUVPos(const unsigned char _num)
 			{
-				if (_num >= 4)return ChVec2();
+				if (_num >= vertexs.size())return ChVec2();
 
-				return primitives.vertexArray[_num].uvPos;
+				return vertexs[_num]->uv;
 
 			}
 
 
 			///////////////////////////////////////////////////////////////////////////////////
 
-			void SetDrawData(ID3D11DeviceContext* _CD)override;
-
-			///////////////////////////////////////////////////////////////////////////////////
-
 		protected:
+			
+			std::vector<ChPtr::Shared<MeshVertex11>> vertexs;
 
-			void UpdateVertex();
+			VertexBuffer11<MeshVertex11> vertexBuffer;
 
-			///////////////////////////////////////////////////////////////////////////////////
-
-			ChStd::Bool updateFlg = true;
-
-			PrimitiveData11<MeshVertex11> primitives;
 	};
 }
 

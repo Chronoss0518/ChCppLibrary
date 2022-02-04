@@ -20,13 +20,15 @@ namespace ChD3D11
 
 		Release();
 
-		SetDevice(_device);
+		device = _device;
 
 		normalTex = ChPtr::Make_S<Texture11>();
 		whiteTex = ChPtr::Make_S<Texture11>();
 
 		normalTex->CreateColorTexture(_device, ChVec4(0.5f, 1.0f, 0.5f, 1.0f), 1, 1);
 		whiteTex->CreateColorTexture(_device, ChVec4(1.0f), 1, 1);
+
+		materialBuffer.CreateBuffer(_device, 2);
 
 	}
 
@@ -45,7 +47,7 @@ namespace ChD3D11
 	void Mesh11::Release()
 	{
 		frameList.clear();
-		ShaderObject<PrimitiveVertex11>::Release();
+		materialBuffer.Release();
 		modelData = nullptr;
 	}
 
@@ -159,10 +161,10 @@ namespace ChD3D11
 					vertexs.pos = verList[faces[fCount]->vertexData[j].vertexNo]->pos;
 					vertexs.normal = verList[faces[fCount]->vertexData[j].vertexNo]->normal;
 					vertexs.faceNormal = faceNormal;
-					vertexs.blendPow = verList[faces[fCount]->vertexData[j].vertexNo]->blendPow;
-					vertexs.blendIndex = verList[faces[fCount]->vertexData[j].vertexNo]->boneNo;
+					//vertexs.blendPow = verList[faces[fCount]->vertexData[j].vertexNo]->blendPow;
+					//vertexs.blendIndex = verList[faces[fCount]->vertexData[j].vertexNo]->boneNo;
 
-					vertexs.uvPos = faces[fCount]->vertexData[j].uvPos;
+					vertexs.uv = faces[fCount]->vertexData[j].uvPos;
 
 					prim->indexArray[nowCount] = nowCount;
 
@@ -172,8 +174,8 @@ namespace ChD3D11
 
 			}
 
-			CreateVertexBuffer(*prim);
-			CreateIndexBuffer(*prim);
+			prim->vertexBuffer.CreateBuffer(GetDevice(), prim->vertexArray, prim->vertexNum);
+			prim->indexBuffer.CreateBuffer(GetDevice(), prim->indexArray, prim->indexNum);
 
 			prim->mate = ChPtr::Make_S<Material11>();
 
@@ -183,8 +185,6 @@ namespace ChD3D11
 			prim->mate->materialName = mateList[i]->materialName;
 
 			prim->mate->material.frameMatrix = _baseModels.baseLMat;
-
-			CreateContentBuffer<ShaderUseMaterial11>(&prim->mate->mBuffer);
 
 			for (auto texName : mateList[i]->textureNames)
 			{
@@ -256,7 +256,6 @@ namespace ChD3D11
 
 		if (modelData == nullptr)return;
 
-		unsigned int strides = sizeof(PrimitiveVertex11);
 		unsigned int offsets = 0;
 
 
@@ -264,10 +263,11 @@ namespace ChD3D11
 		{
 			for (auto&& prim : frame->primitiveDatas)
 			{
-				_dc->IASetVertexBuffers(0, 1, &prim.second->vertexs, &strides, &offsets);
-				_dc->IASetIndexBuffer(prim.second->indexs, DXGI_FORMAT_R32_UINT, 0);
+				prim.second->vertexBuffer.SetVertexBuffer(_dc, offsets);
+				prim.second->indexBuffer.SetIndexBuffer(_dc);
 
-				_dc->UpdateSubresource(prim.second->mate->mBuffer,0, nullptr, &prim.second->mate->material, 0, 0);
+
+				materialBuffer.UpdateResouce(_dc, &prim.second->mate->material);
 
 				for (unsigned long i = 0; i < prim.second->mate->textureList.size(); i++)
 				{
@@ -281,11 +281,12 @@ namespace ChD3D11
 
 				}
 
-				_dc->VSSetConstantBuffers(2, 1, &prim.second->mate->mBuffer);
-				_dc->PSSetConstantBuffers(2, 1, &prim.second->mate->mBuffer);
+				materialBuffer.SetToVertexShader(_dc, 1);
+				materialBuffer.SetToPixelShader(_dc, 1);
 
 				_dc->DrawIndexed(prim.second->indexNum, 0, 0);
 
+				_dc->Flush();
 			}
 		}
 

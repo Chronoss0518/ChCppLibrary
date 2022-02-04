@@ -177,6 +177,16 @@ void ShaderController11::Init(
 
 	normalTex.CreateColorTexture(device, ChVec4(0.5f, 1.0f, 0.5f, 1.0f), 1, 1);
 
+
+	baseData.CreateBuffer(_device, 0);
+
+	charaData.CreateBuffer(_device, 1);
+
+	polygonData.CreateBuffer(_device, 1);
+
+	boneData.CreateBuffer(_device, 11);
+
+
 	bdObject.projMat.CreateProjectionMat(
 		ChMath::ToRadian(60.0f)
 		, _width
@@ -191,7 +201,6 @@ void ShaderController11::Init(
 
 	bdObject.windSize = ChVec4(_width, _height, 0.0f, 0.0f);
 
-	BaseDataUpdate();
 
 	dsBuffer.CreateDepthBuffer(_device, _width, _height);
 
@@ -251,24 +260,6 @@ void ShaderController11::Release()
 
 	lightDatas.Release();
 	window.Release();
-
-	if (ChPtr::NotNullCheck(baseData))
-	{
-		baseData->Release();
-		baseData = nullptr;
-	}
-
-	if (ChPtr::NotNullCheck(charaData))
-	{
-		charaData->Release();
-		charaData = nullptr;
-	}
-
-	if (ChPtr::NotNullCheck(polygonData))
-	{
-		polygonData->Release();
-		polygonData = nullptr;
-	}
 
 	SetInitFlg(false);
 }
@@ -372,15 +363,12 @@ void ShaderController11::DrawStart()
 
 	if (bdUpdateFlg)
 	{
-
-		dc->UpdateSubresource(baseData, 0, nullptr, &bdObject, 0, 0);
-
+		baseData.UpdateResouce(dc,&bdObject);
 		bdUpdateFlg = false;
 	}
 
-	dc->VSSetConstantBuffers(0, 1, &baseData);
-
-	dc->PSSetConstantBuffers(0, 1, &baseData);
+	baseData.SetToVertexShader(dc, 1);
+	baseData.SetToPixelShader(dc, 1);
 
 	drawFlg = true;
 
@@ -409,11 +397,10 @@ void ShaderController11::DrawEnd()
 
 	bpTex.SetShader(dc);
 
+	polygonData.UpdateResouce(dc, &pdObject);
 
-	dc->UpdateSubresource(polygonData, 0, nullptr, &pdObject, 0, 0);
-
-	dc->VSSetConstantBuffers(1, 1, &polygonData);
-	dc->PSSetConstantBuffers(1, 1, &polygonData);
+	polygonData.SetToVertexShader(dc, 1);
+	polygonData.SetToPixelShader(dc, 1);
 
 	out3D.SetDrawData(dc, 0);
 
@@ -423,10 +410,10 @@ void ShaderController11::DrawEnd()
 
 	bpTex.SetShader(dc);
 
-	dc->UpdateSubresource(polygonData, 0, nullptr, &pdObject, 0, 0);
+	polygonData.UpdateResouce(dc, &pdObject);
 
-	dc->VSSetConstantBuffers(1, 1, &polygonData);
-	dc->PSSetConstantBuffers(1, 1, &polygonData);
+	polygonData.SetToVertexShader(dc, 1);
+	polygonData.SetToPixelShader(dc, 1);
 
 	out2D.SetDrawData(dc, 0);
 
@@ -449,18 +436,18 @@ void ShaderController11::Draw(
 	if (!_Mesh.IsMesh())return;
 
 
-	cdObject.modelMat = _mat.Transpose();
-
 	cdObject.modelMat = _mat;
 
 	bvModel.SetShader(dc);
 
 	bpModel.SetShader(dc);
 
-	dc->UpdateSubresource(charaData, 0, nullptr, &cdObject, 0, 0);
 
-	dc->VSSetConstantBuffers(1, 1, &charaData);
-	dc->PSSetConstantBuffers(1, 1, &charaData);
+	charaData.UpdateResouce(dc, &cdObject);
+
+	charaData.SetToVertexShader(dc, 1);
+	charaData.SetToPixelShader(dc, 1);
+
 
 	if (!rtDrawFlg)
 	{
@@ -533,10 +520,10 @@ void ShaderController11::Draw(
 
 	bpModel.SetShader(dc);
 
-	dc->UpdateSubresource(charaData, 0, nullptr, &cdObject, 0, 0);
+	charaData.UpdateResouce(dc, &cdObject);
 
-	dc->VSSetConstantBuffers(1, 1, &charaData);
-	dc->PSSetConstantBuffers(1, 1, &charaData);
+	charaData.SetToVertexShader(dc, 1);
+	charaData.SetToPixelShader(dc, 1);
 
 	drawTex->SetDrawData(dc, 0);
 
@@ -574,55 +561,13 @@ void ShaderController11::Draw(
 
 	bpTex.SetShader(dc);
 
-	dc->UpdateSubresource(polygonData, 0, nullptr, &pdObject, 0, 0);
+	polygonData.UpdateResouce(dc, &pdObject);
 
-	dc->VSSetConstantBuffers(1, 1, &polygonData);
-	dc->PSSetConstantBuffers(1, 1, &polygonData);
+	polygonData.SetToVertexShader(dc, 1);
+	polygonData.SetToPixelShader(dc, 1);
 
 	drawTex->SetDrawData(dc, 0);
 
 	_sprite.SetDrawData(dc);
 
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ShaderController11::BaseDataUpdate()
-{
-
-
-
-	D3D11_BUFFER_DESC desc;
-	ZeroMemory(&desc, sizeof(D3D11_BUFFER_DESC));
-
-	desc.ByteWidth = sizeof(BaseDatas);
-	desc.Usage = D3D11_USAGE_DEFAULT;
-	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	desc.CPUAccessFlags = 0;
-	desc.MiscFlags = 0;
-	desc.StructureByteStride = 0;
-
-	device->CreateBuffer(&desc, nullptr, &baseData);
-
-	ZeroMemory(&desc, sizeof(D3D11_BUFFER_DESC));
-
-	desc.ByteWidth = sizeof(CharaDatas);
-	desc.Usage = D3D11_USAGE_DEFAULT;
-	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	desc.CPUAccessFlags = 0;
-	desc.MiscFlags = 0;
-	desc.StructureByteStride = 0;
-
-	device->CreateBuffer(&desc, nullptr, &charaData);
-
-	ZeroMemory(&desc, sizeof(D3D11_BUFFER_DESC));
-
-	desc.ByteWidth = sizeof(PolygonDatas);
-	desc.Usage = D3D11_USAGE_DEFAULT;
-	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	desc.CPUAccessFlags = 0;
-	desc.MiscFlags = 0;
-	desc.StructureByteStride = 0;
-
-	device->CreateBuffer(&desc, nullptr, &polygonData);
 }

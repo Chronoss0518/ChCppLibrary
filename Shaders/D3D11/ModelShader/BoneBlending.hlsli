@@ -1,5 +1,5 @@
 
-cbuffer BoneData :register(b10)
+cbuffer BoneData :register(b11)
 {
 	row_major float4x4 SkinWeightMat[1000];
 };
