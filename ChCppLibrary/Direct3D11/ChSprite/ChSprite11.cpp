@@ -23,9 +23,6 @@ void Sprite11::Init(ID3D11Device* _device)
 	SetInitPosition();
 	SetInitUV();
 
-	//vertexBuffer.SetUsageFlg(D3D11_USAGE::D3D11_USAGE_DYNAMIC);
-	//vertexBuffer.SetCPUAccessFlg(D3D11_CPU_ACCESS_FLAG::D3D11_CPU_ACCESS_WRITE);
-
 	vertexBuffer.CreateBuffer(_device, vertexs,4);
 
 	indexBuffer.CreateBuffer(_device, indexs, 6);
@@ -100,7 +97,7 @@ void Sprite11::SetDrawData(ID3D11DeviceContext* _dc)
 {
 	unsigned int offsets = 0;
 
-	//vertexBuffer.SetDynamicBuffer(_dc, vertexs, 4);
+	vertexBuffer.UpdateResouce(_dc, vertexs);
 
 	vertexBuffer.SetVertexBuffer(_dc, offsets);
 
