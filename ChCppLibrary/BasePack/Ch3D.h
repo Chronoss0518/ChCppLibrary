@@ -41,9 +41,9 @@ namespace Ch3D
 
 	struct Material
 	{
-		ChVec4 diffuse = ChVec4();
-		ChVec4 specular = ChVec4();
-		ChVec4 ambient = ChVec4();
+		ChVec4 diffuse = ChVec4(1.0f);
+		ChVec4 specular = ChVec4(0.0f);
+		ChVec4 ambient = ChVec4(0.3f);
 	};
 
 	struct MaterialStatus
