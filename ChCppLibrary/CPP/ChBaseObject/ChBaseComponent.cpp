@@ -2,7 +2,7 @@
 #include"../../BaseIncluder/ChBase.h"
 
 #include"ChBaseComponent.h"
-#include"ChObjectManager.h"
+#include"ChObjectList.h"
 #include"ChBaseObject.h"
 
 using namespace ChCpp;

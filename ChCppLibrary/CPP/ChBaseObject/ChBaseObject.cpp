@@ -2,7 +2,7 @@
 #include"../../BaseIncluder/ChBase.h"
 
 #include"ChBaseComponent.h"
-#include"ChObjectManager.h"
+#include"ChObjectList.h"
 #include"ChBaseObject.h"
 
 using namespace ChCpp;
@@ -20,10 +20,10 @@ void BaseObject::Destroy()
 
 void BaseObject::DestroyToChild(const ChPtr::Shared<BaseObject>& _child)
 {
-	auto It = std::find(childList.begin(), childList.end(), _child);
+	auto it = std::find(childList.begin(), childList.end(), _child);
 
-	if (It == childList.end())return;
-	(*It)->dFlg = true;
+	if (it == childList.end())return;
+	(*it)->dFlg = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -233,9 +233,8 @@ void BaseObject::BaseRelease()
 void BaseObject::BaseInit(
 	const std::string& _ObjectName
 	, const std::string& _tag
-	, const ObjectManager* _objMa)
+	, ObjectManager* _objMaList)
 {
-	objMa = (ObjectManager*)_objMa;
 	tag = _tag;
 	myName = _ObjectName;
 
@@ -269,22 +268,26 @@ void BaseObject::ReleaseComponent(const std::string& _comName)
 void BaseObject::ChengeTag(const std::string& _newTag)
 {
 	if (dFlg)return;
+
+
+	auto tmpTag = tag;
+
+	tag = _newTag;
+
+	if (ChPtr::NullCheck(objMaList))return;
+
 	auto tmp = std::find(
-		objMa->objectList[tag].begin()
-		, objMa->objectList[tag].end()
+		objMaList->objectList[tag].begin()
+		, objMaList->objectList[tag].end()
 		, shared_from_this());
 
-	auto tmpTag = (*tmp)->tag;
+	objMaList->objectList[_newTag].push_back((*tmp));
 
-	objMa->objectList[_newTag].push_back((*tmp));
+	objMaList->objectList[tmpTag].erase(tmp);
 
-	objMa->objectList[tmpTag].erase(tmp);
+	if (!objMaList->objectList[tmpTag].empty())return;
 
-	(*tmp)->tag = _newTag;
-
-	if (!objMa->objectList[tmpTag].empty())return;
-
-	objMa->objectList.erase(tmpTag);
+	objMaList->objectList.erase(tmpTag);
 
 }
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -310,11 +313,14 @@ void BaseObject::IsReleasComponent()
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-std::vector<ChPtr::Shared<BaseObject>> BaseObject::LookObjectList()
+std::vector<ChPtr::Weak<BaseObject>> BaseObject::LookObjectList()
 {
-	std::vector<ChPtr::Shared<BaseObject>>tmpObjList;
 
-	for (auto&&objlist : objMa->objectList)
+	std::vector<ChPtr::Weak<BaseObject>>tmpObjList;
+
+	if (ChPtr::NullCheck(objMaList))return tmpObjList;
+
+	for (auto&&objlist : objMaList->objectList)
 	{
 		for (auto&& obj : objlist.second)
 		{
@@ -328,14 +334,15 @@ std::vector<ChPtr::Shared<BaseObject>> BaseObject::LookObjectList()
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-std::vector<ChPtr::Shared<BaseObject>> BaseObject::LookObjectListForTag
-(const std::string& _tag)
+std::vector<ChPtr::Weak<BaseObject>> BaseObject::LookObjectListForTag(const std::string& _tag)
 {
-	std::vector<ChPtr::Shared<BaseObject>>tmpObjList;
+	std::vector<ChPtr::Weak<BaseObject>>tmpObjList;
 
-	if (objMa->objectList.find(_tag) == objMa->objectList.end())return tmpObjList;
+	if (ChPtr::NullCheck(objMaList))return tmpObjList;
 
-	auto objlist = objMa->objectList[_tag];
+	if (objMaList->objectList.find(_tag) == objMaList->objectList.end())return tmpObjList;
+
+	auto objlist = objMaList->objectList[_tag];
 
 	for (auto&& obj : objlist)
 	{
@@ -348,13 +355,14 @@ std::vector<ChPtr::Shared<BaseObject>> BaseObject::LookObjectListForTag
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-std::vector<ChPtr::Shared<BaseObject>>
-BaseObject::LookObjectListForName(const std::string& _ObjectName)
+std::vector<ChPtr::Weak<BaseObject>> BaseObject::LookObjectListForName(const std::string& _ObjectName)
 {
 
-	std::vector<ChPtr::Shared<BaseObject>>tmpObjList;
+	std::vector<ChPtr::Weak<BaseObject>>tmpObjList;
 
-	for (auto&& tags : objMa->objectList)
+	if (ChPtr::NullCheck(objMaList))return tmpObjList;
+
+	for (auto&& tags : objMaList->objectList)
 	{
 		for (auto&& Obj : tags.second)
 		{
@@ -369,16 +377,17 @@ BaseObject::LookObjectListForName(const std::string& _ObjectName)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-std::vector<ChPtr::Shared<BaseObject>>
-BaseObject::LookObjectListForTagAndName(
+std::vector<ChPtr::Weak<BaseObject>>BaseObject::LookObjectListForTagAndName(
 	const std::string& _ObjectName
 	,const std::string& _tag)
 {
-	std::vector<ChPtr::Shared<BaseObject>>tmpObjList;
+	std::vector<ChPtr::Weak<BaseObject>>tmpObjList;
 
-	if (objMa->objectList.find(_tag) == objMa->objectList.end())return tmpObjList;
+	if (ChPtr::NullCheck(objMaList))return tmpObjList;
 
-	auto objlist = objMa->objectList[_tag];
+	if (objMaList->objectList.find(_tag) == objMaList->objectList.end())return tmpObjList;
+
+	auto objlist = objMaList->objectList[_tag];
 
 	for (auto&& obj : objlist)
 	{

@@ -9,10 +9,16 @@ using namespace ChCpp;
 //ChObjectListÉÅÉ\ÉbÉh
 ///////////////////////////////////////////////////////////////////////////////////////
 
-
-std::vector<ChPtr::Shared<BaseObject>> ObjectList::GetObjectList()
+void ObjectList::Release()
 {
-	std::vector<ChPtr::Shared<BaseObject>>tmpObjList;
+	ClearObject();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+std::vector<ChPtr::Weak<BaseObject>> ObjectList::GetObjectList()
+{
+	std::vector<ChPtr::Weak<BaseObject>>tmpObjList;
 
 	for (auto&& objlist : objectList)
 	{
@@ -28,10 +34,10 @@ std::vector<ChPtr::Shared<BaseObject>> ObjectList::GetObjectList()
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-std::vector<ChPtr::Shared<BaseObject>> ObjectList::GetObjectListForTag(const std::string& _TagName)
+std::vector<ChPtr::Weak<BaseObject>> ObjectList::GetObjectListForTag(const std::string& _TagName)
 {
 
-	std::vector<ChPtr::Shared<BaseObject>>tmpObjList;
+	std::vector<ChPtr::Weak<BaseObject>>tmpObjList;
 
 	for (auto&& obj : objectList[_TagName])
 	{
@@ -44,10 +50,10 @@ std::vector<ChPtr::Shared<BaseObject>> ObjectList::GetObjectListForTag(const std
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-std::vector<ChPtr::Shared<BaseObject>> ObjectList::GetObjectListForName(const std::string& _Name)
+std::vector<ChPtr::Weak<BaseObject>> ObjectList::GetObjectListForName(const std::string& _Name)
 {
 
-	std::vector<ChPtr::Shared<BaseObject>>tmpObjList;
+	std::vector<ChPtr::Weak<BaseObject>>tmpObjList;
 
 	for (auto&& objlist : objectList)
 	{

@@ -18,12 +18,15 @@ namespace ChCpp
 		friend BaseObject;
 
 		///////////////////////////////////////////////////////////////////////////////////////
+		//CostructerDestructer//
+
+		ObjectList() {}
+		~ObjectList() {}
+
+		///////////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
-		inline void Release()override
-		{
-			ClearObject();
-		}
+		void Release()override;
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
@@ -45,15 +48,40 @@ namespace ChCpp
 
 			return ChPtr::SharedSafeCast<T>(tmpObj);
 		}
+		
+		//BaseObjectを継承したオブジェクトのみ登録可能//
+		template<class T>
+		auto SetObject(ChPtr::Shared<T> _obj) ->typename std::enable_if
+			<std::is_base_of<BaseObject, T>::value, ChPtr::Shared<T>>::type
+		{
+
+			ChPtr::Shared<BaseObject> tmpObj = _obj;
+
+			if (objectList.find(tmpObj->GetTag()) != objectList.end())
+			{
+				if (std::find(objectList[tmpObj->GetTag()].begin(), objectList[tmpObj->GetTag()].end(), tmpObj))return;
+			}
+
+			tmpObj->objMa = this;
+
+			objectList[tmpObj->GetTag()].push_back(tmpObj);
+
+			for (auto&& child : tmpObj->childList)
+			{
+				SetObject(child);
+			}
+
+			return ChPtr::SharedSafeCast<T>(tmpObj);
+		}
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
-		std::vector<ChPtr::Shared<BaseObject>> GetObjectList();
+		std::vector<ChPtr::Weak<BaseObject>> GetObjectList();
 
-		std::vector<ChPtr::Shared<BaseObject>> GetObjectListForTag(const std::string& _tagName);
+		std::vector<ChPtr::Weak<BaseObject>> GetObjectListForTag(const std::string& _tagName);
 
-		std::vector<ChPtr::Shared<BaseObject>> GetObjectListForName(const std::string& _name);
+		std::vector<ChPtr::Weak<BaseObject>> GetObjectListForName(const std::string& _name);
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//UpdateFunction//
@@ -111,18 +139,10 @@ namespace ChCpp
 			const std::string& _tags);
 
 		///////////////////////////////////////////////////////////////////////////////////////
-
-	private:
+		
+	protected:
 
 		std::map<std::string, std::vector<ChPtr::Shared<BaseObject>>>objectList;
-
-		///////////////////////////////////////////////////////////////////////////////////////
-		//CostructerDestructer//
-
-		ObjectList() {}
-		~ObjectList() {}
-
-	public:
 
 
 	};

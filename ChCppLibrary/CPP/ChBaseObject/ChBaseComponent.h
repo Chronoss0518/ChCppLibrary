@@ -2,8 +2,6 @@
 #ifndef Ch_CPP_BaCom_h
 #define Ch_CPP_BaCom_h
 
-#include"../ChBitBool/ChBitBool.h"
-
 namespace ChCpp
 {
 	class BaseObject;
@@ -43,6 +41,9 @@ namespace ChCpp
 		ChStd::Bool IsDeth() { return dFlg; }
 
 		ChStd::Bool IsUse() { return useFlg; }
+
+		//コンポーネント自身の機能//
+		virtual void Function() {}
 
 	protected:
 
