@@ -49,7 +49,7 @@ namespace ChCpp
 		//GetFunction//
 
 		//現在のタグを取得//
-		std::string GetThisTag() { return tag; }
+		std::string GetTag() { return tag; }
 
 		std::string GetMyName() { return myName; }
 
@@ -87,15 +87,15 @@ namespace ChCpp
 		}
 
 		//子オブジェクト群の取得//
-		std::vector<ChPtr::Shared<BaseObject>>GetChildlen()
+		std::vector<ChPtr::Shared<BaseObject>>& GetChildlen()
 		{
 			return childList;
 		}
 
 		//親の取得//
-		ChPtr::Shared<BaseObject>GetParent()
+		ChPtr::Weak<BaseObject>GetParent()
 		{
-			return parent.lock();
+			return parent;
 		}
 
 

@@ -213,7 +213,6 @@ void BaseObject::DrawEndFunction()
 void BaseObject::BaseRelease()
 {
 
-
 	for (auto com : comList)
 	{
 		com->Release();
