@@ -32,10 +32,10 @@ namespace ChD3D11
 
 			void SetDrawData(ID3D11DeviceContext* _CD);
 
-			//inline void SetInitTri()
-			//{
-			//	vertexs.pop_back();
-			//}
+			inline void SetInitTri()
+			{
+				vertexs.pop_back();
+			}
 
 			void SetInitSquare();
 
@@ -44,22 +44,18 @@ namespace ChD3D11
 
 			inline ChVec3 GetPos(const unsigned char _num)
 			{
-				//if (_num >= vertexs.size())return ChVec3();
-				if (_num >= 4)return ChVec3();
-
-				//return vertexs[_num]->pos;
-				return vertexs[_num].pos;
-
+				if (_num >= vertexs.size())return ChVec3();
+				
+				return vertexs[_num]->pos;
+				
 			}
 
 			inline ChVec2 GetUVPos(const unsigned char _num)
 			{
-				//if (_num >= vertexs.size())return ChVec2();
-				if (_num >= 4)return ChVec2();
-
-				//return vertexs[_num]->uv;
-				return vertexs[_num].uv;
-
+				if (_num >= vertexs.size())return ChVec2();
+				
+				return vertexs[_num]->uv;
+				
 			}
 
 			///////////////////////////////////////////////////////////////////////////////////
@@ -77,15 +73,13 @@ namespace ChD3D11
 
 		protected:
 			
-			//std::vector<ChPtr::Shared<MeshVertex11>> vertexs;
+			std::vector<ChPtr::Shared<MeshVertex11>> vertexs;
 
-			//VertexBuffer11<MeshVertex11> vertexBuffer;
-			//IndexBuffer11 indexBuffer;
-
-			MeshVertex11 vertexs[4];
-
+			MeshVertex11 drawVertexs[3];
 			VertexBuffer11<MeshVertex11> vertexBuffer;
 			IndexBuffer11 indexBuffer;
+			ShaderUseMaterial11 material;
+			ConstantBuffer11<ShaderUseMaterial11> materialBuffer;
 	};
 }
 

@@ -509,7 +509,6 @@ void ShaderController11::Draw(
 
 	}
 
-	//cdObject.modelMat = _mat.Transpose();
 	cdObject.modelMat = _mat;
 
 	ChD3D11::Texture11* drawTex = &_tex;

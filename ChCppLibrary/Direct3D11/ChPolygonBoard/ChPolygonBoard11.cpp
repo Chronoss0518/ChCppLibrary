@@ -18,169 +18,153 @@ void PolygonBoard11::Init()
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
 
 void PolygonBoard11::Init(ID3D11Device* _device)
 {
-	Release();
-
 	SetInitSquare();
 
-	vertexBuffer.CreateBuffer(_device, vertexs, 4);
+	vertexBuffer.CreateBuffer(_device, drawVertexs, 3);
 
-	unsigned long indexs[6] = { 0,1,2,0,2,3 };
+	unsigned long indexs[3] = { 0,1,2 };
 
-	indexBuffer.CreateBuffer(_device, indexs, 6);
+	indexBuffer.CreateBuffer(_device, indexs, 3);
+
+	material.diffuse = ChVec4(1.0f);
+	material.specular = ChVec4(0.0f);
+	material.ambient = ChVec4(0.0f);
+
+	materialBuffer.CreateBuffer(_device, 2);
+
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
 
 void PolygonBoard11::Release()
 {
-	//if (!vertexs.empty())vertexs.clear();
+	if (!vertexs.empty())vertexs.clear();
 	vertexBuffer.Release();
 	indexBuffer.Release();
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
 
 void PolygonBoard11::SetVertexList(const std::vector<ChPtr::Shared<MeshVertex11>>& _vertexList)
 {
-	Release();
+	if (!vertexs.empty())vertexs.clear();
 
-	//for (auto ver : _vertexList)
-	//{
-	//	vertexs.push_back(ver);
-	//}
+	for (auto ver : _vertexList)
+	{
+		vertexs.push_back(ver);
+	}
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
 
 void PolygonBoard11::SetPos(const unsigned char  _posNames, const  ChVec3& _posData)
 {
 
-	//if (_posNames >= vertexs.size())return;
+	if (_posNames >= vertexs.size())return;
 
-	//vertexs[_posNames]->pos = _posData;
-
-	if (_posNames >= 4)return;
-
-	vertexs[_posNames].pos = _posData;
+	vertexs[_posNames]->pos = _posData;
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
 
 void PolygonBoard11::SetUV(const unsigned char _posNames, const ChVec2& _posData)
 {
 
-	//if (_posNames >= vertexs.size())return;
+	if (_posNames >= vertexs.size())return;
 
-	//vertexs[_posNames]->uv = _posData;
-
-	if (_posNames >= 4)return;
-
-	vertexs[_posNames].uv = _posData;
+	vertexs[_posNames]->uv = _posData;
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
 
 void PolygonBoard11::SetInitSquare()
 {
+	if (!vertexs.empty())vertexs.clear();
 
 	{
-		//auto vertex = ChPtr::Make_S<MeshVertex11>();
+		auto vertex = ChPtr::Make_S<MeshVertex11>();
 
-		auto&& vertex = &vertexs[0];
-		
 		vertex->pos = ChVec3(-0.5f, 0.5f, 0.0f);
 		vertex->uv = ChVec2(0.0f, 0.0f);
 		vertex->color = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
 		
-		//vertexs.push_back(vertex);
+		vertexs.push_back(vertex);
 	}
 
 	{
-		//auto vertex = ChPtr::Make_S<MeshVertex11>();
+		auto vertex = ChPtr::Make_S<MeshVertex11>();
 
-		auto&& vertex = &vertexs[1];
-		
 		vertex->pos = ChVec3(0.5f, 0.5f, 0.0f);
 		vertex->uv = ChVec2(1.0f, 0.0f);
 		vertex->color = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
 		
-		//vertexs.push_back(vertex);
+		vertexs.push_back(vertex);
 	}
 
 	{
-		//auto vertex = ChPtr::Make_S<MeshVertex11>();
-
-		auto&& vertex = &vertexs[2];
+		auto vertex = ChPtr::Make_S<MeshVertex11>();
 
 		vertex->pos = ChVec3(0.5f, -0.5f, 0.0f);
 		vertex->uv = ChVec2(1.0f, 1.0f);
 		vertex->color = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
 	
-		//vertexs.push_back(vertex);
+		vertexs.push_back(vertex);
 	}
 
 	{
-		//auto vertex = ChPtr::Make_S<MeshVertex11>();
+		auto vertex = ChPtr::Make_S<MeshVertex11>();
 
-		auto&& vertex = &vertexs[3];
-
+		
 		vertex->pos = ChVec3(-0.5f, -0.5f, 0.0f);
 		vertex->uv = ChVec2(0.0f, 1.0f);
 		vertex->color = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
 		
-		//vertexs.push_back(vertex);
+		vertexs.push_back(vertex);
 	}
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
 
 void PolygonBoard11::SetDrawData(ID3D11DeviceContext* _dc)
 {
-	//if (vertexs.size() < 3)return;
+	if (vertexs.size() < 3)return;
 
 	unsigned int offsets = 0;
 
-	//for (unsigned long i = 1; i < vertexs.size() - 1; i++)
-	//{
-	//	MeshVertex11 ver[3];
+	drawVertexs[0] = *vertexs[0];
 
-	//	ver[0] = *vertexs[0];
-	//	ver[1] = *vertexs[i];
-	//	ver[2] = *vertexs[i + 1];
+	materialBuffer.UpdateResouce(_dc, &material);
 
-	//	vertexBuffer.SetDynamicBuffer(_dc, ver, 3);
+	materialBuffer.SetToVertexShader(_dc);
+	materialBuffer.SetToPixelShader(_dc);
 
-	//	vertexBuffer.SetVertexBuffer(_dc, offsets);
+	for (unsigned long i = 1; i < vertexs.size() - 1; i++)
+	{
+		drawVertexs[1] = *vertexs[i];
+		drawVertexs[2] = *vertexs[i + 1];
 
-	//	indexBuffer.SetIndexBuffer(_dc);
+		vertexBuffer.UpdateResouce(_dc, drawVertexs);
 
-	//	_dc->DrawIndexed(3, 0, 0);
+		vertexBuffer.SetVertexBuffer(_dc, offsets);
 
-	//	_dc->Flush();
-	//}
+		indexBuffer.SetIndexBuffer(_dc);
 
+		_dc->DrawIndexed(3, 0, 0);
 
-	vertexBuffer.UpdateResouce(_dc, vertexs);
-
-	vertexBuffer.SetVertexBuffer(_dc, offsets);
-
-	indexBuffer.SetIndexBuffer(_dc);
-
-	_dc->DrawIndexed(6, 0, 0);
-
-	_dc->Flush();
+		_dc->Flush();
+	}
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
 
 void PolygonBoard11::AddVertex(const MeshVertex11& _vertexs)
 {
@@ -190,8 +174,8 @@ void PolygonBoard11::AddVertex(const MeshVertex11& _vertexs)
 	vertex->uv = _vertexs.uv;
 	vertex->color = _vertexs.color;
 	vertex->normal = _vertexs.normal;
-	//vertexs.push_back(vertex);
+	vertexs.push_back(vertex);
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
 
