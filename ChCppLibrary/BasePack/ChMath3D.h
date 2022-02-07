@@ -644,21 +644,30 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 	///////////////////////////////////////////////////////////////////////////////////
 	//SerializeDeserialize//
 
-	std::string Serialize(
+	inline std::string Serialize(
 		const std::string& _cutChar = ","
-		, const std::string& _endChar = ";");
+		, const std::string& _endChar = ";")
+	{
+		return m.Serialize(_cutChar);
+	}
 
-	std::string SerializeUpper(
+	inline std::string SerializeUpper(
 		const std::string& _cutChar = ","
 		, const std::string& _endChar = ";"
-		, const std::string& _cutTo4Char = "\n");
+		, const std::string& _cutTo4Char = "\n")
+	{
+		return m.SerializeUpper(_cutChar, _endChar, _cutTo4Char);
+	}
 
-	void Deserialize(
+	inline void Deserialize(
 		const std::string& _str
 		, const size_t _fPos = 0
 		, const std::string& _cutChar = ","
 		, const std::string& _endChar = ";"
-		, const unsigned int _digit = 6);
+		, const unsigned int _digit = 6)
+	{
+		m.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
+	}
 
 
 	///////////////////////////////////////////////////////////////////////////////////
@@ -723,65 +732,107 @@ struct ChRMatrix : public ChMath::BaseMatrix4x4<float>
 {
 	ChRMatrix& operator =(const ChRMatrix& _mat);
 
-	//ChRMatrix& operator=(const D3DXVECTOR3&);
-	//ChRMatrix& operator=(const DirectX::XMFLOAT3&);
+	ChRMatrix& operator += (const ChRMatrix& _mat);
+	ChRMatrix const operator + (const ChRMatrix& _mat)const;
 
-	//ChRMatrix& operator=(const D3DXQUATERNION&);
-	//ChRMatrix& operator=(const DirectX::XMFLOAT4&);
+	ChRMatrix& operator -= (const ChRMatrix& _mat);
+	ChRMatrix const operator - (const ChRMatrix& _mat)const;
 
-	//ChRMatrix& operator=(const D3DXMATRIX&);
-	//ChRMatrix& operator=(const DirectX::XMFLOAT4X4&);
+	ChRMatrix& operator *= (const ChRMatrix& _mat);
+	ChRMatrix const operator * (const ChRMatrix& _mat)const;
+
+	ChRMatrix& operator /= (const ChRMatrix& _mat);
+	ChRMatrix const operator / (const ChRMatrix& _mat)const;
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//ConstructerDestructer//
 
 	inline ChRMatrix()
 	{
-		for (unsigned char i = 0; i < 4; i++)
-		{
-			for (unsigned char j = 0; j < 4; j++)
-			{
-				m[i][j] = i != j ? 0.0f : 1.0f;
-			}
-		}
+		Identity();
 	}
 
-	inline ChRMatrix(const ChRMatrix& _mat) { *this = _mat; }
-
-	//inline ChRMatrix(const D3DXVECTOR3& _vec) { *this = _vec; }
-	//inline ChRMatrix(const DirectX::XMFLOAT3& _vec) { *this = _vec; }
-
-	//inline ChRMatrix(const D3DXQUATERNION& _Qua) { *this = _Qua; }
-	//inline ChRMatrix(const DirectX::XMFLOAT4& _Qua) { *this = _Qua; }
+	inline ChRMatrix(const ChRMatrix& _mat) { m.Set(_mat.m); }
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//SerializeDeserialize//
 
-	std::string Serialize(
+	inline std::string Serialize(
 		const std::string& _cutChar = ","
-		, const std::string& _endChar = ";");
+		, const std::string& _endChar = ";")
+	{
+		return m.Serialize(_cutChar);
+	}
 
-	std::string SerializeUpper(
+	inline std::string SerializeUpper(
 		const std::string& _cutChar = ","
 		, const std::string& _endChar = ";"
-		, const std::string& _cutTo4Char = "\n");
+		, const std::string& _cutTo4Char = "\n")
+	{
+		return m.SerializeUpper(_cutChar, _endChar, _cutTo4Char);
+	}
 
-	void Deserialize(
+	inline void Deserialize(
 		const std::string& _str
 		, const size_t _fPos = 0
 		, const std::string& _cutChar = ","
 		, const std::string& _endChar = ";"
-		, const unsigned int _digit = 6);
+		, const unsigned int _digit = 6)
+	{
+		m.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////
+	//SetFunction//
+
+	void SetPosition(const ChVec3& _vec);
+
+	void SetPosition(const float _x, const float _y, const float _z);
+
+	void SetRotation(const ChVec3& _vec);
+
+	void SetRotation(const float _x, const float _y, const float _z);
+
+	void SetRotationXAxis(const float _x);
+
+	void SetRotationYAxis(const float _y);
+
+	void SetRotationZAxis(const float _z);
+
+	void SetScalling(const ChVec3& _vec);
+
+	void SetScalling(const float _x, const float _y, const float _z);
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//GetFunction//
 
-	ChVec3 GetPosition();
+	ChVec3 GetPosition()const;
 
-	ChVec3 GetRotation();
+	ChVec3 GetRotation()const;
 
-	ChVec3 GetScalling();
+	ChVec3 GetScalling()const;
 
+	///////////////////////////////////////////////////////////////////////////////////
+
+	ChVec4 Transform(const ChVec4 _Base)const;
+
+	ChVec4 TransformCoord(const ChVec4 _Base)const;
+
+	///////////////////////////////////////////////////////////////////////////////////
+
+	void Identity()
+	{
+		m.Identity();
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////
+
+	void Inverse()
+	{
+		m.Inverse();
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////
 
 	ChLMatrix ConvertAxis();
 
