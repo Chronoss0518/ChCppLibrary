@@ -13,6 +13,13 @@ namespace ChCpp
 
 		friend BaseObject;
 
+		///////////////////////////////////////////////////////////////////////////////////
+		//ConstructerDestructer//
+
+		virtual ~BaseComponent() { Release(); }
+
+		BaseComponent() {}
+
 	protected:
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -42,8 +49,7 @@ namespace ChCpp
 
 		ChStd::Bool IsUse() { return useFlg; }
 
-		//コンポーネント自身の機能//
-		virtual void Function() {}
+		///////////////////////////////////////////////////////////////////////////////////////
 
 	protected:
 
@@ -74,13 +80,6 @@ namespace ChCpp
 		{
 			return ChPtr::SharedSafeCast<Class>(obj.lock());
 		}
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//ConstructerDestructer//
-
-		virtual ~BaseComponent() { Release(); }
-
-		BaseComponent() {}
 
 		ChStd::Bool useFlg = true;
 
