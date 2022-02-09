@@ -52,9 +52,9 @@ namespace ChCpp
 					std::vector<ChPtr::Shared<Data>> values;
 				};
 
-				std::vector<ChPtr::Shared<ChVec3>> vertexDatas;
-				std::vector<ChPtr::Shared<ChVec2>> uvDatas;
-				std::vector<ChPtr::Shared<ChVec3>> normalDatas;
+				std::vector<ChPtr::Shared<ChVec3>> vertexPosList;
+				std::vector<ChPtr::Shared<ChVec2>> vertexUvPosList;
+				std::vector<ChPtr::Shared<ChVec3>> vertexNormalList;
 
 				unsigned long sVertex = 0;
 				unsigned long sUV = 0;
@@ -129,6 +129,11 @@ namespace ChCpp
 
 			///////////////////////////////////////////////////////////////////////////////////////
 			//GetFunction//
+
+			///////////////////////////////////////////////////////////////////////////////////////
+			//IsFunction//
+			
+			ChStd::Bool IsPrefix(const std::string _str, const char* _prefix,const unsigned long _prefixSize);
 
 			///////////////////////////////////////////////////////////////////////////////////////
 			//LoadFunction//

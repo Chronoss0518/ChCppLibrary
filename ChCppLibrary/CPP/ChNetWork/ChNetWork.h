@@ -58,7 +58,7 @@ namespace ChCpp
 		
 		class InternetProtocol;
 
-		class SockBase :public ClassPerts::Initializer,public ClassPerts::Releaser
+		class SockBase :public ChCp::Initializer,public ChCp::Releaser
 		{
 		public:
 
@@ -106,7 +106,7 @@ namespace ChCpp
 
 		};
 
-		class InternetProtocol :public ChCpp::ClassPerts::Initializer
+		class InternetProtocol :public ChCp::Initializer
 		{
 		public:
 

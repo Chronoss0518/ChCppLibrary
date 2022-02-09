@@ -23,10 +23,7 @@
 #include"../Direct3D11/ChPackDate/ChVector3_11.h"
 #include"../Direct3D11/ChPackDate/ChQuaternion_11.h"
 #include"../Direct3D11/ChDirectX11Controller/ChDirectX11Controller.h"
-
-using IndexBuffer = ID3D11Buffer*;
-using VertexBuffer = ID3D11Buffer*;
-using ConstantBuffer = ID3D11Buffer*;
+#include"../Direct3D11/ChShaderStructures11.h"
 
 #endif
 

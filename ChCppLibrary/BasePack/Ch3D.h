@@ -1,7 +1,10 @@
 #ifndef Ch_CPP_3D_h
 #define Ch_CPP_3D_h
 
-#include"../BaseIncluder/ChBase.h"
+#include<string>
+#include<vector>
+#include"ChMath.h"
+#include"ChMath3D.h"
 
 namespace Ch3D
 {
@@ -21,65 +24,65 @@ namespace Ch3D
 	struct MeshVertex : public PolyVertex
 	{
 		ChVec3 faceNormal = ChVec3(0.0f, 0.0f, -1.0f);
-		ChUIMat blendIndex;
-		ChLMat blendPow;
+	};
+
+	struct SkinMeshData
+	{
+		ChUIMat boneNo;
+		ChLMat bonePow;
 		unsigned long blendNum = 0;
 	};
 
 	//ëŒè€ÇÃí∏ì_Çä«óùÇ∑ÇÈ//
-	template<class vertex>
-	struct TriPolygon
+	struct Polygon
 	{
-		 typename std::enable_if<std::is_base_of<Vertex,vertex>::value,vertex>::type vertexs[3];
-		 unsigned long vertexNo[3];
+		 std::vector<unsigned long> vertexNo;
 	};
 
 	struct Material
 	{
-		ChVec4 diffuse;
-		ChVec3 specular;
-		float specilarPower;
-		ChVec3 ambient;
-
+		ChVec4 diffuse = ChVec4(1.0f);
+		ChVec4 specular = ChVec4(0.0f);
+		ChVec4 ambient = ChVec4(0.3f);
 	};
 
 	struct MaterialStatus
 	{
 		Material mate;
 
-		std::string texture;
-		std::string normalMap;
-		std::string damegeMap;
+		std::string diffuseMap = "";
+		std::string ambientMap = "";
+		std::string specularMap = "";
+		std::string specularHighLightMap = "";
+		std::string bumpMap = "";
+		std::string alphaMap = "";
+		std::string normalMap = "";
+		std::string metallicMap = "";
 	};
 
 	//MaterialÇ…ëŒâûÇ∑ÇÈñ Çä«óùÇ∑ÇÈ//
 	template<class vertex = Vertex>
-	struct Primitive
+	class Primitive
 	{
-		std::vector<ChPtr::Shared<TriPolygon<Vertex>>> triPolygons = nullptr;
+
+		std::vector<ChPtr::Shared<Polygon>> polygons = nullptr;
 		Vertex* vertexList = nullptr;
 
-		ChPtr::Shared<MaterialStatus>mate = nullptr;
-
+		MaterialStatus mate;
 	};
 
 	template<class vertex = Vertex,class primitive = Primitive<vertex>>
-	struct Frame
+	class Frame
 	{
+	public:
 
-		std::vector<ChPtr::Shared<primitive>> polyDatas = nullptr;
+		std::vector<ChPtr::Shared<primitive>> primitives = nullptr;
 		std::map<std::string, unsigned long>mateNames;
 
 		std::vector<ChPtr::Shared<Frame<Vertex>>> parent;
 
 	};
 
-
-	template<class vertex = Vertex>
-	struct MeshBuffer
-	{
-		
-	};
 
 
 }

@@ -1,5 +1,5 @@
-#ifndef Ch_CPP_BaFr_h
-#define Ch_CPP_BaFr_h
+#ifndef Ch_CPP_TexObj_h
+#define Ch_CPP_TexObj_h
 
 namespace ChCpp
 {
@@ -83,6 +83,20 @@ namespace ChCpp
 		size_t LineCount()const
 		{
 			return textLines.size();
+		}
+
+		///////////////////////////////////////////////////////////////////////////////////////
+
+		inline std::vector<std::string>::iterator begin()
+		{
+			return textLines.begin();
+		}
+
+		///////////////////////////////////////////////////////////////////////////////////////
+
+		inline std::vector<std::string>::iterator end()
+		{
+			return textLines.end();
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////////

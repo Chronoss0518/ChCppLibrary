@@ -15,8 +15,10 @@ std::string TextObject::GetText()const
 
 	for (auto text : textLines)
 	{
-		out += text + "\n";
+		out += text + '\n';
 	}
+
+	out.pop_back();
 
 	return out;
 
@@ -26,7 +28,7 @@ std::string TextObject::GetText()const
 
 std::string TextObject::GetTextLine(const size_t _index)const
 {
-	size_t tmp = _index + 1;
+	size_t tmp = _index;
 	if (tmp >= textLines.size())return "";
 
 	return textLines[tmp];
@@ -58,6 +60,7 @@ void TextObject::SetText(const std::string _str)
 
 	}
 
+	textLines.push_back(_str.substr(tmpPos));
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -66,16 +69,24 @@ void TextObject::SetTextLine(
 	const std::string _str
 	, const unsigned int _setIndex)
 {
-	if (_str.find("\n") != std::string::npos)return;
 	if (_setIndex > textLines.size())return;
+
+	TextObject tmp;
+	tmp.SetText(_str);
 
 	if (_setIndex == textLines.size())
 	{
-		textLines.push_back(_str);
+		for (unsigned long i = 0; i < tmp.Count(); i++)
+		{
+			textLines.push_back(tmp.GetTextLine(i));
+		}
 		return;
 	}
 
-	textLines.insert(textLines.begin() + (textLines.size() - _setIndex - 1), _str);
+	for (unsigned long i = 0; i < tmp.Count(); i++)
+	{
+		textLines.insert(textLines.begin() + (textLines.size() - _setIndex - 1 + i), tmp.GetTextLine(i));
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -88,15 +99,15 @@ unsigned long TextObject::FindLine(
 	std::string str = GetText();
 
 	size_t tmp = _startPos;
-	size_t Base = str.find(_findStr);
+	size_t base = str.find(_findStr);
 
-	if (Base == str.npos)return 0;
+	if (base == str.npos)return 0;
 	unsigned long count = 1;
 	while (1)
 	{
 		tmp = str.find("\n", tmp);
 
-		if (tmp >= Base)return count;
+		if (tmp >= base)return count;
 
 		count++;
 

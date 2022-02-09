@@ -11,7 +11,7 @@ namespace ChD3D11
 		LeftTop,RightTop,RightDown, LeftDown
 	};
 
-	class Sprite11 :public ShaderObject<Vertex11>
+	class Sprite11
 	{
 
 	public:
@@ -20,11 +20,10 @@ namespace ChD3D11
 		{
 			for (unsigned char i = 0; i < 4; i++)
 			{
-				poss[i] = _sp.poss[i];
-				uvPoss[i] = _sp.uvPoss[i];
+				vertexs[i].pos = _sp.vertexs[i].pos;
+				vertexs[i].color = _sp.vertexs[i].color;
+				vertexs[i].uv = _sp.vertexs[i].uv;
 			}
-
-			updateFlg = true;
 
 			return *this;
 
@@ -35,9 +34,9 @@ namespace ChD3D11
 
 		void Init();
 
-		void Init(const ID3D11Device* _device);
+		void Init(ID3D11Device* _device);
 
-		void Release()override;
+		void Release();
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
@@ -56,32 +55,36 @@ namespace ChD3D11
 
 		void SetUVPos(const unsigned char _posNames, const  ChVec2& _posData);
 
+		void SetInitPosition();
+
+		void SetInitUV();
+
 		///////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
 
 		inline ChVec2 GetPos(const SpritePositionName _posNames)
 		{
-			return poss[ChStd::EnumCast(_posNames)];
+			return GetPos(ChStd::EnumCast(_posNames));
 		}
 
 		inline ChVec2 GetPos(const unsigned char _num)
 		{
 			if (_num >= 4)return ChVec2();
 
-			return poss[_num];
+			return vertexs[_num].pos;
 		}
 
-		inline ChVec2 GetPosUVPos(const SpritePositionName _posNames)
+		inline ChVec2 GetUV(const SpritePositionName _posNames)
 		{
-			return uvPoss[ChStd::EnumCast(_posNames)];
+			return GetUV(ChStd::EnumCast(_posNames));
 		}
 
-		ChVec2 GetPosUVPos(const unsigned char _num)
+		ChVec2 GetUV(const unsigned char _num)
 		{
 			if (_num >= 4)return ChVec2();
 
-			return uvPoss[_num];
+			return vertexs[_num].uv;
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -96,43 +99,21 @@ namespace ChD3D11
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		void SetDrawData(ID3D11DeviceContext* _dc)override;
+		void SetDrawData(ID3D11DeviceContext* _dc);
+
+		///////////////////////////////////////////////////////////////////////////////////
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 	protected:
 
-		void UpdateVertex();
-
 		///////////////////////////////////////////////////////////////////////////////////
 
-		//ChVec2 Position[4] = 
-		//{
-		//	ChVec2(-1.0f,-1.0f)	//LeftTop//
-		//	,ChVec2(1.0f,-1.0f)	//RightTop//
-		//	,ChVec2(1.0f,1.0f)	//RightDown//
-		//	,ChVec2(-1.0f,1.0f)	//LeftDown//
-		//};
+		Vertex11 vertexs[4];
+		unsigned long indexs[6] = { 0,1,2,0,2,3 };
 
-		ChVec2 poss[4] =
-		{
-			ChVec2(-1.0f,1.0f)	//LeftTop//
-			,ChVec2(1.0f,1.0f)	//RightTop//
-			,ChVec2(1.0f,-1.0f)	//RightDown//
-			,ChVec2(-1.0f,-1.0f)	//LeftDown//
-		};
-
-		ChVec2 uvPoss[4] =
-		{
-			ChVec2(0.0f,0.0f)	//LeftTop//
-			,ChVec2(1.0f,0.0f)	//RightTop//
-			,ChVec2(1.0f,1.0f)	//RightDown//
-			,ChVec2(0.0f,1.0f)	//LeftDown//
-		};
-
-		ChStd::Bool updateFlg = true;
-
-		PrimitiveData11<Vertex11> primitives;
+		VertexBuffer11<Vertex11> vertexBuffer;
+		IndexBuffer11 indexBuffer;
 
 	};
 

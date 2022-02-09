@@ -242,6 +242,7 @@ ChStd::Bool ChCpp::ModelLoader::XFile::SetMeshNormal(
 	, const ChPtr::Shared<TemplateRange>& _targetTemplate
 	, const std::string& _text)
 {
+	
 	if (exceptionFlg)return false;
 
 	if (!IsTags(normalTags, _targetTemplate, _text))return false;
@@ -695,7 +696,7 @@ void ChCpp::ModelLoader::XFile::XFrameToChFrame(
 
 	_chFrame = ChPtr::Make_S<ModelFrame::Frame>();
 
-	_chFrame->baseMat = _xFrame->frameMatrix;
+	_chFrame->baseLMat = _xFrame->frameMatrix;
 	_chFrame->myName = _xFrame->fName;
 
 
@@ -796,7 +797,7 @@ void ChCpp::ModelLoader::XFile::XFrameToChFrame(
 					chFace->vertexData[j].uvPos = chVertexData->uvPos;
 					chFace->vertexData[j].vertexNo = chVertexData->vertexNo;
 
-					chFace->normal += xVertexList[xFace->vertexNos[counters[j]]]->normal;
+					//chFace->normal += xVertexList[xFace->vertexNos[counters[j]]]->normal;
 				}
 
 				chFace->normal.Normalize();
@@ -838,8 +839,8 @@ void ChCpp::ModelLoader::XFile::XFrameToChFrame(
 			chMate->diffuse = xMate->diffuse;
 			chMate->materialName = xMate->materialName;
 			chMate->specular = xMate->specular;
-			chMate->spePow = xMate->specularPower;
-			chMate->ambientPow = xMate->ambient.Len() / 4.0f;
+			chMate->specular = xMate->specularPower;
+			chMate->ambient = xMate->ambient.Len() / 4.0f;
 
 			for (unsigned long i = 0; i < xMate->textureNameList.size(); i++)
 			{
@@ -847,14 +848,14 @@ void ChCpp::ModelLoader::XFile::XFrameToChFrame(
 
 				//switch (i)
 				//{
-				//case 0:ChMate->diffuseMap = XMate->TextureNameList[i]; break;
-				//case 1:ChMate->NormalMap = XMate->TextureNameList[i]; break;
-				//case 2:ChMate->AmbientMap = XMate->TextureNameList[i]; break;
-				//case 3:ChMate->specularMap = XMate->TextureNameList[i]; break;
-				//case 4:ChMate->specularPowMap = XMate->TextureNameList[i]; break;
-				//case 5:ChMate->BumpMap = XMate->TextureNameList[i]; break;
-				//case 6:ChMate->alphaMap = XMate->TextureNameList[i]; break;
-				//case 7:ChMate->MetallicMap = XMate->TextureNameList[i]; break;
+				//case 0:chMate->diffuse = xMate->textureNameList[i]; break;
+				//case 1:chMate->normalMap = xMate->textureNameList[i]; break;
+				//case 2:chMate->ambientMap = xMate->textureNameList[i]; break;
+				//case 3:chMate->specularMap = xMate->textureNameList[i]; break;
+				//case 4:chMate->specularHighLightMap = xMate->textureNameList[i]; break;
+				//case 5:chMate->bumpMap = xMate->textureNameList[i]; break;
+				//case 6:chMate->alphaMap = xMate->textureNameList[i]; break;
+				//case 7:chMate->metallicMap = xMate->textureNameList[i]; break;
 				//default:
 				//	break;
 				//}

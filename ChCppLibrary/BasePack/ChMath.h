@@ -179,10 +179,10 @@ namespace ChMath
 		{
 			for (unsigned long i = 0; i < Array; i++)
 			{
-				if (_Array.val[i] != val[i])continue;
-				return false;
+				if (_Array.val[i] == val[i])continue;
+				return true;
 			}
-			return true;
+			return false;
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////////
@@ -1237,6 +1237,14 @@ namespace ChMath
 			struct
 			{
 				T w, h;
+			};
+			struct
+			{
+				T start, end;
+			};
+			struct
+			{
+				T high, low;
 			};
 			VectorBase<T, 2> val;
 		};

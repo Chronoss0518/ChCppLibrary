@@ -351,10 +351,6 @@ namespace ChD3D11
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		void BaseDataUpdate();
-
-		///////////////////////////////////////////////////////////////////////////////////
-
 		//3Dモデル描画用シェーダー//
 		VertexShader11 bvModel;
 		PixelShader11 bpModel;
@@ -444,16 +440,16 @@ namespace ChD3D11
 		ChStd::Bool bdUpdateFlg = true;
 
 		BaseDatas bdObject;
-		ConstantBuffer baseData = nullptr;
+		ConstantBuffer11<BaseDatas> baseData;
 
 		CharaDatas cdObject;
-		ConstantBuffer charaData = nullptr;
+		ConstantBuffer11<CharaDatas> charaData;
 
 		PolygonDatas pdObject;
-		ConstantBuffer polygonData = nullptr;
+		ConstantBuffer11<PolygonDatas> polygonData;
 
 		BoneDatas bodObject;
-		ConstantBuffer boneData = nullptr;
+		ConstantBuffer11<BoneDatas> boneData;
 
 		///////////////////////////////////////////////////////////////////////////////////
 
