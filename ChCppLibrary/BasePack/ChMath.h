@@ -1289,7 +1289,7 @@ namespace ChMath
 			m.Identity();
 		}
 
-		inline BaseMatrix2x2(const BaseMatrix2x2& _mat) { m = _mat.val; }
+		inline BaseMatrix2x2(const BaseMatrix2x2& _mat) { m = _mat.m; }
 
 	};
 
@@ -1322,7 +1322,7 @@ namespace ChMath
 			m.Identity();
 		}
 
-		inline BaseMatrix3x3(const BaseMatrix3x3& _mat) { m = _mat.val; }
+		inline BaseMatrix3x3(const BaseMatrix3x3& _mat) { m = _mat.m; }
 
 	};
 
@@ -1357,7 +1357,7 @@ namespace ChMath
 			m.Identity();
 		}
 
-		inline BaseMatrix4x4(const BaseMatrix4x4& _mat) { m = _mat.val; }
+		inline BaseMatrix4x4(const BaseMatrix4x4& _mat) { m = _mat.m; }
 
 	};
 
