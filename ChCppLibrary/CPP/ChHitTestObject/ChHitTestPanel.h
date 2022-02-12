@@ -6,6 +6,12 @@
 namespace ChCpp
 {
 
+	struct Square
+	{
+		ChVec3 pos[4];
+	};
+
+
 	//äÓñ{ìIÇ…ñ ÇÕè„å¸Ç´//
 	class HitTestPanel :public HitTestObject
 	{
@@ -19,6 +25,16 @@ namespace ChCpp
 		{
 			size = _size;
 		}
+
+		///////////////////////////////////////////////////////////////////////////////////////
+		//GetFunction//
+
+		inline ChVec2 GetSize()
+		{
+			return size;
+		}
+
+		Square GetSquarePositions();
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//

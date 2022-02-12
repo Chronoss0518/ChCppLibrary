@@ -5,14 +5,34 @@
 
 namespace ChCpp
 {
-
+	
 	class HitTestRay :public HitTestObject
 	{
 	public:
 		///////////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		inline void SetDirection(const ChVec3& _dir) { dir = _dir; }
+		inline void SetMaxLength(const float _maxLen = FLT_MAX) { maxLen = _maxLen; }
+
+		inline void SetRayDir(const ChVec3& _dir) { rayDir = _dir; rayDir.Normalize(); }
+
+		//Rayの基本方向をZ軸の+方向//
+		inline void SetRayPZ() { rayDir = ChVec3(0.0f, 0.0f, 1.0f); }
+
+		//Rayの基本方向をZ軸の-方向//
+		inline void SetRayMZ() { rayDir = ChVec3(0.0f, 0.0f, -1.0f); }
+
+		//Rayの基本方向をX軸の+方向//
+		inline void SetRayPX() { rayDir = ChVec3(1.0f, 0.0f, 0.0f); }
+
+		//Rayの基本方向をX軸の-方向//
+		inline void SetRayMX() { rayDir = ChVec3(-1.0f, 0.0f, 0.0f); }
+
+		//Rayの基本方向をY軸の+方向//
+		inline void SetRayPY() { rayDir = ChVec3(0.0f, 1.0f, 0.0f); }
+
+		//Rayの基本方向をY軸の-方向//
+		inline void SetRayMY() { rayDir = ChVec3(0.0f, -1.0f, 0.0f); }
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
@@ -43,8 +63,12 @@ namespace ChCpp
 
 	private:
 
-		ChVec3 dir;
+		float CreateDat(const ChVec3& _vec1, const ChVec3& _vec2, const ChVec3& _vec3);
 
+		ChStd::Bool HitTestTri(const ChVec3& _vec1, const ChVec3& _vec2, const ChVec3& _vec3);
+
+
+		ChVec3 rayDir = ChVec3(0.0f, 0.0f, 1.0f);
 		float maxLen = FLT_MAX;
 
 	};

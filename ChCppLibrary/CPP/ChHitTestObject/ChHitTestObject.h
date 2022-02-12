@@ -18,11 +18,15 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		inline void SetPosition(const ChVec3& _pos) { pos = _pos; }
+		inline void SetPosition(const ChVec3& _pos) { mat.SetPosition(_pos); }
 
-		inline void SetRotation(const ChVec3& _rot) { rot = _rot; }
+		inline void SetRotation(const ChVec3& _rot) { mat.SetRotation(_rot); }
 
-		inline void SetScalling(const ChVec3& _scl) { scl = _scl;; }
+		inline void SetScalling(const ChVec3& _scl) { mat.SetScalling(_scl); }
+
+		inline void SetMatrix(const ChLMat& _mat) { mat = _mat; }
+
+		inline void SetHitVector(const ChVec3& _vec) { hitVector = _vec; }
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
@@ -57,29 +61,23 @@ namespace ChCpp
 		virtual ChStd::Bool IsInnerHit(
 			HitTestSphere* _target) = 0;
 
-	protected:
-
-		///////////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
-
-		inline void SetHitVector(const ChVec3& _vec) { hitVector = _vec; }
-
 		///////////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
-		inline ChVec3 GetPos() const { return pos; }
+		inline ChVec3 GetPos() const { return mat.GetPosition(); }
 
-		inline ChVec3 GetRot()const { return rot; }
+		inline ChVec3 GetRot()const { return mat.GetRotation(); }
 
-		inline ChVec3 GetScl()const { return scl; }
+		inline ChVec3 GetScl()const { return mat.GetScalling(); }
+
+		inline ChLMat GetMat()const { return mat; }
 
 		inline ~HitTestObject() {}
 
+
 	private:
 
-		ChVec3 pos;
-		ChVec3 rot;
-		ChVec3 scl;
+		ChLMat mat;
 
 		//Ç±ÇÃêîílï∂à⁄ìÆÇ≥ÇπÇÍÇŒè’ìÀÇ©ÇÁñ∆ÇÍÇÈà⁄ìÆêîíl//
 		ChVec3 hitVector = 0.0f;
