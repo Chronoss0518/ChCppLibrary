@@ -958,20 +958,22 @@ namespace ChMath
 		T GetLen()const
 		{
 			T out = static_cast<T>(0.0f);
+
+			if (Row != Column)return out;
+			
 			unsigned long tmpNum;
 			for (unsigned long i = 0; i < Column; i++)
 			{
-				T add = static_cast<T>(1.0f);
-				T sub = static_cast<T>(1.0f);
+				T add = m[0][i];
+				T sub = m[0][i];
 
-				for (unsigned long j = 0; j < Row; j++)
+				for (unsigned long j = 1; j < Row; j++)
 				{
-					if (i == j)continue;
-					tmpNum = i + j;
-					add *= m[j % Column][tmpNum % Row];
+					tmpNum = (i + j) % Row;
+					add *= m[j % Column][tmpNum];
 
-					tmpNum = i - j < 0 ? j - i : i - j;
-					sub *= m[j % Column][tmpNum % Row];
+					tmpNum = (Row + i - j) % Row;
+					sub *= m[j % Column][tmpNum];
 				}
 
 				out = out + add - sub;

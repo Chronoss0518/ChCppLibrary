@@ -273,6 +273,7 @@ namespace ChD3D11
 				{
 					ChPtr::Shared<Texture11> tex = prim.second->mate->textureList[i];
 
+					if (tex == nullptr)tex = whiteTex;
 					if (!tex->IsTex())tex = whiteTex;
 
 					tex->SetDrawData(_dc, i);
