@@ -1016,37 +1016,6 @@ ChLMatrix const ChLMatrix::operator / (const ChLMatrix& _mat)const
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-std::string ChLMatrix::Serialize(
-	const std::string& _cutChar
-	, const std::string& _endChar)
-{
-	return m.Serialize(_cutChar);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-std::string ChLMatrix::SerializeUpper(
-	const std::string& _cutChar
-	, const std::string& _endChar
-	, const std::string& _cutTo4Char)
-{
-	return m.SerializeUpper(_cutChar, _endChar, _cutTo4Char);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChLMatrix::Deserialize(
-	const std::string& _str
-	, const size_t _fPos
-	, const std::string& _cutChar
-	, const std::string& _endChar
-	, const unsigned int _digit)
-{
-	m.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
 void ChLMatrix::SetPosition(const ChVec3& _vec)
 {
 	SetPosition(_vec.x, _vec.y, _vec.z);
@@ -1229,6 +1198,14 @@ ChRMatrix ChLMatrix::ConvertAxis()
 {
 	ChRMatrix tmp;
 
+	for (unsigned long i = 0; i < m.GetColumn(); i++)
+	{
+		for (unsigned long j = 0; j < m.GetRow(); j++)
+		{
+			tmp.m[i][j] = m[j][i];
+		}
+	}
+
 	return tmp;
 }
 
@@ -1238,9 +1215,298 @@ ChRMatrix ChLMatrix::ConvertAxis()
 
 ChRMatrix& ChRMatrix::operator =(const ChRMatrix& _mat)
 {
+	if (this == &_mat)return *this;
 	m.Set(_mat.m);
-
 	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChRMatrix& ChRMatrix::operator += (const ChRMatrix& _mat)
+{
+	m.Add(_mat.m);
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChRMatrix const ChRMatrix::operator + (const ChRMatrix& _mat)const
+{
+	ChRMatrix out = *this;
+	out += _mat;
+	return out;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChRMatrix& ChRMatrix::operator -= (const ChRMatrix& _mat)
+{
+	m.Sub(_mat.m);
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChRMatrix const ChRMatrix::operator - (const ChRMatrix& _mat)const
+{
+	ChRMatrix out = *this;
+	out -= _mat;
+	return out;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChRMatrix& ChRMatrix::operator *= (const ChRMatrix& _mat)
+{
+	m.Mul(_mat.m);
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChRMatrix const ChRMatrix::operator * (const ChRMatrix& _mat)const
+{
+	ChRMatrix out = *this;
+	out *= _mat;
+	return out;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChRMatrix& ChRMatrix::operator /= (const ChRMatrix& _mat)
+{
+	m.Div(_mat.m);
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChRMatrix const ChRMatrix::operator / (const ChRMatrix& _mat)const
+{
+	ChRMatrix out = *this;
+	out /= _mat;
+	return out;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void ChRMatrix::SetPosition(const ChVec3& _vec)
+{
+	SetPosition(_vec.x, _vec.y, _vec.z);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void ChRMatrix::SetPosition(const float _x, const float _y, const float _z)
+{
+	r_41 = _x;
+	r_42 = _y;
+	r_43 = _z;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void ChRMatrix::ChRMatrix::SetRotation(const ChVec3& _vec)
+{
+	SetRotation(_vec.x, _vec.y, _vec.z);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void ChRMatrix::SetRotation(const float _x, const float _y, const float _z)
+{
+
+	ChRMat XAxis, YAxis, ZAxis;
+
+	XAxis.SetRotationXAxis(_x);
+	YAxis.SetRotationYAxis(_y);
+	ZAxis.SetRotationZAxis(_z);
+
+	YAxis = XAxis * YAxis;
+
+	YAxis = ZAxis * YAxis;
+
+	YAxis.SetPosition(GetPosition());
+	YAxis.SetScalling(GetScalling());
+
+	m.Set(YAxis.m);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void ChRMatrix::SetRotationXAxis(const float _x)
+{
+	float x = -std::fmod(_x, ChMath::Pi * 2.0f);
+
+	r_22 = std::cos(x);
+	r_23 = std::sin(x);
+
+	r_32 = -std::sin(x);
+	r_33 = std::cos(x);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void ChRMatrix::SetRotationYAxis(const float _y)
+{
+	float  y = -std::fmod(_y, ChMath::Pi * 2.0f);
+
+	r_11 = std::cos(y);
+	r_13 = -std::sin(y);
+
+	r_31 = std::sin(y);
+	r_33 = std::cos(y);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void ChRMatrix::SetRotationZAxis(const float _z)
+{
+	float z = -std::fmod(_z, ChMath::Pi * 2.0f);
+
+	r_11 = std::cos(z);
+	r_12 = std::sin(z);
+
+	r_21 = -std::sin(z);
+	r_22 = std::cos(z);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void ChRMatrix::SetScalling(const ChVec3& _vec)
+{
+	SetScalling(_vec.x, _vec.y, _vec.z);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void ChRMatrix::SetScalling(const float _x, const float _y, const float _z)
+{
+	ChVector4 vec[3];
+
+	for (unsigned long i = 0; i < m.GetRow() - 1; i++)
+	{
+		for (unsigned long j = 0; j < m.GetColumn() - 1; j++)
+		{
+			vec[i].val[j] = m[j][i];
+		}
+	}
+
+
+	vec[0].Normalize();
+	vec[0].val.Mul(_x);
+	
+	vec[1].Normalize();
+	vec[1].val.Mul(_y);
+	
+	vec[2].Normalize();
+	vec[2].val.Mul(_z);
+
+
+	for (unsigned long i = 0; i < m.GetRow() - 1; i++)
+	{
+		for (unsigned long j = 0; j < m.GetColumn() - 1; j++)
+		{
+			m[j][i] = vec[i].val[j];
+		}
+	}
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVec3 ChRMatrix::GetPosition()const
+{
+	return ChVec3(r_41, r_42, r_43);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVec3 ChRMatrix::GetRotation()const
+{
+	ChVec3 tmpScl = GetScalling();
+
+	float outM[4][4];
+
+	for (unsigned char i = 0; i < 3; i++)
+	{
+		for (unsigned char j = 0; j < 3; j++)
+		{
+			outM[i][j] = m[j][i];
+			outM[i][j] /= tmpScl.val[j] != 0.0f ? tmpScl.val[j] : 1.0f;
+		}
+	}
+
+	ChVec3 out = ChVec3(
+		(std::atan2f(outM[2][1], outM[2][2])),
+		(std::asinf(-outM[2][0])),
+		(std::atan2f(outM[1][0], outM[0][0])));
+
+
+	return out;
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVec3 ChRMatrix::GetScalling()const
+{
+	ChVector4 vec[3];
+
+	for (unsigned long i = 0; i < m.GetRow() - 1; i++)
+	{
+		for (unsigned long j = 0; j < m.GetColumn() - 1; j++)
+		{
+			vec[i].val[j] = m[j][i];
+		}
+	}
+
+	return ChVec3(vec[0].val.GetLen(), vec[0].val.GetLen(), vec[0].val.GetLen());
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVec4 ChRMatrix::Transform(const ChVec4 _Base)const
+{
+	ChVec4 out;
+
+	out = _Base;
+
+	out.w = 1.0f;
+
+	out.val = m.VerticalMul(out.val);
+
+	return out;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVec4 ChRMatrix::TransformCoord(const ChVec4 _Base)const
+{
+	ChRMatrix tmp = *this;
+
+	tmp.r_41 = 0.0f;
+	tmp.r_42 = 0.0f;
+	tmp.r_43 = 0.0f;
+
+	return tmp.Transform(_Base);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChLMatrix ChRMatrix::ConvertAxis()
+{
+	ChLMatrix tmp;
+
+	for (unsigned long i = 0; i < m.GetColumn(); i++)
+	{
+		for (unsigned long j = 0; j < m.GetRow(); j++)
+		{
+			tmp.m[i][j] = m[j][i];
+		}
+	}
+
+	return tmp;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

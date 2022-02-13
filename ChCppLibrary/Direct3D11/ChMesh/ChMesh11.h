@@ -8,21 +8,28 @@ namespace ChD3D11
 {
 
 	class Texture11;
+	class Mesh11;
 
 	struct FrameData11
 	{
-		std::map<std::string,ChPtr::Shared<PrimitiveData11<PrimitiveVertex11>>>primitiveDatas;
+		friend Mesh11;
+
+		std::map<std::string,ChPtr::Shared<PrimitiveData11<SkinMeshVertex11>>>primitiveDatas;
 
 		std::string frameName;
 
 		ChMat_11 baseMat;
+		ChMat_11 animationMat;
 
-		ChPtr::Shared<FrameData11> parentFrame;
+		ChPtr::Weak<FrameData11> parentFrame;
 
 		std::vector<ChPtr::Shared<FrameData11>>childFrame;
 
-		unsigned long primitiveCount = 0;
+		inline ChMat_11 GetDrawMatrix() { return drawMat; }
 
+	private:
+
+		ChMat_11 drawMat;
 	};
 
 	class Mesh11
@@ -55,12 +62,32 @@ namespace ChD3D11
 		void SetDrawData(ID3D11DeviceContext* _dc,const std::string& _frameName);
 
 		///////////////////////////////////////////////////////////////////////////////////////
+		//GetFunction//
+
+		inline ChPtr::Shared<FrameData11> GetRootFrame() { return modelData; }
+
+		inline ChPtr::Shared<FrameData11> GetFrame(const std::string& _frameName)
+		{
+			return (frameNames.find(_frameName) != frameNames.end()) ? frameNames[_frameName].lock() : nullptr;
+		}
+
+		inline std::vector<std::string> GetFrameNames()
+		{
+			std::vector<std::string> out;
+
+			for (auto&& frame : frameNames)
+			{
+				out.push_back(frame.first);
+			}
+
+			return out;
+		}
 
 		inline ID3D11Device* GetDevice() { return device; }
 
-	protected:
+		ChMat_11 GetParentAnimationMatrixs(FrameData11& _frame);
 
-		///////////////////////////////////////////////////////////////////////////////////////
+	protected:
 
 		void CreateFrames(
 			ChPtr::Shared<FrameData11>& _frames
@@ -76,7 +103,7 @@ namespace ChD3D11
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
-		void UpdateFrame();
+		void UpdateFrameDrawMatrix();
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
@@ -84,9 +111,9 @@ namespace ChD3D11
 		using MaterialNo = unsigned long;
 		using MaterialName = std::string;
 
-		std::map<std::string,ChPtr::Shared<FrameData11>>frameNames;
+		std::map<std::string,ChPtr::Weak<FrameData11>>frameNames;
 
-		std::vector<ChPtr::Shared<FrameData11>>frameList;
+		std::vector<ChPtr::Weak<FrameData11>>drawFrames;
 
 		ChPtr::Shared<FrameData11> modelData = nullptr;
 

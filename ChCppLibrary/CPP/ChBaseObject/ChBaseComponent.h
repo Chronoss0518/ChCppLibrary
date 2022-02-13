@@ -2,8 +2,6 @@
 #ifndef Ch_CPP_BaCom_h
 #define Ch_CPP_BaCom_h
 
-#include"../ChBitBool/ChBitBool.h"
-
 namespace ChCpp
 {
 	class BaseObject;
@@ -14,6 +12,13 @@ namespace ChCpp
 	public:
 
 		friend BaseObject;
+
+		///////////////////////////////////////////////////////////////////////////////////
+		//ConstructerDestructer//
+
+		virtual ~BaseComponent() { Release(); }
+
+		BaseComponent() {}
 
 	protected:
 
@@ -44,6 +49,8 @@ namespace ChCpp
 
 		ChStd::Bool IsUse() { return useFlg; }
 
+		///////////////////////////////////////////////////////////////////////////////////////
+
 	protected:
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -69,17 +76,9 @@ namespace ChCpp
 		template<class Class = BaseObject>
 		auto LookObj()->
 			typename std::enable_if<std::is_base_of<BaseObject, Class>::value, ChPtr::Shared<Class>>::type
-
 		{
 			return ChPtr::SharedSafeCast<Class>(obj.lock());
 		}
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//ConstructerDestructer//
-
-		virtual ~BaseComponent() { Release(); }
-
-		BaseComponent() {}
 
 		ChStd::Bool useFlg = true;
 

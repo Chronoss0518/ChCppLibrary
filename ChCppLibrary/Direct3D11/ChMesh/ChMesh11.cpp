@@ -46,11 +46,31 @@ namespace ChD3D11
 
 	void Mesh11::Release()
 	{
-		frameList.clear();
+		if(!drawFrames.empty())drawFrames.clear();
+		if (!frameNames.empty())frameNames.clear();
 		materialBuffer.Release();
 		modelData = nullptr;
 	}
 
+	///////////////////////////////////////////////////////////////////////////////////////
+
+	ChMat_11 Mesh11::GetParentAnimationMatrixs(FrameData11& _frame)
+	{
+		auto pFrame = _frame.parentFrame.lock();
+
+		if (pFrame == nullptr)
+		{
+			_frame.drawMat = _frame.animationMat * _frame.baseMat;
+			return _frame.drawMat;
+		}
+
+		auto parentAniamtionMat = GetParentAnimationMatrixs(*pFrame);
+		
+		_frame.drawMat = parentAniamtionMat * _frame.animationMat * _frame.baseMat;
+
+		return _frame.drawMat;
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////
 
 	void Mesh11::Create(const ChCpp::ModelObject& _baseModels)
@@ -74,6 +94,9 @@ namespace ChD3D11
 
 		_frames = ChPtr::Make_S<FrameData11>();
 		
+		_frames->frameName = _baseModels.myName;
+		_frames->baseMat = _baseModels.baseLMat;
+
 		CreatePrimitiveData(_frames, _baseModels);
 
 		for (auto&& models : _baseModels.childFrames)
@@ -83,6 +106,8 @@ namespace ChD3D11
 			_frames->childFrame.push_back(tmp);
 			tmp->parentFrame = _frames;
 		}
+
+		frameNames[_frames->frameName] = _frames;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -119,21 +144,19 @@ namespace ChD3D11
 
 		auto& verList = _baseModels.mesh->vertexList;
 
-		_frames->primitiveCount = mateNum;
-
 		//PrimitiveCount//
 		for (unsigned long i = 0; i< mateNum;i++)
 		{
 
 			auto& faces = surfaceList[i];
 			
-			auto prim = ChPtr::Make_S<PrimitiveData11<PrimitiveVertex11>>();
+			auto prim = ChPtr::Make_S<PrimitiveData11<SkinMeshVertex11>>();
 
 			prim->vertexNum = faces.size() * 3;
 			prim->indexNum = faces.size() * 3;
 
 
-			prim->vertexArray = new PrimitiveVertex11[prim->vertexNum];
+			prim->vertexArray = new SkinMeshVertex11[prim->vertexNum];
 
 			prim->indexArray = new unsigned long[prim->indexNum];
 
@@ -186,25 +209,31 @@ namespace ChD3D11
 
 			prim->mate->material.frameMatrix = _baseModels.baseLMat;
 
-			for (auto texName : mateList[i]->textureNames)
+			if (mateList[i]->textureNames.size() > 0)
 			{
 				auto tex = ChPtr::Make_S<Texture11>();
 
-				tex->CreateTexture(texName,GetDevice());
+				tex->CreateTexture(mateList[i]->textureNames[0], GetDevice());
+				if (!tex->IsTex())tex = whiteTex;
 
-				prim->mate->textureList.push_back(tex);
-
+				prim->mate->diffuseMap = tex;
 			}
 
-			if (prim->mate->textureList.size() <= 0)prim->mate->textureList.push_back(whiteTex);
-			if (prim->mate->textureList.size() <= 1)prim->mate->textureList.push_back(normalTex);
+			if (mateList[i]->textureNames.size() > 1)
+			{
+				auto tex = ChPtr::Make_S<Texture11>();
 
+				tex->CreateTexture(mateList[i]->textureNames[1], GetDevice());
+				if (!tex->IsTex())tex = normalTex;
+
+				prim->mate->normalMap = tex;
+			}
 
 			_frames->primitiveDatas[mateList[i]->materialName] = prim;
 
 		}
 
-		frameList.push_back(_frames);
+		drawFrames.push_back(_frames);
 
 
 
@@ -259,27 +288,32 @@ namespace ChD3D11
 		unsigned int offsets = 0;
 
 
-		for (auto&& frame : frameList)
+		for (auto&& fPtr : drawFrames)
 		{
+			auto frame = fPtr.lock();
+			if (frame == nullptr)continue;
+
 			for (auto&& prim : frame->primitiveDatas)
 			{
 				prim.second->vertexBuffer.SetVertexBuffer(_dc, offsets);
 				prim.second->indexBuffer.SetIndexBuffer(_dc);
 
+				prim.second->mate->material.frameMatrix = GetParentAnimationMatrixs(*frame);
 
 				materialBuffer.UpdateResouce(_dc, &prim.second->mate->material);
 
-				for (unsigned long i = 0; i < prim.second->mate->textureList.size(); i++)
 				{
-					ChPtr::Shared<Texture11> tex = prim.second->mate->textureList[i];
+					auto diffuseMap = prim.second->mate->diffuseMap;
+					if (diffuseMap == nullptr)diffuseMap = whiteTex;
+					if (!diffuseMap->IsTex())diffuseMap = whiteTex;
+					diffuseMap->SetDrawData(_dc, 0);
+				}
 
-					if (tex == nullptr)tex = whiteTex;
-					if (!tex->IsTex())tex = whiteTex;
-
-					tex->SetDrawData(_dc, i);
-
-					if (i - 1 > 128)break;
-
+				{
+					auto normalMap = prim.second->mate->normalMap;
+					if (normalMap == nullptr)normalMap = whiteTex;
+					if (!normalMap->IsTex())normalMap = whiteTex;
+					normalMap->SetDrawData(_dc, 1);
 				}
 
 				materialBuffer.SetToVertexShader(_dc, 1);
@@ -299,13 +333,6 @@ namespace ChD3D11
 	{
 		if (modelData == nullptr)return;
 
-		for (auto&& frame : frameList)
-		{
-			for (auto&& prim : frame->primitiveDatas)
-			{
-
-			}
-		}
 
 	}
 

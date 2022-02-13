@@ -45,9 +45,9 @@ namespace ChCpp
 		struct Material
 		{
 			std::string materialName = "";
-			ChVec4 diffuse = ChVec4(1.0f);
-			ChVec4 specular = ChVec4(1.0f);
-			ChVec4 ambient = ChVec4(0.0f);
+			ChVec4 diffuse = 1.0f;
+			ChVec4 specular =1.0f;
+			ChVec4 ambient = 0.0f;
 			std::vector<std::string>textureNames = std::vector<std::string>(0);
 
 			//std::string diffuseMap;
@@ -123,22 +123,6 @@ namespace ChCpp
 			}
 
 		};
-
-
-		struct BoneTrees
-		{
-			union
-			{
-				ChLMat baseLMat = ChLMat();
-				ChRMat baseRMat;
-			};
-
-			ChPtr::Weak<BoneTrees> parentBone;
-			std::vector<ChPtr::Shared<BoneTrees>>childBones;
-		};
-
-		std::map<std::string, unsigned long>boneNames;
-		std::vector<ChPtr::Shared<BoneTrees>>boneList;
 
 		ChPtr::Shared<Frame>modelData = nullptr;
 		std::string modelName;

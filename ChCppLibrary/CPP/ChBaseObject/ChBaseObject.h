@@ -5,7 +5,6 @@
 #include"../ChBitBool/ChBitBool.h"
 
 #include"ChBaseComponent.h"
-#include"ChOPClass.h"
 
 namespace ChCpp
 {
@@ -13,17 +12,12 @@ namespace ChCpp
 	class ObjectList;
 
 	//オブジェクトを生成する場合、このクラスを継承して作成する。//
-	//このクラスとクラスパーツ(ChCpp::OP)を継承した//
-	//オリジナルのクラスを作成して利用する。//
-	class BaseObject :public std::enable_shared_from_this<BaseObject>
+	class BaseObject :public std::enable_shared_from_this<BaseObject>,public ChCp::Releaser
 	{
 	public:
 
 		friend BaseComponent;
-		friend ObjectManager;
 		friend ObjectList;
-
-	protected:
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
@@ -32,7 +26,9 @@ namespace ChCpp
 		virtual void Init() {}
 
 		//自身を捨てる時に自動的に走る関数//
-		virtual void Release() {}
+		void Release() {}
+
+	protected:
 
 		//自身を捨てたい時に走らせる関数//
 		void Destroy();
@@ -44,6 +40,11 @@ namespace ChCpp
 		void ReleaseComponent(const std::string& _comName);
 
 	public:
+
+		///////////////////////////////////////////////////////////////////////////////////
+		//ConstructerDestructer//
+
+		BaseObject() {};
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
@@ -121,14 +122,18 @@ namespace ChCpp
 		}
 
 		//子オブジェクトのセット//
-		template<class T>
-		inline void SetChild(typename std::enable_if
-			<std::is_base_of<BaseObject, T>::value, const ChPtr::Shared<T>>::type _childObject)
+		inline void SetChild(ChPtr::Shared<BaseObject> _childObject)
 		{
-			ChPtr::Shared<BaseObject> obj = ChPtr::SharedSafeCast<T>(_childObject);
-			childList.push_back(obj);
+			childList.push_back(_childObject);
 
-			obj->Parent = shared_from_this();
+			auto par = _childObject->parent.lock();
+			if (par != nullptr)
+			{
+				auto&& obj =  std::find(par->childList.begin(), par->childList.end(), _childObject);
+				if(obj != par->childList.end())	par->childList.erase(obj);
+			}
+
+			_childObject->parent = shared_from_this();
 
 		}
 
@@ -149,27 +154,19 @@ namespace ChCpp
 		//Tag変更時に走らせる関数//
 		void ChengeTag(const std::string& _newTag);
 
-	public:
-
 		///////////////////////////////////////////////////////////////////////////////////////
 
 		//全体オブジェクトの確認//
-		std::vector<ChPtr::Shared<BaseObject>>LookObjectList();
-
-		///////////////////////////////////////////////////////////////////////////////////////
+		std::vector<ChPtr::Weak<BaseObject>>LookObjectList();
 
 		//選択したタグのオブジェクトの確認//
-		std::vector<ChPtr::Shared<BaseObject>>LookObjectListForTag(const std::string& _tag);
-
-		///////////////////////////////////////////////////////////////////////////////////////
+		std::vector<ChPtr::Weak<BaseObject>>LookObjectListForTag(const std::string& _tag);
 
 		//選択した名前のオブジェクトの確認//
-		std::vector<ChPtr::Shared<BaseObject>>LookObjectListForName(const std::string& _objectName);
-
-		///////////////////////////////////////////////////////////////////////////////////////
+		std::vector<ChPtr::Weak<BaseObject>>LookObjectListForName(const std::string& _objectName);
 
 		//選択したタグ内の選択した名前ののオブジェクトの確認//
-		std::vector<ChPtr::Shared<BaseObject>>LookObjectListForTagAndName(const std::string& _objectName, const std::string& _Tag);
+		std::vector<ChPtr::Weak<BaseObject>>LookObjectListForTagAndName(const std::string& _objectName, const std::string& _Tag);
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//UsingFunctionToManagers//
@@ -187,6 +184,8 @@ namespace ChCpp
 		void Draw2DFunction();
 		void DrawEndFunction();
 
+		//オブジェクト自身の機能//
+		virtual void Function() {}
 
 	protected:
 
@@ -207,10 +206,6 @@ namespace ChCpp
 		virtual void Draw2D() {}
 		virtual void DrawEnd() {}
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//ConstructerDestructer//
-
-		BaseObject() {};
 
 		ChStd::Bool useFlg = true;
 
@@ -223,7 +218,7 @@ namespace ChCpp
 		void BaseInit(
 			const std::string& _objectName
 			, const std::string& _tag
-			, const ObjectManager* _objMa);
+			, ObjectManager* _objMa);
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//Component//
@@ -237,13 +232,12 @@ namespace ChCpp
 
 		std::vector<ChPtr::Shared<BaseComponent>>comList;
 
-		ObjectManager* objMa = nullptr;
+		ObjectList* objMaList = nullptr;
 		std::string myName;
 		std::string tag;
 		ChStd::Bool dFlg = false;
 
 	};
-
 
 }
 

@@ -3,7 +3,6 @@
 
 #include"../../BaseIncluder/ChBase.h"
 
-#include"../../CPP/ChBitBool/ChBitBool.h"
 #include"ChXInputController.h"
 
 #pragma comment(lib,"xinput.lib")

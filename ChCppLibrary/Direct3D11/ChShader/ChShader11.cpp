@@ -435,7 +435,6 @@ void ShaderController11::Draw(
 	if (!drawFlg)return;
 	if (!_Mesh.IsMesh())return;
 
-
 	cdObject.modelMat = _mat;
 
 	bvModel.SetShader(dc);

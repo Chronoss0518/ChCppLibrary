@@ -1112,9 +1112,9 @@ namespace ChMath
 		}
 		*/
 
-		unsigned long GetColumn() { return Column; }
+		unsigned long GetColumn()const { return Column; }
 
-		unsigned long GetRow() { return Row; }
+		unsigned long GetRow()const { return Row; }
 
 		///////////////////////////////////////////////////////////////////////////////////
 

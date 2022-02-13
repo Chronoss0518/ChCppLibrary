@@ -166,8 +166,6 @@ void XAudio2Manager::CreateSound(AudioObject* _Object, const std::string& _fileN
 
 	if (ChPtr::NullCheck(reader))
 	{
-		
-
 		return;
 	}
 

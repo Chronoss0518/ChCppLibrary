@@ -18,18 +18,17 @@ namespace Ch3D
 
 	struct PolyVertex : public Vertex
 	{
-		ChVec3 normal = ChVec3(0.0f, 0.0f, -1.0f);
+		ChVec3 normal = ChVec3(0.0f, 0.0f, 1.0f);
 	};
 
 	struct MeshVertex : public PolyVertex
 	{
-		ChVec3 faceNormal = ChVec3(0.0f, 0.0f, -1.0f);
+		ChVec3 faceNormal = ChVec3(0.0f, 0.0f, 1.0f);
 	};
 
 	struct SkinMeshData
 	{
-		ChUIMat boneNo;
-		ChLMat bonePow;
+		ChVec4 brendPows[16] = { 0.0f,0.0f,0.0f ,0.0f ,0.0f ,0.0f ,0.0f ,0.0f ,0.0f ,0.0f ,0.0f ,0.0f ,0.0f ,0.0f ,0.0f ,0.0f };
 		unsigned long blendNum = 0;
 	};
 
@@ -41,9 +40,9 @@ namespace Ch3D
 
 	struct Material
 	{
-		ChVec4 diffuse = ChVec4(1.0f);
-		ChVec4 specular = ChVec4(0.0f);
-		ChVec4 ambient = ChVec4(0.3f);
+		ChVec4 diffuse = 1.0f;
+		ChVec4 specular = 0.0f;
+		ChVec4 ambient = 0.3f;
 	};
 
 	struct MaterialStatus
