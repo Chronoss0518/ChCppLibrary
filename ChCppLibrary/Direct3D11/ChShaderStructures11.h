@@ -18,16 +18,14 @@ namespace ChD3D11
 
 		std::string materialName;
 
-		std::vector<ChPtr::Shared<Texture11>>textureList;
-
-		//ChPtr::Shared<Texture11> diffuseMap = ChPtr::Make_S<Texture11>();
-		//ChPtr::Shared<Texture11> ambientMap = ChPtr::Make_S<Texture11>();
-		//ChPtr::Shared<Texture11> specularMap = ChPtr::Make_S<Texture11>();
-		//ChPtr::Shared<Texture11> specularHighLightMap = ChPtr::Make_S<Texture11>();
-		//ChPtr::Shared<Texture11> bumpMap = ChPtr::Make_S<Texture11>();
-		//ChPtr::Shared<Texture11> alphaMap = ChPtr::Make_S<Texture11>();
-		//ChPtr::Shared<Texture11> normalMap = ChPtr::Make_S<Texture11>();
-		//ChPtr::Shared<Texture11> metallicMap = ChPtr::Make_S<Texture11>();
+		ChPtr::Shared<Texture11> diffuseMap = ChPtr::Make_S<Texture11>();
+		ChPtr::Shared<Texture11> ambientMap = ChPtr::Make_S<Texture11>();
+		ChPtr::Shared<Texture11> specularMap = ChPtr::Make_S<Texture11>();
+		ChPtr::Shared<Texture11> specularHighLightMap = ChPtr::Make_S<Texture11>();
+		ChPtr::Shared<Texture11> bumpMap = ChPtr::Make_S<Texture11>();
+		ChPtr::Shared<Texture11> alphaMap = ChPtr::Make_S<Texture11>();
+		ChPtr::Shared<Texture11> normalMap = ChPtr::Make_S<Texture11>();
+		ChPtr::Shared<Texture11> metallicMap = ChPtr::Make_S<Texture11>();
 
 	};
 

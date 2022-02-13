@@ -124,22 +124,6 @@ namespace ChCpp
 
 		};
 
-
-		struct BoneTrees
-		{
-			union
-			{
-				ChLMat baseLMat = ChLMat();
-				ChRMat baseRMat;
-			};
-
-			ChPtr::Weak<BoneTrees> parentBone;
-			std::vector<ChPtr::Shared<BoneTrees>>childBones;
-		};
-
-		std::map<std::string, unsigned long>boneNames;
-		std::vector<ChPtr::Shared<BoneTrees>>boneList;
-
 		ChPtr::Shared<Frame>modelData = nullptr;
 		std::string modelName;
 

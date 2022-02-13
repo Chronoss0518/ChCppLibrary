@@ -76,7 +76,6 @@ namespace ChCpp
 		template<class Class = BaseObject>
 		auto LookObj()->
 			typename std::enable_if<std::is_base_of<BaseObject, Class>::value, ChPtr::Shared<Class>>::type
-
 		{
 			return ChPtr::SharedSafeCast<Class>(obj.lock());
 		}
