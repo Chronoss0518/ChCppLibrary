@@ -6,23 +6,39 @@
 namespace ChCpp
 {
 
+	struct Cube
+	{
+		ChVec3 pos[8] = {
+			ChVec3(0.5f,0.5f,0.5f),
+			ChVec3(-0.5f,0.5f,0.5f),
+			ChVec3(-0.5f,-0.5f,0.5f),
+			ChVec3(0.5f,-0.5f,0.5f),
+			ChVec3(0.5f,0.5f,-0.5f),
+			ChVec3(-0.5f,0.5f,-0.5f),
+			ChVec3(-0.5f,-0.5f,-0.5f),
+			ChVec3(0.5f,-0.5f,-0.5f)
+		};
+
+		unsigned char faces[12][3] =
+		{
+			{0,1,2},
+			{0,2,3},
+			{0,4,5},
+			{0,5,1},
+			{1,5,6},
+			{1,6,2},
+			{0,4,7},
+			{0,7,3},
+			{2,6,7},
+			{2,7,3},
+			{4,7,6},
+			{4,6,5}
+		};
+	};
+
 	class HitTestBox :public HitTestObject
 	{
 	public:
-		///////////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
-
-		inline void SetSize(const ChVec3& _size) 
-		{
-			size = _size; 
-			size.Abs();
-		}
-
-		///////////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
-
-		inline ChVec3 GetSize() { return size; }
-
 		///////////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
 
@@ -50,9 +66,11 @@ namespace ChCpp
 		ChStd::Bool IsInnerHit(
 			HitTestSphere* _target)override;
 
-	private:
 
-		ChVec3 size;
+		///////////////////////////////////////////////////////////////////////////////////////
+		
+		Cube CreateCube();
+
 
 
 	};

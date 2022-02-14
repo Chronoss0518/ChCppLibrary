@@ -235,16 +235,14 @@ ChStd::Bool HitTestBox::IsHit(
 ChStd::Bool HitTestBox::IsHit(
 	HitTestBox* _target)
 {
-
-
 	//ˆÊ’uî•ñ‚¾‚¯‚Ì“–‚½‚è”»’è//
 
 	ChVec3 tPos = _target->GetPos();
 	ChVec3 mPos = GetPos();
 
 	ChVec3 tmpVec = mPos - tPos;
-	ChVec3 tSize = _target->GetSize();
-	ChVec3 mSize = size;
+	ChVec3 tSize = _target->GetScl();
+	ChVec3 mSize = GetScl();
 
 	ChVec3 testVec = tmpVec;
 	testVec.Abs();
@@ -270,7 +268,43 @@ ChStd::Bool HitTestBox::IsHit(
 ChStd::Bool  HitTestBox::IsHit(
 	HitTestSphere* _target)
 {
-	return false;
+	//ˆÊ’uî•ñ‚¾‚¯‚Ì“–‚½‚è”»’è//
+
+	float spSize = _target->GetScl().Len();
+	ChVec3 spPos = _target->GetPos();
+	
+	auto cube = CreateCube();
+
+	for (unsigned char i = 0; i < 8; i++)
+	{
+		ChVec3 tmpVec = cube.pos[i] - spPos;
+		if (tmpVec.Len() > spSize)continue;
+
+		_target->SetHitVector(tmpVec);
+
+		float inLen = tmpVec.Len() - spSize;
+
+		SetHitVector(tmpVec * inLen);
+
+		return true;
+	}
+
+	ChVec3 tmpVec = GetPos() - spPos;
+	ChVec3 testVec = tmpVec;
+	testVec.Abs();
+
+	ChVec3 tSize = spSize;
+	ChVec3 mSize = GetScl();
+
+	if (tSize.x + mSize.x < testVec.x)return false;
+	if (tSize.y + mSize.y < testVec.y)return false;
+	if (tSize.z + mSize.z < testVec.z)return false;
+
+	SetHitVector(tmpVec);
+
+	_target->SetHitVector(tmpVec * -1.0f);
+
+	return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -292,8 +326,8 @@ ChStd::Bool  HitTestBox::IsInnerHit(
 	ChVec3 tPos = _target->GetPos();
 	ChVec3 mPos = GetPos();
 
-	ChVec3 tSize = _target->GetSize();
-	ChVec3 mSize = size;
+	ChVec3 tSize = _target->GetScl();
+	ChVec3 mSize = GetScl();
 
 	ChVec3 testVec = mPos - tPos;
 	testVec.Abs();
@@ -326,6 +360,26 @@ ChStd::Bool  HitTestBox::IsInnerHit(
 	return false;
 }
 
+
+Cube HitTestBox::CreateCube()
+{
+	auto pos = GetPos();
+	auto scl = GetScl();
+
+	ChLMat mat;
+	mat.SetPosition(pos);
+	mat.SetScalling(scl);
+	
+	Cube out;
+
+	for (unsigned long i = 0; i < 8; i++)
+	{
+		out.pos[i] = mat.Transform(out.pos[i]);
+	}
+
+	return out;
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////
 //HitTestSphere Method//
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -341,7 +395,7 @@ ChStd::Bool HitTestSphere::IsHit(
 ChStd::Bool HitTestSphere::IsHit(
 	HitTestBox* _target)
 {
-	return false;
+	return _target->IsHit(this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
