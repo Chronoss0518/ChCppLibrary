@@ -32,7 +32,7 @@ namespace ChD3D11
 		ChMat_11 drawMat;
 	};
 
-	class Mesh11
+	class Mesh11:public ChCp::Initializer
 	{
 	public:
 

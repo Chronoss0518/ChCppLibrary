@@ -30,6 +30,8 @@ namespace ChD3D11
 
 		materialBuffer.CreateBuffer(_device, 2);
 
+		SetInitFlg(true);
+
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -50,6 +52,12 @@ namespace ChD3D11
 		if (!frameNames.empty())frameNames.clear();
 		materialBuffer.Release();
 		modelData = nullptr;
+
+		normalTex = nullptr;
+		whiteTex = nullptr;
+
+		SetInitFlg(false);
+
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -75,9 +83,12 @@ namespace ChD3D11
 
 	void Mesh11::Create(const ChCpp::ModelObject& _baseModels)
 	{
+		if (!IsInit())return;
 		if (_baseModels.GetModel() == nullptr)return;
 		auto model = _baseModels.GetModel();
 		if (model->modelData == nullptr)return;
+
+		modelData = nullptr;
 
 		CreateFrames(modelData,*model->modelData);
 
