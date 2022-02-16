@@ -9,15 +9,6 @@ namespace ChCpp
 	class HitTestSphere :public HitTestObject
 	{
 	public:
-		///////////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
-
-		inline void SetLen(const float& _len) { len = _len; }
-
-		///////////////////////////////////////////////////////////////////////////////////////
-		//GetFunction//
-
-		inline float GetLen()const { return len; }
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
@@ -45,11 +36,6 @@ namespace ChCpp
 		//対象のオブジェクトがオブジェクト内から衝突しているかの判定//
 		ChStd::Bool IsInnerHit(
 			HitTestSphere* _target)override;
-
-	private:
-
-		float                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               len = 0.0f;
-
 
 	};
 

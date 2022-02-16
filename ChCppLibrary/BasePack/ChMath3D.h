@@ -332,6 +332,13 @@ struct ChVector3 : public ChMath::Vector3Base<float>
 
 	///////////////////////////////////////////////////////////////////////////////////
 
+	inline float Dot(const ChVector3& _vec)
+	{
+		return GetDot(*this, _vec);
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////
+
 	//ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
 	inline void Correction(
 		const ChVector3& _start, const ChVector3& _end, const float _Now)

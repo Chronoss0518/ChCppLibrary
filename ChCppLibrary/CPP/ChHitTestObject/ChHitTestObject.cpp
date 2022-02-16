@@ -1,4 +1,5 @@
 #include"../../BaseIncluder/ChBase.h"
+#include<cmath>
 
 #include"ChHitTestObject.h"
 #include"ChHitTestRay.h"
@@ -240,21 +241,22 @@ ChStd::Bool HitTestBox::IsHit(
 	ChVec3 tPos = _target->GetPos();
 	ChVec3 mPos = GetPos();
 
-	ChVec3 tmpVec = mPos - tPos;
+	ChVec3 tmpVec = tPos - mPos;
 	ChVec3 tSize = _target->GetScl();
 	ChVec3 mSize = GetScl();
-
 	ChVec3 testVec = tmpVec;
+
 	testVec.Abs();
 
+	tSize.Abs();
+	mSize.Abs();
 
-	if (tSize.x + mSize.x < testVec.x)return false;
-	if (tSize.y + mSize.y < testVec.y)return false;
-	if (tSize.z + mSize.z < testVec.z)return false;
+	//x1,w1,x2,w2
+	//x1 < x2 && x1 + w1 > x2
 
-	ChVec3 moveSize = testVec - (tSize + mSize);
-
-	tmpVec *= moveSize;
+	if (testVec.x > mSize.x + tSize.x)return false;
+	if (testVec.y > mSize.y + tSize.y)return false;
+	if (testVec.z > mSize.z + tSize.z)return false;
 
 	SetHitVector(tmpVec);
 
@@ -270,39 +272,39 @@ ChStd::Bool  HitTestBox::IsHit(
 {
 	//位置情報だけの当たり判定//
 
-	float spSize = _target->GetScl().Len();
-	ChVec3 spPos = _target->GetPos();
-	
-	auto cube = CreateCube();
+	ChVec3 tPos = _target->GetPos();
+	ChVec3 mPos = GetPos();
 
-	for (unsigned char i = 0; i < 8; i++)
-	{
-		ChVec3 tmpVec = cube.pos[i] - spPos;
-		if (tmpVec.Len() > spSize)continue;
+	ChVec3 tmpVec = mPos - tPos;
 
-		_target->SetHitVector(tmpVec);
+	ChVec3 tSize = tmpVec;
 
-		float inLen = tmpVec.Len() - spSize;
+	//|ap|・|bp| = 0// 
+	//(px - ax,py - ay,pz - az) ・ (px - bx,py - by,pz - bz) = 0//
 
-		SetHitVector(tmpVec * inLen);
+	tSize.Normalize();
 
-		return true;
-	}
+	tSize *= _target->GetScl();
 
-	ChVec3 tmpVec = GetPos() - spPos;
-	ChVec3 testVec = tmpVec;
-	testVec.Abs();
+	tSize.Abs();
 
-	ChVec3 tSize = spSize;
 	ChVec3 mSize = GetScl();
 
-	if (tSize.x + mSize.x < testVec.x)return false;
-	if (tSize.y + mSize.y < testVec.y)return false;
-	if (tSize.z + mSize.z < testVec.z)return false;
+	ChVec3 testVec = tmpVec;
+	
+	testVec.Abs();
+	mSize.Abs();
 
-	SetHitVector(tmpVec);
+	//x1,w1,x2,w2
+	//x1 < x2 && x1 + w1 > x2
 
-	_target->SetHitVector(tmpVec * -1.0f);
+	if (testVec.x > mSize.x + tSize.x)return false;
+	if (testVec.y > mSize.y + tSize.y)return false;
+	if (testVec.z > mSize.z + tSize.z)return false;
+
+	SetHitVector(tmpVec * -1.0f);
+
+	_target->SetHitVector(tmpVec);
 
 	return true;
 }
@@ -409,17 +411,31 @@ ChStd::Bool  HitTestSphere::IsHit(
 
 	ChVec3 mPos = GetPos();
 
-	ChVec3 tmpVec = mPos - tPos;
+	ChVec3 tmpVec = tPos - mPos;
+
+	float mLen = GetScl().x * GetScl().y * GetScl().z;
+	float tLen = _target->GetScl().x * _target->GetScl().y * _target->GetScl().z;
+
+	mLen = 1.0f;
+	tLen = 1.0f;
+
+	float testLen = (tLen + mLen) * (tLen + mLen);
+
+	tmpVec *= tmpVec;
 
 	float tmpLen = tmpVec.Len();
 
-	if (tmpLen >= (_target->GetLen() + len))return false;
+	//三角形の定理//
+	//三辺にそれぞれa,b,cと置く//
+	//bとcが垂直の時、aの長さは√(b)^2 + (c)^2 = aとなる。
+
+	if (tmpLen >= testLen)return false;
 
 	tmpVec.Normalize();
 
-	float moveSize = tmpLen - len;
+	float moveSize = tmpLen - mLen;
 
-	moveSize = _target->GetLen() - moveSize;
+	moveSize = tLen - moveSize;
 
 	SetHitVector(tmpVec * moveSize);
 
@@ -460,17 +476,17 @@ ChStd::Bool  HitTestSphere::IsInnerHit(
 
 	float tmpLen = tmpVec.Len();
 
-	if (tmpLen + len <= _target->GetLen())return false;
+	//if (tmpLen + len <= _target->GetLen())return false;
 
 	tmpVec.Normalize();
 
-	float moveSize = tmpLen + len;
+	//float moveSize = tmpLen + len;
 
-	moveSize = moveSize - _target->GetLen();
+	//moveSize = moveSize - _target->GetLen();
 
-	SetHitVector(tmpVec * -moveSize);
+	//SetHitVector(tmpVec * -moveSize);
 
-	_target->SetHitVector(tmpVec * (moveSize));
+	//_target->SetHitVector(tmpVec * (moveSize));
 
 	return true;
 
