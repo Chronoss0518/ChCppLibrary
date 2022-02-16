@@ -9,14 +9,14 @@ namespace ChCpp
 	struct Cube
 	{
 		ChVec3 pos[8] = {
-			ChVec3(0.5f,0.5f,0.5f),
-			ChVec3(-0.5f,0.5f,0.5f),
-			ChVec3(-0.5f,-0.5f,0.5f),
-			ChVec3(0.5f,-0.5f,0.5f),
-			ChVec3(0.5f,0.5f,-0.5f),
-			ChVec3(-0.5f,0.5f,-0.5f),
-			ChVec3(-0.5f,-0.5f,-0.5f),
-			ChVec3(0.5f,-0.5f,-0.5f)
+			ChVec3(1.0f,1.0f,1.0f),
+			ChVec3(-1.0f,1.0f,1.0f),
+			ChVec3(-1.0f,-1.0f,1.0f),
+			ChVec3(1.0f,-1.0f,1.0f),
+			ChVec3(1.0f,1.0f,-1.0f),
+			ChVec3(-1.0f,1.0f,-1.0f),
+			ChVec3(-1.0f,-1.0f,-1.0f),
+			ChVec3(1.0f,-1.0f,-1.0f)
 		};
 
 		unsigned char faces[12][3] =
