@@ -6,7 +6,7 @@
 #include"ChHitTestPanel.h"
 #include"ChHitTestBox.h"
 #include"ChHitTestSphere.h"
-#include"ChHitTestMesh.h"
+#include"ChHitTestPolygon.h"
 
 using namespace ChCpp;
 
@@ -45,9 +45,22 @@ ChStd::Bool  HitTestRay::IsHit(
 ///////////////////////////////////////////////////////////////////////////////////////
 
 ChStd::Bool  HitTestRay::IsHit(
-	HitTestMesh* _target)
+	HitTestPolygon* _target)
 {
-	return false;
+	ChVec3 minLenVec = maxLen;
+	ChStd::Bool hitFlg = false;
+
+	for (auto poly : _target->GetPolygonList())
+	{
+		if (!HitTestTri(poly->poss[0], poly->poss[1], poly->poss[2]))continue;
+		hitFlg = true;
+		if (minLenVec.Len() < GetHitVectol().Len())continue;
+		minLenVec = GetHitVectol();
+	}
+	
+	if (hitFlg)_target->SetHitVector(minLenVec);
+
+	return hitFlg;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -175,7 +188,7 @@ ChStd::Bool  HitTestPanel::IsHit(
 ///////////////////////////////////////////////////////////////////////////////////////
 
 ChStd::Bool  HitTestPanel::IsHit(
-	HitTestMesh* _target)
+	HitTestPolygon* _target)
 {
 	return false;
 }
@@ -282,7 +295,36 @@ ChStd::Bool  HitTestBox::IsHit(
 	//|ap|E|bp| = 0// 
 	//(px - ax,py - ay,pz - az) E (px - bx,py - by,pz - bz) = 0//
 
+	//LenVec = dirVec * r^2
+
+	tSize.Abs();
 	tSize.Normalize();
+
+	{
+
+		auto size = _target->GetScl();
+
+		/*
+		
+		float xDot, yDot;
+		
+		xDot = tSize.Dot(ChVec3(1.0f, 0.0f, 0.0f));
+		
+		xDot *= xDot;
+		xDot = 1 - xDot;
+
+		yDot = tSize.Dot(ChVec3(0.0f, 1.0f, 0.0f));
+
+		float len = tSize.x != 0.0f ? xDot / tSize.x : 1.0f;
+
+		//len = len * (tSize.y != 0.0f ? yDot / tSize.y : 1.0f);
+
+		tSize *= len;
+
+		*/
+
+		tSize *= size.Len() * size.Len();
+	}
 
 	tSize *= _target->GetScl();
 
@@ -290,8 +332,12 @@ ChStd::Bool  HitTestBox::IsHit(
 
 	ChVec3 mSize = GetScl();
 
+	mSize *= mSize;
+
 	ChVec3 testVec = tmpVec;
 	
+	testVec *= testVec;
+
 	testVec.Abs();
 	mSize.Abs();
 
@@ -302,9 +348,20 @@ ChStd::Bool  HitTestBox::IsHit(
 	if (testVec.y > mSize.y + tSize.y)return false;
 	if (testVec.z > mSize.z + tSize.z)return false;
 
-	SetHitVector(tmpVec * -1.0f);
+	tmpVec.Normalize();
+	
+	{
+		auto lenVec = mSize + tSize - testVec;
+		tmpVec.x *= sqrtf(lenVec.x);
+		tmpVec.y *= sqrtf(lenVec.y);
+		tmpVec.z *= sqrtf(lenVec.z);
+	}
 
-	_target->SetHitVector(tmpVec);
+	//tmpVec *= _target->GetScl().Len() * _target->GetScl().Len();
+
+	SetHitVector(tmpVec);
+
+	_target->SetHitVector(tmpVec * -1.0f);
 
 	return true;
 }
@@ -312,7 +369,7 @@ ChStd::Bool  HitTestBox::IsHit(
 ///////////////////////////////////////////////////////////////////////////////////////
 
 ChStd::Bool  HitTestBox::IsHit(
-	HitTestMesh* _target)
+	HitTestPolygon* _target)
 {
 	return false;
 }
@@ -447,7 +504,7 @@ ChStd::Bool  HitTestSphere::IsHit(
 ///////////////////////////////////////////////////////////////////////////////////////
 
 ChStd::Bool  HitTestSphere::IsHit(
-	HitTestMesh* _target)
+	HitTestPolygon* _target)
 {
 	return false;
 }
@@ -496,7 +553,7 @@ ChStd::Bool  HitTestSphere::IsInnerHit(
 //HitTestMesh Method//
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool HitTestMesh::IsHit(
+ChStd::Bool HitTestPolygon::IsHit(
 	HitTestPanel* _target)
 {
 	return false;
@@ -504,7 +561,7 @@ ChStd::Bool HitTestMesh::IsHit(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool HitTestMesh::IsHit(
+ChStd::Bool HitTestPolygon::IsHit(
 	HitTestBox* _target)
 {
 	return false;
@@ -512,7 +569,7 @@ ChStd::Bool HitTestMesh::IsHit(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  HitTestMesh::IsHit(
+ChStd::Bool  HitTestPolygon::IsHit(
 	HitTestSphere* _target)
 {
 	return false;
@@ -520,15 +577,15 @@ ChStd::Bool  HitTestMesh::IsHit(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  HitTestMesh::IsHit(
-	HitTestMesh* _target)
+ChStd::Bool  HitTestPolygon::IsHit(
+	HitTestPolygon* _target)
 {
 	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  HitTestMesh::IsInnerHit(
+ChStd::Bool  HitTestPolygon::IsInnerHit(
 	HitTestBox* _target)
 {
 	return false;
@@ -536,7 +593,7 @@ ChStd::Bool  HitTestMesh::IsInnerHit(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  HitTestMesh::IsInnerHit(
+ChStd::Bool  HitTestPolygon::IsInnerHit(
 	HitTestSphere* _target)
 {
 	return false;

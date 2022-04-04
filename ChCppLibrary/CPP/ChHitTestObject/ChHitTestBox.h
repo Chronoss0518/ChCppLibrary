@@ -56,7 +56,7 @@ namespace ChCpp
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
 		ChStd::Bool IsHit(
-			HitTestMesh* _target)override;
+			HitTestPolygon* _target)override;
 
 		//対象のオブジェクトがオブジェクト内から衝突しているかの判定//
 		ChStd::Bool IsInnerHit(
