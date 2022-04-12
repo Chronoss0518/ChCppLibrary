@@ -302,41 +302,28 @@ ChStd::Bool  HitTestBox::IsHit(
 
 	{
 
-		auto size = _target->GetScl();
+		// (x^2 + y^2 + z^2) = r^2
+		// ((nx * l)^2 + (ny * l)^2 + (nz * l)^2) = r^2
+		// l^2 = (r^2) / (nx^2 + ny^2 + nz^2)
 
-		/*
-		
-		float xDot, yDot;
-		
-		xDot = tSize.Dot(ChVec3(1.0f, 0.0f, 0.0f));
-		
-		xDot *= xDot;
-		xDot = 1 - xDot;
+		float tmp = ((tSize.x * tSize.x) + (tSize.y * tSize.y) + (tSize.z * tSize.z));
+		if (tmp != 0)
+		{
 
-		yDot = tSize.Dot(ChVec3(0.0f, 1.0f, 0.0f));
+			float l = 1 / tmp;
 
-		float len = tSize.x != 0.0f ? xDot / tSize.x : 1.0f;
+			l = sqrtf(l);
 
-		//len = len * (tSize.y != 0.0f ? yDot / tSize.y : 1.0f);
+			tSize *= l;
 
-		tSize *= len;
+			tSize *= _target->GetScl();
+		}
 
-		*/
-
-		tSize *= size.Len() * size.Len();
 	}
-
-	tSize *= _target->GetScl();
-
-	tSize.Abs();
 
 	ChVec3 mSize = GetScl();
 
-	mSize *= mSize;
-
 	ChVec3 testVec = tmpVec;
-	
-	testVec *= testVec;
 
 	testVec.Abs();
 	mSize.Abs();
@@ -468,35 +455,75 @@ ChStd::Bool  HitTestSphere::IsHit(
 
 	ChVec3 mPos = GetPos();
 
-	ChVec3 tmpVec = tPos - mPos;
+	ChVec3 tmpVec = (tPos)- (mPos);
 
-	float mLen = GetScl().x * GetScl().y * GetScl().z;
-	float tLen = _target->GetScl().x * _target->GetScl().y * _target->GetScl().z;
+	ChVec3 tSize = tmpVec, mSize;
+	tSize.Abs();
+	tSize.Normalize();
+	mSize = tSize;
 
-	mLen = 1.0f;
-	tLen = 1.0f;
+	//x^2 + y^2 + z^2 = r^2
+	//(nx * l)^2 + (ny * l)^2 + (nz * l)^2 = r^2
+	// nx^2 * l^2 + ny^2 * l^2 + nz^2 * l^2 = r^2
+	//l^2(nx^2 + ny^2 + nz^2) = r^2
+	//l^2 = r^2 / (nx^2 + ny^2 + nz^2)
 
-	float testLen = (tLen + mLen) * (tLen + mLen);
+	float tmp = ((tSize.x * tSize.x) + (tSize.y * tSize.y) + (tSize.z * tSize.z));
+	if (tmp != 0)
+	{
+		float l = 1 / tmp;
 
-	tmpVec *= tmpVec;
+		l = sqrtf(l);
+		//tSize *= tSize;
+		tSize *= l;
+		
+		float r = ((tSize.x * tSize.x) + (tSize.y * tSize.y) + (tSize.z * tSize.z));
 
-	float tmpLen = tmpVec.Len();
+		mSize = tSize;
+		tSize *= _target->GetScl();
+		mSize *= GetScl();
+	}
+
+	auto testVec = tmpVec;
+
+	testVec.Abs();
+
+	//tmpVec *= tmpVec;
 
 	//三角形の定理//
 	//三辺にそれぞれa,b,cと置く//
 	//bとcが垂直の時、aの長さは√(b)^2 + (c)^2 = aとなる。
 
-	if (tmpLen >= testLen)return false;
+
+	//float testSize = 1.0f;
+	//float objectSize = 1.0f;
+
+	//for (unsigned char i = 0; i < 3; i++)
+	//{
+	//	if (testVec.val[i] > 0.0f)testSize *= testVec.val[i];
+	//	if ((mSize.val[i] + tSize.val[i]) > 0.0f)objectSize *= (mSize.val[i] + tSize.val[i]);
+	//}
+
+	//if (testSize > objectSize * 2)return false;
+
+
+	if (testVec.x > mSize.x + tSize.x)return false;
+	if (testVec.y > mSize.y + tSize.y)return false;
+	if (testVec.z > mSize.z + tSize.z)return false;
 
 	tmpVec.Normalize();
 
-	float moveSize = tmpLen - mLen;
 
-	moveSize = tLen - moveSize;
+	{
+		auto lenVec = mSize + tSize - testVec;
+		tmpVec.x *= sqrtf(lenVec.x);
+		tmpVec.y *= sqrtf(lenVec.y);
+		tmpVec.z *= sqrtf(lenVec.z);
+	}
 
-	SetHitVector(tmpVec * moveSize);
+	SetHitVector(tmpVec * -1.0f);
 
-	_target->SetHitVector(tmpVec * (-moveSize));
+	_target->SetHitVector(tmpVec);
 
 	return true;
 }
