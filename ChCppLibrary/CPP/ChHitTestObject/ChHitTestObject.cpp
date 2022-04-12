@@ -387,7 +387,6 @@ ChStd::Bool  HitTestBox::IsInnerHit(
 		if (tSize.y < testVec.y + mSize.y)hitFlgs.y = testVec.y + mSize.y - tSize.y;
 		if (tSize.z < testVec.z + mSize.z)hitFlgs.z = testVec.z + mSize.z - tSize.z;
 
-
 		if (hitFlgs.Len() <= 0.0f)return false;
 	}
 
@@ -462,26 +461,28 @@ ChStd::Bool  HitTestSphere::IsHit(
 	tSize.Normalize();
 	mSize = tSize;
 
-	//x^2 + y^2 + z^2 = r^2
-	//(nx * l)^2 + (ny * l)^2 + (nz * l)^2 = r^2
-	// nx^2 * l^2 + ny^2 * l^2 + nz^2 * l^2 = r^2
-	//l^2(nx^2 + ny^2 + nz^2) = r^2
-	//l^2 = r^2 / (nx^2 + ny^2 + nz^2)
 
-	float tmp = ((tSize.x * tSize.x) + (tSize.y * tSize.y) + (tSize.z * tSize.z));
-	if (tmp != 0)
+	// a・b = |a||b|cosθ//
+	// a・b = cosθ//
+
 	{
-		float l = 1 / tmp;
+		ChVec3 xzVec = ChVec3(tSize.x, 0.0f, tSize.z);
 
-		l = sqrtf(l);
-		//tSize *= tSize;
-		tSize *= l;
-		
-		float r = ((tSize.x * tSize.x) + (tSize.y * tSize.y) + (tSize.z * tSize.z));
+		xzVec.Normalize();
+
+		float xzLen = 1 / (xzVec.Dot(ChVec3(1.0f, 0.0f, 0.0f)));
+
+		float yLen = 1 / (tSize.Dot(xzVec));
+
+
+		float r = xzLen * yLen;
+
+		tSize *= r;
 
 		mSize = tSize;
 		tSize *= _target->GetScl();
 		mSize *= GetScl();
+
 	}
 
 	auto testVec = tmpVec;
@@ -495,21 +496,21 @@ ChStd::Bool  HitTestSphere::IsHit(
 	//bとcが垂直の時、aの長さは√(b)^2 + (c)^2 = aとなる。
 
 
-	//float testSize = 1.0f;
-	//float objectSize = 1.0f;
+	float testSize = 1.0f;
+	float objectSize = 1.0f;
 
-	//for (unsigned char i = 0; i < 3; i++)
-	//{
-	//	if (testVec.val[i] > 0.0f)testSize *= testVec.val[i];
-	//	if ((mSize.val[i] + tSize.val[i]) > 0.0f)objectSize *= (mSize.val[i] + tSize.val[i]);
-	//}
+	for (unsigned char i = 0; i < 3; i++)
+	{
+		if (testVec.val[i] > 0.0f)testSize *= testVec.val[i];
+		if ((mSize.val[i] + tSize.val[i]) > 0.0f)objectSize *= (mSize.val[i] + tSize.val[i]);
+	}
 
-	//if (testSize > objectSize * 2)return false;
+	if (testSize > objectSize * 2)return false;
 
 
-	if (testVec.x > mSize.x + tSize.x)return false;
-	if (testVec.y > mSize.y + tSize.y)return false;
-	if (testVec.z > mSize.z + tSize.z)return false;
+	//if (testVec.x > mSize.x + tSize.x)return false;
+	//if (testVec.y > mSize.y + tSize.y)return false;
+	//if (testVec.z > mSize.z + tSize.z)return false;
 
 	tmpVec.Normalize();
 
