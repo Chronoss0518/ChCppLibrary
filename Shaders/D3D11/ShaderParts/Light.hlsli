@@ -31,7 +31,8 @@ cbuffer LightData :register(b10)
 texture2D LightPowMap :register(t10);
 
 //画像から1ピクセルの色を取得するための物//
-sampler LightSmp :register(s10) = sampler_state {
+sampler LightSmp :register(s10)
+= sampler_state{
 	Filter = MIN_MAG_MIP_LINEAR;
 	AddressU = Clamp;
 	AddressV = Clamp;

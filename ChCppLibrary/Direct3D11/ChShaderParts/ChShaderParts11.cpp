@@ -102,6 +102,7 @@ void ChLightHeader::Init(ID3D11Device* _device)
 
 	buf.CreateBuffer(_device, 10);
 
+
 	{
 		ChVec4 tmpCol[256];
 
