@@ -345,14 +345,14 @@ void ShaderController11::DrawStart()
 		dc->ClearRenderTargetView(out3D.GetRTView(), backColor.val.GetVal());
 		dc->ClearRenderTargetView(out2D.GetRTView(), tmpCol.val.GetVal());
 
-		out3D.SetDrawData(dc, 12);
+		//out3D.SetDrawData(dc, 12);
 
 		rtDrawFlg = false;
 	}
 
 	view.SetDrawData(dc);
 
-	lightDatas.SetPSDrawData(dc);
+	lightDatas.SetDrawData(dc);
 
 	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
