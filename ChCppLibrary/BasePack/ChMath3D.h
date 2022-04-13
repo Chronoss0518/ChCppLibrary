@@ -901,8 +901,10 @@ namespace ChMath
 	double Round(const double& _val, const unsigned int _digit);
 
 
+	static const float SQUARE_ROOT = 1.41421356f;
+
 	//‰~ü—¦//
-	static const float Pi = 3.1415f;
+	static const float PI = 3.1415f;
 
 	class Degree;
 	class Radian;
@@ -1038,10 +1040,10 @@ namespace ChMath
 		const ChVec3& _Pos1, const ChVec3& _Pos2, const ChVec3& _Pos3);
 
 	//RadianŠp‚©‚çDegreeŠp‚Ö//
-	static inline float ToDegree(const float _Radian) { return (_Radian * 180.0f / Pi); }
+	static inline float ToDegree(const float _Radian) { return (_Radian * 180.0f / PI); }
 
 	//DegreeŠp‚©‚çRadianŠp‚Ö//
-	static inline float ToRadian(const float _degree) { return (_degree * Pi / 180.0f); }
+	static inline float ToRadian(const float _degree) { return (_degree * PI / 180.0f); }
 
 	//³‚Ì•„†‚©‚Ç‚¤‚©‚ğŠm”F‚·‚é//
 	static inline ChStd::Bool IsPSign(const int _val) { return _val >= 0.0f ? true : false; }

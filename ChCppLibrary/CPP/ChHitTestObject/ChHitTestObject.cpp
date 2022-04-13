@@ -8,6 +8,8 @@
 #include"ChHitTestSphere.h"
 #include"ChHitTestPolygon.h"
 
+#include<Windows.h>
+
 using namespace ChCpp;
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -470,14 +472,35 @@ ChStd::Bool  HitTestSphere::IsHit(
 
 		xzVec.Normalize();
 
-		float xzLen = 1 / (xzVec.Dot(ChVec3(1.0f, 0.0f, 0.0f)));
+		float xzCos = (xzVec.Dot(ChVec3(1.0f, 0.0f, 0.0f)));
+		float yCos = (tSize.Dot(ChVec3(0.0f, 1.0f, 0.0f)));
+		//float yCos = (tSize.Dot(xzVec));
 
-		float yLen = 1 / (tSize.Dot(xzVec));
+		float tmpSquareRoot = ChMath::SQUARE_ROOT- 1;
+
+
+		//1Å®0:0Å®1Å®0//
+		float xzVal = (1.0f - xzCos);
+		float yVal = (yCos);
+
+		xzVal = 2.0f * xzVal - 1.0f;
+		yVal = 2.0f * yVal - 1.0f;
+
+		//y = a(x - p)^2 * q//
+
+		float xzLen = 1 + (tmpSquareRoot * (-1.0f * (xzVal * xzVal) + 1.0f));
+
+		float yLen = 1 + (tmpSquareRoot * (-1.0f * (yVal * yVal) + 1.0f));
+
+		OutputDebugString(("tSize x:" + std::to_string(tSize.x) + "y:" + std::to_string(tSize.y) + "z:" + std::to_string(tSize.z) + "\n").c_str());
+		OutputDebugString(("xzVec x:" + std::to_string(xzVec.x) + "y:" + std::to_string(xzVec.y) + "z:" + std::to_string(xzVec.z) + "\n").c_str());
+		OutputDebugString(("xzLen:" + std::to_string(xzLen) + "\n").c_str());
+		OutputDebugString(("yCos:" + std::to_string(yCos) + "\n").c_str());
 
 
 		float r = xzLen * yLen;
 
-		tSize *= r;
+		tSize *= (r);
 
 		mSize = tSize;
 		tSize *= _target->GetScl();
@@ -496,30 +519,29 @@ ChStd::Bool  HitTestSphere::IsHit(
 	//bÇ∆cÇ™êÇíºÇÃéûÅAaÇÃí∑Ç≥ÇÕÅ„(b)^2 + (c)^2 = aÇ∆Ç»ÇÈÅB
 
 
-	float testSize = 1.0f;
-	float objectSize = 1.0f;
+	//float testSize = 1.0f;
+	//float objectSize = 1.0f;
 
-	for (unsigned char i = 0; i < 3; i++)
-	{
-		if (testVec.val[i] > 0.0f)testSize *= testVec.val[i];
-		if ((mSize.val[i] + tSize.val[i]) > 0.0f)objectSize *= (mSize.val[i] + tSize.val[i]);
-	}
+	//for (unsigned char i = 0; i < 3; i++)
+	//{
+	//	if (testVec.val[i] > 0.0f)testSize *= testVec.val[i];
+	//	if ((mSize.val[i] + tSize.val[i]) > 0.0f)objectSize *= (mSize.val[i] + tSize.val[i]);
+	//}
 
-	if (testSize > objectSize * 2)return false;
+	//if (testSize > objectSize)return false;
 
 
-	//if (testVec.x > mSize.x + tSize.x)return false;
-	//if (testVec.y > mSize.y + tSize.y)return false;
-	//if (testVec.z > mSize.z + tSize.z)return false;
+	if (testVec.x > mSize.x + tSize.x)return false;
+	if (testVec.y > mSize.y + tSize.y)return false;
+	if (testVec.z > mSize.z + tSize.z)return false;
 
 	tmpVec.Normalize();
 
-
 	{
-		auto lenVec = mSize + tSize - testVec;
-		tmpVec.x *= sqrtf(lenVec.x);
-		tmpVec.y *= sqrtf(lenVec.y);
-		tmpVec.z *= sqrtf(lenVec.z);
+		auto lenVec = (mSize + tSize - testVec);
+		tmpVec.x *= (lenVec.x);
+		tmpVec.y *= (lenVec.y);
+		tmpVec.z *= (lenVec.z);
 	}
 
 	SetHitVector(tmpVec * -1.0f);

@@ -1062,7 +1062,7 @@ void ChLMatrix::SetRotation(const float _x, const float _y, const float _z)
 
 void ChLMatrix::SetRotationXAxis(const float _x)
 {
-	float x = -std::fmod(_x, ChMath::Pi * 2.0f);
+	float x = -std::fmod(_x, ChMath::PI * 2.0f);
 
 	l_22 = std::cos(x);
 	l_23 = std::sin(x);
@@ -1075,7 +1075,7 @@ void ChLMatrix::SetRotationXAxis(const float _x)
 
 void ChLMatrix::SetRotationYAxis(const float _y)
 {
-	float  y = -std::fmod(_y, ChMath::Pi * 2.0f);
+	float  y = -std::fmod(_y, ChMath::PI * 2.0f);
 
 	l_11 = std::cos(y);
 	l_13 = -std::sin(y);
@@ -1088,7 +1088,7 @@ void ChLMatrix::SetRotationYAxis(const float _y)
 
 void ChLMatrix::SetRotationZAxis(const float _z)
 {
-	float z = -std::fmod(_z, ChMath::Pi * 2.0f);
+	float z = -std::fmod(_z, ChMath::PI * 2.0f);
 
 	l_11 = std::cos(z);
 	l_12 = std::sin(z);
@@ -1336,7 +1336,7 @@ void ChRMatrix::SetRotation(const float _x, const float _y, const float _z)
 
 void ChRMatrix::SetRotationXAxis(const float _x)
 {
-	float x = -std::fmod(_x, ChMath::Pi * 2.0f);
+	float x = -std::fmod(_x, ChMath::PI * 2.0f);
 
 	r_22 = std::cos(x);
 	r_23 = std::sin(x);
@@ -1349,7 +1349,7 @@ void ChRMatrix::SetRotationXAxis(const float _x)
 
 void ChRMatrix::SetRotationYAxis(const float _y)
 {
-	float  y = -std::fmod(_y, ChMath::Pi * 2.0f);
+	float  y = -std::fmod(_y, ChMath::PI * 2.0f);
 
 	r_11 = std::cos(y);
 	r_13 = -std::sin(y);
@@ -1362,7 +1362,7 @@ void ChRMatrix::SetRotationYAxis(const float _y)
 
 void ChRMatrix::SetRotationZAxis(const float _z)
 {
-	float z = -std::fmod(_z, ChMath::Pi * 2.0f);
+	float z = -std::fmod(_z, ChMath::PI * 2.0f);
 
 	r_11 = std::cos(z);
 	r_12 = std::sin(z);
@@ -1868,12 +1868,12 @@ ChMath::Radian::Radian(const Degree& _val)
 void ChMath::Radian::Math()
 {
 	float tmpVal;
-	tmpVal = (val / Pi);
+	tmpVal = (val / PI);
 	if (tmpVal < 0.0f)
 	{
 		unsigned int tmp;
 		tmp = static_cast<unsigned int>(std::floor((tmpVal / -2.0f)));
-		val += (tmp + 1) * 2.0f * Pi;
+		val += (tmp + 1) * 2.0f * PI;
 		return;
 	}
 
@@ -1881,7 +1881,7 @@ void ChMath::Radian::Math()
 	{
 		unsigned int tmp;
 		tmp = static_cast<unsigned int>(std::floor((tmpVal / 2.0f)));
-		val -= (tmp) * 2.0f * Pi;
+		val -= (tmp) * 2.0f * PI;
 		return;
 	}
 
