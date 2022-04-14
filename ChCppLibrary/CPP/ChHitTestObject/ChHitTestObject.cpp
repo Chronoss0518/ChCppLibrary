@@ -8,8 +8,6 @@
 #include"ChHitTestSphere.h"
 #include"ChHitTestPolygon.h"
 
-#include<Windows.h>
-
 using namespace ChCpp;
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -456,42 +454,40 @@ ChStd::Bool  HitTestSphere::IsHit(
 
 	ChVec3 mPos = GetPos();
 
-	ChVec3 tmpVec = (tPos)- (mPos);
+	ChVec3 tmpVec = (tPos) - (mPos);
 
 	ChVec3 tSize = tmpVec, mSize;
-	tSize.Abs();
 	tSize.Normalize();
 	mSize = tSize;
 
 
 	{
 		//mSize = tSize;
-		tSize *= _target->GetScl();
-		mSize *= GetScl();
+		auto tmpScl = _target->GetScl();
+
+		tSize *= tmpScl;
+		tmpScl = GetScl();
+		mSize *= tmpScl;
 	}
 
 	auto testVec = tmpVec;
-
-	testVec.Abs();
-
-	//tmpVec *= tmpVec;
 
 	//三角形の定理//
 	//三辺にそれぞれa,b,cと置く//
 	//bとcが垂直の時、aの長さは√(b)^2 + (c)^2 = aとなる。
 
+	float objectSize = mSize.Len() + tSize.Len();
+	float testLen = testVec.Len();
 
-	if (testVec.x > mSize.x + tSize.x)return false;
-	if (testVec.y > mSize.y + tSize.y)return false;
-	if (testVec.z > mSize.z + tSize.z)return false;
-
-	tmpVec.Normalize();
+	if (objectSize < testLen)return false;
 
 	{
-		//auto lenVec = (mSize + tSize - testVec);
-		//tmpVec.x *= (lenVec.x);
-		//tmpVec.y *= (lenVec.y);
-		//tmpVec.z *= (lenVec.z);
+		auto len = (objectSize - testLen);
+		tmpVec.Normalize();
+
+		tmpVec.val.SetLen(len);
+
+
 	}
 
 	SetHitVector(tmpVec * -1.0f);

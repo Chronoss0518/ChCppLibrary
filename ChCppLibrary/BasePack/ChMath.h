@@ -31,14 +31,17 @@ namespace ChMath
 
 	}
 
-	static inline float SqrtEx(const float& _base, const unsigned long _digit = 37)
+	static inline long double SqrtEx(const long double& _base, const unsigned long _digit = 4931)
 	{
-		float out = _base;
+		if (_base == 0.0)return 0.0;
 
-		unsigned long maxCount = _digit > 37 ? 37 : _digit;
+		long double out = _base;
+
+		unsigned long maxCount = _digit > 4931 ? 4931 : _digit;
 
 		//ˆÈ‰º‚ğQÆ//
-		//https://qiita.com/rytaryu/items/e5d760a80f9ce5db860f//
+		//https://qiita.com/rytaryu/items/e5d760a80f9ce5db860f
+		//
 
 		for (unsigned long i = 0; i < maxCount; i++)
 		{
@@ -52,21 +55,33 @@ namespace ChMath
 
 	static inline double SqrtEx(const double& _base, const unsigned long _digit = 307)
 	{
+		if (_base == 0.0)return 0.0;
+
 		double out = _base;
 
 		unsigned long maxCount = _digit > 307 ? 307 : _digit;
 
-		//ˆÈ‰º‚ğQÆ//
-		//https://qiita.com/rytaryu/items/e5d760a80f9ce5db860f//
-
-		for (unsigned long i = 0; i < maxCount; i++)
-		{
-			out = ((out * out) + _base) / (2 * out);
-		}
+		out = static_cast<double>(SqrtEx(static_cast<long double>(out), maxCount));
 
 		return out;
 	}
 
+	///////////////////////////////////////////////////////////////////////////////////
+
+	static inline float SqrtEx(const float& _base, const unsigned long _digit = 37)
+	{
+		if (_base == 0.0f)return 0.0f;
+
+		float out = _base;
+
+		unsigned long maxCount = _digit > 37 ? 37 : _digit;
+
+		out = static_cast<float>(SqrtEx(static_cast<long double>(out), maxCount));
+
+		return out;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////
 
 	//2‚Ì•½•ûª(—LŒøŒ…”8Œ…)//
 	static const float SQUARE_ROOT = 1.41421356f;
@@ -439,6 +454,39 @@ namespace ChMath
 
 		}
 
+		///////////////////////////////////////////////////////////////////////////////////////
+		//SetFunction//
+
+		void SetLen(const T _len)
+		{
+			if (GetLen() == 0.0f)return;
+
+			Normalize();
+
+			T tmp = _len * _len;
+
+			/*
+			x^2 + y^2 + z^2 = r^2
+
+			(nx * l)^2 + (ny * l)^2 + (nz * l)^2 = r^2
+
+			l^2 = r^2 /(nx^2 + ny^2 + nz^2)
+			*/
+
+			T add = static_cast<T>(0.0f);
+
+			for (unsigned long i = 0; i < Array; i++)
+			{
+				add += val[i] * val[i];
+			}
+
+			T l = tmp / add;
+
+			l = SqrtEx(l);
+			Mul(l);
+
+		}
+
 		///////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
@@ -461,15 +509,12 @@ namespace ChMath
 			const unsigned long _digit = 6
 		)const
 		{
-			if (GetLen(_digit) <= 0.0f || _vec.GetLen(_digit) <= 0.0f)return 0.0f;
-
 			VectorBase tmp1, tmp2;
 
 			tmp1 = *this;
 			tmp2 = _vec;
 
-			tmp1.Normalize(_digit);
-			tmp2.Normalize(_digit);
+			if (!tmp1.Normalize(_digit) || !tmp2.Normalize(_digit))return 0.0f;
 
 			return tmp1.GetDot(tmp2);
 		}
@@ -479,10 +524,11 @@ namespace ChMath
 			const unsigned long _digit = 6
 		)const
 		{
+			T tmp = GetCos(_vec, _digit);
 
-			if (GetLen(_digit) <= 0.0f || _vec.GetLen(_digit) <= 0.0f)return 0.0f;
+			if (tmp == 0.0f)return 0.0f;
 
-			return static_cast<T>(std::acos(GetCos(_vec,_digit)));
+			return static_cast<T>(std::acos(tmp));
 		}
 
 		T GetDot(
@@ -602,20 +648,22 @@ namespace ChMath
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		void Normalize(
+		ChStd::Bool Normalize(
 			const unsigned long _digit = 6
 		)
 		{
 
 			T len = GetLen(_digit);
 
-			if (len == static_cast<T>(1.0))return;
-			if (len == static_cast<T>(0.0))return;
+			if (len == static_cast<T>(1.0))return true;
+			if (len == static_cast<T>(0.0))return false;
 
 			for (unsigned long i = 0; i < Array; i++)
 			{
 				val[i] /= len;
 			}
+
+			return true;
 		}
 
 	private:
