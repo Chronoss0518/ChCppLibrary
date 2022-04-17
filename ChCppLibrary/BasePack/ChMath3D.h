@@ -166,11 +166,20 @@ struct ChVector4 : public ChMath::Vector4Base<float>
 		const ChVector4& _vec2,
 		const unsigned long _digit = 6);
 
+	static float GetElementsLen(
+		const ChVector4& _vec1,
+		const ChVector4& _vec2);
+
 	///////////////////////////////////////////////////////////////////////////////////
 
 	inline float Len(const unsigned long _digit = 6) const
 	{
 		return GetLen(*this, ChVector4(),_digit);
+	}
+
+	inline float ElementsLen()const
+	{
+		return GetElementsLen(*this, ChVector4());
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
@@ -199,6 +208,8 @@ struct ChVector4 : public ChMath::Vector4Base<float>
 	///////////////////////////////////////////////////////////////////////////////////
 
 	void Normalize(const unsigned long _digit = 6);
+
+	void ElementsNormalize();
 
 	///////////////////////////////////////////////////////////////////////////////////
 
@@ -340,11 +351,20 @@ struct ChVector3 : public ChMath::Vector3Base<float>
 		const ChVector3& _vec2,
 		const unsigned long _digit = 6);
 
+	static float GetElementsLen(
+		const ChVector3& _vec1,
+		const ChVector3& _vec2);
+
 	///////////////////////////////////////////////////////////////////////////////////
 
 	inline float Len(const unsigned long _digit = 6) const
 	{
 		return GetLen(*this, ChVector3(),_digit);
+	}
+
+	inline float ElementsLen()const
+	{
+		return GetElementsLen(*this, ChVector3());
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
@@ -381,6 +401,8 @@ struct ChVector3 : public ChMath::Vector3Base<float>
 
 	void Normalize(
 		const unsigned long _digit = 6);
+
+	void ElementsNormalize();
 
 	///////////////////////////////////////////////////////////////////////////////////
 
@@ -504,11 +526,20 @@ struct ChVector2 : public ChMath::Vector2Base<float>
 		const ChVector2& _vec2,
 		const unsigned long _digit = 6);
 
+	static float GetElementsLen(
+		const ChVector2& _vec1,
+		const ChVector2& _vec2);
+
 	///////////////////////////////////////////////////////////////////////////////////
 
 	inline float Len(const unsigned long _digit = 6) const
 	{
 		return GetLen(*this, ChVector2(),_digit);
+	}
+
+	inline float ElementsLen() const
+	{
+		return GetElementsLen(*this, ChVector2());
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
@@ -535,6 +566,8 @@ struct ChVector2 : public ChMath::Vector2Base<float>
 	///////////////////////////////////////////////////////////////////////////////////
 
 	void Normalize(const unsigned long _digit = 6);
+
+	void ElementsNormalize();
 
 	///////////////////////////////////////////////////////////////////////////////////
 
