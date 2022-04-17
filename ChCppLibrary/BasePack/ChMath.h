@@ -492,6 +492,22 @@ namespace ChMath
 
 		unsigned long GetArray() { return Array; }
 
+		//ベクトルの要素の大きさを得る//
+		T GetElementsLen()
+		{
+			VectorBase tmp = *this;
+			tmp.Abs();
+
+			T out = static_cast<T>(0.0f);
+			for (unsigned long i = 0; i < Array; i++)
+			{
+				out += tmp.val[i];
+			}
+
+			return out;
+		}
+
+		//ベクトルの大きさを得る//
 		T GetLen(const unsigned long _digit = 6)const
 		{
 			T Len = static_cast<T>(0.0f);
@@ -648,12 +664,30 @@ namespace ChMath
 
 		///////////////////////////////////////////////////////////////////////////////////
 
+		//ベクトルの長さを1にする//
 		ChStd::Bool Normalize(
 			const unsigned long _digit = 6
 		)
 		{
 
 			T len = GetLen(_digit);
+
+			if (len == static_cast<T>(1.0))return true;
+			if (len == static_cast<T>(0.0))return false;
+
+			for (unsigned long i = 0; i < Array; i++)
+			{
+				val[i] /= len;
+			}
+
+			return true;
+		}
+
+		//ベクトルの要素の合計を1にする//
+		ChStd::Bool ElementsNormalize()
+		{
+
+			T len = GetElementsLen();
 
 			if (len == static_cast<T>(1.0))return true;
 			if (len == static_cast<T>(0.0))return false;
