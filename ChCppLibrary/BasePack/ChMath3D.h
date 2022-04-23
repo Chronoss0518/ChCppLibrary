@@ -804,9 +804,9 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	ChVec4 Transform(const ChVec4 _Base)const;
+	ChVec4 Transform(const ChVec4& _Base)const;
 
-	ChVec4 TransformCoord(const ChVec4 _Base)const;
+	ChVec4 TransformCoord(const ChVec4& _Base)const;
 
 	///////////////////////////////////////////////////////////////////////////////////
 

@@ -1264,7 +1264,7 @@ ChVec3 ChLMatrix::GetScalling(const unsigned long _digit)const
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVec4 ChLMatrix::Transform(const ChVec4 _Base)const
+ChVec4 ChLMatrix::Transform(const ChVec4& _Base)const
 {
 	ChVec4 out;
 
@@ -1279,7 +1279,7 @@ ChVec4 ChLMatrix::Transform(const ChVec4 _Base)const
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVec4 ChLMatrix::TransformCoord(const ChVec4 _Base)const
+ChVec4 ChLMatrix::TransformCoord(const ChVec4& _Base)const
 {
 	ChLMatrix tmp = *this;
 
