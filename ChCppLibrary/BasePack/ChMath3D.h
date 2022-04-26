@@ -207,7 +207,7 @@ struct ChVector4 : public ChMath::Vector4Base<float>
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	void Normalize(const unsigned long _digit = 6);
+	ChStd::Bool Normalize(const unsigned long _digit = 6);
 
 	void ElementsNormalize();
 
@@ -399,7 +399,7 @@ struct ChVector3 : public ChMath::Vector3Base<float>
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	void Normalize(
+	ChStd::Bool Normalize(
 		const unsigned long _digit = 6);
 
 	void ElementsNormalize();
@@ -565,7 +565,7 @@ struct ChVector2 : public ChMath::Vector2Base<float>
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	void Normalize(const unsigned long _digit = 6);
+	ChStd::Bool Normalize(const unsigned long _digit = 6);
 
 	void ElementsNormalize();
 
