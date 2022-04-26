@@ -288,7 +288,22 @@ ChStd::Bool  HitTestBox::IsHit(
 
 	ChVec3 mPos = GetPos();
 
-	ChVec3 tmpVec = tPos - mPos;
+	
+	ChVec3 tScl = _target->GetScl(), mScl = GetScl();
+
+	for (unsigned char i = 0; i < 3; i++)
+	{
+		if (tScl.val[i] > 0.0001f && tScl.val[i] < -0.0001f)
+		{
+			tScl.val[i] = tScl.val[i] < 1.0f ? -1.0f / tScl.val[i] : tScl.val[i] - 1.0f;
+		}
+		if (mScl.val[i] > 0.0001f && mScl.val[i] < -0.0001f)
+		{
+			mScl.val[i] = mScl.val[i] < 1.0f ? -1.0f / mScl.val[i] : mScl.val[i] - 1.0f;
+		}
+	}
+
+	ChVec3 tmpVec = (tPos)-(mPos);
 
 	ChVec3 testVec = tmpVec;
 
@@ -420,6 +435,8 @@ ChStd::Bool HitTestSphere::IsHit(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
+#include<windows.h>
+
 ChStd::Bool  HitTestSphere::IsHit(
 	HitTestSphere* _target)
 {
@@ -431,30 +448,22 @@ ChStd::Bool  HitTestSphere::IsHit(
 
 	ChVec3 tScl = _target->GetScl(), mScl = GetScl();
 
-	for (unsigned char i = 0; i < 3; i++)
-	{
-		if (tScl.val[i] > 0.0001f && tScl.val[i] < -0.0001f)
-		{
-			tScl.val[i] = tScl.val[i] < 1.0f ? -1.0f / tScl.val[i] : tScl.val[i] - 1.0f;
-		}
-		if (mScl.val[i] > 0.0001f && mScl.val[i] < -0.0001f)
-		{
-			mScl.val[i] = mScl.val[i] < 1.0f ? -1.0f / mScl.val[i] : mScl.val[i] - 1.0f;
-		}
-	}
-
 	ChVec3 tmpVec = (tPos)-(mPos);
 
 	ChVec3 objVec = tmpVec;
 	objVec.Abs();
-	objVec += ((tScl)) - ((mScl));
-	objVec.Abs();
 
-	auto testVec = objVec;
-
+	ChVec3 testVec = objVec; 
+	
 	objVec.Normalize();
 
-	objVec *= 2;
+	tScl = objVec * tScl;
+	mScl = objVec * mScl;
+
+	objVec = tScl + mScl;
+
+	//objVec = tScl + mScl;
+	//objVec.Abs();
 
 	//三角形の定理//
 	//三辺にそれぞれa,b,cと置く//
@@ -463,15 +472,17 @@ ChStd::Bool  HitTestSphere::IsHit(
 	//float objectSize = mSize.Len() + tSize.Len();
 	//float testLen = testVec.Len();
 
-	if (testVec.x > objVec.x)return false;
-	if (testVec.y > objVec.y)return false;
-	if (testVec.z > objVec.z)return false;
-
-	//if (objectSize < testLen)return false;
-
+	//if (testVec.x > objVec.x)return false;
+	//if (testVec.y > objVec.y)return false;
+	//if (testVec.z > objVec.z)return false;
+	if (testVec.Len() > objVec.Len())return false;
+	
 	{
 		//auto len = (objectSize - testLen);
 		auto lenVec = (objVec - testVec);
+		//auto lenVec = testVec;
+
+		//tmpVec = testVec * -1.0f;
 		tmpVec.Normalize();
 
 		//tmpVec.val.SetLen(len);
