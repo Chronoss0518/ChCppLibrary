@@ -291,19 +291,37 @@ ChStd::Bool  HitTestBox::IsHit(
 	
 	ChVec3 tScl = _target->GetScl(), mScl = GetScl();
 
-	for (unsigned char i = 0; i < 3; i++)
+	ChVec3 tmpVec = (tPos)-(mPos);
+
+	ChVec3 tmpPos[4] = { 1.0f,1.0f,1.0f,1.0f };
+
+	tmpPos[1].x = -1.0f;
+	tmpPos[2].y = -1.0f;
+	tmpPos[3].z = -1.0f;
+
 	{
-		if (tScl.val[i] > 0.0001f && tScl.val[i] < -0.0001f)
+		auto mat = GetMat();
+		for (unsigned char i = 0; i < 4; i++)
 		{
-			tScl.val[i] = tScl.val[i] < 1.0f ? -1.0f / tScl.val[i] : tScl.val[i] - 1.0f;
-		}
-		if (mScl.val[i] > 0.0001f && mScl.val[i] < -0.0001f)
-		{
-			mScl.val[i] = mScl.val[i] < 1.0f ? -1.0f / mScl.val[i] : mScl.val[i] - 1.0f;
+			tmpPos[i] = mat.TransformCoord(tmpPos[i]);
 		}
 	}
+	
+	//ベクトルABと点Pの距離(交点をV)//
+	//AV = AB * x = AP - PV//
+	//x = Dot(AB,AP)/(Len[AB]^2)//
 
-	ChVec3 tmpVec = (tPos)-(mPos);
+	ChVec3 axisCoefficient;
+
+	//それぞれの辺に対応する係数を取得//
+	for (unsigned char i = 0; i < 3; i++)
+	{
+		auto vec = tmpPos[i + 1] - tmpPos[0];
+		auto len = vec.Len();
+		axisCoefficient.val[i] = vec.Dot(tmpVec) / (len * len);
+	}
+
+	//一番近い位置を取得
 
 	ChVec3 testVec = tmpVec;
 
@@ -481,7 +499,7 @@ ChStd::Bool  HitTestSphere::IsHit(
 		//auto len = (objectSize - testLen);
 		auto lenVec = (objVec - testVec);
 		//auto lenVec = testVec;
-
+		lenVec.Abs();
 		//tmpVec = testVec * -1.0f;
 		tmpVec.Normalize();
 
