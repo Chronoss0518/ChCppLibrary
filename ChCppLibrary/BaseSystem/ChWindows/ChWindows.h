@@ -145,7 +145,7 @@ namespace ChSystem
 
 		std::string className = "";
 
-
+		HINSTANCE inst = nullptr;
 		HWND hWnd = nullptr;
 		MSG msg{ 0 };
 
