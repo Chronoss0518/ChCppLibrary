@@ -15,7 +15,7 @@ namespace ChSystem
 namespace ChWin
 {
 
-	class TextBox :public WindObject
+	class TextBox :public WindBaseObject
 	{
 
 	public:

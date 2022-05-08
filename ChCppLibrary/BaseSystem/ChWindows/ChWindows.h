@@ -9,7 +9,7 @@
 namespace ChWin
 {
 
-	class WindObject;
+	class WindBaseObject;
 }
 
 namespace ChSystem
@@ -120,7 +120,7 @@ namespace ChSystem
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		friend ChWin::WindObject;
+		friend ChWin::WindBaseObject;
 
 		friend LRESULT CALLBACK ChSystem::WndProc(
 			HWND _hWnd
