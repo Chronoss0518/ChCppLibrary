@@ -5,81 +5,63 @@
 
 namespace ChWin
 {
-
-	LRESULT CALLBACK WndProc(
-		HWND _hWnd
-		, UINT _uMsg
-		, WPARAM _wParam
-		, LPARAM _lParam);
+	class WindClassStyle;
 
 	//WindowsAPIの内WindowClassを用いたオブジェクトを司るクラス//
-	class WindClassObject
+	class WindClassObject:public ChCp::Initializer
 	{
-	public:
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//ConstructorDestructor//
+	public://ConstructorDestructor//
 
 		inline WindClassObject() { Init(); }
 
 		inline WindClassObject(const WNDCLASS& _cls) { Init(_cls); }
 
 		inline ~WindClassObject() { Release(); }
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//InitAndRelease//
+		
+	public://InitAndRelease//
 
 		void Init();
 
 		void Init(const WNDCLASS& _cls);
 
-		void Init(const HINSTANCE _hInst);
-
 		void Release();
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
+	public://SetFunction//
 
 		void SetStyle(const unsigned int _style);
 
-		void SetWindProcedure(WNDPROC _WindProc);
+		void SetStyle(const WindClassStyle* _style);
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//GetFunction//
+		void SetIcon(const HICON _icon);
 
-		inline WNDCLASS GetWindClass() { return cls; }
+		void SetCursol(const HCURSOR _cursor);
 
-		///////////////////////////////////////////////////////////////////////////////////
-		
+		//ウィンドウクラス構造の後の追加バイト数//
+		void SetClsExtra(const int _byteNum = 0);
+
+		//ウィンドウインスタンスの後の追加バイト数//
+		void SetWndExtra(const int _byteNum = 0);
+
+		void SetBackgroundColor(const HBRUSH _brush);
+
+		void SetInstance(const HINSTANCE _hInst);
+
+		void SetWindProcedure(WNDPROC _windProc);
+
+	public://GetFunction//
+
+		inline std::string GetWindClassName() { return className; }
+
+	public:
+
 		//Set関数よりセットされた情報を元にクラスを登録する//
 		//クラス名が空文字の場合は登録されない//
-		void RegistClass();
-
-		///////////////////////////////////////////////////////////////////////////////////
+		void RegistClass(const std::string& _className);
 
 	protected:
 
 		WNDCLASS cls;
-
-		LRESULT(*WndProc)(
-			HWND _hWnd
-			, UINT _uMsg
-			, WPARAM _wParam
-			, LPARAM _lParam) = nullptr;
-
-		friend LRESULT CALLBACK ChWin::WndProc(
-			HWND _hWnd
-			, UINT _uMsg
-			, WPARAM _wParam
-			, LPARAM _lParam);
-
-	private:
-
-		static std::map<HWND, WindClassObject*>& WindManager();
-
-	public:
-
-		static WindClassObject* GetWindObject(const HWND* _hWnd);
+		std::string className = "";
 
 	};
 }

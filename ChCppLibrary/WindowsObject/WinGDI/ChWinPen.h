@@ -40,15 +40,6 @@ namespace ChWin
 
 	private:
 
-		void SetPen(HPEN _pen)
-		{
-			if (ChPtr::NullCheck(_pen))return;
-
-			Release();
-
-			pen = _pen;
-		};
-
 		HPEN pen = nullptr;
 	};
 }
