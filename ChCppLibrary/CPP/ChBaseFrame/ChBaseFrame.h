@@ -10,10 +10,7 @@ namespace ChCpp
 	//BaseFrame管理用クラス//
 	class BaseFrameManager:public ChCp::Initializer
 	{
-	public:
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
+	public://Set Function//
 
 		//自作フレームをセット//
 		//BaseFrameを継承しているもののみセットできる//
@@ -41,20 +38,49 @@ namespace ChCpp
 			Chenges();
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//UpdateFunction//
+	public://UpdateFunction//
 
 		void Update();
 
-	private:
+	private://Release Funciton//
 
-		friend BaseFrame;
+		void Release()
+		{
+			if (ChPtr::NotNullCheck(saveData))
+			{
+				delete saveData;
+				saveData = nullptr;
+			}
 
-		///////////////////////////////////////////////////////////////////////////////////
+			SetInitFlg(false);
+
+		}
+
+	private://Other Function
 
 		void ChengeFrame(const std::string& _frameName);
 
 		void Chenges();
+
+		template<class T>
+		void SaveData(const T* _save)
+		{
+			if (ChPtr::NullCheck(saveData))
+			{
+				saveData = new T();
+			}
+
+			auto tmp = static_cast<T*>(saveData);
+
+
+			*tmp = *_save;
+		}
+
+	private:// Member Value//
+
+		friend BaseFrame;
+
+		void* saveData = nullptr;
 
 		std::map<std::string, std::function<ChPtr::Shared<BaseFrame>()>>frameList;
 
@@ -62,14 +88,13 @@ namespace ChCpp
 
 		ChPtr::Shared<BaseFrame>nowFrame;
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//ConstructerDestructer//
+	private://ConstructerDestructer//
 
 		BaseFrameManager() { SetInitFlg(true); }
 
-		~BaseFrameManager() { SetInitFlg(false); }
+		~BaseFrameManager() { Release(); }
 
-	public:
+	public://Get Instance//
 
 		static BaseFrameManager& GetIns()
 		{
@@ -86,24 +111,20 @@ namespace ChCpp
 	//void Init(),void Release(),void Frame()//
 	class BaseFrame:public ChCp::Releaser
 	{
-	public:
-
-		///////////////////////////////////////////////////////////////////////////////////////
-		//InitAndRelease//
+	public://InitAndRelease//
 		virtual inline void Init() {};
 
 		virtual inline void Release()override {};
 
-		///////////////////////////////////////////////////////////////////////////////////
+	public://Update Function//
 
 		virtual void Update() = 0;
 
+	public:
+
 		friend BaseFrameManager;
 
-	protected:
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//ConstructerDestructer//
+	protected://ConstructerDestructer//
 
 		BaseFrame() {};
 
