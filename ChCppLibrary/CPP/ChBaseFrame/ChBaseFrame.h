@@ -8,7 +8,7 @@ namespace ChCpp
 	class BaseFrame;
 
 	//BaseFrame管理用クラス//
-	class BaseFrameList:public ChCp::Initializer
+	class BaseFrameManager:public ChCp::Initializer
 	{
 	public:
 
@@ -65,21 +65,21 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////////
 		//ConstructerDestructer//
 
-		BaseFrameList() { SetInitFlg(true); }
+		BaseFrameManager() { SetInitFlg(true); }
 
-		~BaseFrameList() { SetInitFlg(false); }
+		~BaseFrameManager() { SetInitFlg(false); }
 
 	public:
 
-		static BaseFrameList& GetIns()
+		static BaseFrameManager& GetIns()
 		{
-			static BaseFrameList ins;
+			static BaseFrameManager ins;
 			return ins;
 		}
 
 	};
 
-	static const std::function<BaseFrameList&()>FrameList = BaseFrameList::GetIns;
+	static const std::function<BaseFrameManager&()>FrameManager = BaseFrameManager::GetIns;
 
 	//ゲームシーンを簡易的生成を行うためのクラス//
 	//必要に応じて以下の関数をオーバーライドする//
@@ -96,9 +96,9 @@ namespace ChCpp
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		virtual void Frame() = 0;
+		virtual void Update() = 0;
 
-		friend BaseFrameList;
+		friend BaseFrameManager;
 
 	protected:
 
@@ -112,7 +112,7 @@ namespace ChCpp
 		//登録されているフレームに移動する//
 		void ChangeFrame(const std::string& _frameName)
 		{
-			FrameList().ChengeFrame(_frameName);
+			FrameManager().ChengeFrame(_frameName);
 		}
 
 	private:

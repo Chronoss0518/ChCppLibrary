@@ -10,17 +10,17 @@ using namespace ChCpp;
 //BaseFrame9ƒƒ\ƒbƒh
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void BaseFrameList::Update()
+void BaseFrameManager::Update()
 {
 	if (nowFrame == nullptr)return;
-	nowFrame->Frame();
+	nowFrame->Update();
 
 	Chenges();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void BaseFrameList::ChengeFrame(const std::string& _frameName)
+void BaseFrameManager::ChengeFrame(const std::string& _frameName)
 {
 	if (frameList.find(_frameName) == frameList.end())return;
 
@@ -31,7 +31,7 @@ void BaseFrameList::ChengeFrame(const std::string& _frameName)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void BaseFrameList::Chenges()
+void BaseFrameManager::Chenges()
 {
 
 	if (nextFrame == nullptr)return;
