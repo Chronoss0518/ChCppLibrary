@@ -52,7 +52,7 @@ void WindObject::Release()
 {
 	if (IsInit())
 	{
-		SendMessage(hWnd, WM_CLOSE, 0, 0);
+		SendMessage(hWnd, WM_QUIT, 0, 0);
 		SetInitFlg(false);
 	}
 
