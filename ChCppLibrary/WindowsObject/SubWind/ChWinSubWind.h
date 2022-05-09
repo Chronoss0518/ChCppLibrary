@@ -13,7 +13,7 @@ namespace ChSystem
 namespace ChWin
 {
 
-	class SubWind :public WindObject
+	class SubWind :public WindBaseObject
 	{
 
 	public:

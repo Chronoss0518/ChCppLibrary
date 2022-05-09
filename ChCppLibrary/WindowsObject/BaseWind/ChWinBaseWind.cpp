@@ -5,9 +5,9 @@
 #include"ChWinBaseWind.h"
 #include"../../BaseSystem/ChWindows/ChWindows.h"
 
-std::map<unsigned long, ChWin::WindObject*>ChWin::WindObject::objList;
+std::map<unsigned long, ChWin::WindBaseObject*>ChWin::WindBaseObject::objList;
 
-std::string ChWin::WindObject::className = "";
+std::string ChWin::WindBaseObject::className = "";
 
 //WindProcedureは登録する際に静的な関数でなければならない//
 LRESULT CALLBACK SubWndProc(
@@ -41,8 +41,8 @@ LRESULT CALLBACK SubWndProc(
 
 void ChWin::ObjUpdate(const WPARAM& _wParam)
 {
-	if (ChWin::WindObject::objList.empty())return;
-	ChWin::WindObject::objList[LOWORD(_wParam)]->Update(_wParam);
+	if (ChWin::WindBaseObject::objList.empty())return;
+	ChWin::WindBaseObject::objList[LOWORD(_wParam)]->Update(_wParam);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -51,7 +51,7 @@ void ChWin::WindMoveUpdate(const HWND _hWnd, LPARAM _lParam)
 {
 
 
-	if (ChWin::WindObject::objList.empty())return;
+	if (ChWin::WindBaseObject::objList.empty())return;
 
 	auto wind = ((ChWin::SubWind*)GetWindowLongPtr(_hWnd, GWLP_USERDATA));
 	if (ChPtr::NullCheck(wind))return;
@@ -89,7 +89,7 @@ void ChWin::WindMoveUpdate(const HWND _hWnd, LPARAM _lParam)
 
 void ChWin::WindSizeUpdate(const HWND _hWnd, LPARAM _lParam)
 {
-	if (ChWin::WindObject::objList.empty())return;
+	if (ChWin::WindBaseObject::objList.empty())return;
 
 	auto wind = ((ChWin::SubWind*)GetWindowLongPtr(_hWnd, GWLP_USERDATA));
 	if (ChPtr::NullCheck(wind))return;
@@ -138,10 +138,10 @@ void ChWin::WindSizeUpdate(const HWND _hWnd, LPARAM _lParam)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
-//WindObjectメソッド//
+//WindBaseObjectメソッド//
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChWin::WindObject::Init(const HWND& _hWnd)
+void ChWin::WindBaseObject::Init(const HWND& _hWnd)
 {
 	if (ChPtr::NullCheck(_hWnd))return;
 	hOwn = _hWnd;
@@ -174,7 +174,7 @@ void ChWin::WindObject::Init(const HWND& _hWnd)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChWin::WindObject::Release()
+void ChWin::WindBaseObject::Release()
 {
 	if (ChPtr::NullCheck(hIns))return;
 	DestroyWindow(hIns);
@@ -196,7 +196,7 @@ void ChWin::WindObject::Release()
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChWin::WindObject::Move(const int _x
+void ChWin::WindBaseObject::Move(const int _x
 	, const int _y
 	, const int _w
 	, const int _h)
@@ -205,7 +205,7 @@ void ChWin::WindObject::Move(const int _x
 	MoveWindow(hIns, _x, _y, _w, _h, true);
 }
 
-void ChWin::WindObject::Move(const int _x
+void ChWin::WindBaseObject::Move(const int _x
 	, const int _y)
 {
 
@@ -215,7 +215,7 @@ void ChWin::WindObject::Move(const int _x
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChWin::WindObject::ReSize(
+void ChWin::WindBaseObject::ReSize(
 	const int _w
 	, const int _h)
 {
@@ -225,7 +225,7 @@ void ChWin::WindObject::ReSize(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChWin::WindObject::RegisterObj()
+void ChWin::WindBaseObject::RegisterObj()
 {
 	myID = objList.size();
 	objList[myID] = (this);

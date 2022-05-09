@@ -72,6 +72,7 @@ void Windows::Init(
 		, _hInst
 		, nullptr);
 
+	inst = _hInst;
 
 	ShowWindow(hWnd, _nCmdShow);
 	UpdateWindow(hWnd);

@@ -1,319 +1,78 @@
 #ifdef _WINDOWS_
 
-#ifndef Ch_Win_WCls_h
-#define Ch_Win_WCls_h
+#ifndef Ch_Win_WO_h
+#define Ch_Win_WO_h
 
 namespace ChWin
 {
-	//WindowStyleを管理するクラス//
-	class WindStyle
+	LRESULT CALLBACK WndProc(
+		HWND _hWnd
+		, UINT _uMsg
+		, WPARAM _wParam
+		, LPARAM _lParam);
+
+	class WindStyle;
+	class WindCreater;
+
+	//WindowsAPIの内、Windowの管理するクラス//
+	class WindObject :public ChCp::Initializer
 	{
-	public:
+	public://operator Function//
+		
+		WindObject& operator = (const WindObject& _obj);
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//Set Function//
+		bool operator == (const WindObject& _obj)const;
+		bool operator != (const WindObject& _obj)const;
 
-		inline void SetStyle(const unsigned long _windStyles) { windStyle = _windStyles; }
-
-		//Windowに枠を付ける//
-		void SetBorder();
-
-		//Windowにタイトルを付ける//
-		void SetCaption();
-
-		//Windowに子階層属性を付ける//
-		void SetChild();
-
-		//Window配下のWindowの描画範囲を描画しないようにする//
-		void SetClipChildren();
-
-		//Window配下のWindow同士が重なっている部分を描画しないようにする//
-		void SetClipSiblings();
-
-		//Windowは初期時点で無効状態にする//
-		void SetDisabled();
-
-		//Windowにダイアログボックスと同じ境界線を付ける//
-		void SetDLGFrame();
-
-		//WindowがControlできるグループの最初であることを定義する//
-		void SetGroup();
-
-		//Windowに水平のスクロールバーを付ける//
-		void SetHScroll();
-
-		//Windowは最初からサイズが最大状態で表示される//
-		void SetMaxmize();
-
-		//Windowに最大化ボタンを付ける//
-		void SetMaximaizeBox();
-
-		//Windowは最初からサイズが最小状態で表示される//
-		void SetMinimize();
-
-		//Windowに最小化ボタンを付ける//
-		void SetMinimizeBox();
-
-		//Windowにタイトルバーと境界線を持ったWindowを重ねる//
-		void SetOverlapped();
-
-		//OverlappedにCaption,SysMenu,SyzeBox,MinimizeBox,MaximizeBoxを追加した複合スタイル//
-		void SetOverlappedWindow();
-
-		//Windowをポップアップウィンドウにする。こちらはChildと併用できない//
-		void SetPopup();
-
-		//PopupにBorder,SysMenuを追加した複合スタイル//
-		void SetPopupWindow();
-
-		//Windowにサイズを変更可能な境界線を付ける//
-		void SetSizeBox();
-
-		//Windowのタイトルバーにウィンドウメニューを付ける//
-		void SetSysMenu();
-
-		//WindowはUserがTabキーを押した際にフォーカスを受け取れるようにする//
-		void SetTabStop();
-
-		//Windowが最初から表示されるようにする//
-		void SetVisible();
-
-		//Windowに垂直スクロールバーを付ける//
-		void SetVScroll();
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//Get Function//
-
-		inline unsigned long GetStyle()const  { return windStyle; }
-
-		///////////////////////////////////////////////////////////////////////////////////
-
-		//セットされていたStyleを0にする//
-		inline void Clear() { windStyle = 0; }
-
-	private:
-
-		unsigned long windStyle = 0;
-
-	};
+	public://ConstructorDestructor//
 
 
-	//WindowsAPIの内、Windowの作成と管理を司るクラス//
-	class WindObject
-	{
-	public:
+		WindObject(const WindObject& _obj);
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//InitAndRelease//
+		WindObject() { Init(); }
 
-		inline void Create(
-			const wchar_t* _appName,
-			const wchar_t* _windClassName,
-			const unsigned int _windWidth,
-			const unsigned int _windHeight,
-			const HINSTANCE _hInst,
-			const unsigned int _windXPos = 10,
-			const unsigned int _windYPos = 10)
+		~WindObject() { Release(); }
+
+	public://InitAndRelease//
+
+		void Init();
+
+		void Release();
+
+	public://SetFunction//
+
+		void Set(const WindObject& _obj);
+
+		//_messageにはWM_やメッセージプロシージャ―が受け取れる方にしてください//
+		inline void SetWindProcedure(const unsigned long _message, std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)> _proc)
 		{
-			CreateWindowWChar(
-				_appName
-				, _windClassName
-				, _windWidth
-				, _windHeight
-				, WS_OVERLAPPEDWINDOW
-				| WS_CLIPCHILDREN
-				| WS_GROUP
-				, _hInst
-				, _windXPos
-				, _windYPos);
+			if (!_proc)return;
+
+			(wndProc)[_message] = _proc;
 		}
 
-		inline void Create(
-			const wchar_t* _appName,
-			const wchar_t* _windClassName,
-			const ChMath::Vector2Base<unsigned int>& _windSize,
-			const HINSTANCE _hInst,
-			const ChMath::Vector2Base<unsigned int>& _windPos = ChMath::Vector2Base<unsigned int>(10, 10))
+		void SetWindPos(const unsigned int _x, const unsigned int _y,const unsigned int _flgs = SWP_NOSIZE | SWP_NOZORDER);
+
+		inline void SetWindPos(const ChMath::Vector2Base<unsigned int>& _pos, const unsigned int _flgs = SWP_NOSIZE | SWP_NOZORDER)
 		{
-			CreateWindowWChar(
-				_appName
-				, _windClassName
-				, _windSize.w
-				, _windSize.h
-				, WS_OVERLAPPEDWINDOW
-				| WS_CLIPCHILDREN
-				| WS_GROUP
-				, _hInst
-				, _windPos.x
-				, _windPos.y);
+			SetWindPos(_pos.x, _pos.y, _flgs);
 		}
 
-		inline void Create(
-			const wchar_t* _appName,
-			const wchar_t* _windClassName,
-			const unsigned int _windWidth,
-			const unsigned int _windHeight,
-			const unsigned long _windStyle,
-			const HINSTANCE _hInst,
-			const unsigned int _windXPos = 10,
-			const unsigned int _windYPos = 10)
-		{
+		void SetWindSize(const unsigned int _w, const unsigned int _h, const unsigned int _flgs = SWP_NOMOVE | SWP_NOZORDER);
 
-			CreateWindowWChar(
-				_appName
-				, _windClassName
-				, _windWidth
-				, _windHeight
-				, _windStyle
-				, _hInst
-				, _windXPos
-				, _windYPos);
+		inline void SetWindSize(const ChMath::Vector2Base<unsigned int>& _size, const unsigned int _flgs = SWP_NOMOVE | SWP_NOZORDER)
+		{
+			SetWindPos(_size.w, _size.h, _flgs);
 		}
 
-		inline void Create(
-			const wchar_t* _appName,
-			const wchar_t* _windClassName,
-			const ChMath::Vector2Base<unsigned int>& _windSize,
-			const unsigned long _windStyle,
-			const HINSTANCE _hInst,
-			const ChMath::Vector2Base<unsigned int>& _windPos = ChMath::Vector2Base<unsigned int>(10, 10))
-		{
+		void SetWindRect(const unsigned int _x, const unsigned int _y, const unsigned int _w, const unsigned int _h, const unsigned int _flgs = SWP_NOZORDER);
 
-			CreateWindowWChar(
-				_appName
-				, _windClassName
-				, _windSize.w
-				, _windSize.h
-				, _windStyle
-				, _hInst
-				, _windPos.x
-				, _windPos.y);
+		inline void SetWindRect(const RECT& _rec, const unsigned int _flgs = SWP_NOZORDER)
+		{
+			SetWindRect(_rec.top, _rec.left, _rec.right - _rec.left, _rec.bottom - _rec.top, _flgs);
 		}
 
-		inline void Create(
-			const wchar_t* _appName,
-			const wchar_t* _windClassName,
-			const unsigned int _windWidth,
-			const unsigned int _windHeight,
-			const WindStyle& _windStyle,
-			const HINSTANCE _hInst,
-			const unsigned int _windXPos = 10,
-			const unsigned int _windYPos = 10)
-		{
-
-			CreateWindowWChar(
-				_appName
-				, _windClassName
-				, _windWidth
-				, _windHeight
-				, _windStyle.GetStyle()
-				, _hInst
-				, _windXPos
-				, _windYPos);
-		}
-
-		inline void Create(
-			const wchar_t* _appName,
-			const wchar_t* _windClassName,
-			const ChMath::Vector2Base<unsigned int>& _windSize,
-			const WindStyle& _windStyle,
-			const HINSTANCE _hInst,
-			const ChMath::Vector2Base<unsigned int>& _windPos = ChMath::Vector2Base<unsigned int>(10, 10))
-		{
-
-			CreateWindowWChar(
-				_appName
-				, _windClassName
-				, _windSize.w
-				, _windSize.h
-				, _windStyle.GetStyle()
-				, _hInst
-				, _windPos.x
-				, _windPos.y);
-		}
-
-		inline void Create(
-			const char* _appName,
-			const char* _windClassName,
-			const unsigned int _windWidth,
-			const unsigned int _windHeight,
-			const HINSTANCE _hInst,
-			const unsigned int _windXPos = 10,
-			const unsigned int _windYPos = 10)
-		{
-			CreateWindowChar(
-				_appName
-				, _windClassName
-				, _windWidth
-				, _windHeight
-				, WS_OVERLAPPEDWINDOW
-				| WS_CLIPCHILDREN
-				| WS_GROUP
-				, _hInst
-				, _windXPos
-				, _windYPos);
-		}
-
-		inline void Create(
-			const char* _appName,
-			const char* _windClassName,
-			const ChMath::Vector2Base<unsigned int>& _windSize,
-			const HINSTANCE _hInst,
-			const ChMath::Vector2Base<unsigned int>& _windPos = ChMath::Vector2Base<unsigned int>(10, 10))
-		{
-
-		}
-
-		inline void Create(
-			const char* _appName,
-			const char* _windClassName,
-			const unsigned int _windWidth,
-			const unsigned int _windHeight,
-			const unsigned long _windStyle,
-			const HINSTANCE _hInst,
-			const unsigned int _windXPos = 10,
-			const unsigned int _windYPos = 10)
-		{
-
-		}
-
-		inline void Create(
-			const char* _appName,
-			const char* _windClassName,
-			const ChMath::Vector2Base<unsigned int>& _windSize,
-			const unsigned long _windStyle,
-			const HINSTANCE _hInst,
-			const ChMath::Vector2Base<unsigned int>& _windPos = ChMath::Vector2Base<unsigned int>(10, 10))
-		{
-
-		}
-
-		inline void Create(
-			const char* _appName,
-			const char* _windClassName,
-			const unsigned int _windWidth,
-			const unsigned int _windHeight,
-			const WindStyle& _windStyle,
-			const HINSTANCE _hInst,
-			const unsigned int _windXPos = 10,
-			const unsigned int _windYPos = 10)
-		{
-
-		}
-
-		inline void Create(
-			const char* _appName,
-			const char* _windClassName,
-			const ChMath::Vector2Base<unsigned int>& _windSize,
-			const WindStyle& _windStyle,
-			const HINSTANCE _hInst,
-			const ChMath::Vector2Base<unsigned int>& _windPos = ChMath::Vector2Base<unsigned int>(10, 10))
-		{
-
-		}
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//GetFunction//
+	public://GetFunction//
 
 		//Windハンドルの取得//
 		inline HWND GethWnd(void) const { return hWnd; }
@@ -322,50 +81,115 @@ namespace ChWin
 		inline const LPMSG GetReturnMassage(void) const { return const_cast<const LPMSG>(&msg); }
 
 		//Windowのサイズを取得する関数//
-		inline const ChMath::Vector2Base<unsigned int> GetWindSize()const { return windSize; }
+		const ChMath::Vector2Base<unsigned int> GetWindSize()const;
 
 		//Windowの左上の位置を取得する関数//
-		inline const ChMath::Vector2Base<unsigned int> GetWindPos()const { return windPos; }
+		const ChMath::Vector2Base<unsigned int> GetWindPos()const;
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//UpdateFunction//
+		const HINSTANCE GetInstance()const;
 
-		void Update();
+	public://UpdateFunction//
 
-	private:
+		ChStd::Bool Update();
 
-		void SetRegister();
+	public:
 
-		///////////////////////////////////////////////////////////////////////////////////
+		//メッセージを送る。戻り値は変更があった場合の数値//
+		LPARAM Send(const unsigned int _msg, WPARAM _wParam = 0, LPARAM _lParam = 0);
 
-		void CreateWindowWChar(
-			const wchar_t* _appName,
-			const wchar_t* _windClassName,
-			const unsigned int _windWidth,
-			const unsigned int _windHeight,
-			const unsigned long _windStyle,
-			const HINSTANCE _hInst,
-			const unsigned int _windXPos,
-			const unsigned int _windYPos);
+		//WndProcedureを動的にするために外部にあるWndProcから見えるようにする//
+		friend LRESULT CALLBACK ChWin::WndProc(
+			HWND _hWnd
+			, UINT _uMsg
+			, WPARAM _wParam
+			, LPARAM _lParam);
 
-		void CreateWindowChar(
-			const char* _appName,
-			const char* _windClassName,
-			const unsigned int _windWidth,
-			const unsigned int _windHeight,
-			const unsigned long _windStyle,
-			const HINSTANCE _hInst,
-			const unsigned int _windXPos,
-			const unsigned int _windYPos);
+		//WIndCreaterにWindObjectのPrivate部分も見えるようにする//
+		friend WindCreater;
 
-		///////////////////////////////////////////////////////////////////////////////////
+	private://CreateBaseFunction//
 
+		void CreateEnd(const int _nCmdShow);
 
-
+	private://MemberValue//
+		
+		std::map<unsigned int, std::function<LRESULT(HWND,UINT,WPARAM,LPARAM)>> wndProc;
 		HWND hWnd = nullptr;
-		MSG msg = {0};
-		ChMath::Vector2Base<unsigned int> windSize;
-		ChMath::Vector2Base<unsigned int> windPos;
+		MSG msg = { 0 };
+
+	};
+
+	class WindCreater
+	{
+	public://ConstructorDestructor//
+
+		WindCreater(HINSTANCE _ins) { Init(_ins); }
+
+	public://Init And Release//
+
+		void Init(HINSTANCE _ins) { hInst; }
+
+	public://Set Function//
+
+		void SetWindStyle(const unsigned int _style)
+		{
+			style = _style;
+		}
+
+		void SetWindStyle(const WindStyle* _style);
+
+		void SetParentWind(const WindObject& _wObj)
+		{
+			parent = _wObj.GethWnd();
+		}
+
+		void SetParentWind(const HWND _wind)
+		{
+			parent = _wind;
+		}
+
+		void SetMenu(const HMENU _menu)
+		{
+			hMenu = _menu;
+		}
+
+		void SetInitPosition(const ChMath::Vector2Base<int>& _pos);
+
+		void SetInitPosition(const int _x, const int _y);
+
+		void SetInitSize(const ChMath::Vector2Base<int>& _size);
+
+		void SetInitSize(const int _w, const int _h);
+
+	public://Get Function//
+
+		inline const ChMath::Vector2Base<int> GetPosition()const
+		{
+			return pos;
+		}
+
+		inline const ChMath::Vector2Base<int> GetSize()const
+		{
+			return size;
+		}
+
+	public://Create Functino//
+
+		//Set Functionを先に行う//
+		ChStd::Bool Create(WindObject* _out,const std::string& _appName,const std::string& _windClassName,const int _nShowCmd = 0);
+
+		ChStd::Bool Create(WindObject* _out,const std::wstring& _appName,const std::wstring& _windClassName, const int _nShowCmd = 0);
+
+	private://MemberValue//
+
+		unsigned int style = 0;
+		HWND parent = nullptr;
+		HMENU hMenu = nullptr;
+		HINSTANCE hInst = nullptr;
+		LPVOID param = nullptr;
+		ChMath::Vector2Base<int> pos = ChMath::Vector2Base<int>(0, 0);
+		ChMath::Vector2Base<int> size = ChMath::Vector2Base<int>(100,100);
+
 	};
 
 }
