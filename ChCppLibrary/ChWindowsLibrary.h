@@ -20,7 +20,13 @@
 #include"WindowsObject/Mouse/ChWinMouse.h"
 #include"WindowsObject/TextBox/ChWinTextBox.h"
 #include"WindowsObject/DrawTexter/ChWinDrawTexter.h"
+
+//NewVersionWindowsClass//
 #include"WindowsObject/MsgBox/ChMsgBox.h"
+#include<WindowsObject/WindObject/ChWindStyle.h>
+#include<WindowsObject/WindClassObject/ChWindClassStyle.h>
+#include<WindowsObject/WindObject/ChWindObject.h>
+#include<WindowsObject/WindClassObject/ChWindClassObject.h>
 
 
 #ifndef Ch_Library_Create
