@@ -48,7 +48,8 @@ void Brush::CreateNullBrush()
 void Brush::CreatePatterBrush(const Texture* _tex)
 {
 	if (ChPtr::NullCheck(_tex))return;
-	CreatePatterBrush(_tex->GetBitMap());
+	brush = _tex->CreateBrush();
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -56,7 +57,7 @@ void Brush::CreatePatterBrush(const Texture* _tex)
 void Brush::CreatePatterBrush(const ChPtr::Shared<Texture>& _tex)
 {
 	if (_tex == nullptr)return;
-	CreatePatterBrush(_tex->GetBitMap());
+	brush = _tex->CreateBrush();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
