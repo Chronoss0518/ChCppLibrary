@@ -596,7 +596,7 @@ namespace ChMath
 		{
 			for (unsigned long i = 0; i < Array; i++)
 			{
-				val[i] = val[i] < 0.0f ? val[i] * -1.0f : val[i];
+				val[i] = val[i] < static_cast<T>(0.0f) ? val[i] * static_cast<T>(-1.0f) : val[i];
 			}
 		}
 
@@ -605,7 +605,7 @@ namespace ChMath
 
 			for (unsigned long i = 0; i < Array; i++)
 			{
-				val[i] = _vec.val[i] < 0.0f ? _vec.val[i] * -1.0f : _vec.val[i];
+				val[i] = _vec.val[i] < static_cast<T>(0.0f) ? _vec.val[i] * static_cast<T>(-1.0f) : _vec.val[i];
 			}
 		}
 
