@@ -7,7 +7,6 @@
 
 #include"../ChBaseSystem/ChBaseSystem.h"
 #include"ChWindows.h"
-#include"../../WindowsObject/BaseWind/ChWinBaseWind.h"
 #include"../../WindowsObject/Mouse/ChWinMouse.h"
 
 using namespace ChSystem;
@@ -18,12 +17,6 @@ ChStd::Bool BaseWndProcs(
 	, const WPARAM _wParam
 	, const LPARAM _lParam);
 
-std::function<ChStd::Bool(
-	HWND _hWnd
-	, UINT _uMsg
-	, WPARAM _wParam
-	, LPARAM _lParam)>Windows::ImGuiProc;
-
 ///////////////////////////////////////////////////////////////////////////////////////
 //ChWindowsÉÅÉ\ÉbÉh
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -31,68 +24,270 @@ std::function<ChStd::Bool(
 void Windows::Init(
 	const std::string& _appName
 	, const std::string& _windClassName
-	, const unsigned int _windWidth
-	, const unsigned int _windHeight
+	, const int _windWidth
+	, const int _windHeight
 	, const HINSTANCE _hInst
 	, const int _nCmdShow)
 {
 
-	windSize.w = _windWidth;
-	windSize.h = _windHeight;
+	auto size = ChMath::Vector2Base<int>(_windWidth, _windHeight);
 
-	WNDCLASS wc;
-	wc.style = CS_HREDRAW | CS_VREDRAW;
-	wc.lpfnWndProc = WndProc;
-	wc.cbClsExtra = 0;
-	wc.cbWndExtra = 0;
-	wc.hInstance = _hInst;
-	wc.hIcon = NULL;
-	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-	wc.lpszMenuName = (LPSTR)NULL;
-	wc.lpszClassName = _windClassName.c_str();
-	RegisterClass(&wc);
+	size.val.Abs();
 
-	WinProcs = BaseWndProcs;
+	ChWin::WindCreater creater(_hInst);
 
-	className = wc.lpszClassName;
+	creater.SetInitPosition(10, 10);
+	creater.SetInitSize(size.w, size.h);
+	creater.SetWindStyle(WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_GROUP);
 
-	hWnd = CreateWindow(
-		wc.lpszClassName
-		, _appName.c_str()
-		, WS_OVERLAPPEDWINDOW
-		| WS_CLIPCHILDREN 
-		| WS_GROUP
-		, 10
-		, 10
-		, _windWidth
-		, _windHeight
-		, NULL
-		, NULL
-		, _hInst
-		, nullptr);
+	creater.Create(&wndObject, _appName, _windClassName, _nCmdShow);
 
 	inst = _hInst;
 
-	ShowWindow(hWnd, _nCmdShow);
-	UpdateWindow(hWnd);
+	buttonList.SetSize((256 / 8) + 1);
+	isNowPush.SetSize((256 / 8) + 1);
+
+	SetInitFlg(true);
+}
+
+void Windows::Init(
+	const std::string& _appName,
+	const std::string& _windClassName,
+	const int _windWidth,
+	const int _windHeight,
+	const int _initWindPosX,
+	const int _initWindPosY,
+	const HINSTANCE _hInst,
+	const int _nCmdShow)
+{
+
+	auto pos = ChMath::Vector2Base<int>(_initWindPosX, _initWindPosY);
+	auto size = ChMath::Vector2Base<int>(_windWidth, _windHeight);
+
+	pos.val.Abs();
+	size.val.Abs();
+
+	ChWin::WindCreater creater(_hInst);
+
+	creater.SetInitPosition(pos.x, pos.y);
+	creater.SetInitSize(size.w, size.h);
+	creater.SetWindStyle(WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_GROUP);
+
+	creater.Create(&wndObject, _appName, _windClassName, _nCmdShow);
+
+	inst = _hInst;
 
 	buttonList.SetSize((256 / 8) + 1);
 	isNowPush.SetSize((256 / 8) + 1);
 
 	SetInitFlg(true);
 
-	SetWindowLongPtr(hWnd, GWLP_USERDATA, (long)this);
+}
+
+void Windows::Init(
+	const ChWin::WindCreater& _creater,
+	const std::string& _appName,
+	const std::string& _windClassName,
+	const HINSTANCE _hInst,
+	const int _nCmdShow)
+{
+
+	_creater.Create(&wndObject, _appName, _windClassName, _nCmdShow);
+
+	inst = _hInst;
+
+	buttonList.SetSize((256 / 8) + 1);
+	isNowPush.SetSize((256 / 8) + 1);
+
+	SetInitFlg(true);
+}
+
+void Windows::Init(
+	const std::string& _appName,
+	const std::string& _className,
+	const unsigned long _dwStyle,
+	const int _initWindPosX,
+	const int _initWindPosY,
+	const int _windWidth,
+	const int _windHeight,
+	HINSTANCE _hInst,
+	const int _nCmdShow,
+	const unsigned long _exStyle,
+	HWND _parent,
+	HMENU _hMenu,
+	LPVOID _param)
+{
+	auto pos = ChMath::Vector2Base<int>(_initWindPosX, _initWindPosY);
+	auto size = ChMath::Vector2Base<int>(_windWidth, _windHeight);
+
+	pos.val.Abs();
+	size.val.Abs();
+
+	ChWin::WindCreater creater(_hInst);
+
+
+	HWND hWnd = CreateWindowExA(
+		_exStyle,
+		_className.c_str(),
+		_appName.c_str(),
+		_dwStyle,
+		pos.x,
+		pos.y, 
+		size.w,
+		size.h,
+		_parent,
+		_hMenu ,
+		_hInst,
+		_param);
+
+	wndObject.Init(hWnd,_nCmdShow);
+
+	buttonList.SetSize((256 / 8) + 1);
+	isNowPush.SetSize((256 / 8) + 1);
+
+	SetInitFlg(true);
+
+	SetWindowLongPtrA(hWnd, GWLP_USERDATA, reinterpret_cast<long>(&wndObject));
+
+}
+
+void Windows::Init(
+	const std::wstring& _appName
+	, const std::wstring& _windClassName
+	, const int _windWidth
+	, const int _windHeight
+	, const HINSTANCE _hInst
+	, const int _nCmdShow)
+{
+
+	auto size = ChMath::Vector2Base<int>(_windWidth, _windHeight);
+
+	size.val.Abs();
+
+	ChWin::WindCreater creater(_hInst);
+
+	creater.SetInitPosition(10, 10);
+	creater.SetInitSize(size.w, size.h);
+	creater.SetWindStyle(WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_GROUP);
+
+	creater.Create(&wndObject, _appName, _windClassName, _nCmdShow);
+
+	inst = _hInst;
+
+	buttonList.SetSize((256 / 8) + 1);
+	isNowPush.SetSize((256 / 8) + 1);
+
+	SetInitFlg(true);
+
+}
+
+void Windows::Init(
+	const std::wstring& _appName,
+	const std::wstring& _windClassName,
+	const int _windWidth,
+	const int _windHeight,
+	const int _initWindPosX,
+	const int _initWindPosY,
+	const HINSTANCE _hInst,
+	const int _nCmdShow)
+{
+
+	auto pos = ChMath::Vector2Base<int>(_initWindPosX, _initWindPosY);
+	auto size = ChMath::Vector2Base<int>(_windWidth, _windHeight);
+
+	pos.val.Abs();
+	size.val.Abs();
+
+	ChWin::WindCreater creater(_hInst);
+
+	creater.SetInitPosition(pos.x, pos.y);
+	creater.SetInitSize(size.w, size.h);
+	creater.SetWindStyle(WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_GROUP);
+
+	creater.Create(&wndObject, _appName, _windClassName, _nCmdShow);
+
+	inst = _hInst;
+
+	buttonList.SetSize((256 / 8) + 1);
+	isNowPush.SetSize((256 / 8) + 1);
+
+	SetInitFlg(true);
+
+}
+
+void Windows::Init(
+	const ChWin::WindCreater& _creater,
+	const std::wstring& _appName,
+	const std::wstring& _windClassName,
+	const HINSTANCE _hInst,
+	const int _nCmdShow)
+{
+
+	_creater.Create(&wndObject, _appName, _windClassName, _nCmdShow);
+
+	inst = _hInst;
+
+	buttonList.SetSize((256 / 8) + 1);
+	isNowPush.SetSize((256 / 8) + 1);
+
+	SetInitFlg(true);
+}
+
+void Windows::Init(
+	const std::wstring& _appName,
+	const std::wstring& _className,
+	const unsigned long _dwStyle,
+	const int _initWindPosX,
+	const int _initWindPosY,
+	const int _windWidth,
+	const int _windHeight,
+	HINSTANCE _hInst,
+	const int _nCmdShow,
+	const unsigned long _exStyle,
+	HWND _parent,
+	HMENU _hMenu,
+	LPVOID _param)
+{
+	auto pos = ChMath::Vector2Base<int>(_initWindPosX, _initWindPosY);
+	auto size = ChMath::Vector2Base<int>(_windWidth, _windHeight);
+
+	pos.val.Abs();
+	size.val.Abs();
+
+	ChWin::WindCreater creater(_hInst);
+
+
+	HWND hWnd = CreateWindowExW(
+		_exStyle,
+		_className.c_str(),
+		_appName.c_str(),
+		_dwStyle,
+		pos.x,
+		pos.y,
+		size.w,
+		size.h,
+		_parent,
+		_hMenu,
+		_hInst,
+		_param);
+
+	wndObject.Init(hWnd, _nCmdShow);
+
+	buttonList.SetSize((256 / 8) + 1);
+	isNowPush.SetSize((256 / 8) + 1);
+
+	SetInitFlg(true);
+
+	SetWindowLongPtrW(hWnd, GWLP_USERDATA, reinterpret_cast<long>(&wndObject));
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void Windows::Release()
 {
+	wndObject.Release();
 	SetInitFlg(false);
-	UnregisterClass(
-		className.c_str()
-		, (HINSTANCE)GetWindowLong(hWnd, GWL_HINSTANCE));
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -151,36 +346,12 @@ ChStd::Bool Windows::IsPause(const int _Key)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool Windows::IsMessage(
-	const std::string& _mainStr
-	, const std::string& _subStr)
-{
-
- 	if (ChPtr::NullCheck(hWnd))return true;
-
-	if (MessageBox(
-		hWnd
-		, &_mainStr[0]
-		, &_subStr[0]
-		, MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2)
-		== IDYES)return true;
-
-	return false;
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
 ChStd::Bool Windows::IsUpdate()
 {
+	auto hWnd = wndObject.GethWnd();
 	if (ChPtr::NullCheck(hWnd))return false;
 
 	isKeyUpdate = false;
-	if (!PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE))return true;
-
-	if (!(GetMessage(&msg, NULL, 0, 0)))return false;
-	TranslateMessage(&msg);
-	DispatchMessage(&msg);
 	
 	{
 
@@ -192,7 +363,7 @@ ChStd::Bool Windows::IsUpdate()
 
 	}
 
-	return true;
+	return wndObject.Update();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -213,95 +384,4 @@ void Windows::SetKeyCode()
 	}
 
 	isKeyUpdate = true;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-LRESULT CALLBACK ChSystem::WndProc(
-	HWND _hWnd
-	, UINT _uMsg
-	, WPARAM _wParam
-	, LPARAM _lParam)
-{
-
-	if (Windows::ImGuiProc)if (Windows::ImGuiProc(_hWnd, _uMsg, _wParam, _lParam))return true;
-
-	auto base = SysManager().GetSystem<Windows>();
-
-	if (base)
-	{
-		base->WinProcs(_hWnd, _uMsg, _wParam, _lParam);
-	}
-	else
-	{
-		switch (_uMsg)
-		{
-		case WM_COMMAND:
-
-			ChWin::ObjUpdate(_wParam);
-			break;
-
-		case WM_DESTROY:
-
-			PostQuitMessage(0);
-			return 0;
-
-		default:
-			break;
-		}
-	}
-	return DefWindowProc(_hWnd, _uMsg, _wParam, _lParam);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-//GlobalFunction//
-///////////////////////////////////////////////////////////////////////////////////
-
-ChStd::Bool BaseWndProcs(
-	const HWND _hWnd
-	, const UINT _uMsg
-	, const WPARAM _wParam
-	, const LPARAM _lParam)
-{
-
-	switch (_uMsg)
-	{
-	case WM_MOUSEWHEEL:
-
-	{
-
-		POINTS tmp;
-		tmp.y = 0;
-		tmp.x = GET_WHEEL_DELTA_WPARAM(_wParam);
-		ChWin::Mouse().WheelUpdate(tmp);
-
-	}
-	break;
-
-	case WM_MOUSEHWHEEL:
-	{
-		POINTS tmp;
-		tmp.x = 0;
-		tmp.y = GET_WHEEL_DELTA_WPARAM(_wParam);
-		ChWin::Mouse().WheelUpdate(tmp);
-
-	}
-	break;
-
-	case WM_COMMAND:
-
-		ChWin::ObjUpdate(_wParam);
-		break;
-
-	case WM_DESTROY:
-		PostQuitMessage(0);
-		return 0;
-	default:
-		break;
-	}
-
-
-
-	return true;
-
 }
