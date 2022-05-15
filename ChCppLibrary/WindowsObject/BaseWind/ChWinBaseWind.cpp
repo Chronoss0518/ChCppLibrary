@@ -16,8 +16,6 @@ LRESULT CALLBACK SubWndProc(
 	, WPARAM _wParam
 	, LPARAM _lParam)
 {
-	if(ChSystem::Windows::ImGuiProc)if (ChSystem::Windows::ImGuiProc(_hWnd, _uMsg, _wParam, _lParam))return true;
-
 	switch (_uMsg)
 	{	
 	case WM_MOVE:

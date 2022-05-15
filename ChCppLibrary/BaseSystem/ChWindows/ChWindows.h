@@ -4,13 +4,8 @@
 #define Ch_Game_Windows_h
 
 #include"../ChBaseSystem/ChBaseSystem.h"
-#include"../../WindowsObject/BaseWind/ChWinBaseWind.h"
-
-namespace ChWin
-{
-
-	class WindBaseObject;
-}
+#include"../../WindowsObject/WindObject/ChWindObject.h"
+#include"../../WindowsObject/WindClassObject/ChWindClassObject.h"
 
 namespace ChSystem
 {
@@ -20,11 +15,6 @@ namespace ChSystem
 		, WPARAM _wParam
 		, LPARAM _lParam);
 
-	using ChWinProc = std::function<ChStd::Bool(
-		HWND _hWnd
-		, UINT _uMsg
-		, WPARAM _wParam
-		, LPARAM _lParam)>;
 
 	//Windowsで作成されたWindとWindowsに関する入出力などを管理した、//
 	//WIndows全体の管理クラス//
@@ -37,13 +27,87 @@ namespace ChSystem
 		///////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
-		//Windの生成//
-		void Init(const std::string& _aPPName
-			, const std::string& _windClassName
-			, const unsigned int _windWidth
-			, const unsigned int _windHeight
-			, const HINSTANCE _hInst
-			, const int _nCmdShow);
+		//Windの生成(stringVer)//
+		void Init(
+			const std::string& _appName,
+			const std::string& _windClassName,
+			const int _windWidth,
+			const int _windHeight,
+			const HINSTANCE _hInst,
+			const int _nCmdShow);
+
+		void Init(
+			const std::string& _appName,
+			const std::string& _windClassName,
+			const int _windWidth,
+			const int _windHeight,
+			const int _initWindPosX,
+			const int _initWindPosY,
+			const HINSTANCE _hInst,
+			const int _nCmdShow);
+
+		void Init(
+			const ChWin::WindCreater& _creater,
+			const std::string& _appName,
+			const std::string& _windClassName,
+			const HINSTANCE _hInst,
+			const int _nCmdShow);
+
+		void Init(
+			const std::string& _appName,
+			const std::string& _className,
+			const unsigned long _dwStyle,
+			const int _initWindPosX,
+			const int _initWindPosY,
+			const int _windWidth,
+			const int _windHeight,
+			HINSTANCE _hInst,
+			const int _nCmdShow,
+			const unsigned long _exStyle = 0,
+			HWND _parent = nullptr,
+			HMENU _hMenu = nullptr,
+			LPVOID _param = nullptr);
+
+		//Windの生成(wstringVer)//
+		void Init(
+			const std::wstring& _appName,
+			const std::wstring& _windClassName,
+			const int _windWidth,
+			const int _windHeight,
+			const HINSTANCE _hInst,
+			const int _nCmdShow);
+
+		void Init(
+			const std::wstring& _appName,
+			const std::wstring& _windClassName,
+			const int _windWidth,
+			const int _windHeight,
+			const int _initWindPosX,
+			const int _initWindPosY,
+			const HINSTANCE _hInst,
+			const int _nCmdShow);
+
+		void Init(
+			const ChWin::WindCreater& _creater,
+			const std::wstring& _appName,
+			const std::wstring& _windClassName,
+			const HINSTANCE _hInst,
+			const int _nCmdShow);
+
+		void Init(
+			const std::wstring& _appName,
+			const std::wstring& _className,
+			const unsigned long _dwStyle,
+			const int _initWindPosX,
+			const int _initWindPosY,
+			const int _windWidth,
+			const int _windHeight,
+			HINSTANCE _hInst,
+			const int _nCmdShow,
+			const unsigned long _exStyle = 0,
+			HWND _parent = nullptr,
+			HMENU _hMenu = nullptr,
+			LPVOID _param = nullptr);
 
 		//Windの解放//
 		void Release()override;
@@ -51,19 +115,24 @@ namespace ChSystem
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		inline void SetWinProcedure(const ChWinProc& _proce)
+		inline void SetDefaultWinProcedure(const std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>& _proce)
 		{
-			WinProcs = _proce;
+			wndObject.SetDefaultWindProcedure(_proce);
+		}
+
+		inline void SetWinProcedure(const unsigned int _windowMessage ,const std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>& _proce)
+		{
+			wndObject.SetWindProcedure(_windowMessage, _proce);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
 		//Windハンドルの取得//
-		inline HWND GethWnd(void) const { return hWnd; }
+		inline HWND GethWnd(void) const { return wndObject.GethWnd(); }
 
 		//メッセージの値を返す関数//
-		inline const LPMSG GetReturnMassage(void) const { return const_cast<const LPMSG>(&msg); }
+		inline const LPMSG GetReturnMassage(void) const { return wndObject.GetReturnMassage(); }
 
 		unsigned long GetNowTime()override { return timeGetTime(); }
 
@@ -84,13 +153,8 @@ namespace ChSystem
 		//戻り値がTrueだった場合はポーズ中//
 		ChStd::Bool IsPause(const int _key)override;
 
-		//チェックメッセージボックス用関数//
-		ChStd::Bool IsMessage(
-			const std::string& _mainStr
-			, const std::string& _subStr);
-
 		//WindMassageを確認する関数//
-		ChStd::Bool IsUpdate();
+		ChStd::Bool IsUpdate()override;
 
 		///////////////////////////////////////////////////////////////////////////////////
 
@@ -98,29 +162,40 @@ namespace ChSystem
 			const std::string& _mainStr
 			, const std::string& _subStr)override
 		{
-			WMessage(_mainStr, _subStr);
+			WMessageA(_mainStr, _subStr);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//メッセージボックス用関数//
-		inline void WMessage(
+		inline void WMessageA(
 			const std::string& _mainStr
 			, const std::string& _subStr)
 		{
-			if (ChPtr::NullCheck(hWnd))return;
+			if (ChPtr::NullCheck(wndObject.GethWnd()))return;
 
-			MessageBox(
-				hWnd
+			MessageBoxA(
+				wndObject.GethWnd()
 				, &_mainStr[0]
 				, &_subStr[0]
 				, MB_OK);
 
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////
+		//メッセージボックス用関数//
+		inline void WMessageW(
+			const std::wstring& _mainStr
+			, const std::wstring& _subStr)
+		{
+			if (ChPtr::NullCheck(wndObject.GethWnd()))return;
 
-		friend ChWin::WindBaseObject;
+			MessageBoxW(
+				wndObject.GethWnd()
+				, &_mainStr[0]
+				, &_subStr[0]
+				, MB_OK);
+
+		}
 
 		friend LRESULT CALLBACK ChSystem::WndProc(
 			HWND _hWnd
@@ -128,11 +203,7 @@ namespace ChSystem
 			, WPARAM _wParam
 			, LPARAM _lParam);
 
-		static ChWinProc ImGuiProc;
-
 	protected:
-
-		ChWinProc WinProcs;
 
 		///////////////////////////////////////////////////////////////////////////////////
 
@@ -143,27 +214,10 @@ namespace ChSystem
 
 		ChStd::Bool isKeyUpdate;
 
-		std::string className = "";
-
 		HINSTANCE inst = nullptr;
-		HWND hWnd = nullptr;
-		MSG msg{ 0 };
+		ChWin::WindObject wndObject;
+		ChWin::WindClassObject cObject;
 
-
-	private:
-
-		std::string WPP = "WinParam";
-
-	protected:
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//SetSingleton
-		///////////////////////////////////////////////////////////////////////////////////
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//ConstructerDestructor//
-
-	public:
 
 	};
 
