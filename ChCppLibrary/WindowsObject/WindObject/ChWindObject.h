@@ -5,7 +5,13 @@
 
 namespace ChWin
 {
-	LRESULT CALLBACK WndProc(
+	LRESULT CALLBACK WndProcA(
+		HWND _hWnd
+		, UINT _uMsg
+		, WPARAM _wParam
+		, LPARAM _lParam);
+
+	LRESULT CALLBACK WndProcW(
 		HWND _hWnd
 		, UINT _uMsg
 		, WPARAM _wParam
@@ -37,6 +43,8 @@ namespace ChWin
 
 		void Init();
 
+		void Init(HWND _hWnd,const int _nShowCmd);
+
 		void Release();
 
 	public://SetFunction//
@@ -44,11 +52,19 @@ namespace ChWin
 		void Set(const WindObject& _obj);
 
 		//_messageにはWM_やメッセージプロシージャ―が受け取れる方にしてください//
-		inline void SetWindProcedure(const unsigned long _message, std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)> _proc)
+		inline void SetWindProcedure(const unsigned long _message,const std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>& _proc)
 		{
 			if (!_proc)return;
 
 			(wndProc)[_message] = _proc;
+		}
+
+		//登録されたどのメッセージも受け取らなかった場合に呼ばれる関数//
+		inline void SetDefaultWindProcedure(const std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>& _proc)
+		{
+			if (!_proc)return;
+
+			defaultWindProc = _proc;
 		}
 
 		void SetWindPos(const unsigned int _x, const unsigned int _y,const unsigned int _flgs = SWP_NOSIZE | SWP_NOZORDER);
@@ -86,19 +102,61 @@ namespace ChWin
 		//Windowの左上の位置を取得する関数//
 		const ChMath::Vector2Base<unsigned int> GetWindPos()const;
 
-		const HINSTANCE GetInstance()const;
+		inline const HINSTANCE GetInstance()const
+		{
+#ifdef UNICODE
+			return GetInstanceW();
+#else
+			return GetInstanceA();
+#endif
+		}
+
+		const HINSTANCE GetInstanceA()const;
+
+		const HINSTANCE GetInstanceW()const;
 
 	public://UpdateFunction//
 
-		ChStd::Bool Update();
+		inline ChStd::Bool Update()
+		{
+#ifdef UNICODE
+			return UpdateW();
+#else
+			return UpdateA();
+#endif
+		}
+
+		ChStd::Bool UpdateA();
+		ChStd::Bool UpdateW();
 
 	public:
 
 		//メッセージを送る。戻り値は変更があった場合の数値//
-		LPARAM Send(const unsigned int _msg, WPARAM _wParam = 0, LPARAM _lParam = 0);
+		inline LPARAM Send(const unsigned int _msg, WPARAM _wParam = 0, LPARAM _lParam = 0)
+		{
+
+#ifdef UNICODE
+			return SendW(_msg, _wParam, _lParam);
+#else
+			return SendA(_msg,_wParam,_lParam);
+#endif
+		}
+
+		//メッセージを送る。戻り値は変更があった場合の数値//
+		LPARAM SendW(const unsigned int _msg, WPARAM _wParam = 0, LPARAM _lParam = 0);
+
+		//メッセージを送る。戻り値は変更があった場合の数値//
+		LPARAM SendA(const unsigned int _msg, WPARAM _wParam = 0, LPARAM _lParam = 0);
 
 		//WndProcedureを動的にするために外部にあるWndProcから見えるようにする//
-		friend LRESULT CALLBACK ChWin::WndProc(
+		friend LRESULT CALLBACK ChWin::WndProcA(
+			HWND _hWnd
+			, UINT _uMsg
+			, WPARAM _wParam
+			, LPARAM _lParam);
+
+		//WndProcedureを動的にするために外部にあるWndProcから見えるようにする//
+		friend LRESULT CALLBACK ChWin::WndProcW(
 			HWND _hWnd
 			, UINT _uMsg
 			, WPARAM _wParam
@@ -107,12 +165,19 @@ namespace ChWin
 		//WIndCreaterにWindObjectのPrivate部分も見えるようにする//
 		friend WindCreater;
 
-	private://CreateBaseFunction//
+	protected://CreateBaseFunction//
 
 		void CreateEnd(const int _nCmdShow);
 
 	private://MemberValue//
 		
+		std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)> defaultWindProc = [](
+			HWND _hWnd,
+			UINT _uMsg, 
+			WPARAM _wParam,
+			LPARAM _lParam)->LRESULT 
+		{return DefWindowProc(_hWnd, _uMsg, _wParam, _lParam); };
+
 		std::map<unsigned int, std::function<LRESULT(HWND,UINT,WPARAM,LPARAM)>> wndProc;
 		HWND hWnd = nullptr;
 		MSG msg = { 0 };
@@ -127,28 +192,33 @@ namespace ChWin
 
 	public://Init And Release//
 
-		void Init(HINSTANCE _ins) { hInst; }
+		void Init(HINSTANCE _ins) { hInst = _ins; }
 
 	public://Set Function//
 
-		void SetWindStyle(const unsigned int _style)
+		inline void SetWindStyle(const unsigned int _style)
 		{
 			style = _style;
 		}
 
 		void SetWindStyle(const WindStyle* _style);
 
-		void SetParentWind(const WindObject& _wObj)
+		inline void SetEXStyle(const unsigned long _style)
+		{
+			exStyle = _style;
+		}
+
+		inline void SetParentWind(const WindObject& _wObj)
 		{
 			parent = _wObj.GethWnd();
 		}
 
-		void SetParentWind(const HWND _wind)
+		inline void SetParentWind(const HWND _wind)
 		{
 			parent = _wind;
 		}
 
-		void SetMenu(const HMENU _menu)
+		inline void SetMenu(const HMENU _menu)
 		{
 			hMenu = _menu;
 		}
@@ -176,12 +246,13 @@ namespace ChWin
 	public://Create Functino//
 
 		//Set Functionを先に行う//
-		ChStd::Bool Create(WindObject* _out,const std::string& _appName,const std::string& _windClassName,const int _nShowCmd = 0);
+		ChStd::Bool Create(WindObject* _out,const std::string& _appName,const std::string& _windClassName,const int _nShowCmd = 0)const;
 
-		ChStd::Bool Create(WindObject* _out,const std::wstring& _appName,const std::wstring& _windClassName, const int _nShowCmd = 0);
+		ChStd::Bool Create(WindObject* _out,const std::wstring& _appName,const std::wstring& _windClassName, const int _nShowCmd = 0)const;
 
 	private://MemberValue//
 
+		unsigned long exStyle = 0;
 		unsigned int style = 0;
 		HWND parent = nullptr;
 		HMENU hMenu = nullptr;

@@ -48,6 +48,14 @@ void WindObject::Init()
 	};
 }
 
+void WindObject::Init(HWND _hWnd, const int _nShowCmd)
+{
+	if (ChPtr::NullCheck(_hWnd))return;
+	Release();
+	hWnd = _hWnd;
+	CreateEnd(_nShowCmd);
+}
+
 void WindObject::Release()
 {
 	if (IsInit())
@@ -62,8 +70,6 @@ void WindObject::CreateEnd(const int _nCmdShow)
 {
 	ShowWindow(hWnd, _nCmdShow);
 	UpdateWindow(hWnd);
-
-	SetWindowLongPtr(hWnd, GWLP_USERDATA, (long)this);
 
 	SetInitFlg(true);
 
@@ -125,36 +131,61 @@ inline const ChMath::Vector2Base<unsigned int> WindObject::GetWindPos()const
 	return out;
 }
 
-const HINSTANCE WindObject::GetInstance()const
+const HINSTANCE WindObject::GetInstanceA()const
 {
-	return (HINSTANCE)GetWindowLong(hWnd, GWL_HINSTANCE);
+	return (HINSTANCE)GetWindowLongA(hWnd, GWL_HINSTANCE);
 }
 
-LPARAM WindObject::Send(const unsigned int _msg, WPARAM _wParam, LPARAM _lParam)
+const HINSTANCE WindObject::GetInstanceW()const
+{
+	return (HINSTANCE)GetWindowLongW(hWnd, GWL_HINSTANCE);
+}
+
+LPARAM WindObject::SendA(const unsigned int _msg, WPARAM _wParam, LPARAM _lParam)
 {
 	LPARAM out = _lParam;
 	if (!*this)return out;
 	WPARAM wParam = _wParam;
-	SendMessage(hWnd, _msg, wParam, out);
+	SendMessageA(hWnd, _msg, wParam, out);
 	return out;
 }
 
-ChStd::Bool WindObject::Update()
+LPARAM WindObject::SendW(const unsigned int _msg, WPARAM _wParam, LPARAM _lParam)
+{
+	LPARAM out = _lParam;
+	if (!*this)return out;
+	WPARAM wParam = _wParam;
+	SendMessageW(hWnd, _msg, wParam, out);
+	return out;
+}
+
+ChStd::Bool WindObject::UpdateA()
 {
 	if (!IsInit())return false;
 
-	if (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE) <= 0)return true;
+	if (PeekMessageA(&msg, NULL, 0, 0, PM_NOREMOVE) <= 0)return true;
 
-	if ((GetMessage(&msg, NULL, 0, 0)) <= 0)return false;
+	if ((GetMessageA(&msg, NULL, 0, 0)) <= 0)return false;
 	TranslateMessage(&msg);
-	DispatchMessage(&msg);
+	DispatchMessageA(&msg);
 
 	return true;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-//WindowObjectCreate Method
-///////////////////////////////////////////////////////////////////////////////////
+ChStd::Bool WindObject::UpdateW()
+{
+	if (!IsInit())return false;
+
+	if (PeekMessageW(&msg, NULL, 0, 0, PM_NOREMOVE) <= 0)return true;
+
+	if ((GetMessageW(&msg, NULL, 0, 0)) <= 0)return false;
+	TranslateMessage(&msg);
+	DispatchMessageW(&msg);
+
+	return true;
+}
+
+//WindowObjectCreate Method//
 
 void WindCreater::SetWindStyle(const WindStyle* _style)
 {
@@ -184,13 +215,14 @@ void WindCreater::SetInitSize(const int _w, const int _h)
 	size.y = _h >= 0 ? _h : _h * -1;
 }
 
-ChStd::Bool WindCreater::Create(WindObject* _out,const std::string& _appName, const std::string& _windClassName, const int _nShowCmd)
+ChStd::Bool WindCreater::Create(WindObject* _out,const std::string& _appName, const std::string& _windClassName, const int _nShowCmd)const
 {
 	if (ChPtr::NullCheck(_out))return false;
 
 	_out->Init();
 
-	_out->hWnd = CreateWindowA(
+	_out->hWnd = CreateWindowExA(
+		exStyle,
 		_windClassName.c_str(),
 		_appName.c_str(),
 		style,
@@ -205,17 +237,19 @@ ChStd::Bool WindCreater::Create(WindObject* _out,const std::string& _appName, co
 	
 	_out->CreateEnd(_nShowCmd);
 
+	SetWindowLongPtrA(_out->hWnd, GWLP_USERDATA, reinterpret_cast<long>(_out));
 	return true;
 }
 
-ChStd::Bool WindCreater::Create(WindObject* _out,const std::wstring& _appName, const std::wstring& _windClassName, const int _nShowCmd)
+ChStd::Bool WindCreater::Create(WindObject* _out,const std::wstring& _appName, const std::wstring& _windClassName, const int _nShowCmd)const
 {
 
 	if (ChPtr::NullCheck(_out))return false;
 
 	_out->Init();
 
-	_out->hWnd = CreateWindowW(
+	_out->hWnd = CreateWindowExW(
+		exStyle,
 		_windClassName.c_str(),
 		_appName.c_str(),
 		style,
@@ -229,6 +263,8 @@ ChStd::Bool WindCreater::Create(WindObject* _out,const std::wstring& _appName, c
 	if (ChPtr::NullCheck(_out->hWnd))return false;
 
 	_out->CreateEnd(_nShowCmd);
+
+	SetWindowLongPtrW(_out->hWnd, GWLP_USERDATA, reinterpret_cast<long>(_out));
 
 	return true;
 }
