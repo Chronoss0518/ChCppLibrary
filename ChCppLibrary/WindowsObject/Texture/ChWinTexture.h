@@ -100,20 +100,28 @@ namespace ChWin
 	public://Other Function//
 
 		void Draw(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos = ChMath::Vector2Base<int>(0, 0));
-
-		void Draw(HDC _drawTarget, unsigned long _x, unsigned long _y, unsigned long _w, unsigned long _h, unsigned long _baseX = 0, unsigned long _baseY = 0);
+		
+		void Draw(HDC _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX = 0, const int _baseY = 0);
 
 		void DrawStretch(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize);
 
-		void DrawStretch(HDC _drawTarget, unsigned long _x, unsigned long _y, unsigned long _w, unsigned long _h, unsigned long _baseX, unsigned long _baseY, unsigned long _baseW, unsigned long _baseH);
+		void DrawStretch(HDC _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH);
+
+		void DrawTransparent(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize,const UINT _transparent);
+
+		void DrawTransparent(HDC _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH, const UINT _transparent);
 
 		void Draw(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos = ChMath::Vector2Base<int>(0, 0));
 
-		void Draw(RenderTarget& _drawTarget, unsigned long _x, unsigned long _y, unsigned long _w, unsigned long _h, unsigned long _baseX = 0, unsigned long _baseY = 0);
+		void Draw(RenderTarget& _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX = 0, const int _baseY = 0);
 
 		void DrawStretch(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize);
 
-		void DrawStretch(RenderTarget& _drawTarget, unsigned long _x, unsigned long _y, unsigned long _w, unsigned long _h, unsigned long _baseX, unsigned long _baseY, unsigned long _baseW, unsigned long _baseH);
+		void DrawStretch(RenderTarget& _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH);
+
+		void DrawTransparent(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent);
+
+		void DrawTransparent(RenderTarget& _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH, const UINT _transparent);
 
 		//ChStd::Bool FillTexture(const FillType _type = FillType::Whiteness);
 
@@ -122,10 +130,9 @@ namespace ChWin
 		Strech stretchType = Strech::BlackOnWhite;
 		RasterOpeCode opeCode = RasterOpeCode::SRCCopy;
 		HBITMAP mainTexture = nullptr;
-
 	};
 
-	class RenderTarget :private Texture
+	class RenderTarget :protected Texture
 	{
 	public://ConstructorDestructor//
 
@@ -167,19 +174,27 @@ namespace ChWin
 
 		void Draw(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos = ChMath::Vector2Base<int>(0, 0));
 
-		void Draw(HDC _drawTarget, unsigned long _x, unsigned long _y, unsigned long _w, unsigned long _h, unsigned long _baseX = 0, unsigned long _baseY = 0);
+		void Draw(HDC _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX = 0, const int _baseY = 0);
 
 		void DrawStretch(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize);
 
-		void DrawStretch(HDC _drawTarget, unsigned long _x, unsigned long _y, unsigned long _w, unsigned long _h, unsigned long _baseX, unsigned long _baseY, unsigned long _baseW, unsigned long _baseH);
+		void DrawStretch(HDC _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH);
+
+		void DrawTransparent(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent);
+
+		void DrawTransparent(HDC _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH, const UINT _transparent);
 
 		void Draw(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos = ChMath::Vector2Base<int>(0, 0));
 
-		void Draw(RenderTarget& _drawTarget, unsigned long _x, unsigned long _y, unsigned long _w, unsigned long _h, unsigned long _baseX = 0, unsigned long _baseY = 0);
+		void Draw(RenderTarget& _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX = 0, const int _baseY = 0);
 
 		void DrawStretch(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize);
 
-		void DrawStretch(RenderTarget& _drawTarget, unsigned long _x, unsigned long _y, unsigned long _w, unsigned long _h, unsigned long _baseX, unsigned long _baseY, unsigned long _baseW, unsigned long _baseH);
+		void DrawStretch(RenderTarget& _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH);
+
+		void DrawTransparent(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent);
+
+		void DrawTransparent(RenderTarget& _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH, const UINT _transparent);
 
 	protected://Member Value//
 
