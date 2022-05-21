@@ -13,28 +13,6 @@ using namespace ChWin;
 static WindStyle style;
 
 
-WindObject& WindObject::operator = (const WindObject& _obj)
-{
-	Set(_obj);
-	return *this;
-}
-
-bool WindObject::operator == (const WindObject& _obj)const
-{
-	return this == &_obj;
-}
-
-bool WindObject::operator != (const WindObject& _obj)const
-{
-
-	return this != &_obj;
-}
-
-WindObject::WindObject(const WindObject& _obj)
-{
-	Set(_obj);
-}
-
 void WindObject::Init()
 {
 
@@ -73,14 +51,6 @@ void WindObject::CreateEnd(const int _nCmdShow)
 
 	SetInitFlg(true);
 
-}
-
-void WindObject::Set(const WindObject& _obj)
-{
-	wndProc = _obj.wndProc;
-	hWnd = _obj.hWnd;
-	msg = _obj.msg;
-	SetInitFlg(static_cast<bool>(_obj));
 }
 
 void WindObject::SetWindPos(const unsigned int _x, const unsigned int _y, const unsigned int _flgs)

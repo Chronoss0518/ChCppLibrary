@@ -23,17 +23,7 @@ namespace ChWin
 	//WindowsAPIの内、Windowの管理するクラス//
 	class WindObject :public ChCp::Initializer
 	{
-	public://operator Function//
-		
-		WindObject& operator = (const WindObject& _obj);
-
-		bool operator == (const WindObject& _obj)const;
-		bool operator != (const WindObject& _obj)const;
-
 	public://ConstructorDestructor//
-
-
-		WindObject(const WindObject& _obj);
 
 		WindObject() { Init(); }
 
@@ -48,8 +38,6 @@ namespace ChWin
 		void Release();
 
 	public://SetFunction//
-
-		void Set(const WindObject& _obj);
 
 		//_messageにはWM_やメッセージプロシージャ―が受け取れる方にしてください//
 		inline void SetWindProcedure(const unsigned long _message,const std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>& _proc)
@@ -91,7 +79,7 @@ namespace ChWin
 	public://GetFunction//
 
 		//Windハンドルの取得//
-		inline HWND GethWnd(void) const { return hWnd; }
+		inline HWND GethWnd(void)const { return hWnd; }
 
 		//メッセージの値を返す関数//
 		inline const LPMSG GetReturnMassage(void) const { return const_cast<const LPMSG>(&msg); }
@@ -129,7 +117,7 @@ namespace ChWin
 		ChStd::Bool UpdateA();
 		ChStd::Bool UpdateW();
 
-	public:
+	public://Other Functions//
 
 		//メッセージを送る。戻り値は変更があった場合の数値//
 		inline LPARAM Send(const unsigned int _msg, WPARAM _wParam = 0, LPARAM _lParam = 0)
@@ -147,6 +135,13 @@ namespace ChWin
 
 		//メッセージを送る。戻り値は変更があった場合の数値//
 		LPARAM SendA(const unsigned int _msg, WPARAM _wParam = 0, LPARAM _lParam = 0);
+
+		//描画を行う前に以前の描画情報を全て消す命令と再描画命令を送る//
+		inline void InvalidateWind(const bool _clear = true)
+		{
+			InvalidateRect(hWnd, nullptr, _clear);
+			UpdateWindow(hWnd);
+		}
 
 		//WndProcedureを動的にするために外部にあるWndProcから見えるようにする//
 		friend LRESULT CALLBACK ChWin::WndProcA(

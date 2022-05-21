@@ -136,6 +136,8 @@ namespace ChSystem
 
 		unsigned long GetNowTime()override { return timeGetTime(); }
 
+		ChWin::WindObject& GetWindObject() { return wndObject; }
+
 		///////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
 
@@ -195,6 +197,11 @@ namespace ChSystem
 				, &_subStr[0]
 				, MB_OK);
 
+		}
+
+		inline void InvalidateWind(const bool _clear = true)
+		{
+			wndObject.InvalidateWind(_clear);
 		}
 
 		friend LRESULT CALLBACK ChSystem::WndProc(
