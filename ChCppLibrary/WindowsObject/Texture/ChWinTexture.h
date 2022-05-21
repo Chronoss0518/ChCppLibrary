@@ -13,15 +13,6 @@ namespace ChWin
 	class Brush;
 	class WindDrawer;
 
-	enum class FillType :unsigned long
-	{
-		PatCopy = PATCOPY,
-		PatInvert = PATINVERT,
-		DstInvert = DSTINVERT,
-		Blackness = BLACKNESS,
-		Whiteness = WHITENESS
-	};
-
 	enum class Strech :int
 	{
 		BlackOnWhite = BLACKONWHITE,
@@ -97,7 +88,7 @@ namespace ChWin
 
 		inline RasterOpeCode GetRasterizerOperationCodeType() { return opeCode; }
 
-	public://Other Function//
+	public://Other Functions//
 
 		void Draw(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos = ChMath::Vector2Base<int>(0, 0));
 		
@@ -125,6 +116,14 @@ namespace ChWin
 
 		//ChStd::Bool FillTexture(const FillType _type = FillType::Whiteness);
 
+	protected://Other Function//
+
+		void DrawMain(HDC _textureHDC,HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos);
+
+		void DrawStretchMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize);
+
+		void DrawTransparentMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent);
+
 	protected://Member Value//
 
 		Strech stretchType = Strech::BlackOnWhite;
@@ -136,7 +135,7 @@ namespace ChWin
 	{
 	public://ConstructorDestructor//
 
-		inline ~RenderTarget()override { Texture::Release(); }
+		inline ~RenderTarget()override { Release(); }
 
 	public://Init And Release//
 
@@ -159,6 +158,19 @@ namespace ChWin
 		inline void SetStretchType(const Strech _stretch) { Texture::SetStretchType(_stretch); }
 
 		inline void SetRasterizerOperationCodeType(const RasterizerOperationCodeType _opeCode) { Texture::SetRasterizerOperationCodeType(_opeCode); }
+
+		inline void SetBackGroundColor(HBRUSH _brush)
+		{
+#ifdef UNICODE
+			SetBackGroundColorW(_brush);
+#else
+			SetBackGroundColorA(_brush);
+#endif
+		}
+
+		void SetBackGroundColorA(HBRUSH _brush);
+
+		void SetBackGroundColorW(HBRUSH _brush);
 
 	public://Get Functions//
 
@@ -195,6 +207,10 @@ namespace ChWin
 		void DrawTransparent(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent);
 
 		void DrawTransparent(RenderTarget& _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH, const UINT _transparent);
+
+		void FillRT(HBRUSH _brush,const RECT& _range);
+
+		void FillRT(HBRUSH _brush,const long _x,const long _y,const long _w,const long _h);
 
 	protected://Member Value//
 

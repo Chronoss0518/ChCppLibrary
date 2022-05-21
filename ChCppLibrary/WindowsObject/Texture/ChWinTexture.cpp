@@ -105,18 +105,12 @@ void Texture::Draw(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const 
 
 	if (ChPtr::NullCheck(_drawTarget))return;
 
-	auto pos = _pos;
-	pos.val.Abs();
-	auto size = _size;
-	size.val.Abs();
-	auto bpos = _basePos;
-	bpos.val.Abs();
 
 	HDC tmp = CreateCompatibleDC(_drawTarget);
 	
 	SetTextureToHDC(tmp);
 
-	BitBlt(_drawTarget, pos.x, pos.y, size.w, size.h, tmp, bpos.x, bpos.y, ChStd::EnumCast(opeCode));
+	DrawMain(tmp, _drawTarget, _pos, _size, _basePos);
 
 	DeleteDC(tmp);
 
@@ -133,26 +127,13 @@ void Texture::DrawStretch(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos,
 
 	if (ChPtr::NullCheck(_drawTarget))return;
 
-	auto pos = _pos;
-	pos.val.Abs();
-	auto size = _size;
-	size.val.Abs();
-	auto bpos = _basePos;
-	auto bsize = _baseSize;
-
 	HDC tmp = CreateCompatibleDC(_drawTarget);
-
-	int tmpStretch = GetStretchBltMode(_drawTarget);
-
-	SetStretchBltMode(_drawTarget, ChStd::EnumCast(stretchType));
 
 	SetTextureToHDC(tmp);
 
-	StretchBlt(_drawTarget, pos.x, pos.y, size.w, size.h, tmp, bpos.x, bpos.y, bsize.w, bsize.h, ChStd::EnumCast(opeCode));
+	DrawStretchMain(tmp, _drawTarget, _pos, _size, _basePos, _baseSize);
 
 	DeleteDC(tmp);
-
-	SetStretchBltMode(_drawTarget, tmpStretch);
 
 }
 
@@ -167,28 +148,13 @@ void Texture::DrawTransparent(HDC _drawTarget, const ChMath::Vector2Base<int>& _
 
 	if (ChPtr::NullCheck(_drawTarget))return;
 
-	auto pos = _pos;
-	pos.val.Abs();
-	auto size = _size;
-	size.val.Abs();
-	auto bpos = _basePos;
-	bpos.val.Abs();
-	auto bsize = _baseSize;
-	bsize.val.Abs();
-
 	HDC tmp = CreateCompatibleDC(_drawTarget);
-
-	int tmpStretch = GetStretchBltMode(_drawTarget);
-
-	SetStretchBltMode(_drawTarget, ChStd::EnumCast(stretchType));
 
 	SetTextureToHDC(tmp);
 
-	TransparentBlt(_drawTarget, pos.x, pos.y, size.w, size.h, tmp, bpos.x, bpos.y, bsize.w, bsize.h, _transparent);
+	DrawTransparentMain(tmp, _drawTarget, _pos, _size, _basePos, _baseSize, _transparent);
 
 	DeleteDC(tmp);
-
-	SetStretchBltMode(_drawTarget, tmpStretch);
 }
 
 void Texture::DrawTransparent(HDC _drawTarget, const int  _x, const int  _y, const int  _w, const int  _h, const int  _baseX, const int  _baseY, const int  _baseW, const int  _baseH, const UINT _transparent)
@@ -203,18 +169,11 @@ void Texture::Draw(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _p
 
 	if (!_drawTarget.IsInit())return;
 
-	auto pos = _pos;
-	pos.val.Abs();
-	auto size = _size;
-	size.val.Abs();
-	auto bpos = _basePos;
-	bpos.val.Abs();
-
 	HDC tmp = CreateCompatibleDC(_drawTarget.GetRenderTarget());
-
+	
 	SetTextureToHDC(tmp);
 
-	BitBlt(_drawTarget.GetRenderTarget(), pos.x, pos.y, size.w, size.h, tmp, bpos.x, bpos.y, ChStd::EnumCast(opeCode));
+	DrawMain(tmp, _drawTarget.GetRenderTarget(), _pos, _size, _basePos);
 
 	DeleteDC(tmp);
 
@@ -232,26 +191,13 @@ void Texture::DrawStretch(RenderTarget& _drawTarget, const ChMath::Vector2Base<i
 
 	if (!_drawTarget.IsInit())return;
 
-	auto pos = _pos;
-	pos.val.Abs();
-	auto size = _size;
-	size.val.Abs();
-	auto bpos = _basePos;
-	auto bsize = _baseSize;
-
 	HDC tmp = CreateCompatibleDC(_drawTarget.GetRenderTarget());
-
-	int tmpStretch = GetStretchBltMode(_drawTarget.GetRenderTarget());
-
-	SetStretchBltMode(_drawTarget.GetRenderTarget(), ChStd::EnumCast(stretchType));
-
+	
 	SetTextureToHDC(tmp);
 
-	StretchBlt(_drawTarget.GetRenderTarget(), pos.x, pos.y, size.w, size.h, tmp, bpos.x, bpos.y, bsize.w, bsize.h, ChStd::EnumCast(opeCode));
+	DrawStretchMain(tmp, _drawTarget.GetRenderTarget(), _pos, _size, _basePos, _baseSize);
 
 	DeleteDC(tmp);
-
-	SetStretchBltMode(_drawTarget.GetRenderTarget(), tmpStretch);
 
 }
 
@@ -264,8 +210,61 @@ void Texture::DrawTransparent(RenderTarget& _drawTarget, const ChMath::Vector2Ba
 {
 
 	if (!IsInit())return;
-
 	if (!_drawTarget.IsInit())return;
+
+	HDC tmp = CreateCompatibleDC(_drawTarget.GetRenderTarget());
+
+	SetTextureToHDC(tmp);
+	
+	DrawTransparentMain(tmp, _drawTarget.GetRenderTarget(), _pos, _size, _basePos, _baseSize, _transparent);
+
+	DeleteDC(tmp);
+
+}
+
+void Texture::DrawTransparent(RenderTarget& _drawTarget, const int  _x, const int  _y, const int  _w, const int  _h, const int  _baseX, const int  _baseY, const int  _baseW, const int  _baseH, const UINT _transparent)
+{
+	DrawTransparent(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _transparent);
+}
+
+void Texture::DrawMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos)
+{
+
+	auto pos = _pos;
+	pos.val.Abs();
+	auto size = _size;
+	size.val.Abs();
+	auto bpos = _basePos;
+	bpos.val.Abs();
+
+	HDC tmp = CreateCompatibleDC(_drawTarget);
+
+	BitBlt(_drawTarget, pos.x, pos.y, size.w, size.h, _textureHDC, bpos.x, bpos.y, ChStd::EnumCast(opeCode));
+
+}
+
+void Texture::DrawStretchMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize)
+{
+
+	auto pos = _pos;
+	pos.val.Abs();
+	auto size = _size;
+	size.val.Abs();
+	auto bpos = _basePos;
+	auto bsize = _baseSize;
+
+	int tmpStretch = GetStretchBltMode(_drawTarget);
+
+	SetStretchBltMode(_drawTarget, ChStd::EnumCast(stretchType));
+
+	StretchBlt(_drawTarget, pos.x, pos.y, size.w, size.h, _textureHDC, bpos.x, bpos.y, bsize.w, bsize.h, ChStd::EnumCast(opeCode));
+
+	SetStretchBltMode(_drawTarget, tmpStretch);
+
+}
+
+void Texture::DrawTransparentMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent)
+{
 
 	auto pos = _pos;
 	pos.val.Abs();
@@ -276,25 +275,14 @@ void Texture::DrawTransparent(RenderTarget& _drawTarget, const ChMath::Vector2Ba
 	auto bsize = _baseSize;
 	bsize.val.Abs();
 
-	HDC tmp = CreateCompatibleDC(_drawTarget.GetRenderTarget());
+	int tmpStretch = GetStretchBltMode(_drawTarget);
 
-	int tmpStretch = GetStretchBltMode(_drawTarget.GetRenderTarget());
+	SetStretchBltMode(_drawTarget, ChStd::EnumCast(stretchType));
 
-	SetStretchBltMode(_drawTarget.GetRenderTarget(), ChStd::EnumCast(stretchType));
+	TransparentBlt(_drawTarget, pos.x, pos.y, size.w, size.h, _textureHDC, bpos.x, bpos.y, bsize.w, bsize.h, _transparent);
 
-	SetTextureToHDC(tmp);
+	SetStretchBltMode(_drawTarget, tmpStretch);
 
-	TransparentBlt(_drawTarget.GetRenderTarget(), pos.x, pos.y, size.w, size.h, tmp, bpos.x, bpos.y, bsize.w, bsize.h, _transparent);
-
-	DeleteDC(tmp);
-
-	SetStretchBltMode(_drawTarget.GetRenderTarget(), tmpStretch);
-
-}
-
-void Texture::DrawTransparent(RenderTarget& _drawTarget, const int  _x, const int  _y, const int  _w, const int  _h, const int  _baseX, const int  _baseY, const int  _baseW, const int  _baseH, const UINT _transparent)
-{
-	DrawTransparent(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _transparent);
 }
 
 //RenderTarget Method//
@@ -312,7 +300,7 @@ void RenderTarget::Release()
 
 ChStd::Bool RenderTarget::CreateRenderTarget(HWND _hWnd, const int _width, const int _height)
 {
-
+	if (ChPtr::NullCheck(_hWnd))return false;
 	Texture::Release();
 
 	int w = _width >= 0 ? _width : _width * -1;
@@ -331,8 +319,18 @@ ChStd::Bool RenderTarget::CreateRenderTarget(HWND _hWnd, const int _width, const
 	mainTexture = CreateCompatibleBitmap(dc, w, h);
 
 	ReleaseDC(_hWnd, tmp);
-	if (ChPtr::NullCheck(mainTexture))return false;
 
+	if (ChPtr::NullCheck(mainTexture))
+	{
+		ReleaseDC(_hWnd, tmp);
+		DeleteDC(dc);
+		dc = nullptr;
+		return false;
+	}
+
+	SelectObject(dc, GetStockObject(NULL_PEN));
+
+	SetTextureToHDC(dc);
 	SetInitFlg(true);
 
 	return true;
@@ -340,28 +338,81 @@ ChStd::Bool RenderTarget::CreateRenderTarget(HWND _hWnd, const int _width, const
 
 ChStd::Bool RenderTarget::CreateRenderTarget(HDC _dc, const int _width, const int _height)
 {
+	if (ChPtr::NullCheck(_dc))return false;
 	Texture::Release();
 
 	int w = _width >= 0 ? _width : _width * -1;
 	int h = _height >= 0 ? _height : _height * -1;
 
+	dc = CreateCompatibleDC(_dc);
 
-	dc = _dc;
+	if (ChPtr::NullCheck(dc))
+	{
+		return false;
+	}
+
 	mainTexture = CreateCompatibleBitmap(dc, w, h);
 
-	if (ChPtr::NullCheck(mainTexture))return false;
+	if (ChPtr::NullCheck(mainTexture)) 
+	{
+		DeleteDC(dc);
+		dc = nullptr;
+		return false;
+	}
 
+	SelectObject(dc, GetStockObject(NULL_PEN));
+	SetTextureToHDC(dc);
 	SetInitFlg(true);
 
 	return true;
 
 }
 
+void RenderTarget::SetBackGroundColorA(HBRUSH _brush)
+{
+	if (ChPtr::NullCheck(_brush))return;
+	if (!IsInit())return;
+
+	BITMAP tmp;
+	GetObjectA(
+		mainTexture,
+		sizeof(BITMAP),
+		&tmp
+	);
+
+	SelectObject(dc, _brush);
+
+	PatBlt(dc, 0, 0, tmp.bmWidth, tmp.bmHeight, ChStd::EnumCast(RasterOpeCode::SRCCopy));
+
+	SelectObject(dc, GetStockObject(NULL_BRUSH));
+	SetTextureToHDC(dc);
+}
+
+void RenderTarget::SetBackGroundColorW(HBRUSH _brush)
+{
+	if (ChPtr::NullCheck(_brush))return;
+	if (!IsInit())return;
+	BITMAP tmp;
+	GetObjectW(
+		mainTexture,
+		sizeof(BITMAP),
+		&tmp
+	);
+
+	SelectObject(dc, _brush);
+
+	PatBlt(dc, 0, 0, tmp.bmWidth, tmp.bmHeight, ChStd::EnumCast(RasterOpeCode::SRCCopy));
+
+	SelectObject(dc, GetStockObject(NULL_BRUSH));
+	SetTextureToHDC(dc);
+}
+
 void RenderTarget::Draw(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos)
 {
 	if (!IsInit())return;
 	if (_drawTarget == dc)return;
-	Texture::Draw(_drawTarget, _pos, _size, _basePos);
+	DrawMain(dc, _drawTarget, _pos, _size, _basePos);
+
 }
 
 void RenderTarget::Draw(HDC _drawTarget, const int  _x, const int  _y, const int  _w, const int  _h, const int  _baseX, const int  _baseY)
@@ -369,7 +420,7 @@ void RenderTarget::Draw(HDC _drawTarget, const int  _x, const int  _y, const int
 
 	if (!IsInit())return;
 	if (_drawTarget == dc)return;
-	Texture::Draw(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY));
+	Draw(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY));
 }
 
 void RenderTarget::DrawStretch(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize)
@@ -377,68 +428,93 @@ void RenderTarget::DrawStretch(HDC _drawTarget, const ChMath::Vector2Base<int>& 
 
 	if (!IsInit())return;
 	if (_drawTarget == dc)return;
-	Texture::DrawStretch(_drawTarget, _pos, _size, _basePos,_baseSize);
+
+	DrawStretchMain(dc, _drawTarget, _pos, _size, _basePos, _baseSize);
 }
 
 void RenderTarget::DrawStretch(HDC _drawTarget, const int  _x, const int  _y, const int  _w, const int  _h, const int  _baseX, const int  _baseY, const int  _baseW, const int  _baseH)
 {
 	if (!IsInit())return;
 	if (_drawTarget == dc)return;
-	Texture::DrawStretch(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH));
+
+	DrawStretch(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH));
 }
 
 void RenderTarget::DrawTransparent(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent)
 {
 	if (!IsInit())return;
 	if (_drawTarget == dc)return;
-	Texture::DrawTransparent(_drawTarget, _pos, _size, _basePos, _baseSize,_transparent);
+	DrawTransparentMain(dc, _drawTarget, _pos, _size, _basePos, _baseSize, _transparent);
+
 }
 
 void RenderTarget::DrawTransparent(HDC _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH, const UINT _transparent)
 {
 	if (!IsInit())return;
 	if (_drawTarget == dc)return;
-	Texture::DrawTransparent(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _transparent);
+	DrawTransparent(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _transparent);
 }
 
 void RenderTarget::Draw(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos)
 {
 	if (!IsInit())return;
 	if (&_drawTarget == this)return;
-	Texture::Draw(_drawTarget, _pos, _size, _basePos);
+	DrawMain(dc, _drawTarget.GetRenderTarget(), _pos, _size, _basePos);
+
 }
 
 void RenderTarget::Draw(RenderTarget& _drawTarget, const int  _x, const int  _y, const int  _w, const int  _h, const int  _baseX, const int  _baseY)
 {
 	if (!IsInit())return;
 	if (&_drawTarget == this)return;
-	Texture::Draw(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY));
+	Draw(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY));
 }
 
 void RenderTarget::DrawStretch(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize)
 {
 	if (!IsInit())return;
 	if (&_drawTarget == this)return;
-	Texture::DrawStretch(_drawTarget, _pos, _size, _basePos, _baseSize);
+	DrawStretchMain(dc, _drawTarget.GetRenderTarget(), _pos, _size, _basePos, _baseSize);
 }
 
 void RenderTarget::DrawStretch(RenderTarget& _drawTarget, const int  _x, const int  _y, const int  _w, const int  _h, const int  _baseX, const int  _baseY, const int  _baseW, const int  _baseH)
 {
 	if (!IsInit())return;
 	if (&_drawTarget == this)return;
-	Texture::DrawStretch(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH));
+	DrawStretch(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH));
 }
 
 void RenderTarget::DrawTransparent(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent)
 {
 	if (!IsInit())return;
 	if (&_drawTarget == this)return;
-	Texture::DrawTransparent(_drawTarget, _pos, _size, _basePos, _baseSize, _transparent);
+	DrawTransparentMain(dc, _drawTarget.GetRenderTarget(), _pos, _size, _basePos, _baseSize, _transparent);
 }
 
 void RenderTarget::DrawTransparent(RenderTarget& _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH, const UINT _transparent)
 {
 	if (!IsInit())return;
 	if (&_drawTarget == this)return;
-	Texture::DrawTransparent(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _transparent);
+	DrawTransparent(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _transparent);
+}
+
+void RenderTarget::FillRT(HBRUSH _brush, const RECT& _range)
+{
+	if (!IsInit())return;
+	if (ChPtr::NullCheck(_brush))return;
+	FillRect(dc, &_range, _brush);
+}
+
+void RenderTarget::FillRT(HBRUSH _brush, const long _x, const long _y, const long _w, const long _h)
+{
+	if (!IsInit())return;
+	if (ChPtr::NullCheck(_brush))return;
+	RECT tmp;
+	tmp.top = _y;
+	tmp.bottom = _y + _h;
+
+	tmp.left = _x;
+	tmp.right = _x + _w;
+
+	FillRect(dc, &tmp, _brush);
 }
