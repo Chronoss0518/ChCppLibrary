@@ -159,19 +159,6 @@ namespace ChWin
 
 		inline void SetRasterizerOperationCodeType(const RasterizerOperationCodeType _opeCode) { Texture::SetRasterizerOperationCodeType(_opeCode); }
 
-		inline void SetBackGroundColor(HBRUSH _brush)
-		{
-#ifdef UNICODE
-			SetBackGroundColorW(_brush);
-#else
-			SetBackGroundColorA(_brush);
-#endif
-		}
-
-		void SetBackGroundColorA(HBRUSH _brush);
-
-		void SetBackGroundColorW(HBRUSH _brush);
-
 	public://Get Functions//
 
 		inline RasterOpeCode GetRasterizerOperationCodeType() { return Texture::GetRasterizerOperationCodeType(); }
@@ -207,6 +194,19 @@ namespace ChWin
 		void DrawTransparent(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent);
 
 		void DrawTransparent(RenderTarget& _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH, const UINT _transparent);
+
+		inline void DrawBrush(HBRUSH _brush)
+		{
+#ifdef UNICODE
+			DrawBrushW(_brush);
+#else
+			DrawBrushA(_brush);
+#endif
+		}
+
+		void DrawBrushW(HBRUSH _brush);
+
+		void DrawBrushA(HBRUSH _brush);
 
 		void FillRT(HBRUSH _brush,const RECT& _range);
 
