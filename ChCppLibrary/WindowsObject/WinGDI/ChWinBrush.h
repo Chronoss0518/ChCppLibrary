@@ -46,8 +46,11 @@ namespace ChWin
 
 		HBRUSH SelectBrush(HDC _dc);
 
+		void FillRect(HDC _dc, const RECT& _rec);
+
 	private:
 
+		ChStd::Bool createFlg = false;;
 		HBRUSH brush = nullptr;
 	};
 }

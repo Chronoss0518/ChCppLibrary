@@ -208,9 +208,26 @@ namespace ChWin
 
 		void DrawBrushA(HBRUSH _brush);
 
+		inline void DrawBrush(ChWin::Brush& _brush)
+		{
+#ifdef UNICODE
+			DrawBrushW(_brush);
+#else
+			DrawBrushA(_brush);
+#endif
+		}
+
+		void DrawBrushW(ChWin::Brush& _brush);
+
+		void DrawBrushA(ChWin::Brush& _brush);
+
 		void FillRT(HBRUSH _brush,const RECT& _range);
 
 		void FillRT(HBRUSH _brush,const long _x,const long _y,const long _w,const long _h);
+
+		void FillRT(ChWin::Brush& _brush, const RECT& _range);
+
+		void FillRT(ChWin::Brush& _brush, const long _x, const long _y, const long _w, const long _h);
 
 	protected://Member Value//
 

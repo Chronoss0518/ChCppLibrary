@@ -519,6 +519,64 @@ void RenderTarget::DrawBrushW(HBRUSH _brush)
 	//SetTextureToHDC(dc);
 }
 
+void RenderTarget::DrawBrushA(ChWin::Brush& _brush)
+{
+	if (!IsInit())return;
+
+	BITMAP tmp;
+	GetObjectA(
+		mainTexture,
+		sizeof(BITMAP),
+		&tmp
+	);
+
+	RECT rec;
+
+	ChStd::MZero(&rec);
+
+	rec.bottom = tmp.bmHeight;
+	rec.right = tmp.bmWidth;
+
+	_brush.FillRect(dc, rec);
+
+	//SelectObject(dc, _brush);
+
+	//PatBlt(dc, 0, 0, tmp.bmWidth, tmp.bmHeight, ChStd::EnumCast(RasterOpeCode::SRCCopy));
+
+	//SelectObject(dc, GetStockObject(NULL_BRUSH));
+
+	//SetTextureToHDC(dc);
+}
+
+void RenderTarget::DrawBrushW(ChWin::Brush& _brush)
+{
+	if (!IsInit())return;
+	BITMAP tmp;
+	GetObjectW(
+		mainTexture,
+		sizeof(BITMAP),
+		&tmp
+	);
+
+
+	RECT rec;
+
+	ChStd::MZero(&rec);
+
+	rec.bottom = tmp.bmHeight;
+	rec.right = tmp.bmWidth;
+
+	_brush.FillRect(dc, rec);
+
+	//SelectObject(dc, _brush);
+
+	//PatBlt(dc, 0, 0, tmp.bmWidth, tmp.bmHeight, ChStd::EnumCast(RasterOpeCode::SRCCopy));
+
+	//SelectObject(dc, GetStockObject(NULL_BRUSH));
+
+	//SetTextureToHDC(dc);
+}
+
 void RenderTarget::FillRT(HBRUSH _brush, const RECT& _range)
 {
 	if (!IsInit())return;
@@ -538,4 +596,24 @@ void RenderTarget::FillRT(HBRUSH _brush, const long _x, const long _y, const lon
 	tmp.right = _x + _w;
 
 	FillRect(dc, &tmp, _brush);
+}
+
+void RenderTarget::FillRT(ChWin::Brush& _brush, const RECT& _range)
+{
+	if (!IsInit())return;
+	_brush.FillRect(dc, _range);
+}
+
+void RenderTarget::FillRT(ChWin::Brush& _brush, const long _x, const long _y, const long _w, const long _h)
+{
+	if (!IsInit())return;
+
+	RECT tmp;
+	tmp.top = _y;
+	tmp.bottom = _y + _h;
+
+	tmp.left = _x;
+	tmp.right = _x + _w;
+
+	_brush.FillRect(dc, tmp);
 }
