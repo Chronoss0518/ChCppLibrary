@@ -19,20 +19,14 @@ namespace ChCpp
 			ChVec3(1.0f,-1.0f,-1.0f)
 		};
 
-		unsigned char faces[12][3] =
+		const unsigned char faces[6][4] =
 		{
-			{0,1,2},
-			{0,2,3},
-			{0,4,5},
-			{0,5,1},
-			{1,5,6},
-			{1,6,2},
-			{0,4,7},
-			{0,7,3},
-			{2,6,7},
-			{2,7,3},
-			{4,7,6},
-			{4,6,5}
+			{0,1,2,3},
+			{0,4,5,1},
+			{1,5,6,2},
+			{0,4,7,3},
+			{2,6,7,3},
+			{4,7,6,5},
 		};
 	};
 
@@ -56,7 +50,7 @@ namespace ChCpp
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
 		ChStd::Bool IsHit(
-			HitTestMesh* _target)override;
+			HitTestPolygon* _target)override;
 
 		//対象のオブジェクトがオブジェクト内から衝突しているかの判定//
 		ChStd::Bool IsInnerHit(
@@ -69,7 +63,7 @@ namespace ChCpp
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		
-		Cube CreateCube();
+		Cube CreateCube(const ChLMat& _mat);
 
 
 

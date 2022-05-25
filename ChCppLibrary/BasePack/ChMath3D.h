@@ -136,29 +136,50 @@ struct ChVector4 : public ChMath::Vector4Base<float>
 	//GetFunction//
 
 	static ChVector4 GetCross(
-		const ChVector4& _vec1, const ChVector4& _vec2);
+		const ChVector4& _vec1,
+		const ChVector4& _vec2,
+		const unsigned long _digit = 6);
 
 	static float GetCos(
-		const ChVector4& _vec1, const ChVector4& _vec2);
+		const ChVector4& _vec1, 
+		const ChVector4& _vec2,
+		const unsigned long _digit = 6);
 
 	static float GetRadian(
-		const ChVector4& _vec1, const ChVector4& _vec2);
+		const ChVector4& _vec1,
+		const ChVector4& _vec2,
+		const unsigned long _digit = 6);
 
 	static float GetDot(
-		const ChVector4& _vec1, const ChVector4& _vec2);
+		const ChVector4& _vec1, 
+		const ChVector4& _vec2,
+		const unsigned long _digit = 6);
 
 	//ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
 	static ChVector4 GetCorrection(
-		const ChVector4& _start, const ChVector4& _end, const float _Now);
+		const ChVector4& _start,
+		const ChVector4& _end, 
+		const float _Now);
 
 	static float GetLen(
-		const ChVector4& _vec1, const ChVector4& _vec2);
+		const ChVector4& _vec1, 
+		const ChVector4& _vec2,
+		const unsigned long _digit = 6);
+
+	static float GetElementsLen(
+		const ChVector4& _vec1,
+		const ChVector4& _vec2);
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	inline float Len() const
+	inline float Len(const unsigned long _digit = 6) const
 	{
-		return GetLen(*this, ChVector4());
+		return GetLen(*this, ChVector4(),_digit);
+	}
+
+	inline float ElementsLen()const
+	{
+		return GetElementsLen(*this, ChVector4());
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
@@ -177,18 +198,25 @@ struct ChVector4 : public ChMath::Vector4Base<float>
 
 	//ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
 	inline void Correction(
-		const ChVector4& _start, const ChVector4& _end, const float _Now)
+		const ChVector4& _start, 
+		const ChVector4& _end,
+		const float _Now)
 	{
 		*this = GetCorrection(_start, _end, _Now);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	void Normalize();
+	ChStd::Bool Normalize(const unsigned long _digit = 6);
+
+	void ElementsNormalize();
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	void Cross(const ChVector4& _vec1, const ChVector4& _vec2);
+	void Cross(
+		const ChVector4& _vec1,
+		const ChVector4& _vec2,
+		const unsigned long _digit = 6);
 
 };
 
@@ -293,29 +321,50 @@ struct ChVector3 : public ChMath::Vector3Base<float>
 	//GetFunction//
 
 	static ChVector3 GetCross(
-		const ChVector3& _vec1, const ChVector3& _vec2);
+		const ChVector3& _vec1,
+		const ChVector3& _vec2,
+		const unsigned long _digit = 6);
 
 	static float GetCos(
-		const ChVector3& _vec1, const ChVector3& _vec2);
+		const ChVector3& _vec1,
+		const ChVector3& _vec2,
+		const unsigned long _digit = 6);
 
 	static float GetRadian(
-		const ChVector3& _vec1, const ChVector3& _vec2);
+		const ChVector3& _vec1,
+		const ChVector3& _vec2,
+		const unsigned long _digit = 6);
 
 	static float GetDot(
-		const ChVector3& _vec1, const ChVector3& _vec2);
+		const ChVector3& _vec1,
+		const ChVector3& _vec2,
+		const unsigned long _digit = 6);
 
 	//ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
 	static ChVector3 GetCorrection(
-		const ChVector3& _start, const ChVector3& _end, const float _Now);
+		const ChVector3& _start, 
+		const ChVector3& _end,
+		const float _Now);
 
 	static float GetLen(
-		const ChVector3& _vec1, const ChVector3& _vec2);
+		const ChVector3& _vec1,
+		const ChVector3& _vec2,
+		const unsigned long _digit = 6);
+
+	static float GetElementsLen(
+		const ChVector3& _vec1,
+		const ChVector3& _vec2);
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	inline float Len() const
+	inline float Len(const unsigned long _digit = 6) const
 	{
-		return GetLen(*this, ChVector3());
+		return GetLen(*this, ChVector3(),_digit);
+	}
+
+	inline float ElementsLen()const
+	{
+		return GetElementsLen(*this, ChVector3());
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
@@ -332,9 +381,11 @@ struct ChVector3 : public ChMath::Vector3Base<float>
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	inline float Dot(const ChVector3& _vec)
+	inline float Dot(
+		const ChVector3& _vec,
+		const unsigned long _digit = 6)
 	{
-		return GetDot(*this, _vec);
+		return GetDot(*this, _vec,_digit);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
@@ -348,11 +399,17 @@ struct ChVector3 : public ChMath::Vector3Base<float>
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	void Normalize();
+	ChStd::Bool Normalize(
+		const unsigned long _digit = 6);
+
+	void ElementsNormalize();
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	void Cross(const ChVector3& _vec1, const ChVector3& _vec2);
+	void Cross(
+		const ChVector3& _vec1,
+		const ChVector3& _vec2,
+		const unsigned long _digit = 6);
 
 };
 
@@ -439,29 +496,50 @@ struct ChVector2 : public ChMath::Vector2Base<float>
 	//GetFunction//
 
 	static ChVector2 GetCross(
-		const ChVector2& _vec1, const ChVector2& _vec2);
+		const ChVector2& _vec1,
+		const ChVector2& _vec2,
+		const unsigned long _digit = 6);
 
 	static float GetCos(
-		const ChVector2& _vec1, const ChVector2& _vec2);
+		const ChVector2& _vec1, 
+		const ChVector2& _vec2,
+		const unsigned long _digit = 6);
 
 	static float GetRadian(
-		const ChVector2& _vec1, const ChVector2& _vec2);
+		const ChVector2& _vec1,
+		const ChVector2& _vec2,
+		const unsigned long _digit = 6);
 
 	static float GetDot(
-		const ChVector2& _vec1, const ChVector2& _vec2);
+		const ChVector2& _vec1, 
+		const ChVector2& _vec2,
+		const unsigned long _digit = 6);
 
 	//ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
 	static ChVector2 GetCorrection(
-		const ChVector2& _start, const ChVector2& _end, const float _Now);
+		const ChVector2& _start, 
+		const ChVector2& _end, 
+		const float _Now);
 
 	static float GetLen(
-		const ChVector2& _vec1, const ChVector2& _vec2);
+		const ChVector2& _vec1, 
+		const ChVector2& _vec2,
+		const unsigned long _digit = 6);
+
+	static float GetElementsLen(
+		const ChVector2& _vec1,
+		const ChVector2& _vec2);
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	inline float Len() const
+	inline float Len(const unsigned long _digit = 6) const
 	{
-		return GetLen(*this, ChVector2());
+		return GetLen(*this, ChVector2(),_digit);
+	}
+
+	inline float ElementsLen() const
+	{
+		return GetElementsLen(*this, ChVector2());
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
@@ -487,11 +565,16 @@ struct ChVector2 : public ChMath::Vector2Base<float>
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	void Normalize();
+	ChStd::Bool Normalize(const unsigned long _digit = 6);
+
+	void ElementsNormalize();
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	void Cross(const ChVector2& _vec1, const ChVector2& _vec2);
+	void Cross(
+		const ChVector2& _vec1, 
+		const ChVector2& _vec2,
+		const unsigned long _digit = 6);
 
 };
 
@@ -684,9 +767,15 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 
 	void SetPosition(const float _x, const float _y, const float _z);
 
-	void SetRotation(const ChVec3& _vec);
+	void SetRotation(
+		const ChVec3& _vec,
+		const unsigned long _digit = 6);
 
-	void SetRotation(const float _x, const float _y, const float _z);
+	void SetRotation(
+		const float _x, 
+		const float _y, 
+		const float _z,
+		const unsigned long _digit = 6);
 
 	void SetRotationXAxis(const float _x);
 
@@ -694,24 +783,30 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 
 	void SetRotationZAxis(const float _z);
 
-	void SetScalling(const ChVec3& _vec);
+	void SetScalling(
+		const ChVec3& _vec,
+		const unsigned long _digit = 6);
 
-	void SetScalling(const float _x, const float _y, const float _z);
+	void SetScalling(
+		const float _x, 
+		const float _y,
+		const float _z,
+		const unsigned long _digit = 6);
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//GetFunction//
 
 	ChVec3 GetPosition()const;
 
-	ChVec3 GetRotation()const;
+	ChVec3 GetRotation(const unsigned long _digit = 6)const;
 
-	ChVec3 GetScalling()const;
+	ChVec3 GetScalling(const unsigned long _digit = 6)const;
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	ChVec4 Transform(const ChVec4 _Base)const;
+	ChVec4 Transform(const ChVec4& _Base)const;
 
-	ChVec4 TransformCoord(const ChVec4 _Base)const;
+	ChVec4 TransformCoord(const ChVec4& _Base)const;
 
 	///////////////////////////////////////////////////////////////////////////////////
 
@@ -796,9 +891,15 @@ struct ChRMatrix : public ChMath::BaseMatrix4x4<float>
 
 	void SetPosition(const float _x, const float _y, const float _z);
 
-	void SetRotation(const ChVec3& _vec);
+	void SetRotation(
+		const ChVec3& _vec,
+		const unsigned long _digit = 6);
 
-	void SetRotation(const float _x, const float _y, const float _z);
+	void SetRotation(
+		const float _x, 
+		const float _y, 
+		const float _z,
+		const unsigned long _digit = 6);
 
 	void SetRotationXAxis(const float _x);
 
@@ -806,18 +907,24 @@ struct ChRMatrix : public ChMath::BaseMatrix4x4<float>
 
 	void SetRotationZAxis(const float _z);
 
-	void SetScalling(const ChVec3& _vec);
+	void SetScalling(
+		const ChVec3& _vec,
+		const unsigned long _digit = 6);
 
-	void SetScalling(const float _x, const float _y, const float _z);
+	void SetScalling(
+		const float _x,
+		const float _y, 
+		const float _z,
+		const unsigned long _digit = 6);
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//GetFunction//
 
 	ChVec3 GetPosition()const;
 
-	ChVec3 GetRotation()const;
+	ChVec3 GetRotation(const unsigned long _digit = 6)const;
 
-	ChVec3 GetScalling()const;
+	ChVec3 GetScalling(const unsigned long _digit = 6)const;
 
 	///////////////////////////////////////////////////////////////////////////////////
 
@@ -891,18 +998,6 @@ using ChUIMat = ChUIMatrix;
 
 namespace ChMath
 {
-
-	static inline std::string ConvertNum10to64(unsigned long _num)
-	{
-		return "";
-	}
-
-	float Round(const float& _val, const unsigned int _digit);
-	double Round(const double& _val, const unsigned int _digit);
-
-
-	//â~é¸ó¶//
-	static const float Pi = 3.1415f;
 
 	class Degree;
 	class Radian;
@@ -1032,16 +1127,21 @@ namespace ChMath
 
 	//3í∏ì_ÇÊÇËñ@ê¸ÇçÏê¨Ç∑ÇÈ//
 	//ñ@ê¸ÇÕéOí∏ì_ÇÃäOêœ(åç∑Ç∑ÇÈÉxÉNÉgÉã)ÇéZèoÇµÇƒçÏê¨Ç≥ÇÍÇÈ//
-	ChVector3 GetFaceNormal(const TriVertex& _PlEq);
+	ChVector3 GetFaceNormal(
+		const TriVertex& _PlEq,
+		const unsigned long _digit = 6);
 
 	ChVector3 GetFaceNormal(
-		const ChVec3& _Pos1, const ChVec3& _Pos2, const ChVec3& _Pos3);
+		const ChVec3& _Pos1, 
+		const ChVec3& _Pos2,
+		const ChVec3& _Pos3,
+		const unsigned long _digit = 6);
 
 	//RadianäpÇ©ÇÁDegreeäpÇ÷//
-	static inline float ToDegree(const float _Radian) { return (_Radian * 180.0f / Pi); }
+	static inline float ToDegree(const float _Radian) { return (_Radian * 180.0f / PI); }
 
 	//DegreeäpÇ©ÇÁRadianäpÇ÷//
-	static inline float ToRadian(const float _degree) { return (_degree * Pi / 180.0f); }
+	static inline float ToRadian(const float _degree) { return (_degree * PI / 180.0f); }
 
 	//ê≥ÇÃïÑçÜÇ©Ç«Ç§Ç©ÇämîFÇ∑ÇÈ//
 	static inline ChStd::Bool IsPSign(const int _val) { return _val >= 0.0f ? true : false; }

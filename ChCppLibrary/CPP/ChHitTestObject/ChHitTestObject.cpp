@@ -6,7 +6,7 @@
 #include"ChHitTestPanel.h"
 #include"ChHitTestBox.h"
 #include"ChHitTestSphere.h"
-#include"ChHitTestMesh.h"
+#include"ChHitTestPolygon.h"
 
 using namespace ChCpp;
 
@@ -45,9 +45,22 @@ ChStd::Bool  HitTestRay::IsHit(
 ///////////////////////////////////////////////////////////////////////////////////////
 
 ChStd::Bool  HitTestRay::IsHit(
-	HitTestMesh* _target)
+	HitTestPolygon* _target)
 {
-	return false;
+	ChVec3 minLenVec = maxLen;
+	ChStd::Bool hitFlg = false;
+
+	for (auto poly : _target->GetPolygonList())
+	{
+		if (!HitTestTri(poly->poss[0], poly->poss[1], poly->poss[2]))continue;
+		hitFlg = true;
+		if (minLenVec.Len() < GetHitVectol().Len())continue;
+		minLenVec = GetHitVectol();
+	}
+
+	if (hitFlg)_target->SetHitVector(minLenVec);
+
+	return hitFlg;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -90,7 +103,6 @@ float HitTestRay::CreateDat(const ChVec3& _vec1, const ChVec3& _vec2, const ChVe
 
 ChStd::Bool HitTestRay::HitTestTri(const ChVec3& _vec1, const ChVec3& _vec2, const ChVec3& _vec3)
 {
-
 	//eg1 = (v1 - v0), eg2 = (v2 - v0);
 	//hitPos = spos + (dir * len)
 	//hitPos = (eg1 * u) + (eg2 * v) + v0
@@ -175,7 +187,7 @@ ChStd::Bool  HitTestPanel::IsHit(
 ///////////////////////////////////////////////////////////////////////////////////////
 
 ChStd::Bool  HitTestPanel::IsHit(
-	HitTestMesh* _target)
+	HitTestPolygon* _target)
 {
 	return false;
 }
@@ -273,34 +285,74 @@ ChStd::Bool  HitTestBox::IsHit(
 	//位置情報だけの当たり判定//
 
 	ChVec3 tPos = _target->GetPos();
+
 	ChVec3 mPos = GetPos();
 
-	ChVec3 tmpVec = mPos - tPos;
+	
+	ChVec3 tScl = _target->GetScl(), mScl = GetScl();
 
-	ChVec3 tSize = tmpVec;
+	ChVec3 tmpVec = (tPos)-(mPos);
 
-	//|ap|・|bp| = 0// 
-	//(px - ax,py - ay,pz - az) ・ (px - bx,py - by,pz - bz) = 0//
+	ChVec3 tmpPos[4] = { 1.0f,1.0f,1.0f,1.0f };
+
+	tmpPos[1].x = -1.0f;
+	tmpPos[2].y = -1.0f;
+	tmpPos[3].z = -1.0f;
+
+	{
+		auto mat = GetMat();
+		for (unsigned char i = 0; i < 4; i++)
+		{
+			tmpPos[i] = mat.TransformCoord(tmpPos[i]);
+		}
+	}
+	
+	//ベクトルABと点Pの距離(交点をV)//
+	//AV = AB * x = AP - PV//
+	//x = Dot(AB,AP)/(Len[AB]^2)//
+
+	ChVec3 axisCoefficient;
+
+	//それぞれの辺に対応する係数を取得//
+	for (unsigned char i = 0; i < 3; i++)
+	{
+		auto vec = tmpPos[i + 1] - tmpPos[0];
+		auto len = vec.Len();
+		axisCoefficient.val[i] = vec.Dot(tmpVec) / (len * len);
+	}
+
+	//一番近い位置を取得
+
+	ChVec3 testVec = tmpVec;
+
+	testVec.Abs();
+
+	ChVec3 mSize = GetScl();
+
+	ChVec3 tSize = testVec;
 
 	tSize.Normalize();
 
 	tSize *= _target->GetScl();
 
-	tSize.Abs();
-
-	ChVec3 mSize = GetScl();
-
-	ChVec3 testVec = tmpVec;
-	
-	testVec.Abs();
-	mSize.Abs();
-
 	//x1,w1,x2,w2
 	//x1 < x2 && x1 + w1 > x2
 
-	if (testVec.x > mSize.x + tSize.x)return false;
-	if (testVec.y > mSize.y + tSize.y)return false;
-	if (testVec.z > mSize.z + tSize.z)return false;
+	ChVec3 objVec = mSize + tSize;
+
+	if (testVec.x > objVec.x)return false;
+	if (testVec.y > objVec.y)return false;
+	if (testVec.z > objVec.z)return false;
+
+	tmpVec.Normalize();
+
+	{
+		auto lenVec = objVec - testVec;
+		tmpVec.x *= lenVec.x;
+		tmpVec.y *= lenVec.y;
+		tmpVec.z *= lenVec.z;
+	}
+	//tmpVec *= _target->GetScl().Len() * _target->GetScl().Len();
 
 	SetHitVector(tmpVec * -1.0f);
 
@@ -312,7 +364,7 @@ ChStd::Bool  HitTestBox::IsHit(
 ///////////////////////////////////////////////////////////////////////////////////////
 
 ChStd::Bool  HitTestBox::IsHit(
-	HitTestMesh* _target)
+	HitTestPolygon* _target)
 {
 	return false;
 }
@@ -343,7 +395,6 @@ ChStd::Bool  HitTestBox::IsInnerHit(
 		if (tSize.y < testVec.y + mSize.y)hitFlgs.y = testVec.y + mSize.y - tSize.y;
 		if (tSize.z < testVec.z + mSize.z)hitFlgs.z = testVec.z + mSize.z - tSize.z;
 
-
 		if (hitFlgs.Len() <= 0.0f)return false;
 	}
 
@@ -363,15 +414,15 @@ ChStd::Bool  HitTestBox::IsInnerHit(
 }
 
 
-Cube HitTestBox::CreateCube()
+Cube HitTestBox::CreateCube(const ChLMat& _mat)
 {
-	auto pos = GetPos();
-	auto scl = GetScl();
+	auto pos = _mat.GetPosition();
+	auto scl = _mat.GetScalling();
 
 	ChLMat mat;
 	mat.SetPosition(pos);
 	mat.SetScalling(scl);
-	
+
 	Cube out;
 
 	for (unsigned long i = 0; i < 8; i++)
@@ -402,6 +453,8 @@ ChStd::Bool HitTestSphere::IsHit(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
+#include<windows.h>
+
 ChStd::Bool  HitTestSphere::IsHit(
 	HitTestSphere* _target)
 {
@@ -411,35 +464,56 @@ ChStd::Bool  HitTestSphere::IsHit(
 
 	ChVec3 mPos = GetPos();
 
-	ChVec3 tmpVec = tPos - mPos;
+	ChVec3 tScl = _target->GetScl(), mScl = GetScl();
 
-	float mLen = GetScl().x * GetScl().y * GetScl().z;
-	float tLen = _target->GetScl().x * _target->GetScl().y * _target->GetScl().z;
+	ChVec3 tmpVec = (tPos)-(mPos);
 
-	mLen = 1.0f;
-	tLen = 1.0f;
+	ChVec3 objVec = tmpVec;
+	objVec.Abs();
 
-	float testLen = (tLen + mLen) * (tLen + mLen);
+	ChVec3 testVec = objVec; 
+	
+	objVec.Normalize();
 
-	tmpVec *= tmpVec;
+	tScl = objVec * tScl;
+	mScl = objVec * mScl;
 
-	float tmpLen = tmpVec.Len();
+	objVec = tScl + mScl;
+
+	//objVec = tScl + mScl;
+	//objVec.Abs();
 
 	//三角形の定理//
 	//三辺にそれぞれa,b,cと置く//
 	//bとcが垂直の時、aの長さは√(b)^2 + (c)^2 = aとなる。
 
-	if (tmpLen >= testLen)return false;
+	//float objectSize = mSize.Len() + tSize.Len();
+	//float testLen = testVec.Len();
 
-	tmpVec.Normalize();
+	//if (testVec.x > objVec.x)return false;
+	//if (testVec.y > objVec.y)return false;
+	//if (testVec.z > objVec.z)return false;
+	if (testVec.Len() > objVec.Len())return false;
+	
+	{
+		//auto len = (objectSize - testLen);
+		auto lenVec = (objVec - testVec);
+		//auto lenVec = testVec;
+		lenVec.Abs();
+		//tmpVec = testVec * -1.0f;
+		tmpVec.Normalize();
 
-	float moveSize = tmpLen - mLen;
+		//tmpVec.val.SetLen(len);
 
-	moveSize = tLen - moveSize;
+		tmpVec.x *= lenVec.x;
+		tmpVec.y *= lenVec.y;
+		tmpVec.z *= lenVec.z;
 
-	SetHitVector(tmpVec * moveSize);
+	}
 
-	_target->SetHitVector(tmpVec * (-moveSize));
+	SetHitVector(tmpVec * -1.0f);
+
+	_target->SetHitVector(tmpVec);
 
 	return true;
 }
@@ -447,7 +521,7 @@ ChStd::Bool  HitTestSphere::IsHit(
 ///////////////////////////////////////////////////////////////////////////////////////
 
 ChStd::Bool  HitTestSphere::IsHit(
-	HitTestMesh* _target)
+	HitTestPolygon* _target)
 {
 	return false;
 }
@@ -496,7 +570,7 @@ ChStd::Bool  HitTestSphere::IsInnerHit(
 //HitTestMesh Method//
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool HitTestMesh::IsHit(
+ChStd::Bool HitTestPolygon::IsHit(
 	HitTestPanel* _target)
 {
 	return false;
@@ -504,7 +578,7 @@ ChStd::Bool HitTestMesh::IsHit(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool HitTestMesh::IsHit(
+ChStd::Bool HitTestPolygon::IsHit(
 	HitTestBox* _target)
 {
 	return false;
@@ -512,7 +586,7 @@ ChStd::Bool HitTestMesh::IsHit(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  HitTestMesh::IsHit(
+ChStd::Bool  HitTestPolygon::IsHit(
 	HitTestSphere* _target)
 {
 	return false;
@@ -520,15 +594,15 @@ ChStd::Bool  HitTestMesh::IsHit(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  HitTestMesh::IsHit(
-	HitTestMesh* _target)
+ChStd::Bool  HitTestPolygon::IsHit(
+	HitTestPolygon* _target)
 {
 	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  HitTestMesh::IsInnerHit(
+ChStd::Bool  HitTestPolygon::IsInnerHit(
 	HitTestBox* _target)
 {
 	return false;
@@ -536,7 +610,7 @@ ChStd::Bool  HitTestMesh::IsInnerHit(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  HitTestMesh::IsInnerHit(
+ChStd::Bool  HitTestPolygon::IsInnerHit(
 	HitTestSphere* _target)
 {
 	return false;

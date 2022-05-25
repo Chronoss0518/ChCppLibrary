@@ -3,6 +3,93 @@
 
 namespace ChMath
 {
+
+	static inline std::string ConvertNum10to64(unsigned long _num)
+	{
+		return "";
+	}
+
+	static inline float Round(const float& _val, const unsigned int _digit)
+	{
+		float out = _val * std::powf(10.0f, static_cast<float>(_digit - 1));
+		out = std::round(out);
+		out = out * std::powf(0.1f, static_cast<float>(_digit - 1));
+
+		return out;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////
+
+	static inline double Round(const double& _val, const unsigned int _digit)
+	{
+		double out = _val * std::powl(10, static_cast<double>(_digit - 1));
+		out = std::round(out);
+		out = out * std::powl(0.1, static_cast<double>(_digit - 1));
+
+
+		return out;
+
+	}
+
+	static inline long double SqrtEx(const long double& _base, const unsigned long _digit = 4931)
+	{
+		if (_base == 0.0)return 0.0;
+
+		long double out = _base;
+
+		unsigned long maxCount = _digit > 4931 ? 4931 : _digit;
+
+		//以下を参照//
+		//https://qiita.com/rytaryu/items/e5d760a80f9ce5db860f
+		//
+
+		for (unsigned long i = 0; i < maxCount; i++)
+		{
+			out = ((out * out) + _base) / (2 * out);
+		}
+
+		return out;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////
+
+	static inline double SqrtEx(const double& _base, const unsigned long _digit = 307)
+	{
+		if (_base == 0.0)return 0.0;
+
+		double out = _base;
+
+		unsigned long maxCount = _digit > 307 ? 307 : _digit;
+
+		out = static_cast<double>(SqrtEx(static_cast<long double>(out), maxCount));
+
+		return out;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////
+
+	static inline float SqrtEx(const float& _base, const unsigned long _digit = 37)
+	{
+		if (_base == 0.0f)return 0.0f;
+
+		float out = _base;
+
+		unsigned long maxCount = _digit > 37 ? 37 : _digit;
+
+		out = static_cast<float>(SqrtEx(static_cast<long double>(out), maxCount));
+
+		return out;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////
+
+	//2の平方根(有効桁数8桁)//
+	static const float SQUARE_ROOT = 1.41421356f;
+
+	//円周率//
+	static const float PI = 3.1415f;
+
+
 	template<typename T, unsigned long Array>
 	using VectorTest = typename std::enable_if<(Array > 0) && (std::is_integral<T>::value || std::is_floating_point<T>::value), T>::type;
 
@@ -367,54 +454,105 @@ namespace ChMath
 
 		}
 
+		///////////////////////////////////////////////////////////////////////////////////////
+		//SetFunction//
+
+		void SetLen(const T _len)
+		{
+			if (GetLen() == 0.0f)return;
+
+			Normalize();
+
+			T tmp = _len * _len;
+
+			/*
+			x^2 + y^2 + z^2 = r^2
+
+			(nx * l)^2 + (ny * l)^2 + (nz * l)^2 = r^2
+
+			l^2 = r^2 /(nx^2 + ny^2 + nz^2)
+			*/
+
+			T add = static_cast<T>(0.0f);
+
+			for (unsigned long i = 0; i < Array; i++)
+			{
+				add += val[i] * val[i];
+			}
+
+			T l = tmp / add;
+
+			l = SqrtEx(l);
+			Mul(l);
+
+		}
+
 		///////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
 		unsigned long GetArray() { return Array; }
 
-		T GetLen()const
+		//ベクトルの要素の大きさを得る//
+		T GetElementsLen()
+		{
+			VectorBase tmp = *this;
+			tmp.Abs();
+
+			T out = static_cast<T>(0.0f);
+			for (unsigned long i = 0; i < Array; i++)
+			{
+				out += tmp.val[i];
+			}
+
+			return out;
+		}
+
+		//ベクトルの大きさを得る//
+		T GetLen(const unsigned long _digit = 6)const
 		{
 			T Len = static_cast<T>(0.0f);
 
 			for (unsigned long i = 0; i < Array; i++)
 			{
-				Len += std::abs(val[i]);
+				Len += val[i] * val[i];
 			}
 
-			return Len;
+			return SqrtEx(Len,_digit);
 		}
 
 		T GetCos(
-			const VectorBase& _vec)const
+			const VectorBase& _vec,
+			const unsigned long _digit = 6
+		)const
 		{
-
-			if (GetLen() <= 0.0f || _vec.GetLen() <= 0.0f)return 0.0f;
-
 			VectorBase tmp1, tmp2;
 
 			tmp1 = *this;
 			tmp2 = _vec;
 
-			tmp1.Normalize();
-			tmp2.Normalize();
+			if (!tmp1.Normalize(_digit) || !tmp2.Normalize(_digit))return 0.0f;
 
 			return tmp1.GetDot(tmp2);
 		}
 
 		T GetRadian(
-			const VectorBase& _vec)const
+			const VectorBase& _vec,
+			const unsigned long _digit = 6
+		)const
 		{
+			T tmp = GetCos(_vec, _digit);
 
-			if (GetLen() <= 0.0f || _vec.GetLen() <= 0.0f)return 0.0f;
+			if (tmp == 0.0f)return 0.0f;
 
-			return static_cast<T>(std::acos(GetCos(_vec)));
+			return static_cast<T>(std::acos(tmp));
 		}
 
 		T GetDot(
-			const VectorBase& _vec)const
+			const VectorBase& _vec,
+			const unsigned long _digit = 6)const
 		{
 
-			if (GetLen() <= 0.0f || _vec.GetLen() <= 0.0f)return 0.0f;
+			if (GetLen(_digit) <= 0.0f || _vec.GetLen(_digit) <= 0.0f)return 0.0f;
 
 			T tmpLen = 0.0f;
 
@@ -425,6 +563,26 @@ namespace ChMath
 
 			return tmpLen;
 
+		}
+
+		VectorBase GetCross(
+			const VectorBase& _vec1,
+			const VectorBase& _vec2,
+			const unsigned long _digit = 6)const
+		{
+
+			VectorBase out;
+
+			for (unsigned char i = 0; i < Array; i++)
+			{
+				out.val[i] =
+					(_vec1.val[(i + 1) % Array] * _vec2.val[(i + 2) % Array])
+					- (_vec1.val[(i + 2) % Array] * _vec2.val[(i + 1) % Array]);
+			}
+
+			out.Normalize(_digit);
+
+			return out;
 		}
 
 		const T* const GetVal()const
@@ -438,7 +596,7 @@ namespace ChMath
 		{
 			for (unsigned long i = 0; i < Array; i++)
 			{
-				val[i] = val[i] < 0.0f ? val[i] * -1.0f : val[i];
+				val[i] = val[i] < static_cast<T>(0.0f) ? val[i] * static_cast<T>(-1.0f) : val[i];
 			}
 		}
 
@@ -447,47 +605,26 @@ namespace ChMath
 
 			for (unsigned long i = 0; i < Array; i++)
 			{
-				val[i] = _vec.val[i] < 0.0f ? _vec.val[i] * -1.0f : _vec.val[i];
+				val[i] = _vec.val[i] < static_cast<T>(0.0f) ? _vec.val[i] * static_cast<T>(-1.0f) : _vec.val[i];
 			}
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		void Cross(
-			const VectorBase& _vec)
+			const VectorBase& _vec,
+			const unsigned long _digit = 6)
 		{
-
-			VectorBase tmpVec;
-
-			tmpVec = *this;
-
-			for (unsigned char i = 0; i < Array; i++)
-			{
-				val[i] =
-					(tmpVec.val[(i + 1) % Array] * _vec.val[(i + 2) % Array])
-					- (tmpVec.val[(i + 2) % Array] * _vec.val[(i + 1) % Array]);
-			}
-
-			Normalize();
-
-			return;
+			Set(GetCross(*this, _vec, _digit));
 
 		}
 
 		void Cross(
-			const VectorBase& _vec1, const VectorBase& _vec2)
+			const VectorBase& _vec1,
+			const VectorBase& _vec2, 
+			const unsigned long _digit = 6)
 		{
-
-			for (unsigned char i = 0; i < Array; i++)
-			{
-				val[i] =
-					(_vec1.val[(i + 1) % Array] * _vec2.val[(i + 2) % Array])
-					- (_vec1.val[(i + 2) % Array] * _vec2.val[(i + 1) % Array]);
-			}
-
-			Normalize();
-
-			return;
+			Set(GetCross(_vec1, _vec2, _digit));
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -527,17 +664,40 @@ namespace ChMath
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		void Normalize()
+		//ベクトルの長さを1にする//
+		ChStd::Bool Normalize(
+			const unsigned long _digit = 6
+		)
 		{
 
-			T Len = GetLen();
+			T len = GetLen(_digit);
 
-			if (Len == static_cast<T>(0.0f))return;
+			if (len == static_cast<T>(1.0))return true;
+			if (len == static_cast<T>(0.0))return false;
 
 			for (unsigned long i = 0; i < Array; i++)
 			{
-				val[i] /= Len;
+				val[i] /= len;
 			}
+
+			return true;
+		}
+
+		//ベクトルの要素の合計を1にする//
+		ChStd::Bool ElementsNormalize()
+		{
+
+			T len = GetElementsLen();
+
+			if (len == static_cast<T>(1.0))return true;
+			if (len == static_cast<T>(0.0))return false;
+
+			for (unsigned long i = 0; i < Array; i++)
+			{
+				val[i] /= len;
+			}
+
+			return true;
 		}
 
 	private:

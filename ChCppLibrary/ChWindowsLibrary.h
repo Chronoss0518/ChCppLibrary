@@ -10,6 +10,8 @@
 
 #ifdef _WINDEF_
 #pragma comment(lib, "winmm.lib")
+#pragma comment(lib, "Msimg32.lib")
+#pragma comment(lib,"Gdi32.lib")
 #endif
 
 #include"WindowsObject/BaseWind/ChWinBaseWind.h"
@@ -20,8 +22,14 @@
 #include"WindowsObject/Mouse/ChWinMouse.h"
 #include"WindowsObject/TextBox/ChWinTextBox.h"
 #include"WindowsObject/DrawTexter/ChWinDrawTexter.h"
-#include"WindowsObject/MsgBox/ChMsgBox.h"
 
+//NewVersionWindowsClass//
+#include"WindowsObject/MsgBox/ChMsgBox.h"
+#include"WindowsObject/WindObject/ChWindStyle.h"
+#include"WindowsObject/WindClassObject/ChWindClassStyle.h"
+#include"WindowsObject/WindObject/ChWindObject.h"
+#include"WindowsObject/WindClassObject/ChWindClassObject.h"
+#include"WindowsObject/Texture/ChWinTexture.h"
 
 #ifndef Ch_Library_Create
 #ifdef _MT

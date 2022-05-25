@@ -7,7 +7,7 @@ namespace ChCpp
 	class HitTestPanel;
 	class HitTestBox;
 	class HitTestSphere;
-	class HitTestMesh;
+	class HitTestPolygon;
 	
 	//引数として与えた物体から見て当たり判定を行うクラス//
 	class HitTestObject
@@ -51,7 +51,7 @@ namespace ChCpp
 
 		//対象のオブジェクトの外から衝突しているかの判定//
 		virtual ChStd::Bool IsHit(
-			HitTestMesh* _target) = 0;
+			HitTestPolygon* _target) = 0;
 
 		//対象のオブジェクト内から衝突しているかの判定//
 		virtual ChStd::Bool IsInnerHit(

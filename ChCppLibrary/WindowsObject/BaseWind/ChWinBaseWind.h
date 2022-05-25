@@ -37,14 +37,14 @@ namespace ChWin
 
 	 void WindSizeUpdate(const HWND _hWnd, LPARAM _lParam);
 
-	typedef class WindObject :public ChCp::Initializer,public ChCp::Releaser
+	typedef class WindBaseObject :public ChCp::Initializer,public ChCp::Releaser
 	{
 	public:
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//ConstructerDestructer//
 
-		inline WindObject() {};
+		inline WindBaseObject() {};
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
@@ -123,7 +123,7 @@ namespace ChWin
 
 	private:
 
-		static std::map<unsigned long, WindObject*>objList;
+		static std::map<unsigned long, WindBaseObject*>objList;
 
 	}WindObj;
 }

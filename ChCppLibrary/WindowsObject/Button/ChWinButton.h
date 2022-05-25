@@ -13,7 +13,7 @@ namespace ChSystem
 namespace ChWin
 {
 
-	class BaseButton :public WindObject
+	class BaseButton :public WindBaseObject
 	{
 
 	public:

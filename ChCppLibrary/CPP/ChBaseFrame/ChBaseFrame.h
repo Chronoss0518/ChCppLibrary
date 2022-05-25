@@ -8,12 +8,9 @@ namespace ChCpp
 	class BaseFrame;
 
 	//BaseFrame管理用クラス//
-	class BaseFrameList:public ChCp::Initializer
+	class BaseFrameManager:public ChCp::Initializer
 	{
-	public:
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
+	public://Set Function//
 
 		//自作フレームをセット//
 		//BaseFrameを継承しているもののみセットできる//
@@ -41,20 +38,49 @@ namespace ChCpp
 			Chenges();
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//UpdateFunction//
+	public://UpdateFunction//
 
 		void Update();
 
-	private:
+	private://Release Funciton//
 
-		friend BaseFrame;
+		void Release()
+		{
+			if (ChPtr::NotNullCheck(saveData))
+			{
+				delete saveData;
+				saveData = nullptr;
+			}
 
-		///////////////////////////////////////////////////////////////////////////////////
+			SetInitFlg(false);
+
+		}
+
+	private://Other Function
 
 		void ChengeFrame(const std::string& _frameName);
 
 		void Chenges();
+
+		template<class T>
+		void SaveData(const T* _save)
+		{
+			if (ChPtr::NullCheck(saveData))
+			{
+				saveData = new T();
+			}
+
+			auto tmp = static_cast<T*>(saveData);
+
+
+			*tmp = *_save;
+		}
+
+	private:// Member Value//
+
+		friend BaseFrame;
+
+		void* saveData = nullptr;
 
 		std::map<std::string, std::function<ChPtr::Shared<BaseFrame>()>>frameList;
 
@@ -62,48 +88,43 @@ namespace ChCpp
 
 		ChPtr::Shared<BaseFrame>nowFrame;
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//ConstructerDestructer//
+	private://ConstructerDestructer//
 
-		BaseFrameList() { SetInitFlg(true); }
+		BaseFrameManager() { SetInitFlg(true); }
 
-		~BaseFrameList() { SetInitFlg(false); }
+		~BaseFrameManager() { Release(); }
 
-	public:
+	public://Get Instance//
 
-		static BaseFrameList& GetIns()
+		static BaseFrameManager& GetIns()
 		{
-			static BaseFrameList ins;
+			static BaseFrameManager ins;
 			return ins;
 		}
 
 	};
 
-	static const std::function<BaseFrameList&()>FrameList = BaseFrameList::GetIns;
+	static const std::function<BaseFrameManager&()>FrameManager = BaseFrameManager::GetIns;
 
 	//ゲームシーンを簡易的生成を行うためのクラス//
 	//必要に応じて以下の関数をオーバーライドする//
 	//void Init(),void Release(),void Frame()//
 	class BaseFrame:public ChCp::Releaser
 	{
-	public:
-
-		///////////////////////////////////////////////////////////////////////////////////////
-		//InitAndRelease//
+	public://InitAndRelease//
 		virtual inline void Init() {};
 
 		virtual inline void Release()override {};
 
-		///////////////////////////////////////////////////////////////////////////////////
+	public://Update Function//
 
-		virtual void Frame() = 0;
+		virtual void Update() = 0;
 
-		friend BaseFrameList;
+	public:
 
-	protected:
+		friend BaseFrameManager;
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//ConstructerDestructer//
+	protected://ConstructerDestructer//
 
 		BaseFrame() {};
 
@@ -112,7 +133,7 @@ namespace ChCpp
 		//登録されているフレームに移動する//
 		void ChangeFrame(const std::string& _frameName)
 		{
-			FrameList().ChengeFrame(_frameName);
+			FrameManager().ChengeFrame(_frameName);
 		}
 
 	private:

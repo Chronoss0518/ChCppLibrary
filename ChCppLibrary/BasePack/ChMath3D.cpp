@@ -245,11 +245,14 @@ void ChVec4::DeserializeARGB(
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector4 ChVec4::GetCross(const ChVector4& _vec1, const ChVector4& _vec2)
+ChVector4 ChVec4::GetCross(
+	const ChVector4& _vec1, 
+	const ChVector4& _vec2,
+	const unsigned long _digit)
 {
 	ChVector4 tmpVec;
 
-	tmpVec.val.Cross(_vec1.val, _vec2.val);
+	tmpVec.val.Cross(_vec1.val, _vec2.val,_digit);
 
 	return tmpVec;
 
@@ -257,37 +260,45 @@ ChVector4 ChVec4::GetCross(const ChVector4& _vec1, const ChVector4& _vec2)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-float ChVec4::GetCos(const ChVector4& _vec1, const ChVector4& _vec2)
+float ChVec4::GetCos(
+	const ChVector4& _vec1, 
+	const ChVector4& _vec2,
+	const unsigned long _digit)
 {
-	return _vec1.val.GetCos(_vec2.val);
+	return _vec1.val.GetCos(_vec2.val,_digit);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-float ChVec4::GetRadian(const ChVector4& _vec1, const ChVector4& _vec2)
+float ChVec4::GetRadian(
+	const ChVector4& _vec1, 
+	const ChVector4& _vec2,
+	const unsigned long _digit)
 {
-	return _vec1.val.GetRadian(_vec2.val);
+	return _vec1.val.GetRadian(_vec2.val,_digit);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-float ChVec4::GetDot(const ChVector4& _vec1, const ChVector4& _vec2)
+float ChVec4::GetDot(
+	const ChVector4& _vec1,
+	const ChVector4& _vec2,
+	const unsigned long _digit)
 {
-	return _vec1.val.GetDot(_vec2.val);
+	return _vec1.val.GetDot(_vec2.val,_digit);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 //ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
-ChVector4 ChVec4::GetCorrection(const ChVector4& _start, const ChVector4& _end, const float _Now)
+ChVector4 ChVec4::GetCorrection(
+	const ChVector4& _start, 
+	const ChVector4& _end,
+	const float _Now)
 {
-	if (_Now <= 0.0f)return _start;
-	if (_Now >= 1.0f)return _end;
 	ChVector4 tmpVec;
 
-	tmpVec = _end - _start;
-
-	tmpVec = _start + (tmpVec * _Now);
+	tmpVec.val.Correction(_start.val, _end.val, _Now);
 
 	return tmpVec;
 
@@ -297,31 +308,49 @@ ChVector4 ChVec4::GetCorrection(const ChVector4& _start, const ChVector4& _end, 
 
 float ChVec4::GetLen(
 	const ChVector4& _vec1
-	, const ChVector4& _vec2)
+	, const ChVector4& _vec2,
+	const unsigned long _digit)
 {
 
 	ChVec4 tmpVec = _vec1 - _vec2;
 
-	return  tmpVec.val.GetLen();
+	return  tmpVec.val.GetLen(_digit);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChVec4::Normalize()
+float ChVec4::GetElementsLen(
+	const ChVector4& _vec1,
+	const ChVector4& _vec2)
 {
-	if (Len() == 1.0f)return;
 
-	val.Normalize();
+	ChVec4 tmpVec = _vec1 - _vec2;
 
+	return  tmpVec.val.GetElementsLen();
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChStd::Bool ChVec4::Normalize(const unsigned long _digit)
+{
+	return val.Normalize(_digit);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void ChVec4::ElementsNormalize()
+{
+	val.ElementsNormalize();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChVec4::Cross(
 	const ChVector4& _vec1
-	, const ChVector4& _vec2)
+	, const ChVector4& _vec2,
+	const unsigned long _digit)
 {
-	val.Cross(_vec1.val, _vec2.val);
+	val.Cross(_vec1.val, _vec2.val,_digit);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -515,11 +544,14 @@ void ChVec3::Deserialize(
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector3 ChVec3::GetCross(const ChVector3& _vec1, const ChVector3& _vec2)
+ChVector3 ChVec3::GetCross(
+	const ChVector3& _vec1, 
+	const ChVector3& _vec2,
+	const unsigned long _digit)
 {
 	ChVector3 tmpVec;
 
-	tmpVec.val.Cross(_vec1.val, _vec2.val);
+	tmpVec.val.Cross(_vec1.val, _vec2.val,_digit);
 
 	return tmpVec;
 
@@ -527,23 +559,32 @@ ChVector3 ChVec3::GetCross(const ChVector3& _vec1, const ChVector3& _vec2)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-float ChVec3::GetCos(const ChVector3& _vec1, const ChVector3& _vec2)
+float ChVec3::GetCos(
+	const ChVector3& _vec1,
+	const ChVector3& _vec2,
+	const unsigned long _digit)
 {
-	return _vec1.val.GetCos(_vec2.val);
+	return _vec1.val.GetCos(_vec2.val,_digit);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-float ChVec3::GetRadian(const ChVector3& _vec1, const ChVector3& _vec2)
+float ChVec3::GetRadian(
+	const ChVector3& _vec1, 
+	const ChVector3& _vec2,
+	const unsigned long _digit)
 {
-	return _vec1.val.GetRadian(_vec2.val);
+	return _vec1.val.GetRadian(_vec2.val,_digit);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-float ChVec3::GetDot(const ChVector3& _vec1, const ChVector3& _vec2)
+float ChVec3::GetDot(
+	const ChVector3& _vec1,
+	const ChVector3& _vec2,
+	const unsigned long _digit)
 {
-	return _vec1.val.GetDot(_vec2.val);
+	return _vec1.val.GetDot(_vec2.val,_digit);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -551,13 +592,9 @@ float ChVec3::GetDot(const ChVector3& _vec1, const ChVector3& _vec2)
 //ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
 ChVector3 ChVec3::GetCorrection(const ChVector3& _start, const ChVector3& _end, const float _Now)
 {
-	if (_Now <= 0.0f)return _start;
-	if (_Now >= 1.0f)return _end;
 	ChVector3 tmpVec;
 
-	tmpVec = _end - _start;
-
-	tmpVec = _start + (tmpVec * _Now);
+	tmpVec.val.Correction(_start.val, _end.val, _Now);
 
 	return tmpVec;
 
@@ -567,28 +604,50 @@ ChVector3 ChVec3::GetCorrection(const ChVector3& _start, const ChVector3& _end, 
 
 float ChVec3::GetLen(
 	const ChVector3& _vec1
+	, const ChVector3& _vec2,
+	const unsigned long _digit)
+{
+
+	ChVec3 tmpVec = _vec1 - _vec2;
+
+	return  tmpVec.val.GetLen(_digit);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+float ChVec3::GetElementsLen(
+	const ChVector3& _vec1
 	, const ChVector3& _vec2)
 {
 
 	ChVec3 tmpVec = _vec1 - _vec2;
 
-	return  tmpVec.val.GetLen();
+	return  tmpVec.val.GetElementsLen();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChVec3::Normalize()
+ChStd::Bool ChVec3::Normalize(
+	const unsigned long _digit)
 {
-	val.Normalize();
+	return val.Normalize(_digit);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void ChVec3::ElementsNormalize()
+{
+	val.ElementsNormalize();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChVec3::Cross(
 	const ChVector3& _vec1
-	, const ChVector3& _vec2)
+	, const ChVector3& _vec2,
+	const unsigned long _digit)
 {
-	*this = GetCross(_vec1, _vec2);
+	*this = GetCross(_vec1, _vec2,_digit);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -780,53 +839,59 @@ void ChVec2::Deserialize(
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector2 ChVec2::GetCross(const ChVector2& _vec1, const ChVector2& _vec2)
+ChVector2 ChVec2::GetCross(
+	const ChVector2& _vec1, 
+	const ChVector2& _vec2,
+	const unsigned long _digit)
 {
 	ChVector2 tmpVec;
 
-	tmpVec.val.Cross(_vec1.val, _vec2.val);
+	tmpVec.val.Cross(_vec1.val, _vec2.val,_digit);
 
 	return tmpVec;
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-float ChVec2::GetCos(const ChVector2& _vec1, const ChVector2& _vec2)
+float ChVec2::GetCos(
+	const ChVector2& _vec1,
+	const ChVector2& _vec2,
+	const unsigned long _digit)
 {
-
-	return _vec1.val.GetCos(_vec2.val);
-
+	return _vec1.val.GetCos(_vec2.val,_digit);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-float ChVec2::GetRadian(const ChVector2& _vec1, const ChVector2& _vec2)
+float ChVec2::GetRadian(
+	const ChVector2& _vec1,
+	const ChVector2& _vec2,
+	const unsigned long _digit)
 {
-
-	return _vec1.val.GetRadian(_vec2.val);
-
+	return _vec1.val.GetRadian(_vec2.val,_digit);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-float ChVec2::GetDot(const ChVector2& _vec1, const ChVector2& _vec2)
+float ChVec2::GetDot(
+	const ChVector2& _vec1,
+	const ChVector2& _vec2,
+	const unsigned long _digit)
 {
-	return _vec1.val.GetDot(_vec2.val);
+	return _vec1.val.GetDot(_vec2.val,_digit);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 //ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
-ChVector2 ChVec2::GetCorrection(const ChVector2& _start, const ChVector2& _end, const float _Now)
+ChVector2 ChVec2::GetCorrection(
+	const ChVector2& _start
+	, const ChVector2& _end
+	, const float _Now)
 {
-	if (_Now <= 0.0f)return _start;
-	if (_Now >= 1.0f)return _end;
 	ChVector2 tmpVec;
 
-	tmpVec = _end - _start;
-
-	tmpVec = _start + (tmpVec * _Now);
+	tmpVec.val.Correction(_start.val, _end.val, _Now);
 
 	return tmpVec;
 
@@ -836,28 +901,49 @@ ChVector2 ChVec2::GetCorrection(const ChVector2& _start, const ChVector2& _end, 
 
 float ChVec2::GetLen(
 	const ChVector2& _vec1
+	, const ChVector2& _vec2,
+	const unsigned long _digit)
+{
+
+	ChVec2 tmpVec = _vec1 - _vec2;
+
+	return  tmpVec.val.GetLen(_digit);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+float ChVec2::GetElementsLen(
+	const ChVector2& _vec1
 	, const ChVector2& _vec2)
 {
 
 	ChVec2 tmpVec = _vec1 - _vec2;
 
-	return  tmpVec.val.GetLen();
+	return  tmpVec.val.GetElementsLen();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChVec2::Normalize()
+ChStd::Bool ChVec2::Normalize(const unsigned long _digit)
 {
-	val.Normalize();
+	return val.Normalize(_digit);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void ChVec2::ElementsNormalize()
+{
+	val.ElementsNormalize();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChVec2::Cross(
-	const ChVector2& _vec1
-	, const ChVector2& _vec2)
+	const ChVector2& _vec1,
+	const ChVector2& _vec2,
+	const unsigned long _digit)
 {
-	*this = GetCross(_vec1, _vec2);
+	*this = GetCross(_vec1, _vec2,_digit);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -1032,14 +1118,20 @@ void ChLMatrix::SetPosition(const float _x, const float _y, const float _z)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLMatrix::ChLMatrix::SetRotation(const ChVec3& _vec)
+void ChLMatrix::ChLMatrix::SetRotation(
+	const ChVec3& _vec,
+	const unsigned long _digit)
 {
-	SetRotation(_vec.x, _vec.y, _vec.z);
+	SetRotation(_vec.x, _vec.y, _vec.z,_digit);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLMatrix::SetRotation(const float _x, const float _y, const float _z)
+void ChLMatrix::SetRotation(
+	const float _x, 
+	const float _y, 
+	const float _z,
+	const unsigned long _digit)
 {
 
 	ChLMat XAxis, YAxis, ZAxis;
@@ -1053,7 +1145,7 @@ void ChLMatrix::SetRotation(const float _x, const float _y, const float _z)
 	YAxis = ZAxis * YAxis;
 
 	YAxis.SetPosition(GetPosition());
-	YAxis.SetScalling(GetScalling());
+	YAxis.SetScalling(GetScalling(_digit),_digit);
 
 	m.Set(YAxis.m);
 }
@@ -1062,7 +1154,7 @@ void ChLMatrix::SetRotation(const float _x, const float _y, const float _z)
 
 void ChLMatrix::SetRotationXAxis(const float _x)
 {
-	float x = -std::fmod(_x, ChMath::Pi * 2.0f);
+	float x = -std::fmod(_x, ChMath::PI * 2.0f);
 
 	l_22 = std::cos(x);
 	l_23 = std::sin(x);
@@ -1075,7 +1167,7 @@ void ChLMatrix::SetRotationXAxis(const float _x)
 
 void ChLMatrix::SetRotationYAxis(const float _y)
 {
-	float  y = -std::fmod(_y, ChMath::Pi * 2.0f);
+	float  y = -std::fmod(_y, ChMath::PI * 2.0f);
 
 	l_11 = std::cos(y);
 	l_13 = -std::sin(y);
@@ -1088,7 +1180,7 @@ void ChLMatrix::SetRotationYAxis(const float _y)
 
 void ChLMatrix::SetRotationZAxis(const float _z)
 {
-	float z = -std::fmod(_z, ChMath::Pi * 2.0f);
+	float z = -std::fmod(_z, ChMath::PI * 2.0f);
 
 	l_11 = std::cos(z);
 	l_12 = std::sin(z);
@@ -1099,22 +1191,28 @@ void ChLMatrix::SetRotationZAxis(const float _z)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLMatrix::SetScalling(const ChVec3& _vec)
+void ChLMatrix::SetScalling(
+	const ChVec3& _vec,
+	const unsigned long _digit)
 {
-	SetScalling(_vec.x, _vec.y, _vec.z);
+	SetScalling(_vec.x, _vec.y, _vec.z,_digit);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLMatrix::SetScalling(const float _x, const float _y, const float _z)
+void ChLMatrix::SetScalling(
+	const float _x,
+	const float _y,
+	const float _z,
+	const unsigned long _digit)
 {
-	m[0].Normalize();
+	m[0].Normalize(_digit);
 	m[0].Mul(_x);
 
-	m[1].Normalize();
+	m[1].Normalize(_digit);
 	m[1].Mul(_y);
 
-	m[2].Normalize();
+	m[2].Normalize(_digit);
 	m[2].Mul(_z);
 }
 
@@ -1127,9 +1225,9 @@ ChVec3 ChLMatrix::GetPosition()const
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVec3 ChLMatrix::GetRotation()const
+ChVec3 ChLMatrix::GetRotation(const unsigned long _digit)const
 {
-	ChVec3 tmpScl = GetScalling();
+	ChVec3 tmpScl = GetScalling(_digit);
 
 	float outM[4][4];
 
@@ -1159,14 +1257,14 @@ ChVec3 ChLMatrix::GetRotation()const
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVec3 ChLMatrix::GetScalling()const
+ChVec3 ChLMatrix::GetScalling(const unsigned long _digit)const
 {
-	return ChVec3(m[0].GetLen(), m[1].GetLen(), m[2].GetLen());
+	return ChVec3(m[0].GetLen(_digit), m[1].GetLen(_digit), m[2].GetLen(_digit));
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVec4 ChLMatrix::Transform(const ChVec4 _Base)const
+ChVec4 ChLMatrix::Transform(const ChVec4& _Base)const
 {
 	ChVec4 out;
 
@@ -1181,7 +1279,7 @@ ChVec4 ChLMatrix::Transform(const ChVec4 _Base)const
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVec4 ChLMatrix::TransformCoord(const ChVec4 _Base)const
+ChVec4 ChLMatrix::TransformCoord(const ChVec4& _Base)const
 {
 	ChLMatrix tmp = *this;
 
@@ -1306,14 +1404,20 @@ void ChRMatrix::SetPosition(const float _x, const float _y, const float _z)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChRMatrix::ChRMatrix::SetRotation(const ChVec3& _vec)
+void ChRMatrix::ChRMatrix::SetRotation(
+	const ChVec3& _vec,
+	const unsigned long _digit)
 {
-	SetRotation(_vec.x, _vec.y, _vec.z);
+	SetRotation(_vec.x, _vec.y, _vec.z,_digit);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChRMatrix::SetRotation(const float _x, const float _y, const float _z)
+void ChRMatrix::SetRotation(
+	const float _x, 
+	const float _y, 
+	const float _z,
+	const unsigned long _digit)
 {
 
 	ChRMat XAxis, YAxis, ZAxis;
@@ -1327,7 +1431,7 @@ void ChRMatrix::SetRotation(const float _x, const float _y, const float _z)
 	YAxis = ZAxis * YAxis;
 
 	YAxis.SetPosition(GetPosition());
-	YAxis.SetScalling(GetScalling());
+	YAxis.SetScalling(GetScalling(_digit),_digit);
 
 	m.Set(YAxis.m);
 }
@@ -1336,7 +1440,7 @@ void ChRMatrix::SetRotation(const float _x, const float _y, const float _z)
 
 void ChRMatrix::SetRotationXAxis(const float _x)
 {
-	float x = -std::fmod(_x, ChMath::Pi * 2.0f);
+	float x = -std::fmod(_x, ChMath::PI * 2.0f);
 
 	r_22 = std::cos(x);
 	r_23 = std::sin(x);
@@ -1349,7 +1453,7 @@ void ChRMatrix::SetRotationXAxis(const float _x)
 
 void ChRMatrix::SetRotationYAxis(const float _y)
 {
-	float  y = -std::fmod(_y, ChMath::Pi * 2.0f);
+	float  y = -std::fmod(_y, ChMath::PI * 2.0f);
 
 	r_11 = std::cos(y);
 	r_13 = -std::sin(y);
@@ -1362,7 +1466,7 @@ void ChRMatrix::SetRotationYAxis(const float _y)
 
 void ChRMatrix::SetRotationZAxis(const float _z)
 {
-	float z = -std::fmod(_z, ChMath::Pi * 2.0f);
+	float z = -std::fmod(_z, ChMath::PI * 2.0f);
 
 	r_11 = std::cos(z);
 	r_12 = std::sin(z);
@@ -1373,14 +1477,20 @@ void ChRMatrix::SetRotationZAxis(const float _z)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChRMatrix::SetScalling(const ChVec3& _vec)
+void ChRMatrix::SetScalling(
+	const ChVec3& _vec,
+	const unsigned long _digit)
 {
-	SetScalling(_vec.x, _vec.y, _vec.z);
+	SetScalling(_vec.x, _vec.y, _vec.z,_digit);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChRMatrix::SetScalling(const float _x, const float _y, const float _z)
+void ChRMatrix::SetScalling(
+	const float _x, 
+	const float _y, 
+	const float _z,
+	const unsigned long _digit)
 {
 	ChVector4 vec[3];
 
@@ -1393,13 +1503,13 @@ void ChRMatrix::SetScalling(const float _x, const float _y, const float _z)
 	}
 
 
-	vec[0].Normalize();
+	vec[0].Normalize(_digit);
 	vec[0].val.Mul(_x);
 	
-	vec[1].Normalize();
+	vec[1].Normalize(_digit);
 	vec[1].val.Mul(_y);
 	
-	vec[2].Normalize();
+	vec[2].Normalize(_digit);
 	vec[2].val.Mul(_z);
 
 
@@ -1422,9 +1532,9 @@ ChVec3 ChRMatrix::GetPosition()const
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVec3 ChRMatrix::GetRotation()const
+ChVec3 ChRMatrix::GetRotation(const unsigned long _digit)const
 {
-	ChVec3 tmpScl = GetScalling();
+	ChVec3 tmpScl = GetScalling(_digit);
 
 	float outM[4][4];
 
@@ -1449,7 +1559,7 @@ ChVec3 ChRMatrix::GetRotation()const
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVec3 ChRMatrix::GetScalling()const
+ChVec3 ChRMatrix::GetScalling(const unsigned long _digit)const
 {
 	ChVector4 vec[3];
 
@@ -1461,7 +1571,7 @@ ChVec3 ChRMatrix::GetScalling()const
 		}
 	}
 
-	return ChVec3(vec[0].val.GetLen(), vec[0].val.GetLen(), vec[0].val.GetLen());
+	return ChVec3(vec[0].val.GetLen(_digit), vec[1].val.GetLen(_digit), vec[2].val.GetLen(_digit));
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -1553,28 +1663,6 @@ void ChUIMatrix::Deserialize(
 ///////////////////////////////////////////////////////////////////////////////////
 //Math Function//
 ///////////////////////////////////////////////////////////////////////////////////
-
-float ChMath::Round(const float& _val, const unsigned int _digit)
-{
-	float out = _val * std::powf(10.0f, static_cast<float>(_digit - 1));
-	out = std::round(out);
-	out = out * std::powf(0.1f, static_cast<float>(_digit - 1));
-
-	return out;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-double ChMath::Round(const double& _val, const unsigned int _digit)
-{
-	double out = _val * std::powl(10, static_cast<double>(_digit - 1));
-	out = std::round(out);
-	out = out * std::powl(0.1, static_cast<double>(_digit - 1));
-
-
-	return out;
-
-}
 
 ///////////////////////////////////////////////////////////////////////////////////
 //Degree Method//
@@ -1868,12 +1956,12 @@ ChMath::Radian::Radian(const Degree& _val)
 void ChMath::Radian::Math()
 {
 	float tmpVal;
-	tmpVal = (val / Pi);
+	tmpVal = (val / PI);
 	if (tmpVal < 0.0f)
 	{
 		unsigned int tmp;
 		tmp = static_cast<unsigned int>(std::floor((tmpVal / -2.0f)));
-		val += (tmp + 1) * 2.0f * Pi;
+		val += (tmp + 1) * 2.0f * PI;
 		return;
 	}
 
@@ -1881,7 +1969,7 @@ void ChMath::Radian::Math()
 	{
 		unsigned int tmp;
 		tmp = static_cast<unsigned int>(std::floor((tmpVal / 2.0f)));
-		val -= (tmp) * 2.0f * Pi;
+		val -= (tmp) * 2.0f * PI;
 		return;
 	}
 
@@ -1894,7 +1982,8 @@ void ChMath::Radian::Math()
 ChVector3 ChMath::GetFaceNormal(
 	const ChVec3& _Pos1
 	, const ChVec3& _Pos2
-	, const ChVec3& _Pos3)
+	, const ChVec3& _Pos3,
+	const unsigned long _digit)
 {
 
 	ChVec3 tmpVec, tmpVec2;
@@ -1902,16 +1991,18 @@ ChVector3 ChMath::GetFaceNormal(
 	tmpVec = _Pos1 - _Pos2;
 	tmpVec2 = _Pos2 - _Pos3;
 
-	tmpVec.Cross(tmpVec, tmpVec2);
+	tmpVec.Cross(tmpVec, tmpVec2,_digit);
 
-	tmpVec.Normalize();
+	tmpVec.Normalize(_digit);
 
 	return tmpVec;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVector3 ChMath::GetFaceNormal(const TriVertex& _PlEq)
+ChVector3 ChMath::GetFaceNormal(
+	const TriVertex& _PlEq,
+	const unsigned long _digit)
 {
-	return GetFaceNormal(_PlEq.Ver1, _PlEq.Ver2, _PlEq.Ver3);
+	return GetFaceNormal(_PlEq.Ver1, _PlEq.Ver2, _PlEq.Ver3,_digit);
 }
