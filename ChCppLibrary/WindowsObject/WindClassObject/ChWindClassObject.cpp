@@ -20,7 +20,7 @@ LRESULT CALLBACK ChWin::WndProcA(
 
 	if (base)
 	{
-		if (!base->wndProc.empty())
+		if (base->IsInit() && !base->wndProc.empty())
 		{
 			auto it = base->wndProc.find(_uMsg);
 			if (it != (base->wndProc).end())

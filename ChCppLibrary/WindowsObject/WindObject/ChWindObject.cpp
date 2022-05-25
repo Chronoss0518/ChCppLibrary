@@ -36,11 +36,11 @@ void WindObject::Init(HWND _hWnd, const int _nShowCmd)
 
 void WindObject::Release()
 {
-	if (IsInit())
-	{
-		SendMessage(hWnd, WM_QUIT, 0, 0);
-		SetInitFlg(false);
-	}
+	if (!IsInit())return;
+
+	Send(WM_CLOSE, 0, 0);
+	SetInitFlg(false);
+
 
 }
 
@@ -185,7 +185,7 @@ void WindCreater::SetInitSize(const int _w, const int _h)
 	size.y = _h >= 0 ? _h : _h * -1;
 }
 
-ChStd::Bool WindCreater::Create(WindObject* _out,const std::string& _appName, const std::string& _windClassName, const int _nShowCmd)const
+ChStd::Bool WindCreater::Create(WindObject* _out, const std::string& _appName, const std::string& _windClassName, const int _nShowCmd)const
 {
 	if (ChPtr::NullCheck(_out))return false;
 
@@ -204,14 +204,14 @@ ChStd::Bool WindCreater::Create(WindObject* _out,const std::string& _appName, co
 		param);
 
 	if (ChPtr::NullCheck(_out->hWnd))return false;
-	
+
 	_out->CreateEnd(_nShowCmd);
 
 	SetWindowLongPtrA(_out->hWnd, GWLP_USERDATA, reinterpret_cast<long>(_out));
 	return true;
 }
 
-ChStd::Bool WindCreater::Create(WindObject* _out,const std::wstring& _appName, const std::wstring& _windClassName, const int _nShowCmd)const
+ChStd::Bool WindCreater::Create(WindObject* _out, const std::wstring& _appName, const std::wstring& _windClassName, const int _nShowCmd)const
 {
 
 	if (ChPtr::NullCheck(_out))return false;

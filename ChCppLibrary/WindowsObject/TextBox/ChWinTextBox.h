@@ -3,8 +3,8 @@
 #ifndef Ch_Win_TextBox_h
 #define Ch_Win_TextBox_h
 
-#ifndef Ch_Win_BObj_h
-#include"../BaseWind/ChWinBaseWind.h"
+#ifndef Ch_Win_WO_h
+#include"../WindObject/ChWindObject.h"
 #endif
 
 namespace ChSystem
@@ -15,16 +15,191 @@ namespace ChSystem
 namespace ChWin
 {
 
-	class TextBox :public WindBaseObject
+	class TextBox :public WindObject
 	{
+	public://Create Functions//
 
-	public:
+		//TextBox‚Ìì¬//
+		void CreateA(
+			HINSTANCE _hIns,
+			const std::string& _startText,
+			const ChMath::Vector2Base<int>& _pos,
+			const ChMath::Vector2Base<int>& _size,
+			const HWND _parentHandl = nullptr);
+
+		//TextBox‚Ìì¬//
+		void CreateA(
+			HINSTANCE _hIns,
+			const std::string& _startText,
+			const int _x, 
+			const int _y, 
+			const int _w,
+			const int _h,
+			const HWND _parentHandl = nullptr);
+
+		//TextBox‚Ìì¬//
+		void CreateA(
+			const std::string& _startText,
+			const ChMath::Vector2Base<int>& _pos,
+			const ChMath::Vector2Base<int>& _size,
+			const WindObject& _parentWind);
+
+		//TextBox‚Ìì¬//
+		void CreateA(
+			const std::string& _startText,
+			const int _x,
+			const int _y,
+			const int _w,
+			const int _h,
+			const WindObject& _parentWind);
+
+		//TextBox‚Ìì¬//
+		void CreateW(
+			HINSTANCE _hIns,
+			const std::wstring& _startText,
+			const ChMath::Vector2Base<int>& _pos,
+			const ChMath::Vector2Base<int>& _size,
+			const HWND _parentHandl = nullptr);
+
+		//TextBox‚Ìì¬//
+		void CreateW(
+			HINSTANCE _hIns,
+			const std::wstring& _startText,
+			const int _x,
+			const int _y,
+			const int _w,
+			const int _h,
+			const HWND _parentHandl = nullptr);
+
+		//TextBox‚Ìì¬//
+		void CreateW(
+			const std::wstring& _startText,
+			const ChMath::Vector2Base<int>& _pos,
+			const ChMath::Vector2Base<int>& _size,
+			const WindObject& _parentWind);
+
+		//TextBox‚Ìì¬//
+		void CreateW(
+			const std::wstring& _startText,
+			const int _x,
+			const int _y,
+			const int _w,
+			const int _h,
+			const WindObject& _parentWind);
+
+		void Create(
+			HINSTANCE _hIns,
+			const
+#ifdef UNICODE
+			std::wstring
+#else
+			std::string
+#endif
+			_startText,
+			const ChMath::Vector2Base<int>& _pos,
+			const ChMath::Vector2Base<int>& _size,
+			const HWND _parentHandl = nullptr
+		)
+		{
+
+#ifdef UNICODE
+			CreateW(_hIns, _startText, _pos, _size, _parentHandl);
+#else
+			CreateA(_hIns, _startText, _pos, _size, _parentHandl);
+#endif
+		}
+
+		void Create(
+			HINSTANCE _hIns,
+			const
+#ifdef UNICODE
+			std::wstring
+#else
+			std::string
+#endif
+			_startText,
+			const int _x,
+			const int _y,
+			const int _w,
+			const int _h,
+			const HWND _parentHandl = nullptr
+		)
+		{
+
+#ifdef UNICODE
+			CreateW(_hIns, _startText, ChMath::Vector2Base<int>(_x,_y), ChMath::Vector2Base<int>(_w, _h), _parentHandl);
+#else
+			CreateA(_hIns, _startText, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), _parentHandl);
+#endif
+		}
+
+		void Create(
+			const
+#ifdef UNICODE
+			std::wstring
+#else
+			std::string
+#endif
+			_startText,
+			const ChMath::Vector2Base<int>& _pos,
+			const ChMath::Vector2Base<int>& _size,
+			const WindObject& _parentWind
+		)
+		{
+
+#ifdef UNICODE
+			CreateW(_startText, _pos, _size, _parentWind);
+#else
+			CreateA(_startText, _pos, _size, _parentWind);
+#endif
+		}
+
+		void Create(
+			const
+#ifdef UNICODE
+			std::wstring
+#else
+			std::string
+#endif
+			_startText,
+			const int _x,
+			const int _y,
+			const int _w,
+			const int _h,
+			const WindObject& _parentWind
+		)
+		{
+
+#ifdef UNICODE
+			CreateW(_startText, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), _parentWind);
+#else
+			CreateA(_startText, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), _parentWind);
+#endif
+		}
+
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
 		//TextBox‚©‚çText‚Ìo—Í//
-		std::string GetText();
+		std::string GetTextA();
+
+		std::wstring GetTextW();
+
+#ifdef UNICODE
+		std::wstring
+#else
+		std::string
+#endif
+			GetText()
+		{
+			return
+#ifdef UNICODE
+				GetTextW();
+#else
+				GetTextA();
+#endif
+		}
 
 		//TextBox‚Ö“ü—Í‚Å‚«‚é•¶š”‚Ì§ŒÀ//
 		inline unsigned long GetCharLimit()
@@ -36,12 +211,42 @@ namespace ChWin
 		//SetFunction//
 
 		//TextBox‚ÖText‚Ì“ü—Í//
-		void SetText(const std::string& _text);
+		void SetTextA(const std::string& _text);
+
+		void SetTextW(const std::wstring& _text);
+
+
+		void SetText(
+			const
+#ifdef UNICODE
+			std::wstring&
+#else
+			std::string&
+#endif 
+			_text)
+		{
+#ifdef UNICODE
+				SetTextW(_text);
+#else
+				SetTextA(_text);
+#endif
+		}
 
 		//TextBox‚Ö“ü—Í‚Å‚«‚é•¶š”‚Ì§ŒÀ//
-		void SetCharLimit(const unsigned long _size);
+		void SetCharLimitA(const unsigned long _size);
 
-		void Update(const WPARAM& _wParam)override;
+		//TextBox‚Ö“ü—Í‚Å‚«‚é•¶š”‚Ì§ŒÀ//
+		void SetCharLimitW(const unsigned long _size);
+
+		void SetText(const unsigned long _size)
+		{
+#ifdef UNICODE
+			SetCharLimitW(_size);
+#else
+			SetCharLimitA(_size);
+#endif
+		}
+
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
@@ -49,15 +254,6 @@ namespace ChWin
 		inline ChStd::Bool IsSelect() { return selectFlg; }
 
 		///////////////////////////////////////////////////////////////////////////////////////
-
-		//TextBox‚Ìì¬//
-		void Create(
-			const std::string& _startText
-			, const int _x
-			, const int _y
-			, const int _w
-			, const int _h
-			, const HWND _parentHandl = nullptr);
 
 	private:
 

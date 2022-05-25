@@ -241,9 +241,9 @@ namespace ChWin
 	public://Create Functino//
 
 		//Set FunctionÇêÊÇ…çsÇ§//
-		ChStd::Bool Create(WindObject* _out,const std::string& _appName,const std::string& _windClassName,const int _nShowCmd = 0)const;
+		ChStd::Bool Create(WindObject* _out,const std::string& _appName,const std::string& _windClassName,const int _nShowCmd = true)const;
 
-		ChStd::Bool Create(WindObject* _out,const std::wstring& _appName,const std::wstring& _windClassName, const int _nShowCmd = 0)const;
+		ChStd::Bool Create(WindObject* _out,const std::wstring& _appName,const std::wstring& _windClassName, const int _nShowCmd = true)const;
 
 	private://MemberValue//
 
