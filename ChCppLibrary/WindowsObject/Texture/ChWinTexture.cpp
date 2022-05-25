@@ -355,15 +355,16 @@ void Texture::DrawPlgMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector
 	auto bsize = _baseSize;
 	bsize.val.Abs();
 
-	MaskTexture maskRT;
+	static MaskTexture maskRT;
 
 
 	{
 		//auto texSize = GetTextureSize();
 
 		//maskRT.CreateMaskTexture(texSize.w, texSize.h);
+		//maskRT.CreateRenderTarget(_drawTarget,texSize.w, texSize.h);
+		
 		maskRT.CreateMaskTexture(bsize.w, bsize.h);
-
 		auto oldBkColor = maskRT.SetBKColor( _transparent);
 
 		{
@@ -374,7 +375,7 @@ void Texture::DrawPlgMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector
 
 			DrawMain(_textureHDC,maskRT.GetRenderTarget(), ChMath::Vector2Base<int>(0, 0), bsize, bpos);
 			
-			//DrawMain(_textureHDC,maskRT.GetRenderTarget(), ChMath::Vector2Base<int>(0, 0), texSize, ChMath::Vector2Base<int>(0, 0));
+			//DrawMain(maskRT.GetRenderTarget() ,_drawTarget, ChMath::Vector2Base<int>(0, 0), texSize, ChMath::Vector2Base<int>(0, 0));
 
 			//BitBlt(maskRT.GetRenderTarget(),0,0, bsize.w, bsize.h, _textureHDC, 0, 0, ChStd::EnumCast(opeCode));
 
@@ -382,9 +383,10 @@ void Texture::DrawPlgMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector
 
 		}
 
-		SetBkColor(maskRT.GetRenderTarget(), oldBkColor);
+		maskRT.SetBKColor(oldBkColor);
 
 	}
+
 
 	POINT edgePoint[3]{ {0,0},{0,0} ,{0,0} };
 
@@ -395,7 +397,7 @@ void Texture::DrawPlgMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector
 
 		mat.SetPosition(static_cast<float>(pos.x + size.x * 0.5f), static_cast<float>(pos.y + size.x * 0.5f), 0.0f);
 
-		mat.SetRotationZAxis(ChMath::ToRadian(_rot));
+		mat.SetRotationZAxis(ChMath::ToRadian(static_cast<float>(_rot)));
 
 		for (char i = 0; i < 3; i++)
 		{
@@ -419,8 +421,8 @@ void Texture::DrawPlgMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector
 
 	int tmpStretch = SetStretchBltMode(_drawTarget, ChStd::EnumCast(stretchType));
 
-	int out = PlgBlt(_drawTarget, edgePoint, _textureHDC, bpos.x, bpos.y, bsize.w, bsize.h, maskRT.GetTexture(), 0, 0);
-
+	int out = PlgBlt(_drawTarget, edgePoint, _textureHDC, bpos.x, bpos.y, bsize.w, bsize.h, maskRT.GetTexture(),0,0);
+	
 	SetStretchBltMode(_drawTarget, tmpStretch);
 
 }
@@ -441,7 +443,7 @@ void RenderTarget::Release()
 ChStd::Bool RenderTarget::CreateRenderTarget(HWND _hWnd, const ChMath::Vector2Base<int>& _size)
 {
 	if (ChPtr::NullCheck(_hWnd))return false;
-	Texture::Release();
+	Release();
 
 	auto size = _size;
 	size.val.Abs();
@@ -484,7 +486,7 @@ ChStd::Bool RenderTarget::CreateRenderTarget(HWND _hWnd, const int _width, const
 ChStd::Bool RenderTarget::CreateRenderTarget(HDC _dc, const ChMath::Vector2Base<int>& _size)
 {
 	if (ChPtr::NullCheck(_dc))return false;
-	Texture::Release();
+	Release();
 
 	auto size = _size;
 	size.val.Abs();
@@ -715,7 +717,7 @@ void RenderTarget::FillRT(ChWin::Brush& _brush, const long _x, const long _y, co
 
 ChStd::Bool MaskTexture::CreateMaskTexture(const ChMath::Vector2Base<int>& _size)
 {
-	Texture::Release();
+	Release();
 
 	dc = CreateCompatibleDC(NULL);
 
