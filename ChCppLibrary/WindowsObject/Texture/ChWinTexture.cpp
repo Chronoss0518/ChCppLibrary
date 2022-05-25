@@ -359,11 +359,6 @@ void Texture::DrawPlgMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector
 
 
 	{
-		//auto texSize = GetTextureSize();
-
-		//maskRT.CreateMaskTexture(texSize.w, texSize.h);
-		//maskRT.CreateRenderTarget(_drawTarget,texSize.w, texSize.h);
-		
 		maskRT.CreateMaskTexture(bsize.w, bsize.h);
 		auto oldBkColor = maskRT.SetBKColor( _transparent);
 
@@ -375,10 +370,6 @@ void Texture::DrawPlgMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector
 
 			DrawMain(_textureHDC,maskRT.GetRenderTarget(), ChMath::Vector2Base<int>(0, 0), bsize, bpos);
 			
-			//DrawMain(maskRT.GetRenderTarget() ,_drawTarget, ChMath::Vector2Base<int>(0, 0), texSize, ChMath::Vector2Base<int>(0, 0));
-
-			//BitBlt(maskRT.GetRenderTarget(),0,0, bsize.w, bsize.h, _textureHDC, 0, 0, ChStd::EnumCast(opeCode));
-
 			opeCode = oCode;
 
 		}
