@@ -1,4 +1,5 @@
 #include<Windows.h>
+#include<wingdi.h>
 #include"../../BaseIncluder/ChBase.h"
 #include"../../BaseSystem/ChWindows/ChWindows.h"
 #include"../WindDrawer/ChWindDrawer.h"
@@ -99,6 +100,30 @@ void Texture::SetStretchToHDC(HDC _target)
 	SelectObject(_target, mainTexture);
 }
 
+ChMath::Vector2Base<int> Texture::GetTextureSizeW()
+{
+	BITMAP tmp;
+	GetObjectW(
+		mainTexture,
+		sizeof(BITMAP),
+		&tmp
+	);
+
+	return ChMath::Vector2Base<int>(tmp.bmWidth, tmp.bmHeight);
+}
+
+ChMath::Vector2Base<int> Texture::GetTextureSizeA()
+{
+	BITMAP tmp;
+	GetObjectA(
+		mainTexture,
+		sizeof(BITMAP),
+		&tmp
+	);
+
+	return ChMath::Vector2Base<int>(tmp.bmWidth, tmp.bmHeight);
+}
+
 void Texture::Draw(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos)
 {
 	if (!IsInit())return;
@@ -160,6 +185,26 @@ void Texture::DrawTransparent(HDC _drawTarget, const ChMath::Vector2Base<int>& _
 void Texture::DrawTransparent(HDC _drawTarget, const int  _x, const int  _y, const int  _w, const int  _h, const int  _baseX, const int  _baseY, const int  _baseW, const int  _baseH, const UINT _transparent)
 {
 	DrawTransparent(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _transparent);
+}
+
+void Texture::DrawPlg(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent, const int _rot)
+{
+	if (!IsInit())return;
+
+	if (ChPtr::NullCheck(_drawTarget))return;
+
+	HDC tmp = CreateCompatibleDC(_drawTarget);
+
+	SetTextureToHDC(tmp);
+
+	DrawPlgMain(tmp, _drawTarget, _pos, _size, _basePos, _baseSize, _transparent,_rot);
+
+	DeleteDC(tmp);
+}
+
+void Texture::DrawPlg(HDC _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH, const UINT _transparent, const int _rot)
+{
+	DrawPlg(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _transparent,_rot);
 }
 
 void Texture::Draw(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos)
@@ -227,6 +272,26 @@ void Texture::DrawTransparent(RenderTarget& _drawTarget, const int  _x, const in
 	DrawTransparent(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _transparent);
 }
 
+void Texture::DrawPlg(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent, const int _rot)
+{
+	if (!IsInit())return;
+
+	if (!_drawTarget.IsInit())return;
+
+	HDC tmp = CreateCompatibleDC(_drawTarget.GetRenderTarget());
+
+	SetTextureToHDC(tmp);
+
+	DrawPlgMain(tmp, _drawTarget.GetRenderTarget(), _pos, _size, _basePos, _baseSize, _transparent, _rot);
+
+	DeleteDC(tmp);
+}
+
+void Texture::DrawPlg(RenderTarget& _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH, const UINT _transparent, const int _rot)
+{
+	DrawPlg(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _transparent,_rot);
+}
+
 void Texture::DrawMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos)
 {
 
@@ -236,8 +301,6 @@ void Texture::DrawMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector2Ba
 	size.val.Abs();
 	auto bpos = _basePos;
 	bpos.val.Abs();
-
-	HDC tmp = CreateCompatibleDC(_drawTarget);
 
 	BitBlt(_drawTarget, pos.x, pos.y, size.w, size.h, _textureHDC, bpos.x, bpos.y, ChStd::EnumCast(opeCode));
 
@@ -253,9 +316,7 @@ void Texture::DrawStretchMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Ve
 	auto bpos = _basePos;
 	auto bsize = _baseSize;
 
-	int tmpStretch = GetStretchBltMode(_drawTarget);
-
-	SetStretchBltMode(_drawTarget, ChStd::EnumCast(stretchType));
+	int tmpStretch = SetStretchBltMode(_drawTarget, ChStd::EnumCast(stretchType));
 
 	StretchBlt(_drawTarget, pos.x, pos.y, size.w, size.h, _textureHDC, bpos.x, bpos.y, bsize.w, bsize.h, ChStd::EnumCast(opeCode));
 
@@ -275,11 +336,90 @@ void Texture::DrawTransparentMain(HDC _textureHDC, HDC _drawTarget, const ChMath
 	auto bsize = _baseSize;
 	bsize.val.Abs();
 
-	int tmpStretch = GetStretchBltMode(_drawTarget);
-
-	SetStretchBltMode(_drawTarget, ChStd::EnumCast(stretchType));
+	int tmpStretch = SetStretchBltMode(_drawTarget, ChStd::EnumCast(stretchType));
 
 	TransparentBlt(_drawTarget, pos.x, pos.y, size.w, size.h, _textureHDC, bpos.x, bpos.y, bsize.w, bsize.h, _transparent);
+
+	SetStretchBltMode(_drawTarget, tmpStretch);
+
+}
+
+void Texture::DrawPlgMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent, const unsigned long _rot)
+{
+	auto pos = _pos;
+	//pos.val.Abs();
+	auto size = _size;
+	//size.val.Abs();
+	auto bpos = _basePos;
+	bpos.val.Abs();
+	auto bsize = _baseSize;
+	bsize.val.Abs();
+
+	MaskTexture maskRT;
+
+
+	{
+		//auto texSize = GetTextureSize();
+
+		//maskRT.CreateMaskTexture(texSize.w, texSize.h);
+		maskRT.CreateMaskTexture(bsize.w, bsize.h);
+
+		auto oldBkColor = maskRT.SetBKColor( _transparent);
+
+		{
+
+			auto oCode = opeCode;
+
+			opeCode = RasterOpeCode::NotSRCCopy;
+
+			DrawMain(_textureHDC,maskRT.GetRenderTarget(), ChMath::Vector2Base<int>(0, 0), bsize, bpos);
+			
+			//DrawMain(_textureHDC,maskRT.GetRenderTarget(), ChMath::Vector2Base<int>(0, 0), texSize, ChMath::Vector2Base<int>(0, 0));
+
+			//BitBlt(maskRT.GetRenderTarget(),0,0, bsize.w, bsize.h, _textureHDC, 0, 0, ChStd::EnumCast(opeCode));
+
+			opeCode = oCode;
+
+		}
+
+		SetBkColor(maskRT.GetRenderTarget(), oldBkColor);
+
+	}
+
+	POINT edgePoint[3]{ {0,0},{0,0} ,{0,0} };
+
+	{
+		ChVec3 rotPointBase[3];
+
+		ChLMat mat;
+
+		mat.SetPosition(static_cast<float>(pos.x + size.x * 0.5f), static_cast<float>(pos.y + size.x * 0.5f), 0.0f);
+
+		mat.SetRotationZAxis(ChMath::ToRadian(_rot));
+
+		for (char i = 0; i < 3; i++)
+		{
+			rotPointBase[i] = ChVec3(static_cast<float>(pos.x), static_cast<float>(pos.y), 0.0f);
+		}
+
+		rotPointBase[1].x += size.x;
+		rotPointBase[2].y += size.y;
+
+		for (char i = 0; i < 3; i++)
+		{
+			rotPointBase[i] -= ChVec3(static_cast<float>(pos.x), static_cast<float>(pos.y), 0.0f);
+			rotPointBase[i] -= ChVec3(size.x * 0.5f, size.y * 0.5f, 0.0f);
+			rotPointBase[i] = mat.Transform(rotPointBase[i]);
+			edgePoint[i].x = static_cast<long>(rotPointBase[i].x);
+			edgePoint[i].y = static_cast<long>(rotPointBase[i].y);
+		}
+
+
+	}
+
+	int tmpStretch = SetStretchBltMode(_drawTarget, ChStd::EnumCast(stretchType));
+
+	int out = PlgBlt(_drawTarget, edgePoint, _textureHDC, bpos.x, bpos.y, bsize.w, bsize.h, maskRT.GetTexture(), 0, 0);
 
 	SetStretchBltMode(_drawTarget, tmpStretch);
 
@@ -298,13 +438,13 @@ void RenderTarget::Release()
 	Texture::Release(); 
 }
 
-ChStd::Bool RenderTarget::CreateRenderTarget(HWND _hWnd, const int _width, const int _height)
+ChStd::Bool RenderTarget::CreateRenderTarget(HWND _hWnd, const ChMath::Vector2Base<int>& _size)
 {
 	if (ChPtr::NullCheck(_hWnd))return false;
 	Texture::Release();
 
-	int w = _width >= 0 ? _width : _width * -1;
-	int h = _height >= 0 ? _height : _height * -1;
+	auto size = _size;
+	size.val.Abs();
 
 	HDC tmp = GetDC(_hWnd);
 
@@ -316,7 +456,7 @@ ChStd::Bool RenderTarget::CreateRenderTarget(HWND _hWnd, const int _width, const
 		return false;
 	}
 
-	mainTexture = CreateCompatibleBitmap(dc, w, h);
+	mainTexture = CreateCompatibleBitmap(dc, size.w, size.h);
 
 	ReleaseDC(_hWnd, tmp);
 
@@ -336,13 +476,18 @@ ChStd::Bool RenderTarget::CreateRenderTarget(HWND _hWnd, const int _width, const
 	return true;
 }
 
-ChStd::Bool RenderTarget::CreateRenderTarget(HDC _dc, const int _width, const int _height)
+ChStd::Bool RenderTarget::CreateRenderTarget(HWND _hWnd, const int _width, const int _height)
+{
+	return CreateRenderTarget(_hWnd,ChMath::Vector2Base<int>(_width,_height));
+}
+
+ChStd::Bool RenderTarget::CreateRenderTarget(HDC _dc, const ChMath::Vector2Base<int>& _size)
 {
 	if (ChPtr::NullCheck(_dc))return false;
 	Texture::Release();
 
-	int w = _width >= 0 ? _width : _width * -1;
-	int h = _height >= 0 ? _height : _height * -1;
+	auto size = _size;
+	size.val.Abs();
 
 	dc = CreateCompatibleDC(_dc);
 
@@ -351,9 +496,9 @@ ChStd::Bool RenderTarget::CreateRenderTarget(HDC _dc, const int _width, const in
 		return false;
 	}
 
-	mainTexture = CreateCompatibleBitmap(dc, w, h);
+	mainTexture = CreateCompatibleBitmap(dc, size.w, size.h);
 
-	if (ChPtr::NullCheck(mainTexture)) 
+	if (ChPtr::NullCheck(mainTexture))
 	{
 		DeleteDC(dc);
 		dc = nullptr;
@@ -368,6 +513,11 @@ ChStd::Bool RenderTarget::CreateRenderTarget(HDC _dc, const int _width, const in
 
 }
 
+ChStd::Bool RenderTarget::CreateRenderTarget(HDC _dc, const int _width, const int _height)
+{
+	return CreateRenderTarget(_dc, ChMath::Vector2Base<int>(_width, _height));
+}
+
 void RenderTarget::Draw(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos)
 {
 	if (!IsInit())return;
@@ -378,7 +528,6 @@ void RenderTarget::Draw(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, c
 
 void RenderTarget::Draw(HDC _drawTarget, const int  _x, const int  _y, const int  _w, const int  _h, const int  _baseX, const int  _baseY)
 {
-
 	if (!IsInit())return;
 	if (_drawTarget == dc)return;
 	Draw(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY));
@@ -386,7 +535,6 @@ void RenderTarget::Draw(HDC _drawTarget, const int  _x, const int  _y, const int
 
 void RenderTarget::DrawStretch(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize)
 {
-
 	if (!IsInit())return;
 	if (_drawTarget == dc)return;
 
@@ -414,6 +562,20 @@ void RenderTarget::DrawTransparent(HDC _drawTarget, const int _x, const int _y, 
 	if (!IsInit())return;
 	if (_drawTarget == dc)return;
 	DrawTransparent(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _transparent);
+}
+
+void RenderTarget::DrawPlg(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent, const int _rot)
+{
+	if (!IsInit())return;
+	if (_drawTarget == dc)return;
+	DrawPlgMain(dc, _drawTarget, _pos, _size, _basePos, _baseSize, _transparent, _rot);
+}
+
+void RenderTarget::DrawPlg(HDC _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH, const UINT _transparent, const int _rot)
+{
+	if (!IsInit())return;
+	if (_drawTarget == dc)return;
+	DrawPlg(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _transparent,_rot);
 }
 
 void RenderTarget::Draw(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos)
@@ -459,122 +621,54 @@ void RenderTarget::DrawTransparent(RenderTarget& _drawTarget, const int _x, cons
 	DrawTransparent(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _transparent);
 }
 
-void RenderTarget::DrawBrushA(HBRUSH _brush)
+void RenderTarget::DrawPlg(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent, const int _rot)
+{
+	if (!IsInit())return;
+	if (&_drawTarget == this)return;
+	DrawPlgMain(dc, _drawTarget.GetRenderTarget(), _pos, _size, _basePos, _baseSize, _transparent, _rot);
+}
+
+void RenderTarget::DrawPlg(RenderTarget& _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH, const UINT _transparent, const int _rot)
+{
+	if (!IsInit())return;
+	if (&_drawTarget == this)return;
+	DrawPlg(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _transparent,_rot);
+}
+
+void RenderTarget::DrawBrush(HBRUSH _brush)
 {
 	if (ChPtr::NullCheck(_brush))return;
 	if (!IsInit())return;
 
-	BITMAP tmp;
-	GetObjectA(
-		mainTexture,
-		sizeof(BITMAP),
-		&tmp
-	);
+	auto texSize = GetTextureSize();
 
 	RECT rec;
 
 	ChStd::MZero(&rec);
 
-	rec.bottom = tmp.bmHeight;
-	rec.right = tmp.bmWidth;
+	rec.bottom = texSize.h;
+	rec.right = texSize.w;
 
 	FillRT(_brush, rec);
 
-	//SelectObject(dc, _brush);
-
-	//PatBlt(dc, 0, 0, tmp.bmWidth, tmp.bmHeight, ChStd::EnumCast(RasterOpeCode::SRCCopy));
-
-	//SelectObject(dc, GetStockObject(NULL_BRUSH));
-
-	//SetTextureToHDC(dc);
 }
 
-void RenderTarget::DrawBrushW(HBRUSH _brush)
-{
-	if (ChPtr::NullCheck(_brush))return;
-	if (!IsInit())return;
-	BITMAP tmp;
-	GetObjectW(
-		mainTexture,
-		sizeof(BITMAP),
-		&tmp
-	);
 
+void RenderTarget::DrawBrush(ChWin::Brush& _brush)
+{
+	if (!IsInit())return;
+
+	auto texSize = GetTextureSize();
 
 	RECT rec;
 
 	ChStd::MZero(&rec);
 
-	rec.bottom = tmp.bmHeight;
-	rec.right = tmp.bmWidth;
-
-	FillRT(_brush, rec);
-
-	//SelectObject(dc, _brush);
-
-	//PatBlt(dc, 0, 0, tmp.bmWidth, tmp.bmHeight, ChStd::EnumCast(RasterOpeCode::SRCCopy));
-
-	//SelectObject(dc, GetStockObject(NULL_BRUSH));
-
-	//SetTextureToHDC(dc);
-}
-
-void RenderTarget::DrawBrushA(ChWin::Brush& _brush)
-{
-	if (!IsInit())return;
-
-	BITMAP tmp;
-	GetObjectA(
-		mainTexture,
-		sizeof(BITMAP),
-		&tmp
-	);
-
-	RECT rec;
-
-	ChStd::MZero(&rec);
-
-	rec.bottom = tmp.bmHeight;
-	rec.right = tmp.bmWidth;
+	rec.bottom = texSize.h;
+	rec.right = texSize.w;
 
 	_brush.FillRect(dc, rec);
 
-	//SelectObject(dc, _brush);
-
-	//PatBlt(dc, 0, 0, tmp.bmWidth, tmp.bmHeight, ChStd::EnumCast(RasterOpeCode::SRCCopy));
-
-	//SelectObject(dc, GetStockObject(NULL_BRUSH));
-
-	//SetTextureToHDC(dc);
-}
-
-void RenderTarget::DrawBrushW(ChWin::Brush& _brush)
-{
-	if (!IsInit())return;
-	BITMAP tmp;
-	GetObjectW(
-		mainTexture,
-		sizeof(BITMAP),
-		&tmp
-	);
-
-
-	RECT rec;
-
-	ChStd::MZero(&rec);
-
-	rec.bottom = tmp.bmHeight;
-	rec.right = tmp.bmWidth;
-
-	_brush.FillRect(dc, rec);
-
-	//SelectObject(dc, _brush);
-
-	//PatBlt(dc, 0, 0, tmp.bmWidth, tmp.bmHeight, ChStd::EnumCast(RasterOpeCode::SRCCopy));
-
-	//SelectObject(dc, GetStockObject(NULL_BRUSH));
-
-	//SetTextureToHDC(dc);
 }
 
 void RenderTarget::FillRT(HBRUSH _brush, const RECT& _range)
@@ -616,4 +710,35 @@ void RenderTarget::FillRT(ChWin::Brush& _brush, const long _x, const long _y, co
 	tmp.right = _x + _w;
 
 	_brush.FillRect(dc, tmp);
+}
+
+
+ChStd::Bool MaskTexture::CreateMaskTexture(const ChMath::Vector2Base<int>& _size)
+{
+	Texture::Release();
+
+	dc = CreateCompatibleDC(NULL);
+
+	if (ChPtr::NullCheck(dc))return false;
+
+	auto size = _size;
+	size.val.Abs();
+
+	mainTexture = CreateBitmap(size.w, size.h, 1, 1, NULL);
+
+	if (ChPtr::NullCheck(mainTexture))
+	{
+		DeleteDC(dc);
+		return false;
+	}
+
+	SetTextureToHDC(dc);
+	SetInitFlg(true);
+
+	return true;
+}
+
+ChStd::Bool MaskTexture::CreateMaskTexture(const int _width, const int _height)
+{
+	return CreateMaskTexture(ChMath::Vector2Base<int>(_width, _height));
 }

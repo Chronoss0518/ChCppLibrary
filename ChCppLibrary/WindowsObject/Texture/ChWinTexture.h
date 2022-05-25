@@ -13,7 +13,7 @@ namespace ChWin
 	class Brush;
 	class WindDrawer;
 
-	enum class Strech :int
+	enum class Stretch :int
 	{
 		BlackOnWhite = BLACKONWHITE,
 		ColorOnColor =COLORONCOLOR,
@@ -80,13 +80,29 @@ namespace ChWin
 
 		void SetStretchToHDC(HDC _target);
 
-		inline void SetStretchType(const Strech _stretch) { stretchType = _stretch; }
+		inline void SetStretchType(const Stretch _stretch) { stretchType = _stretch; }
 
 		inline void SetRasterizerOperationCodeType(const RasterizerOperationCodeType _opeCode) { opeCode = _opeCode; }
 
 	public://Get Functions//
 
 		inline RasterOpeCode GetRasterizerOperationCodeType() { return opeCode; }
+
+		inline HBITMAP GetTexture() { return mainTexture; }
+
+		inline ChMath::Vector2Base<int> GetTextureSize()
+		{
+			return 
+#ifdef UNICODE
+			GetTextureSizeW();
+#else
+			GetTextureSizeA();
+#endif
+		}
+
+		ChMath::Vector2Base<int> GetTextureSizeW();
+
+		ChMath::Vector2Base<int> GetTextureSizeA();
 
 	public://Other Functions//
 
@@ -102,6 +118,10 @@ namespace ChWin
 
 		void DrawTransparent(HDC _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH, const UINT _transparent);
 
+		void DrawPlg(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent, const int _rot);
+
+		void DrawPlg(HDC _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH, const UINT _transparent, const int _rot);
+
 		void Draw(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos = ChMath::Vector2Base<int>(0, 0));
 
 		void Draw(RenderTarget& _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX = 0, const int _baseY = 0);
@@ -114,9 +134,13 @@ namespace ChWin
 
 		void DrawTransparent(RenderTarget& _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH, const UINT _transparent);
 
+		void DrawPlg(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent, const int _rot);
+
+		void DrawPlg(RenderTarget& _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH, const UINT _transparent, const int _rot);
+
 		//ChStd::Bool FillTexture(const FillType _type = FillType::Whiteness);
 
-	protected://Other Function//
+	protected://Other Functions//
 
 		void DrawMain(HDC _textureHDC,HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos);
 
@@ -124,9 +148,11 @@ namespace ChWin
 
 		void DrawTransparentMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent);
 
+		void DrawPlgMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent,const unsigned long _rot);
+
 	protected://Member Value//
 
-		Strech stretchType = Strech::BlackOnWhite;
+		Stretch stretchType = Stretch::BlackOnWhite;
 		RasterOpeCode opeCode = RasterOpeCode::SRCCopy;
 		HBITMAP mainTexture = nullptr;
 	};
@@ -143,8 +169,10 @@ namespace ChWin
 
 	public://Create Functions//
 
+		ChStd::Bool CreateRenderTarget(HWND _hWnd, const ChMath::Vector2Base<int>& _size);
 		ChStd::Bool CreateRenderTarget(HWND _hWnd, const int _width, const int _height);
 
+		ChStd::Bool CreateRenderTarget(HDC _dc, const ChMath::Vector2Base<int>& _size);
 		ChStd::Bool CreateRenderTarget(HDC _dc, const int _width, const int _height);
 
 		inline HBRUSH CreateBrush()const  { return Texture::CreateBrush(); }
@@ -155,15 +183,24 @@ namespace ChWin
 
 		inline void SetStretchToHDC(HDC _target) { Texture::SetStretchToHDC(_target); }
 
-		inline void SetStretchType(const Strech _stretch) { Texture::SetStretchType(_stretch); }
+		inline void SetStretchType(const Stretch _stretch) { Texture::SetStretchType(_stretch); }
 
 		inline void SetRasterizerOperationCodeType(const RasterizerOperationCodeType _opeCode) { Texture::SetRasterizerOperationCodeType(_opeCode); }
+
+		inline UINT SetBKColor(const UINT _transparent) { return SetBkColor(dc, _transparent); }
 
 	public://Get Functions//
 
 		inline RasterOpeCode GetRasterizerOperationCodeType() { return Texture::GetRasterizerOperationCodeType(); }
 
 		inline HDC GetRenderTarget() { return dc; }
+
+		inline HBITMAP GetTexture() { return Texture::GetTexture(); }
+
+		inline ChMath::Vector2Base<int> GetTextureSize()
+		{
+			return Texture::GetTextureSize();
+		}
 
 	public://Is Function//
 
@@ -183,6 +220,10 @@ namespace ChWin
 
 		void DrawTransparent(HDC _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH, const UINT _transparent);
 
+		void DrawPlg(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent, const int _rot);
+
+		void DrawPlg(HDC _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH, const UINT _transparent, const int _rot);
+
 		void Draw(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos = ChMath::Vector2Base<int>(0, 0));
 
 		void Draw(RenderTarget& _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX = 0, const int _baseY = 0);
@@ -195,31 +236,13 @@ namespace ChWin
 
 		void DrawTransparent(RenderTarget& _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH, const UINT _transparent);
 
-		inline void DrawBrush(HBRUSH _brush)
-		{
-#ifdef UNICODE
-			DrawBrushW(_brush);
-#else
-			DrawBrushA(_brush);
-#endif
-		}
+		void DrawPlg(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent, const int _rot);
 
-		void DrawBrushW(HBRUSH _brush);
+		void DrawPlg(RenderTarget& _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH, const UINT _transparent, const int _rot);
 
-		void DrawBrushA(HBRUSH _brush);
+		void DrawBrush(HBRUSH _brush);
 
-		inline void DrawBrush(ChWin::Brush& _brush)
-		{
-#ifdef UNICODE
-			DrawBrushW(_brush);
-#else
-			DrawBrushA(_brush);
-#endif
-		}
-
-		void DrawBrushW(ChWin::Brush& _brush);
-
-		void DrawBrushA(ChWin::Brush& _brush);
+		void DrawBrush(ChWin::Brush& _brush);
 
 		void FillRT(HBRUSH _brush,const RECT& _range);
 
@@ -232,6 +255,47 @@ namespace ChWin
 	protected://Member Value//
 
 		HDC dc = nullptr;
+
+	};
+
+	class MaskTexture :protected RenderTarget
+	{
+	public://ConstructorDestructor//
+
+		inline ~MaskTexture()override { Release(); }
+
+	public://Init And Release//
+
+		void Release() { RenderTarget::Release(); }
+
+	public://Create Functions//
+
+		ChStd::Bool CreateMaskTexture(const ChMath::Vector2Base<int>& _size);
+
+		ChStd::Bool CreateMaskTexture(const int _width, const int _height);
+
+	public://Set Functions//
+
+		inline void SetTextureToHDC(HDC _target)
+		{
+			RenderTarget::SetTextureToHDC(_target);
+		}
+
+		inline void SetStretchType(const Stretch _stretch) { stretchType = _stretch; }
+
+		inline void SetRasterizerOperationCodeType(const RasterizerOperationCodeType _opeCode) { opeCode = _opeCode; }
+
+		inline UINT SetBKColor(const UINT _transparent) { return RenderTarget::SetBKColor(_transparent); }
+
+	public://Get Functions//
+
+		inline HDC GetRenderTarget() { return RenderTarget::GetRenderTarget(); }
+
+		inline HBITMAP GetTexture() { return RenderTarget::GetTexture(); }
+
+	public://Is Function//
+
+		ChStd::Bool IsInit()const { return RenderTarget::IsInit(); }
 
 	};
 

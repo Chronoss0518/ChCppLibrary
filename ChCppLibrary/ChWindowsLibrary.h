@@ -11,6 +11,7 @@
 #ifdef _WINDEF_
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "Msimg32.lib")
+#pragma comment(lib,"Gdi32.lib")
 #endif
 
 #include"WindowsObject/BaseWind/ChWinBaseWind.h"
