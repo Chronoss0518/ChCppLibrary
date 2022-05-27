@@ -43,8 +43,9 @@ void TextBox::CreateA(
 
 	if (!IsInit())return;
 
-	SetWindProcedure(EN_KILLFOCUS, [&](HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam)->LRESULT {selectFlg = false; return DefWindowProcA(_hWnd, _msg, _wParam, _lParam); });
-	SetWindProcedure(EN_SETFOCUS, [&](HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam)->LRESULT {selectFlg = true; return DefWindowProcA(_hWnd, _msg, _wParam, _lParam); });
+	SetChildWindProcedure(EN_KILLFOCUS, [&](HWND _hWnd, UINT _msg) {selectFlg = false; });
+	SetChildWindProcedure(EN_SETFOCUS, [&](HWND _hWnd, UINT _msg) {selectFlg = true; });
+	SetChildWindProcedure(EN_CHANGE, [&](HWND _hWnd, UINT _msg) {isChangeFlg = true; });
 
 
 }
@@ -98,8 +99,9 @@ void TextBox::CreateA(
 
 	if (!IsInit())return;
 
-	SetWindProcedure(EN_KILLFOCUS, [&](HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam)->LRESULT {selectFlg = false; return DefWindowProcA(_hWnd, _msg, _wParam, _lParam); });
-	SetWindProcedure(EN_SETFOCUS, [&](HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam)->LRESULT {selectFlg = true; return DefWindowProcA(_hWnd, _msg, _wParam, _lParam); });
+	SetChildWindProcedure(EN_KILLFOCUS, [&](HWND _hWnd, UINT _msg) {selectFlg = false; });
+	SetChildWindProcedure(EN_SETFOCUS, [&](HWND _hWnd, UINT _msg) {selectFlg = true; });
+	SetChildWindProcedure(EN_CHANGE, [&](HWND _hWnd, UINT _msg) {isChangeFlg = true; });
 
 }
 
@@ -150,8 +152,9 @@ void TextBox::CreateW(
 
 	if (!IsInit())return;
 
-	SetWindProcedure(EN_KILLFOCUS, [&](HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam)->LRESULT {selectFlg = false; return DefWindowProcW(_hWnd, _msg, _wParam, _lParam); });
-	SetWindProcedure(EN_SETFOCUS, [&](HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam)->LRESULT {selectFlg = true; return DefWindowProcW(_hWnd, _msg, _wParam, _lParam); });
+	SetChildWindProcedure(EN_KILLFOCUS, [&](HWND _hWnd, UINT _msg) {selectFlg = false; });
+	SetChildWindProcedure(EN_SETFOCUS, [&](HWND _hWnd, UINT _msg) {selectFlg = true; });
+	SetChildWindProcedure(EN_CHANGE, [&](HWND _hWnd, UINT _msg) {isChangeFlg = true; });
 
 }
 
@@ -204,8 +207,9 @@ void TextBox::CreateW(
 
 	if (!IsInit())return;
 
-	SetWindProcedure(EN_KILLFOCUS, [&](HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam)->LRESULT {selectFlg = false; return DefWindowProcW(_hWnd, _msg, _wParam, _lParam); });
-	SetWindProcedure(EN_SETFOCUS, [&](HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam)->LRESULT {selectFlg = true; return DefWindowProcW(_hWnd, _msg, _wParam, _lParam); });
+	SetChildWindProcedure(EN_KILLFOCUS, [&](HWND _hWnd, UINT _msg) {selectFlg = false; });
+	SetChildWindProcedure(EN_SETFOCUS, [&](HWND _hWnd, UINT _msg) {selectFlg = true; });
+	SetChildWindProcedure(EN_CHANGE, [&](HWND _hWnd, UINT _msg) {isChangeFlg = true; });
 
 }
 
@@ -230,6 +234,7 @@ std::string TextBox::GetTextA()
 
 	Text = reinterpret_cast<char*>(SendA(WM_GETTEXT, (WPARAM)1500, (LPARAM)tmp));
 
+	isChangeFlg = false;
 	return Text;
 }
 
@@ -242,6 +247,7 @@ std::wstring TextBox::GetTextW()
 
 	Text = reinterpret_cast<wchar_t*>(SendW(WM_GETTEXT, (WPARAM)1500, (LPARAM)tmp));
 
+	isChangeFlg = false;
 	return Text;
 }
 
@@ -275,4 +281,16 @@ void ChWin::TextBox::SetCharLimitW(const unsigned long _size)
 	if (selectFlg)return;
 	SendW(EM_SETLIMITTEXT, (WPARAM)_size, (LPARAM)NULL);
 	charLimit = _size;
+}
+
+void ChWin::TextBox::Select()
+{
+	Send(EN_SETFOCUS);
+	EnableWindow(GethWnd(), true);
+}
+
+void ChWin::TextBox::UnSelect()
+{
+	Send(EN_KILLFOCUS);
+	EnableWindow(GethWnd(), false);
 }

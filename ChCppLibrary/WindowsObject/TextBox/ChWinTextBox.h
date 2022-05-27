@@ -31,8 +31,8 @@ namespace ChWin
 		void CreateA(
 			HINSTANCE _hIns,
 			const std::string& _startText,
-			const int _x, 
-			const int _y, 
+			const int _x,
+			const int _y,
 			const int _w,
 			const int _h,
 			const HWND _parentHandl = nullptr);
@@ -127,7 +127,7 @@ namespace ChWin
 		{
 
 #ifdef UNICODE
-			CreateW(_hIns, _startText, ChMath::Vector2Base<int>(_x,_y), ChMath::Vector2Base<int>(_w, _h), _parentHandl);
+			CreateW(_hIns, _startText, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), _parentHandl);
 #else
 			CreateA(_hIns, _startText, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), _parentHandl);
 #endif
@@ -226,9 +226,9 @@ namespace ChWin
 			_text)
 		{
 #ifdef UNICODE
-				SetTextW(_text);
+			SetTextW(_text);
 #else
-				SetTextA(_text);
+			SetTextA(_text);
 #endif
 		}
 
@@ -247,21 +247,24 @@ namespace ChWin
 #endif
 		}
 
-
-		///////////////////////////////////////////////////////////////////////////////////////
-		//IsFunction//
+	public://Is Functions//
 
 		inline ChStd::Bool IsSelect() { return selectFlg; }
 
-		///////////////////////////////////////////////////////////////////////////////////////
+		inline ChStd::Bool IsChange() { return isChangeFlg; }
 
-	private:
+	public://Other Functions//
+
+		void Select();
+
+		void UnSelect();
+
+	private://Member Value//
 
 		unsigned long charLimit = 50;
 
 		ChStd::Bool selectFlg = false;
-
-
+		ChStd::Bool isChangeFlg = false;
 
 	};
 

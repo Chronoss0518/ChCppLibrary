@@ -20,7 +20,6 @@
 #include"WindowsObject/Button/ChWinButton.h"
 #include"WindowsObject/SubWind/ChWinSubWind.h"
 #include"WindowsObject/Mouse/ChWinMouse.h"
-#include"WindowsObject/TextBox/ChWinTextBox.h"
 #include"WindowsObject/DrawTexter/ChWinDrawTexter.h"
 
 //NewVersionWindowsClass//
@@ -30,6 +29,7 @@
 #include"WindowsObject/WindObject/ChWindObject.h"
 #include"WindowsObject/WindClassObject/ChWindClassObject.h"
 #include"WindowsObject/Texture/ChWinTexture.h"
+#include"WindowsObject/TextBox/ChWinTextBox.h"
 
 #ifndef Ch_Library_Create
 #ifdef _MT
