@@ -229,10 +229,11 @@ std::string TextBox::GetTextA()
 {
 	std::string Text = "";
 
-	if (selectFlg)return Text;
 	char tmp[1500] = "\0";
 
-	Text = reinterpret_cast<char*>(SendA(WM_GETTEXT, (WPARAM)1500, (LPARAM)tmp));
+	GetWindowTextA(GethWnd(), tmp, 1500);
+
+	Text = tmp;
 
 	isChangeFlg = false;
 	return Text;
@@ -242,10 +243,13 @@ std::wstring TextBox::GetTextW()
 {
 	std::wstring Text = L"";
 
-	if (selectFlg)return Text;
-	char tmp[1500] = "\0";
+	wchar_t tmp[1500] = L"\0";
 
-	Text = reinterpret_cast<wchar_t*>(SendW(WM_GETTEXT, (WPARAM)1500, (LPARAM)tmp));
+	GetWindowTextW(GethWnd(), tmp, 1500);
+
+	Text = tmp;
+
+	//Text = reinterpret_cast<wchar_t*>(SendW(WM_GETTEXT, (WPARAM)1500, (LPARAM)tmp));
 
 	isChangeFlg = false;
 	return Text;

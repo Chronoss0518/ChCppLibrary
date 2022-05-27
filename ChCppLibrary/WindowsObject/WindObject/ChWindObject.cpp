@@ -131,16 +131,18 @@ LPARAM WindObject::SendW(const unsigned int _msg, WPARAM _wParam, LPARAM _lParam
 
 ChStd::Bool WindObject::UpdateA()
 {
-	if (IsWindowEnabled(hWnd))
-	{
-		UpdateWindow(hWnd);
-	}
+	UpdateWindow(hWnd);
 
 	if (!IsInit())return false;
 
-	if (!PeekMessageA(&msg, hWnd, 0, 0, PM_NOREMOVE))return true;
+	if (!PeekMessageA(&msg, hWnd, 0, 0, PM_NOREMOVE))
+	{
+		if(ChPtr::NullCheck(msg.hwnd))return false;
+		return true;
+	}
+	
 
-	if ((GetMessageA(&msg, hWnd, 0, 0)) <= 0)return false;
+	if ((GetMessageA(&msg, NULL, 0, 0)) <= 0)return false;
 	TranslateMessage(&msg);
 	DispatchMessageA(&msg);
 
@@ -149,17 +151,14 @@ ChStd::Bool WindObject::UpdateA()
 
 ChStd::Bool WindObject::UpdateW()
 {
-	
-	if (IsWindowEnabled(hWnd))
-	{
-		UpdateWindow(hWnd);
-	}
+
+	UpdateWindow(hWnd);
 	
 	if (!IsInit())return false;
 
-	if (!PeekMessageW(&msg, hWnd, 0, 0, PM_NOREMOVE))return true;
+	if (!PeekMessageW(&msg, NULL, 0, 0, PM_NOREMOVE))return true;
 
-	if ((GetMessageW(&msg, hWnd, 0, 0)) <= 0)return false;
+	if ((GetMessageW(&msg, NULL, 0, 0)) <= 0)return false;
 	TranslateMessage(&msg);
 	DispatchMessageW(&msg);
 
