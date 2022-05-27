@@ -38,9 +38,10 @@ namespace ChWin
 		void Release();
 
 	public://SetFunction//
-
+		
+		//このウィンドウが子ウィンドウ以外の場合のみ実行される//
 		//_messageにはWM_やメッセージプロシージャ―が受け取れる方にしてください//
-		inline void SetWindProcedure(const unsigned long _message,const std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>& _proc)
+		inline virtual void SetWindProcedure(const unsigned long _message,const std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>& _proc)
 		{
 			if (!_proc)return;
 
@@ -53,6 +54,16 @@ namespace ChWin
 			if (!_proc)return;
 
 			defaultWindProc = _proc;
+		}
+
+		//子ウィンドウが動作して呼ばれたときに実行される関数//
+		//このウィンドウが子ウィンドウの場合のみ実行される//
+		//_messageにはWM_やメッセージプロシージャ―が受け取れる方にしてください//
+		inline void SetChildWindProcedure(const unsigned long _message, const std::function<void(HWND, UINT)>& _proc)
+		{
+			if (!_proc)return;
+
+			(childWindProc)[_message] = _proc;
 		}
 
 		void SetWindPos(const unsigned int _x, const unsigned int _y,const unsigned int _flgs = SWP_NOSIZE | SWP_NOZORDER);
@@ -105,7 +116,7 @@ namespace ChWin
 
 	public://UpdateFunction//
 
-		inline ChStd::Bool Update()
+		inline virtual ChStd::Bool Update()
 		{
 #ifdef UNICODE
 			return UpdateW();
@@ -173,6 +184,7 @@ namespace ChWin
 			LPARAM _lParam)->LRESULT 
 		{return DefWindowProc(_hWnd, _uMsg, _wParam, _lParam); };
 
+		std::map<unsigned int, std::function<void(HWND, UINT)>> childWindProc;
 		std::map<unsigned int, std::function<LRESULT(HWND,UINT,WPARAM,LPARAM)>> wndProc;
 		HWND hWnd = nullptr;
 		MSG msg = { 0 };
