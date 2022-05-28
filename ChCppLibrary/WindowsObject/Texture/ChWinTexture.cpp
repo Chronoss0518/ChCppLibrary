@@ -7,6 +7,7 @@
 
 using namespace ChWin;
 
+
 //Texture Method//
 
 void Texture::Release()
@@ -187,6 +188,47 @@ void Texture::DrawTransparent(HDC _drawTarget, const int  _x, const int  _y, con
 	DrawTransparent(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _transparent);
 }
 
+void Texture::DrawMask(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const UINT _transparent)
+{
+	if (!IsInit())return;
+
+	if (ChPtr::NullCheck(_drawTarget))return;
+
+	HDC tmp = CreateCompatibleDC(_drawTarget);
+
+	SetTextureToHDC(tmp);
+
+	DrawMaskMain(tmp, _drawTarget, _pos, _size, _basePos, _transparent);
+
+	DeleteDC(tmp);
+}
+
+void Texture::DrawMask(HDC _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const UINT _transparent)
+{
+	DrawMask(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), _transparent);
+}
+
+void Texture::DrawMask(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, HBITMAP _maskTex)
+{
+	if (!IsInit())return;
+
+	if (ChPtr::NullCheck(_drawTarget))return;
+
+	HDC tmp = CreateCompatibleDC(_drawTarget);
+
+	SetTextureToHDC(tmp);
+
+	DrawMaskMain(tmp, _drawTarget, _pos, _size, _basePos, _maskTex);
+
+	DeleteDC(tmp);
+
+}
+
+void Texture::DrawMask(HDC _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, HBITMAP _maskTex)
+{
+	DrawMask(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), _maskTex);
+}
+
 void Texture::DrawPlg(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent, const int _rot)
 {
 	if (!IsInit())return;
@@ -205,6 +247,28 @@ void Texture::DrawPlg(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, con
 void Texture::DrawPlg(HDC _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH, const UINT _transparent, const int _rot)
 {
 	DrawPlg(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _transparent,_rot);
+}
+
+void Texture::DrawPlg(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, HBITMAP _maskTex, const int _rot)
+{
+	if (!IsInit())return;
+
+	if (ChPtr::NullCheck(_drawTarget))return;
+
+	HDC tmp = CreateCompatibleDC(_drawTarget);
+
+	SetTextureToHDC(tmp);
+
+	DrawPlgMain(tmp, _drawTarget, _pos, _size, _basePos, _baseSize, _maskTex, _rot);
+
+	DeleteDC(tmp);
+
+}
+
+void Texture::DrawPlg(HDC _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH, HBITMAP _maskTex, const int _rot)
+{
+	DrawPlg(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _maskTex, _rot);
+
 }
 
 void Texture::Draw(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos)
@@ -272,6 +336,46 @@ void Texture::DrawTransparent(RenderTarget& _drawTarget, const int  _x, const in
 	DrawTransparent(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _transparent);
 }
 
+void Texture::DrawMask(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const UINT _transparent)
+{
+	if (!IsInit())return;
+
+	if (!_drawTarget.IsInit())return;
+
+	HDC tmp = CreateCompatibleDC(_drawTarget.GetRenderTarget());
+
+	SetTextureToHDC(tmp);
+
+	DrawMaskMain(tmp, _drawTarget.GetRenderTarget(), _pos, _size, _basePos, _transparent);
+
+	DeleteDC(tmp);
+}
+
+void Texture::DrawMask(RenderTarget& _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const UINT _transparent)
+{
+	DrawMask(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), _transparent);
+}
+
+void Texture::DrawMask(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, HBITMAP _maskTex)
+{
+	if (!IsInit())return;
+
+	if (!_drawTarget.IsInit())return;
+
+	HDC tmp = CreateCompatibleDC(_drawTarget.GetRenderTarget());
+
+	SetTextureToHDC(tmp);
+
+	DrawMaskMain(tmp, _drawTarget.GetRenderTarget(), _pos, _size, _basePos, _maskTex);
+
+	DeleteDC(tmp);
+}
+
+void Texture::DrawMask(RenderTarget& _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, HBITMAP _maskTex)
+{
+	DrawMask(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), _maskTex);
+}
+
 void Texture::DrawPlg(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent, const int _rot)
 {
 	if (!IsInit())return;
@@ -290,6 +394,26 @@ void Texture::DrawPlg(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>&
 void Texture::DrawPlg(RenderTarget& _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH, const UINT _transparent, const int _rot)
 {
 	DrawPlg(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _transparent,_rot);
+}
+
+void Texture::DrawPlg(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, HBITMAP _maskTex, const int _rot)
+{
+	if (!IsInit())return;
+
+	if (!_drawTarget.IsInit())return;
+
+	HDC tmp = CreateCompatibleDC(_drawTarget.GetRenderTarget());
+
+	SetTextureToHDC(tmp);
+
+	DrawPlgMain(tmp, _drawTarget.GetRenderTarget(), _pos, _size, _basePos, _baseSize, _maskTex, _rot);
+
+	DeleteDC(tmp);
+}
+
+void Texture::DrawPlg(RenderTarget& _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH, HBITMAP _maskTex, const int _rot)
+{
+	DrawPlg(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _maskTex, _rot);
 }
 
 void Texture::DrawMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos)
@@ -336,27 +460,63 @@ void Texture::DrawTransparentMain(HDC _textureHDC, HDC _drawTarget, const ChMath
 	auto bsize = _baseSize;
 	bsize.val.Abs();
 
-	int tmpStretch = SetStretchBltMode(_drawTarget, ChStd::EnumCast(stretchType));
-
 	TransparentBlt(_drawTarget, pos.x, pos.y, size.w, size.h, _textureHDC, bpos.x, bpos.y, bsize.w, bsize.h, _transparent);
 
-	SetStretchBltMode(_drawTarget, tmpStretch);
+}
+
+void Texture::DrawMaskMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const UINT _transparent)
+{
+
+	static MaskTexture maskRT;
+
+	{
+		auto texSize = GetTextureSize();
+
+		maskRT.CreateMaskTexture(texSize.w, texSize.h);
+		auto oldBkColor = maskRT.SetBKColor(_transparent);
+
+		{
+
+			auto oCode = opeCode;
+
+			opeCode = RasterOpeCode::NotSRCCopy;
+
+			DrawMain(_textureHDC, maskRT.GetRenderTarget(), ChMath::Vector2Base<int>(0, 0), texSize, ChMath::Vector2Base<int>(0, 0));
+
+			opeCode = oCode;
+
+		}
+
+		maskRT.SetBKColor(oldBkColor);
+
+	}
+
+	//DrawMain(maskRT.GetRenderTarget(), _drawTarget, _pos, _size, _basePos);
+
+	DrawMaskMain(_textureHDC, _drawTarget, _pos, _size, _basePos, maskRT.GetTexture());
+}
+
+void Texture::DrawMaskMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, HBITMAP _maskTex)
+{
+	auto pos = _pos;
+	pos.val.Abs();
+	auto size = _size;
+	size.val.Abs();
+	auto bpos = _basePos;
+	bpos.val.Abs();
+
+	int out = MaskBlt(_drawTarget, pos.x, pos.y, size.w, size.h, _textureHDC, bpos.x, bpos.y, _maskTex, bpos.x, bpos.y, MAKEROP4(ChStd::EnumCast(opeCode), ChStd::EnumCast(RasterOpeCode::SRCErase)));
 
 }
 
 void Texture::DrawPlgMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent, const unsigned long _rot)
 {
-	auto pos = _pos;
-	//pos.val.Abs();
-	auto size = _size;
-	//size.val.Abs();
 	auto bpos = _basePos;
 	bpos.val.Abs();
 	auto bsize = _baseSize;
 	bsize.val.Abs();
 
 	static MaskTexture maskRT;
-
 
 	{
 		maskRT.CreateMaskTexture(bsize.w, bsize.h);
@@ -378,6 +538,17 @@ void Texture::DrawPlgMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector
 
 	}
 
+	DrawPlgMain(_textureHDC, _drawTarget, _pos, _size, _basePos, _baseSize, maskRT.GetTexture(), _rot);
+}
+
+void Texture::DrawPlgMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, HBITMAP _maskTex, const unsigned long _rot)
+{
+	auto pos = _pos;
+	auto size = _size;
+	auto bpos = _basePos;
+	bpos.val.Abs();
+	auto bsize = _baseSize;
+	bsize.val.Abs();
 
 	POINT edgePoint[3]{ {0,0},{0,0} ,{0,0} };
 
@@ -407,13 +578,12 @@ void Texture::DrawPlgMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector
 			edgePoint[i].y = static_cast<long>(rotPointBase[i].y);
 		}
 
-
 	}
 
 	int tmpStretch = SetStretchBltMode(_drawTarget, ChStd::EnumCast(stretchType));
 
-	int out = PlgBlt(_drawTarget, edgePoint, _textureHDC, bpos.x, bpos.y, bsize.w, bsize.h, maskRT.GetTexture(),0,0);
-	
+	int out = PlgBlt(_drawTarget, edgePoint, _textureHDC, bpos.x, bpos.y, bsize.w, bsize.h,_maskTex, 0, 0);
+
 	SetStretchBltMode(_drawTarget, tmpStretch);
 
 }
@@ -449,9 +619,7 @@ ChStd::Bool RenderTarget::CreateRenderTarget(HWND _hWnd, const ChMath::Vector2Ba
 		return false;
 	}
 
-	mainTexture = CreateCompatibleBitmap(dc, size.w, size.h);
-
-	ReleaseDC(_hWnd, tmp);
+	mainTexture = CreateCompatibleBitmap(tmp, size.w, size.h);
 
 	if (ChPtr::NullCheck(mainTexture))
 	{
@@ -465,6 +633,8 @@ ChStd::Bool RenderTarget::CreateRenderTarget(HWND _hWnd, const ChMath::Vector2Ba
 
 	SetTextureToHDC(dc);
 	SetInitFlg(true);
+
+	ReleaseDC(_hWnd, tmp);
 
 	return true;
 }
@@ -489,7 +659,7 @@ ChStd::Bool RenderTarget::CreateRenderTarget(HDC _dc, const ChMath::Vector2Base<
 		return false;
 	}
 
-	mainTexture = CreateCompatibleBitmap(dc, size.w, size.h);
+	mainTexture = CreateCompatibleBitmap(_dc, size.w, size.h);
 
 	if (ChPtr::NullCheck(mainTexture))
 	{
@@ -557,6 +727,34 @@ void RenderTarget::DrawTransparent(HDC _drawTarget, const int _x, const int _y, 
 	DrawTransparent(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _transparent);
 }
 
+void RenderTarget::DrawMask(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const UINT _transparent)
+{
+	if (!IsInit())return;
+	if (_drawTarget == dc)return;
+	DrawMaskMain(dc,_drawTarget, _pos, _size, _basePos,_transparent);
+}
+
+void RenderTarget::DrawMask(HDC _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const UINT _transparent)
+{
+	if (!IsInit())return;
+	if (_drawTarget == dc)return;
+	DrawMask(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY),_transparent);
+}
+
+void RenderTarget::DrawMask(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const HBITMAP _maskTex)
+{
+	if (!IsInit())return;
+	if (_drawTarget == dc)return;
+	DrawMaskMain(dc, _drawTarget, _pos, _size, _basePos, _maskTex);
+}
+
+void RenderTarget::DrawMask(HDC _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const HBITMAP _maskTex)
+{
+	if (!IsInit())return;
+	if (_drawTarget == dc)return;
+	DrawMask(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), _maskTex);
+}
+
 void RenderTarget::DrawPlg(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent, const int _rot)
 {
 	if (!IsInit())return;
@@ -571,12 +769,25 @@ void RenderTarget::DrawPlg(HDC _drawTarget, const int _x, const int _y, const in
 	DrawPlg(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _transparent,_rot);
 }
 
+void RenderTarget::DrawPlg(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const HBITMAP _maskTex, const int _rot)
+{
+	if (!IsInit())return;
+	if (_drawTarget == dc)return;
+	DrawPlgMain(dc, _drawTarget, _pos, _size, _basePos, _baseSize, _maskTex, _rot);
+}
+
+void RenderTarget::DrawPlg(HDC _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH, const HBITMAP _maskTex, const int _rot)
+{
+	if (!IsInit())return;
+	if (_drawTarget == dc)return;
+	DrawPlg(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _maskTex, _rot);
+}
+
 void RenderTarget::Draw(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos)
 {
 	if (!IsInit())return;
 	if (&_drawTarget == this)return;
 	DrawMain(dc, _drawTarget.GetRenderTarget(), _pos, _size, _basePos);
-
 }
 
 void RenderTarget::Draw(RenderTarget& _drawTarget, const int  _x, const int  _y, const int  _w, const int  _h, const int  _baseX, const int  _baseY)
@@ -614,6 +825,34 @@ void RenderTarget::DrawTransparent(RenderTarget& _drawTarget, const int _x, cons
 	DrawTransparent(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _transparent);
 }
 
+void RenderTarget::DrawMask(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const UINT _transparent)
+{
+	if (!IsInit())return;
+	if (&_drawTarget == this)return;
+	DrawMaskMain(dc, _drawTarget.GetRenderTarget(), _pos, _size, _basePos, _transparent);
+}
+
+void RenderTarget::DrawMask(RenderTarget& _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const UINT _transparent)
+{
+	if (!IsInit())return;
+	if (&_drawTarget == this)return;
+	DrawMask(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), _transparent);
+}
+
+void RenderTarget::DrawMask(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const HBITMAP _maskTex)
+{
+	if (!IsInit())return;
+	if (&_drawTarget == this)return;
+	DrawMaskMain(dc, _drawTarget.GetRenderTarget(), _pos, _size, _basePos, _maskTex);
+}
+
+void RenderTarget::DrawMask(RenderTarget& _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const HBITMAP _maskTex)
+{
+	if (!IsInit())return;
+	if (&_drawTarget == this)return;
+	DrawMask(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), _maskTex);
+}
+
 void RenderTarget::DrawPlg(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent, const int _rot)
 {
 	if (!IsInit())return;
@@ -626,6 +865,20 @@ void RenderTarget::DrawPlg(RenderTarget& _drawTarget, const int _x, const int _y
 	if (!IsInit())return;
 	if (&_drawTarget == this)return;
 	DrawPlg(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _transparent,_rot);
+}
+
+void RenderTarget::DrawPlg(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const HBITMAP _maskTex, const int _rot)
+{
+	if (!IsInit())return;
+	if (&_drawTarget == this)return;
+	DrawPlgMain(dc, _drawTarget.GetRenderTarget(), _pos, _size, _basePos, _baseSize, _maskTex, _rot);
+}
+
+void RenderTarget::DrawPlg(RenderTarget& _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH, const HBITMAP _maskTex, const int _rot)
+{
+	if (!IsInit())return;
+	if (&_drawTarget == this)return;
+	DrawPlg(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _maskTex, _rot);
 }
 
 void RenderTarget::DrawBrush(HBRUSH _brush)
