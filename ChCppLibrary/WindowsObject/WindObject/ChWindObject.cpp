@@ -135,12 +135,7 @@ ChStd::Bool WindObject::UpdateA()
 
 	if (!IsInit())return false;
 
-	if (!PeekMessageA(&msg, hWnd, 0, 0, PM_NOREMOVE))
-	{
-		if(ChPtr::NullCheck(msg.hwnd))return false;
-		return true;
-	}
-	
+	if (!PeekMessageA(&msg, NULL, 0, 0, PM_NOREMOVE))return true;
 
 	if ((GetMessageA(&msg, NULL, 0, 0)) <= 0)return false;
 	TranslateMessage(&msg);
