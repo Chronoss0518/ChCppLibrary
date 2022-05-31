@@ -1,5 +1,7 @@
 #include<Windows.h>
 #include"../../BaseIncluder/ChBase.h"
+
+#include"../PackData/ChPoint.h"
 #include"ChWinTextBox.h"
 
 using namespace ChWin;
@@ -11,8 +13,8 @@ using namespace ChWin;
 void TextBox::CreateA(
 	HINSTANCE _hIns,
 	const std::string& _startText,
-	const ChMath::Vector2Base<int>& _pos,
-	const ChMath::Vector2Base<int>& _size,
+	const ChINTPOINT& _pos,
+	const ChINTPOINT& _size,
 	const HWND _parentHandl)
 {
 	Release();
@@ -59,14 +61,14 @@ void TextBox::CreateA(
 	const int _h,
 	const HWND _parentHandl)
 {
-	CreateA(_hIns, _startText, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), _parentHandl);
+	CreateA(_hIns, _startText, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), _parentHandl);
 }
 
 //TextBox�̍쐬//
 void TextBox::CreateA(
 	const std::string& _startText,
-	const ChMath::Vector2Base<int>& _pos,
-	const ChMath::Vector2Base<int>& _size,
+	const ChINTPOINT& _pos,
+	const ChINTPOINT& _size,
 	const WindObject& _parentWind)
 {
 	if (!static_cast<bool>(_parentWind))return;
@@ -114,14 +116,14 @@ void TextBox::CreateA(
 	const int _h,
 	const WindObject& _parentWind)
 {
-	CreateA(_startText, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), _parentWind);
+	CreateA(_startText, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), _parentWind);
 }
 
 void TextBox::CreateW(
 	HINSTANCE _hIns,
 	const std::wstring& _startText,
-	const ChMath::Vector2Base<int>& _pos,
-	const ChMath::Vector2Base<int>& _size,
+	const ChINTPOINT& _pos,
+	const ChINTPOINT& _size,
 	const HWND _parentHandl)
 {
 	Release();
@@ -167,14 +169,14 @@ void TextBox::CreateW(
 	const int _h,
 	const HWND _parentHandl)
 {
-	CreateW(_hIns, _startText, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), _parentHandl);
+	CreateW(_hIns, _startText, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), _parentHandl);
 }
 
 //TextBox�̍쐬//
 void TextBox::CreateW(
 	const std::wstring& _startText,
-	const ChMath::Vector2Base<int>& _pos,
-	const ChMath::Vector2Base<int>& _size,
+	const ChINTPOINT& _pos,
+	const ChINTPOINT& _size,
 	const WindObject& _parentWind)
 {
 	if (!static_cast<bool>(_parentWind))return;
@@ -222,7 +224,7 @@ void TextBox::CreateW(
 	const int _h,
 	const WindObject& _parentWind)
 {
-	CreateW(_startText, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), _parentWind);
+	CreateW(_startText, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), _parentWind);
 }
 
 std::string TextBox::GetTextA()

@@ -1,6 +1,8 @@
 #include<Windows.h>
 #include<wingdi.h>
 #include"../../BaseIncluder/ChBase.h"
+
+#include"../PackData/ChPoint.h"
 #include"../../BaseSystem/ChWindows/ChWindows.h"
 #include"../WindDrawer/ChWindDrawer.h"
 #include"ChWinTexture.h"
@@ -101,7 +103,7 @@ void Texture::SetStretchToHDC(HDC _target)
 	SelectObject(_target, mainTexture);
 }
 
-ChMath::Vector2Base<int> Texture::GetTextureSizeW()
+ChINTPOINT Texture::GetTextureSizeW()
 {
 	BITMAP tmp;
 	GetObjectW(
@@ -110,10 +112,10 @@ ChMath::Vector2Base<int> Texture::GetTextureSizeW()
 		&tmp
 	);
 
-	return ChMath::Vector2Base<int>(tmp.bmWidth, tmp.bmHeight);
+	return ChINTPOINT(tmp.bmWidth, tmp.bmHeight);
 }
 
-ChMath::Vector2Base<int> Texture::GetTextureSizeA()
+ChINTPOINT Texture::GetTextureSizeA()
 {
 	BITMAP tmp;
 	GetObjectA(
@@ -122,10 +124,10 @@ ChMath::Vector2Base<int> Texture::GetTextureSizeA()
 		&tmp
 	);
 
-	return ChMath::Vector2Base<int>(tmp.bmWidth, tmp.bmHeight);
+	return ChINTPOINT(tmp.bmWidth, tmp.bmHeight);
 }
 
-void Texture::Draw(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos)
+void Texture::Draw(HDC _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos)
 {
 	if (!IsInit())return;
 
@@ -144,10 +146,10 @@ void Texture::Draw(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const 
 
 void Texture::Draw(HDC _drawTarget, const int  _x, const int  _y, const int  _w, const int  _h, const int  _baseX, const int  _baseY)
 {
-	Draw(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY));
+	Draw(_drawTarget, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), ChINTPOINT(_baseX, _baseY));
 }
 
-void Texture::DrawStretch(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize)
+void Texture::DrawStretch(HDC _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const ChINTPOINT& _baseSize)
 {
 	if (!IsInit())return;
 
@@ -165,10 +167,10 @@ void Texture::DrawStretch(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos,
 
 void Texture::DrawStretch(HDC _drawTarget, const int  _x, const int  _y, const int  _w, const int  _h, const int  _baseX, const int  _baseY, const int  _baseW, const int  _baseH)
 {
-	DrawStretch(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH));
+	DrawStretch(_drawTarget, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), ChINTPOINT(_baseX, _baseY), ChINTPOINT(_baseW, _baseH));
 }
 
-void Texture::DrawTransparent(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent)
+void Texture::DrawTransparent(HDC _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const ChINTPOINT& _baseSize, const UINT _transparent)
 {
 	if (!IsInit())return;
 
@@ -185,10 +187,10 @@ void Texture::DrawTransparent(HDC _drawTarget, const ChMath::Vector2Base<int>& _
 
 void Texture::DrawTransparent(HDC _drawTarget, const int  _x, const int  _y, const int  _w, const int  _h, const int  _baseX, const int  _baseY, const int  _baseW, const int  _baseH, const UINT _transparent)
 {
-	DrawTransparent(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _transparent);
+	DrawTransparent(_drawTarget, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), ChINTPOINT(_baseX, _baseY), ChINTPOINT(_baseW, _baseH), _transparent);
 }
 
-void Texture::DrawMask(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const UINT _transparent)
+void Texture::DrawMask(HDC _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const UINT _transparent)
 {
 	if (!IsInit())return;
 
@@ -205,10 +207,10 @@ void Texture::DrawMask(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, co
 
 void Texture::DrawMask(HDC _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const UINT _transparent)
 {
-	DrawMask(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), _transparent);
+	DrawMask(_drawTarget, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), ChINTPOINT(_baseX, _baseY), _transparent);
 }
 
-void Texture::DrawMask(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, HBITMAP _maskTex)
+void Texture::DrawMask(HDC _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, HBITMAP _maskTex)
 {
 	if (!IsInit())return;
 
@@ -226,10 +228,10 @@ void Texture::DrawMask(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, co
 
 void Texture::DrawMask(HDC _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, HBITMAP _maskTex)
 {
-	DrawMask(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), _maskTex);
+	DrawMask(_drawTarget, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), ChINTPOINT(_baseX, _baseY), _maskTex);
 }
 
-void Texture::DrawPlg(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent, const int _rot)
+void Texture::DrawPlg(HDC _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const ChINTPOINT& _baseSize, const UINT _transparent, const int _rot)
 {
 	if (!IsInit())return;
 
@@ -246,10 +248,10 @@ void Texture::DrawPlg(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, con
 
 void Texture::DrawPlg(HDC _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH, const UINT _transparent, const int _rot)
 {
-	DrawPlg(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _transparent,_rot);
+	DrawPlg(_drawTarget, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), ChINTPOINT(_baseX, _baseY), ChINTPOINT(_baseW, _baseH), _transparent,_rot);
 }
 
-void Texture::DrawPlg(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, HBITMAP _maskTex, const int _rot)
+void Texture::DrawPlg(HDC _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const ChINTPOINT& _baseSize, HBITMAP _maskTex, const int _rot)
 {
 	if (!IsInit())return;
 
@@ -267,11 +269,11 @@ void Texture::DrawPlg(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, con
 
 void Texture::DrawPlg(HDC _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH, HBITMAP _maskTex, const int _rot)
 {
-	DrawPlg(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _maskTex, _rot);
+	DrawPlg(_drawTarget, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), ChINTPOINT(_baseX, _baseY), ChINTPOINT(_baseW, _baseH), _maskTex, _rot);
 
 }
 
-void Texture::Draw(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos)
+void Texture::Draw(RenderTarget& _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos)
 {
 
 	if (!IsInit())return;
@@ -290,10 +292,10 @@ void Texture::Draw(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _p
 
 void Texture::Draw(RenderTarget& _drawTarget, const int  _x, const int  _y, const int  _w, const int  _h, const int  _baseX, const int  _baseY)
 {
-	Draw(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY));
+	Draw(_drawTarget, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), ChINTPOINT(_baseX, _baseY));
 }
 
-void Texture::DrawStretch(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize)
+void Texture::DrawStretch(RenderTarget& _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const ChINTPOINT& _baseSize)
 {
 
 	if (!IsInit())return;
@@ -312,10 +314,10 @@ void Texture::DrawStretch(RenderTarget& _drawTarget, const ChMath::Vector2Base<i
 
 void Texture::DrawStretch(RenderTarget& _drawTarget, const int  _x, const int  _y, const int  _w, const int  _h, const int  _baseX, const int  _baseY, const int  _baseW, const int  _baseH)
 {
-	DrawStretch(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH));
+	DrawStretch(_drawTarget, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), ChINTPOINT(_baseX, _baseY), ChINTPOINT(_baseW, _baseH));
 }
 
-void Texture::DrawTransparent(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent)
+void Texture::DrawTransparent(RenderTarget& _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const ChINTPOINT& _baseSize, const UINT _transparent)
 {
 
 	if (!IsInit())return;
@@ -333,10 +335,10 @@ void Texture::DrawTransparent(RenderTarget& _drawTarget, const ChMath::Vector2Ba
 
 void Texture::DrawTransparent(RenderTarget& _drawTarget, const int  _x, const int  _y, const int  _w, const int  _h, const int  _baseX, const int  _baseY, const int  _baseW, const int  _baseH, const UINT _transparent)
 {
-	DrawTransparent(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _transparent);
+	DrawTransparent(_drawTarget, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), ChINTPOINT(_baseX, _baseY), ChINTPOINT(_baseW, _baseH), _transparent);
 }
 
-void Texture::DrawMask(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const UINT _transparent)
+void Texture::DrawMask(RenderTarget& _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const UINT _transparent)
 {
 	if (!IsInit())return;
 
@@ -353,10 +355,10 @@ void Texture::DrawMask(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>
 
 void Texture::DrawMask(RenderTarget& _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const UINT _transparent)
 {
-	DrawMask(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), _transparent);
+	DrawMask(_drawTarget, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), ChINTPOINT(_baseX, _baseY), _transparent);
 }
 
-void Texture::DrawMask(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, HBITMAP _maskTex)
+void Texture::DrawMask(RenderTarget& _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, HBITMAP _maskTex)
 {
 	if (!IsInit())return;
 
@@ -373,10 +375,10 @@ void Texture::DrawMask(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>
 
 void Texture::DrawMask(RenderTarget& _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, HBITMAP _maskTex)
 {
-	DrawMask(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), _maskTex);
+	DrawMask(_drawTarget, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), ChINTPOINT(_baseX, _baseY), _maskTex);
 }
 
-void Texture::DrawPlg(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent, const int _rot)
+void Texture::DrawPlg(RenderTarget& _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const ChINTPOINT& _baseSize, const UINT _transparent, const int _rot)
 {
 	if (!IsInit())return;
 
@@ -393,10 +395,10 @@ void Texture::DrawPlg(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>&
 
 void Texture::DrawPlg(RenderTarget& _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH, const UINT _transparent, const int _rot)
 {
-	DrawPlg(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _transparent,_rot);
+	DrawPlg(_drawTarget, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), ChINTPOINT(_baseX, _baseY), ChINTPOINT(_baseW, _baseH), _transparent,_rot);
 }
 
-void Texture::DrawPlg(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, HBITMAP _maskTex, const int _rot)
+void Texture::DrawPlg(RenderTarget& _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const ChINTPOINT& _baseSize, HBITMAP _maskTex, const int _rot)
 {
 	if (!IsInit())return;
 
@@ -413,10 +415,10 @@ void Texture::DrawPlg(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>&
 
 void Texture::DrawPlg(RenderTarget& _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH, HBITMAP _maskTex, const int _rot)
 {
-	DrawPlg(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _maskTex, _rot);
+	DrawPlg(_drawTarget, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), ChINTPOINT(_baseX, _baseY), ChINTPOINT(_baseW, _baseH), _maskTex, _rot);
 }
 
-void Texture::DrawMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos)
+void Texture::DrawMain(HDC _textureHDC, HDC _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos)
 {
 
 	auto pos = _pos;
@@ -430,7 +432,7 @@ void Texture::DrawMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector2Ba
 
 }
 
-void Texture::DrawStretchMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize)
+void Texture::DrawStretchMain(HDC _textureHDC, HDC _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const ChINTPOINT& _baseSize)
 {
 
 	auto pos = _pos;
@@ -448,7 +450,7 @@ void Texture::DrawStretchMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Ve
 
 }
 
-void Texture::DrawTransparentMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent)
+void Texture::DrawTransparentMain(HDC _textureHDC, HDC _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const ChINTPOINT& _baseSize, const UINT _transparent)
 {
 
 	auto pos = _pos;
@@ -464,7 +466,7 @@ void Texture::DrawTransparentMain(HDC _textureHDC, HDC _drawTarget, const ChMath
 
 }
 
-void Texture::DrawMaskMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const UINT _transparent)
+void Texture::DrawMaskMain(HDC _textureHDC, HDC _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const UINT _transparent)
 {
 
 	static MaskTexture maskRT;
@@ -481,7 +483,7 @@ void Texture::DrawMaskMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vecto
 
 			opeCode = RasterOpeCode::NotSRCCopy;
 
-			DrawMain(_textureHDC, maskRT.GetRenderTarget(), ChMath::Vector2Base<int>(0, 0), texSize, ChMath::Vector2Base<int>(0, 0));
+			DrawMain(_textureHDC, maskRT.GetRenderTarget(), ChINTPOINT(0, 0), texSize, ChINTPOINT(0, 0));
 
 			opeCode = oCode;
 
@@ -496,7 +498,7 @@ void Texture::DrawMaskMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vecto
 	DrawMaskMain(_textureHDC, _drawTarget, _pos, _size, _basePos, maskRT.GetTexture());
 }
 
-void Texture::DrawMaskMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, HBITMAP _maskTex)
+void Texture::DrawMaskMain(HDC _textureHDC, HDC _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, HBITMAP _maskTex)
 {
 	auto pos = _pos;
 	pos.val.Abs();
@@ -509,7 +511,7 @@ void Texture::DrawMaskMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vecto
 
 }
 
-void Texture::DrawPlgMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent, const unsigned long _rot)
+void Texture::DrawPlgMain(HDC _textureHDC, HDC _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const ChINTPOINT& _baseSize, const UINT _transparent, const unsigned long _rot)
 {
 	auto bpos = _basePos;
 	bpos.val.Abs();
@@ -528,7 +530,7 @@ void Texture::DrawPlgMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector
 
 			opeCode = RasterOpeCode::NotSRCCopy;
 
-			DrawMain(_textureHDC,maskRT.GetRenderTarget(), ChMath::Vector2Base<int>(0, 0), bsize, bpos);
+			DrawMain(_textureHDC,maskRT.GetRenderTarget(), ChINTPOINT(0, 0), bsize, bpos);
 			
 			opeCode = oCode;
 
@@ -541,7 +543,7 @@ void Texture::DrawPlgMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector
 	DrawPlgMain(_textureHDC, _drawTarget, _pos, _size, _basePos, _baseSize, maskRT.GetTexture(), _rot);
 }
 
-void Texture::DrawPlgMain(HDC _textureHDC, HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, HBITMAP _maskTex, const unsigned long _rot)
+void Texture::DrawPlgMain(HDC _textureHDC, HDC _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const ChINTPOINT& _baseSize, HBITMAP _maskTex, const unsigned long _rot)
 {
 	auto pos = _pos;
 	auto size = _size;
@@ -601,7 +603,7 @@ void RenderTarget::Release()
 	Texture::Release(); 
 }
 
-ChStd::Bool RenderTarget::CreateRenderTarget(HWND _hWnd, const ChMath::Vector2Base<int>& _size)
+ChStd::Bool RenderTarget::CreateRenderTarget(HWND _hWnd, const ChINTPOINT& _size)
 {
 	if (ChPtr::NullCheck(_hWnd))return false;
 	Release();
@@ -641,10 +643,10 @@ ChStd::Bool RenderTarget::CreateRenderTarget(HWND _hWnd, const ChMath::Vector2Ba
 
 ChStd::Bool RenderTarget::CreateRenderTarget(HWND _hWnd, const int _width, const int _height)
 {
-	return CreateRenderTarget(_hWnd,ChMath::Vector2Base<int>(_width,_height));
+	return CreateRenderTarget(_hWnd,ChINTPOINT(_width,_height));
 }
 
-ChStd::Bool RenderTarget::CreateRenderTarget(HDC _dc, const ChMath::Vector2Base<int>& _size)
+ChStd::Bool RenderTarget::CreateRenderTarget(HDC _dc, const ChINTPOINT& _size)
 {
 	if (ChPtr::NullCheck(_dc))return false;
 	Release();
@@ -678,10 +680,10 @@ ChStd::Bool RenderTarget::CreateRenderTarget(HDC _dc, const ChMath::Vector2Base<
 
 ChStd::Bool RenderTarget::CreateRenderTarget(HDC _dc, const int _width, const int _height)
 {
-	return CreateRenderTarget(_dc, ChMath::Vector2Base<int>(_width, _height));
+	return CreateRenderTarget(_dc, ChINTPOINT(_width, _height));
 }
 
-void RenderTarget::Draw(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos)
+void RenderTarget::Draw(HDC _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos)
 {
 	if (!IsInit())return;
 	if (_drawTarget == dc)return;
@@ -693,10 +695,10 @@ void RenderTarget::Draw(HDC _drawTarget, const int  _x, const int  _y, const int
 {
 	if (!IsInit())return;
 	if (_drawTarget == dc)return;
-	Draw(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY));
+	Draw(_drawTarget, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), ChINTPOINT(_baseX, _baseY));
 }
 
-void RenderTarget::DrawStretch(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize)
+void RenderTarget::DrawStretch(HDC _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const ChINTPOINT& _baseSize)
 {
 	if (!IsInit())return;
 	if (_drawTarget == dc)return;
@@ -709,10 +711,10 @@ void RenderTarget::DrawStretch(HDC _drawTarget, const int  _x, const int  _y, co
 	if (!IsInit())return;
 	if (_drawTarget == dc)return;
 
-	DrawStretch(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH));
+	DrawStretch(_drawTarget, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), ChINTPOINT(_baseX, _baseY), ChINTPOINT(_baseW, _baseH));
 }
 
-void RenderTarget::DrawTransparent(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent)
+void RenderTarget::DrawTransparent(HDC _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const ChINTPOINT& _baseSize, const UINT _transparent)
 {
 	if (!IsInit())return;
 	if (_drawTarget == dc)return;
@@ -724,10 +726,10 @@ void RenderTarget::DrawTransparent(HDC _drawTarget, const int _x, const int _y, 
 {
 	if (!IsInit())return;
 	if (_drawTarget == dc)return;
-	DrawTransparent(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _transparent);
+	DrawTransparent(_drawTarget, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), ChINTPOINT(_baseX, _baseY), ChINTPOINT(_baseW, _baseH), _transparent);
 }
 
-void RenderTarget::DrawMask(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const UINT _transparent)
+void RenderTarget::DrawMask(HDC _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const UINT _transparent)
 {
 	if (!IsInit())return;
 	if (_drawTarget == dc)return;
@@ -738,10 +740,10 @@ void RenderTarget::DrawMask(HDC _drawTarget, const int _x, const int _y, const i
 {
 	if (!IsInit())return;
 	if (_drawTarget == dc)return;
-	DrawMask(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY),_transparent);
+	DrawMask(_drawTarget, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), ChINTPOINT(_baseX, _baseY),_transparent);
 }
 
-void RenderTarget::DrawMask(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const HBITMAP _maskTex)
+void RenderTarget::DrawMask(HDC _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const HBITMAP _maskTex)
 {
 	if (!IsInit())return;
 	if (_drawTarget == dc)return;
@@ -752,10 +754,10 @@ void RenderTarget::DrawMask(HDC _drawTarget, const int _x, const int _y, const i
 {
 	if (!IsInit())return;
 	if (_drawTarget == dc)return;
-	DrawMask(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), _maskTex);
+	DrawMask(_drawTarget, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), ChINTPOINT(_baseX, _baseY), _maskTex);
 }
 
-void RenderTarget::DrawPlg(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent, const int _rot)
+void RenderTarget::DrawPlg(HDC _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const ChINTPOINT& _baseSize, const UINT _transparent, const int _rot)
 {
 	if (!IsInit())return;
 	if (_drawTarget == dc)return;
@@ -766,10 +768,10 @@ void RenderTarget::DrawPlg(HDC _drawTarget, const int _x, const int _y, const in
 {
 	if (!IsInit())return;
 	if (_drawTarget == dc)return;
-	DrawPlg(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _transparent,_rot);
+	DrawPlg(_drawTarget, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), ChINTPOINT(_baseX, _baseY), ChINTPOINT(_baseW, _baseH), _transparent,_rot);
 }
 
-void RenderTarget::DrawPlg(HDC _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const HBITMAP _maskTex, const int _rot)
+void RenderTarget::DrawPlg(HDC _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const ChINTPOINT& _baseSize, const HBITMAP _maskTex, const int _rot)
 {
 	if (!IsInit())return;
 	if (_drawTarget == dc)return;
@@ -780,10 +782,10 @@ void RenderTarget::DrawPlg(HDC _drawTarget, const int _x, const int _y, const in
 {
 	if (!IsInit())return;
 	if (_drawTarget == dc)return;
-	DrawPlg(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _maskTex, _rot);
+	DrawPlg(_drawTarget, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), ChINTPOINT(_baseX, _baseY), ChINTPOINT(_baseW, _baseH), _maskTex, _rot);
 }
 
-void RenderTarget::Draw(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos)
+void RenderTarget::Draw(RenderTarget& _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos)
 {
 	if (!IsInit())return;
 	if (&_drawTarget == this)return;
@@ -794,10 +796,10 @@ void RenderTarget::Draw(RenderTarget& _drawTarget, const int  _x, const int  _y,
 {
 	if (!IsInit())return;
 	if (&_drawTarget == this)return;
-	Draw(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY));
+	Draw(_drawTarget, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), ChINTPOINT(_baseX, _baseY));
 }
 
-void RenderTarget::DrawStretch(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize)
+void RenderTarget::DrawStretch(RenderTarget& _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const ChINTPOINT& _baseSize)
 {
 	if (!IsInit())return;
 	if (&_drawTarget == this)return;
@@ -808,10 +810,10 @@ void RenderTarget::DrawStretch(RenderTarget& _drawTarget, const int  _x, const i
 {
 	if (!IsInit())return;
 	if (&_drawTarget == this)return;
-	DrawStretch(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH));
+	DrawStretch(_drawTarget, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), ChINTPOINT(_baseX, _baseY), ChINTPOINT(_baseW, _baseH));
 }
 
-void RenderTarget::DrawTransparent(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent)
+void RenderTarget::DrawTransparent(RenderTarget& _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const ChINTPOINT& _baseSize, const UINT _transparent)
 {
 	if (!IsInit())return;
 	if (&_drawTarget == this)return;
@@ -822,10 +824,10 @@ void RenderTarget::DrawTransparent(RenderTarget& _drawTarget, const int _x, cons
 {
 	if (!IsInit())return;
 	if (&_drawTarget == this)return;
-	DrawTransparent(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _transparent);
+	DrawTransparent(_drawTarget, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), ChINTPOINT(_baseX, _baseY), ChINTPOINT(_baseW, _baseH), _transparent);
 }
 
-void RenderTarget::DrawMask(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const UINT _transparent)
+void RenderTarget::DrawMask(RenderTarget& _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const UINT _transparent)
 {
 	if (!IsInit())return;
 	if (&_drawTarget == this)return;
@@ -836,10 +838,10 @@ void RenderTarget::DrawMask(RenderTarget& _drawTarget, const int _x, const int _
 {
 	if (!IsInit())return;
 	if (&_drawTarget == this)return;
-	DrawMask(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), _transparent);
+	DrawMask(_drawTarget, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), ChINTPOINT(_baseX, _baseY), _transparent);
 }
 
-void RenderTarget::DrawMask(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const HBITMAP _maskTex)
+void RenderTarget::DrawMask(RenderTarget& _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const HBITMAP _maskTex)
 {
 	if (!IsInit())return;
 	if (&_drawTarget == this)return;
@@ -850,10 +852,10 @@ void RenderTarget::DrawMask(RenderTarget& _drawTarget, const int _x, const int _
 {
 	if (!IsInit())return;
 	if (&_drawTarget == this)return;
-	DrawMask(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), _maskTex);
+	DrawMask(_drawTarget, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), ChINTPOINT(_baseX, _baseY), _maskTex);
 }
 
-void RenderTarget::DrawPlg(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const UINT _transparent, const int _rot)
+void RenderTarget::DrawPlg(RenderTarget& _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const ChINTPOINT& _baseSize, const UINT _transparent, const int _rot)
 {
 	if (!IsInit())return;
 	if (&_drawTarget == this)return;
@@ -864,10 +866,10 @@ void RenderTarget::DrawPlg(RenderTarget& _drawTarget, const int _x, const int _y
 {
 	if (!IsInit())return;
 	if (&_drawTarget == this)return;
-	DrawPlg(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _transparent,_rot);
+	DrawPlg(_drawTarget, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), ChINTPOINT(_baseX, _baseY), ChINTPOINT(_baseW, _baseH), _transparent,_rot);
 }
 
-void RenderTarget::DrawPlg(RenderTarget& _drawTarget, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const ChMath::Vector2Base<int>& _baseSize, const HBITMAP _maskTex, const int _rot)
+void RenderTarget::DrawPlg(RenderTarget& _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const ChINTPOINT& _baseSize, const HBITMAP _maskTex, const int _rot)
 {
 	if (!IsInit())return;
 	if (&_drawTarget == this)return;
@@ -878,7 +880,7 @@ void RenderTarget::DrawPlg(RenderTarget& _drawTarget, const int _x, const int _y
 {
 	if (!IsInit())return;
 	if (&_drawTarget == this)return;
-	DrawPlg(_drawTarget, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY), ChMath::Vector2Base<int>(_baseW, _baseH), _maskTex, _rot);
+	DrawPlg(_drawTarget, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), ChINTPOINT(_baseX, _baseY), ChINTPOINT(_baseW, _baseH), _maskTex, _rot);
 }
 
 void RenderTarget::DrawBrush(HBRUSH _brush)
@@ -959,7 +961,7 @@ void RenderTarget::FillRT(ChWin::Brush& _brush, const long _x, const long _y, co
 }
 
 
-ChStd::Bool MaskTexture::CreateMaskTexture(const ChMath::Vector2Base<int>& _size)
+ChStd::Bool MaskTexture::CreateMaskTexture(const ChINTPOINT& _size)
 {
 	Release();
 
@@ -986,5 +988,5 @@ ChStd::Bool MaskTexture::CreateMaskTexture(const ChMath::Vector2Base<int>& _size
 
 ChStd::Bool MaskTexture::CreateMaskTexture(const int _width, const int _height)
 {
-	return CreateMaskTexture(ChMath::Vector2Base<int>(_width, _height));
+	return CreateMaskTexture(ChINTPOINT(_width, _height));
 }

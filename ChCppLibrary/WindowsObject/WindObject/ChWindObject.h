@@ -230,22 +230,22 @@ namespace ChWin
 			hMenu = _menu;
 		}
 
-		void SetInitPosition(const ChMath::Vector2Base<int>& _pos);
+		void SetInitPosition(const ChINTPOINT& _pos);
 
 		void SetInitPosition(const int _x, const int _y);
 
-		void SetInitSize(const ChMath::Vector2Base<int>& _size);
+		void SetInitSize(const ChINTPOINT& _size);
 
 		void SetInitSize(const int _w, const int _h);
 
 	public://Get Function//
 
-		inline const ChMath::Vector2Base<int> GetPosition()const
+		inline const ChINTPOINT GetPosition()const
 		{
 			return pos;
 		}
 
-		inline const ChMath::Vector2Base<int> GetSize()const
+		inline const ChINTPOINT GetSize()const
 		{
 			return size;
 		}
@@ -265,8 +265,8 @@ namespace ChWin
 		HMENU hMenu = nullptr;
 		HINSTANCE hInst = nullptr;
 		LPVOID param = nullptr;
-		ChMath::Vector2Base<int> pos = ChMath::Vector2Base<int>(0, 0);
-		ChMath::Vector2Base<int> size = ChMath::Vector2Base<int>(100,100);
+		ChINTPOINT pos = ChINTPOINT(0, 0);
+		ChINTPOINT size = ChINTPOINT(100,100);
 
 	};
 

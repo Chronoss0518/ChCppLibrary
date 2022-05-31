@@ -31,6 +31,35 @@ namespace ChSystem
 		void Init(
 			const std::string& _appName,
 			const std::string& _windClassName,
+			const ChINTPOINT& _windSize,
+			const HINSTANCE _hInst,
+			const int _nCmdShow);
+
+		void Init(
+			const std::string& _appName,
+			const std::string& _windClassName,
+			const ChINTPOINT& _windSize,
+			const ChINTPOINT& _windPos,
+			const HINSTANCE _hInst,
+			const int _nCmdShow);
+
+		void Init(
+			const std::string& _appName,
+			const std::string& _className,
+			const unsigned long _dwStyle,
+			const ChINTPOINT& _windSize,
+			const ChINTPOINT& _windPos,
+			HINSTANCE _hInst,
+			const int _nCmdShow,
+			const unsigned long _exStyle = 0,
+			HWND _parent = nullptr,
+			HMENU _hMenu = nullptr,
+			LPVOID _param = nullptr);
+
+		//WindÇÃê∂ê¨(stringVer)//
+		void Init(
+			const std::string& _appName,
+			const std::string& _windClassName,
 			const int _windWidth,
 			const int _windHeight,
 			const HINSTANCE _hInst,
@@ -61,6 +90,35 @@ namespace ChSystem
 			const int _initWindPosY,
 			const int _windWidth,
 			const int _windHeight,
+			HINSTANCE _hInst,
+			const int _nCmdShow,
+			const unsigned long _exStyle = 0,
+			HWND _parent = nullptr,
+			HMENU _hMenu = nullptr,
+			LPVOID _param = nullptr);
+
+		//WindÇÃê∂ê¨(wstringVer)//
+		void Init(
+			const std::wstring& _appName,
+			const std::wstring& _windClassName,
+			const ChINTPOINT& _windSize,
+			const HINSTANCE _hInst,
+			const int _nCmdShow);
+
+		void Init(
+			const std::wstring& _appName,
+			const std::wstring& _windClassName,
+			const ChINTPOINT& _windSize,
+			const ChINTPOINT& _windPos,
+			const HINSTANCE _hInst,
+			const int _nCmdShow);
+
+		void Init(
+			const std::wstring& _appName,
+			const std::wstring& _className,
+			const unsigned long _dwStyle,
+			const ChINTPOINT& _windSize,
+			const ChINTPOINT& _windPos,
 			HINSTANCE _hInst,
 			const int _nCmdShow,
 			const unsigned long _exStyle = 0,

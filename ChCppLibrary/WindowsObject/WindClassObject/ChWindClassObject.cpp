@@ -2,6 +2,7 @@
 
 #include"../../BaseIncluder/ChBase.h"
 
+#include"../PackData/ChPoint.h"
 #include"../WindObject/ChWindObject.h"
 #include"ChWindClassObject.h"
 #include"ChWindClassStyle.h"

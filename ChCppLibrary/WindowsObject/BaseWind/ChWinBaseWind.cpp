@@ -1,6 +1,7 @@
 
 #include<Windows.h>
 #include"../../BaseIncluder/ChBase.h"
+#include"../PackData/ChPoint.h"
 #include"../SubWind/ChWinSubWind.h"
 #include"ChWinBaseWind.h"
 #include"../../BaseSystem/ChWindows/ChWindows.h"

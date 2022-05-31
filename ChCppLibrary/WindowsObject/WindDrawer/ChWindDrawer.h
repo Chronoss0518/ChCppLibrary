@@ -35,23 +35,23 @@ namespace ChWin
 
 		void DrawStart(HWND _hWind);
 
-		void DrawString(const std::string& _str, const ChMath::Vector2Base<int>& _pos);
+		void DrawString(const std::string& _str, const ChINTPOINT& _pos);
 
 		void DrawString(const std::string& _str,const int _x, const int _y);
 
-		void DrawString(const std::wstring& _str, const ChMath::Vector2Base<int>& _pos);
+		void DrawString(const std::wstring& _str, const ChINTPOINT& _pos);
 
 		void DrawString(const std::wstring& _str, const int _x, const int _y);
 
-		void DrawLine(const ChMath::Vector2Base<int>& _startPos, const ChMath::Vector2Base<int>& _endPos);
+		void DrawLine(const ChINTPOINT& _startPos, const ChINTPOINT& _endPos);
 
 		void DrawLine(const int _startX, const int _startY, const int _endX, const int _endY);
 
-		void DrawTexture(HBITMAP _texture, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size,const ChMath::Vector2Base<int>& _basePos = ChMath::Vector2Base<int>(0,0),const unsigned long _opeCode = SRCCOPY);
+		void DrawTexture(HBITMAP _texture, const ChINTPOINT& _pos, const ChINTPOINT& _size,const ChINTPOINT& _basePos = ChINTPOINT(0,0),const unsigned long _opeCode = SRCCOPY);
 
 		void DrawTexture(HBITMAP _texture, const int _x, const int _y, const int _w, const int _h,const int _baseX = 0, const int _baseY = 0, const unsigned long _opeCode = SRCCOPY);
 
-		void DrawTexture(Texture& _texture, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos = ChMath::Vector2Base<int>(0,0));
+		void DrawTexture(Texture& _texture, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos = ChINTPOINT(0,0));
 
 		void DrawTexture(Texture& _texture, const int _x, const int _y, const int _w, const int _h,const int _baseX = 0,const int _baseY = 0);
 

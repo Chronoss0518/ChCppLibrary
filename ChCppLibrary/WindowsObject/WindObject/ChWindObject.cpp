@@ -1,6 +1,7 @@
 #include<Windows.h>
 #include"../../BaseIncluder/ChBase.h"
 
+#include"../PackData/ChPoint.h"
 #include"ChWindObject.h"
 #include"ChWindStyle.h"
 
@@ -37,7 +38,10 @@ void WindObject::Release()
 {
 	if (!IsInit())return;
 
-	Send(WM_CLOSE, 0, 0);
+	//Send(WM_CLOSE, 0, 0);
+
+	DestroyWindow(hWnd);
+
 	SetInitFlg(false);
 
 
@@ -167,7 +171,7 @@ void WindCreater::SetWindStyle(const WindStyle* _style)
 	style = _style->GetStyle();
 }
 
-void WindCreater::SetInitPosition(const ChMath::Vector2Base<int>& _pos)
+void WindCreater::SetInitPosition(const ChINTPOINT& _pos)
 {
 	SetInitPosition(_pos.x, _pos.y);
 }
@@ -178,7 +182,7 @@ void WindCreater::SetInitPosition(const int _x, const int _y)
 	pos.y = _y >= 0 ? _y : _y * -1;
 }
 
-void WindCreater::SetInitSize(const ChMath::Vector2Base<int>& _size)
+void WindCreater::SetInitSize(const ChINTPOINT& _size)
 {
 	SetInitSize(_size.w, _size.h);
 }

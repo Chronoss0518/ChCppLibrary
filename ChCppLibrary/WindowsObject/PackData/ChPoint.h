@@ -1,8 +1,11 @@
+#ifdef _WINDOWS_
+
 #ifndef Ch_Win_Point_h
 #define Ch_Win_Point_h
 
-typedef class ChINTPOINT:public ChMath::Vector2Base<long>
+typedef class ChINTPOINT:public ChMath::Vector2Base<int>
 {
+public://Operator Functions//
 
 	ChINTPOINT& operator=(const ChINTPOINT& _cm)
 	{
@@ -35,10 +38,17 @@ typedef class ChINTPOINT:public ChMath::Vector2Base<long>
 	ChINTPOINT& operator/=(const int& _cm);
 	ChINTPOINT operator/(const int& _cm)const;
 
+public://Constructor Destructor//
+
 	ChINTPOINT(const ChINTPOINT& _cm)
 	{
 		if (this == &_cm)return;
 		*this = _cm;
+	}
+
+	ChINTPOINT(const ChMath::Vector2Base<int>& _cm)
+	{
+		val.Set(_cm.val);
 	}
 
 	ChINTPOINT()
@@ -47,20 +57,20 @@ typedef class ChINTPOINT:public ChMath::Vector2Base<long>
 		y = 0;
 	}
 
-	ChINTPOINT(const long _x, const long _y)
+	ChINTPOINT(const int _x, const int _y)
 	{
 		x = _x;
 		y = _y;
 	}
 
-	ChINTPOINT(const long _num)
+	ChINTPOINT(const int _num)
 	{
 		val.Set(_num);
 	}
 
 public://Set Functions//
 
-	inline void Set(const long _x, const long _y) { x = _x; y = _y; }
+	inline void Set(const int _x, const int _y) { x = _x; y = _y; }
 
 public://Is Functions//
 
@@ -256,5 +266,7 @@ public://Member Values//
 }ChPOINT,ChPoint;
 
 
+
+#endif
 
 #endif

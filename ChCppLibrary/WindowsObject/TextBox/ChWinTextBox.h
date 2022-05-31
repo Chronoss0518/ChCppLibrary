@@ -23,8 +23,8 @@ namespace ChWin
 		void CreateA(
 			HINSTANCE _hIns,
 			const std::string& _startText,
-			const ChMath::Vector2Base<int>& _pos,
-			const ChMath::Vector2Base<int>& _size,
+			const ChINTPOINT& _pos,
+			const ChINTPOINT& _size,
 			const HWND _parentHandl = nullptr);
 
 		//TextBox�̍쐬//
@@ -40,8 +40,8 @@ namespace ChWin
 		//TextBox�̍쐬//
 		void CreateA(
 			const std::string& _startText,
-			const ChMath::Vector2Base<int>& _pos,
-			const ChMath::Vector2Base<int>& _size,
+			const ChINTPOINT& _pos,
+			const ChINTPOINT& _size,
 			const WindObject& _parentWind);
 
 		//TextBox�̍쐬//
@@ -57,8 +57,8 @@ namespace ChWin
 		void CreateW(
 			HINSTANCE _hIns,
 			const std::wstring& _startText,
-			const ChMath::Vector2Base<int>& _pos,
-			const ChMath::Vector2Base<int>& _size,
+			const ChINTPOINT& _pos,
+			const ChINTPOINT& _size,
 			const HWND _parentHandl = nullptr);
 
 		//TextBox�̍쐬//
@@ -74,8 +74,8 @@ namespace ChWin
 		//TextBox�̍쐬//
 		void CreateW(
 			const std::wstring& _startText,
-			const ChMath::Vector2Base<int>& _pos,
-			const ChMath::Vector2Base<int>& _size,
+			const ChINTPOINT& _pos,
+			const ChINTPOINT& _size,
 			const WindObject& _parentWind);
 
 		//TextBox�̍쐬//
@@ -96,8 +96,8 @@ namespace ChWin
 			std::string
 #endif
 			_startText,
-			const ChMath::Vector2Base<int>& _pos,
-			const ChMath::Vector2Base<int>& _size,
+			const ChINTPOINT& _pos,
+			const ChINTPOINT& _size,
 			const HWND _parentHandl = nullptr
 		)
 		{
@@ -127,9 +127,9 @@ namespace ChWin
 		{
 
 #ifdef UNICODE
-			CreateW(_hIns, _startText, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), _parentHandl);
+			CreateW(_hIns, _startText, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), _parentHandl);
 #else
-			CreateA(_hIns, _startText, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), _parentHandl);
+			CreateA(_hIns, _startText, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), _parentHandl);
 #endif
 		}
 
@@ -141,8 +141,8 @@ namespace ChWin
 			std::string
 #endif
 			_startText,
-			const ChMath::Vector2Base<int>& _pos,
-			const ChMath::Vector2Base<int>& _size,
+			const ChINTPOINT& _pos,
+			const ChINTPOINT& _size,
 			const WindObject& _parentWind
 		)
 		{
@@ -171,9 +171,9 @@ namespace ChWin
 		{
 
 #ifdef UNICODE
-			CreateW(_startText, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), _parentWind);
+			CreateW(_startText, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), _parentWind);
 #else
-			CreateA(_startText, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), _parentWind);
+			CreateA(_startText, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), _parentWind);
 #endif
 		}
 
