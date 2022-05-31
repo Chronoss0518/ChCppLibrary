@@ -14,6 +14,9 @@
 #pragma comment(lib,"Gdi32.lib")
 #endif
 
+//PackingClass//
+#include"WindowsObject/PackData/ChPoint.h"
+
 #include"WindowsObject/BaseWind/ChWinBaseWind.h"
 #include"BaseSystem/ChWindows/ChWindows.h"
 #include"WindowsObject/FileDialog/ChWinFileDialog.h"
