@@ -77,13 +77,13 @@ void WindObject::SetWindRect(const unsigned int _x, const unsigned int _y, const
 	SetWindowPos(hWnd, HWND_TOP, _x, _y, _w, _h, _flgs);
 }
 
-const ChMath::Vector2Base<unsigned int> WindObject::GetWindSize()const
+const ChPOINT WindObject::GetWindSize()const
 {
-	ChMath::Vector2Base<unsigned int> out;
+	ChPOINT out;
 	if (!*this)return out;
 
 	RECT rect;
-	GetClientRect(hWnd, &rect);
+	GetWindowRect(hWnd, &rect);
 
 	out.w = rect.right - rect.left;
 	out.h = rect.bottom - rect.top;
@@ -91,16 +91,16 @@ const ChMath::Vector2Base<unsigned int> WindObject::GetWindSize()const
 	return out;
 }
 
-const ChMath::Vector2Base<unsigned int> WindObject::GetWindPos()const
+const ChPOINT WindObject::GetWindPos()const
 {
-	ChMath::Vector2Base<unsigned int> out;
+	ChPOINT out;
 	if (!*this)return out;
 	RECT rect;
-	GetClientRect(hWnd, &rect);
+	GetWindowRect(hWnd, &rect);
 
 
-	out.w = rect.left;
-	out.h = rect.top;
+	out.x = rect.left;
+	out.y = rect.top;
 
 	return out;
 }

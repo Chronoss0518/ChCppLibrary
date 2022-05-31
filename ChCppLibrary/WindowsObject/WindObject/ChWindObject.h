@@ -68,14 +68,14 @@ namespace ChWin
 
 		void SetWindPos(const unsigned int _x, const unsigned int _y,const unsigned int _flgs = SWP_NOSIZE | SWP_NOZORDER);
 
-		inline void SetWindPos(const ChMath::Vector2Base<unsigned int>& _pos, const unsigned int _flgs = SWP_NOSIZE | SWP_NOZORDER)
+		inline void SetWindPos(const ChPOINT& _pos, const unsigned int _flgs = SWP_NOSIZE | SWP_NOZORDER)
 		{
 			SetWindPos(_pos.x, _pos.y, _flgs);
 		}
 
 		void SetWindSize(const unsigned int _w, const unsigned int _h, const unsigned int _flgs = SWP_NOMOVE | SWP_NOZORDER);
 
-		inline void SetWindSize(const ChMath::Vector2Base<unsigned int>& _size, const unsigned int _flgs = SWP_NOMOVE | SWP_NOZORDER)
+		inline void SetWindSize(const ChPOINT& _size, const unsigned int _flgs = SWP_NOMOVE | SWP_NOZORDER)
 		{
 			SetWindPos(_size.w, _size.h, _flgs);
 		}
@@ -96,10 +96,10 @@ namespace ChWin
 		inline const LPMSG GetReturnMassage(void) const { return const_cast<const LPMSG>(&msg); }
 
 		//Windowのサイズを取得する関数//
-		const ChMath::Vector2Base<unsigned int> GetWindSize()const;
+		const ChPOINT GetWindSize()const;
 
 		//Windowの左上の位置を取得する関数//
-		const ChMath::Vector2Base<unsigned int> GetWindPos()const;
+		const ChPOINT GetWindPos()const;
 
 		inline const HINSTANCE GetInstance()const
 		{
