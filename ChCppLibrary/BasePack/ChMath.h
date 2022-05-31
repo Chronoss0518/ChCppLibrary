@@ -381,9 +381,11 @@ namespace ChMath
 
 		void Div(const T& _val)
 		{
+			T tmp = _val != static_cast<T>(0.0f) ? _val : static_cast<T>(1.0f);
+
 			for (unsigned long i = 0; i < Array; i++)
 			{
-				val[i] /= _val != static_cast<T>(0.0f) ? _val : static_cast<T>(1.0f);
+				val[i] /= tmp;
 			}
 		}
 

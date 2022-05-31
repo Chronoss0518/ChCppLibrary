@@ -7,10 +7,7 @@
 
 ChINTPOINT& ChINTPOINT::operator+=(const ChINTPOINT& _cm)
 {
-	for (char i = 0; i < 2; i++)
-	{
-		val[i] += _cm.val[i];
-	}
+	val.Add(_cm.val);
 	return *this;
 }
 
@@ -25,10 +22,7 @@ ChINTPOINT ChINTPOINT::operator+(const ChINTPOINT& _cm)const
 
 ChINTPOINT& ChINTPOINT::operator-=(const ChINTPOINT& _cm)
 {
-	for (char i = 0; i < 2; i++)
-	{
-		val[i] -= _cm.val[i];
-	}
+	val.Sub(_cm.val);
 	return *this;
 }
 
@@ -43,10 +37,7 @@ ChINTPOINT ChINTPOINT::operator-(const ChINTPOINT& _cm)const
 
 ChINTPOINT& ChINTPOINT::operator*=(const ChINTPOINT& _cm)
 {
-	for (char i = 0; i < 2; i++)
-	{
-		val[i] *= _cm.val[i];
-	}
+	val.Mul(_cm.val);
 	return *this;
 }
 
@@ -61,10 +52,7 @@ ChINTPOINT ChINTPOINT::operator*(const ChINTPOINT& _cm)const
 
 ChINTPOINT& ChINTPOINT::operator/=(const ChINTPOINT& _cm)
 {
-	for (char i = 0; i < 2; i++)
-	{
-		val[i] /= _cm.val[i] != 0 ? _cm.val[i] : 1;
-	}
+	val.Div(_cm.val);
 	return *this;
 }
 
@@ -79,10 +67,8 @@ ChINTPOINT ChINTPOINT::operator/(const ChINTPOINT& _cm)const
 
 ChINTPOINT& ChINTPOINT::operator+=(const int& _cm)
 {
-	for (char i = 0; i < 2; i++)
-	{
-		val[i] += _cm;
-	}
+
+	val.Add(_cm);
 	return *this;
 }
 
@@ -97,10 +83,7 @@ ChINTPOINT ChINTPOINT::operator+(const int& _cm)const
 
 ChINTPOINT& ChINTPOINT::operator-=(const int& _cm)
 {
-	for (char i = 0; i < 2; i++)
-	{
-		val[i] -= _cm;
-	}
+	val.Sub(_cm);
 	return *this;
 }
 
@@ -115,10 +98,7 @@ ChINTPOINT ChINTPOINT::operator-(const int& _cm)const
 
 ChINTPOINT& ChINTPOINT::operator*=(const int& _cm)
 {
-	for (char i = 0; i < 2; i++)
-	{
-		val[i] *= _cm;
-	}
+	val.Mul(_cm);
 	return *this;
 }
 
@@ -133,12 +113,7 @@ ChINTPOINT ChINTPOINT::operator*(const int& _cm)const
 
 ChINTPOINT& ChINTPOINT::operator/=(const int& _cm)
 {
-	auto tmp = _cm != 0 ? _cm : 1;
-
-	for (char i = 0; i < 2; i++)
-	{
-		val[i] /= tmp;
-	}
+	val.Div(_cm);
 	return *this;
 }
 
@@ -155,10 +130,7 @@ ChINTPOINT ChINTPOINT::operator/(const int& _cm)const
 
 ChPOINT& ChPOINT::operator+=(const ChPOINT& _cm)
 {
-	for (char i = 0; i < 2; i++)
-	{
-		val[i] += _cm.val[i];
-	}
+	vec.val.Add(_cm.vec.val);
 	return *this;
 }
 
@@ -173,10 +145,7 @@ ChPOINT ChPOINT::operator+(const ChPOINT& _cm)const
 
 ChPOINT& ChPOINT::operator-=(const ChPOINT& _cm)
 {
-	for (char i = 0; i < 2; i++)
-	{
-		val[i] -= _cm.val[i];
-	}
+	vec.val.Sub(_cm.vec.val);
 	return *this;
 }
 
@@ -191,10 +160,7 @@ ChPOINT ChPOINT::operator-(const ChPOINT& _cm)const
 
 ChPOINT& ChPOINT::operator*=(const ChPOINT& _cm)
 {
-	for (char i = 0; i < 2; i++)
-	{
-		val[i] *= _cm.val[i];
-	}
+	vec.val.Mul(_cm.vec.val);
 	return *this;
 }
 
@@ -209,10 +175,7 @@ ChPOINT ChPOINT::operator*(const ChPOINT& _cm)const
 
 ChPOINT& ChPOINT::operator/=(const ChPOINT& _cm)
 {
-	for (char i = 0; i < 2; i++)
-	{
-		val[i] /= _cm.val[i] != 0 ? _cm.val[i] : 1;
-	}
+	vec.val.Div(_cm.vec.val);
 	return *this;
 }
 
@@ -227,10 +190,7 @@ ChPOINT ChPOINT::operator/(const ChPOINT& _cm)const
 
 ChPOINT& ChPOINT::operator+=(const long& _cm)
 {
-	for (char i = 0; i < 2; i++)
-	{
-		val[i] += _cm;
-	}
+	vec.val.Add(_cm);
 	return *this;
 }
 
@@ -245,10 +205,7 @@ ChPOINT ChPOINT::operator+(const long& _cm)const
 
 ChPOINT& ChPOINT::operator-=(const long& _cm)
 {
-	for (char i = 0; i < 2; i++)
-	{
-		val[i] -= _cm;
-	}
+	vec.val.Sub(_cm);
 	return *this;
 }
 
@@ -263,10 +220,7 @@ ChPOINT ChPOINT::operator-(const long& _cm)const
 
 ChPOINT& ChPOINT::operator*=(const long& _cm)
 {
-	for (char i = 0; i < 2; i++)
-	{
-		val[i] *= _cm;
-	}
+	vec.val.Mul(_cm);
 	return *this;
 }
 
@@ -281,12 +235,7 @@ ChPOINT ChPOINT::operator*(const long& _cm)const
 
 ChPOINT& ChPOINT::operator/=(const long& _cm)
 {
-	auto tmp = _cm != 0 ? _cm : 1;
-
-	for (char i = 0; i < 2; i++)
-	{
-		val[i] /= tmp;
-	}
+	vec.val.Div(_cm);
 	return *this;
 }
 

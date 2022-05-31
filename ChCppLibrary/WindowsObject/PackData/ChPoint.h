@@ -7,8 +7,7 @@ typedef class ChINTPOINT:public ChMath::Vector2Base<long>
 	ChINTPOINT& operator=(const ChINTPOINT& _cm)
 	{
 		if (this == &_cm)return *this;
-		x = _cm.x;
-		y = _cm.y;
+		val.Set(_cm.val);
 		return *this;
 	}
 
@@ -66,6 +65,33 @@ public://Set Functions//
 public://Is Functions//
 
 	ChStd::Bool IsAll0()const;
+
+public://Serialize Deserialize//
+
+	inline std::string Serialize(
+		const std::string& _cutChar = ","
+		, const std::string& _endChar = ";")
+	{
+		return val.Serialize(_cutChar, _endChar);
+	}
+
+	inline void Deserialize(
+		const std::string& _str
+		, const size_t _fPos = 0
+		, const std::string& _cutChar = ","
+		, const std::string& _endChar = ";"
+		, const unsigned int _digit = 6)
+	{
+		val.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
+	}
+
+public://Other Functions//
+
+	inline void Abs() { val.Abs(); }
+
+	inline void Identity() { val.Identity(); }
+
+
 }ChIPoint;
 
 typedef class ChLONGPOINT
@@ -185,11 +211,36 @@ public://Is Functions//
 
 	ChStd::Bool IsAll0()const;
 
+public://Serialize Deserialize//
+
+	inline std::string Serialize(
+		const std::string& _cutChar = ","
+		, const std::string& _endChar = ";")
+	{
+		return vec.val.Serialize(_cutChar, _endChar);
+	}
+
+	inline void Deserialize(
+		const std::string& _str
+		, const size_t _fPos = 0
+		, const std::string& _cutChar = ","
+		, const std::string& _endChar = ";"
+		, const unsigned int _digit = 6)
+	{
+		vec.val.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
+	}
+
+public://Other Functions//
+
+	inline void Abs() { vec.val.Abs(); }
+
+	inline void Identity() { vec.val.Identity(); }
+
 public://Member Values//
 
 	union
 	{
-		ChMath::Vector2Base<long> vec;
+		ChMath::Vector2Base<long> vec = 0;
 		POINT pt;
 		struct
 		{
