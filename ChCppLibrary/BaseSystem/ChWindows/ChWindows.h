@@ -183,6 +183,8 @@ namespace ChSystem
 			wndObject.SetWindProcedure(_windowMessage, _proce);
 		}
 
+		inline void SetEnableFlg(const ChStd::Bool _flg) { wndObject.SetEnableFlg(_flg); }
+
 		///////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
@@ -215,6 +217,8 @@ namespace ChSystem
 
 		//WindMassageÇämîFÇ∑ÇÈä÷êî//
 		ChStd::Bool IsUpdate()override;
+
+		inline ChStd::Bool IsCursorPosOnWindow() { return wndObject.IsCursorPosOnWindow(); }
 
 		///////////////////////////////////////////////////////////////////////////////////
 

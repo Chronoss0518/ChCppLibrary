@@ -115,22 +115,21 @@ const HINSTANCE WindObject::GetInstanceW()const
 	return (HINSTANCE)GetWindowLongW(hWnd, GWL_HINSTANCE);
 }
 
-LPARAM WindObject::SendA(const unsigned int _msg, WPARAM _wParam, LPARAM _lParam)
+ChStd::Bool WindObject::IsCursorPosOnWindow()
 {
-	LPARAM out = _lParam;
-	if (!*this)return out;
-	WPARAM wParam = _wParam;
-	SendMessageA(hWnd, _msg, wParam, out);
-	return out;
-}
+	auto size = GetWindSize();
 
-LPARAM WindObject::SendW(const unsigned int _msg, WPARAM _wParam, LPARAM _lParam)
-{
-	LPARAM out = _lParam;
-	if (!*this)return out;
-	WPARAM wParam = _wParam;
-	SendMessageW(hWnd, _msg, wParam, out);
-	return out;
+	POINT cPos;
+	GetCursorPos(&cPos);
+	ScreenToClient(hWnd, &cPos);
+
+	if (0 <= cPos.x && size.w > cPos.x && 0 <= cPos.y && size.h > cPos.y)
+	{
+		return true;
+	}
+
+	return false;
+
 }
 
 ChStd::Bool WindObject::UpdateA()
@@ -162,6 +161,24 @@ ChStd::Bool WindObject::UpdateW()
 	DispatchMessageW(&msg);
 
 	return true;
+}
+
+LPARAM WindObject::SendA(const unsigned int _msg, WPARAM _wParam, LPARAM _lParam)
+{
+	LPARAM out = _lParam;
+	if (!*this)return out;
+	WPARAM wParam = _wParam;
+	SendMessageA(hWnd, _msg, wParam, out);
+	return out;
+}
+
+LPARAM WindObject::SendW(const unsigned int _msg, WPARAM _wParam, LPARAM _lParam)
+{
+	LPARAM out = _lParam;
+	if (!*this)return out;
+	WPARAM wParam = _wParam;
+	SendMessageW(hWnd, _msg, wParam, out);
+	return out;
 }
 
 //WindowObjectCreate Method//
@@ -218,6 +235,8 @@ ChStd::Bool WindCreater::Create(WindObject* _out, const std::string& _appName, c
 
 	SetWindowLongPtrA(_out->hWnd, GWLP_USERDATA, reinterpret_cast<long>(_out));
 
+	_out->parent = parent;
+
 	return true;
 }
 
@@ -245,6 +264,8 @@ ChStd::Bool WindCreater::Create(WindObject* _out, const std::wstring& _appName, 
 	_out->CreateEnd(_nShowCmd);
 
 	SetWindowLongPtrW(_out->hWnd, GWLP_USERDATA, reinterpret_cast<long>(_out));
+
+	_out->parent = parent;
 
 	return true;
 }

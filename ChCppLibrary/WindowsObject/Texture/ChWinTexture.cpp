@@ -521,7 +521,9 @@ void Texture::DrawPlgMain(HDC _textureHDC, HDC _drawTarget, const ChINTPOINT& _p
 	static MaskTexture maskRT;
 
 	{
-		maskRT.CreateMaskTexture(bsize.w, bsize.h);
+		auto texSize = GetTextureSize();
+
+		maskRT.CreateMaskTexture(texSize.w, texSize.h);
 		auto oldBkColor = maskRT.SetBKColor( _transparent);
 
 		{
@@ -530,7 +532,7 @@ void Texture::DrawPlgMain(HDC _textureHDC, HDC _drawTarget, const ChINTPOINT& _p
 
 			opeCode = RasterOpeCode::NotSRCCopy;
 
-			DrawMain(_textureHDC,maskRT.GetRenderTarget(), ChINTPOINT(0, 0), bsize, bpos);
+			DrawMain(_textureHDC,maskRT.GetRenderTarget(), ChINTPOINT(0, 0), texSize, ChINTPOINT(0, 0));
 			
 			opeCode = oCode;
 
@@ -584,7 +586,7 @@ void Texture::DrawPlgMain(HDC _textureHDC, HDC _drawTarget, const ChINTPOINT& _p
 
 	int tmpStretch = SetStretchBltMode(_drawTarget, ChStd::EnumCast(stretchType));
 
-	int out = PlgBlt(_drawTarget, edgePoint, _textureHDC, bpos.x, bpos.y, bsize.w, bsize.h,_maskTex, 0, 0);
+	int out = PlgBlt(_drawTarget, edgePoint, _textureHDC, bpos.x, bpos.y, bsize.w, bsize.h, _maskTex, bpos.x, bpos.y);
 
 	SetStretchBltMode(_drawTarget, tmpStretch);
 

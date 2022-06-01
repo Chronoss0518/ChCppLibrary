@@ -87,6 +87,8 @@ namespace ChWin
 			SetWindRect(_rec.top, _rec.left, _rec.right - _rec.left, _rec.bottom - _rec.top, _flgs);
 		}
 
+		inline void SetEnableFlg(const ChStd::Bool _flg) { EnableWindow(hWnd, _flg); }
+
 	public://GetFunction//
 
 		//Windハンドルの取得//
@@ -114,7 +116,12 @@ namespace ChWin
 
 		const HINSTANCE GetInstanceW()const;
 
-	public://UpdateFunction//
+	public://Is Functions//
+
+		//ウィンドウの範囲内でクリックされたかを確認//
+		ChStd::Bool IsCursorPosOnWindow();
+
+	public://Update Functions//
 
 		inline virtual ChStd::Bool Update()
 		{
@@ -187,6 +194,7 @@ namespace ChWin
 		std::map<unsigned int, std::function<void(HWND, UINT)>> childWindProc;
 		std::map<unsigned int, std::function<LRESULT(HWND,UINT,WPARAM,LPARAM)>> wndProc;
 		HWND hWnd = nullptr;
+		HWND parent = nullptr;
 		MSG msg = { 0 };
 
 	};

@@ -292,11 +292,11 @@ void ChWin::TextBox::SetCharLimitW(const unsigned long _size)
 void ChWin::TextBox::Select()
 {
 	Send(EN_SETFOCUS);
-	EnableWindow(GethWnd(), true);
+	SetEnableFlg(true);
 }
 
 void ChWin::TextBox::UnSelect()
 {
 	Send(EN_KILLFOCUS);
-	EnableWindow(GethWnd(), false);
+	SetEnableFlg(false);
 }
