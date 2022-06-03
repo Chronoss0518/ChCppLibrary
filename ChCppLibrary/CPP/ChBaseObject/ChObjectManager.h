@@ -26,9 +26,10 @@ namespace ChCpp
 			if (list == objectList.end())
 			{
 				objectList[_tag] = ChPtr::Make_S<ObjectList>();
+				list = objectList.find(_tag);
 			}
 
-			return (*list)->SetObject<T>(_objectName);
+			return (*list).second->SetObject<T>(_objectName);
 		}
 
 		//BaseObjectを継承したオブジェクトのみ登録可能//
@@ -41,9 +42,10 @@ namespace ChCpp
 			if (list == objectList.end())
 			{
 				objectList[_tag] = ChPtr::Make_S<ObjectList>();
+				list = objectList.find(_tag);
 			}
 
-			return (*list)->SetObject<T>(_obj);
+			return (*list).second->SetObject<T>(_obj);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////////
@@ -59,7 +61,7 @@ namespace ChCpp
 
 			for (auto&& objlist : objectList)
 			{
-				for (auto&& outObj : objlist.second->GetObjectList())
+				for (auto&& outObj : objlist.second->GetObjectList<T>())
 				{
 					tmpObjList.push_back(outObj);
 				}
@@ -77,7 +79,7 @@ namespace ChCpp
 
 			for (auto&& objlist : objectList)
 			{
-				for (auto&& outObj : objlist.second->GetObjectListForName(_name))
+				for (auto&& outObj : objlist.second->GetObjectListForName<T>(_name))
 				{
 					tmpObjList.push_back(outObj);
 				}
@@ -97,7 +99,7 @@ namespace ChCpp
 
 			if (it == objectList.end())return tmpObjList;
 
-			for (auto&& outObj : (*it).second->GetObjectList())
+			for (auto&& outObj : (*it).second->GetObjectList<T>())
 			{
 				tmpObjList.push_back(outObj);
 			}
@@ -116,7 +118,7 @@ namespace ChCpp
 
 			if (it == objectList.end())return tmpObjList;
 
-			for (auto&& outObj : (*it).second->GetObjectListForName(_name))
+			for (auto&& outObj : (*it).second->GetObjectListForName<T>(_name))
 			{
 				tmpObjList.push_back(outObj);
 			}

@@ -94,7 +94,7 @@ namespace ChCpp
 
 			for (auto&& obj : childList)
 			{
-				auto&& test = dynamic_cast<T>(obj);
+				auto&& test = ChPtr::SharedSafeCast<T>(obj);
 				if (test == nullptr)continue;
 				tmpObjList.push_back(test);
 			}
@@ -112,7 +112,7 @@ namespace ChCpp
 
 			for (auto&& obj : childList)
 			{
-				auto&& test = dynamic_cast<T>(obj);
+				auto&& test = ChPtr::SharedSafeCast<T>(obj);
 				if (test == nullptr)continue;
 				if (test->GetMyName() != _name)continue;
 				tmpObjList.push_back(test);
@@ -231,7 +231,7 @@ namespace ChCpp
 		//SetéûÇ…ëñÇÈä÷êî//
 		void BaseInit(
 			const std::string& _objectName
-			, ObjectManager* _objMa);
+			, ObjectList* _objMa);
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//Component//

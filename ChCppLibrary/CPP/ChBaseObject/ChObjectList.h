@@ -84,8 +84,8 @@ namespace ChCpp
 
 			for (auto&& obj : objectList)
 			{
-				if (obj->parent != nullptr)continue;
-				auto&& test = dynamic_cast<T>(obj);
+				if (obj->parent.lock() != nullptr)continue;
+				auto&& test = ChPtr::SharedSafeCast<T>(obj);
 				if (test == nullptr)continue;
 				tmpObjList.push_back(test);
 				for (auto&& childObj : obj->GetChildlen())
@@ -107,8 +107,8 @@ namespace ChCpp
 
 			for (auto&& obj : objectList)
 			{
-				if (obj->parent != nullptr)continue;
-				auto&& test = dynamic_cast<T>(obj);
+				if (obj->parent.lock() != nullptr)continue;
+				auto&& test = ChPtr::SharedSafeCast<T>(obj);
 				if (test == nullptr)continue;
 				if (test->GetMyName() != _name)continue;
 				tmpObjList.push_back(test);

@@ -232,7 +232,7 @@ void BaseObject::BaseRelease()
 
 void BaseObject::BaseInit(
 	const std::string& _ObjectName
-	, ObjectManager* _objMaList)
+	, ObjectList* _objMaList)
 {
 	myName = _ObjectName;
 
