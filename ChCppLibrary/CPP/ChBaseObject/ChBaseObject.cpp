@@ -232,10 +232,8 @@ void BaseObject::BaseRelease()
 
 void BaseObject::BaseInit(
 	const std::string& _ObjectName
-	, const std::string& _tag
 	, ObjectManager* _objMaList)
 {
-	tag = _tag;
 	myName = _ObjectName;
 
 	Init();
@@ -263,35 +261,6 @@ void BaseObject::ReleaseComponent(const std::string& _comName)
 	}
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
-void BaseObject::ChengeTag(const std::string& _newTag)
-{
-	if (dFlg)return;
-
-
-	auto tmpTag = tag;
-
-	tag = _newTag;
-
-	if (ChPtr::NullCheck(objMaList))return;
-
-	auto tmp = std::find(
-		objMaList->objectList[tag].begin()
-		, objMaList->objectList[tag].end()
-		, shared_from_this());
-
-	objMaList->objectList[_newTag].push_back((*tmp));
-
-	objMaList->objectList[tmpTag].erase(tmp);
-
-	if (!objMaList->objectList[tmpTag].empty())return;
-
-	objMaList->objectList.erase(tmpTag);
-
-}
-///////////////////////////////////////////////////////////////////////////////////////
-
 void BaseObject::IsReleasComponent()
 {
 
@@ -310,93 +279,3 @@ void BaseObject::IsReleasComponent()
 
 	}
 }
-
-///////////////////////////////////////////////////////////////////////////////////////
-
-std::vector<ChPtr::Weak<BaseObject>> BaseObject::LookObjectList()
-{
-
-	std::vector<ChPtr::Weak<BaseObject>>tmpObjList;
-
-	if (ChPtr::NullCheck(objMaList))return tmpObjList;
-
-	for (auto&&objlist : objMaList->objectList)
-	{
-		for (auto&& obj : objlist.second)
-		{
-			tmpObjList.push_back(obj);
-		}
-	}
-
-	return tmpObjList;
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-
-std::vector<ChPtr::Weak<BaseObject>> BaseObject::LookObjectListForTag(const std::string& _tag)
-{
-	std::vector<ChPtr::Weak<BaseObject>>tmpObjList;
-
-	if (ChPtr::NullCheck(objMaList))return tmpObjList;
-
-	if (objMaList->objectList.find(_tag) == objMaList->objectList.end())return tmpObjList;
-
-	auto objlist = objMaList->objectList[_tag];
-
-	for (auto&& obj : objlist)
-	{
-		tmpObjList.push_back(obj);
-	}
-
-	return tmpObjList;
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-
-std::vector<ChPtr::Weak<BaseObject>> BaseObject::LookObjectListForName(const std::string& _ObjectName)
-{
-
-	std::vector<ChPtr::Weak<BaseObject>>tmpObjList;
-
-	if (ChPtr::NullCheck(objMaList))return tmpObjList;
-
-	for (auto&& tags : objMaList->objectList)
-	{
-		for (auto&& Obj : tags.second)
-		{
-			if (_ObjectName != Obj->myName)continue;
-			tmpObjList.push_back(Obj);
-		}
-	}
-
-	return tmpObjList;
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-
-std::vector<ChPtr::Weak<BaseObject>>BaseObject::LookObjectListForTagAndName(
-	const std::string& _ObjectName
-	,const std::string& _tag)
-{
-	std::vector<ChPtr::Weak<BaseObject>>tmpObjList;
-
-	if (ChPtr::NullCheck(objMaList))return tmpObjList;
-
-	if (objMaList->objectList.find(_tag) == objMaList->objectList.end())return tmpObjList;
-
-	auto objlist = objMaList->objectList[_tag];
-
-	for (auto&& obj : objlist)
-	{
-		if (_ObjectName != obj->myName)continue;
-		tmpObjList.push_back(obj);
-	}
-
-	return tmpObjList;
-
-
-}
-

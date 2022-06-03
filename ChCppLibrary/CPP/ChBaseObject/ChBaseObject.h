@@ -49,9 +49,6 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
-		//現在のタグを取得//
-		std::string GetTag() { return tag; }
-
 		std::string GetMyName() { return myName; }
 
 		//コンポーネントの取得//
@@ -88,9 +85,40 @@ namespace ChCpp
 		}
 
 		//子オブジェクト群の取得//
-		std::vector<ChPtr::Shared<BaseObject>>& GetChildlen()
+		template<class T = BaseObject>
+		inline std::vector<ChPtr::Weak<
+			typename std::enable_if<std::is_base_of<BaseObject, T>::value, T>::type>> 
+			GetChildlen()
 		{
-			return childList;
+			std::vector<ChPtr::Weak<T>>tmpObjList;
+
+			for (auto&& obj : childList)
+			{
+				auto&& test = dynamic_cast<T>(obj);
+				if (test == nullptr)continue;
+				tmpObjList.push_back(test);
+			}
+
+			return tmpObjList;
+		}
+
+		//子オブジェクト群の取得//
+		template<class T = BaseObject>
+		inline std::vector<ChPtr::Weak<
+			typename std::enable_if<std::is_base_of<BaseObject, T>::value, T>::type>>
+			GetChildlenForName(const std::string& _name)
+		{
+			std::vector<ChPtr::Weak<BaseObject>>tmpObjList;
+
+			for (auto&& obj : childList)
+			{
+				auto&& test = dynamic_cast<T>(obj);
+				if (test == nullptr)continue;
+				if (test->GetMyName() != _name)continue;
+				tmpObjList.push_back(test);
+			}
+
+			return tmpObjList;
 		}
 
 		//親の取得//
@@ -126,7 +154,8 @@ namespace ChCpp
 		{
 			childList.push_back(_childObject);
 
-			auto par = _childObject->parent.lock();
+			auto&& par = _childObject->parent.lock();
+
 			if (par != nullptr)
 			{
 				auto&& obj =  std::find(par->childList.begin(), par->childList.end(), _childObject);
@@ -151,22 +180,7 @@ namespace ChCpp
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
-		//Tag変更時に走らせる関数//
-		void ChengeTag(const std::string& _newTag);
-
-		///////////////////////////////////////////////////////////////////////////////////////
-
-		//全体オブジェクトの確認//
-		std::vector<ChPtr::Weak<BaseObject>>LookObjectList();
-
-		//選択したタグのオブジェクトの確認//
-		std::vector<ChPtr::Weak<BaseObject>>LookObjectListForTag(const std::string& _tag);
-
-		//選択した名前のオブジェクトの確認//
-		std::vector<ChPtr::Weak<BaseObject>>LookObjectListForName(const std::string& _objectName);
-
-		//選択したタグ内の選択した名前ののオブジェクトの確認//
-		std::vector<ChPtr::Weak<BaseObject>>LookObjectListForTagAndName(const std::string& _objectName, const std::string& _Tag);
+		ObjectList* LookObjectList();
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//UsingFunctionToManagers//
@@ -217,7 +231,6 @@ namespace ChCpp
 		//Set時に走る関数//
 		void BaseInit(
 			const std::string& _objectName
-			, const std::string& _tag
 			, ObjectManager* _objMa);
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -234,7 +247,6 @@ namespace ChCpp
 
 		ObjectList* objMaList = nullptr;
 		std::string myName;
-		std::string tag;
 		ChStd::Bool dFlg = false;
 
 	};

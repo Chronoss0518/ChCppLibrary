@@ -34,17 +34,17 @@ namespace ChCpp
 		//オブジェクトを登録する//
 		//BaseObjectを継承したオブジェクトのみ登録可能//
 		template<class T>
-		auto SetObject(const std::string& _objectName, const std::string& _tag) ->typename std::enable_if
+		auto SetObject(const std::string& _objectName) ->typename std::enable_if
 			<std::is_base_of<BaseObject, T>::value, ChPtr::Shared<T>>::type
 		{
 
 			ChPtr::Shared<BaseObject> tmpObj = ChPtr::Make_S<T>();
 
-			tmpObj->BaseInit(_objectName, _tag, this);
+			tmpObj->BaseInit(_objectName, this);
 
 			tmpObj->Init();
 
-			objectList[_tag].push_back(tmpObj);
+			objectList.push_back(tmpObj);
 
 			return ChPtr::SharedSafeCast<T>(tmpObj);
 		}
@@ -57,14 +57,11 @@ namespace ChCpp
 
 			ChPtr::Shared<BaseObject> tmpObj = _obj;
 
-			if (objectList.find(tmpObj->GetTag()) != objectList.end())
-			{
-				if (std::find(objectList[tmpObj->GetTag()].begin(), objectList[tmpObj->GetTag()].end(), tmpObj))return;
-			}
+			if (std::find(objectList.begin(), objectList.end(), tmpObj) != objectList.end())return;;
 
 			tmpObj->objMa = this;
 
-			objectList[tmpObj->GetTag()].push_back(tmpObj);
+			objectList.push_back(tmpObj);
 
 			for (auto&& child : tmpObj->childList)
 			{
@@ -77,11 +74,52 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
-		std::vector<ChPtr::Weak<BaseObject>> GetObjectList();
 
-		std::vector<ChPtr::Weak<BaseObject>> GetObjectListForTag(const std::string& _tagName);
+		template<class T = BaseObject>
+		inline std::vector<ChPtr::Weak<
+			typename std::enable_if<std::is_base_of<BaseObject, T>::value, T>::type>>
+			GetObjectList()
+		{
+			std::vector<ChPtr::Weak<T>>tmpObjList;
 
-		std::vector<ChPtr::Weak<BaseObject>> GetObjectListForName(const std::string& _name);
+			for (auto&& obj : objectList)
+			{
+				if (obj->parent != nullptr)continue;
+				auto&& test = dynamic_cast<T>(obj);
+				if (test == nullptr)continue;
+				tmpObjList.push_back(test);
+				for (auto&& childObj : obj->GetChildlen())
+				{
+					tmpObjList.push_back(childObj);
+				}
+
+			}
+
+			return tmpObjList;
+		}
+
+		template<class T = BaseObject>
+		inline std::vector<ChPtr::Weak<
+			typename std::enable_if<std::is_base_of<BaseObject, T>::value, T>::type>>
+			GetObjectListForName(const std::string& _name)
+		{
+			std::vector<ChPtr::Weak<BaseObject>>tmpObjList;
+
+			for (auto&& obj : objectList)
+			{
+				if (obj->parent != nullptr)continue;
+				auto&& test = dynamic_cast<T>(obj);
+				if (test == nullptr)continue;
+				if (test->GetMyName() != _name)continue;
+				tmpObjList.push_back(test);
+				for (auto&& childObj : obj->GetChildlenForName(_name))
+				{
+					tmpObjList.push_back(childObj);
+				}
+			}
+
+			return tmpObjList;
+		}
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//UpdateFunction//
@@ -127,23 +165,14 @@ namespace ChCpp
 		//保持しているすべてのオブジェクトを削除する。
 		void ClearObject();
 
-		//選択されたタグのオブジェクトをすべて消去する//
-		void ClearObjectForTag(const std::string& _tags);
-
 		//選択された名前のオブジェクトをすべて消去する//
 		void ClearObjectForName(const std::string& _name);
-
-		//選択されたタグと関連する名前のオブジェクトをすべて消去する//
-		void ClearObjectForTagAndName(
-			const std::string& _name,
-			const std::string& _tags);
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		
 	protected:
 
-		std::map<std::string, std::vector<ChPtr::Shared<BaseObject>>>objectList;
-
+		std::vector<ChPtr::Shared<BaseObject>>objectList;
 
 	};
 

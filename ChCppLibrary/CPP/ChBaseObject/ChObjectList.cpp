@@ -16,59 +16,6 @@ void ObjectList::Release()
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-std::vector<ChPtr::Weak<BaseObject>> ObjectList::GetObjectList()
-{
-	std::vector<ChPtr::Weak<BaseObject>>tmpObjList;
-
-	for (auto&& objlist : objectList)
-	{
-		for (auto&& obj : objlist.second)
-		{
-			tmpObjList.push_back(obj);
-		}
-	}
-
-	return tmpObjList;
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-
-std::vector<ChPtr::Weak<BaseObject>> ObjectList::GetObjectListForTag(const std::string& _TagName)
-{
-
-	std::vector<ChPtr::Weak<BaseObject>>tmpObjList;
-
-	for (auto&& obj : objectList[_TagName])
-	{
-		tmpObjList.push_back(obj);
-	}
-
-	return tmpObjList;
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-
-std::vector<ChPtr::Weak<BaseObject>> ObjectList::GetObjectListForName(const std::string& _Name)
-{
-
-	std::vector<ChPtr::Weak<BaseObject>>tmpObjList;
-
-	for (auto&& objlist : objectList)
-	{
-		for (auto&& obj : objlist.second)
-		{
-			if (obj->GetMyName() != _Name)continue;
-			tmpObjList.push_back(obj);
-		}
-	}
-
-	return tmpObjList;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-
 void ObjectList::Update()
 {
 
@@ -84,13 +31,10 @@ void ObjectList::Update()
 
 void ObjectList::ObjectUpdateBegin()
 {
-	for (auto&& gObj : objectList)
+	for (auto&& obj : objectList)
 	{
-		for (auto&& obj : gObj.second)
-		{
-			if (obj->parent.lock() != nullptr)continue;
-			obj->UpdateBeginFunction();
-		}
+		if (obj->parent.lock() != nullptr)continue;
+		obj->UpdateBeginFunction();
 	}
 }
 
@@ -98,25 +42,23 @@ void ObjectList::ObjectUpdateBegin()
 
 void ObjectList::ObjectUpdate()
 {
-	for (auto&& gObj : objectList)
+	auto&& obj = objectList.begin();
+
+	while (obj != objectList.end())
 	{
-		auto obj = gObj.second.begin();
 
-		while (obj != gObj.second.end())
+		if ((*obj)->dFlg)
 		{
-
-			if ((*obj)->dFlg)
-			{
-				gObj.second.erase(obj);
-				continue;
-			}
-
-			if ((*obj)->parent.lock() != nullptr)continue;
-
-			(*obj)->UpdateFunction();
-
-			obj++;
+			(*obj)->BaseRelease();
+			objectList.erase(obj);
+			continue;
 		}
+
+		if ((*obj)->parent.lock() != nullptr)continue;
+
+		(*obj)->UpdateFunction();
+
+		obj++;
 	}
 
 }
@@ -125,13 +67,10 @@ void ObjectList::ObjectUpdate()
 
 void ObjectList::ObjectUpdateEnd()
 {
-	for (auto&& gObj : objectList)
+	for (auto&& obj : objectList)
 	{
-		for (auto&& obj : gObj.second)
-		{
-			if (obj->parent.lock() != nullptr)continue;
-			obj->UpdateEndFunction();
-		}
+		if (obj->parent.lock() != nullptr)continue;
+		obj->UpdateEndFunction();
 	}
 }
 
@@ -150,13 +89,10 @@ void ObjectList::Move()
 
 void ObjectList::ObjectMoveBegin()
 {
-	for (auto&& gObj : objectList)
+	for (auto&& obj : objectList)
 	{
-		for (auto&& obj : gObj.second)
-		{
-			if (obj->parent.lock() != nullptr)continue;
-			obj->MoveBeginFunction();
-		}
+		if (obj->parent.lock() != nullptr)continue;
+		obj->MoveBeginFunction();
 	}
 }
 
@@ -164,13 +100,10 @@ void ObjectList::ObjectMoveBegin()
 
 void ObjectList::ObjectMove()
 {
-	for (auto&& gObj : objectList)
+	for (auto&& obj : objectList)
 	{
-		for (auto&& obj : gObj.second)
-		{
-			if (obj->parent.lock() != nullptr)continue;
-			obj->MoveFunction();
-		}
+		if (obj->parent.lock() != nullptr)continue;
+		obj->MoveFunction();
 	}
 }
 
@@ -178,13 +111,10 @@ void ObjectList::ObjectMove()
 
 void ObjectList::ObjectMoveEnd()
 {
-	for (auto&& gObj : objectList)
+	for (auto&& obj : objectList)
 	{
-		for (auto&& obj : gObj.second)
-		{
-			if (obj->parent.lock() != nullptr)continue;
-			obj->MoveEndFunction();
-		}
+		if (obj->parent.lock() != nullptr)continue;
+		obj->MoveEndFunction();
 	}
 }
 
@@ -192,13 +122,10 @@ void ObjectList::ObjectMoveEnd()
 
 void ObjectList::ClearObject()
 {
-	for (auto&& gObj : objectList)
+	for (auto&& obj : objectList)
 	{
-		for (auto&& obj : gObj.second)
-		{
-			if (obj->parent.lock() != nullptr)continue;
-			obj->BaseRelease();
-		}
+		if (obj->parent.lock() != nullptr)continue;
+		obj->BaseRelease();
 	}
 
 	if (!objectList.empty())objectList.clear();
@@ -206,42 +133,11 @@ void ObjectList::ClearObject()
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ObjectList::ClearObjectForTag(const std::string& _Tags)
-{
-	if (objectList.find(_Tags) == objectList.end())return;
-
-	for (auto&& obj : objectList[_Tags])
-	{
-		obj->Destroy();
-	}
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-
 void ObjectList::ClearObjectForName(const std::string& _Name)
 {
-	for (auto&& objList : objectList)
+	for (auto&& obj : objectList)
 	{
-		for (auto&& obj : objList.second)
-		{
-			if (obj->myName.find(_Name, 0) == std::string::npos)continue;
-			obj->Destroy();
-		}
-	}
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-
-void ObjectList::ClearObjectForTagAndName(
-	const std::string& _Name,
-	const std::string& _Tags)
-{
-	if (objectList.find(_Tags) == objectList.end())return;
-
-	for (auto&& obj : objectList[_Tags])
-	{
-		if (obj->myName.find(_Name, 0) != std::string::npos)continue;
-
+		if (obj->myName.find(_Name, 0) == std::string::npos)continue;
 		obj->Destroy();
 	}
 }
@@ -263,13 +159,10 @@ void ObjectList::Draw()
 
 void ObjectList::ObjectDrawBegin()
 {
-	for (auto&& gObj : objectList)
+	for (auto&& obj : objectList)
 	{
-		for (auto&& obj : gObj.second)
-		{
-			if (obj->parent.lock() != nullptr)continue;
-			obj->DrawBeginFunction();
-		}
+		if (obj->parent.lock() != nullptr)continue;
+		obj->DrawBeginFunction();
 	}
 }
 
@@ -277,13 +170,10 @@ void ObjectList::ObjectDrawBegin()
 
 void ObjectList::ObjectDraw2D()
 {
-	for (auto&& gObj : objectList)
+	for (auto&& obj : objectList)
 	{
-		for (auto&& obj : gObj.second)
-		{
-			if (obj->parent.lock() != nullptr)continue;
-			obj->Draw3DFunction();
-		}
+		if (obj->parent.lock() != nullptr)continue;
+		obj->Draw3DFunction();
 	}
 }
 
@@ -291,13 +181,10 @@ void ObjectList::ObjectDraw2D()
 
 void ObjectList::ObjectDraw3D()
 {
-	for (auto&& gObj : objectList)
+	for (auto&& obj : objectList)
 	{
-		for (auto&& obj : gObj.second)
-		{
-			if (obj->parent.lock() != nullptr)continue;
-			obj->UpdateEndFunction();
-		}
+		if (obj->parent.lock() != nullptr)continue;
+		obj->UpdateEndFunction();
 	}
 }
 
@@ -305,12 +192,15 @@ void ObjectList::ObjectDraw3D()
 
 void ObjectList::ObjectDrawEnd()
 {
-	for (auto&& gObj : objectList)
+	for (auto&& obj : objectList)
 	{
-		for (auto&& obj : gObj.second)
-		{
-			if (obj->parent.lock() != nullptr)continue;
-			obj->DrawEndFunction();
-		}
+		if (obj->parent.lock() != nullptr)continue;
+		obj->DrawEndFunction();
 	}
+}
+
+
+ObjectList* BaseObject::LookObjectList()
+{
+	return objMaList;
 }
