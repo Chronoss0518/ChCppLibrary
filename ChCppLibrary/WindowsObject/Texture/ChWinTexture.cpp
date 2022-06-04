@@ -475,7 +475,7 @@ void Texture::DrawMaskMain(HDC _textureHDC, HDC _drawTarget, const ChINTPOINT& _
 		auto texSize = GetTextureSize();
 
 		maskRT.CreateMaskTexture(texSize.w, texSize.h);
-		auto oldBkColor = maskRT.SetBKColor(_transparent);
+		auto oldBkColor = SetBkColor(_textureHDC,_transparent);
 
 		{
 
@@ -489,13 +489,17 @@ void Texture::DrawMaskMain(HDC _textureHDC, HDC _drawTarget, const ChINTPOINT& _
 
 		}
 
-		maskRT.SetBKColor(oldBkColor);
+		SetBkColor(_textureHDC, oldBkColor);
 
 	}
 
-	//DrawMain(maskRT.GetRenderTarget(), _drawTarget, _pos, _size, _basePos);
+
+	HBRUSH tmp = (HBRUSH)SelectObject(_drawTarget,CreatePatternBrush((HBITMAP)GetCurrentObject(_drawTarget, OBJ_BITMAP)));
 
 	DrawMaskMain(_textureHDC, _drawTarget, _pos, _size, _basePos, maskRT.GetTexture());
+
+	DeleteObject(SelectObject(_drawTarget, tmp));
+
 }
 
 void Texture::DrawMaskMain(HDC _textureHDC, HDC _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, HBITMAP _maskTex)
@@ -507,7 +511,7 @@ void Texture::DrawMaskMain(HDC _textureHDC, HDC _drawTarget, const ChINTPOINT& _
 	auto bpos = _basePos;
 	bpos.val.Abs();
 
-	int out = MaskBlt(_drawTarget, pos.x, pos.y, size.w, size.h, _textureHDC, bpos.x, bpos.y, _maskTex, bpos.x, bpos.y, MAKEROP4(ChStd::EnumCast(opeCode), ChStd::EnumCast(RasterOpeCode::SRCErase)));
+	int out = MaskBlt(_drawTarget, pos.x, pos.y, size.w, size.h, _textureHDC, bpos.x, bpos.y, _maskTex, bpos.x, bpos.y, MAKEROP4(ChStd::EnumCast(opeCode), ChStd::EnumCast(RasterOpeCode::PATCopy)));
 
 }
 
@@ -524,7 +528,7 @@ void Texture::DrawPlgMain(HDC _textureHDC, HDC _drawTarget, const ChINTPOINT& _p
 		auto texSize = GetTextureSize();
 
 		maskRT.CreateMaskTexture(texSize.w, texSize.h);
-		auto oldBkColor = maskRT.SetBKColor( _transparent);
+		auto oldBkColor = SetBkColor(_textureHDC,_transparent);
 
 		{
 
@@ -537,8 +541,8 @@ void Texture::DrawPlgMain(HDC _textureHDC, HDC _drawTarget, const ChINTPOINT& _p
 			opeCode = oCode;
 
 		}
-
-		maskRT.SetBKColor(oldBkColor);
+		
+		SetBkColor(_textureHDC, oldBkColor);
 
 	}
 
