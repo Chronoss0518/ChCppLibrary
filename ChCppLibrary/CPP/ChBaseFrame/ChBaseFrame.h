@@ -56,11 +56,7 @@ namespace ChCpp
 
 		}
 
-	private://Other Function
-
-		void ChengeFrame(const std::string& _frameName);
-
-		void Chenges();
+	public://Other Function
 
 		template<class T>
 		void SaveData(const T* _save)
@@ -75,6 +71,23 @@ namespace ChCpp
 
 			*tmp = *_save;
 		}
+
+		template<class T>
+		T* GetData()
+		{
+			if (ChPtr::NullCheck(saveData))return nullptr;
+
+			auto tmp = static_cast<T*>(saveData);
+
+
+			return tmp;
+		}
+
+	private://Other Function
+
+		void ChengeFrame(const std::string& _frameName);
+
+		void Chenges();
 
 	private:// Member Value//
 
@@ -125,6 +138,18 @@ namespace ChCpp
 		friend BaseFrameManager;
 
 	protected://ConstructerDestructer//
+
+		template<class T>
+		void SaveData(const T* _save)
+		{
+			FrameManager().SaveData(_save);
+		}
+
+		template<class T>
+		T* GetData()
+		{
+			return FrameManager().GetData<T>();
+		}
 
 		BaseFrame() {};
 
