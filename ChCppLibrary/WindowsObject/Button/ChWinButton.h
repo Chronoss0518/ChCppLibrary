@@ -3,9 +3,7 @@
 #ifndef Ch_Win_BuOb_h
 #define Ch_Win_BuOb_h
 
-#ifndef Ch_Win_WO_h
 #include"../WindObject/ChWindObject.h"
-#endif
 
 namespace ChSystem
 {
@@ -181,11 +179,11 @@ namespace ChWin
 		///////////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		void SetClickFunction(std::function<void(HWND, UINT)>& _callBack);
+		void SetClickFunction(const std::function<void(HWND, UINT)>& _callBack);
 
-		void SetDblClickFunction(std::function<void(HWND, UINT)>& _callBack);
+		void SetDblClickFunction(const std::function<void(HWND, UINT)>& _callBack);
 
-		void SetSelectFunction(std::function<void(HWND, UINT)>& _callBack);
+		void SetSelectFunction(const std::function<void(HWND, UINT)>& _callBack);
 
 	protected:
 

@@ -1,6 +1,7 @@
 #include<Windows.h>
 #include"../../BaseIncluder/ChBase.h"
 
+#include"../PackData/ChPoint.h"
 #include"../WindObject/ChWindStyle.h"
 #include"ChWinButton.h"
 
@@ -34,7 +35,7 @@ void Button::CreateA(
 	creater.SetInitPosition(pos.x, pos.y);
 	creater.SetInitSize(size.w, size.h);
 	creater.SetParentWind(_parentHandl);
-
+	
 	creater.Create(this, _startText.c_str(), "BUTTON");
 
 }
@@ -161,6 +162,7 @@ void Button::CreateW(
 	creater.SetParentWind(_parentWind.GethWnd());
 
 	creater.Create(this, _startText.c_str(), L"BUTTON");
+	
 }
 
 //TextBox�̍쐬//
@@ -175,17 +177,17 @@ void Button::CreateW(
 	CreateW(_startText, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), _parentWind);
 }
 
-void Button::SetClickFunction(std::function<void(HWND, UINT)>& _callBack)
+void Button::SetClickFunction(const std::function<void(HWND, UINT)>& _callBack)
 {
 	SetChildWindProcedure(BN_CLICKED, _callBack);
 }
 
-void Button::SetDblClickFunction(std::function<void(HWND, UINT)>& _callBack)
+void Button::SetDblClickFunction(const std::function<void(HWND, UINT)>& _callBack)
 {
 	SetChildWindProcedure(BN_DBLCLK, _callBack);
 }
 
-void Button::SetSelectFunction(std::function<void(HWND, UINT)>& _callBack)
+void Button::SetSelectFunction(const std::function<void(HWND, UINT)>& _callBack)
 {
 	SetChildWindProcedure(BN_HILITE, _callBack);
 }
