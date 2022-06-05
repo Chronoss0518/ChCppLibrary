@@ -81,13 +81,7 @@ struct ChVector4 : public ChMath::Vector4Base<float>
 
 	inline ChVector4(const float _num)
 	{
-
 		val.Set(_num);
-
-		if (w < -1.0f)
-			w = -1.0f;
-		if (w > 1.0f)
-			w = 1.0f;
 	}
 
 	inline ChVector4(
@@ -97,10 +91,6 @@ struct ChVector4 : public ChMath::Vector4Base<float>
 		y = _y;
 		z = _z;
 		w = _w;
-		if (w < -1.0f)
-			w = -1.0f;
-		if (w > 1.0f)
-			w = 1.0f;
 	}
 
 	inline ChVector4(const ChVector4& _vec) { *this = _vec; }
@@ -131,6 +121,11 @@ struct ChVector4 : public ChMath::Vector4Base<float>
 		, const std::string& _cutChar = ","
 		, const std::string& _endChar = ";"
 		, const unsigned int _digit = 6);
+
+	inline void WParamSaturate()
+	{
+		w = w > -1.0f ? (w < 1.0f ? w : 1.0f) : -1.0f;
+	}
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//GetFunction//
@@ -217,6 +212,18 @@ struct ChVector4 : public ChMath::Vector4Base<float>
 		const ChVector4& _vec1,
 		const ChVector4& _vec2,
 		const unsigned long _digit = 6);
+
+	inline ChStd::Bool IsOverlaps(const ChVector4& _vec)
+	{
+		return ChMath::Vector4Base<float>::IsOverlaps(_vec); 
+	}
+
+	inline ChVector4 OverlapsRect(const ChVector4& _vec)
+	{
+		ChVector4 out;
+		out.val.Set(ChMath::Vector4Base<float>::OverlapsRect(_vec).val);
+		return out;
+	}
 
 };
 

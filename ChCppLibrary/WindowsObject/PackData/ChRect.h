@@ -120,6 +120,12 @@ public://Is Functions//
 
 	ChStd::Bool IsAll0()const;
 
+	inline ChStd::Bool IsOverlaps(const ChLONGRECT& _vec)
+	{
+		return vec.IsOverlaps(_vec.vec);
+	}
+
+
 public://Serialize Deserialize//
 
 	inline std::string Serialize(
@@ -145,6 +151,13 @@ public://Other Functions//
 
 	inline void Identity() { vec.val.Identity(); }
 
+	inline ChLONGRECT OverlapsRect(const ChLONGRECT& _vec)
+	{
+		ChLONGRECT out;
+		out.vec.val.Set(vec.OverlapsRect(_vec).val);
+		return out;
+	}
+
 public://Member Values//
 
 	union
@@ -153,13 +166,13 @@ public://Member Values//
 		RECT pt;
 		struct
 		{
-			long x, y;
+			long x, y, w, h;
 		};
 		struct
 		{
-			long w, h;
+			long top, left, bottom, right;
 		};
-		long val[2];
+		long val[4];
 	};
 
 }ChRECT, ChRect;
