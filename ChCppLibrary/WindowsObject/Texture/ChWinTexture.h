@@ -3,11 +3,6 @@
 #ifndef Ch_Win_WTex_h
 #define Ch_Win_WTex_h
 
-namespace ChSystem
-{
-	class Windows;
-}
-
 namespace ChWin
 {
 	class Brush;

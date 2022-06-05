@@ -3,8 +3,7 @@
 #include"../../BaseIncluder/ChBase.h"
 
 #include"../PackData/ChPoint.h"
-#include"../../BaseSystem/ChWindows/ChWindows.h"
-#include"../WindDrawer/ChWindDrawer.h"
+#include"../WinGDI/ChWinBrush.h"
 #include"ChWinTexture.h"
 
 using namespace ChWin;
