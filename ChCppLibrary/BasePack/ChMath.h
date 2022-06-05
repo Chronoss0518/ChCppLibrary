@@ -1325,7 +1325,7 @@ namespace ChMath
 			};
 			struct
 			{
-				T left, top, right, down;
+				T left, top, right, bottom;
 			};
 			VectorBase<T, 4> val;
 		};
@@ -1350,6 +1350,29 @@ namespace ChMath
 		}
 
 		inline Vector4Base(const Vector4Base& _vec) { val = _vec.val; }
+
+		inline ChStd::Bool IsOverlaps(const Vector4Base& _vec)
+		{
+			if (_vec.top < top + bottom && _vec.top > top && _vec.left < left + right && _vec.left > left)return true;
+
+			if (top < _vec.top + _vec.bottom && top > _vec.top && left < _vec.left + _vec.right && left > _vec.left)return true;
+
+			return false;
+		}
+
+		inline Vector4Base OverlapsRect(const Vector4Base& _vec)
+		{
+			Vector4Base overlapsRect;
+			
+			if (!IsOverlaps(_vec))return overlapsRect;
+
+			overlapsRect.top = _vec.top >= top ? top : _vec.top;
+			overlapsRect.left = _vec.left >= left ? left : _vec.left;
+			overlapsRect.bottom = _vec.bottom >= bottom ? bottom : _vec.bottom;
+			overlapsRect.right = _vec.right >= right ? right : _vec.right;
+			
+			return overlapsRect;
+		}
 
 	};
 
