@@ -17,7 +17,6 @@ namespace ChWin
 
 		typedef enum class PushButtonType : int
 		{
-			Error = 0,
 			Ok = IDOK,
 			Cancel = IDCANCEL,
 			Abort = IDABORT,
@@ -122,54 +121,54 @@ namespace ChWin
 
 		PushButtonType DisplayW(
 			HWND _hWnd,
-			const wchar_t* _text,
-			const wchar_t* _title);
+			const wchar_t* _title,
+			const wchar_t* _text);
 
 		PushButtonType DisplayServiceNotificationW(
-			const wchar_t* _text,
-			const wchar_t* _title);
+			const wchar_t* _title,
+			const wchar_t* _text);
 
 		PushButtonType DisplayA(
 			HWND _hWnd,
-			const char* _text,
-			const char* _title);
+			const char* _title,
+			const char* _text);
 
 		PushButtonType DisplayServiceNotificationA(
-			const char* _text,
-			const char* _title);
+			const char* _title,
+			const char* _text);
 
 		PushButtonType Display(
 			HWND _hWnd,
 #ifdef _UNICODE
-			const wchar_t* _text,
-			const wchar_t* _title
+			const wchar_t* _title,
+			const wchar_t* _text
 #else
-			const char* _text,
-			const char* _title
+			const char* _title,
+			const char* _text
 #endif
 		)
 		{
 #ifdef _UNICODE
-			return DisplayW(_hWnd, _text, _title);
+			return DisplayW(_hWnd, _title, _text);
 #else
-			return DisplayA(_hWnd, _text, _title);
+			return DisplayA(_hWnd, _title, _text);
 #endif
 		}
 
 		PushButtonType DisplayServiceNotification(
 #ifdef _UNICODE
-			const wchar_t* _text,
-			const wchar_t* _title
+			const wchar_t* _title,
+			const wchar_t* _text
 #else
-			const char* _text,
-			const char* _title
+			const char* _title,
+			const char* _text
 #endif
 		)
 		{
 #ifdef _UNICODE
-			return DisplayServiceNotificationW(_text, _title);
+			return DisplayServiceNotificationW(_title, _text);
 #else
-			return DisplayServiceNotificationA(_text, _title);
+			return DisplayServiceNotificationA(_title, _text);
 #endif
 		}
 

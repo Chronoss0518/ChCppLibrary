@@ -9,54 +9,46 @@ using namespace ChWin;
 
 MsgBox::PushButtonType MsgBox::DisplayW(
 	HWND _hWnd,
-	const wchar_t* _text,
-	const wchar_t* _title)
+	const wchar_t* _title,
+	const wchar_t* _text)
 {
-
-	if (buttonType <= 0)return PushButtonType::Error;
 	unsigned int uType = CreateUType();
-	uType |= MB_SERVICE_NOTIFICATION;
 
-	return static_cast<PushButtonType>(MessageBoxW(_hWnd, _text, _title, uType));
+	return static_cast<PushButtonType>(MessageBoxW(_hWnd, _title, _text, uType));
 }
 
 MsgBox::PushButtonType MsgBox::DisplayServiceNotificationW(
-	const wchar_t* _text,
-	const wchar_t* _title)
+	const wchar_t* _title,
+	const wchar_t* _text)
 {
 
-	if (buttonType <= 0)return PushButtonType::Error;
 	unsigned int uType = CreateUType();
 	uType |= MB_SERVICE_NOTIFICATION;
 
-	return static_cast<PushButtonType>(MessageBoxW(nullptr, _text, _title, uType));
+	return static_cast<PushButtonType>(MessageBoxW(nullptr, _title, _text, uType));
 }
 
 
 MsgBox::PushButtonType MsgBox::DisplayA(
 	HWND _hWnd,
-	const char* _text,
-	const char* _title)
+	const char* _title,
+	const char* _text)
 {
 
-	if (buttonType <= 0)return PushButtonType::Error;
-
 	unsigned int uType = CreateUType();
-	uType |= MB_SERVICE_NOTIFICATION;
 
-	return static_cast<PushButtonType>(MessageBoxA(_hWnd, _text, _title, uType));
+	return static_cast<PushButtonType>(MessageBoxA(_hWnd, _title, _text, uType));
 }
 
 MsgBox::PushButtonType MsgBox::DisplayServiceNotificationA(
-	const char* _text,
-	const char* _title)
+	const char* _title,
+	const char* _text)
 {
-	if (buttonType <= 0)return PushButtonType::Error;
 
 	unsigned int uType = CreateUType();
 	uType |= MB_SERVICE_NOTIFICATION;
 
-	return static_cast<PushButtonType>(MessageBoxA(nullptr, _text, _title, uType));
+	return static_cast<PushButtonType>(MessageBoxA(nullptr, _title, _text, uType));
 }
 
 
