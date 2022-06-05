@@ -3,9 +3,7 @@
 #ifndef Ch_Win_DfBu_h
 #define Ch_Win_DfBu_h
 
-#ifndef Ch_Win_BuOb_h
 #include"ChWinButton.h"
-#endif
 
 namespace ChSystem
 {
@@ -19,7 +17,7 @@ namespace ChWin
 	{
 	protected:
 
-		WindStyle* CreateStyle()override;
+		void CreateStyle()override;
 
 	};
 

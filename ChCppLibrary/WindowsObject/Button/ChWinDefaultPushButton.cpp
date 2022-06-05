@@ -10,11 +10,10 @@ using namespace ChWin;
 //DefaultPushButtonƒƒ\ƒbƒh//
 ///////////////////////////////////////////////////////////////////////////////////////
 
-WindStyle* DefaultPushButton::CreateStyle()
+void DefaultPushButton::CreateStyle()
 {
-	auto style = Button::CreateStyle();
+	Button::CreateStyle();
 
-	style->AddStyle(BS_DEFPUSHBUTTON);
+	style.AddStyle(BS_DEFPUSHBUTTON);
 
-	return style;
 }
