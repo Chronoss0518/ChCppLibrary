@@ -9,9 +9,6 @@ ChVector4& ChVec4::operator*= (const float& _num)
 
 	val.Mul(_num);
 
-	if (w < -1.0f)w = -1.0f;
-	if (w > 1.0f)w = 1.0f;
-
 	return *this;
 }
 
@@ -33,8 +30,6 @@ ChVector4& ChVec4::operator/= (const float& _num)
 {
 	val.Div(_num);
 
-	if (w < -1.0f)w = -1.0f;
-	if (w > 1.0f)w = 1.0f;
 	return *this;
 }
 
@@ -57,8 +52,6 @@ ChVector4& ChVec4::operator= (const float& _num)
 
 	val.Set(_num);
 
-	if (w < -1.0f)w = -1.0f;
-	if (w > 1.0f)w = 1.0f;
 	return *this;
 }
 
@@ -77,8 +70,6 @@ ChVector4& ChVec4::operator *= (const ChVector4& _vec)
 {
 	val.Mul(_vec.val);
 
-	if (w < -1.0f)w = -1.0f;
-	if (w > 1.0f)w = 1.0f;
 	return *this;
 }
 
@@ -99,8 +90,6 @@ ChVector4& ChVec4::operator /= (const ChVector4& _vec)
 {
 	val.Div(_vec.val);
 
-	if (w < -1.0f)w = -1.0f;
-	if (w > 1.0f)w = 1.0f;
 	return *this;
 }
 
@@ -122,8 +111,6 @@ ChVector4& ChVec4::operator -= (const ChVector4& _vec)
 
 	val.Sub(_vec.val);
 
-	if (w < -1.0f)w = -1.0f;
-	if (w > 1.0f)w = 1.0f;
 	return *this;
 }
 
@@ -145,8 +132,6 @@ ChVector4& ChVec4::operator += (const ChVector4& _vec)
 
 	val.Add(_vec.val);
 
-	if (w < -1.0f)w = -1.0f;
-	if (w > 1.0f)w = 1.0f;
 	return *this;
 }
 
