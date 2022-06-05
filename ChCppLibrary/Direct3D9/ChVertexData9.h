@@ -129,8 +129,8 @@ namespace ChD3D9
 		{
 			spData.ver[0].pos = ChVec3_9(_Rect.left, _Rect.top, 0.0f);
 			spData.ver[1].pos = ChVec3_9(_Rect.left + _Rect.right, _Rect.top, 0.0f);
-			spData.ver[2].pos = ChVec3_9(_Rect.left + _Rect.right, _Rect.top + _Rect.down, 0.0f);
-			spData.ver[3].pos = ChVec3_9(_Rect.left, _Rect.top + _Rect.down, 0.0f);
+			spData.ver[2].pos = ChVec3_9(_Rect.left + _Rect.right, _Rect.top + _Rect.bottom, 0.0f);
+			spData.ver[3].pos = ChVec3_9(_Rect.left, _Rect.top + _Rect.bottom, 0.0f);
 		}
 
 		SpriteData& operator = (const VertexData& _VD)
