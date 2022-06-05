@@ -20,6 +20,12 @@ namespace ChWin
 	class WindStyle;
 	class WindCreater;
 
+
+#ifndef Ch_Win_Point_h
+	#include"../PackData/ChPoint.h"
+#endif
+
+
 	//WindowsAPI‚Ì“àAWindow‚ÌŠÇ—‚·‚éƒNƒ‰ƒX//
 	class WindObject :public ChCp::Initializer
 	{

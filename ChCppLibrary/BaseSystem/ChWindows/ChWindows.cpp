@@ -4,7 +4,6 @@
 #include"../../BaseIncluder/ChBase.h"
 
 #include"../../CPP/ChBitBool/ChBitBool.h"
-#include"../../WindowsObject/PackData/ChPoint.h"
 
 #include"../ChBaseSystem/ChBaseSystem.h"
 #include"ChWindows.h"

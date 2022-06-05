@@ -1,7 +1,6 @@
 #include<Windows.h>
 #include"../../BaseIncluder/ChBase.h"
 
-#include"../PackData/ChPoint.h"
 #include"ChWinTextBox.h"
 
 using namespace ChWin;
@@ -35,7 +34,8 @@ void TextBox::CreateA(
 		WS_VSCROLL |
 		ES_LEFT |
 		ES_MULTILINE |
-		ES_AUTOVSCROLL);
+		ES_AUTOVSCROLL |
+		WS_GROUP);
 
 	creater.SetInitPosition(pos.x, pos.y);
 	creater.SetInitSize(size.w, size.h);
@@ -71,7 +71,7 @@ void TextBox::CreateA(
 	const ChINTPOINT& _size,
 	const WindObject& _parentWind)
 {
-	if (!static_cast<bool>(_parentWind))return;
+	if (!_parentWind.IsInit())return;
 
 	Release();
 
@@ -91,7 +91,8 @@ void TextBox::CreateA(
 		WS_VSCROLL | 
 		ES_LEFT |
 		ES_MULTILINE | 
-		ES_AUTOVSCROLL);
+		ES_AUTOVSCROLL |
+		WS_GROUP);
 
 	creater.SetInitPosition(pos.x, pos.y);
 	creater.SetInitSize(size.w, size.h);
@@ -144,7 +145,8 @@ void TextBox::CreateW(
 		WS_VSCROLL |
 		ES_LEFT |
 		ES_MULTILINE |
-		ES_AUTOVSCROLL);
+		ES_AUTOVSCROLL |
+		WS_GROUP);
 
 	creater.SetInitPosition(pos.x, pos.y);
 	creater.SetInitSize(size.w, size.h);
@@ -179,7 +181,7 @@ void TextBox::CreateW(
 	const ChINTPOINT& _size,
 	const WindObject& _parentWind)
 {
-	if (!static_cast<bool>(_parentWind))return;
+	if (!_parentWind.IsInit())return;
 
 	Release();
 
@@ -199,7 +201,8 @@ void TextBox::CreateW(
 		WS_VSCROLL |
 		ES_LEFT |
 		ES_MULTILINE |
-		ES_AUTOVSCROLL);
+		ES_AUTOVSCROLL |
+		WS_GROUP);
 
 	creater.SetInitPosition(pos.x, pos.y);
 	creater.SetInitSize(size.w, size.h);

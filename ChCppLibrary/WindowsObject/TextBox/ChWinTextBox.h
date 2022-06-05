@@ -7,11 +7,6 @@
 #include"../WindObject/ChWindObject.h"
 #endif
 
-namespace ChSystem
-{
-	class Windows;
-}
-
 namespace ChWin
 {
 
