@@ -14,7 +14,7 @@ WindStyle* DefaultPushButton::CreateStyle()
 {
 	auto style = Button::CreateStyle();
 
-	style->AddStyle(BS_PUSHBUTTON);
+	style->AddStyle(BS_DEFPUSHBUTTON);
 
 	return style;
 }
