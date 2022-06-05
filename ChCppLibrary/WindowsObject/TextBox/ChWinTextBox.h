@@ -3,9 +3,7 @@
 #ifndef Ch_Win_TextBox_h
 #define Ch_Win_TextBox_h
 
-#ifndef Ch_Win_WO_h
 #include"../WindObject/ChWindObject.h"
-#endif
 
 namespace ChWin
 {
