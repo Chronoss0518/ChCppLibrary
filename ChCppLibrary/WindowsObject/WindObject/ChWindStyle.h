@@ -143,6 +143,12 @@ namespace ChWin
 			windStyle |= WS_VSCROLL;
 		}
 
+		//指定したスタイルを付ける//
+		inline void AddStyle(const unsigned long _windStyles) 
+		{
+			windStyle |= _windStyles; 
+		}
+
 	public://Set Function//
 
 		inline void SetStyle(const unsigned long _windStyles) { windStyle = _windStyles; }
