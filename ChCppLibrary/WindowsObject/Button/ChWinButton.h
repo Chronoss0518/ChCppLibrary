@@ -176,8 +176,7 @@ namespace ChWin
 #endif
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
+		public://Set Functions//
 
 		void SetClickFunction(const std::function<void(HWND, UINT)>& _callBack);
 
@@ -185,9 +184,12 @@ namespace ChWin
 
 		void SetSelectFunction(const std::function<void(HWND, UINT)>& _callBack);
 
+
 	protected:
 
-		virtual WindStyle* CreateStyle();
+		virtual void CreateStyle();
+
+		WindStyle style;
 
 	};
 

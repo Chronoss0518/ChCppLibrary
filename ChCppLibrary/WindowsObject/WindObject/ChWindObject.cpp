@@ -92,6 +92,17 @@ void WindObject::SetWindIDW(long _IDPtr)
 	SetWindowLongPtrW(hWnd, GWLP_ID, _IDPtr);
 }
 
+long WindObject::GetWindIDA()
+{
+	if (!IsInit())return 0;
+	return GetWindowLongPtrA(hWnd, GWLP_ID);
+}
+
+long WindObject::GetWindIDW()
+{
+	if (!IsInit())return 0;
+	return GetWindowLongPtrW(hWnd, GWLP_ID);
+}
 
 const ChPOINT WindObject::GetWindSize()const
 {

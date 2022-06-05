@@ -30,7 +30,9 @@ void Button::CreateA(
 
 	creater.SetEXStyle(WS_EX_CLIENTEDGE);
 
-	creater.SetWindStyle(CreateStyle());
+	CreateStyle();
+	creater.SetWindStyle(&style);
+
 
 	creater.SetInitPosition(pos.x, pos.y);
 	creater.SetInitSize(size.w, size.h);
@@ -72,7 +74,8 @@ void Button::CreateA(
 
 	creater.SetEXStyle(WS_EX_CLIENTEDGE);
 
-	creater.SetWindStyle(CreateStyle());
+	CreateStyle();
+	creater.SetWindStyle(&style);
 
 	creater.SetInitPosition(pos.x, pos.y);
 	creater.SetInitSize(size.w, size.h);
@@ -113,7 +116,9 @@ void Button::CreateW(
 
 	creater.SetEXStyle(WS_EX_CLIENTEDGE);
 
-	creater.SetWindStyle(CreateStyle());
+	CreateStyle();
+	creater.SetWindStyle(&style);
+
 
 	creater.SetInitPosition(pos.x, pos.y);
 	creater.SetInitSize(size.w, size.h);
@@ -155,7 +160,8 @@ void Button::CreateW(
 
 	creater.SetEXStyle(WS_EX_CLIENTEDGE);
 
-	creater.SetWindStyle(CreateStyle());
+	CreateStyle();
+	creater.SetWindStyle(&style);
 
 	creater.SetInitPosition(pos.x, pos.y);
 	creater.SetInitSize(size.w, size.h);
@@ -192,11 +198,8 @@ void Button::SetSelectFunction(const std::function<void(HWND, UINT)>& _callBack)
 	SetChildWindProcedure(BN_HILITE, _callBack);
 }
 
-WindStyle* Button::CreateStyle()
+void Button::CreateStyle()
 {
-
-	static WindStyle style;
-
 	style.Clear();
 
 	style.AddVisible();
@@ -205,5 +208,4 @@ WindStyle* Button::CreateStyle()
 	style.AddGroup();
 
 
-	return &style;
 }

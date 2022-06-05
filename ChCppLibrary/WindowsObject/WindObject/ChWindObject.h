@@ -106,6 +106,20 @@ namespace ChWin
 
 	public://GetFunction//
 
+		long GetWindIDA();
+
+		long GetWindIDW();
+
+		inline long GetWindID()
+		{
+#ifdef UNICODE
+			return GetWindIDW();
+#else
+			return GetWindIDA();
+#endif
+		}
+
+
 		//Windƒnƒ“ƒhƒ‹‚ÌŽæ“¾//
 		inline HWND GethWnd(void)const { return hWnd; }
 
