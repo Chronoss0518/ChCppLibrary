@@ -20,11 +20,7 @@ namespace ChWin
 	class WindStyle;
 	class WindCreater;
 
-
-#ifndef Ch_Win_Point_h
-	#include"../PackData/ChPoint.h"
-#endif
-
+#include"../PackData/ChPoint.h"
 
 	//WindowsAPIÇÃì‡ÅAWindowÇÃä«óùÇ∑ÇÈÉNÉâÉX//
 	class WindObject :public ChCp::Initializer
@@ -94,6 +90,19 @@ namespace ChWin
 		}
 
 		inline void SetEnableFlg(const ChStd::Bool _flg) { EnableWindow(hWnd, _flg); }
+
+		void SetWindIDA(long _IDPtr);
+
+		void SetWindIDW(long _IDPtr);
+
+		inline void SetWindID(long _IDPtr)
+		{
+#ifdef UNICODE
+			SetWindIDW(_IDPtr);
+#else
+			SetWindIDA(_IDPtr);
+#endif
+		}
 
 	public://GetFunction//
 
@@ -198,6 +207,7 @@ namespace ChWin
 		{return DefWindowProc(_hWnd, _uMsg, _wParam, _lParam); };
 
 		std::map<unsigned int, std::function<void(HWND, UINT)>> childWindProc;
+
 		std::map<unsigned int, std::function<LRESULT(HWND,UINT,WPARAM,LPARAM)>> wndProc;
 		HWND hWnd = nullptr;
 		HWND parent = nullptr;
@@ -251,6 +261,8 @@ namespace ChWin
 		void SetInitSize(const ChINTPOINT& _size);
 
 		void SetInitSize(const int _w, const int _h);
+
+		inline void SetParam(LPVOID _param) { param = _param; }
 
 	public://Get Function//
 

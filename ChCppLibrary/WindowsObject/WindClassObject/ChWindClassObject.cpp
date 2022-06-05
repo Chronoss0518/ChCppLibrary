@@ -31,16 +31,16 @@ LRESULT CALLBACK ChWin::WndProcA(
 			else if (_uMsg == WM_COMMAND)
 			{
 
-				auto child = ((ChWin::WindObject*)GetWindowLongPtrA((HWND)_lParam, GWLP_USERDATA));
+				auto child = ((ChWin::WindObject*)GetWindowLongPtrA((HWND)LOWORD(_wParam), GWLP_USERDATA));
 
 				if (child)
 				{
-					if (child->IsInit() && !child->wndProc.empty())
+					if (child->IsInit() && !child->childWindProc.empty())
 					{
 						auto cit = child->childWindProc.find(HIWORD(_wParam));
 						if (cit != (child->childWindProc).end())
 						{
-							(cit)->second((HWND)_lParam, HIWORD(_wParam));
+							(cit)->second((HWND)LOWORD(_wParam), HIWORD(_wParam));
 						}
 					}
 				}
@@ -90,16 +90,16 @@ LRESULT CALLBACK ChWin::WndProcW(
 			else if (_uMsg == WM_COMMAND)
 			{
 
-				auto child = ((ChWin::WindObject*)GetWindowLongPtrW((HWND)_lParam, GWLP_USERDATA));
+				auto child = ((ChWin::WindObject*)GetWindowLongPtrW((HWND)LOWORD(_wParam), GWLP_USERDATA));
 
 				if (child)
 				{
-					if (child->IsInit() && !child->wndProc.empty())
+					if (child->IsInit() && !child->childWindProc.empty())
 					{
 						auto cit = child->childWindProc.find(HIWORD(_wParam));
 						if (cit != (child->childWindProc).end())
 						{
-							(cit)->second((HWND)_lParam, HIWORD(_wParam));
+							(cit)->second((HWND)LOWORD(_wParam), HIWORD(_wParam));
 						}
 					}
 				}

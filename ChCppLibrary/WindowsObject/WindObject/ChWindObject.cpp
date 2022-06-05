@@ -53,6 +53,7 @@ void WindObject::CreateEnd(const int _nCmdShow)
 	UpdateWindow(hWnd);
 
 	SetInitFlg(true);
+	SetWindIDW(reinterpret_cast<long>(hWnd));
 
 }
 
@@ -76,6 +77,21 @@ void WindObject::SetWindRect(const unsigned int _x, const unsigned int _y, const
 
 	SetWindowPos(hWnd, HWND_TOP, _x, _y, _w, _h, _flgs);
 }
+
+void WindObject::SetWindIDA(long _IDPtr)
+{
+	if (!IsInit())return;
+
+	SetWindowLongPtrA(hWnd, GWLP_ID, _IDPtr);
+}
+
+void WindObject::SetWindIDW(long _IDPtr)
+{
+	if (!IsInit())return;
+	
+	SetWindowLongPtrW(hWnd, GWLP_ID, _IDPtr);
+}
+
 
 const ChPOINT WindObject::GetWindSize()const
 {
