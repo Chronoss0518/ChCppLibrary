@@ -6,6 +6,8 @@
 #include"../../CPP/ChBitBool/ChBitBool.h"
 
 #include"../ChBaseSystem/ChBaseSystem.h"
+
+#include"../../WindowsObject/PackData/ChPoint.h"
 #include"ChWindows.h"
 #include"../../WindowsObject/Mouse/ChWinMouse.h"
 
