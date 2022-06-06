@@ -76,6 +76,7 @@ void BaseObject::UpdateFunction()
 		{
 			(*com)->Release();
 			comList.erase(com);
+			if (comList.empty())break;
 			continue;
 		}
 		if (!(*com)->IsUseFlg())continue;
@@ -90,6 +91,7 @@ void BaseObject::UpdateFunction()
 		{
 			(*child)->Release();
 			childList.erase(child);
+			if (childList.empty())break;
 			continue;
 		}
 		if (!(*child)->IsUseFlg())continue;
@@ -324,6 +326,7 @@ void BaseObject::IsDestroyToChild()
 		(*child)->Release();
 		childList.erase(child);
 
+		if (childList.empty())break;
 	}
 }
 
@@ -341,6 +344,7 @@ void BaseObject::IsDestroyComponent()
 		}
 		(*com)->Release();
 		comList.erase(com);
+		if (comList.empty())break;
 
 	}
 }

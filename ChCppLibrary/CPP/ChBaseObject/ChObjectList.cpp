@@ -52,6 +52,7 @@ void ObjectList::ObjectUpdate()
 		{
 			(*obj)->BaseRelease();
 			objectList.erase(obj);
+			if (objectList.empty())break;
 			continue;
 		}
 

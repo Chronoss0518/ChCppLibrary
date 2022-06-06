@@ -164,6 +164,8 @@ namespace ChCpp
 		//子オブジェクトのセット//
 		inline void SetChild(ChPtr::Shared<BaseObject> _childObject)
 		{
+			if (shared_from_this() == _childObject->shared_from_this())return;
+
 			childList.push_back(_childObject);
 
 			auto&& par = _childObject->parent.lock();
