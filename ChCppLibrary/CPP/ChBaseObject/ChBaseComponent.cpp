@@ -21,6 +21,7 @@ void BaseComponent::BaseInit(ChPtr::Shared<BaseObject> _obj)
 void BaseComponent::Destroy()
 {
 	dFlg = true;
+	useFlg = false;
 }
 
 void BaseComponent::ObjectDestroy()

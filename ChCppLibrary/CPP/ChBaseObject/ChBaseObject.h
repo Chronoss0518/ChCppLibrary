@@ -34,10 +34,22 @@ namespace ChCpp
 		void Destroy();
 
 		//自身が持つ子を削除する//
+		void DestroyToChild();
+
+		//自身が持つ子を削除する//
 		void DestroyToChild(const ChPtr::Shared<BaseObject>& _child);
 
-		//コンポーネントを指定して削除する//
-		void ReleaseComponent(const std::string& _comName);
+		//削除される子オブジェクトが存在するかを確認しつつ削除する//
+		void IsDestroyToChild();
+
+		//コンポーネントをすべて削除する//
+		void DestroyComponent();
+
+		//指定したコンポーネントをすべて削除する//
+		void DestroyComponent(const std::string& _comName);
+
+		//削除されるコンポーネントがあるかどうかを確認しつつ削除する//
+		void IsDestroyComponent();
 
 	public:
 
@@ -221,8 +233,6 @@ namespace ChCpp
 		virtual void DrawEnd() {}
 
 
-		ChStd::Bool useFlg = true;
-
 	private:
 
 		//Release時に走る関数//
@@ -234,11 +244,6 @@ namespace ChCpp
 			, ObjectList* _objMa);
 
 		///////////////////////////////////////////////////////////////////////////////////
-		//Component//
-
-		void IsReleasComponent();
-
-		///////////////////////////////////////////////////////////////////////////////////
 
 		std::vector<ChPtr::Shared<BaseObject>>childList;
 		ChPtr::Weak<BaseObject>parent;
@@ -248,6 +253,8 @@ namespace ChCpp
 		ObjectList* objMaList = nullptr;
 		std::string myName;
 		ChStd::Bool dFlg = false;
+
+		ChStd::Bool useFlg = true;
 
 	};
 

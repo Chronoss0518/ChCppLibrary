@@ -14,9 +14,10 @@ using namespace ChCpp;
 void BaseObject::Destroy()
 {
 	dFlg = true;
-}
+	useFlg = false;
 
-///////////////////////////////////////////////////////////////////////////////////////
+	DestroyToChild();
+}
 
 void BaseObject::DestroyToChild(const ChPtr::Shared<BaseObject>& _child)
 {
@@ -24,6 +25,22 @@ void BaseObject::DestroyToChild(const ChPtr::Shared<BaseObject>& _child)
 
 	if (it == childList.end())return;
 	(*it)->dFlg = true;
+}
+
+//Ž©g‚ªŽ‚ÂŽq‚ðíœ‚·‚é//
+void BaseObject::DestroyToChild()
+{
+	if (childList.empty())return;
+
+	for (auto&& childs : childList)
+	{
+		childs->dFlg = true;
+	}
+
+	childList.clear();
+
+	objMaList->IsDestroyObject();
+	
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -34,11 +51,13 @@ void BaseObject::UpdateBeginFunction()
 
 	for (auto com : comList)
 	{
+		if(!com->IsUseFlg())continue;
 		com->UpdateBegin();
 	}
 
 	for (auto&& childs : childList)
 	{
+		if (!childs->IsUseFlg())continue;
 		childs->UpdateBeginFunction();
 	}
 
@@ -48,19 +67,34 @@ void BaseObject::UpdateBeginFunction()
 
 void BaseObject::UpdateFunction()
 {
-
-	IsReleasComponent();
-
 	Update();
 
-	for (auto com : comList)
+	auto com = comList.begin();
+	while (com != comList.end())
 	{
-		com->Update();
+		if ((*com)->IsDeth())
+		{
+			(*com)->Release();
+			comList.erase(com);
+			continue;
+		}
+		if (!(*com)->IsUseFlg())continue;
+		(*com)->Update();
+		com++;
 	}
 
-	for (auto&& childs : childList)
+	auto child = childList.begin();
+	while (child != childList.end())
 	{
-		childs->UpdateFunction();
+		if ((*child)->dFlg)
+		{
+			(*child)->Release();
+			childList.erase(child);
+			continue;
+		}
+		if (!(*child)->IsUseFlg())continue;
+		(*child)->Update();
+		child++;
 	}
 }
 
@@ -73,11 +107,13 @@ void BaseObject::UpdateEndFunction()
 
 	for (auto com : comList)
 	{
+		if (!com->IsUseFlg())continue;
 		com->UpdateEnd();
 	}
 
 	for (auto&& childs : childList)
 	{
+		if (!childs->IsUseFlg())continue;
 		childs->UpdateEnd();
 	}
 }
@@ -91,11 +127,13 @@ void BaseObject::MoveBeginFunction()
 
 	for (auto com : comList)
 	{
+		if (!com->IsUseFlg())continue;
 		com->MoveBegin();
 	}
 
 	for (auto&& childs : childList)
 	{
+		if (!childs->IsUseFlg())continue;
 		childs->MoveBeginFunction();
 	}
 }
@@ -109,11 +147,13 @@ void BaseObject::MoveFunction()
 
 	for (auto com : comList)
 	{
+		if (!com->IsUseFlg())continue;
 		com->Move();
 	}
 
 	for (auto&& childs : childList)
 	{
+		if (!childs->IsUseFlg())continue;
 		childs->MoveFunction();
 	}
 }
@@ -127,11 +167,13 @@ void BaseObject::MoveEndFunction()
 
 	for (auto com : comList)
 	{
+		if (!com->IsUseFlg())continue;
 		com->MoveEnd();
 	}
 
 	for (auto&& childs : childList)
 	{
+		if (!childs->IsUseFlg())continue;
 		childs->MoveEndFunction();
 	}
 }
@@ -145,11 +187,13 @@ void BaseObject::DrawBeginFunction()
 
 	for (auto com : comList)
 	{
+		if (!com->IsUseFlg())continue;
 		com->DrawBegin();
 	}
 
 	for (auto&& childs : childList)
 	{
+		if (!childs->IsUseFlg())continue;
 		childs->DrawBeginFunction();
 	}
 }
@@ -163,11 +207,13 @@ void BaseObject::Draw3DFunction()
 
 	for (auto com : comList)
 	{
+		if (!com->IsUseFlg())continue;
 		com->Draw3D();
 	}
 
 	for (auto&& childs : childList)
 	{
+		if (!childs->IsUseFlg())continue;
 		childs->Draw3DFunction();
 	}
 }
@@ -181,11 +227,13 @@ void BaseObject::Draw2DFunction()
 
 	for (auto com : comList)
 	{
+		if (!com->IsUseFlg())continue;
 		com->Draw2D();
 	}
 
 	for (auto&& childs : childList)
 	{
+		if (!childs->IsUseFlg())continue;
 		childs->Draw2DFunction();
 	}
 }
@@ -199,36 +247,25 @@ void BaseObject::DrawEndFunction()
 
 	for (auto com : comList)
 	{
+		if (!com->IsUseFlg())continue;
 		com->DrawEnd();
 	}
 
 	for (auto&& childs : childList)
 	{
+		if (!childs->IsUseFlg())continue;
 		childs->DrawEndFunction();
 	}
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
 void BaseObject::BaseRelease()
 {
-
-	for (auto com : comList)
-	{
-		com->Release();
-	}
-
-	if (!comList.empty())comList.clear();
-
-	for (auto&& childs : childList)
-	{
-		childs->BaseRelease();
-	}
+	DestroyComponent();
+	
+	DestroyToChild();
 
 	Release();
 }
-
-///////////////////////////////////////////////////////////////////////////////////////
 
 void BaseObject::BaseInit(
 	const std::string& _ObjectName
@@ -239,9 +276,20 @@ void BaseObject::BaseInit(
 	Init();
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
+void BaseObject::DestroyComponent()
+{
+	if (comList.empty())return;
 
-void BaseObject::ReleaseComponent(const std::string& _comName)
+	for (auto com : comList)
+	{
+		com->Release();
+	}
+
+	comList.clear();
+
+}
+
+void BaseObject::DestroyComponent(const std::string& _comName)
 {
 
 	for (auto&& com : comList)
@@ -253,7 +301,7 @@ void BaseObject::ReleaseComponent(const std::string& _comName)
 		}
 
 		auto tmp = std::find(comList.begin(), comList.end(), com);
-
+		com->Release();
 		comList.erase(tmp);
 
 		if (comList.empty())break;
@@ -261,7 +309,25 @@ void BaseObject::ReleaseComponent(const std::string& _comName)
 	}
 }
 
-void BaseObject::IsReleasComponent()
+void BaseObject::IsDestroyToChild()
+{
+
+	if (childList.empty())return;
+	auto child = childList.begin();
+	while (child != childList.end())
+	{
+		if (!(*child)->dFlg)
+		{
+			child++;
+			continue;
+		}
+		(*child)->Release();
+		childList.erase(child);
+
+	}
+}
+
+void BaseObject::IsDestroyComponent()
 {
 
 	if (comList.empty())return;
@@ -273,9 +339,8 @@ void BaseObject::IsReleasComponent()
 			com++;
 			continue;
 		}
+		(*com)->Release();
 		comList.erase(com);
-
-		if (comList.empty())break;
 
 	}
 }

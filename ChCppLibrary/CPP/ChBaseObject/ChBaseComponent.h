@@ -37,19 +37,15 @@ namespace ChCpp
 		//é©êgÇÃñ{ëÃÇéÃÇƒÇΩÇ¢éûÇ…ëñÇÁÇπÇÈä÷êî//
 		void ObjectDestroy();
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
+	public://Set Function//
 
-		void SetUsing(const ChStd::Bool _Flg) { useFlg = _Flg; }
+		inline void SetUsing(const ChStd::Bool _Flg) { useFlg = _Flg; }
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//IsFunction//
+	public://Is Functions//
 
-		ChStd::Bool IsDeth() { return dFlg; }
+		inline ChStd::Bool IsDeth() { return dFlg; }
 
-		ChStd::Bool IsUse() { return useFlg; }
-
-		///////////////////////////////////////////////////////////////////////////////////////
+		inline ChStd::Bool IsUseFlg() { return useFlg; }
 
 	protected:
 
@@ -80,8 +76,6 @@ namespace ChCpp
 			return ChPtr::SharedSafeCast<Class>(obj.lock());
 		}
 
-		ChStd::Bool useFlg = true;
-
 		///////////////////////////////////////////////////////////////////////////////////
 		//UpdateFuncsions//
 		virtual void UpdateBegin() {};
@@ -108,6 +102,7 @@ namespace ChCpp
 
 		///////////////////////////////////////////////////////////////////////////////////
 
+		ChStd::Bool useFlg = true;
 
 		ChPtr::Weak<BaseObject> obj;
 

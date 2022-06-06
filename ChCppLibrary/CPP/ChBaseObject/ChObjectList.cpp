@@ -33,6 +33,7 @@ void ObjectList::ObjectUpdateBegin()
 {
 	for (auto&& obj : objectList)
 	{
+		if (!obj->IsUseFlg())continue;
 		if (obj->parent.lock() != nullptr)continue;
 		obj->UpdateBeginFunction();
 	}
@@ -54,6 +55,7 @@ void ObjectList::ObjectUpdate()
 			continue;
 		}
 
+		if (!(*obj)->IsUseFlg())continue;
 		if ((*obj)->parent.lock() != nullptr)continue;
 
 		(*obj)->UpdateFunction();
@@ -69,6 +71,7 @@ void ObjectList::ObjectUpdateEnd()
 {
 	for (auto&& obj : objectList)
 	{
+		if (!obj->IsUseFlg())continue;
 		if (obj->parent.lock() != nullptr)continue;
 		obj->UpdateEndFunction();
 	}
@@ -91,6 +94,7 @@ void ObjectList::ObjectMoveBegin()
 {
 	for (auto&& obj : objectList)
 	{
+		if (!obj->IsUseFlg())continue;
 		if (obj->parent.lock() != nullptr)continue;
 		obj->MoveBeginFunction();
 	}
@@ -102,6 +106,7 @@ void ObjectList::ObjectMove()
 {
 	for (auto&& obj : objectList)
 	{
+		if (!obj->IsUseFlg())continue;
 		if (obj->parent.lock() != nullptr)continue;
 		obj->MoveFunction();
 	}
@@ -113,6 +118,7 @@ void ObjectList::ObjectMoveEnd()
 {
 	for (auto&& obj : objectList)
 	{
+		if (!obj->IsUseFlg())continue;
 		if (obj->parent.lock() != nullptr)continue;
 		obj->MoveEndFunction();
 	}
@@ -124,6 +130,7 @@ void ObjectList::ClearObject()
 {
 	for (auto&& obj : objectList)
 	{
+		if (!obj->IsUseFlg())continue;
 		if (obj->parent.lock() != nullptr)continue;
 		obj->BaseRelease();
 	}
@@ -139,6 +146,25 @@ void ObjectList::ClearObjectForName(const std::string& _Name)
 	{
 		if (obj->myName.find(_Name, 0) == std::string::npos)continue;
 		obj->Destroy();
+	}
+}
+
+void ObjectList::IsDestroyObject()
+{
+
+	auto&& obj = objectList.begin();
+
+	while (obj != objectList.end())
+	{
+
+		if (!(*obj)->dFlg)
+		{
+			obj++;
+			continue;
+		}
+
+		(*obj)->BaseRelease();
+		objectList.erase(obj);
 	}
 }
 
@@ -161,6 +187,7 @@ void ObjectList::ObjectDrawBegin()
 {
 	for (auto&& obj : objectList)
 	{
+		if (!obj->IsUseFlg())continue;
 		if (obj->parent.lock() != nullptr)continue;
 		obj->DrawBeginFunction();
 	}
@@ -172,6 +199,7 @@ void ObjectList::ObjectDraw2D()
 {
 	for (auto&& obj : objectList)
 	{
+		if (!obj->IsUseFlg())continue;
 		if (obj->parent.lock() != nullptr)continue;
 		obj->Draw3DFunction();
 	}
@@ -183,6 +211,7 @@ void ObjectList::ObjectDraw3D()
 {
 	for (auto&& obj : objectList)
 	{
+		if (!obj->IsUseFlg())continue;
 		if (obj->parent.lock() != nullptr)continue;
 		obj->UpdateEndFunction();
 	}
@@ -194,6 +223,7 @@ void ObjectList::ObjectDrawEnd()
 {
 	for (auto&& obj : objectList)
 	{
+		if (!obj->IsUseFlg())continue;
 		if (obj->parent.lock() != nullptr)continue;
 		obj->DrawEndFunction();
 	}
