@@ -14,7 +14,7 @@ MsgBox::PushButtonType MsgBox::DisplayW(
 {
 	unsigned int uType = CreateUType();
 
-	return static_cast<PushButtonType>(MessageBoxW(_hWnd, _title, _text, uType));
+	return static_cast<PushButtonType>(MessageBoxW(_hWnd, _text, _title, uType));
 }
 
 MsgBox::PushButtonType MsgBox::DisplayServiceNotificationW(
@@ -25,7 +25,7 @@ MsgBox::PushButtonType MsgBox::DisplayServiceNotificationW(
 	unsigned int uType = CreateUType();
 	uType |= MB_SERVICE_NOTIFICATION;
 
-	return static_cast<PushButtonType>(MessageBoxW(nullptr, _title, _text, uType));
+	return static_cast<PushButtonType>(MessageBoxW(nullptr, _text, _title, uType));
 }
 
 
@@ -37,7 +37,7 @@ MsgBox::PushButtonType MsgBox::DisplayA(
 
 	unsigned int uType = CreateUType();
 
-	return static_cast<PushButtonType>(MessageBoxA(_hWnd, _title, _text, uType));
+	return static_cast<PushButtonType>(MessageBoxA(_hWnd, _text, _title, uType));
 }
 
 MsgBox::PushButtonType MsgBox::DisplayServiceNotificationA(
@@ -48,7 +48,7 @@ MsgBox::PushButtonType MsgBox::DisplayServiceNotificationA(
 	unsigned int uType = CreateUType();
 	uType |= MB_SERVICE_NOTIFICATION;
 
-	return static_cast<PushButtonType>(MessageBoxA(nullptr, _title, _text, uType));
+	return static_cast<PushButtonType>(MessageBoxA(nullptr, _text, _title, uType));
 }
 
 
