@@ -49,31 +49,10 @@ namespace ChCpp
 			return ChPtr::SharedSafeCast<T>(tmpObj);
 		}
 		
-		//BaseObjectを継承したオブジェクトのみ登録可能//
-		template<class T>
-		auto SetObject(ChPtr::Shared<T> _obj) ->typename std::enable_if
-			<std::is_base_of<BaseObject, T>::value, ChPtr::Shared<T>>::type
-		{
-
-			ChPtr::Shared<BaseObject> tmpObj = _obj;
-
-			if (std::find(objectList.begin(), objectList.end(), tmpObj) != objectList.end())return;;
-
-			tmpObj->objMa = this;
-
-			objectList.push_back(tmpObj);
-
-			for (auto&& child : tmpObj->childList)
-			{
-				SetObject(child);
-			}
-
-			return ChPtr::SharedSafeCast<T>(tmpObj);
-		}
+		void SetObject(ChPtr::Shared<BaseObject> _obj);
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
-
 
 		template<class T = BaseObject>
 		inline std::vector<ChPtr::Weak<

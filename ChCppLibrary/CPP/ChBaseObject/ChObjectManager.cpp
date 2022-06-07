@@ -16,6 +16,21 @@ void ObjectManager::Release()
 	ClearObject();
 }
 
+void ObjectManager::SetObject(ChPtr::Shared<BaseObject> _obj, const std::string& _tag)
+{
+	if (_obj == nullptr)return;
+
+	auto&& list = objectList.find(_tag);
+	if (list == objectList.end())
+	{
+		objectList[_tag] = ChPtr::Make_S<ObjectList>();
+		list = objectList.find(_tag);
+	}
+
+	list->second->SetObject(_obj);
+
+
+}
 void ObjectManager::Update()
 {
 

@@ -28,10 +28,12 @@ namespace ChCpp
 		//自身を捨てる時に自動的に走る関数//
 		void Release() {}
 
-	protected:
+	public://Destroy Function//
 
 		//自身を捨てたい時に走らせる関数//
 		void Destroy();
+
+	protected://Destroy Functions//
 
 		//自身が持つ子を削除する//
 		void DestroyToChild();
@@ -39,17 +41,19 @@ namespace ChCpp
 		//自身が持つ子を削除する//
 		void DestroyToChild(const ChPtr::Shared<BaseObject>& _child);
 
-		//削除される子オブジェクトが存在するかを確認しつつ削除する//
-		void IsDestroyToChild();
-
 		//コンポーネントをすべて削除する//
 		void DestroyComponent();
 
 		//指定したコンポーネントをすべて削除する//
 		void DestroyComponent(const std::string& _comName);
 
+	public://Destroy Functions//
+
+		//削除される子オブジェクトが存在するかを確認しつつ削除する//
+		void DestroyToChildTest();
+
 		//削除されるコンポーネントがあるかどうかを確認しつつ削除する//
-		void IsDestroyComponent();
+		void DestroyComponentTest();
 
 	public:
 
@@ -162,23 +166,9 @@ namespace ChCpp
 		}
 
 		//子オブジェクトのセット//
-		inline void SetChild(ChPtr::Shared<BaseObject> _childObject)
-		{
-			if (shared_from_this() == _childObject->shared_from_this())return;
+		void SetChild(ChPtr::Shared<BaseObject> _childObject);
 
-			childList.push_back(_childObject);
-
-			auto&& par = _childObject->parent.lock();
-
-			if (par != nullptr)
-			{
-				auto&& obj =  std::find(par->childList.begin(), par->childList.end(), _childObject);
-				if(obj != par->childList.end())	par->childList.erase(obj);
-			}
-
-			_childObject->parent = shared_from_this();
-
-		}
+		void SetParent(ChPtr::Shared<BaseObject>& _parentObject);
 
 		//自身の名前のセット//
 		inline void SetMyName(const std::string& _newName) { myName = _newName; }
@@ -193,6 +183,10 @@ namespace ChCpp
 		inline ChStd::Bool IsUseFlg() { return useFlg; }
 
 		///////////////////////////////////////////////////////////////////////////////////////
+
+		void WithdrawParent();
+		
+		void WithdrawObjectList();
 
 		ObjectList* LookObjectList();
 

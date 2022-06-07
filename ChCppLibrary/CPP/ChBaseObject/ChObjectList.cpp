@@ -14,6 +14,27 @@ void ObjectList::Release()
 	ClearObject();
 }
 
+void ObjectList::SetObject(ChPtr::Shared<BaseObject> _obj)
+{
+
+	if (_obj == nullptr)return;
+
+	if (!objectList.empty())
+	{
+		if (std::find(objectList.begin(), objectList.end(), _obj) != objectList.end())return;
+	}
+
+	_obj->WithdrawObjectList();
+
+	_obj->objMaList = this;
+
+	objectList.push_back(_obj);
+
+	for (auto&& child : _obj->childList)
+	{
+		SetObject(child);
+	}
+}
 ///////////////////////////////////////////////////////////////////////////////////////
 
 void ObjectList::Update()

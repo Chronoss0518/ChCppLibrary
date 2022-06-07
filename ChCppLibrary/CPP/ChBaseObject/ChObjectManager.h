@@ -32,25 +32,10 @@ namespace ChCpp
 			return (*list).second->SetObject<T>(_objectName);
 		}
 
-		//BaseObjectを継承したオブジェクトのみ登録可能//
-		template<class T>
-		auto SetObject(ChPtr::Shared<T> _obj,const std::string& _tag = "") ->typename std::enable_if
-			<std::is_base_of<BaseObject, T>::value, ChPtr::Shared<T>>::type
-		{
-
-			auto&& list = objectList.find(_tag);
-			if (list == objectList.end())
-			{
-				objectList[_tag] = ChPtr::Make_S<ObjectList>();
-				list = objectList.find(_tag);
-			}
-
-			return (*list).second->SetObject<T>(_obj);
-		}
+		void SetObject(ChPtr::Shared<BaseObject> _obj, const std::string& _tag = "");
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
-
 
 		template<class T = BaseObject>
 		inline std::vector<ChPtr::Weak<

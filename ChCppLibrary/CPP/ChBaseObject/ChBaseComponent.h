@@ -31,6 +31,8 @@ namespace ChCpp
 		//Á‹‚³‚ê‚éÛ‚É©“®“I‚ÉŒÄ‚Î‚ê‚é//
 		virtual void Release() {};
 
+	public://Destroy Functions//
+
 		//©g‚ğÁ‚µ‚½‚¢‚Æ‚«‚ÉŒÄ‚Ô//
 		void Destroy();
 
