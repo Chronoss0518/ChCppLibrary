@@ -1,6 +1,7 @@
 #include<Windows.h>
 #include"../../BaseIncluder/ChBase.h"
 
+#include"ChPoint.h"
 #include"ChRect.h"
 
 //ChLONGRECT Method//
@@ -123,6 +124,11 @@ ChLONGRECT ChLONGRECT::operator/(const long& _cm)const
 	out /= _cm;
 
 	return out;
+}
+
+ChLONGRECT::ChLONGRECT(const ChLONGPOINT& _pos, const ChLONGPOINT& _size)
+{
+	vec.SetScreenCoordinates(_pos.vec, _size.vec);
 }
 
 ChStd::Bool ChLONGRECT::IsAll0()const

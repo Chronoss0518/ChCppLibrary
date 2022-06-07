@@ -3,6 +3,8 @@
 #ifndef Ch_Win_Rect_h
 #define Ch_Win_Rect_h
 
+class ChLONGPOINT;
+
 typedef class ChLONGRECT
 {
 public://Operator Functions//
@@ -80,6 +82,8 @@ public://ConstructerDestructer//
 		if (this == &_cm)return;
 		*this = _cm;
 	}
+
+	ChLONGRECT(const ChLONGPOINT& _pos, const ChLONGPOINT& _size);
 
 	ChLONGRECT(const RECT& _cm)
 	{
