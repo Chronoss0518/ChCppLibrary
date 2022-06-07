@@ -37,7 +37,7 @@ namespace ChCpp
 		void Destroy();
 
 		//©g‚Ì–{‘Ì‚ğÌ‚Ä‚½‚¢‚É‘–‚ç‚¹‚éŠÖ”//
-		void ObjectDestroy();
+		void DestroyObject();
 
 	public://Set Function//
 

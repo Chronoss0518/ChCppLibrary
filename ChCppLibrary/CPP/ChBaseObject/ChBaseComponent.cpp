@@ -24,7 +24,7 @@ void BaseComponent::Destroy()
 	useFlg = false;
 }
 
-void BaseComponent::ObjectDestroy()
+void BaseComponent::DestroyObject()
 {
 	auto tmpObj = obj.lock();
 	if (tmpObj == nullptr)return;

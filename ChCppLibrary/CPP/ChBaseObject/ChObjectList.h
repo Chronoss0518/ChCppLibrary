@@ -148,7 +148,7 @@ namespace ChCpp
 		void ClearObjectForName(const std::string& _name);
 
 		//削除されるオブジェクトを確認して削除する//
-		void IsDestroyObject();
+		void DestroyObjectTest();
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		

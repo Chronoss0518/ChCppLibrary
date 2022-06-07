@@ -53,9 +53,10 @@ void BaseObject::DestroyToChild()
 		childs->dFlg = true;
 	}
 
+
 	childList.clear();
 
-	objMaList->IsDestroyObject();
+	objMaList->DestroyObjectTest();
 	
 }
 
@@ -193,12 +194,14 @@ void BaseObject::UpdateBeginFunction()
 	{
 		if(!com->IsUseFlg())continue;
 		com->UpdateBegin();
+		if (comList.empty())break;
 	}
 
 	for (auto&& childs : childList)
 	{
 		if (!childs->IsUseFlg())continue;
 		childs->UpdateBeginFunction();
+		if (childList.empty())break;
 	}
 
 }
@@ -209,34 +212,42 @@ void BaseObject::UpdateFunction()
 {
 	Update();
 
-	auto com = comList.begin();
-	while (com != comList.end())
+	if (!comList.empty())
 	{
-		if ((*com)->IsDeth())
+		auto com = comList.begin();
+		while (com != comList.end())
 		{
-			(*com)->Release();
-			comList.erase(com);
+			if ((*com)->IsDeth())
+			{
+				(*com)->Release();
+				comList.erase(com);
+				if (comList.empty())break;
+				continue;
+			}
+			if ((*com)->IsUseFlg())(*com)->Update();
+
 			if (comList.empty())break;
-			continue;
+			com++;
 		}
-		if (!(*com)->IsUseFlg())continue;
-		(*com)->Update();
-		com++;
 	}
 
-	auto child = childList.begin();
-	while (child != childList.end())
+	if (!childList.empty())
 	{
-		if ((*child)->dFlg)
+		auto child = childList.begin();
+		while (child != childList.end())
 		{
-			(*child)->Release();
-			childList.erase(child);
+			if ((*child)->dFlg)
+			{
+				(*child)->Release();
+				childList.erase(child);
+				if (childList.empty())break;
+				continue;
+			}
+			if ((*child)->IsUseFlg())(*child)->Update();
+
 			if (childList.empty())break;
-			continue;
+			child++;
 		}
-		if (!(*child)->IsUseFlg())continue;
-		(*child)->Update();
-		child++;
 	}
 }
 
@@ -251,12 +262,14 @@ void BaseObject::UpdateEndFunction()
 	{
 		if (!com->IsUseFlg())continue;
 		com->UpdateEnd();
+		if (comList.empty())break;
 	}
 
 	for (auto&& childs : childList)
 	{
 		if (!childs->IsUseFlg())continue;
 		childs->UpdateEnd();
+		if (childList.empty())break;
 	}
 }
 
@@ -271,12 +284,14 @@ void BaseObject::MoveBeginFunction()
 	{
 		if (!com->IsUseFlg())continue;
 		com->MoveBegin();
+		if (comList.empty())break;
 	}
 
 	for (auto&& childs : childList)
 	{
 		if (!childs->IsUseFlg())continue;
 		childs->MoveBeginFunction();
+		if (childList.empty())break;
 	}
 }
 
@@ -291,12 +306,14 @@ void BaseObject::MoveFunction()
 	{
 		if (!com->IsUseFlg())continue;
 		com->Move();
+		if (comList.empty())break;
 	}
 
 	for (auto&& childs : childList)
 	{
 		if (!childs->IsUseFlg())continue;
 		childs->MoveFunction();
+		if (childList.empty())break;
 	}
 }
 
@@ -311,12 +328,14 @@ void BaseObject::MoveEndFunction()
 	{
 		if (!com->IsUseFlg())continue;
 		com->MoveEnd();
+		if (comList.empty())break;
 	}
 
 	for (auto&& childs : childList)
 	{
 		if (!childs->IsUseFlg())continue;
 		childs->MoveEndFunction();
+		if (childList.empty())break;
 	}
 }
 
@@ -331,12 +350,14 @@ void BaseObject::DrawBeginFunction()
 	{
 		if (!com->IsUseFlg())continue;
 		com->DrawBegin();
+		if (comList.empty())break;
 	}
 
 	for (auto&& childs : childList)
 	{
 		if (!childs->IsUseFlg())continue;
 		childs->DrawBeginFunction();
+		if (childList.empty())break;
 	}
 }
 
@@ -351,12 +372,14 @@ void BaseObject::Draw3DFunction()
 	{
 		if (!com->IsUseFlg())continue;
 		com->Draw3D();
+		if (comList.empty())break;
 	}
 
 	for (auto&& childs : childList)
 	{
 		if (!childs->IsUseFlg())continue;
 		childs->Draw3DFunction();
+		if (childList.empty())break;
 	}
 }
 
@@ -371,12 +394,14 @@ void BaseObject::Draw2DFunction()
 	{
 		if (!com->IsUseFlg())continue;
 		com->Draw2D();
+		if (comList.empty())break;
 	}
 
 	for (auto&& childs : childList)
 	{
 		if (!childs->IsUseFlg())continue;
 		childs->Draw2DFunction();
+		if (childList.empty())break;
 	}
 }
 
@@ -391,12 +416,14 @@ void BaseObject::DrawEndFunction()
 	{
 		if (!com->IsUseFlg())continue;
 		com->DrawEnd();
+		if (comList.empty())break;
 	}
 
 	for (auto&& childs : childList)
 	{
 		if (!childs->IsUseFlg())continue;
 		childs->DrawEndFunction();
+		if (childList.empty())break;
 	}
 }
 
@@ -417,5 +444,6 @@ void BaseObject::BaseInit(
 {
 	myName = _ObjectName;
 
-	Init();
+	objMaList = _objMaList;
+
 }

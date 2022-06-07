@@ -57,6 +57,7 @@ void ObjectList::ObjectUpdateBegin()
 		if (!obj->IsUseFlg())continue;
 		if (obj->parent.lock() != nullptr)continue;
 		obj->UpdateBeginFunction();
+		if (objectList.empty())break;
 	}
 }
 
@@ -77,11 +78,15 @@ void ObjectList::ObjectUpdate()
 			continue;
 		}
 
-		if (!(*obj)->IsUseFlg())continue;
-		if ((*obj)->parent.lock() != nullptr)continue;
-
-		(*obj)->UpdateFunction();
-
+		if ((*obj)->IsUseFlg())
+		{
+			if ((*obj)->parent.lock() == nullptr)
+			{
+				(*obj)->UpdateFunction();
+				if (objectList.empty())break;
+			}
+		}
+		
 		obj++;
 	}
 
@@ -96,6 +101,7 @@ void ObjectList::ObjectUpdateEnd()
 		if (!obj->IsUseFlg())continue;
 		if (obj->parent.lock() != nullptr)continue;
 		obj->UpdateEndFunction();
+		if (objectList.empty())break;
 	}
 }
 
@@ -119,6 +125,7 @@ void ObjectList::ObjectMoveBegin()
 		if (!obj->IsUseFlg())continue;
 		if (obj->parent.lock() != nullptr)continue;
 		obj->MoveBeginFunction();
+		if (objectList.empty())break;
 	}
 }
 
@@ -131,6 +138,7 @@ void ObjectList::ObjectMove()
 		if (!obj->IsUseFlg())continue;
 		if (obj->parent.lock() != nullptr)continue;
 		obj->MoveFunction();
+		if (objectList.empty())break;
 	}
 }
 
@@ -143,6 +151,7 @@ void ObjectList::ObjectMoveEnd()
 		if (!obj->IsUseFlg())continue;
 		if (obj->parent.lock() != nullptr)continue;
 		obj->MoveEndFunction();
+		if (objectList.empty())break;
 	}
 }
 
@@ -171,7 +180,7 @@ void ObjectList::ClearObjectForName(const std::string& _Name)
 	}
 }
 
-void ObjectList::IsDestroyObject()
+void ObjectList::DestroyObjectTest()
 {
 
 	auto&& obj = objectList.begin();
@@ -212,6 +221,7 @@ void ObjectList::ObjectDrawBegin()
 		if (!obj->IsUseFlg())continue;
 		if (obj->parent.lock() != nullptr)continue;
 		obj->DrawBeginFunction();
+		if (objectList.empty())break;
 	}
 }
 
@@ -224,6 +234,7 @@ void ObjectList::ObjectDraw2D()
 		if (!obj->IsUseFlg())continue;
 		if (obj->parent.lock() != nullptr)continue;
 		obj->Draw3DFunction();
+		if (objectList.empty())break;
 	}
 }
 
@@ -236,6 +247,7 @@ void ObjectList::ObjectDraw3D()
 		if (!obj->IsUseFlg())continue;
 		if (obj->parent.lock() != nullptr)continue;
 		obj->UpdateEndFunction();
+		if (objectList.empty())break;
 	}
 }
 
@@ -248,6 +260,7 @@ void ObjectList::ObjectDrawEnd()
 		if (!obj->IsUseFlg())continue;
 		if (obj->parent.lock() != nullptr)continue;
 		obj->DrawEndFunction();
+		if (objectList.empty())break;
 	}
 }
 
