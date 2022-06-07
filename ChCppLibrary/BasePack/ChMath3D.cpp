@@ -1,6 +1,599 @@
 #include"../BaseIncluder/ChBase.h"
 
 ///////////////////////////////////////////////////////////////////////////////////
+//ChVector2 Method//
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector2& ChVector2::operator=(const ChVector2& _vec)
+{
+	if (this == &_vec)return *this;
+	val.Set(_vec.val);
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector2& ChVec2::operator*= (const float& _num)
+{
+	val.Mul(_num);
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector2 ChVec2::operator * (const float& _num)const
+{
+
+	ChVector2 tmpVec = *this;
+
+	tmpVec *= _num;
+
+	return tmpVec;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector2& ChVec2::operator/= (const float& _num)
+{
+	val.Div(_num);
+
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector2 ChVec2::operator / (const float& _num)const
+{
+
+	ChVector2 tmpVec = *this;
+
+	tmpVec /= _num;
+
+	return tmpVec;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector2& ChVec2::operator= (const float& _num)
+{
+
+	val.Set(_num);
+
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector2& ChVec2::operator += (const ChVector2& _vec)
+{
+	val.Add(_vec.val);
+
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector2 ChVec2::operator + (const ChVector2& _vec)const
+{
+	ChVector2 tmpVec = *this;
+
+	tmpVec += _vec;
+
+	return tmpVec;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector2& ChVec2::operator -= (const ChVector2& _vec)
+{
+	val.Sub(_vec.val);
+
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector2 ChVec2::operator - (const ChVector2& _vec)const
+{
+	ChVector2 tmpVec = *this;
+
+	tmpVec -= _vec;
+
+	return tmpVec;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector2& ChVec2::operator *= (const ChVector2& _vec)
+{
+	val.Mul(_vec.val);
+
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector2 ChVec2::operator * (const ChVector2& _vec)const
+{
+	ChVector2 tmpVec = *this;
+
+	tmpVec *= _vec;
+
+	return tmpVec;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector2& ChVec2::operator /= (const ChVector2& _vec)
+{
+	val.Div(_vec.val);
+
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector2 ChVec2::operator / (const ChVector2& _vec)const
+{
+	ChVector2 tmpVec = *this;
+
+	tmpVec /= _vec;
+
+	return tmpVec;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVec2::operator const ChVector4() const
+{
+	ChVec4 out;
+
+	out.val = static_cast<ChMath::VectorBase<float, 4>>(val);
+
+	return out;
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVec2::operator const ChVector3() const
+{
+
+	ChVec3 out;
+
+	out.val = static_cast<ChMath::VectorBase<float, 3>>(val);
+
+	return out;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+std::string ChVec2::Serialize(
+	const std::string& _cutChar
+	, const std::string& _endChar)
+{
+	return val.Serialize(_cutChar, _endChar);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void ChVec2::Deserialize(
+	const std::string& _str
+	, const size_t _fPos
+	, const std::string& _cutChar
+	, const std::string& _endChar
+	, const unsigned int _digit)
+{
+	val.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector2 ChVec2::GetCross(
+	const ChVector2& _vec1,
+	const ChVector2& _vec2,
+	const unsigned long _digit)
+{
+	ChVector2 tmpVec;
+
+	tmpVec.val.Cross(_vec1.val, _vec2.val, _digit);
+
+	return tmpVec;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+float ChVec2::GetCos(
+	const ChVector2& _vec1,
+	const ChVector2& _vec2,
+	const unsigned long _digit)
+{
+	return _vec1.val.GetCos(_vec2.val, _digit);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+float ChVec2::GetRadian(
+	const ChVector2& _vec1,
+	const ChVector2& _vec2,
+	const unsigned long _digit)
+{
+	return _vec1.val.GetRadian(_vec2.val, _digit);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+float ChVec2::GetDot(
+	const ChVector2& _vec1,
+	const ChVector2& _vec2,
+	const unsigned long _digit)
+{
+	return _vec1.val.GetDot(_vec2.val, _digit);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+//ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
+ChVector2 ChVec2::GetCorrection(
+	const ChVector2& _start
+	, const ChVector2& _end
+	, const float _Now)
+{
+	ChVector2 tmpVec;
+
+	tmpVec.val.Correction(_start.val, _end.val, _Now);
+
+	return tmpVec;
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+float ChVec2::GetLen(
+	const ChVector2& _vec1
+	, const ChVector2& _vec2,
+	const unsigned long _digit)
+{
+
+	ChVec2 tmpVec = _vec1 - _vec2;
+
+	return  tmpVec.val.GetLen(_digit);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+float ChVec2::GetElementsLen(
+	const ChVector2& _vec1
+	, const ChVector2& _vec2)
+{
+
+	ChVec2 tmpVec = _vec1 - _vec2;
+
+	return  tmpVec.val.GetElementsLen();
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChStd::Bool ChVec2::Normalize(const unsigned long _digit)
+{
+	return val.Normalize(_digit);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void ChVec2::ElementsNormalize()
+{
+	val.ElementsNormalize();
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void ChVec2::Cross(
+	const ChVector2& _vec1,
+	const ChVector2& _vec2,
+	const unsigned long _digit)
+{
+	*this = GetCross(_vec1, _vec2, _digit);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+//ChVector3 Method//
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector3& ChVec3::operator*= (const float& _num)
+{
+
+	val.Mul(_num);
+
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector3 ChVec3::operator * (const float& _num)const
+{
+
+	ChVector3 tmpVec = *this;
+
+	tmpVec *= _num;
+
+	return tmpVec;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector3& ChVec3::operator/= (const float& _num)
+{
+	val.Div(_num);
+
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector3 ChVec3::operator / (const float& _num)const
+{
+
+	ChVector3 tmpVec = *this;
+
+	tmpVec /= _num;
+
+	return tmpVec;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector3& ChVec3::operator= (const float& _num)
+{
+
+	val.Set(_num);
+
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector3& ChVector3::operator=(const ChVector3& _vec)
+{
+	val.Set(_vec.val);
+
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector3& ChVec3::operator *= (const ChVector3& _vec)
+{
+	val.Mul(_vec.val);
+
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector3 ChVec3::operator * (const ChVector3& _vec)const
+{
+	ChVector3 tmpVec = *this;
+
+	tmpVec *= _vec;
+
+	return tmpVec;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector3& ChVec3::operator /= (const ChVector3& _vec)
+{
+	val.Div(_vec.val);
+
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector3 ChVec3::operator / (const ChVector3& _vec)const
+{
+	ChVector3 tmpVec = *this;
+
+	tmpVec /= _vec;
+
+	return tmpVec;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector3& ChVec3::operator -= (const ChVector3& _vec)
+{
+	val.Sub(_vec.val);
+
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector3 ChVec3::operator - (const ChVector3& _vec)const
+{
+	ChVector3 tmpVec = *this;
+
+	tmpVec -= _vec;
+
+	return tmpVec;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector3& ChVec3::operator += (const ChVector3& _vec)
+{
+	val.Add(_vec.val);
+
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector3 ChVec3::operator + (const ChVector3& _vec)const
+{
+	ChVector3 tmpVec = *this;
+
+	tmpVec += _vec;
+
+	return tmpVec;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVec3::operator const ChVector4() const
+{
+	ChVec4 out;
+
+	out.val = static_cast<ChMath::VectorBase<float, 4>>(val);
+
+	return out;
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVec3::operator const ChVector2() const
+{
+
+	ChVec2 out;
+
+	out.val = static_cast<ChMath::VectorBase<float, 2>>(val);
+
+	return out;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+std::string ChVec3::Serialize(
+	const std::string& _cutChar
+	, const std::string& _endChar)
+{
+	return val.Serialize(_cutChar, _endChar);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void ChVec3::Deserialize(
+	const std::string& _str
+	, const size_t _fPos
+	, const std::string& _cutChar
+	, const std::string& _endChar
+	, const unsigned int _digit)
+{
+	val.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVector3 ChVec3::GetCross(
+	const ChVector3& _vec1,
+	const ChVector3& _vec2,
+	const unsigned long _digit)
+{
+	ChVector3 tmpVec;
+
+	tmpVec.val.Cross(_vec1.val, _vec2.val, _digit);
+
+	return tmpVec;
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+float ChVec3::GetCos(
+	const ChVector3& _vec1,
+	const ChVector3& _vec2,
+	const unsigned long _digit)
+{
+	return _vec1.val.GetCos(_vec2.val, _digit);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+float ChVec3::GetRadian(
+	const ChVector3& _vec1,
+	const ChVector3& _vec2,
+	const unsigned long _digit)
+{
+	return _vec1.val.GetRadian(_vec2.val, _digit);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+float ChVec3::GetDot(
+	const ChVector3& _vec1,
+	const ChVector3& _vec2,
+	const unsigned long _digit)
+{
+	return _vec1.val.GetDot(_vec2.val, _digit);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+//ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
+ChVector3 ChVec3::GetCorrection(const ChVector3& _start, const ChVector3& _end, const float _Now)
+{
+	ChVector3 tmpVec;
+
+	tmpVec.val.Correction(_start.val, _end.val, _Now);
+
+	return tmpVec;
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+float ChVec3::GetLen(
+	const ChVector3& _vec1
+	, const ChVector3& _vec2,
+	const unsigned long _digit)
+{
+
+	ChVec3 tmpVec = _vec1 - _vec2;
+
+	return  tmpVec.val.GetLen(_digit);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+float ChVec3::GetElementsLen(
+	const ChVector3& _vec1
+	, const ChVector3& _vec2)
+{
+
+	ChVec3 tmpVec = _vec1 - _vec2;
+
+	return  tmpVec.val.GetElementsLen();
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChStd::Bool ChVec3::Normalize(
+	const unsigned long _digit)
+{
+	return val.Normalize(_digit);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void ChVec3::ElementsNormalize()
+{
+	val.ElementsNormalize();
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void ChVec3::Cross(
+	const ChVector3& _vec1
+	, const ChVector3& _vec2,
+	const unsigned long _digit)
+{
+	*this = GetCross(_vec1, _vec2, _digit);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
 //ChVector4 Method//
 ///////////////////////////////////////////////////////////////////////////////////
 
@@ -336,599 +929,6 @@ void ChVec4::Cross(
 	const unsigned long _digit)
 {
 	val.Cross(_vec1.val, _vec2.val,_digit);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-//ChVector3 Method//
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector3& ChVec3::operator*= (const float& _num)
-{
-
-	val.Mul(_num);
-
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector3 ChVec3::operator * (const float& _num)const
-{
-
-	ChVector3 tmpVec = *this;
-
-	tmpVec *= _num;
-
-	return tmpVec;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector3& ChVec3::operator/= (const float& _num)
-{
-	val.Div(_num);
-
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector3 ChVec3::operator / (const float& _num)const
-{
-
-	ChVector3 tmpVec = *this;
-
-	tmpVec /= _num;
-
-	return tmpVec;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector3& ChVec3::operator= (const float& _num)
-{
-
-	val.Set(_num);
-
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector3& ChVector3::operator=(const ChVector3& _vec)
-{
-	val.Set(_vec.val);
-
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector3& ChVec3::operator *= (const ChVector3& _vec)
-{
-	val.Mul(_vec.val);
-
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector3 ChVec3::operator * (const ChVector3& _vec)const
-{
-	ChVector3 tmpVec = *this;
-
-	tmpVec *= _vec;
-
-	return tmpVec;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector3& ChVec3::operator /= (const ChVector3& _vec)
-{
-	val.Div(_vec.val);
-
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector3 ChVec3::operator / (const ChVector3& _vec)const
-{
-	ChVector3 tmpVec = *this;
-
-	tmpVec /= _vec;
-
-	return tmpVec;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector3& ChVec3::operator -= (const ChVector3& _vec)
-{
-	val.Sub(_vec.val);
-
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector3 ChVec3::operator - (const ChVector3& _vec)const
-{
-	ChVector3 tmpVec = *this;
-
-	tmpVec -= _vec;
-
-	return tmpVec;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector3& ChVec3::operator += (const ChVector3& _vec)
-{
-	val.Add(_vec.val);
-
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector3 ChVec3::operator + (const ChVector3& _vec)const
-{
-	ChVector3 tmpVec = *this;
-
-	tmpVec += _vec;
-
-	return tmpVec;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVec3::operator const ChVector4() const
-{
-	ChVec4 out;
-
-	out.val = static_cast<ChMath::VectorBase<float, 4>>(val);
-
-	return out;
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVec3::operator const ChVector2() const
-{
-
-	ChVec2 out;
-
-	out.val = static_cast<ChMath::VectorBase<float, 2>>(val);
-
-	return out;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-std::string ChVec3::Serialize(
-	const std::string& _cutChar
-	, const std::string& _endChar)
-{
-	return val.Serialize(_cutChar, _endChar);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChVec3::Deserialize(
-	const std::string& _str
-	, const size_t _fPos
-	, const std::string& _cutChar
-	, const std::string& _endChar
-	, const unsigned int _digit)
-{
-	val.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector3 ChVec3::GetCross(
-	const ChVector3& _vec1, 
-	const ChVector3& _vec2,
-	const unsigned long _digit)
-{
-	ChVector3 tmpVec;
-
-	tmpVec.val.Cross(_vec1.val, _vec2.val,_digit);
-
-	return tmpVec;
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-float ChVec3::GetCos(
-	const ChVector3& _vec1,
-	const ChVector3& _vec2,
-	const unsigned long _digit)
-{
-	return _vec1.val.GetCos(_vec2.val,_digit);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-float ChVec3::GetRadian(
-	const ChVector3& _vec1, 
-	const ChVector3& _vec2,
-	const unsigned long _digit)
-{
-	return _vec1.val.GetRadian(_vec2.val,_digit);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-float ChVec3::GetDot(
-	const ChVector3& _vec1,
-	const ChVector3& _vec2,
-	const unsigned long _digit)
-{
-	return _vec1.val.GetDot(_vec2.val,_digit);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-//ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
-ChVector3 ChVec3::GetCorrection(const ChVector3& _start, const ChVector3& _end, const float _Now)
-{
-	ChVector3 tmpVec;
-
-	tmpVec.val.Correction(_start.val, _end.val, _Now);
-
-	return tmpVec;
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-float ChVec3::GetLen(
-	const ChVector3& _vec1
-	, const ChVector3& _vec2,
-	const unsigned long _digit)
-{
-
-	ChVec3 tmpVec = _vec1 - _vec2;
-
-	return  tmpVec.val.GetLen(_digit);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-float ChVec3::GetElementsLen(
-	const ChVector3& _vec1
-	, const ChVector3& _vec2)
-{
-
-	ChVec3 tmpVec = _vec1 - _vec2;
-
-	return  tmpVec.val.GetElementsLen();
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChStd::Bool ChVec3::Normalize(
-	const unsigned long _digit)
-{
-	return val.Normalize(_digit);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChVec3::ElementsNormalize()
-{
-	val.ElementsNormalize();
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChVec3::Cross(
-	const ChVector3& _vec1
-	, const ChVector3& _vec2,
-	const unsigned long _digit)
-{
-	*this = GetCross(_vec1, _vec2,_digit);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-//ChVector2 Method//
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector2& ChVector2::operator=(const ChVector2& _vec)
-{
-	if (this == &_vec)return *this;
-	val.Set(_vec.val);
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector2& ChVec2::operator*= (const float& _num)
-{
-	val.Mul(_num);
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector2 ChVec2::operator * (const float& _num)const
-{
-
-	ChVector2 tmpVec = *this;
-
-	tmpVec *= _num;
-
-	return tmpVec;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector2& ChVec2::operator/= (const float& _num)
-{
-	val.Div(_num);
-
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector2 ChVec2::operator / (const float& _num)const
-{
-
-	ChVector2 tmpVec = *this;
-
-	tmpVec /= _num;
-
-	return tmpVec;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector2& ChVec2::operator= (const float& _num)
-{
-
-	val.Set(_num);
-
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector2& ChVec2::operator += (const ChVector2& _vec)
-{
-	val.Add(_vec.val);
-
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector2 ChVec2::operator + (const ChVector2& _vec)const
-{
-	ChVector2 tmpVec = *this;
-
-	tmpVec += _vec;
-
-	return tmpVec;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector2& ChVec2::operator -= (const ChVector2& _vec)
-{
-	val.Sub(_vec.val);
-
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector2 ChVec2::operator - (const ChVector2& _vec)const
-{
-	ChVector2 tmpVec = *this;
-
-	tmpVec -= _vec;
-
-	return tmpVec;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector2& ChVec2::operator *= (const ChVector2& _vec)
-{
-	val.Mul(_vec.val);
-
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector2 ChVec2::operator * (const ChVector2& _vec)const
-{
-	ChVector2 tmpVec = *this;
-
-	tmpVec *= _vec;
-
-	return tmpVec;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector2& ChVec2::operator /= (const ChVector2& _vec)
-{
-	val.Div(_vec.val);
-
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector2 ChVec2::operator / (const ChVector2& _vec)const
-{
-	ChVector2 tmpVec = *this;
-
-	tmpVec /= _vec;
-
-	return tmpVec;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVec2::operator const ChVector4() const
-{
-	ChVec4 out;
-
-	out.val = static_cast<ChMath::VectorBase<float, 4>>(val);
-
-	return out;
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVec2::operator const ChVector3() const
-{
-
-	ChVec3 out;
-
-	out.val = static_cast<ChMath::VectorBase<float, 3>>(val);
-
-	return out;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-std::string ChVec2::Serialize(
-	const std::string& _cutChar
-	, const std::string& _endChar)
-{
-	return val.Serialize(_cutChar, _endChar);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChVec2::Deserialize(
-	const std::string& _str
-	, const size_t _fPos
-	, const std::string& _cutChar
-	, const std::string& _endChar
-	, const unsigned int _digit)
-{
-	val.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector2 ChVec2::GetCross(
-	const ChVector2& _vec1, 
-	const ChVector2& _vec2,
-	const unsigned long _digit)
-{
-	ChVector2 tmpVec;
-
-	tmpVec.val.Cross(_vec1.val, _vec2.val,_digit);
-
-	return tmpVec;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-float ChVec2::GetCos(
-	const ChVector2& _vec1,
-	const ChVector2& _vec2,
-	const unsigned long _digit)
-{
-	return _vec1.val.GetCos(_vec2.val,_digit);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-float ChVec2::GetRadian(
-	const ChVector2& _vec1,
-	const ChVector2& _vec2,
-	const unsigned long _digit)
-{
-	return _vec1.val.GetRadian(_vec2.val,_digit);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-float ChVec2::GetDot(
-	const ChVector2& _vec1,
-	const ChVector2& _vec2,
-	const unsigned long _digit)
-{
-	return _vec1.val.GetDot(_vec2.val,_digit);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-//ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
-ChVector2 ChVec2::GetCorrection(
-	const ChVector2& _start
-	, const ChVector2& _end
-	, const float _Now)
-{
-	ChVector2 tmpVec;
-
-	tmpVec.val.Correction(_start.val, _end.val, _Now);
-
-	return tmpVec;
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-float ChVec2::GetLen(
-	const ChVector2& _vec1
-	, const ChVector2& _vec2,
-	const unsigned long _digit)
-{
-
-	ChVec2 tmpVec = _vec1 - _vec2;
-
-	return  tmpVec.val.GetLen(_digit);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-float ChVec2::GetElementsLen(
-	const ChVector2& _vec1
-	, const ChVector2& _vec2)
-{
-
-	ChVec2 tmpVec = _vec1 - _vec2;
-
-	return  tmpVec.val.GetElementsLen();
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChStd::Bool ChVec2::Normalize(const unsigned long _digit)
-{
-	return val.Normalize(_digit);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChVec2::ElementsNormalize()
-{
-	val.ElementsNormalize();
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChVec2::Cross(
-	const ChVector2& _vec1,
-	const ChVector2& _vec2,
-	const unsigned long _digit)
-{
-	*this = GetCross(_vec1, _vec2,_digit);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

@@ -27,403 +27,6 @@ struct ChRMatrix;
 struct ChLMatrix;
 struct ChUIMatrix;
 
-struct ChVector4 : public ChMath::Vector4Base<float>
-{
-
-	///////////////////////////////////////////////////////////////////////////////////
-	//StaticFunction//
-
-
-	///////////////////////////////////////////////////////////////////////////////////
-	//Operator//
-
-	ChVector4& operator*=(const float& _num);
-	ChVector4 operator*(const float& _num) const;
-	ChVector4& operator/=(const float& _num);
-	ChVector4 operator/(const float& _num) const;
-	ChVector4& operator=(const float& _num);
-
-	ChVector4& operator=(const ChVector4& _vec);
-	ChVector4& operator-=(const ChVector4& _vec);
-	ChVector4 operator-(const ChVector4& _vec) const;
-	ChVector4& operator+=(const ChVector4& _vec);
-	ChVector4 operator+(const ChVector4& _vec) const;
-	ChVector4& operator*=(const ChVector4& _vec);
-	ChVector4 operator*(const ChVector4& _vec) const;
-	ChVector4& operator/=(const ChVector4& _vec);
-	ChVector4 operator/(const ChVector4& _vec) const;
-
-	bool operator==(const ChVector4& _vec)const
-	{
-		return val == _vec.val;
-	}
-
-	bool operator!=(const ChVector4& _vec)const
-	{
-		return val != _vec.val;
-	}
-
-	operator const ChVector3() const;
-	operator const ChVector2() const;
-
-	operator const D3DXVECTOR4() const;
-	operator const D3DXVECTOR4* () const;
-
-	ChVector4& operator=(const D3DXVECTOR4&);
-
-	///////////////////////////////////////////////////////////////////////////////////
-	//ConstructerDestructer//
-
-	inline ChVector4()
-	{
-		val.Identity();
-	}
-
-	inline ChVector4(const float _num)
-	{
-		val.Set(_num);
-	}
-
-	inline ChVector4(
-		const float _x, const float _y, const float _z, const float _w)
-	{
-		x = _x;
-		y = _y;
-		z = _z;
-		w = _w;
-	}
-
-	inline ChVector4(const ChVector4& _vec) { *this = _vec; }
-
-	inline ChVector4(const D3DXVECTOR4& _vec) { *this = _vec; }
-
-	///////////////////////////////////////////////////////////////////////////////////
-	//SerializeDeserialize//
-
-	std::string Serialize(
-		const std::string& _cutChar = ","
-		, const std::string& _endChar = ";");
-
-	std::string SerializeARGB(
-		const std::string& _cutChar = ","
-		, const std::string& _endChar = ";");
-
-	void Deserialize(
-		const std::string& _str
-		, const size_t _fPos = 0
-		, const std::string& _cutChar = ","
-		, const std::string& _endChar = ";"
-		, const unsigned int _digit = 6);
-
-	void DeserializeARGB(
-		const std::string& _str
-		, const size_t _fPos = 0
-		, const std::string& _cutChar = ","
-		, const std::string& _endChar = ";"
-		, const unsigned int _digit = 6);
-
-	inline void WParamSaturate()
-	{
-		w = w > -1.0f ? (w < 1.0f ? w : 1.0f) : -1.0f;
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////
-	//GetFunction//
-
-	static ChVector4 GetCross(
-		const ChVector4& _vec1,
-		const ChVector4& _vec2,
-		const unsigned long _digit = 6);
-
-	static float GetCos(
-		const ChVector4& _vec1, 
-		const ChVector4& _vec2,
-		const unsigned long _digit = 6);
-
-	static float GetRadian(
-		const ChVector4& _vec1,
-		const ChVector4& _vec2,
-		const unsigned long _digit = 6);
-
-	static float GetDot(
-		const ChVector4& _vec1, 
-		const ChVector4& _vec2,
-		const unsigned long _digit = 6);
-
-	//ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
-	static ChVector4 GetCorrection(
-		const ChVector4& _start,
-		const ChVector4& _end, 
-		const float _Now);
-
-	static float GetLen(
-		const ChVector4& _vec1, 
-		const ChVector4& _vec2,
-		const unsigned long _digit = 6);
-
-	static float GetElementsLen(
-		const ChVector4& _vec1,
-		const ChVector4& _vec2);
-
-	///////////////////////////////////////////////////////////////////////////////////
-
-	inline float Len(const unsigned long _digit = 6) const
-	{
-		return GetLen(*this, ChVector4(),_digit);
-	}
-
-	inline float ElementsLen()const
-	{
-		return GetElementsLen(*this, ChVector4());
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////
-
-	inline void Abs()
-	{
-		val.Abs();
-	}
-
-	inline void Abs(const ChVector4& _vec)
-	{
-		val.Abs(_vec.val);
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////
-
-	//ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
-	inline void Correction(
-		const ChVector4& _start, 
-		const ChVector4& _end,
-		const float _Now)
-	{
-		*this = GetCorrection(_start, _end, _Now);
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////
-
-	ChStd::Bool Normalize(const unsigned long _digit = 6);
-
-	void ElementsNormalize();
-
-	///////////////////////////////////////////////////////////////////////////////////
-
-	void Cross(
-		const ChVector4& _vec1,
-		const ChVector4& _vec2,
-		const unsigned long _digit = 6);
-
-	inline ChStd::Bool IsOverlaps(const ChVector4& _vec)
-	{
-		return ChMath::Vector4Base<float>::IsOverlaps(_vec); 
-	}
-
-	inline ChVector4 OverlapsRect(const ChVector4& _vec)
-	{
-		ChVector4 out;
-		out.val.Set(ChMath::Vector4Base<float>::OverlapsRect(_vec).val);
-		return out;
-	}
-
-};
-
-using ChVec4 = ChVector4;
-
-///////////////////////////////////////////////////////////////////////////////////
-
-struct ChVector3 : public ChMath::Vector3Base<float>
-{
-
-	ChVector3& operator*=(const float& _num);
-	ChVector3 operator*(const float& _num) const;
-	ChVector3& operator/=(const float& _num);
-	ChVector3 operator/(const float& _num) const;
-	ChVector3& operator=(const float& _num);
-
-	ChVector3& operator=(const ChVector3& _vec);
-	ChVector3& operator-=(const ChVector3& _vec);
-	ChVector3 operator-(const ChVector3& _vec) const;
-	ChVector3& operator+=(const ChVector3& _vec);
-	ChVector3 operator+(const ChVector3& _vec) const;
-	ChVector3& operator*=(const ChVector3& _vec);
-	ChVector3 operator*(const ChVector3& _vec) const;
-	ChVector3& operator/=(const ChVector3& _vec);
-	ChVector3 operator/(const ChVector3& _vec) const;
-
-	bool operator==(const ChVector3& _vec)const
-	{
-		return val == _vec.val;
-	}
-
-	bool operator!=(const ChVector3& _vec)const
-	{
-		return val != _vec.val;
-	}
-
-	operator const ChVector4() const;
-	operator const ChVector2() const;
-
-	operator const D3DXVECTOR3() const;
-	operator const D3DXVECTOR3* () const;
-
-	operator const DirectX::XMFLOAT3() const;
-	operator const DirectX::XMFLOAT3* () const;
-
-	ChVector3& operator=(const D3DXVECTOR3&);
-	ChVector3& operator=(const DirectX::XMFLOAT3&);
-
-	ChVector3& operator=(const D3DXQUATERNION&);
-	ChVector3& operator=(const DirectX::XMFLOAT4&);
-
-	ChVector3& operator=(const D3DXMATRIX&);
-	ChVector3& operator=(const DirectX::XMFLOAT4X4&);
-
-	///////////////////////////////////////////////////////////////////////////////////
-	//ConstructerDestructer//
-
-	inline ChVector3()
-	{
-		val.Identity();
-	}
-
-	inline ChVector3(const float _num)
-	{
-		val.Set(_num);
-	}
-
-	inline ChVector3(
-		const float _x, const float _y, const float _z)
-	{
-		x = _x;
-		y = _y;
-		z = _z;
-	}
-
-	inline ChVector3(const ChVector3& _vec) { *this = _vec; }
-
-	inline ChVector3(const D3DXVECTOR3& _vec) { *this = _vec; }
-	inline ChVector3(const DirectX::XMFLOAT3& _vec) { *this = _vec; }
-
-	inline ChVector3(const D3DXQUATERNION& _Qua) { *this = _Qua; }
-	inline ChVector3(const DirectX::XMFLOAT4& _Qua) { *this = _Qua; }
-
-	inline ChVector3(const D3DXMATRIX& _mat) { *this = _mat; }
-	inline ChVector3(const DirectX::XMFLOAT4X4& _mat) { *this = _mat; }
-
-	///////////////////////////////////////////////////////////////////////////////////
-	//SerializeDeserialize//
-
-	std::string Serialize(
-		const std::string& _cutChar = ","
-		, const std::string& _endChar = ";");
-
-	void Deserialize(
-		const std::string& _str
-		, const size_t _fPos = 0
-		, const std::string& _cutChar = ","
-		, const std::string& _endChar = ";"
-		, const unsigned int _digit = 6);
-
-	///////////////////////////////////////////////////////////////////////////////////
-	//GetFunction//
-
-	static ChVector3 GetCross(
-		const ChVector3& _vec1,
-		const ChVector3& _vec2,
-		const unsigned long _digit = 6);
-
-	static float GetCos(
-		const ChVector3& _vec1,
-		const ChVector3& _vec2,
-		const unsigned long _digit = 6);
-
-	static float GetRadian(
-		const ChVector3& _vec1,
-		const ChVector3& _vec2,
-		const unsigned long _digit = 6);
-
-	static float GetDot(
-		const ChVector3& _vec1,
-		const ChVector3& _vec2,
-		const unsigned long _digit = 6);
-
-	//ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
-	static ChVector3 GetCorrection(
-		const ChVector3& _start, 
-		const ChVector3& _end,
-		const float _Now);
-
-	static float GetLen(
-		const ChVector3& _vec1,
-		const ChVector3& _vec2,
-		const unsigned long _digit = 6);
-
-	static float GetElementsLen(
-		const ChVector3& _vec1,
-		const ChVector3& _vec2);
-
-	///////////////////////////////////////////////////////////////////////////////////
-
-	inline float Len(const unsigned long _digit = 6) const
-	{
-		return GetLen(*this, ChVector3(),_digit);
-	}
-
-	inline float ElementsLen()const
-	{
-		return GetElementsLen(*this, ChVector3());
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////
-
-	inline void Abs()
-	{
-		val.Abs();
-	}
-
-	inline void Abs(const ChVector3& _vec)
-	{
-		val.Abs(_vec.val);
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////
-
-	inline float Dot(
-		const ChVector3& _vec,
-		const unsigned long _digit = 6)
-	{
-		return GetDot(*this, _vec,_digit);
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////
-
-	//ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
-	inline void Correction(
-		const ChVector3& _start, const ChVector3& _end, const float _Now)
-	{
-		*this = GetCorrection(_start, _end, _Now);
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////
-
-	ChStd::Bool Normalize(
-		const unsigned long _digit = 6);
-
-	void ElementsNormalize();
-
-	///////////////////////////////////////////////////////////////////////////////////
-
-	void Cross(
-		const ChVector3& _vec1,
-		const ChVector3& _vec2,
-		const unsigned long _digit = 6);
-
-};
-
-using ChVec3 = ChVector3;
-
-///////////////////////////////////////////////////////////////////////////////////
-
 struct ChVector2 : public ChMath::Vector2Base<float>
 {
 
@@ -586,6 +189,403 @@ struct ChVector2 : public ChMath::Vector2Base<float>
 };
 
 using ChVec2 = ChVector2;
+
+struct ChVector3 : public ChMath::Vector3Base<float>
+{
+
+	ChVector3& operator*=(const float& _num);
+	ChVector3 operator*(const float& _num) const;
+	ChVector3& operator/=(const float& _num);
+	ChVector3 operator/(const float& _num) const;
+	ChVector3& operator=(const float& _num);
+
+	ChVector3& operator=(const ChVector3& _vec);
+	ChVector3& operator-=(const ChVector3& _vec);
+	ChVector3 operator-(const ChVector3& _vec) const;
+	ChVector3& operator+=(const ChVector3& _vec);
+	ChVector3 operator+(const ChVector3& _vec) const;
+	ChVector3& operator*=(const ChVector3& _vec);
+	ChVector3 operator*(const ChVector3& _vec) const;
+	ChVector3& operator/=(const ChVector3& _vec);
+	ChVector3 operator/(const ChVector3& _vec) const;
+
+	bool operator==(const ChVector3& _vec)const
+	{
+		return val == _vec.val;
+	}
+
+	bool operator!=(const ChVector3& _vec)const
+	{
+		return val != _vec.val;
+	}
+
+	operator const ChVector4() const;
+	operator const ChVector2() const;
+
+	operator const D3DXVECTOR3() const;
+	operator const D3DXVECTOR3* () const;
+
+	operator const DirectX::XMFLOAT3() const;
+	operator const DirectX::XMFLOAT3* () const;
+
+	ChVector3& operator=(const D3DXVECTOR3&);
+	ChVector3& operator=(const DirectX::XMFLOAT3&);
+
+	ChVector3& operator=(const D3DXQUATERNION&);
+	ChVector3& operator=(const DirectX::XMFLOAT4&);
+
+	ChVector3& operator=(const D3DXMATRIX&);
+	ChVector3& operator=(const DirectX::XMFLOAT4X4&);
+
+	///////////////////////////////////////////////////////////////////////////////////
+	//ConstructerDestructer//
+
+	inline ChVector3()
+	{
+		val.Identity();
+	}
+
+	inline ChVector3(const float _num)
+	{
+		val.Set(_num);
+	}
+
+	inline ChVector3(
+		const float _x, const float _y, const float _z)
+	{
+		x = _x;
+		y = _y;
+		z = _z;
+	}
+
+	inline ChVector3(const ChVector3& _vec) { *this = _vec; }
+
+	inline ChVector3(const D3DXVECTOR3& _vec) { *this = _vec; }
+	inline ChVector3(const DirectX::XMFLOAT3& _vec) { *this = _vec; }
+
+	inline ChVector3(const D3DXQUATERNION& _Qua) { *this = _Qua; }
+	inline ChVector3(const DirectX::XMFLOAT4& _Qua) { *this = _Qua; }
+
+	inline ChVector3(const D3DXMATRIX& _mat) { *this = _mat; }
+	inline ChVector3(const DirectX::XMFLOAT4X4& _mat) { *this = _mat; }
+
+	///////////////////////////////////////////////////////////////////////////////////
+	//SerializeDeserialize//
+
+	std::string Serialize(
+		const std::string& _cutChar = ","
+		, const std::string& _endChar = ";");
+
+	void Deserialize(
+		const std::string& _str
+		, const size_t _fPos = 0
+		, const std::string& _cutChar = ","
+		, const std::string& _endChar = ";"
+		, const unsigned int _digit = 6);
+
+	///////////////////////////////////////////////////////////////////////////////////
+	//GetFunction//
+
+	static ChVector3 GetCross(
+		const ChVector3& _vec1,
+		const ChVector3& _vec2,
+		const unsigned long _digit = 6);
+
+	static float GetCos(
+		const ChVector3& _vec1,
+		const ChVector3& _vec2,
+		const unsigned long _digit = 6);
+
+	static float GetRadian(
+		const ChVector3& _vec1,
+		const ChVector3& _vec2,
+		const unsigned long _digit = 6);
+
+	static float GetDot(
+		const ChVector3& _vec1,
+		const ChVector3& _vec2,
+		const unsigned long _digit = 6);
+
+	//ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
+	static ChVector3 GetCorrection(
+		const ChVector3& _start,
+		const ChVector3& _end,
+		const float _Now);
+
+	static float GetLen(
+		const ChVector3& _vec1,
+		const ChVector3& _vec2,
+		const unsigned long _digit = 6);
+
+	static float GetElementsLen(
+		const ChVector3& _vec1,
+		const ChVector3& _vec2);
+
+	///////////////////////////////////////////////////////////////////////////////////
+
+	inline float Len(const unsigned long _digit = 6) const
+	{
+		return GetLen(*this, ChVector3(), _digit);
+	}
+
+	inline float ElementsLen()const
+	{
+		return GetElementsLen(*this, ChVector3());
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////
+
+	inline void Abs()
+	{
+		val.Abs();
+	}
+
+	inline void Abs(const ChVector3& _vec)
+	{
+		val.Abs(_vec.val);
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////
+
+	inline float Dot(
+		const ChVector3& _vec,
+		const unsigned long _digit = 6)
+	{
+		return GetDot(*this, _vec, _digit);
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////
+
+	//ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
+	inline void Correction(
+		const ChVector3& _start, const ChVector3& _end, const float _Now)
+	{
+		*this = GetCorrection(_start, _end, _Now);
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////
+
+	ChStd::Bool Normalize(
+		const unsigned long _digit = 6);
+
+	void ElementsNormalize();
+
+	///////////////////////////////////////////////////////////////////////////////////
+
+	void Cross(
+		const ChVector3& _vec1,
+		const ChVector3& _vec2,
+		const unsigned long _digit = 6);
+
+};
+
+using ChVec3 = ChVector3;
+
+///////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////////
+
+struct ChVector4 : public ChMath::Vector4Base<float>
+{
+
+	///////////////////////////////////////////////////////////////////////////////////
+	//StaticFunction//
+
+
+	///////////////////////////////////////////////////////////////////////////////////
+	//Operator//
+
+	ChVector4& operator*=(const float& _num);
+	ChVector4 operator*(const float& _num) const;
+	ChVector4& operator/=(const float& _num);
+	ChVector4 operator/(const float& _num) const;
+	ChVector4& operator=(const float& _num);
+
+	ChVector4& operator=(const ChVector4& _vec);
+	ChVector4& operator-=(const ChVector4& _vec);
+	ChVector4 operator-(const ChVector4& _vec) const;
+	ChVector4& operator+=(const ChVector4& _vec);
+	ChVector4 operator+(const ChVector4& _vec) const;
+	ChVector4& operator*=(const ChVector4& _vec);
+	ChVector4 operator*(const ChVector4& _vec) const;
+	ChVector4& operator/=(const ChVector4& _vec);
+	ChVector4 operator/(const ChVector4& _vec) const;
+
+	bool operator==(const ChVector4& _vec)const
+	{
+		return val == _vec.val;
+	}
+
+	bool operator!=(const ChVector4& _vec)const
+	{
+		return val != _vec.val;
+	}
+
+	operator const ChVector3() const;
+	operator const ChVector2() const;
+
+	operator const D3DXVECTOR4() const;
+	operator const D3DXVECTOR4* () const;
+
+	ChVector4& operator=(const D3DXVECTOR4&);
+
+	///////////////////////////////////////////////////////////////////////////////////
+	//ConstructerDestructer//
+
+	inline ChVector4()
+	{
+		val.Identity();
+	}
+
+	inline ChVector4(const float _num)
+	{
+		val.Set(_num);
+	}
+
+	inline ChVector4(
+		const float _x, const float _y, const float _z, const float _w)
+	{
+		x = _x;
+		y = _y;
+		z = _z;
+		w = _w;
+	}
+
+	inline ChVector4(const ChVector4& _vec) { *this = _vec; }
+
+	inline ChVector4(const D3DXVECTOR4& _vec) { *this = _vec; }
+
+	///////////////////////////////////////////////////////////////////////////////////
+	//SerializeDeserialize//
+
+	std::string Serialize(
+		const std::string& _cutChar = ","
+		, const std::string& _endChar = ";");
+
+	std::string SerializeARGB(
+		const std::string& _cutChar = ","
+		, const std::string& _endChar = ";");
+
+	void Deserialize(
+		const std::string& _str
+		, const size_t _fPos = 0
+		, const std::string& _cutChar = ","
+		, const std::string& _endChar = ";"
+		, const unsigned int _digit = 6);
+
+	void DeserializeARGB(
+		const std::string& _str
+		, const size_t _fPos = 0
+		, const std::string& _cutChar = ","
+		, const std::string& _endChar = ";"
+		, const unsigned int _digit = 6);
+
+	inline void WParamSaturate()
+	{
+		w = w > -1.0f ? (w < 1.0f ? w : 1.0f) : -1.0f;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////
+	//GetFunction//
+
+	static ChVector4 GetCross(
+		const ChVector4& _vec1,
+		const ChVector4& _vec2,
+		const unsigned long _digit = 6);
+
+	static float GetCos(
+		const ChVector4& _vec1,
+		const ChVector4& _vec2,
+		const unsigned long _digit = 6);
+
+	static float GetRadian(
+		const ChVector4& _vec1,
+		const ChVector4& _vec2,
+		const unsigned long _digit = 6);
+
+	static float GetDot(
+		const ChVector4& _vec1,
+		const ChVector4& _vec2,
+		const unsigned long _digit = 6);
+
+	//ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
+	static ChVector4 GetCorrection(
+		const ChVector4& _start,
+		const ChVector4& _end,
+		const float _Now);
+
+	static float GetLen(
+		const ChVector4& _vec1,
+		const ChVector4& _vec2,
+		const unsigned long _digit = 6);
+
+	static float GetElementsLen(
+		const ChVector4& _vec1,
+		const ChVector4& _vec2);
+
+	///////////////////////////////////////////////////////////////////////////////////
+
+	inline float Len(const unsigned long _digit = 6) const
+	{
+		return GetLen(*this, ChVector4(), _digit);
+	}
+
+	inline float ElementsLen()const
+	{
+		return GetElementsLen(*this, ChVector4());
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////
+
+	inline void Abs()
+	{
+		val.Abs();
+	}
+
+	inline void Abs(const ChVector4& _vec)
+	{
+		val.Abs(_vec.val);
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////
+
+	//ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
+	inline void Correction(
+		const ChVector4& _start,
+		const ChVector4& _end,
+		const float _Now)
+	{
+		*this = GetCorrection(_start, _end, _Now);
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////
+
+	ChStd::Bool Normalize(const unsigned long _digit = 6);
+
+	void ElementsNormalize();
+
+	///////////////////////////////////////////////////////////////////////////////////
+
+	void Cross(
+		const ChVector4& _vec1,
+		const ChVector4& _vec2,
+		const unsigned long _digit = 6);
+
+	inline ChStd::Bool IsOverlaps(const ChVector4& _vec)
+	{
+		return ChMath::Vector4Base<float>::IsOverlaps(_vec);
+	}
+
+	inline ChVector4 OverlapsRect(const ChVector4& _vec)
+	{
+		ChVector4 out;
+		out.val.Set(ChMath::Vector4Base<float>::OverlapsRect(_vec).val);
+		return out;
+	}
+
+};
+
+using ChVec4 = ChVector4;
 
 ///////////////////////////////////////////////////////////////////////////////////
 

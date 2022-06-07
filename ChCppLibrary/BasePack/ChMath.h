@@ -1311,107 +1311,6 @@ namespace ChMath
 
 	};
 
-	template<typename T>
-	struct Vector4Base
-	{
-		union {
-			struct
-			{
-				T x, y, z, w;
-			};
-			struct
-			{
-				T r, g, b, a;
-			};
-			struct
-			{
-				T left, top, right, bottom;
-			};
-			VectorBase<T, 4> val;
-		};
-
-		inline Vector4Base()
-		{
-			val.Identity();
-		}
-
-		inline Vector4Base(const T _num)
-		{
-			val.Set(_num);
-		}
-
-		inline Vector4Base(
-			const T _x, const T _y,const T _z,const T _w)
-		{
-			x = _x;
-			y = _y;
-			z = _z;
-			w = _w;
-		}
-
-		inline Vector4Base(const Vector4Base& _vec) { val = _vec.val; }
-
-		inline ChStd::Bool IsOverlaps(const Vector4Base& _vec)
-		{
-			if (_vec.top < top + bottom && _vec.top > top && _vec.left < left + right && _vec.left > left)return true;
-
-			if (top < _vec.top + _vec.bottom && top > _vec.top && left < _vec.left + _vec.right && left > _vec.left)return true;
-
-			return false;
-		}
-
-		inline Vector4Base OverlapsRect(const Vector4Base& _vec)
-		{
-			Vector4Base overlapsRect;
-			
-			if (!IsOverlaps(_vec))return overlapsRect;
-
-			overlapsRect.top = _vec.top >= top ? top : _vec.top;
-			overlapsRect.left = _vec.left >= left ? left : _vec.left;
-			overlapsRect.bottom = _vec.bottom >= bottom ? bottom : _vec.bottom;
-			overlapsRect.right = _vec.right >= right ? right : _vec.right;
-			
-			return overlapsRect;
-		}
-
-	};
-
-	template<typename T>
-	struct Vector3Base
-	{
-		union {
-			struct
-			{
-				T x, y, z;
-			};
-			struct
-			{
-				T r, g, b;
-			};
-			VectorBase<T, 3> val;
-		};
-
-		inline Vector3Base()
-		{
-			val.Identity();
-		}
-
-		inline Vector3Base(const T _num)
-		{
-			val.Set(_num);
-		}
-
-		inline Vector3Base(
-			const T _x, const T _y, const T _z)
-		{
-			x = _x;
-			y = _y;
-			z = _z;
-		}
-
-		inline Vector3Base(const Vector3Base& _vec) { val = _vec.val; }
-
-	};
 
 	template<typename T>
 	struct Vector2Base
@@ -1454,6 +1353,132 @@ namespace ChMath
 		}
 
 		inline Vector2Base(const Vector2Base& _vec) { val = _vec.val; }
+
+	};
+
+	template<typename T>
+	struct Vector3Base
+	{
+		union {
+			struct
+			{
+				T x, y, z;
+			};
+			struct
+			{
+				T r, g, b;
+			};
+			VectorBase<T, 3> val;
+		};
+
+		inline Vector3Base()
+		{
+			val.Identity();
+		}
+
+		inline Vector3Base(const T _num)
+		{
+			val.Set(_num);
+		}
+
+		inline Vector3Base(
+			const T _x, const T _y, const T _z)
+		{
+			x = _x;
+			y = _y;
+			z = _z;
+		}
+
+		inline Vector3Base(const Vector3Base& _vec) { val = _vec.val; }
+
+	};
+
+	template<typename T>
+	struct Vector4Base
+	{
+		union {
+			struct
+			{
+				T x, y, z, w;
+			};
+			struct
+			{
+				T r, g, b, a;
+			};
+			struct
+			{
+				T left, top, right, bottom;
+			};
+			VectorBase<T, 4> val;
+		};
+
+		inline Vector4Base()
+		{
+			val.Identity();
+		}
+
+		inline Vector4Base(const T _num)
+		{
+			val.Set(_num);
+		}
+
+		inline Vector4Base(
+			const T _x, const T _y, const T _z, const T _w)
+		{
+			x = _x;
+			y = _y;
+			z = _z;
+			w = _w;
+		}
+
+		inline Vector4Base(const Vector4Base& _vec) { val = _vec.val; }
+
+		//スクリーン上の座標に合わせて数値をセットする。//
+		//スクリーン座標では左上が0,0の位置になり、右下に行けば行くほど数値が増える//
+		inline void SetScreenCoordinates(const Vector2Base<T>& _pos, const Vector2Base<T>& _size)
+		{
+			left = _pos.x;
+			right = _pos.x + _size.w;
+			top = _pos.y;
+			bottom = _pos.y + _size.h;
+		}
+
+		//投影座標に合わせて数値をセットする。//
+		//投影座標では中央が0,0の位置になり、右上に行けば行くほど数値が増える//
+		inline void SetProjectionCoordinates(const Vector2Base<T>& _pos, const Vector2Base<T>& _size)
+		{
+			auto tmpSize = _size;
+			tmpSize.w /= 2;
+			tmpSize.h /= 2;
+
+			left = _pos.x;
+			right = _pos.x + tmpSize.w;
+			bottom = _pos.y;
+			top = _pos.y + tmpSize.h;
+		}
+
+		inline ChStd::Bool IsOverlaps(const Vector4Base& _vec)
+		{
+			if (_vec.top < top + bottom && _vec.top > top && _vec.left < left + right && _vec.left > left)return true;
+
+			if (top < _vec.top + _vec.bottom && top > _vec.top && left < _vec.left + _vec.right && left > _vec.left)return true;
+
+			return false;
+		}
+
+		inline Vector4Base OverlapsRect(const Vector4Base& _vec)
+		{
+			Vector4Base overlapsRect;
+
+			if (!IsOverlaps(_vec))return overlapsRect;
+
+			overlapsRect.top = _vec.top >= top ? top : _vec.top;
+			overlapsRect.left = _vec.left >= left ? left : _vec.left;
+			overlapsRect.bottom = _vec.bottom >= bottom ? bottom : _vec.bottom;
+			overlapsRect.right = _vec.right >= right ? right : _vec.right;
+
+			return overlapsRect;
+		}
 
 	};
 
