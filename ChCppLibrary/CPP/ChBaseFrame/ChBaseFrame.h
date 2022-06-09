@@ -56,6 +56,10 @@ namespace ChCpp
 
 		}
 
+	public://Get Function//
+
+		inline std::string GetNowFrameName() { return nowFrameName; }
+
 	public://Other Function
 
 		template<class T>
@@ -95,6 +99,9 @@ namespace ChCpp
 
 		void* saveData = nullptr;
 
+		std::string nextFrameName = "";
+		std::string nowFrameName = "";
+
 		std::map<std::string, std::function<ChPtr::Shared<BaseFrame>()>>frameList;
 
 		ChPtr::Shared<BaseFrame>nextFrame = nullptr;
@@ -121,7 +128,7 @@ namespace ChCpp
 
 	//ゲームシーンを簡易的生成を行うためのクラス//
 	//必要に応じて以下の関数をオーバーライドする//
-	//void Init(),void Release(),void Frame()//
+	//void Init(),void Release(),void Update()//
 	class BaseFrame:public ChCp::Releaser
 	{
 	public://InitAndRelease//
