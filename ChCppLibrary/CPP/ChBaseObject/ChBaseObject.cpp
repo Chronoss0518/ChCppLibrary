@@ -129,6 +129,16 @@ void BaseObject::DestroyComponentTest()
 	}
 }
 
+void BaseObject::SetComponent(ChPtr::Shared<BaseComponent>& _component)
+{
+	if (_component == nullptr)return;
+	if (std::find(comList.begin(), comList.end(), _component) != comList.end())return;
+
+	_component->BaseInit(shared_from_this());
+
+	comList.push_back(_component);
+}
+
 void BaseObject::SetChild(ChPtr::Shared<BaseObject> _childObject)
 {
 

@@ -143,7 +143,6 @@ namespace ChCpp
 			return parent;
 		}
 
-
 		///////////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
@@ -164,6 +163,8 @@ namespace ChCpp
 			return ChPtr::SharedSafeCast<T>(tmpCom);
 
 		}
+
+		void SetComponent(ChPtr::Shared<BaseComponent>& _component);
 
 		//子オブジェクトのセット//
 		void SetChild(ChPtr::Shared<BaseObject> _childObject);

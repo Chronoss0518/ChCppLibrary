@@ -97,8 +97,6 @@ namespace ChCpp
 
 	private:
 
-		///////////////////////////////////////////////////////////////////////////////////
-
 		//ÉZÉbÉgÇ≥ÇÍÇÈç€Ç…åƒÇŒÇÍÇÈ//
 		void BaseInit(ChPtr::Shared<BaseObject> _obj);
 
