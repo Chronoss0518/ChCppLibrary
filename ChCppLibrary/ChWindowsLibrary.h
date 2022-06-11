@@ -12,6 +12,7 @@
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "Msimg32.lib")
 #pragma comment(lib,"Gdi32.lib")
+#pragma comment(lib,"user32.lib")
 #endif
 
 //PackingClass//

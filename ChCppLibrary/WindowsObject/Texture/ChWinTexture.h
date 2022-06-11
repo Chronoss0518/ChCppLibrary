@@ -63,7 +63,11 @@ namespace ChWin
 
 		ChStd::Bool CreateTexture(HINSTANCE _instance, const std::wstring& _fileName);
 
+		ChStd::Bool CreateTexture(const ChINTPOINT& _size, const unsigned char* _bit);
+
 		ChStd::Bool CreateTexture(const int _width, const int _height, const unsigned char* _bit);
+
+		ChStd::Bool CreateTexture(const ChINTPOINT& _size, const unsigned char* _bit, const unsigned int _nPlanes, const unsigned int _bitCount);
 
 		ChStd::Bool CreateTexture(const int _width, const int _height, const unsigned char* _bit,const unsigned int _nPlanes,const unsigned int _bitCount);
 
@@ -318,6 +322,18 @@ namespace ChWin
 		void Release() { RenderTarget::Release(); }
 
 	public://Create Functions//
+
+		ChStd::Bool CreateMaskTexture(HWND _hWnd, const std::string& _fileName);
+
+		ChStd::Bool CreateMaskTexture(HWND _hWnd, const std::wstring& _fileName);
+
+		ChStd::Bool CreateMaskTexture(HINSTANCE _instance, const std::string& _fileName);
+
+		ChStd::Bool CreateMaskTexture(HINSTANCE _instance, const std::wstring& _fileName);
+
+		ChStd::Bool CreateMaskTexture(const ChINTPOINT& _size, const unsigned char* _bit);
+
+		ChStd::Bool CreateMaskTexture(const int _width, const int _height, const unsigned char* _bit);
 
 		ChStd::Bool CreateMaskTexture(const ChINTPOINT& _size);
 

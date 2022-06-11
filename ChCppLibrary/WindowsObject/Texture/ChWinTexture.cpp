@@ -3,6 +3,7 @@
 #include"../../BaseIncluder/ChBase.h"
 
 #include"../PackData/ChPoint.h"
+#include"../PackData/ChRect.h"
 #include"../WinGDI/ChWinBrush.h"
 #include"ChWinTexture.h"
 
@@ -17,6 +18,8 @@ void Texture::Release()
 
 	DeleteObject(mainTexture);
 	mainTexture = nullptr;
+
+	SetInitFlg(false);
 }
 
 ChStd::Bool Texture::CreateTexture(HWND _hWnd, const std::string& _fileName)
@@ -58,26 +61,36 @@ ChStd::Bool Texture::CreateTexture(HINSTANCE _instance, const std::wstring& _fil
 	return true;
 }
 
-ChStd::Bool Texture::CreateTexture(const int _width, const int _height, const unsigned char* _bit)
+ChStd::Bool Texture::CreateTexture(const ChINTPOINT& _size, const unsigned char* _bit)
 {
-	return CreateTexture(_width, _height, _bit, 1, 1);
+	return CreateTexture(_size, _bit, 1, 1);
 }
 
-ChStd::Bool Texture::CreateTexture(const int _width, const int _height, const unsigned char* _bit, const unsigned int _nPlanes, const unsigned int _bitCount)
+ChStd::Bool Texture::CreateTexture(const int _width, const int _height, const unsigned char* _bit)
 {
+	return CreateTexture(ChINTPOINT(_width, _height), _bit, 1, 1);
+}
+
+ChStd::Bool Texture::CreateTexture(const ChINTPOINT& _size, const unsigned char* _bit, const unsigned int _nPlanes, const unsigned int _bitCount)
+{
+
 	Release();
 
-	int w = _width >= 0 ? _width : _width * -1;
-	int h = _height >= 0 ? _height : _height * -1;
+	auto size = _size;
+	size.Abs();
 
-	mainTexture = CreateBitmap(w, h, _nPlanes, _bitCount, _bit);
+	mainTexture = CreateBitmap(size.w, size.h, _nPlanes, _bitCount, _bit);
 
 	if (ChPtr::NullCheck(mainTexture))return false;
 
 	SetInitFlg(true);
 
 	return true;
+}
 
+ChStd::Bool Texture::CreateTexture(const int _width, const int _height, const unsigned char* _bit, const unsigned int _nPlanes, const unsigned int _bitCount)
+{
+	return CreateTexture(ChINTPOINT(_width, _height), _bit, _nPlanes, _bitCount);
 }
 
 HBRUSH Texture::CreateBrush()const
@@ -104,6 +117,8 @@ void Texture::SetStretchToHDC(HDC _target)
 
 ChINTPOINT Texture::GetTextureSizeW()
 {
+	if (ChPtr::NullCheck(mainTexture))return ChINTPOINT();
+
 	BITMAP tmp;
 	GetObjectW(
 		mainTexture,
@@ -116,6 +131,8 @@ ChINTPOINT Texture::GetTextureSizeW()
 
 ChINTPOINT Texture::GetTextureSizeA()
 {
+	if (ChPtr::NullCheck(mainTexture))return ChINTPOINT();
+
 	BITMAP tmp;
 	GetObjectA(
 		mainTexture,
@@ -493,11 +510,7 @@ void Texture::DrawMaskMain(HDC _textureHDC, HDC _drawTarget, const ChINTPOINT& _
 	}
 
 
-	HBRUSH tmp = (HBRUSH)SelectObject(_drawTarget,CreatePatternBrush((HBITMAP)GetCurrentObject(_drawTarget, OBJ_BITMAP)));
-
 	DrawMaskMain(_textureHDC, _drawTarget, _pos, _size, _basePos, maskRT.GetTexture());
-
-	DeleteObject(SelectObject(_drawTarget, tmp));
 
 }
 
@@ -510,7 +523,11 @@ void Texture::DrawMaskMain(HDC _textureHDC, HDC _drawTarget, const ChINTPOINT& _
 	auto bpos = _basePos;
 	bpos.val.Abs();
 
+	HBRUSH tmp = (HBRUSH)SelectObject(_drawTarget, CreatePatternBrush((HBITMAP)GetCurrentObject(_drawTarget, OBJ_BITMAP)));
+
 	int out = MaskBlt(_drawTarget, pos.x, pos.y, size.w, size.h, _textureHDC, bpos.x, bpos.y, _maskTex, bpos.x, bpos.y, MAKEROP4(ChStd::EnumCast(opeCode), ChStd::EnumCast(RasterOpeCode::PATCopy)));
+
+	DeleteObject(SelectObject(_drawTarget, tmp));
 
 }
 
@@ -610,40 +627,13 @@ void RenderTarget::Release()
 
 ChStd::Bool RenderTarget::CreateRenderTarget(HWND _hWnd, const ChINTPOINT& _size)
 {
-	if (ChPtr::NullCheck(_hWnd))return false;
-	Release();
-
-	auto size = _size;
-	size.val.Abs();
-
 	HDC tmp = GetDC(_hWnd);
 
-	dc = CreateCompatibleDC(tmp);
-
-	if (ChPtr::NullCheck(dc))
-	{
-		ReleaseDC(_hWnd, tmp);
-		return false;
-	}
-
-	mainTexture = CreateCompatibleBitmap(tmp, size.w, size.h);
-
-	if (ChPtr::NullCheck(mainTexture))
-	{
-		ReleaseDC(_hWnd, tmp);
-		DeleteDC(dc);
-		dc = nullptr;
-		return false;
-	}
-
-	SelectObject(dc, GetStockObject(NULL_PEN));
-
-	SetTextureToHDC(dc);
-	SetInitFlg(true);
+	auto success = CreateRenderTarget(tmp, _size);
 
 	ReleaseDC(_hWnd, tmp);
 
-	return true;
+	return success;
 }
 
 ChStd::Bool RenderTarget::CreateRenderTarget(HWND _hWnd, const int _width, const int _height)
@@ -654,10 +644,24 @@ ChStd::Bool RenderTarget::CreateRenderTarget(HWND _hWnd, const int _width, const
 ChStd::Bool RenderTarget::CreateRenderTarget(HDC _dc, const ChINTPOINT& _size)
 {
 	if (ChPtr::NullCheck(_dc))return false;
-	Release();
+
+	auto texSize = GetTextureSize();
 
 	auto size = _size;
 	size.val.Abs();
+
+	if(size.w == texSize.w && size.h == texSize.h) 
+	{
+		if (ChPtr::NullCheck(dc))
+		{
+			DeleteDC(dc);
+			dc = nullptr;
+		}
+	}
+	else
+	{
+		Release();
+	}
 
 	dc = CreateCompatibleDC(_dc);
 
@@ -895,9 +899,7 @@ void RenderTarget::DrawBrush(HBRUSH _brush)
 
 	auto texSize = GetTextureSize();
 
-	RECT rec;
-
-	ChStd::MZero(&rec);
+	ChRECT rec;
 
 	rec.bottom = texSize.h;
 	rec.right = texSize.w;
@@ -913,9 +915,7 @@ void RenderTarget::DrawBrush(ChWin::Brush& _brush)
 
 	auto texSize = GetTextureSize();
 
-	RECT rec;
-
-	ChStd::MZero(&rec);
+	ChRECT rec;
 
 	rec.bottom = texSize.h;
 	rec.right = texSize.w;
@@ -965,33 +965,98 @@ void RenderTarget::FillRT(ChWin::Brush& _brush, const long _x, const long _y, co
 	_brush.FillRect(dc, tmp);
 }
 
+ChStd::Bool MaskTexture::CreateMaskTexture(HWND _hWnd, const std::string& _fileName)
+{
 
-ChStd::Bool MaskTexture::CreateMaskTexture(const ChINTPOINT& _size)
+	HINSTANCE ins = reinterpret_cast<HINSTANCE>(GetWindowLongA(_hWnd, GWL_HINSTANCE));
+
+	return CreateTexture(ins, _fileName);
+
+}
+
+ChStd::Bool MaskTexture::CreateMaskTexture(HWND _hWnd, const std::wstring& _fileName)
+{
+
+	HINSTANCE ins = reinterpret_cast<HINSTANCE>(GetWindowLongW(_hWnd, GWL_HINSTANCE));
+
+	return CreateTexture(ins, _fileName);
+}
+
+ChStd::Bool MaskTexture::CreateMaskTexture(HINSTANCE _instance, const std::string& _fileName)
 {
 	Release();
 
+	mainTexture = static_cast<HBITMAP>(LoadImageA(_instance, _fileName.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_MONOCHROME));
+
+	if (ChPtr::NullCheck(mainTexture))return false;
+
+	SetInitFlg(true);
+
 	dc = CreateCompatibleDC(NULL);
 
-	if (ChPtr::NullCheck(dc))return false;
-
-	auto size = _size;
-	size.val.Abs();
-
-	mainTexture = CreateBitmap(size.w, size.h, 1, 1, NULL);
-
-	if (ChPtr::NullCheck(mainTexture))
+	if (ChPtr::NullCheck(dc))
 	{
-		DeleteDC(dc);
+		Release();
 		return false;
 	}
 
 	SetTextureToHDC(dc);
-	SetInitFlg(true);
 
 	return true;
 }
 
+ChStd::Bool MaskTexture::CreateMaskTexture(HINSTANCE _instance, const std::wstring& _fileName)
+{
+
+	Release();
+
+	mainTexture = static_cast<HBITMAP>(LoadImageW(_instance, _fileName.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_MONOCHROME));
+
+	if (ChPtr::NullCheck(mainTexture))return false;
+
+	dc = CreateCompatibleDC(NULL);
+
+	if (ChPtr::NullCheck(dc))
+	{
+		Release();
+		return false;
+	}
+
+	SetInitFlg(true);
+
+	SetTextureToHDC(dc);
+
+	return true;
+}
+
+ChStd::Bool MaskTexture::CreateMaskTexture(const ChINTPOINT& _size, const unsigned char* _bit)
+{
+	if (!Texture::CreateTexture(_size, _bit,1,1))return false;
+
+	dc = CreateCompatibleDC(NULL);
+
+	if (ChPtr::NullCheck(dc))
+	{
+		Release();
+		return false;
+	}
+
+	SetTextureToHDC(dc);
+
+	return true;
+}
+
+ChStd::Bool MaskTexture::CreateMaskTexture(const int _width, const int _height, const unsigned char* _bit)
+{
+	return CreateMaskTexture(ChINTPOINT(_width, _height), _bit);
+}
+
+ChStd::Bool MaskTexture::CreateMaskTexture(const ChINTPOINT& _size)
+{
+	return CreateMaskTexture(_size, nullptr);
+}
+
 ChStd::Bool MaskTexture::CreateMaskTexture(const int _width, const int _height)
 {
-	return CreateMaskTexture(ChINTPOINT(_width, _height));
+	return CreateMaskTexture(ChINTPOINT(_width, _height), nullptr);
 }

@@ -38,11 +38,9 @@ namespace ChCpp
 			Chenges();
 		}
 
-		template<class T>
-		auto GetNowFrame()->typename std::enable_if
-			<std::is_base_of<BaseFrame, T>::value, const ChPtr::Weak<T>>::type
-		{
-			return ChPtr::SharedSafeCast<T>(nowFrame);
+
+		ChPtr::Weak< BaseFrame> GetNowFrame()		{
+			return nowFrame;
 		}
 
 	public://UpdateFunction//
