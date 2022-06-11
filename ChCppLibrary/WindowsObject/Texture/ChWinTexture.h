@@ -305,6 +305,8 @@ namespace ChWin
 
 		void FillRT(ChWin::Brush& _brush, const long _x, const long _y, const long _w, const long _h);
 
+		//ChStd::Bool UpdateDC(HDC _dc);
+
 	protected://Member Value//
 
 		HDC dc = nullptr;
