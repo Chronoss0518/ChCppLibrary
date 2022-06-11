@@ -55,7 +55,7 @@ void ObjectList::ObjectUpdateBegin()
 	for (auto&& obj : objectList)
 	{
 		if (!obj->IsUseFlg())continue;
-		if (obj->parent.lock() != nullptr)continue;
+		if (obj->parent.lock())continue;
 		obj->UpdateBeginFunction();
 		if (objectList.empty())break;
 	}
@@ -73,14 +73,14 @@ void ObjectList::ObjectUpdate()
 		if ((*obj)->dFlg)
 		{
 			(*obj)->BaseRelease();
-			objectList.erase(obj);
+			obj = objectList.erase(obj);
 			if (objectList.empty())break;
 			continue;
 		}
 
 		if ((*obj)->IsUseFlg())
 		{
-			if ((*obj)->parent.lock() == nullptr)
+			if (!(*obj)->parent.lock())
 			{
 				(*obj)->UpdateFunction();
 				if (objectList.empty())break;
@@ -89,6 +89,7 @@ void ObjectList::ObjectUpdate()
 		
 		obj++;
 	}
+
 
 }
 
@@ -99,7 +100,7 @@ void ObjectList::ObjectUpdateEnd()
 	for (auto&& obj : objectList)
 	{
 		if (!obj->IsUseFlg())continue;
-		if (obj->parent.lock() != nullptr)continue;
+		if (!obj->parent.lock())continue;
 		obj->UpdateEndFunction();
 		if (objectList.empty())break;
 	}
@@ -123,7 +124,7 @@ void ObjectList::ObjectMoveBegin()
 	for (auto&& obj : objectList)
 	{
 		if (!obj->IsUseFlg())continue;
-		if (obj->parent.lock() != nullptr)continue;
+		if (obj->parent.lock())continue;
 		obj->MoveBeginFunction();
 		if (objectList.empty())break;
 	}
@@ -136,7 +137,7 @@ void ObjectList::ObjectMove()
 	for (auto&& obj : objectList)
 	{
 		if (!obj->IsUseFlg())continue;
-		if (obj->parent.lock() != nullptr)continue;
+		if (obj->parent.lock())continue;
 		obj->MoveFunction();
 		if (objectList.empty())break;
 	}
@@ -149,7 +150,7 @@ void ObjectList::ObjectMoveEnd()
 	for (auto&& obj : objectList)
 	{
 		if (!obj->IsUseFlg())continue;
-		if (obj->parent.lock() != nullptr)continue;
+		if (obj->parent.lock())continue;
 		obj->MoveEndFunction();
 		if (objectList.empty())break;
 	}
@@ -161,8 +162,7 @@ void ObjectList::ClearObject()
 {
 	for (auto&& obj : objectList)
 	{
-		if (!obj->IsUseFlg())continue;
-		if (obj->parent.lock() != nullptr)continue;
+		if (obj->parent.lock())continue;
 		obj->BaseRelease();
 	}
 
@@ -195,7 +195,7 @@ void ObjectList::DestroyObjectTest()
 		}
 
 		(*obj)->BaseRelease();
-		objectList.erase(obj);
+		obj = objectList.erase(obj);
 	}
 }
 
@@ -219,7 +219,7 @@ void ObjectList::ObjectDrawBegin()
 	for (auto&& obj : objectList)
 	{
 		if (!obj->IsUseFlg())continue;
-		if (obj->parent.lock() != nullptr)continue;
+		if (obj->parent.lock())continue;
 		obj->DrawBeginFunction();
 		if (objectList.empty())break;
 	}
@@ -232,7 +232,7 @@ void ObjectList::ObjectDraw2D()
 	for (auto&& obj : objectList)
 	{
 		if (!obj->IsUseFlg())continue;
-		if (obj->parent.lock() != nullptr)continue;
+		if (obj->parent.lock())continue;
 		obj->Draw3DFunction();
 		if (objectList.empty())break;
 	}
@@ -245,7 +245,7 @@ void ObjectList::ObjectDraw3D()
 	for (auto&& obj : objectList)
 	{
 		if (!obj->IsUseFlg())continue;
-		if (obj->parent.lock() != nullptr)continue;
+		if (obj->parent.lock())continue;
 		obj->UpdateEndFunction();
 		if (objectList.empty())break;
 	}
@@ -258,7 +258,7 @@ void ObjectList::ObjectDrawEnd()
 	for (auto&& obj : objectList)
 	{
 		if (!obj->IsUseFlg())continue;
-		if (obj->parent.lock() != nullptr)continue;
+		if (obj->parent.lock())continue;
 		obj->DrawEndFunction();
 		if (objectList.empty())break;
 	}

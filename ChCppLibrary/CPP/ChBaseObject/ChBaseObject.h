@@ -12,7 +12,7 @@ namespace ChCpp
 	class ObjectList;
 
 	//オブジェクトを生成する場合、このクラスを継承して作成する。//
-	class BaseObject :public std::enable_shared_from_this<BaseObject>,public ChCp::Releaser
+	class BaseObject :public std::enable_shared_from_this<BaseObject>, public ChCp::Releaser
 	{
 	public:
 
@@ -33,9 +33,9 @@ namespace ChCpp
 		//自身を捨てたい時に走らせる関数//
 		void Destroy();
 
-	protected://Destroy Functions//
+	public://Destroy Functions//
 
-		//自身が持つ子を削除する//
+	//自身が持つ子を削除する//
 		void DestroyToChild();
 
 		//自身が持つ子を削除する//
@@ -46,8 +46,6 @@ namespace ChCpp
 
 		//指定したコンポーネントをすべて削除する//
 		void DestroyComponent(const std::string& _comName);
-
-	public://Destroy Functions//
 
 		//削除される子オブジェクトが存在するかを確認しつつ削除する//
 		void DestroyToChildTest();
@@ -103,7 +101,7 @@ namespace ChCpp
 		//子オブジェクト群の取得//
 		template<class T = BaseObject>
 		inline std::vector<ChPtr::Weak<
-			typename std::enable_if<std::is_base_of<BaseObject, T>::value, T>::type>> 
+			typename std::enable_if<std::is_base_of<BaseObject, T>::value, T>::type>>
 			GetChildlen()
 		{
 			std::vector<ChPtr::Weak<T>>tmpObjList;
@@ -164,12 +162,12 @@ namespace ChCpp
 
 		}
 
-		void SetComponent(ChPtr::Shared<BaseComponent>& _component);
+		void SetComponent(ChPtr::Shared<BaseComponent> _component);
 
 		//子オブジェクトのセット//
 		void SetChild(ChPtr::Shared<BaseObject> _childObject);
 
-		void SetParent(ChPtr::Shared<BaseObject>& _parentObject);
+		void SetParent(ChPtr::Shared<BaseObject> _parentObject);
 
 		//自身の名前のセット//
 		inline void SetMyName(const std::string& _newName) { myName = _newName; }
@@ -186,7 +184,7 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////////////
 
 		void WithdrawParent();
-		
+
 		void WithdrawObjectList();
 
 		ObjectList* LookObjectList();
@@ -243,7 +241,7 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////////
 
 		std::vector<ChPtr::Shared<BaseObject>>childList;
-		ChPtr::Weak<BaseObject>parent;
+		ChPtr::Weak<BaseObject>parent = ChPtr::Shared<BaseObject>();
 
 		std::vector<ChPtr::Shared<BaseComponent>>comList;
 

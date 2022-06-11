@@ -104,7 +104,7 @@ namespace ChCpp
 
 		ChStd::Bool useFlg = true;
 
-		ChPtr::Weak<BaseObject> obj;
+		ChPtr::Weak<BaseObject> obj = ChPtr::Shared<BaseObject>();
 
 		ChStd::Bool dFlg = false;
 

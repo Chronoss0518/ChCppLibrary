@@ -36,6 +36,8 @@ void BaseObject::DestroyToChild(const ChPtr::Shared<BaseObject>& _child)
 	if (ChPtr::NullCheck((*it)->objMaList))
 	{
 		(*it)->BaseRelease();
+		(*it)->WithdrawParent();
+		childList.erase(it);
 		return;
 	}
 
@@ -51,12 +53,13 @@ void BaseObject::DestroyToChild()
 	for (auto&& childs : childList)
 	{
 		childs->dFlg = true;
+
+		if (ChPtr::NotNullCheck(objMaList))continue;
+
+		childs->BaseRelease();
 	}
 
-
 	childList.clear();
-
-	objMaList->DestroyObjectTest();
 	
 }
 
@@ -76,17 +79,18 @@ void BaseObject::DestroyComponent()
 void BaseObject::DestroyComponent(const std::string& _comName)
 {
 
-	for (auto&& com : comList)
+	auto&& com = comList.begin();
+
+	while (com != comList.end())
 	{
 		std::string tmpName = typeid((*com)).name();
 
 		if (tmpName.find(_comName) == tmpName.npos) {
+			com++;
 			continue;
 		}
-
-		auto tmp = std::find(comList.begin(), comList.end(), com);
-		com->Release();
-		comList.erase(tmp);
+		(*com)->Release();
+		com = comList.erase(com);
 
 		if (comList.empty())break;
 
@@ -105,7 +109,7 @@ void BaseObject::DestroyToChildTest()
 			continue;
 		}
 		(*child)->Release();
-		childList.erase(child);
+		child = childList.erase(child);
 
 		if (childList.empty())break;
 	}
@@ -123,16 +127,16 @@ void BaseObject::DestroyComponentTest()
 			continue;
 		}
 		(*com)->Release();
-		comList.erase(com);
+		com = comList.erase(com);
 		if (comList.empty())break;
 
 	}
 }
 
-void BaseObject::SetComponent(ChPtr::Shared<BaseComponent>& _component)
+void BaseObject::SetComponent(ChPtr::Shared<BaseComponent> _component)
 {
 	if (_component == nullptr)return;
-	if (_component->obj.lock() != nullptr)return;
+	if (!_component->obj.expired())return;
 
 	_component->BaseInit(shared_from_this());
 
@@ -153,7 +157,7 @@ void BaseObject::SetChild(ChPtr::Shared<BaseObject> _childObject)
 
 }
 
-void BaseObject::SetParent(ChPtr::Shared<BaseObject>& _parentObject)
+void BaseObject::SetParent(ChPtr::Shared<BaseObject> _parentObject)
 {
 	if (this == _parentObject.get())return;
 
@@ -172,6 +176,8 @@ void BaseObject::WithdrawParent()
 
 	if (parentObj == nullptr)return;
 	if (parentObj->childList.empty())return;
+
+	parent.reset();
 
 	auto test = std::find(parentObj->childList.begin(), parentObj->childList.end(), shared_from_this());
 
