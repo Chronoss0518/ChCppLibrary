@@ -41,11 +41,11 @@ void BaseFrameManager::Chenges()
 		nowFrame->Release();
 	}
 
+	nowFrameName = nextFrameName;
+
 	nowFrame = nextFrame;
 
 	nowFrame->Init();
-
-	nowFrameName = nextFrameName;
 
 	nextFrame = nullptr;
 	nextFrameName = "";
