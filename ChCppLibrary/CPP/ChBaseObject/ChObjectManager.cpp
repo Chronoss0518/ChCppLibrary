@@ -31,6 +31,36 @@ void ObjectManager::SetObject(ChPtr::Shared<BaseObject> _obj, const std::string&
 
 
 }
+
+std::vector<std::string> ObjectManager::GetTagList()
+{
+	std::vector<std::string> out;
+
+	for (auto&& objList : objectList)
+	{
+		out.push_back(objList.first);
+	}
+
+	return out;
+}
+
+unsigned long ObjectManager::GetObjectCount()
+{
+	unsigned long out = 0;
+
+	for (auto&& objList : objectList)
+	{
+		out += objList.second->GetObjectCount();
+	}
+
+	return out;
+}
+
+unsigned long ObjectManager::GetTagCount()
+{
+	return objectList.size();
+}
+
 void ObjectManager::Update()
 {
 

@@ -100,6 +100,8 @@ namespace ChCpp
 			return tmpObjList;
 		}
 
+		inline unsigned long GetObjectCount(){ return objectList.size(); }
+
 		///////////////////////////////////////////////////////////////////////////////////////
 		//UpdateFunction//
 

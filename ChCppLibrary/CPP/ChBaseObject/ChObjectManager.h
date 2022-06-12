@@ -111,6 +111,12 @@ namespace ChCpp
 			return tmpObjList;
 		}
 
+		std::vector<std::string> GetTagList();
+
+		unsigned long GetObjectCount();
+
+		unsigned long GetTagCount();
+
 		///////////////////////////////////////////////////////////////////////////////////////
 		//UpdateFunction//
 
