@@ -8,7 +8,6 @@
 
 namespace ChCpp
 {
-	class ObjectManager;
 	class ObjectList;
 
 	//オブジェクトを生成する場合、このクラスを継承して作成する。//
