@@ -174,7 +174,7 @@ public://Member Values//
 		};
 		struct
 		{
-			long top, left, bottom, right;
+			long left, top, right, bottom;
 		};
 		long val[4];
 	};
