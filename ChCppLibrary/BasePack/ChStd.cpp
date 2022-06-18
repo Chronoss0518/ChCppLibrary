@@ -103,7 +103,7 @@ long ChStd::BaseNumberToDecimalNumber(const std::vector<char>& _decimal, const s
 
 	bool mFlg = false;
 
-	for (long i = 0; i < _decimal.size(); i++)
+	for (long i = 0; static_cast<unsigned long>(i) < _decimal.size(); i++)
 	{
 		long sum = numMap[_decimal[i]];
 
