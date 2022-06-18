@@ -13,6 +13,25 @@ namespace ChStd
 	//ビット演算子も利用できるためこちらは残しておく//
 	using Bool = unsigned char;
 
+	//10進数//
+	static const std::vector<char> DECIMAL_NUMBUR() { return { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' }; };
+	
+	//16進数//
+	static const std::vector<char> HEXA_DECIMAL() { return  { '0', '1', '2' , '3', '4' , '5' , '6', '7' , '8', '9', 'A', 'B', 'C', 'D' , 'E', 'F' }; };
+
+	//8進数//
+	static const std::vector<char> OCTAL() { return   { '0', '1', '2' , '3', '4' , '5' , '6', '7' }; };
+
+	//2進数//
+	static const std::vector<char> BINARY_NUMBER() { return   { '0', '1'}; };
+
+	//64進数//
+	static const std::vector<char> BASE_NUMBER_64() { return
+		{ 'A', 'B', 'C', 'D' , 'E', 'F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
+		'a', 'b', 'c', 'd' , 'e', 'f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'
+		,'0', '1', '2' , '3', '4' , '5' , '6', '7' , '8', '9','+','/' };
+	};
+
 #ifdef _WIN32
 	
 	//Windowsで使用される相対パス・絶対パスの最大文字数//
@@ -91,6 +110,59 @@ namespace ChStd
 		}
 
 		return Num;
+
+	}
+
+	//10進数の数値を入れると指定した配列によって生成された進数表記で出力される//
+	static inline std::vector<char> TenToBaseNumber(long _decimal, const std::vector<char>& _baseNumber = HEXA_DECIMAL())
+	{
+		bool mFlg = false;
+		long decimal = 0;
+
+		if (_decimal > 0)
+		{
+			decimal = _decimal;
+		}
+		else
+		{
+			decimal = -_decimal;
+			mFlg = true;
+
+		}
+
+		unsigned long size = _baseNumber.size();
+		unsigned long base = decimal / size;
+
+		std::vector<char> out;
+
+		out.push_back(_baseNumber[decimal % size]);
+
+		if (base == 0)
+		{
+			return out;
+		}
+
+		for (auto tmp : TenToBaseNumber(base, _baseNumber))
+		{
+			out.push_back(tmp);
+		}
+
+		if (mFlg)
+		{
+			out.push_back('-');
+		}
+
+		return out;
+
+	}
+
+	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
+	static inline std::vector<char> ToBaseNumber(const std::vector<char>& _decimal, const std::vector<char>& _beforeBaseNumber = DECIMAL_NUMBUR(), const std::vector<char>& _afterBaseNumber = HEXA_DECIMAL())
+	{
+
+		long base = 0;
+
+		return TenToBaseNumber(base,_afterBaseNumber);
 
 	}
 
