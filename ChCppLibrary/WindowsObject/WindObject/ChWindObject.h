@@ -45,16 +45,12 @@ namespace ChWin
 		//_messageにはWM_やメッセージプロシージャ―が受け取れる方にしてください//
 		inline virtual void SetWindProcedure(const unsigned long _message,const std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>& _proc)
 		{
-			if (!_proc)return;
-
 			(wndProc)[_message] = _proc;
 		}
 
 		//登録されたどのメッセージも受け取らなかった場合に呼ばれる関数//
 		inline void SetDefaultWindProcedure(const std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>& _proc)
 		{
-			if (!_proc)return;
-
 			defaultWindProc = _proc;
 		}
 
@@ -63,8 +59,6 @@ namespace ChWin
 		//_messageにはWM_やメッセージプロシージャ―が受け取れる方にしてください//
 		inline void SetChildWindProcedure(const unsigned long _message, const std::function<void(HWND, UINT)>& _proc)
 		{
-			if (!_proc)return;
-
 			(childWindProc)[_message] = _proc;
 		}
 

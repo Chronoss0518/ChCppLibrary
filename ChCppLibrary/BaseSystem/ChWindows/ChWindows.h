@@ -191,6 +191,8 @@ namespace ChSystem
 		//Windハンドルの取得//
 		inline HWND GethWnd(void) const { return wndObject.GethWnd(); }
 
+		inline HINSTANCE GetInstance(void)const { return wndObject.GetInstance(); }
+
 		//メッセージの値を返す関数//
 		inline const LPMSG GetReturnMassage(void) const { return wndObject.GetReturnMassage(); }
 
