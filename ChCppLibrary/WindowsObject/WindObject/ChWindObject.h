@@ -293,6 +293,8 @@ namespace ChWin
 
 	private://MemberValue//
 
+		static void SetRecentCreateWindowObject(ChWin::WindObject* _create);
+
 		unsigned long exStyle = 0;
 		unsigned int style = 0;
 		HWND parent = nullptr;

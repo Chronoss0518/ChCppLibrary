@@ -9,6 +9,13 @@
 
 using namespace ChWin;
 
+ChWin::WindObject* create = nullptr;
+
+
+void WindCreater::SetRecentCreateWindowObject(ChWin::WindObject* _create)
+{
+	create = _create;
+}
 
 LRESULT CALLBACK ChWin::WndProcA(
 	HWND _hWnd
@@ -19,9 +26,11 @@ LRESULT CALLBACK ChWin::WndProcA(
 
 	auto base = ((ChWin::WindObject*)GetWindowLongPtrA(_hWnd, GWLP_USERDATA));
 
+	base = (ChPtr::NotNullCheck(base) ? base : create);
+
 	if (base)
 	{
-		if (base->IsInit() && !base->wndProc.empty())
+		if (!base->wndProc.empty())
 		{
 			auto it = base->wndProc.find(_uMsg);
 			if (it != (base->wndProc).end())
@@ -78,9 +87,11 @@ LRESULT CALLBACK ChWin::WndProcW(
 
 	auto base = ((ChWin::WindObject*)GetWindowLongPtrW(_hWnd, GWLP_USERDATA));
 
+	base = (ChPtr::NotNullCheck(base) ? base : create);
+
 	if (base)
 	{
-		if (base->IsInit() && !base->wndProc.empty())
+		if (!base->wndProc.empty())
 		{
 			auto it = base->wndProc.find(_uMsg);
 			if (it != (base->wndProc).end())

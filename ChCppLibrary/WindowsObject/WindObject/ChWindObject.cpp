@@ -49,12 +49,11 @@ void WindObject::Release()
 
 void WindObject::CreateEnd(const int _nCmdShow)
 {
-	ShowWindow(hWnd, _nCmdShow);
-	UpdateWindow(hWnd);
-
 	SetInitFlg(true);
 	SetWindIDW(reinterpret_cast<long>(hWnd));
 
+	ShowWindow(hWnd, _nCmdShow);
+	UpdateWindow(hWnd);
 }
 
 void WindObject::SetWindPos(const unsigned int _x, const unsigned int _y, const unsigned int _flgs)
@@ -244,6 +243,8 @@ ChStd::Bool WindCreater::Create(WindObject* _out, const std::string& _appName, c
 
 	_out->Init();
 
+	SetRecentCreateWindowObject(_out);
+
 	_out->hWnd = CreateWindowExA(
 		exStyle,
 		_windClassName.c_str(),
@@ -258,9 +259,9 @@ ChStd::Bool WindCreater::Create(WindObject* _out, const std::string& _appName, c
 
 	if (ChPtr::NullCheck(_out->hWnd))return false;
 
-	_out->CreateEnd(_nShowCmd);
-
 	SetWindowLongPtrA(_out->hWnd, GWLP_USERDATA, reinterpret_cast<long>(_out));
+
+	_out->CreateEnd(_nShowCmd);
 
 	_out->parent = parent;
 
@@ -273,6 +274,8 @@ ChStd::Bool WindCreater::Create(WindObject* _out, const std::wstring& _appName, 
 	if (ChPtr::NullCheck(_out))return false;
 
 	_out->Init();
+
+	SetRecentCreateWindowObject(_out);
 
 	_out->hWnd = CreateWindowExW(
 		exStyle,
@@ -288,9 +291,9 @@ ChStd::Bool WindCreater::Create(WindObject* _out, const std::wstring& _appName, 
 
 	if (ChPtr::NullCheck(_out->hWnd))return false;
 
-	_out->CreateEnd(_nShowCmd);
-
 	SetWindowLongPtrW(_out->hWnd, GWLP_USERDATA, reinterpret_cast<long>(_out));
+
+	_out->CreateEnd(_nShowCmd);
 
 	_out->parent = parent;
 
