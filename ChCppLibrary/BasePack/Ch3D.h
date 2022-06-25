@@ -8,29 +8,53 @@
 
 namespace Ch3D
 {
-
-	struct Vertex
+	struct Position
 	{
 		ChVec3 pos;
+	};
+
+	struct UV
+	{
 		ChVec2 uv;
+	};
+
+	struct Color
+	{
 		ChVec4 color = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
 	};
 
-	struct PolyVertex : public Vertex
+	struct Normal
 	{
-		ChVec3 normal = ChVec3(0.0f, 0.0f, 1.0f);
+		ChVec3 normal;
 	};
 
-	struct MeshVertex : public PolyVertex
+	struct FaceNormal
 	{
-		ChVec3 faceNormal = ChVec3(0.0f, 0.0f, 1.0f);
+		ChVec3 faceNormal;
 	};
 
-	struct SkinMeshData
+	template<unsigned long Num>
+	struct Bone
 	{
-		ChVec4 brendPows[16] = { 0.0f,0.0f,0.0f ,0.0f ,0.0f ,0.0f ,0.0f ,0.0f ,0.0f ,0.0f ,0.0f ,0.0f ,0.0f ,0.0f ,0.0f ,0.0f };
-		unsigned long blendNum = 0;
+		float brendPows[Num];
+		unsigned long boneNo[Num];
 	};
+
+	struct Vertex:
+		public Position,
+		public UV,
+		public Color
+	{};
+
+	struct PolyVertex :
+		public Vertex,
+		public Normal
+	{};
+
+	struct MeshVertex :
+		public PolyVertex,
+		public FaceNormal
+	{};
 
 	//‘ÎÛ‚Ì’¸“_‚ğŠÇ—‚·‚é//
 	struct Polygon
@@ -45,18 +69,23 @@ namespace Ch3D
 		ChVec4 ambient = 0.3f;
 	};
 
+	enum class TextureType
+	{
+		Diffuse,
+		Ambient,
+		Specular,
+		SpecularHighLight,
+		Bump,
+		Alpha,
+		Normal,
+		Metallic
+	};
+
 	struct MaterialStatus
 	{
 		Material mate;
 
-		std::string diffuseMap = "";
-		std::string ambientMap = "";
-		std::string specularMap = "";
-		std::string specularHighLightMap = "";
-		std::string bumpMap = "";
-		std::string alphaMap = "";
-		std::string normalMap = "";
-		std::string metallicMap = "";
+		std::map<TextureType, std::string>texture;
 	};
 
 	//Material‚É‘Î‰‚·‚é–Ê‚ğŠÇ—‚·‚é//
