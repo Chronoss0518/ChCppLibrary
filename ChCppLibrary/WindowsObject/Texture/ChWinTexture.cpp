@@ -446,6 +446,8 @@ void Texture::DrawMain(HDC _textureHDC, HDC _drawTarget, const ChINTPOINT& _pos,
 
 	BitBlt(_drawTarget, pos.x, pos.y, size.w, size.h, _textureHDC, bpos.x, bpos.y, ChStd::EnumCast(opeCode));
 
+	GdiFlush();
+
 }
 
 void Texture::DrawStretchMain(HDC _textureHDC, HDC _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const ChINTPOINT& _baseSize)
@@ -464,6 +466,7 @@ void Texture::DrawStretchMain(HDC _textureHDC, HDC _drawTarget, const ChINTPOINT
 
 	SetStretchBltMode(_drawTarget, tmpStretch);
 
+	GdiFlush();
 }
 
 void Texture::DrawTransparentMain(HDC _textureHDC, HDC _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const ChINTPOINT& _baseSize, const UINT _transparent)
@@ -480,6 +483,7 @@ void Texture::DrawTransparentMain(HDC _textureHDC, HDC _drawTarget, const ChINTP
 
 	TransparentBlt(_drawTarget, pos.x, pos.y, size.w, size.h, _textureHDC, bpos.x, bpos.y, bsize.w, bsize.h, _transparent);
 
+	GdiFlush();
 }
 
 void Texture::DrawMaskMain(HDC _textureHDC, HDC _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const UINT _transparent)
@@ -529,6 +533,7 @@ void Texture::DrawMaskMain(HDC _textureHDC, HDC _drawTarget, const ChINTPOINT& _
 
 	DeleteObject(SelectObject(_drawTarget, tmp));
 
+	GdiFlush();
 }
 
 void Texture::DrawPlgMain(HDC _textureHDC, HDC _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const ChINTPOINT& _baseSize, const UINT _transparent, const unsigned long _rot)
@@ -610,6 +615,7 @@ void Texture::DrawPlgMain(HDC _textureHDC, HDC _drawTarget, const ChINTPOINT& _p
 
 	SetStretchBltMode(_drawTarget, tmpStretch);
 
+	GdiFlush();
 }
 
 //RenderTarget Method//
