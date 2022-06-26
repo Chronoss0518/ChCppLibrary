@@ -302,11 +302,8 @@ namespace ChD3D11
 		IndexBuffer11 indexBuffer;
 		VertexBuffer11<vertex> vertexBuffer;
 
-		typename std::enable_if<std::is_base_of<Ch3D::Vertex, vertex>::value, vertex*>::type vertexArray = nullptr;
-		unsigned long* indexArray = nullptr;
-
-		unsigned long vertexNum = 0;
-		unsigned long indexNum = 0;
+		typename std::enable_if<std::is_base_of<Ch3D::Vertex, vertex>::value, std::vector<vertex>>::type vertexArray;
+		std::vector<unsigned long> indexArray;
 
 		ChPtr::Shared<Material11> mate = nullptr;
 
