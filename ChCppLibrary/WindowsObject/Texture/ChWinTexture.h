@@ -145,8 +145,6 @@ namespace ChWin
 
 		std::vector<RGBData> GetTextureByteA();
 
-#if DEVELOP
-
 		inline BITMAP GetTextureData()
 		{
 			return
@@ -156,7 +154,6 @@ namespace ChWin
 				GetTextureDataA();
 #endif
 		}
-#endif
 
 		BITMAP GetTextureDataW();
 
