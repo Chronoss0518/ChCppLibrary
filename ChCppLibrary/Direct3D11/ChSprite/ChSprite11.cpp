@@ -23,9 +23,9 @@ void Sprite11::Init(ID3D11Device* _device)
 	SetInitPosition();
 	SetInitUV();
 
-	vertexBuffer.CreateBuffer(_device, vertexs,4);
+	vertexBuffer.CreateBuffer(_device, vertexs, vertexSize);
 
-	indexBuffer.CreateBuffer(_device, indexs, 6);
+	indexBuffer.CreateBuffer(_device, indexs, indexSize);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
