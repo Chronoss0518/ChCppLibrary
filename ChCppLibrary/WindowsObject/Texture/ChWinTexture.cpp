@@ -1,6 +1,10 @@
+
+#define DEVELOP 1
+
 #include<Windows.h>
 #include<wingdi.h>
 #include"../../BaseIncluder/ChBase.h"
+#include"../../CPP/ChMultiThread/ChMultiThread.h"
 
 #include"../PackData/ChPoint.h"
 #include"../PackData/ChRect.h"
@@ -8,7 +12,6 @@
 #include"ChWinTexture.h"
 
 using namespace ChWin;
-
 
 //Texture Method//
 
@@ -117,30 +120,114 @@ void Texture::SetStretchToHDC(HDC _target)
 
 ChINTPOINT Texture::GetTextureSizeW()
 {
-	if (ChPtr::NullCheck(mainTexture))return ChINTPOINT();
-
-	BITMAP tmp;
-	GetObjectW(
-		mainTexture,
-		sizeof(BITMAP),
-		&tmp
-	);
+	BITMAP tmp = GetTextureDataW();
 
 	return ChINTPOINT(tmp.bmWidth, tmp.bmHeight);
 }
 
 ChINTPOINT Texture::GetTextureSizeA()
 {
-	if (ChPtr::NullCheck(mainTexture))return ChINTPOINT();
-
-	BITMAP tmp;
-	GetObjectA(
-		mainTexture,
-		sizeof(BITMAP),
-		&tmp
-	);
+	BITMAP tmp = GetTextureDataA();
 
 	return ChINTPOINT(tmp.bmWidth, tmp.bmHeight);
+}
+
+#if DEVELOP
+
+std::vector<RGBData> Texture::GetTextureByteW()
+{
+	std::vector<RGBData> out;
+
+
+	return out;
+}
+
+std::vector<RGBData> Texture::GetTextureByteA()
+{
+	std::vector<RGBData> out;
+
+	ChINTPOINT tmp = GetTextureSizeW();
+
+	std::vector<ChPtr::Shared<ChCpp::ChMultiThread>>multipleFunction;
+	for (unsigned long h = 0; h < tmp.h; h++)
+	{
+		auto thread = ChPtr::Make_S<ChCpp::ChMultiThread>();
+		thread->Init([&] {
+
+			for (unsigned long w = 0; w < tmp.w; w++)
+			{
+				auto dc = CreateCompatibleDC(nullptr);
+
+				SetTextureToHDC(dc);
+
+				out.push_back(GetPixel(dc, w, h));
+			}
+		});
+
+		multipleFunction.push_back(thread);
+
+	}
+
+	for (auto&& mFunc : multipleFunction)
+	{
+		mFunc->Join();
+	}
+
+	return out;
+}
+
+#endif
+
+BITMAP Texture::GetTextureDataW()
+{
+	BITMAP out;
+
+	ChStd::MZero(&out);
+
+	if (ChPtr::NullCheck(mainTexture))return out;
+
+	if (!GetObjectW(
+		mainTexture,
+		sizeof(BITMAP),
+		&out
+	))
+	{
+		DIBSECTION tmp;
+		GetObjectW(
+			mainTexture,
+			sizeof(DIBSECTION),
+			&tmp);
+
+		out = tmp.dsBm;
+	}
+
+	return out;
+}
+
+BITMAP Texture::GetTextureDataA()
+{
+	BITMAP out;
+
+	ChStd::MZero(&out);
+
+	if (ChPtr::NullCheck(mainTexture))return out;
+
+	if (!GetObjectA(
+		mainTexture,
+		sizeof(BITMAP),
+		&out
+	))
+	{
+		DIBSECTION tmp;
+		GetObjectA(
+			mainTexture,
+			sizeof(DIBSECTION),
+			&tmp);
+
+		out = tmp.dsBm;
+	}
+
+	return out;
 }
 
 void Texture::Draw(HDC _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos)
@@ -507,6 +594,7 @@ void Texture::DrawMaskMain(HDC _textureHDC, HDC _drawTarget, const ChINTPOINT& _
 
 			opeCode = oCode;
 
+			//auto test = maskRT.GetTextureByte();
 		}
 
 		SetBkColor(_textureHDC, oldBkColor);

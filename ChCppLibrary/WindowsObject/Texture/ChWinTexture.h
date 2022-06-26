@@ -8,6 +8,34 @@ namespace ChWin
 	class Brush;
 	class WindDrawer;
 
+	struct RGBData
+	{
+		inline RGBData()
+		{
+			num = 0;
+		}
+
+		inline RGBData(const COLORREF& _col)
+		{
+			num = _col;
+		}
+
+		inline RGBData(const RGBData& _col)
+		{
+			num = _col.num;
+		}
+
+		union 
+		{
+
+			COLORREF num = 0;
+			struct
+			{
+				unsigned char a, r, g, b;
+			};
+		};
+	};
+
 	enum class Stretch :int
 	{
 		BlackOnWhite = BLACKONWHITE,
@@ -103,6 +131,37 @@ namespace ChWin
 
 		ChINTPOINT GetTextureSizeA();
 
+		inline std::vector<RGBData> GetTextureByte()
+		{
+			return
+#ifdef UNICODE
+				GetTextureByteW();
+#else
+				GetTextureByteA();
+#endif
+		}
+
+		std::vector<RGBData> GetTextureByteW();
+
+		std::vector<RGBData> GetTextureByteA();
+
+#if DEVELOP
+
+		inline BITMAP GetTextureData()
+		{
+			return
+#ifdef UNICODE
+				GetTextureDataW();
+#else
+				GetTextureDataA();
+#endif
+		}
+#endif
+
+		BITMAP GetTextureDataW();
+
+		BITMAP GetTextureDataA();
+
 	public://Other Functions//
 
 		void Draw(HDC _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos = ChINTPOINT(0, 0));
@@ -184,6 +243,7 @@ namespace ChWin
 		Stretch stretchType = Stretch::ColorOnColor;
 		RasterOpeCode opeCode = RasterOpeCode::SRCCopy;
 		HBITMAP mainTexture = nullptr;
+
 	};
 
 	class RenderTarget :protected Texture
@@ -226,10 +286,23 @@ namespace ChWin
 
 		inline HBITMAP GetTexture() { return Texture::GetTexture(); }
 
-		inline ChINTPOINT GetTextureSize()
-		{
-			return Texture::GetTextureSize();
-		}
+		inline ChINTPOINT GetTextureSize() { return Texture::GetTextureSize(); }
+
+		inline ChINTPOINT GetTextureSizeW() { return Texture::GetTextureSizeW(); }
+
+		inline ChINTPOINT GetTextureSizeA() { return Texture::GetTextureSizeA(); }
+
+		inline std::vector<RGBData> GetTextureByte() { return Texture::GetTextureByte(); }
+
+		std::vector<RGBData> GetTextureByteW() { return Texture::GetTextureByteW(); }
+
+		std::vector<RGBData> GetTextureByteA() { return Texture::GetTextureByteA(); }
+
+		inline BITMAP GetTextureData() { return Texture::GetTextureData(); };
+
+		BITMAP GetTextureDataW() { return Texture::GetTextureDataW(); }
+
+		BITMAP GetTextureDataA() { return Texture::GetTextureDataA(); }
 
 	public://Is Function//
 
@@ -359,6 +432,24 @@ namespace ChWin
 		inline HDC GetRenderTarget() { return RenderTarget::GetRenderTarget(); }
 
 		inline HBITMAP GetTexture() { return RenderTarget::GetTexture(); }
+
+		inline ChINTPOINT GetTextureSize() { return Texture::GetTextureSize(); }
+
+		inline ChINTPOINT GetTextureSizeW() { return Texture::GetTextureSizeW(); }
+
+		inline ChINTPOINT GetTextureSizeA() { return Texture::GetTextureSizeA(); }
+
+		inline std::vector<RGBData> GetTextureByte() { return Texture::GetTextureByte(); }
+
+		std::vector<RGBData> GetTextureByteW() { return Texture::GetTextureByteW(); }
+
+		std::vector<RGBData> GetTextureByteA() { return Texture::GetTextureByteA(); }
+
+		inline BITMAP GetTextureData() { return Texture::GetTextureData(); };
+
+		BITMAP GetTextureDataW() { return Texture::GetTextureDataW(); }
+
+		BITMAP GetTextureDataA() { return Texture::GetTextureDataA(); }
 
 	public://Is Function//
 
