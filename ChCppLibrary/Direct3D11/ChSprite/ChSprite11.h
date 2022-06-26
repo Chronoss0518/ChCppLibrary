@@ -109,10 +109,10 @@ namespace ChD3D11
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		Vertex11 vertexs[4];
+		Ch3D::Vertex vertexs[4];
 		unsigned long indexs[6] = { 0,1,2,0,2,3 };
 
-		VertexBuffer11<Vertex11> vertexBuffer;
+		VertexBuffer11<Ch3D::Vertex> vertexBuffer;
 		IndexBuffer11 indexBuffer;
 
 	};

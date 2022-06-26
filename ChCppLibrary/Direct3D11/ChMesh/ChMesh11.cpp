@@ -227,7 +227,7 @@ namespace ChD3D11
 				tex->CreateTexture(mateList[i]->textureNames[0], GetDevice());
 				if (!tex->IsTex())tex = whiteTex;
 
-				prim->mate->diffuseMap = tex;
+				prim->mate->textures[Ch3D::TextureType::Diffuse] = tex;
 			}
 
 			if (mateList[i]->textureNames.size() > 1)
@@ -237,7 +237,7 @@ namespace ChD3D11
 				tex->CreateTexture(mateList[i]->textureNames[1], GetDevice());
 				if (!tex->IsTex())tex = normalTex;
 
-				prim->mate->normalMap = tex;
+				prim->mate->textures[Ch3D::TextureType::Normal] = tex;
 			}
 
 			_frames->primitiveDatas[mateList[i]->materialName] = prim;
@@ -314,14 +314,14 @@ namespace ChD3D11
 				materialBuffer.UpdateResouce(_dc, &prim.second->mate->material);
 
 				{
-					auto diffuseMap = prim.second->mate->diffuseMap;
+					auto diffuseMap = prim.second->mate->textures[Ch3D::TextureType::Diffuse];
 					if (diffuseMap == nullptr)diffuseMap = whiteTex;
 					if (!diffuseMap->IsTex())diffuseMap = whiteTex;
 					diffuseMap->SetDrawData(_dc, 0);
 				}
 
 				{
-					auto normalMap = prim.second->mate->normalMap;
+					auto normalMap = prim.second->mate->textures[Ch3D::TextureType::Normal];
 					if (normalMap == nullptr)normalMap = whiteTex;
 					if (!normalMap->IsTex())normalMap = whiteTex;
 					normalMap->SetDrawData(_dc, 1);

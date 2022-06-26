@@ -49,7 +49,7 @@ void PolygonBoard11::Release()
 
 /////////////////////////////////////////////////////////////////////////////////
 
-void PolygonBoard11::SetVertexList(const std::vector<ChPtr::Shared<MeshVertex11>>& _vertexList)
+void PolygonBoard11::SetVertexList(const std::vector<ChPtr::Shared<Ch3D::PolyVertex>>& _vertexList)
 {
 	if (!vertexs.empty())vertexs.clear();
 
@@ -89,7 +89,7 @@ void PolygonBoard11::SetInitSquare()
 	if (!vertexs.empty())vertexs.clear();
 
 	{
-		auto vertex = ChPtr::Make_S<MeshVertex11>();
+		auto vertex = ChPtr::Make_S<Ch3D::PolyVertex>();
 
 		vertex->pos = ChVec3(-0.5f, 0.5f, 0.0f);
 		vertex->uv = ChVec2(0.0f, 0.0f);
@@ -99,7 +99,7 @@ void PolygonBoard11::SetInitSquare()
 	}
 
 	{
-		auto vertex = ChPtr::Make_S<MeshVertex11>();
+		auto vertex = ChPtr::Make_S<Ch3D::PolyVertex>();
 
 		vertex->pos = ChVec3(0.5f, 0.5f, 0.0f);
 		vertex->uv = ChVec2(1.0f, 0.0f);
@@ -109,7 +109,7 @@ void PolygonBoard11::SetInitSquare()
 	}
 
 	{
-		auto vertex = ChPtr::Make_S<MeshVertex11>();
+		auto vertex = ChPtr::Make_S<Ch3D::PolyVertex>();
 
 		vertex->pos = ChVec3(0.5f, -0.5f, 0.0f);
 		vertex->uv = ChVec2(1.0f, 1.0f);
@@ -119,7 +119,7 @@ void PolygonBoard11::SetInitSquare()
 	}
 
 	{
-		auto vertex = ChPtr::Make_S<MeshVertex11>();
+		auto vertex = ChPtr::Make_S<Ch3D::PolyVertex>();
 
 		
 		vertex->pos = ChVec3(-0.5f, -0.5f, 0.0f);
@@ -166,10 +166,10 @@ void PolygonBoard11::SetDrawData(ID3D11DeviceContext* _dc)
 
 /////////////////////////////////////////////////////////////////////////////////
 
-void PolygonBoard11::AddVertex(const MeshVertex11& _vertexs)
+void PolygonBoard11::AddVertex(const Ch3D::PolyVertex& _vertexs)
 {
 	return;
-	auto vertex = ChPtr::Make_S<MeshVertex11>();
+	auto vertex = ChPtr::Make_S<Ch3D::PolyVertex>();
 	vertex->pos = _vertexs.pos;
 	vertex->uv = _vertexs.uv;
 	vertex->color = _vertexs.color;

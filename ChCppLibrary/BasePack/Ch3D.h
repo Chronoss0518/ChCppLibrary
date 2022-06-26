@@ -25,12 +25,12 @@ namespace Ch3D
 
 	struct Normal
 	{
-		ChVec3 normal;
+		ChVec3 normal = ChVec3(0.0f,1.0f,0.0f);
 	};
 
 	struct FaceNormal
 	{
-		ChVec3 faceNormal;
+		ChVec3 faceNormal = ChVec3(0.0f, 1.0f, 0.0f);
 	};
 
 	template<unsigned long Num>
@@ -39,6 +39,11 @@ namespace Ch3D
 		float brendPows[Num];
 		unsigned long boneNo[Num];
 	};
+
+	struct HaveVertex:
+		public Position,
+		public Color
+	{};
 
 	struct Vertex:
 		public Position,
@@ -81,22 +86,39 @@ namespace Ch3D
 		Metallic
 	};
 
-	struct MaterialStatus
+	struct Transform
 	{
-		Material mate;
+		ChVec3 pos;
+		ChVec3 rot;
+		ChVec3 scl;
 
-		std::map<TextureType, std::string>texture;
+		inline ChLMat GetLeftHandMatrix()
+		{
+			ChLMat out;
+			out.SetPosition(pos);
+			out.SetRotation(rot);
+			out.SetScalling(scl);
+			return out;
+		}
+
+		inline ChRMat GetRightHandMatrix()
+		{
+			ChRMat out;
+			out.SetPosition(pos);
+			out.SetRotation(rot);
+			out.SetScalling(scl);
+			return out;
+		}
 	};
 
 	//MaterialÇ…ëŒâûÇ∑ÇÈñ Çä«óùÇ∑ÇÈ//
 	template<class vertex = Vertex>
 	class Primitive
 	{
-
 		std::vector<ChPtr::Shared<Polygon>> polygons = nullptr;
 		Vertex* vertexList = nullptr;
 
-		MaterialStatus mate;
+		Material mate;
 	};
 
 	template<class vertex = Vertex,class primitive = Primitive<vertex>>
@@ -106,6 +128,7 @@ namespace Ch3D
 
 		std::vector<ChPtr::Shared<primitive>> primitives = nullptr;
 		std::map<std::string, unsigned long>mateNames;
+		Transform transform;
 
 		std::vector<ChPtr::Shared<Frame<Vertex>>> parent;
 

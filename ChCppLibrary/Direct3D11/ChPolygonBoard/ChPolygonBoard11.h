@@ -24,7 +24,7 @@ namespace ChD3D11
 			///////////////////////////////////////////////////////////////////////////////////
 			//SetFunction//
 
-			void SetVertexList(const std::vector<ChPtr::Shared<MeshVertex11>>& _vertexList);
+			void SetVertexList(const std::vector<ChPtr::Shared<Ch3D::PolyVertex>>& _vertexList);
 
 			void SetPos(const unsigned char _posNo, const ChVec3& _posData);
 
@@ -63,20 +63,20 @@ namespace ChD3D11
 
 			inline void AddVertex()
 			{
-				MeshVertex11 vertex;
+				Ch3D::PolyVertex vertex;
 				AddVertex(vertex);
 			}
 
-			void AddVertex(const MeshVertex11& _vertexs);
+			void AddVertex(const Ch3D::PolyVertex& _vertexs);
 
 			///////////////////////////////////////////////////////////////////////////////////
 
 		protected:
 			
-			std::vector<ChPtr::Shared<MeshVertex11>> vertexs;
+			std::vector<ChPtr::Shared<Ch3D::PolyVertex>> vertexs;
 
-			MeshVertex11 drawVertexs[3];
-			VertexBuffer11<MeshVertex11> vertexBuffer;
+			Ch3D::PolyVertex drawVertexs[3];
+			VertexBuffer11<Ch3D::PolyVertex> vertexBuffer;
 			IndexBuffer11 indexBuffer;
 			ShaderUseMaterial11 material;
 			ConstantBuffer11<ShaderUseMaterial11> materialBuffer;
