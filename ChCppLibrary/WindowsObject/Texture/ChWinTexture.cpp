@@ -144,6 +144,37 @@ std::vector<RGBData> Texture::GetTextureByteA()
 {
 	std::vector<RGBData> out;
 
+#if 0
+
+	ChINTPOINT tmp = GetTextureSizeW();
+
+
+	std::vector<ChPtr::Shared<ChCpp::ChMultiThread>>multipleFunction;
+	for (unsigned long h = 0; h < tmp.h; h++)
+	{
+		auto thread = ChPtr::Make_S<ChCpp::ChMultiThread>();
+		thread->Init([&] {
+
+			for (unsigned long w = 0; w < tmp.w; w++)
+			{
+				auto dc = CreateCompatibleDC(nullptr);
+
+				SetTextureToHDC(dc);
+
+				out.push_back(GetPixel(dc, w, h));
+			}
+			});
+
+		multipleFunction.push_back(thread);
+
+	}
+
+	for (auto&& mFunc : multipleFunction)
+	{
+		mFunc->Join();
+	}
+
+#endif
 
 	return out;
 }
