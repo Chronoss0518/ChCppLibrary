@@ -25,10 +25,8 @@ void ChMultiThread::Init(const std::function<void(void)> _func)
 
 	endFlg = false;
 
-	std::thread Tmp([this] {Function(); });
-
-	thread.swap(Tmp);
-
+	thread = std::thread([this] {Function(); });
+	
 }
 
 void ChMultiThread::Join()
