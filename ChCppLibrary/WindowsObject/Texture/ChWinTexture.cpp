@@ -134,47 +134,152 @@ ChINTPOINT Texture::GetTextureSizeA()
 
 std::vector<RGBData> Texture::GetTextureByteW()
 {
-	std::vector<RGBData> out;
+	BITMAP tmp = GetTextureDataW();
 
-
-	return out;
+	return tmp.bmBitsPixel >= 8 ? GetByteColor(tmp) : GetMonoColor(tmp);
 }
 
 std::vector<RGBData> Texture::GetTextureByteA()
 {
+	BITMAP tmp = GetTextureDataA();
+
+	return tmp.bmBitsPixel > 8 ? GetByteColor(tmp): GetMonoColor(tmp);
+}
+
+std::vector<RGBData> Texture::GetMonoColor(BITMAP& _ddb)
+{
+
 	std::vector<RGBData> out;
 
 #if 0
 
-	ChINTPOINT tmp = GetTextureSizeW();
+	if (_ddb.bmWidth <= 0 ||
+		_ddb.bmHeight <= 0 || 
+		_ddb.bmBitsPixel <= 0)return out;
 
+	if (_ddb.bmBitsPixel != 1)return out;
 
-	std::vector<ChPtr::Shared<ChCpp::ChMultiThread>>multipleFunction;
-	for (unsigned long h = 0; h < tmp.h; h++)
+	BITMAPINFO info;
+
+	ChStd::MZero(&info);
+
+	info.bmiHeader.biSize = sizeof(BITMAPINFO);
+	info.bmiHeader.biWidth = _ddb.bmWidth;
+	info.bmiHeader.biHeight = _ddb.bmHeight;
+	info.bmiHeader.biPlanes = 1;
+	info.bmiHeader.biBitCount = _ddb.bmBitsPixel;
+	info.bmiHeader.biCompression = BI_RGB;
+
+	const unsigned long createByteNum = (((_ddb.bmWidth * _ddb.bmHeight) / 8) + 1) * 4;
+
+	unsigned char* byte = new unsigned char[createByteNum];
+
+	auto dc = CreateCompatibleDC(nullptr);
+
+	SetTextureToHDC(dc);
+
+	if (GetDIBits(dc, mainTexture, 0, _ddb.bmHeight, byte, &info, DIB_RGB_COLORS) != 0)
 	{
-		auto thread = ChPtr::Make_S<ChCpp::ChMultiThread>();
-		thread->Init([&] {
+		ChCpp::BitBool flgs;
+		unsigned char moveCount = 0;
+		unsigned long byteCount = 0;
 
-			for (unsigned long w = 0; w < tmp.w; w++)
+		flgs.SetValue(byte[byteCount]);
+
+		while (out.size() < _ddb.bmWidth * _ddb.bmHeight)
+		{
+
+			RGBData col;
+			for (unsigned char i = 0; i < 3; i++)
 			{
-				auto dc = CreateCompatibleDC(nullptr);
-
-				SetTextureToHDC(dc);
-
-				out.push_back(GetPixel(dc, w, h));
+				col.byte[3 - i] = flgs.GetBitFlg(moveCount) ? 1 : 0;
+				col.byte[3 - i] *= 255;
 			}
-			});
 
-		multipleFunction.push_back(thread);
+			if (col.r == 255)
+			{
+				int t = 0;
+				t = 1;
+			}
+
+			out.push_back(col);
+
+			moveCount++;
+			if (moveCount < 8)continue;
+			if (byteCount > createByteNum)
+			{
+				int t = 0;
+				t = 1;
+				break;
+			}
+			if (byteCount > 10000)
+			{
+				int t = 0;
+				t = 1;
+				break;
+			}
+			moveCount = 0;
+			flgs.SetValue(byte[byteCount]);
+			byteCount++;
+		}
 
 	}
 
-	for (auto&& mFunc : multipleFunction)
-	{
-		mFunc->Join();
-	}
+	delete[] byte;
 
 #endif
+
+	return out;
+}
+
+std::vector<RGBData> Texture::GetByteColor(BITMAP& _ddb)
+{
+
+	std::vector<RGBData> out;
+
+	if (_ddb.bmWidth <= 0 ||
+		_ddb.bmHeight <= 0 ||
+		_ddb.bmBitsPixel <= 0)return out;
+
+	BITMAPINFO info;
+
+	ChStd::MZero(&info);
+
+	info.bmiHeader.biSize = sizeof(BITMAPINFO);
+	info.bmiHeader.biWidth = _ddb.bmWidth;
+	info.bmiHeader.biHeight = _ddb.bmHeight;
+	info.bmiHeader.biPlanes = 1;
+	info.bmiHeader.biBitCount = _ddb.bmBitsPixel;
+	info.bmiHeader.biCompression = BI_RGB;
+
+
+	const unsigned char colorTypeCount = (_ddb.bmBitsPixel / 8);
+
+	unsigned long* byte = new unsigned long[_ddb.bmWidth * _ddb.bmHeight];
+
+	auto dc = CreateCompatibleDC(nullptr);
+
+	SetTextureToHDC(dc);
+
+	if (GetDIBits(dc, mainTexture, 0, _ddb.bmHeight, byte, &info, DIB_RGB_COLORS) != 0)
+	{
+		unsigned long count = 0;
+
+		for (unsigned long h = 0; h < _ddb.bmHeight; h++)
+		{
+			for (unsigned long w = 0; w < _ddb.bmWidth; w++)
+			{
+				RGBData col;
+
+				col.num = byte[w + (h * _ddb.bmWidth)];
+
+				out.push_back(col);
+			}
+			count += 1;
+		}
+	}
+
+	delete[] byte;
 
 	return out;
 }
@@ -595,7 +700,7 @@ void Texture::DrawMaskMain(HDC _textureHDC, HDC _drawTarget, const ChINTPOINT& _
 
 			opeCode = oCode;
 
-			//auto test = maskRT.GetTextureByte();
+			auto test = maskRT.GetTextureByte();
 		}
 
 		SetBkColor(_textureHDC, oldBkColor);
