@@ -6,6 +6,8 @@
 #include"../../CPP/ChBitBool/ChBitBool.h"
 
 #include"../ChBaseSystem/ChBaseSystem.h"
+
+#include"../../WindowsObject/PackData/ChPoint.h"
 #include"ChWindows.h"
 #include"../../WindowsObject/Mouse/ChWinMouse.h"
 
@@ -384,4 +386,75 @@ void Windows::SetKeyCode()
 	}
 
 	isKeyUpdate = true;
+}
+
+std::string ChWin::ToRelativePath(const std::string& _path)
+{
+
+	if (_path.find(":\\") == _path.npos && _path.find(":/") == _path.npos)return _path;
+
+	std::string tmp;
+	std::string out = _path;
+
+	{
+
+		char* tmp2 = nullptr;
+		tmp2 = new char[256];
+
+		GetCurrentDirectory(256, tmp2);
+		tmp = tmp2;
+
+		delete[] tmp2;
+
+	}
+
+	std::string SetCutChar = "/";
+	{
+
+		std::string OutCutChar = "\\";
+
+		while (1)
+		{
+			size_t tmpLen = tmp.find(OutCutChar, 0);
+			if (tmpLen == tmp.npos)break;
+			tmp.replace(tmpLen, OutCutChar.size(), SetCutChar);
+
+		}
+		while (1)
+		{
+			size_t tmpLen = _path.find(OutCutChar, 0);
+			if (tmpLen == _path.npos)break;
+			out.replace(tmpLen, OutCutChar.size(), SetCutChar);
+
+		}
+
+		std::string tmpBackChar = "";
+
+
+		while (1)
+		{
+			size_t tmpLen = out.find(tmp);
+
+			if (tmpLen != out.npos)break;
+
+			tmpLen = tmp.rfind(SetCutChar, tmp.length());
+
+			tmp.replace(tmpLen, tmp.length() - tmpLen, "");
+
+			tmpBackChar += "../";
+
+		}
+
+
+
+		out.replace(0, tmp.length() + 1, "");
+
+		out = tmpBackChar + out;
+
+
+
+	}
+
+	return out;
+
 }

@@ -1,5 +1,8 @@
 #include<Windows.h>
 #include"../../BaseIncluder/ChBase.h"
+
+
+#include"../PackData/ChPoint.h"
 #include"ChWinTextBox.h"
 
 using namespace ChWin;
@@ -11,8 +14,8 @@ using namespace ChWin;
 void TextBox::CreateA(
 	HINSTANCE _hIns,
 	const std::string& _startText,
-	const ChMath::Vector2Base<int>& _pos,
-	const ChMath::Vector2Base<int>& _size,
+	const ChINTPOINT& _pos,
+	const ChINTPOINT& _size,
 	const HWND _parentHandl)
 {
 	Release();
@@ -33,7 +36,8 @@ void TextBox::CreateA(
 		WS_VSCROLL |
 		ES_LEFT |
 		ES_MULTILINE |
-		ES_AUTOVSCROLL);
+		ES_AUTOVSCROLL |
+		WS_GROUP);
 
 	creater.SetInitPosition(pos.x, pos.y);
 	creater.SetInitSize(size.w, size.h);
@@ -43,8 +47,9 @@ void TextBox::CreateA(
 
 	if (!IsInit())return;
 
-	SetWindProcedure(EN_KILLFOCUS, [&](HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam)->LRESULT {selectFlg = false; return DefWindowProcA(_hWnd, _msg, _wParam, _lParam); });
-	SetWindProcedure(EN_SETFOCUS, [&](HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam)->LRESULT {selectFlg = true; return DefWindowProcA(_hWnd, _msg, _wParam, _lParam); });
+	SetChildWindProcedure(EN_KILLFOCUS, [&](HWND _hWnd, UINT _msg) {selectFlg = false; });
+	SetChildWindProcedure(EN_SETFOCUS, [&](HWND _hWnd, UINT _msg) {selectFlg = true; });
+	SetChildWindProcedure(EN_CHANGE, [&](HWND _hWnd, UINT _msg) {isChangeFlg = true; });
 
 
 }
@@ -58,17 +63,17 @@ void TextBox::CreateA(
 	const int _h,
 	const HWND _parentHandl)
 {
-	CreateA(_hIns, _startText, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), _parentHandl);
+	CreateA(_hIns, _startText, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), _parentHandl);
 }
 
 //TextBox�̍쐬//
 void TextBox::CreateA(
 	const std::string& _startText,
-	const ChMath::Vector2Base<int>& _pos,
-	const ChMath::Vector2Base<int>& _size,
+	const ChINTPOINT& _pos,
+	const ChINTPOINT& _size,
 	const WindObject& _parentWind)
 {
-	if (!static_cast<bool>(_parentWind))return;
+	if (!_parentWind.IsInit())return;
 
 	Release();
 
@@ -88,7 +93,8 @@ void TextBox::CreateA(
 		WS_VSCROLL | 
 		ES_LEFT |
 		ES_MULTILINE | 
-		ES_AUTOVSCROLL);
+		ES_AUTOVSCROLL |
+		WS_GROUP);
 
 	creater.SetInitPosition(pos.x, pos.y);
 	creater.SetInitSize(size.w, size.h);
@@ -98,8 +104,9 @@ void TextBox::CreateA(
 
 	if (!IsInit())return;
 
-	SetWindProcedure(EN_KILLFOCUS, [&](HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam)->LRESULT {selectFlg = false; return DefWindowProcA(_hWnd, _msg, _wParam, _lParam); });
-	SetWindProcedure(EN_SETFOCUS, [&](HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam)->LRESULT {selectFlg = true; return DefWindowProcA(_hWnd, _msg, _wParam, _lParam); });
+	SetChildWindProcedure(EN_KILLFOCUS, [&](HWND _hWnd, UINT _msg) {selectFlg = false; });
+	SetChildWindProcedure(EN_SETFOCUS, [&](HWND _hWnd, UINT _msg) {selectFlg = true; });
+	SetChildWindProcedure(EN_CHANGE, [&](HWND _hWnd, UINT _msg) {isChangeFlg = true; });
 
 }
 
@@ -112,14 +119,14 @@ void TextBox::CreateA(
 	const int _h,
 	const WindObject& _parentWind)
 {
-	CreateA(_startText, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), _parentWind);
+	CreateA(_startText, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), _parentWind);
 }
 
 void TextBox::CreateW(
 	HINSTANCE _hIns,
 	const std::wstring& _startText,
-	const ChMath::Vector2Base<int>& _pos,
-	const ChMath::Vector2Base<int>& _size,
+	const ChINTPOINT& _pos,
+	const ChINTPOINT& _size,
 	const HWND _parentHandl)
 {
 	Release();
@@ -140,7 +147,8 @@ void TextBox::CreateW(
 		WS_VSCROLL |
 		ES_LEFT |
 		ES_MULTILINE |
-		ES_AUTOVSCROLL);
+		ES_AUTOVSCROLL |
+		WS_GROUP);
 
 	creater.SetInitPosition(pos.x, pos.y);
 	creater.SetInitSize(size.w, size.h);
@@ -150,8 +158,9 @@ void TextBox::CreateW(
 
 	if (!IsInit())return;
 
-	SetWindProcedure(EN_KILLFOCUS, [&](HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam)->LRESULT {selectFlg = false; return DefWindowProcW(_hWnd, _msg, _wParam, _lParam); });
-	SetWindProcedure(EN_SETFOCUS, [&](HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam)->LRESULT {selectFlg = true; return DefWindowProcW(_hWnd, _msg, _wParam, _lParam); });
+	SetChildWindProcedure(EN_KILLFOCUS, [&](HWND _hWnd, UINT _msg) {selectFlg = false; });
+	SetChildWindProcedure(EN_SETFOCUS, [&](HWND _hWnd, UINT _msg) {selectFlg = true; });
+	SetChildWindProcedure(EN_CHANGE, [&](HWND _hWnd, UINT _msg) {isChangeFlg = true; });
 
 }
 
@@ -164,17 +173,17 @@ void TextBox::CreateW(
 	const int _h,
 	const HWND _parentHandl)
 {
-	CreateW(_hIns, _startText, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), _parentHandl);
+	CreateW(_hIns, _startText, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), _parentHandl);
 }
 
 //TextBox�̍쐬//
 void TextBox::CreateW(
 	const std::wstring& _startText,
-	const ChMath::Vector2Base<int>& _pos,
-	const ChMath::Vector2Base<int>& _size,
+	const ChINTPOINT& _pos,
+	const ChINTPOINT& _size,
 	const WindObject& _parentWind)
 {
-	if (!static_cast<bool>(_parentWind))return;
+	if (!_parentWind.IsInit())return;
 
 	Release();
 
@@ -194,7 +203,8 @@ void TextBox::CreateW(
 		WS_VSCROLL |
 		ES_LEFT |
 		ES_MULTILINE |
-		ES_AUTOVSCROLL);
+		ES_AUTOVSCROLL |
+		WS_GROUP);
 
 	creater.SetInitPosition(pos.x, pos.y);
 	creater.SetInitSize(size.w, size.h);
@@ -204,8 +214,9 @@ void TextBox::CreateW(
 
 	if (!IsInit())return;
 
-	SetWindProcedure(EN_KILLFOCUS, [&](HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam)->LRESULT {selectFlg = false; return DefWindowProcW(_hWnd, _msg, _wParam, _lParam); });
-	SetWindProcedure(EN_SETFOCUS, [&](HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam)->LRESULT {selectFlg = true; return DefWindowProcW(_hWnd, _msg, _wParam, _lParam); });
+	SetChildWindProcedure(EN_KILLFOCUS, [&](HWND _hWnd, UINT _msg) {selectFlg = false; });
+	SetChildWindProcedure(EN_SETFOCUS, [&](HWND _hWnd, UINT _msg) {selectFlg = true; });
+	SetChildWindProcedure(EN_CHANGE, [&](HWND _hWnd, UINT _msg) {isChangeFlg = true; });
 
 }
 
@@ -218,18 +229,20 @@ void TextBox::CreateW(
 	const int _h,
 	const WindObject& _parentWind)
 {
-	CreateW(_startText, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), _parentWind);
+	CreateW(_startText, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), _parentWind);
 }
 
 std::string TextBox::GetTextA()
 {
 	std::string Text = "";
 
-	if (selectFlg)return Text;
 	char tmp[1500] = "\0";
 
-	Text = reinterpret_cast<char*>(SendA(WM_GETTEXT, (WPARAM)1500, (LPARAM)tmp));
+	GetWindowTextA(GethWnd(), tmp, 1500);
 
+	Text = tmp;
+
+	isChangeFlg = false;
 	return Text;
 }
 
@@ -237,11 +250,15 @@ std::wstring TextBox::GetTextW()
 {
 	std::wstring Text = L"";
 
-	if (selectFlg)return Text;
-	char tmp[1500] = "\0";
+	wchar_t tmp[1500] = L"\0";
 
-	Text = reinterpret_cast<wchar_t*>(SendW(WM_GETTEXT, (WPARAM)1500, (LPARAM)tmp));
+	GetWindowTextW(GethWnd(), tmp, 1500);
 
+	Text = tmp;
+
+	//Text = reinterpret_cast<wchar_t*>(SendW(WM_GETTEXT, (WPARAM)1500, (LPARAM)tmp));
+
+	isChangeFlg = false;
 	return Text;
 }
 
@@ -275,4 +292,16 @@ void ChWin::TextBox::SetCharLimitW(const unsigned long _size)
 	if (selectFlg)return;
 	SendW(EM_SETLIMITTEXT, (WPARAM)_size, (LPARAM)NULL);
 	charLimit = _size;
+}
+
+void ChWin::TextBox::Select()
+{
+	Send(EN_SETFOCUS);
+	SetEnableFlg(true);
+}
+
+void ChWin::TextBox::UnSelect()
+{
+	Send(EN_KILLFOCUS);
+	SetEnableFlg(false);
 }

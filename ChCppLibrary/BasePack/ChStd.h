@@ -13,15 +13,30 @@ namespace ChStd
 	//ビット演算子も利用できるためこちらは残しておく//
 	using Bool = unsigned char;
 
+	//10進数//
+	const std::vector<char> DECIMAL_NUMBUR();
+
+	//16進数//
+	const std::vector<char> HEXA_DECIMAL();
+
+	//8進数//
+	const std::vector<char> OCTAL();
+
+	//2進数//
+	const std::vector<char> BINARY_NUMBER();
+
+	//64進数//
+	const std::vector<char> BASE_NUMBER_64();
+
 #ifdef _WIN32
 	
 	//Windowsで使用される相対パス・絶対パスの最大文字数//
-	static const unsigned short W_MAX_PATH_LEN = 258;
+	static constexpr unsigned short W_MAX_PATH_LEN = 258;
 
 #elif _WIN64
 
 	//Windowsで使用される相対パス・絶対パスの最大文字数//
-	static const unsigned short W_MAX_PATH_LEN = 258;
+	static constexpr unsigned short W_MAX_PATH_LEN = 258;
 
 #endif
 
@@ -29,15 +44,15 @@ namespace ChStd
 	//StanderdFunction
 	///////////////////////////////////////////////////////////////////////////////////////
 
-	const static unsigned char MAX_CHAR_BIT = 0x80;
-	const static unsigned short MAX_SHORT_BIT = 0x8000;
-	const static unsigned long MAX_LONG_BIT = 0x80000000;
-	const static unsigned long long MAX_LLONG_BIT = 0x8000000000000000;
+	constexpr static unsigned char MAX_CHAR_BIT = 0x80;
+	constexpr static unsigned short MAX_SHORT_BIT = 0x8000;
+	constexpr static unsigned long MAX_LONG_BIT = 0x80000000;
+	constexpr static unsigned long long MAX_LLONG_BIT = 0x8000000000000000;
 
 #ifdef _WIN64
-	const static unsigned int W_MAX_INT_BIT = MAX_LONG_BIT;
+	constexpr static unsigned int W_MAX_INT_BIT = MAX_LONG_BIT;
 #else
-	const static unsigned int W_MAX_INT_BIT = MAX_SHORT_BIT;
+	constexpr static unsigned int W_MAX_INT_BIT = MAX_SHORT_BIT;
 #endif
 
 	//EnumClassを基底型へキャストするためのクラス//
@@ -93,6 +108,15 @@ namespace ChStd
 		return Num;
 
 	}
+
+	//10進数の数値を入れると指定した配列によって生成された進数表記で出力される//
+	std::vector<char> DecimalNumberToBaseNumber(const long _decimal, const std::vector<char>& _baseNumber = HEXA_DECIMAL());
+
+	//指定した進数の配列を入れると10進数の数値が出力される//
+	long BaseNumberToDecimalNumber(const std::vector<char>& _decimal, const std::vector<char>& _baseNumber = HEXA_DECIMAL());
+
+	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
+	std::vector<char> ToBaseNumber(const std::vector<char>& _baseNum, const std::vector<char>& _beforeBaseNumber = DECIMAL_NUMBUR(), const std::vector<char>& _afterBaseNumber = HEXA_DECIMAL());
 
 	template<typename Type>
 	static inline Type BinaryToNumWithBigEndian(const std::vector<char>& _binary, unsigned long _filePos = 0)

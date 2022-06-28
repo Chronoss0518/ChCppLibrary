@@ -26,7 +26,7 @@ void BaseFrameManager::ChengeFrame(const std::string& _frameName)
 
 	nextFrame = frameList[_frameName]();
 
-
+	nextFrameName = _frameName;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -41,9 +41,12 @@ void BaseFrameManager::Chenges()
 		nowFrame->Release();
 	}
 
+	nowFrameName = nextFrameName;
+
 	nowFrame = nextFrame;
 
 	nowFrame->Init();
 
 	nextFrame = nullptr;
+	nextFrameName = "";
 }

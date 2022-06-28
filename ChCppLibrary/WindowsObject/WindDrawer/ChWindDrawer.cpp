@@ -1,6 +1,7 @@
 #include<Windows.h>
 
 #include"../../BaseIncluder/ChBase.h"
+#include"../PackData/ChPoint.h"
 
 #include"ChWindDrawer.h"
 
@@ -61,7 +62,7 @@ void WindDrawer::DrawStart(HWND _hWind)
 	hDC = nullptr;
 }
 
-void WindDrawer::DrawString(const std::string& _str, const ChMath::Vector2Base<int>& _pos)
+void WindDrawer::DrawString(const std::string& _str, const ChINTPOINT& _pos)
 {
 
 	if (ChPtr::NullCheck(hDC))return;
@@ -75,10 +76,10 @@ void WindDrawer::DrawString(const std::string& _str, const ChMath::Vector2Base<i
 
 void WindDrawer::DrawString(const std::string& _str, const int _x, const int _y)
 {
-	DrawString(_str, ChMath::Vector2Base<int>(_x, _y));
+	DrawString(_str, ChINTPOINT(_x, _y));
 }
 
-void WindDrawer::DrawString(const std::wstring& _str, const ChMath::Vector2Base<int>& _pos)
+void WindDrawer::DrawString(const std::wstring& _str, const ChINTPOINT& _pos)
 {
 	if (ChPtr::NullCheck(hDC))return;
 
@@ -91,10 +92,10 @@ void WindDrawer::DrawString(const std::wstring& _str, const ChMath::Vector2Base<
 
 void WindDrawer::DrawString(const std::wstring& _str, const int _x, const int _y)
 {
-	DrawString(_str, ChMath::Vector2Base<int>(_x, _y));
+	DrawString(_str, ChINTPOINT(_x, _y));
 }
 
-void WindDrawer::DrawLine(const ChMath::Vector2Base<int>& _startPos, const ChMath::Vector2Base<int>& _endPos)
+void WindDrawer::DrawLine(const ChINTPOINT& _startPos, const ChINTPOINT& _endPos)
 {
 	if (ChPtr::NullCheck(hDC))return;
 
@@ -110,10 +111,10 @@ void WindDrawer::DrawLine(const ChMath::Vector2Base<int>& _startPos, const ChMat
 
 void WindDrawer::DrawLine(const int _startX, const int _startY, const int _endX, const int _endY)
 {
-	DrawLine(ChMath::Vector2Base<int>(_startX,_startY), ChMath::Vector2Base<int>(_endX, _endY));
+	DrawLine(ChINTPOINT(_startX,_startY), ChINTPOINT(_endX, _endY));
 }
 
-void WindDrawer::DrawTexture(HBITMAP _texture, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos, const unsigned long _opeCode)
+void WindDrawer::DrawTexture(HBITMAP _texture, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const unsigned long _opeCode)
 {
 	auto pos = _pos;
 	auto size = _size;
@@ -132,10 +133,10 @@ void WindDrawer::DrawTexture(HBITMAP _texture, const int _x, const int _y, const
 {
 	if (ChPtr::NullCheck(hDC))return;
 
-	DrawTexture(_texture, ChMath::Vector2Base<int>(_x,_y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY));
+	DrawTexture(_texture, ChINTPOINT(_x,_y), ChINTPOINT(_w, _h), ChINTPOINT(_baseX, _baseY));
 }
 
-void WindDrawer::DrawTexture(Texture& _texture, const ChMath::Vector2Base<int>& _pos, const ChMath::Vector2Base<int>& _size, const ChMath::Vector2Base<int>& _basePos)
+void WindDrawer::DrawTexture(Texture& _texture, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos)
 {
 
 	auto pos = _pos;
@@ -153,7 +154,7 @@ void WindDrawer::DrawTexture(Texture& _texture, const ChMath::Vector2Base<int>& 
 
 void WindDrawer::DrawTexture(Texture& _texture, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY)
 {
-	DrawTexture(_texture, ChMath::Vector2Base<int>(_x, _y), ChMath::Vector2Base<int>(_w, _h), ChMath::Vector2Base<int>(_baseX, _baseY));
+	DrawTexture(_texture, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), ChINTPOINT(_baseX, _baseY));
 
 }
 
@@ -168,8 +169,7 @@ void WindDrawer::DrawEnd()
 
 	ReleaseDC(hWind,hDC);
 
-	SendMessage(hWind, WM_PAINT, 0, 0);
-
+	
 	hDC = nullptr;
 	hWind = nullptr;
 }

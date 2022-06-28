@@ -4,15 +4,13 @@
 #include"../../BaseIncluder/ChD3D11I.h"
 
 
-#include"../ChTexture/ChTexture11.h"
 #include"../ChMesh/ChMesh11.h"
+#include"../ChTexture/ChTexture11.h"
 #include"../ChPolygonBoard/ChPolygonBoard11.h"
 #include"../ChSprite/ChSprite11.h"
 #include"ChShader11.h"
 
 using namespace ChD3D11;
-
-//ChStd::FPOINT ShaderController11::windSize = ChStd::FPOINT(1280.0f, 720.0f);
 
 ///////////////////////////////////////////////////////////////////////////////////////
 //ChShaderController11ÉÅÉ\ÉbÉh

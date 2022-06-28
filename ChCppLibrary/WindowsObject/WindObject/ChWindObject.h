@@ -20,6 +20,8 @@ namespace ChWin
 	class WindStyle;
 	class WindCreater;
 
+#include"../PackData/ChPoint.h"
+
 	//WindowsAPIの内、Windowの管理するクラス//
 	class WindObject :public ChCp::Initializer
 	{
@@ -38,33 +40,38 @@ namespace ChWin
 		void Release();
 
 	public://SetFunction//
-
+		
+		//このウィンドウが子ウィンドウ以外の場合のみ実行される//
 		//_messageにはWM_やメッセージプロシージャ―が受け取れる方にしてください//
-		inline void SetWindProcedure(const unsigned long _message,const std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>& _proc)
+		inline virtual void SetWindProcedure(const unsigned long _message,const std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>& _proc)
 		{
-			if (!_proc)return;
-
 			(wndProc)[_message] = _proc;
 		}
 
 		//登録されたどのメッセージも受け取らなかった場合に呼ばれる関数//
 		inline void SetDefaultWindProcedure(const std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>& _proc)
 		{
-			if (!_proc)return;
-
 			defaultWindProc = _proc;
+		}
+
+		//子ウィンドウが動作して呼ばれたときに実行される関数//
+		//このウィンドウが子ウィンドウの場合のみ実行される//
+		//_messageにはWM_やメッセージプロシージャ―が受け取れる方にしてください//
+		inline void SetChildWindProcedure(const unsigned long _message, const std::function<void(HWND, UINT)>& _proc)
+		{
+			(childWindProc)[_message] = _proc;
 		}
 
 		void SetWindPos(const unsigned int _x, const unsigned int _y,const unsigned int _flgs = SWP_NOSIZE | SWP_NOZORDER);
 
-		inline void SetWindPos(const ChMath::Vector2Base<unsigned int>& _pos, const unsigned int _flgs = SWP_NOSIZE | SWP_NOZORDER)
+		inline void SetWindPos(const ChPOINT& _pos, const unsigned int _flgs = SWP_NOSIZE | SWP_NOZORDER)
 		{
 			SetWindPos(_pos.x, _pos.y, _flgs);
 		}
 
 		void SetWindSize(const unsigned int _w, const unsigned int _h, const unsigned int _flgs = SWP_NOMOVE | SWP_NOZORDER);
 
-		inline void SetWindSize(const ChMath::Vector2Base<unsigned int>& _size, const unsigned int _flgs = SWP_NOMOVE | SWP_NOZORDER)
+		inline void SetWindSize(const ChPOINT& _size, const unsigned int _flgs = SWP_NOMOVE | SWP_NOZORDER)
 		{
 			SetWindPos(_size.w, _size.h, _flgs);
 		}
@@ -76,7 +83,36 @@ namespace ChWin
 			SetWindRect(_rec.top, _rec.left, _rec.right - _rec.left, _rec.bottom - _rec.top, _flgs);
 		}
 
+		inline void SetEnableFlg(const ChStd::Bool _flg) { EnableWindow(hWnd, _flg); }
+
+		void SetWindIDA(long _IDPtr);
+
+		void SetWindIDW(long _IDPtr);
+
+		inline void SetWindID(long _IDPtr)
+		{
+#ifdef UNICODE
+			SetWindIDW(_IDPtr);
+#else
+			SetWindIDA(_IDPtr);
+#endif
+		}
+
 	public://GetFunction//
+
+		long GetWindIDA();
+
+		long GetWindIDW();
+
+		inline long GetWindID()
+		{
+#ifdef UNICODE
+			return GetWindIDW();
+#else
+			return GetWindIDA();
+#endif
+		}
+
 
 		//Windハンドルの取得//
 		inline HWND GethWnd(void)const { return hWnd; }
@@ -85,10 +121,10 @@ namespace ChWin
 		inline const LPMSG GetReturnMassage(void) const { return const_cast<const LPMSG>(&msg); }
 
 		//Windowのサイズを取得する関数//
-		const ChMath::Vector2Base<unsigned int> GetWindSize()const;
+		const ChPOINT GetWindSize()const;
 
 		//Windowの左上の位置を取得する関数//
-		const ChMath::Vector2Base<unsigned int> GetWindPos()const;
+		const ChPOINT GetWindPos()const;
 
 		inline const HINSTANCE GetInstance()const
 		{
@@ -103,9 +139,14 @@ namespace ChWin
 
 		const HINSTANCE GetInstanceW()const;
 
-	public://UpdateFunction//
+	public://Is Functions//
 
-		inline ChStd::Bool Update()
+		//ウィンドウの範囲内でクリックされたかを確認//
+		ChStd::Bool IsCursorPosOnWindow();
+
+	public://Update Functions//
+
+		inline virtual ChStd::Bool Update()
 		{
 #ifdef UNICODE
 			return UpdateW();
@@ -173,8 +214,11 @@ namespace ChWin
 			LPARAM _lParam)->LRESULT 
 		{return DefWindowProc(_hWnd, _uMsg, _wParam, _lParam); };
 
+		std::map<unsigned int, std::function<void(HWND, UINT)>> childWindProc;
+
 		std::map<unsigned int, std::function<LRESULT(HWND,UINT,WPARAM,LPARAM)>> wndProc;
 		HWND hWnd = nullptr;
+		HWND parent = nullptr;
 		MSG msg = { 0 };
 
 	};
@@ -218,22 +262,24 @@ namespace ChWin
 			hMenu = _menu;
 		}
 
-		void SetInitPosition(const ChMath::Vector2Base<int>& _pos);
+		void SetInitPosition(const ChINTPOINT& _pos);
 
 		void SetInitPosition(const int _x, const int _y);
 
-		void SetInitSize(const ChMath::Vector2Base<int>& _size);
+		void SetInitSize(const ChINTPOINT& _size);
 
 		void SetInitSize(const int _w, const int _h);
 
+		inline void SetParam(LPVOID _param) { param = _param; }
+
 	public://Get Function//
 
-		inline const ChMath::Vector2Base<int> GetPosition()const
+		inline const ChINTPOINT GetPosition()const
 		{
 			return pos;
 		}
 
-		inline const ChMath::Vector2Base<int> GetSize()const
+		inline const ChINTPOINT GetSize()const
 		{
 			return size;
 		}
@@ -247,14 +293,16 @@ namespace ChWin
 
 	private://MemberValue//
 
+		static void SetRecentCreateWindowObject(ChWin::WindObject* _create);
+
 		unsigned long exStyle = 0;
 		unsigned int style = 0;
 		HWND parent = nullptr;
 		HMENU hMenu = nullptr;
 		HINSTANCE hInst = nullptr;
 		LPVOID param = nullptr;
-		ChMath::Vector2Base<int> pos = ChMath::Vector2Base<int>(0, 0);
-		ChMath::Vector2Base<int> size = ChMath::Vector2Base<int>(100,100);
+		ChINTPOINT pos = ChINTPOINT(0, 0);
+		ChINTPOINT size = ChINTPOINT(100,100);
 
 	};
 

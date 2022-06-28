@@ -2,12 +2,20 @@
 
 #include"../../BaseIncluder/ChBase.h"
 
+#include"../PackData/ChPoint.h"
 #include"../WindObject/ChWindObject.h"
 #include"ChWindClassObject.h"
 #include"ChWindClassStyle.h"
 
 using namespace ChWin;
 
+ChWin::WindObject* create = nullptr;
+
+
+void WindCreater::SetRecentCreateWindowObject(ChWin::WindObject* _create)
+{
+	create = _create;
+}
 
 LRESULT CALLBACK ChWin::WndProcA(
 	HWND _hWnd
@@ -18,14 +26,35 @@ LRESULT CALLBACK ChWin::WndProcA(
 
 	auto base = ((ChWin::WindObject*)GetWindowLongPtrA(_hWnd, GWLP_USERDATA));
 
+	base = (ChPtr::NotNullCheck(base) ? base : create);
+
 	if (base)
 	{
-		if (base->IsInit() && !base->wndProc.empty())
+		if (!base->wndProc.empty())
 		{
 			auto it = base->wndProc.find(_uMsg);
 			if (it != (base->wndProc).end())
 			{
 				return (it)->second(_hWnd, _uMsg, _wParam, _lParam);
+			}
+			else if (_uMsg == WM_COMMAND)
+			{
+
+				auto child = ((ChWin::WindObject*)GetWindowLongPtrA((HWND)LOWORD(_wParam), GWLP_USERDATA));
+
+				if (child)
+				{
+					if (child->IsInit() && !child->childWindProc.empty())
+					{
+						auto cit = child->childWindProc.find(HIWORD(_wParam));
+						if (cit != (child->childWindProc).end())
+						{
+							(cit)->second((HWND)LOWORD(_wParam), HIWORD(_wParam));
+						}
+					}
+				}
+
+				return 0;
 			}
 			return base->defaultWindProc(_hWnd, _uMsg, _wParam, _lParam);
 		}
@@ -58,6 +87,8 @@ LRESULT CALLBACK ChWin::WndProcW(
 
 	auto base = ((ChWin::WindObject*)GetWindowLongPtrW(_hWnd, GWLP_USERDATA));
 
+	base = (ChPtr::NotNullCheck(base) ? base : create);
+
 	if (base)
 	{
 		if (!base->wndProc.empty())
@@ -66,6 +97,26 @@ LRESULT CALLBACK ChWin::WndProcW(
 			if (it != (base->wndProc).end())
 			{
 				return (it)->second(_hWnd, _uMsg, _wParam, _lParam);
+			}
+			else if (_uMsg == WM_COMMAND)
+			{
+
+				auto child = ((ChWin::WindObject*)GetWindowLongPtrW((HWND)LOWORD(_wParam), GWLP_USERDATA));
+
+				if (child)
+				{
+					if (child->IsInit() && !child->childWindProc.empty())
+					{
+						auto cit = child->childWindProc.find(HIWORD(_wParam));
+						if (cit != (child->childWindProc).end())
+						{
+							(cit)->second((HWND)LOWORD(_wParam), HIWORD(_wParam));
+						}
+					}
+				}
+				child->defaultWindProc(_hWnd, _uMsg, _wParam, _lParam);
+
+				return 0;
 			}
 			return base->defaultWindProc(_hWnd, _uMsg, _wParam, _lParam);
 		}

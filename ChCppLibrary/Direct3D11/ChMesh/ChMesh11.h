@@ -4,11 +4,34 @@
 #include"../../CPP/ChModel/ChModelObject.h"
 #include"../ChShaderStructures11.h"
 
+#include"../../CPP/ChBaseObject/ChBaseObject.h"
+
 namespace ChD3D11
 {
 
 	class Texture11;
 	class Mesh11;
+
+	template<class vertex = Ch3D::Vertex>
+	struct PrimitiveData11 :public ChCpp::BaseComponent
+	{
+		IndexBuffer11 indexBuffer;
+		VertexBuffer11<vertex> vertexBuffer;
+
+		typename std::enable_if<std::is_base_of<Ch3D::Vertex, vertex>::value, std::vector<vertex>>::type vertexArray;
+		std::vector<unsigned long> indexArray;
+
+		ChPtr::Shared<Material11> mate = nullptr;
+
+	};
+
+	struct BoneData11
+	{
+		unsigned long skinWeightCount = 0;
+		ChMath::Vector3Base<unsigned long> tmpBuffer;
+		ChMat_11 animationMat[96];
+
+	};
 
 	struct FrameData11
 	{
@@ -30,6 +53,7 @@ namespace ChD3D11
 	private:
 
 		ChMat_11 drawMat;
+
 	};
 
 	class Mesh11:public ChCp::Initializer

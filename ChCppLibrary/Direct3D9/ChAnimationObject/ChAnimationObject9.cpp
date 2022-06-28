@@ -3,15 +3,10 @@
 #include"../../BaseIncluder/ChBase.h"
 
 #include"../../CPP/ChFile/ChFile.h"
-#include"../../CPP/ChBitBool/ChBitBool.h"
-#include"../../BaseSystem/ChBaseSystem/ChBaseSystem.h"
-#include"../../BaseSystem/ChWindows/ChWindows.h"
 
 #include"../../BaseIncluder/ChD3D9I.h"
 
 #include"ChAnimationObject9.h"
-
-using namespace ChSystem;
 
 ///////////////////////////////////////////////////////////////////////////////////////
 //ChAnimationObject9ÉÅÉ\ÉbÉh

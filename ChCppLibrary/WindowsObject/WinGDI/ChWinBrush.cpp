@@ -2,6 +2,7 @@
 
 #include"../../BaseIncluder/ChBase.h"
 
+#include"../PackData/ChPoint.h"
 #include"../Texture/ChWinTexture.h"
 #include"ChWinBrush.h"
 

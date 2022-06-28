@@ -38,6 +38,14 @@ namespace ChCpp
 			Chenges();
 		}
 
+		template<class T>
+		auto GetNowFrame()->
+			typename std::enable_if
+			<std::is_base_of<BaseFrame,T>::value,ChPtr::Weak<T>>::type
+		{
+			return ChPtr::SharedSafeCast<T>(nowFrame);
+		}
+
 	public://UpdateFunction//
 
 		void Update();
@@ -56,11 +64,11 @@ namespace ChCpp
 
 		}
 
-	private://Other Function
+	public://Get Function//
 
-		void ChengeFrame(const std::string& _frameName);
+		inline std::string GetNowFrameName() { return nowFrameName; }
 
-		void Chenges();
+	public://Other Function
 
 		template<class T>
 		void SaveData(const T* _save)
@@ -76,11 +84,31 @@ namespace ChCpp
 			*tmp = *_save;
 		}
 
+		template<class T>
+		T* GetData()
+		{
+			if (ChPtr::NullCheck(saveData))return nullptr;
+
+			auto tmp = static_cast<T*>(saveData);
+
+
+			return tmp;
+		}
+
+	private://Other Function
+
+		void ChengeFrame(const std::string& _frameName);
+
+		void Chenges();
+
 	private:// Member Value//
 
 		friend BaseFrame;
 
 		void* saveData = nullptr;
+
+		std::string nextFrameName = "";
+		std::string nowFrameName = "";
 
 		std::map<std::string, std::function<ChPtr::Shared<BaseFrame>()>>frameList;
 
@@ -108,7 +136,7 @@ namespace ChCpp
 
 	//ゲームシーンを簡易的生成を行うためのクラス//
 	//必要に応じて以下の関数をオーバーライドする//
-	//void Init(),void Release(),void Frame()//
+	//void Init(),void Release(),void Update()//
 	class BaseFrame:public ChCp::Releaser
 	{
 	public://InitAndRelease//
@@ -125,6 +153,18 @@ namespace ChCpp
 		friend BaseFrameManager;
 
 	protected://ConstructerDestructer//
+
+		template<class T>
+		void SaveData(const T* _save)
+		{
+			FrameManager().SaveData(_save);
+		}
+
+		template<class T>
+		T* GetData()
+		{
+			return FrameManager().GetData<T>();
+		}
 
 		BaseFrame() {};
 

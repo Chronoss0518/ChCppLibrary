@@ -31,25 +31,23 @@ namespace ChCpp
 		//消去される際に自動的に呼ばれる//
 		virtual void Release() {};
 
+	public://Destroy Functions//
+
 		//自身を消したいときに呼ぶ//
 		void Destroy();
 
 		//自身の本体を捨てたい時に走らせる関数//
-		void ObjectDestroy();
+		void DestroyObject();
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
+	public://Set Function//
 
-		void SetUsing(const ChStd::Bool _Flg) { useFlg = _Flg; }
+		inline void SetUsing(const ChStd::Bool _Flg) { useFlg = _Flg; }
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//IsFunction//
+	public://Is Functions//
 
-		ChStd::Bool IsDeth() { return dFlg; }
+		inline ChStd::Bool IsDeth() { return dFlg; }
 
-		ChStd::Bool IsUse() { return useFlg; }
-
-		///////////////////////////////////////////////////////////////////////////////////////
+		inline ChStd::Bool IsUseFlg() { return useFlg; }
 
 	protected:
 
@@ -80,8 +78,6 @@ namespace ChCpp
 			return ChPtr::SharedSafeCast<Class>(obj.lock());
 		}
 
-		ChStd::Bool useFlg = true;
-
 		///////////////////////////////////////////////////////////////////////////////////
 		//UpdateFuncsions//
 		virtual void UpdateBegin() {};
@@ -101,15 +97,14 @@ namespace ChCpp
 
 	private:
 
-		///////////////////////////////////////////////////////////////////////////////////
-
 		//セットされる際に呼ばれる//
 		void BaseInit(ChPtr::Shared<BaseObject> _obj);
 
 		///////////////////////////////////////////////////////////////////////////////////
 
+		ChStd::Bool useFlg = true;
 
-		ChPtr::Weak<BaseObject> obj;
+		ChPtr::Weak<BaseObject> obj = ChPtr::Shared<BaseObject>();
 
 		ChStd::Bool dFlg = false;
 

@@ -1,6 +1,7 @@
 #include<Windows.h>
 #include"../../BaseIncluder/ChBase.h"
 
+#include"../PackData/ChPoint.h"
 #include"ChWindObject.h"
 #include"ChWindStyle.h"
 
@@ -11,7 +12,6 @@ using namespace ChWin;
 ///////////////////////////////////////////////////////////////////////////////////
 
 static WindStyle style;
-
 
 void WindObject::Init()
 {
@@ -38,7 +38,10 @@ void WindObject::Release()
 {
 	if (!IsInit())return;
 
-	Send(WM_CLOSE, 0, 0);
+	//Send(WM_CLOSE, 0, 0);
+
+	DestroyWindow(hWnd);
+
 	SetInitFlg(false);
 
 
@@ -46,11 +49,11 @@ void WindObject::Release()
 
 void WindObject::CreateEnd(const int _nCmdShow)
 {
+	SetInitFlg(true);
+	SetWindIDW(reinterpret_cast<long>(hWnd));
+
 	ShowWindow(hWnd, _nCmdShow);
 	UpdateWindow(hWnd);
-
-	SetInitFlg(true);
-
 }
 
 void WindObject::SetWindPos(const unsigned int _x, const unsigned int _y, const unsigned int _flgs)
@@ -74,29 +77,56 @@ void WindObject::SetWindRect(const unsigned int _x, const unsigned int _y, const
 	SetWindowPos(hWnd, HWND_TOP, _x, _y, _w, _h, _flgs);
 }
 
-inline const ChMath::Vector2Base<unsigned int> WindObject::GetWindSize()const
+void WindObject::SetWindIDA(long _IDPtr)
 {
-	ChMath::Vector2Base<unsigned int> out;
+	if (!IsInit())return;
+
+	SetWindowLongPtrA(hWnd, GWLP_ID, _IDPtr);
+}
+
+void WindObject::SetWindIDW(long _IDPtr)
+{
+	if (!IsInit())return;
+	
+	SetWindowLongPtrW(hWnd, GWLP_ID, _IDPtr);
+}
+
+long WindObject::GetWindIDA()
+{
+	if (!IsInit())return 0;
+	return GetWindowLongPtrA(hWnd, GWLP_ID);
+}
+
+long WindObject::GetWindIDW()
+{
+	if (!IsInit())return 0;
+	return GetWindowLongPtrW(hWnd, GWLP_ID);
+}
+
+const ChPOINT WindObject::GetWindSize()const
+{
+	ChPOINT out;
 	if (!*this)return out;
 
 	RECT rect;
-	GetClientRect(hWnd, &rect);
+	GetWindowRect(hWnd, &rect);
 
-	out.w = rect.left;
-	out.h = rect.top;
+	out.w = rect.right - rect.left;
+	out.h = rect.bottom - rect.top;
 
 	return out;
 }
 
-inline const ChMath::Vector2Base<unsigned int> WindObject::GetWindPos()const
+const ChPOINT WindObject::GetWindPos()const
 {
-	ChMath::Vector2Base<unsigned int> out;
+	ChPOINT out;
 	if (!*this)return out;
 	RECT rect;
-	GetClientRect(hWnd, &rect);
+	GetWindowRect(hWnd, &rect);
 
-	out.w = rect.right - rect.left;
-	out.h = rect.bottom - rect.top;
+
+	out.x = rect.left;
+	out.y = rect.top;
 
 	return out;
 }
@@ -109,6 +139,54 @@ const HINSTANCE WindObject::GetInstanceA()const
 const HINSTANCE WindObject::GetInstanceW()const
 {
 	return (HINSTANCE)GetWindowLongW(hWnd, GWL_HINSTANCE);
+}
+
+ChStd::Bool WindObject::IsCursorPosOnWindow()
+{
+	auto size = GetWindSize();
+
+	POINT cPos;
+	GetCursorPos(&cPos);
+	ScreenToClient(hWnd, &cPos);
+
+	if (0 <= cPos.x && size.w > cPos.x && 0 <= cPos.y && size.h > cPos.y)
+	{
+		return true;
+	}
+
+	return false;
+
+}
+
+ChStd::Bool WindObject::UpdateA()
+{
+	UpdateWindow(hWnd);
+
+	if (!IsInit())return false;
+
+	if (!PeekMessageA(&msg, NULL, 0, 0, PM_NOREMOVE))return true;
+
+	if ((GetMessageA(&msg, NULL, 0, 0)) <= 0)return false;
+	TranslateMessage(&msg);
+	DispatchMessageA(&msg);
+
+	return true;
+}
+
+ChStd::Bool WindObject::UpdateW()
+{
+
+	UpdateWindow(hWnd);
+	
+	if (!IsInit())return false;
+
+	if (!PeekMessageW(&msg, NULL, 0, 0, PM_NOREMOVE))return true;
+
+	if ((GetMessageW(&msg, NULL, 0, 0)) <= 0)return false;
+	TranslateMessage(&msg);
+	DispatchMessageW(&msg);
+
+	return true;
 }
 
 LPARAM WindObject::SendA(const unsigned int _msg, WPARAM _wParam, LPARAM _lParam)
@@ -129,32 +207,6 @@ LPARAM WindObject::SendW(const unsigned int _msg, WPARAM _wParam, LPARAM _lParam
 	return out;
 }
 
-ChStd::Bool WindObject::UpdateA()
-{
-	if (!IsInit())return false;
-
-	if (PeekMessageA(&msg, NULL, 0, 0, PM_NOREMOVE) <= 0)return true;
-
-	if ((GetMessageA(&msg, NULL, 0, 0)) <= 0)return false;
-	TranslateMessage(&msg);
-	DispatchMessageA(&msg);
-
-	return true;
-}
-
-ChStd::Bool WindObject::UpdateW()
-{
-	if (!IsInit())return false;
-
-	if (PeekMessageW(&msg, NULL, 0, 0, PM_NOREMOVE) <= 0)return true;
-
-	if ((GetMessageW(&msg, NULL, 0, 0)) <= 0)return false;
-	TranslateMessage(&msg);
-	DispatchMessageW(&msg);
-
-	return true;
-}
-
 //WindowObjectCreate Method//
 
 void WindCreater::SetWindStyle(const WindStyle* _style)
@@ -162,7 +214,7 @@ void WindCreater::SetWindStyle(const WindStyle* _style)
 	style = _style->GetStyle();
 }
 
-void WindCreater::SetInitPosition(const ChMath::Vector2Base<int>& _pos)
+void WindCreater::SetInitPosition(const ChINTPOINT& _pos)
 {
 	SetInitPosition(_pos.x, _pos.y);
 }
@@ -173,7 +225,7 @@ void WindCreater::SetInitPosition(const int _x, const int _y)
 	pos.y = _y >= 0 ? _y : _y * -1;
 }
 
-void WindCreater::SetInitSize(const ChMath::Vector2Base<int>& _size)
+void WindCreater::SetInitSize(const ChINTPOINT& _size)
 {
 	SetInitSize(_size.w, _size.h);
 }
@@ -191,6 +243,8 @@ ChStd::Bool WindCreater::Create(WindObject* _out, const std::string& _appName, c
 
 	_out->Init();
 
+	SetRecentCreateWindowObject(_out);
+
 	_out->hWnd = CreateWindowExA(
 		exStyle,
 		_windClassName.c_str(),
@@ -205,9 +259,12 @@ ChStd::Bool WindCreater::Create(WindObject* _out, const std::string& _appName, c
 
 	if (ChPtr::NullCheck(_out->hWnd))return false;
 
+	SetWindowLongPtrA(_out->hWnd, GWLP_USERDATA, reinterpret_cast<long>(_out));
+
 	_out->CreateEnd(_nShowCmd);
 
-	SetWindowLongPtrA(_out->hWnd, GWLP_USERDATA, reinterpret_cast<long>(_out));
+	_out->parent = parent;
+
 	return true;
 }
 
@@ -217,6 +274,8 @@ ChStd::Bool WindCreater::Create(WindObject* _out, const std::wstring& _appName, 
 	if (ChPtr::NullCheck(_out))return false;
 
 	_out->Init();
+
+	SetRecentCreateWindowObject(_out);
 
 	_out->hWnd = CreateWindowExW(
 		exStyle,
@@ -232,9 +291,11 @@ ChStd::Bool WindCreater::Create(WindObject* _out, const std::wstring& _appName, 
 
 	if (ChPtr::NullCheck(_out->hWnd))return false;
 
+	SetWindowLongPtrW(_out->hWnd, GWLP_USERDATA, reinterpret_cast<long>(_out));
+
 	_out->CreateEnd(_nShowCmd);
 
-	SetWindowLongPtrW(_out->hWnd, GWLP_USERDATA, reinterpret_cast<long>(_out));
+	_out->parent = parent;
 
 	return true;
 }

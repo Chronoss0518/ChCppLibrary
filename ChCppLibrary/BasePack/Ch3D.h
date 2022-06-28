@@ -8,29 +8,58 @@
 
 namespace Ch3D
 {
-
-	struct Vertex
+	struct Position
 	{
 		ChVec3 pos;
+	};
+
+	struct UV
+	{
 		ChVec2 uv;
+	};
+
+	struct Color
+	{
 		ChVec4 color = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
 	};
 
-	struct PolyVertex : public Vertex
+	struct Normal
 	{
-		ChVec3 normal = ChVec3(0.0f, 0.0f, 1.0f);
+		ChVec3 normal = ChVec3(0.0f,1.0f,0.0f);
 	};
 
-	struct MeshVertex : public PolyVertex
+	struct FaceNormal
 	{
-		ChVec3 faceNormal = ChVec3(0.0f, 0.0f, 1.0f);
+		ChVec3 faceNormal = ChVec3(0.0f, 1.0f, 0.0f);
 	};
 
-	struct SkinMeshData
+	template<unsigned long Num>
+	struct Bone
 	{
-		ChVec4 brendPows[16] = { 0.0f,0.0f,0.0f ,0.0f ,0.0f ,0.0f ,0.0f ,0.0f ,0.0f ,0.0f ,0.0f ,0.0f ,0.0f ,0.0f ,0.0f ,0.0f };
-		unsigned long blendNum = 0;
+		float brendPows[Num];
+		unsigned long boneNo[Num];
 	};
+
+	struct HaveVertex:
+		public Position,
+		public Color
+	{};
+
+	struct Vertex:
+		public Position,
+		public UV,
+		public Color
+	{};
+
+	struct PolyVertex :
+		public Vertex,
+		public Normal
+	{};
+
+	struct MeshVertex :
+		public PolyVertex,
+		public FaceNormal
+	{};
 
 	//ëŒè€ÇÃí∏ì_Çä«óùÇ∑ÇÈ//
 	struct Polygon
@@ -45,29 +74,51 @@ namespace Ch3D
 		ChVec4 ambient = 0.3f;
 	};
 
-	struct MaterialStatus
+	enum class TextureType
 	{
-		Material mate;
+		Diffuse,
+		Ambient,
+		Specular,
+		SpecularHighLight,
+		Bump,
+		Alpha,
+		Normal,
+		Metallic
+	};
 
-		std::string diffuseMap = "";
-		std::string ambientMap = "";
-		std::string specularMap = "";
-		std::string specularHighLightMap = "";
-		std::string bumpMap = "";
-		std::string alphaMap = "";
-		std::string normalMap = "";
-		std::string metallicMap = "";
+	struct Transform
+	{
+		ChVec3 pos;
+		ChVec3 rot;
+		ChVec3 scl;
+
+		inline ChLMat GetLeftHandMatrix()
+		{
+			ChLMat out;
+			out.SetPosition(pos);
+			out.SetRotation(rot);
+			out.SetScalling(scl);
+			return out;
+		}
+
+		inline ChRMat GetRightHandMatrix()
+		{
+			ChRMat out;
+			out.SetPosition(pos);
+			out.SetRotation(rot);
+			out.SetScalling(scl);
+			return out;
+		}
 	};
 
 	//MaterialÇ…ëŒâûÇ∑ÇÈñ Çä«óùÇ∑ÇÈ//
 	template<class vertex = Vertex>
 	class Primitive
 	{
-
 		std::vector<ChPtr::Shared<Polygon>> polygons = nullptr;
 		Vertex* vertexList = nullptr;
 
-		MaterialStatus mate;
+		Material mate;
 	};
 
 	template<class vertex = Vertex,class primitive = Primitive<vertex>>
@@ -77,6 +128,7 @@ namespace Ch3D
 
 		std::vector<ChPtr::Shared<primitive>> primitives = nullptr;
 		std::map<std::string, unsigned long>mateNames;
+		Transform transform;
 
 		std::vector<ChPtr::Shared<Frame<Vertex>>> parent;
 

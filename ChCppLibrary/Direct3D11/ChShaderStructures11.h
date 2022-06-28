@@ -18,35 +18,10 @@ namespace ChD3D11
 
 		std::string materialName;
 
-		ChPtr::Shared<Texture11> diffuseMap = ChPtr::Make_S<Texture11>();
-		ChPtr::Shared<Texture11> ambientMap = ChPtr::Make_S<Texture11>();
-		ChPtr::Shared<Texture11> specularMap = ChPtr::Make_S<Texture11>();
-		ChPtr::Shared<Texture11> specularHighLightMap = ChPtr::Make_S<Texture11>();
-		ChPtr::Shared<Texture11> bumpMap = ChPtr::Make_S<Texture11>();
-		ChPtr::Shared<Texture11> alphaMap = ChPtr::Make_S<Texture11>();
-		ChPtr::Shared<Texture11> normalMap = ChPtr::Make_S<Texture11>();
-		ChPtr::Shared<Texture11> metallicMap = ChPtr::Make_S<Texture11>();
-
+		std::map<Ch3D::TextureType, ChPtr::Shared<Texture11>>textures;
 	};
 
-	struct Vertex11
-	{
-		ChVec3 pos;
-		ChVec2 uv;
-		ChVec4 color = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
-	};
-
-	struct MeshVertex11 : public Vertex11
-	{
-		ChVec3 normal = ChVec3(0.0f, 0.0f, -1.0f);
-	};
-
-	struct PrimitiveVertex11 : public MeshVertex11
-	{
-		ChVec3 faceNormal = ChVec3(0.0f, 0.0f, -1.0f);
-	};
-
-	struct SkinMeshVertex11 : public PrimitiveVertex11
+	struct SkinMeshVertex11 : public Ch3D::MeshVertex
 	{
 		float blendPow[96];
 	};
@@ -208,7 +183,7 @@ namespace ChD3D11
 
 	};
 
-	template<class vertex = Vertex11>
+	template<class vertex = Ch3D::Vertex>
 	class VertexBuffer11 : public ShaderObjectBase11
 	{
 	public:
@@ -318,31 +293,6 @@ namespace ChD3D11
 	protected:
 
 		unsigned long registerNo = 0;
-	};
-
-
-	template<class vertex = Vertex11>
-	struct PrimitiveData11
-	{
-		IndexBuffer11 indexBuffer;
-		VertexBuffer11<vertex> vertexBuffer;
-
-		typename std::enable_if<std::is_base_of<Vertex11, vertex>::value, vertex*>::type vertexArray = nullptr;
-		unsigned long* indexArray = nullptr;
-
-		unsigned long vertexNum = 0;
-		unsigned long indexNum = 0;
-
-		ChPtr::Shared<Material11> mate = nullptr;
-
-	};
-
-	struct BoneData11
-	{
-		unsigned long skinWeightCount = 0;
-		ChMath::Vector3Base<unsigned long> tmpBuffer;
-		ChMat_11 animationMat[96];
-
 	};
 
 

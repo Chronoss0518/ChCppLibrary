@@ -27,16 +27,34 @@ namespace ChPtr
 
 	//SharedPtr用ダウンキャスト//
 	template<class C, class C2>
-	static inline Shared<C> SharedSafeCast(Shared<C2> _sPtr)
+	static inline auto SharedSafeCast(Shared<C2> _sPtr)
+		->typename std::enable_if<std::is_base_of<C2, C>::value &&
+		!std::is_same<C2, C>::value, Shared<C>>::type
 	{
 		return std::dynamic_pointer_cast<C, C2>(_sPtr);
 	}
 
+		template<class C, class C2>
+	static inline auto SharedSafeCast(Shared<C2> _sPtr)
+		->typename  std::enable_if<std::is_same<C2, C>::value, Shared<C>>::type
+	{
+		return _sPtr;
+	}
+
 	//*Ptr用ダウンキャスト//
 	template<class C, class C2>
-	static inline C* SafeCast(C2*_ptr)
+	static inline auto SafeCast(C2*_ptr)
+		->typename  std::enable_if<std::is_base_of<C2, C>::value &&
+		!std::is_same<C2, C>::value, C*>::type
 	{
 		return dynamic_cast<C*>(_ptr);
+	}
+
+		template<class C, class C2>
+	static inline auto SafeCast(C2* _ptr)
+		->typename  std::enable_if<std::is_same<C2, C>::value, C*>::type
+	{
+		return (_ptr);
 	}
 
 	//クラスがNULLまたはnullptrかをチェックする関数//
