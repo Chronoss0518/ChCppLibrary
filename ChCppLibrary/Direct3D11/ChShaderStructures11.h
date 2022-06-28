@@ -26,6 +26,37 @@ namespace ChD3D11
 		float blendPow[96];
 	};
 
+	struct BaseDatas
+	{
+		//ビュー変換行列//
+		ChMat_11 viewMat;
+		//射影変換行列//
+		ChMat_11 projMat;
+		//画面サイズ//
+		ChVec4 windSize;
+	};
+
+	struct CharaDatas
+	{
+		//モデル行列//
+		ChMat_11 modelMat;
+
+	};
+
+	struct PolygonDatas
+	{
+		//モデル行列//
+		ChMat_11 modelMat;
+		//スプライトベース色//
+		ChVec4 baseColor = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
+	};
+
+	struct BoneDatas
+	{
+		//スキンメッシュ用行列//
+		ChMat_11 skinWeightMat[1000];
+	};
+
 	class ShaderObjectBase11 :public ChCp::Releaser, public ChCp::Initializer
 	{
 	public:
