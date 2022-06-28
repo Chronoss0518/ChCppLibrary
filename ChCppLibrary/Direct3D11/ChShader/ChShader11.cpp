@@ -18,114 +18,6 @@ using namespace ChD3D11;
 //ChShaderController11ÉÅÉ\ÉbÉh
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ShaderController11::InitShader()
-{
-
-	{
-		/*
-		
-#include"MBVShader.inc"
-
-		D3D11_INPUT_ELEMENT_DESC Decl[14];
-
-		Decl[0] = { "POSITION",  0, DXGI_FORMAT_R32G32B32_FLOAT,0, 0, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[1] = { "COLOR",  0, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[2] = { "TEXCOORD",  0, DXGI_FORMAT_R32G32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[3] = { "NORMAL",  0, DXGI_FORMAT_R32G32B32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[4] = { "NORMAL",  1, DXGI_FORMAT_R32G32B32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[5] = { "BLENDINDEX",  0, DXGI_FORMAT_R32G32B32A32_UINT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[6] = { "BLENDINDEX",  1, DXGI_FORMAT_R32G32B32A32_UINT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[7] = { "BLENDINDEX",  2, DXGI_FORMAT_R32G32B32A32_UINT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[8] = { "BLENDINDEX",  3, DXGI_FORMAT_R32G32B32A32_UINT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[9] = { "BLENDWEIGHT",  0, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[10] = { "BLENDWEIGHT",  1, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[11] = { "BLENDWEIGHT",  2, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[12] = { "BLENDWEIGHT",  3, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[13] = { "BLENDINDEX",  4, DXGI_FORMAT_R32_UINT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-
-		bvModel.Init(device, Decl, 14, main, sizeof(main));
-
-		*/
-
-		bvModel.InitChBaseModelVertexShader(device);
-	}
-
-	{
-		/*
-		
-#include"PTVShader.inc"
-
-		D3D11_INPUT_ELEMENT_DESC Decl[4];
-
-
-		Decl[0] = { "POSITION",  0, DXGI_FORMAT_R32G32B32_FLOAT,0, 0, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[1] = { "TEXCOORD",  0, DXGI_FORMAT_R32G32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[2] = { "COLOR",  0, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[3] = { "NORMAL",  0, DXGI_FORMAT_R32G32B32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-
-
-		pvTex.Init(device,Decl, 4, main, sizeof(main));
-
-		*/
-
-		pvTex.InitChPolygonboardTextureVertexShader(device);
-	
-	}
-
-	{
-
-		/*
-		
-#include"MBPShader.inc"
-
-
-		bpModel.Init(device,main, sizeof(main));
-
-		*/
-
-		bpModel.InitChBaseModelPixelShader(device);
-
-	}
-
-
-	{
-		/*
-		
-#include"STVShader.inc"
-
-		D3D11_INPUT_ELEMENT_DESC Decl[3];
-
-		Decl[0] = { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[1] = { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[2] = { "COLOR",  0, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-
-
-		spvTex.Init(device,Decl, 3, main, sizeof(main));
-
-		*/
-
-		spvTex.InitChSpriteTextureVertexShader(device);
-
-	}
-
-	{
-
-		/*
-		
-#include"TPShader.inc"
-		
-		bpTex.Init(device,&main, sizeof(main));
-
-		*/
-
-		bpTex.InitChBaseTexturePixelShader(device);
-
-	}
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
 void ShaderController11::Init(
 	DirectX3D11& _chDevice
 	, const ChVec2& _windSize)
@@ -176,8 +68,14 @@ void ShaderController11::Init(
 
 	device = (_device);
 	dc = (_dc);
-	
-	InitShader();
+
+	bvModel.InitChBaseModelVertexShader(_device);
+	pvTex.InitChPolygonboardTextureVertexShader(_device);
+	bpModel.InitChBaseModelPixelShader(_device);
+
+	spvTex.InitChSpriteTextureVertexShader(_device);
+	bpTex.InitChBaseTexturePixelShader(_device);
+
 
 	whiteTex.CreateColorTexture(device, ChVec4(1.0f, 1.0f, 1.0f, 1.0f), 1, 1);
 

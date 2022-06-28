@@ -46,12 +46,6 @@ namespace ChD3D11
 			, const float& _windWitdh
 			, const float& _windHeight);
 
-	protected:
-
-		void InitShader();
-
-	public:
-
 		void Release()override;
 
 		///////////////////////////////////////////////////////////////////////////////////
