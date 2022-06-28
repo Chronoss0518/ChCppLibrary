@@ -246,6 +246,14 @@ namespace ChD3D11
 
 		inline D3D11_FILL_MODE GetFillMode() { return fill; }
 
+		inline BaseDatas GetBaseData() { return bdObject; }
+
+		inline CharaDatas GetCharaData() { return cdObject; }
+
+		inline PolygonDatas GetPolygonData() { return pdObject; }
+
+		inline BoneDatas GetBoneData() { return bodObject; }
+
 		///////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
 
@@ -281,6 +289,12 @@ namespace ChD3D11
 			Mesh11& _mesh
 			, const ChMat_11& _mat = ChMat_11());
 
+		void Draw(
+			Mesh11& _mesh,
+			VertexShader11& _userVS,
+			PixelShader11& _userPS,
+			const ChMat_11& _mat = ChMat_11());
+
 		//OutLine描画//
 		void DrawOutLine(
 			Mesh11& _mesh
@@ -295,6 +309,13 @@ namespace ChD3D11
 			Texture11& _tex
 			, PolygonBoard11& _polygon
 			, const ChMat_11& _mat = ChMat_11());
+
+		void Draw(
+			Texture11& _tex,
+			PolygonBoard11& _polygon,
+			VertexShader11& _userVS,
+			PixelShader11& _userPS,
+			const ChMat_11& _mat = ChMat_11());
 
 		//円形で指定範囲を描画//
 		void DrawToCircleParsec(
@@ -320,6 +341,13 @@ namespace ChD3D11
 			Texture11& _tex
 			, Sprite11& _sprite
 			, const ChMat_11& _mat = ChMat_11());
+
+		void Draw(
+			Texture11& _tex,
+			Sprite11& _sprite,
+			VertexShader11& _userVS,
+			PixelShader11& _userPS,
+			const ChMat_11& _mat = ChMat_11());
 
 		//円形で指定範囲を描画//
 		void DrawToCircleParsec(
@@ -355,7 +383,6 @@ namespace ChD3D11
 		VertexShader11 bvModel;
 		PixelShader11 bpModel;
 		VertexShader11 pvTex;
-
 
 		//板ポリゴンなどテクスチャ単体描画用シェーダー//
 		VertexShader11 spvTex;
@@ -405,37 +432,6 @@ namespace ChD3D11
 
 		//背景色//
 		ChVec4 backColor = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
-
-		struct BaseDatas
-		{
-			//ビュー変換行列//
-			ChMat_11 viewMat;
-			//射影変換行列//
-			ChMat_11 projMat;
-			//画面サイズ//
-			ChVec4 windSize;
-		};
-
-		struct CharaDatas
-		{
-			//モデル行列//
-			ChMat_11 modelMat;
-
-		};
-
-		struct PolygonDatas
-		{
-			//モデル行列//
-			ChMat_11 modelMat;
-			//スプライトベース色//
-			ChVec4 baseColor = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
-		};
-
-		struct BoneDatas
-		{
-			//スキンメッシュ用行列//
-			ChMat_11 skinWeightMat[1000];
-		};
 
 		ChStd::Bool bdUpdateFlg = true;
 
