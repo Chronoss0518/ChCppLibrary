@@ -292,73 +292,16 @@ namespace ChSystem
 
 	};
 
-	static inline void ToRelativePath(std::string&_path)
+}
+
+namespace ChWin
+{
+
+	std::string ToRelativePath(const std::string& _path);
+
+	inline ChINTPOINT GetScreenSize()
 	{
-
-		if (_path.find(":\\") == _path.npos && _path.find(":/") == _path.npos)return;
-
-		std::string tmp;
-
-
-		{
-
-			char* tmp2 = nullptr;
-			tmp2 = new char[256];
-
-			GetCurrentDirectory(256, tmp2);
-			tmp = tmp2;
-
-			delete[] tmp2;
-
-		}
-
-		std::string SetCutChar = "/";
-		{
-
-			std::string OutCutChar = "\\";
-
-			while (1)
-			{
-				size_t tmpLen = tmp.find(OutCutChar, 0);
-				if (tmpLen == tmp.npos)break;
-				tmp.replace(tmpLen, OutCutChar.size(), SetCutChar);
-
-			}
-			while (1)
-			{
-				size_t tmpLen = _path.find(OutCutChar, 0);
-				if (tmpLen == _path.npos)break;
-				_path.replace(tmpLen, OutCutChar.size(), SetCutChar);
-
-			}
-
-			std::string tmpBackChar = "";
-
-
-			while (1)
-			{
-				size_t tmpLen = _path.find(tmp);
-
-				if (tmpLen != _path.npos)break;
-
-				tmpLen = tmp.rfind(SetCutChar, tmp.length());
-
-				tmp.replace(tmpLen, tmp.length() - tmpLen, "");
-
-				tmpBackChar += "../";
-
-			}
-
-
-
-			_path.replace(0, tmp.length() + 1, "");
-
-			_path = tmpBackChar + _path;
-
-
-
-		}
-
+		return ChINTPOINT(GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
 	}
 }
 
