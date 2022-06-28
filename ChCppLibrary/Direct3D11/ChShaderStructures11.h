@@ -5,7 +5,7 @@
 
 namespace ChD3D11
 {
-	class Texture11;
+	class TextureBase11;
 
 	struct ShaderUseMaterial11 :public Ch3D::Material
 	{
@@ -18,7 +18,7 @@ namespace ChD3D11
 
 		std::string materialName;
 
-		std::map<Ch3D::TextureType, ChPtr::Shared<Texture11>>textures;
+		std::map<Ch3D::TextureType, ChPtr::Shared<TextureBase11>>textures;
 	};
 
 	struct SkinMeshVertex11 : public Ch3D::MeshVertex

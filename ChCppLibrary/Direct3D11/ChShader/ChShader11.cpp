@@ -170,10 +170,11 @@ void ShaderController11::Release()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ShaderController11::SetRenderTarget(Texture11& _tex)
+void ShaderController11::SetRenderTarget(RenderTarget11& _tex)
 {
 	if (!*this)return;
 	if (drawFlg)return;
+	if (ChPtr::NullCheck(_tex.GetRTView()))return;
 
 
 	renderTargets.push_back(const_cast<ID3D11RenderTargetView*>(_tex.GetRTView()));
@@ -439,7 +440,7 @@ void ShaderController11::DrawOutLine(
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ShaderController11::Draw(
-	ChD3D11::Texture11& _tex
+	ChD3D11::TextureBase11& _tex
 	, PolygonBoard11& _polygon
 	, const ChMat_11& _mat)
 {
@@ -455,7 +456,7 @@ void ShaderController11::Draw(
 
 	cdObject.modelMat = _mat;
 
-	ChD3D11::Texture11* drawTex = &_tex;
+	ChD3D11::TextureBase11* drawTex = &_tex;
 
 	if (!drawTex->IsTex())drawTex = &whiteTex;
 
@@ -475,7 +476,7 @@ void ShaderController11::Draw(
 }
 
 void ShaderController11::Draw(
-	Texture11& _tex,
+	TextureBase11& _tex,
 	PolygonBoard11& _polygon,
 	VertexShader11& _userVS,
 	PixelShader11& _userPS,
@@ -504,7 +505,7 @@ void ShaderController11::Draw(
 
 #endif
 
-	ChD3D11::Texture11* drawTex = &_tex;
+	ChD3D11::TextureBase11* drawTex = &_tex;
 
 	if (!drawTex->IsTex())drawTex = &whiteTex;
 
@@ -521,7 +522,7 @@ void ShaderController11::Draw(
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ShaderController11::Draw(
-	ChD3D11::Texture11& _tex
+	ChD3D11::TextureBase11& _tex
 	, Sprite11& _sprite
 	, const ChMat_11& _mat)
 {
@@ -539,7 +540,7 @@ void ShaderController11::Draw(
 
 	pdObject.modelMat = _mat;
 
-	ChD3D11::Texture11* drawTex = &_tex;
+	ChD3D11::TextureBase11* drawTex = &_tex;
 
 	if (!drawTex->IsTex())drawTex = &whiteTex;
 
@@ -559,7 +560,7 @@ void ShaderController11::Draw(
 }
 
 void ShaderController11::Draw(
-	Texture11& _tex,
+	TextureBase11& _tex,
 	Sprite11& _sprite,
 	VertexShader11& _userVS,
 	PixelShader11& _userPS,
@@ -579,7 +580,7 @@ void ShaderController11::Draw(
 		out3D.SetDrawData(dc, 12);
 	}
 
-	ChD3D11::Texture11* drawTex = &_tex;
+	ChD3D11::TextureBase11* drawTex = &_tex;
 
 	if (!drawTex->IsTex())drawTex = &whiteTex;
 

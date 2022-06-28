@@ -9,7 +9,10 @@ namespace ChD3D11
 	class DirectX3D11;
 
 	class Mesh11;
+	class TextureBase11;
 	class Texture11;
+	class RenderTarget11;
+	class DepthStencilTexture11;
 	class Sprite11;
 	class PolygonBoard11;
 
@@ -52,7 +55,7 @@ namespace ChD3D11
 		//SetFunction//
 
 		//•`‰æ‚³‚¹‚éƒŒƒ“ƒ_[ƒ^[ƒQƒbƒg‚ğ“o˜^‚·‚é//
-		void SetRenderTarget(Texture11& _tex);
+		void SetRenderTarget(RenderTarget11& _tex);
 
 		inline void SetBackColor(const ChVec4& _color)
 		{
@@ -300,12 +303,12 @@ namespace ChD3D11
 		//”Âƒ|ƒŠƒSƒ“•`‰æŒQ//
 
 		void Draw(
-			Texture11& _tex
+			TextureBase11& _tex
 			, PolygonBoard11& _polygon
 			, const ChMat_11& _mat = ChMat_11());
 
 		void Draw(
-			Texture11& _tex,
+			TextureBase11& _tex,
 			PolygonBoard11& _polygon,
 			VertexShader11& _userVS,
 			PixelShader11& _userPS,
@@ -313,7 +316,7 @@ namespace ChD3D11
 
 		//‰~Œ`‚Åw’è”ÍˆÍ‚ğ•`‰æ//
 		void DrawToCircleParsec(
-			Texture11& _tex
+			TextureBase11& _tex
 			, PolygonBoard11& _polygon
 			, const ChVec2& _startLine
 			, const float _drawRad
@@ -321,7 +324,7 @@ namespace ChD3D11
 
 		//lŠpŒ`‚Åw’è”ÍˆÍ‚ğ•`‰æ//
 		void DrawSquareParsec(
-			Texture11& _tex
+			TextureBase11& _tex
 			, PolygonBoard11& _polygon
 			, const ChVec2& _startLine
 			, const float _drawRad
@@ -332,12 +335,12 @@ namespace ChD3D11
 
 		//’Êí•`‰æ//
 		void Draw(
-			Texture11& _tex
+			TextureBase11& _tex
 			, Sprite11& _sprite
 			, const ChMat_11& _mat = ChMat_11());
 
 		void Draw(
-			Texture11& _tex,
+			TextureBase11& _tex,
 			Sprite11& _sprite,
 			VertexShader11& _userVS,
 			PixelShader11& _userPS,
@@ -345,7 +348,7 @@ namespace ChD3D11
 
 		//‰~Œ`‚Åw’è”ÍˆÍ‚ğ•`‰æ//
 		void DrawToCircleParsec(
-			Texture11& _tex
+			TextureBase11& _tex
 			, Sprite11& _sprite
 			, const ChVec2& _startLine
 			, const float _drawRad
@@ -353,7 +356,7 @@ namespace ChD3D11
 
 		//lŠpŒ`‚Åw’è”ÍˆÍ‚ğ•`‰æ//
 		void DrawSquareParsec(
-			Texture11& _tex
+			TextureBase11& _tex
 			, Sprite11& _sprite
 			, const ChVec2& _startLine
 			, const float _drawRad
@@ -383,7 +386,7 @@ namespace ChD3D11
 		PixelShader11 bpTex;
 
 		//ShadowMap¶¬—p//
-		Texture11 depthShadowTex;
+		RenderTarget11 depthShadowTex;
 
 		//ƒ‚ƒfƒ‹‚Ì‰æ‘œ‚ª‚È‚¢ê‡‚ÉƒZƒbƒg‚·‚é//
 		Texture11 whiteTex;
@@ -399,7 +402,7 @@ namespace ChD3D11
 		ID3D11DeviceContext* dc = nullptr;
 
 		//DepthStencilBuffer—p//
-		Texture11 dsBuffer;
+		DepthStencilTexture11 dsBuffer;
 
 		ShaderParts::DrawWindow window;
 
@@ -443,8 +446,8 @@ namespace ChD3D11
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		Texture11 out3D;
-		Texture11 out2D;
+		RenderTarget11 out3D;
+		RenderTarget11 out2D;
 
 		Sprite11 outSprite;
 
