@@ -57,9 +57,82 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using namespace ChD3D11;
 
-///////////////////////////////////////////////////////////////////////////////////////
-//Texture11Method//
-///////////////////////////////////////////////////////////////////////////////////////
+void TextureBase11::Release()
+{
+
+	if (ChPtr::NotNullCheck(sampler)) { sampler->Release(); sampler = nullptr; }
+	if (ChPtr::NotNullCheck(texView)) { texView->Release(); texView = nullptr; }
+	if (ChPtr::NotNullCheck(baseTex)) { baseTex->Release(); baseTex = nullptr; }
+
+	if (textureSize > 0)
+	{
+		textureSize < 2 ? delete pixelData : delete[] pixelData;
+		textureSize = 0;
+		pixelData = nullptr;
+	}
+}
+
+void TextureBase11::InitSampler()
+{
+
+	ZeroMemory(&sDesc, sizeof(D3D11_SAMPLER_DESC));
+	sDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	sDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	sDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+
+	UpdateSampler();
+}
+
+void TextureBase11::UpdateSampler()
+{
+	if (!sdUpdateFlg)return;
+
+	device->CreateSamplerState(&sDesc, &sampler);
+
+	sdUpdateFlg = false;
+}
+
+void TextureBase11::SetDrawData(ID3D11DeviceContext* _dc, unsigned int _textureNo)
+{
+	if (ChPtr::NullCheck(texView))return;
+
+	UpdateSampler();
+
+	_dc->PSSetShaderResources(_textureNo, 1, &texView);
+	_dc->PSSetSamplers(_textureNo, 1, &sampler);
+
+}
+
+void TextureBase11::CreateSRV()
+{
+
+
+	if (ChPtr::NullCheck(baseTex))return;
+
+	D3D11_TEXTURE2D_DESC txDesc;
+
+	baseTex->GetDesc(&txDesc);
+
+
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC desc;
+	desc.Format = txDesc.Format;
+	desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	desc.Texture2D.MipLevels = txDesc.MipLevels;
+	desc.Texture2D.MostDetailedMip = 0;
+
+	device->CreateShaderResourceView(baseTex, &desc, &texView);
+
+}
+
+void TextureBase11::Init(ID3D11Device* _device)
+{
+
+	InitSampler();
+
+	device = _device;
+}
 
 void Texture11::CreateTexture(const std::string& _texPath)
 {
@@ -70,8 +143,6 @@ void Texture11::CreateTexture(const std::string& _texPath)
 	CreateTexture(_texPath, tmpDevice);
 
 }
-
-///////////////////////////////////////////////////////////////////////////////////////
 
 void Texture11::CreateTexture(const std::string& _texPath, ID3D11Device* _device)
 {
@@ -94,8 +165,6 @@ void Texture11::CreateTexture(const std::string& _texPath, ID3D11Device* _device
 	Init(_device);
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
 void Texture11::CreateTexture(const std::wstring& _texPath)
 {
 
@@ -105,8 +174,6 @@ void Texture11::CreateTexture(const std::wstring& _texPath)
 
 	CreateTexture(_texPath, tmpDevice);
 }
-
-///////////////////////////////////////////////////////////////////////////////////////
 
 void Texture11::CreateTexture(const std::wstring& _texPath, ID3D11Device* _device)
 {
@@ -130,8 +197,6 @@ void Texture11::CreateTexture(const std::wstring& _texPath, ID3D11Device* _devic
 	Init(_device);
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
 void Texture11::CreateColorTexture(
 	const ChVec4& _color
 	, const unsigned long _width
@@ -146,8 +211,6 @@ void Texture11::CreateColorTexture(
 
 	CreateColorTexture(tmpDevice, _color,_width,_height, _CPUFlg);
 }
-
-///////////////////////////////////////////////////////////////////////////////////////
 
 void Texture11::CreateColorTexture(
 	ID3D11Device* _device
@@ -204,8 +267,6 @@ void Texture11::CreateColorTexture(
 	Init(_device);
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
 void Texture11::CreateColorTexture(
 	const ChVec4* _colorArray
 	, const unsigned long _width
@@ -220,8 +281,6 @@ void Texture11::CreateColorTexture(
 
 	CreateColorTexture(tmpDevice, _colorArray, _width, _height,_CPUFlg);
 }
-
-///////////////////////////////////////////////////////////////////////////////////////
 
 void Texture11::CreateColorTexture(
 	ID3D11Device* _device
@@ -278,9 +337,16 @@ void Texture11::CreateColorTexture(
 	Init(_device);
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
 
-void Texture11::CreateRenderTarget(
+void RenderTarget11::Release()
+{
+
+	if (ChPtr::NotNullCheck(rtView)) { rtView->Release(); rtView = nullptr; }
+
+	TextureBase11::Release();
+}
+
+void RenderTarget11::CreateRenderTarget(
 	const unsigned long _width
 	, const unsigned long _height
 	, const unsigned int _CPUFlg)
@@ -290,12 +356,10 @@ void Texture11::CreateRenderTarget(
 
 	ID3D11Device* tmpDevice = (D3D11Device());
 
-	CreateRenderTarget(tmpDevice, _width, _height,_CPUFlg);
+	CreateRenderTarget(tmpDevice, _width, _height, _CPUFlg);
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
-void Texture11::CreateRenderTarget(
+void RenderTarget11::CreateRenderTarget(
 	ID3D11Device* _device
 	, const unsigned long _width
 	, const unsigned long _height
@@ -337,9 +401,22 @@ void Texture11::CreateRenderTarget(
 	Init(_device);
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
+void RenderTarget11::ClearBackBuffer(ID3D11DeviceContext* _dc, const ChVec4& _backColor)
+{
+	if (ChPtr::NullCheck(_dc))return;
 
-void Texture11::CreateDepthBuffer(
+	_dc->ClearRenderTargetView(rtView, _backColor.val.GetVal());
+}
+
+void DepthStencilTexture11::Release()
+{
+
+	if (ChPtr::NotNullCheck(dsView)) { dsView->Release(); dsView = nullptr; }
+
+	TextureBase11::Release();
+}
+
+void DepthStencilTexture11::CreateDepthBuffer(
 	const float& _width
 	, const float& _height
 	, const unsigned int _CPUFlg)
@@ -349,12 +426,10 @@ void Texture11::CreateDepthBuffer(
 
 	ID3D11Device* tmpDevice = (D3D11Device());
 
-	CreateDepthBuffer(tmpDevice, _width, _height,_CPUFlg);
+	CreateDepthBuffer(tmpDevice, _width, _height, _CPUFlg);
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
-void Texture11::CreateDepthBuffer(
+void DepthStencilTexture11::CreateDepthBuffer(
 	ID3D11Device* _device
 	, const float& _width
 	, const float& _height
@@ -397,113 +472,11 @@ void Texture11::CreateDepthBuffer(
 	Init(_device);
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
-void Texture11::Release()
-{
-
-	if (ChPtr::NotNullCheck(sampler)) { sampler->Release(); sampler = nullptr; }
-	if (ChPtr::NotNullCheck(texView)) { texView->Release(); texView = nullptr; }
-	if (ChPtr::NotNullCheck(rtView)) { rtView->Release(); rtView = nullptr; }
-	if (ChPtr::NotNullCheck(dsView)) { dsView->Release(); dsView = nullptr; }
-	if (ChPtr::NotNullCheck(baseTex)) { baseTex->Release(); baseTex = nullptr; }
-
-	if (textureSize > 0) 
-	{
-		textureSize < 2 ? delete pixelData  : delete[] pixelData;
-		textureSize = 0;
-		pixelData = nullptr;
-	}
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-
-void Texture11::ClearBackBuffer(ID3D11DeviceContext* _dc, const ChVec4& _backColor)
-{
-	if (ChPtr::NullCheck(_dc))return;
-
-	_dc->ClearRenderTargetView(rtView,_backColor.val.GetVal());
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-
-void Texture11::ClearDepthBuffer(
+void DepthStencilTexture11::ClearDepthBuffer(
 	ID3D11DeviceContext* _dc
 	, const UINT _flgment)
 {
 	if (ChPtr::NullCheck(_dc))return;
 
 	_dc->ClearDepthStencilView(dsView, _flgment, 1.0f, 0);
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-
-void Texture11::InitSampler()
-{
-
-	ZeroMemory(&sDesc, sizeof(D3D11_SAMPLER_DESC));
-	sDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	sDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	sDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	sDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-
-	UpdateSampler();
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-
-void Texture11::UpdateSampler()
-{
-	if (!sdUpdateFlg)return;
-
-	device->CreateSamplerState(&sDesc, &sampler);
-
-	sdUpdateFlg = false;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-
-void Texture11::SetDrawData(ID3D11DeviceContext* _dc,unsigned int _textureNo)
-{
-	if (ChPtr::NullCheck(texView))return;
-
-	UpdateSampler();
-
-	_dc->PSSetShaderResources(_textureNo, 1, &texView);
-	_dc->PSSetSamplers(_textureNo, 1,&sampler);
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-
-void Texture11::CreateSRV()
-{
-
-
-	if (ChPtr::NullCheck(baseTex))return;
-
-	D3D11_TEXTURE2D_DESC txDesc;
-
-	baseTex->GetDesc(&txDesc);
-
-
-
-	D3D11_SHADER_RESOURCE_VIEW_DESC desc;
-	desc.Format = txDesc.Format;
-	desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	desc.Texture2D.MipLevels = txDesc.MipLevels;
-	desc.Texture2D.MostDetailedMip = 0;
-
-	device->CreateShaderResourceView(baseTex, &desc, &texView);
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-
-void Texture11::Init(ID3D11Device* _device)
-{
-
-	InitSampler();
-
-	device = _device;
 }

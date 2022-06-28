@@ -29,19 +29,74 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace ChD3D11
 {
 
-	class Texture11:public ChCp::Releaser
+	class TextureBase11 :public ChCp::Releaser
+	{
+	public://Init And Release//
+
+		void Release()override;
+
+	public://Set Functions//
+
+		inline void SetSampler(D3D11_SAMPLER_DESC& _sDesc)
+		{
+			sDesc = _sDesc;
+			sdUpdateFlg = true;
+		}
+
+		void SetDrawData(ID3D11DeviceContext* _dc, unsigned int _textureNo);
+
+	public://Get Functions//
+
+		ID3D11ShaderResourceView* GetSRView()
+		{
+			return texView;
+		}
+
+		ID3D11Resource* GetTex()
+		{
+			return baseTex;
+		}
+
+	public://Is Functionss//
+
+		ChStd::Bool IsTex() { return ChPtr::NotNullCheck(baseTex); }
+
+	protected:
+
+		void Init(ID3D11Device* _device);
+
+		void CreateSRV();
+
+		void InitSampler();
+
+		void UpdateSampler();
+
+		ChVec4 GetBitColor(
+			const unsigned int _width
+			, const unsigned int _height);
+
+		D3D11_SAMPLER_DESC sDesc;
+		ChStd::Bool sdUpdateFlg = true;
+		ID3D11SamplerState* sampler = nullptr;
+
+		ID3D11ShaderResourceView* texView = nullptr;
+
+		ID3D11Texture2D* baseTex = nullptr;
+		ChVec4* pixelData = nullptr;
+		unsigned long textureSize = 0;
+
+		ID3D11Device* device = nullptr;
+
+	};
+
+	class Texture11 :public TextureBase11
 	{
 	public:
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//ConstructerDestructer//
 
-		Texture11(){}
-
-		///////////////////////////////////////////////////////////////////////////////////////
-		//InitAndRelease//
-
-		void Release()override;
+		Texture11() {}
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//CreateFunction//
@@ -84,6 +139,20 @@ namespace ChD3D11
 			, const unsigned long _height
 			, const unsigned int _CPUFlg = 0);
 
+		///////////////////////////////////////////////////////////////////////////////////////
+
+	protected:
+
+	};
+
+	class RenderTarget11 :public TextureBase11
+	{
+	public://InitAndRelease//
+
+		void Release();
+
+	public://Create Functions//
+
 		void CreateRenderTarget(
 			ID3D11Device* _device
 			, const unsigned long _width
@@ -94,6 +163,30 @@ namespace ChD3D11
 			const unsigned long _width
 			, const unsigned long _height
 			, const unsigned int _CPUFlg = 0);
+
+	public://Get Functions//
+
+		inline ID3D11RenderTargetView* GetRTView()
+		{
+			return rtView;
+		}
+
+	public://Other Functions//
+
+		void ClearBackBuffer(ID3D11DeviceContext* _dc, const ChVec4& _buckColor);
+
+	private://Member Values//
+
+		ID3D11RenderTargetView* rtView = nullptr;
+	};
+
+	class DepthStencilTexture11 :public TextureBase11
+	{
+	public://Init And Release//
+
+		void Release()override;
+
+	public://Create Functions//
 
 		void CreateDepthBuffer(
 			ID3D11Device* _device
@@ -106,86 +199,25 @@ namespace ChD3D11
 			, const float& _height
 			, const unsigned int _CPUFlg = 0);
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
+	public://Other Functions//
 
-		inline void SetSampler(D3D11_SAMPLER_DESC& _sDesc)
-		{
-			sDesc = _sDesc;
-			sdUpdateFlg = true;
-		}
+		void ClearDepthBuffer(
+			ID3D11DeviceContext* _dc
+			, const UINT _flgment = D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL);
 
-		void SetDrawData(ID3D11DeviceContext* _dc, unsigned int _textureNo);
-
-		///////////////////////////////////////////////////////////////////////////////////////
-		//GetFunction//
-
-		ID3D11ShaderResourceView*  GetSRView()
-		{
-			return texView;
-		}
-
-		ID3D11RenderTargetView* GetRTView()
-		{
-			return rtView;
-		}
+	public://Get Functions//
 
 		ID3D11DepthStencilView* GetDSView()
 		{
 			return dsView;
 		}
 
-		ID3D11Resource* GetTex()
-		{
-			return baseTex;
-		}
+	private://Member Values//
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//IsFunction//
-
-		ChStd::Bool IsTex() { return ChPtr::NotNullCheck(baseTex); }
-
-		///////////////////////////////////////////////////////////////////////////////////////
-
-		void ClearBackBuffer(ID3D11DeviceContext* _dc, const ChVec4& _buckColor);
-
-		void ClearDepthBuffer(
-			ID3D11DeviceContext* _dc
-			, const UINT _flgment = D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL);
-
-		///////////////////////////////////////////////////////////////////////////////////////
-
-	protected:
-
-		void Init(ID3D11Device* _device);
-
-		void CreateSRV();
-
-		void InitSampler();
-
-		void UpdateSampler();
-
-		ChVec4 GetBitColor(
-			const unsigned int _width
-			, const unsigned int _height);
-
-		D3D11_SAMPLER_DESC sDesc;
-		ChStd::Bool sdUpdateFlg = true;
-		ID3D11SamplerState* sampler = nullptr;
-
-		ID3D11ShaderResourceView* texView = nullptr;
-		ID3D11RenderTargetView* rtView = nullptr;
 		ID3D11DepthStencilView* dsView = nullptr;
 
-		ID3D11Texture2D* baseTex = nullptr;
-		ChVec4* pixelData = nullptr;
-		unsigned long textureSize = 0;
-
-		ID3D11Device* device = nullptr;
-
-		private:
-
 	};
+
 
 }
 #endif
