@@ -10,30 +10,27 @@ using namespace ChCpp;
 //BaseFrame9ƒƒ\ƒbƒh
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void BaseFrameManager::Update()
+void FrameList::Update()
 {
 	if (nowFrame == nullptr)return;
 	nowFrame->Update();
 
-	Chenges();
+	Changes();
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
-void BaseFrameManager::ChengeFrame(const std::string& _frameName)
+void FrameList::ChangeFrame(const unsigned long _frameNo)
 {
-	if (frameList.find(_frameName) == frameList.end())return;
+	if (frameList.size() <= _frameNo)return;
 
-	nextFrame = frameList[_frameName]();
+	nextFrame = frameList[_frameNo]();
 
-	nextFrameName = _frameName;
+	nextFrameNo = _frameNo;
+
+	nextFrame->SetManager(this);
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
-void BaseFrameManager::Chenges()
+void FrameList::Changes()
 {
-
 	if (nextFrame == nullptr)return;
 
 	if (nowFrame != nullptr)
@@ -41,12 +38,34 @@ void BaseFrameManager::Chenges()
 		nowFrame->Release();
 	}
 
-	nowFrameName = nextFrameName;
-
+	nowFrameNo = nextFrameNo;
 	nowFrame = nextFrame;
 
 	nowFrame->Init();
 
 	nextFrame = nullptr;
-	nextFrameName = "";
+	nextFrameNo = -1;
+}
+
+void FrameManager::ChangeFrame(const std::string& _frameName)
+{
+	if (frameNames.find(_frameName) == frameNames.end())return;
+
+	FrameList::ChangeFrame(frameNames[_frameName]);
+}
+
+std::string FrameManager::GetNowFrameName() 
+{
+	if (frameNames.empty())return "";
+
+	if (frameNames.size() <= nowFrameNo)return "";
+
+	for (auto&& name : frameNames)
+	{
+		if (name.second != nowFrameNo)continue;
+
+		return name.first;
+	}
+
+	return "";
 }
