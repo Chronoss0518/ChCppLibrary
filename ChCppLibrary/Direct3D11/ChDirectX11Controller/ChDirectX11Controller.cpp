@@ -93,7 +93,7 @@ void DirectX3D11::CreateDevice(
 		NULL
 		, D3D_DRIVER_TYPE_HARDWARE
 		, NULL
-		, D3D11_CREATE_DEVICE_DEBUG
+		, NULL
 		//,0
 		, lv
 		, 1
