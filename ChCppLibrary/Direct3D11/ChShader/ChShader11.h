@@ -274,8 +274,6 @@ namespace ChD3D11
 		//•`‰æŠJn‘O‚ÉŒÄ‚ÔŠÖ”//
 		void DrawStart();
 
-		///////////////////////////////////////////////////////////////////////////////////
-
 		//•`‰æI—¹‚ÉŒÄ‚ÔŠÖ”//
 		void DrawEnd();
 
@@ -425,7 +423,7 @@ namespace ChD3D11
 
 		ID3D11RasterizerState* rasteriser = nullptr;
 
-		ChStd::Bool rasteriserUpdate = false;
+		ChStd::Bool rasteriserUpdate = true;
 
 		//”wŒiF//
 		ChVec4 backColor = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);

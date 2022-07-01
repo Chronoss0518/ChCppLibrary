@@ -48,7 +48,6 @@ void ShaderController11::Init(
 	, const ChVec2& _windSize) 
 {
 	Init(_device, _dc, _SC, _windSize.w, _windSize.h);
-
 }
 
 
@@ -105,28 +104,7 @@ void ShaderController11::Init(
 
 	bdObject.windSize = ChVec4(_width, _height, 0.0f, 0.0f);
 
-
 	dsBuffer.CreateDepthBuffer(_device, _width, _height);
-
-
-	//描画方法//
-	D3D11_RASTERIZER_DESC rasteriserDesc
-	{
-		fill
-		,cull
-		,true
-		,0
-		,0.0f
-		,0.0f
-		,false
-		,false
-		,false
-		,false
-	};
-
-	device->CreateRasterizerState(&rasteriserDesc, &rasteriser);
-
-	dc->RSSetState(rasteriser);
 
 	out3D.CreateRenderTarget(
 		_device,
@@ -190,21 +168,21 @@ void ShaderController11::SetDrawDatas()
 
 	if (rasteriserUpdate)
 	{
-		rasteriser->Release();
+		if(ChPtr::NotNullCheck(rasteriser))rasteriser->Release();
 
 		//描画方法//
 		D3D11_RASTERIZER_DESC RasteriserDesc
 		{
-			fill
-			,cull
-			,true
-			,0
-			,0.0f
-			,0.0f
-			,false
-			,false
-			,false
-			,false
+			fill,
+			cull,
+			true,
+			0,
+			0.0f,
+			0.0f,
+			false,
+			false,
+			false,
+			false
 		};
 
 
@@ -229,7 +207,6 @@ void ShaderController11::DrawStart()
 	if (!*this)return;
 	if (drawFlg)return;
 
-
 	if (!renderTargets.empty())
 	{
 		tmpView = &renderTargets[0];
@@ -239,8 +216,6 @@ void ShaderController11::DrawStart()
 	}
 	else
 	{
-		//window.SetDrawData(dc, dsBuffer.GetDSView());
-
 		window.ClearView(dc, backColor);
 
 		dsBuffer.ClearDepthBuffer(dc);
@@ -249,8 +224,6 @@ void ShaderController11::DrawStart()
 
 		dc->ClearRenderTargetView(out3D.GetRTView(), backColor.val.GetVal());
 		dc->ClearRenderTargetView(out2D.GetRTView(), tmpCol.val.GetVal());
-
-		//out3D.SetDrawData(dc, 12);
 
 		rtDrawFlg = false;
 	}
@@ -293,10 +266,8 @@ void ShaderController11::DrawEnd()
 	drawFlg = false;
 
 	if (rtDrawFlg)return;
-	
 
 	window.SetDrawData(dc, nullptr);
-
 
 	spvTex.SetShader(dc);
 
@@ -324,7 +295,7 @@ void ShaderController11::DrawEnd()
 
 	outSprite.SetDrawData(dc);
 
-	// バックバッファをプライマリバッファにコピー
+	// バックバッファをプライマリバッファにコピー//
 	window.Draw();
 
 }
@@ -340,25 +311,22 @@ void ShaderController11::Draw(
 	if (!drawFlg)return;
 	if (!_mesh.IsMesh())return;
 
+	if (!rtDrawFlg)
+	{
+		ID3D11RenderTargetView* tmp = out3D.GetRTView();
+		dc->OMSetRenderTargets(1, &tmp, dsBuffer.GetDSView());
+	}
+
 	cdObject.modelMat = _mat;
 
 	bvModel.SetShader(dc);
 
 	bpModel.SetShader(dc);
 
-
 	charaData.UpdateResouce(dc, &cdObject);
 
 	charaData.SetToVertexShader(dc, 1);
 	charaData.SetToPixelShader(dc, 1);
-
-
-	if (!rtDrawFlg)
-	{
-		ID3D11RenderTargetView* tmp = out3D.GetRTView();
-		dc->OMSetRenderTargets(1, &tmp, dsBuffer.GetDSView());
-
-	}
 
 	_mesh.SetDrawData(dc);
 
@@ -379,6 +347,13 @@ void ShaderController11::Draw(
 	if (!_userVS.IsInit())return;
 	if (!_userPS.IsInit())return;
 
+	if (!rtDrawFlg)
+	{
+		ID3D11RenderTargetView* tmp = out3D.GetRTView();
+		dc->OMSetRenderTargets(1, &tmp, dsBuffer.GetDSView());
+
+	}
+
 #if TEST_FLG
 
 	cdObject.modelMat = _mat;
@@ -393,13 +368,6 @@ void ShaderController11::Draw(
 	_userVS.SetShader(dc);
 
 	_userPS.SetShader(dc);
-
-	if (!rtDrawFlg)
-	{
-		ID3D11RenderTargetView* tmp = out3D.GetRTView();
-		dc->OMSetRenderTargets(1, &tmp, dsBuffer.GetDSView());
-
-	}
 
 	_mesh.SetDrawData(dc);
 
@@ -419,12 +387,10 @@ void ShaderController11::DrawOutLine(
 	if (!drawFlg)return;
 	if (_Mesh.IsMesh())return;
 
-
 	if (!rtDrawFlg)
 	{
 		ID3D11RenderTargetView* tmp = out3D.GetRTView();
 		dc->OMSetRenderTargets(1, &tmp, dsBuffer.GetDSView());
-
 	}
 
 	D3D11_CULL_MODE tmpCull = GetCullMode();
@@ -451,7 +417,6 @@ void ShaderController11::Draw(
 	{
 		ID3D11RenderTargetView* tmp = out3D.GetRTView();
 		dc->OMSetRenderTargets(1, &tmp, dsBuffer.GetDSView());
-
 	}
 
 	cdObject.modelMat = _mat;
@@ -491,7 +456,6 @@ void ShaderController11::Draw(
 	{
 		ID3D11RenderTargetView* tmp = out3D.GetRTView();
 		dc->OMSetRenderTargets(1, &tmp, dsBuffer.GetDSView());
-
 	}
 
 #if TEST_FLG
