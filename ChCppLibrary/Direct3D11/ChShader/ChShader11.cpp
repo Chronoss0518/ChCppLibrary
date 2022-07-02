@@ -80,7 +80,6 @@ void ShaderController11::Init(
 
 	normalTex.CreateColorTexture(device, ChVec4(0.5f, 1.0f, 0.5f, 1.0f), 1, 1);
 
-
 	baseData.CreateBuffer(_device, 0);
 
 	charaData.CreateBuffer(_device, 1);
@@ -88,7 +87,6 @@ void ShaderController11::Init(
 	polygonData.CreateBuffer(_device, 1);
 
 	boneData.CreateBuffer(_device, 11);
-
 
 	bdObject.projMat.CreateProjectionMat(
 		ChMath::ToRadian(60.0f)
@@ -123,12 +121,12 @@ void ShaderController11::Init(
 	window.SetSwapEffect(DXGI_SWAP_EFFECT_DISCARD);
 
 	view.SetDrawDepth(0.0f, 1.0f);
-	view.SetWindPos(ChVec2(0.0f, 0.0f));
-	view.SetWindSize(ChVec2(_width, _height));
+	view.SetTopLeftPos(ChVec2(0.0f, 0.0f));
+	view.SetSize(ChVec2(_width, _height));
 
 	lightDatas.Init(_device);
 
-
+	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	SetInitFlg(true);
 }
@@ -153,7 +151,6 @@ void ShaderController11::SetRenderTarget(RenderTarget11& _tex)
 	if (!*this)return;
 	if (drawFlg)return;
 	if (ChPtr::NullCheck(_tex.GetRTView()))return;
-
 
 	renderTargets.push_back(const_cast<ID3D11RenderTargetView*>(_tex.GetRTView()));
 
@@ -181,10 +178,9 @@ void ShaderController11::SetDrawDatas()
 			0.0f,
 			false,
 			false,
-			false,
+			true,
 			false
 		};
-
 
 		device->CreateRasterizerState(&RasteriserDesc, &rasteriser);
 
@@ -193,7 +189,6 @@ void ShaderController11::SetDrawDatas()
 		rasteriserUpdate = false;
 
 	}
-
 
 	dc->RSSetState(rasteriser);
 
@@ -211,7 +206,7 @@ void ShaderController11::DrawStart()
 	{
 		tmpView = &renderTargets[0];
 		dc->OMSetRenderTargets(renderTargets.size(), tmpView, nullptr);
-		dc->ClearRenderTargetView(renderTargets[0], backColor.val.GetVal());
+
 		rtDrawFlg = true;
 	}
 	else
@@ -220,19 +215,16 @@ void ShaderController11::DrawStart()
 
 		dsBuffer.ClearDepthBuffer(dc);
 
-		ChVec4 tmpCol = ChVec4(0.0f, 0.0f, 0.0f,0.0f);
-
-		dc->ClearRenderTargetView(out3D.GetRTView(), backColor.val.GetVal());
-		dc->ClearRenderTargetView(out2D.GetRTView(), tmpCol.val.GetVal());
+		out3D.SetBackColor(dc, backColor);
+		out2D.SetBackColor(dc, ChVec4(0.0f, 0.0f, 0.0f, 0.0f));
 
 		rtDrawFlg = false;
+
 	}
 
 	view.SetDrawData(dc);
 
 	lightDatas.SetDrawData(dc);
-
-	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	SetDrawDatas();
 
