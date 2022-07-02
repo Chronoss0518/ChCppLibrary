@@ -401,7 +401,7 @@ void RenderTarget11::CreateRenderTarget(
 	Init(_device);
 }
 
-void RenderTarget11::ClearBackBuffer(ID3D11DeviceContext* _dc, const ChVec4& _backColor)
+void RenderTarget11::SetBackColor(ID3D11DeviceContext* _dc, const ChVec4& _backColor)
 {
 	if (ChPtr::NullCheck(_dc))return;
 
