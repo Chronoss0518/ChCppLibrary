@@ -13,9 +13,9 @@ namespace ChD3D11
 			///////////////////////////////////////////////////////////////////////////////////
 			//SetFunction//
 
-			inline void SetWindPos(const ChVec2& _Pos) { View.TopLeftX = _Pos.x; View.TopLeftY = _Pos.y; }
+			inline void SetTopLeftPos(const ChVec2& _Pos) { View.TopLeftX = _Pos.x; View.TopLeftY = _Pos.y; }
 
-			inline void SetWindSize(const ChVec2& _Size) { View.Width = _Size.x; View.Height = _Size.y; }
+			inline void SetSize(const ChVec2& _Size) { View.Width = _Size.x; View.Height = _Size.y; }
 
 			inline void SetDrawDepth(const float _Min,const float _Max) { View.MinDepth = _Min; View.MaxDepth = _Max; }
 
