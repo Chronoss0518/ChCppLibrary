@@ -164,6 +164,54 @@ namespace ChD3D11
 			lightDatas.SetUseLightFlg(_flg);
 		}
 
+		inline void SetLightDir(const ChVec3& _dir)
+		{
+			if (!*this)return;
+			if (drawFlg)return;
+
+			lightDatas.SetLightDir(_dir);
+		}
+
+		inline void SetLightAmbientPow(const float _amb)
+		{
+			if (!*this)return;
+			if (drawFlg)return;
+
+			lightDatas.SetLightAmbientPow(_amb);
+		}
+
+		inline void SetPLightPos(const ChVec3& _pos, const unsigned long _no = 0)
+		{
+			if (!*this)return;
+			if (drawFlg)return;
+
+			lightDatas.SetPLightPos(_pos, _no);
+		}
+
+		inline void SetPLightLen(const float _len, const unsigned long _no = 0)
+		{
+			if (!*this)return;
+			if (drawFlg)return;
+
+			lightDatas.SetPLightLen(_len, _no);
+		}
+
+		inline void SetPLightDiffuse(const ChVec3& _dif, const unsigned long _no = 0)
+		{
+			if (!*this)return;
+			if (drawFlg)return;
+
+			lightDatas.SetPLightDiffuse(_dif, _no);
+		}
+
+		inline void SetPLightUseFlg(const ChStd::Bool& _flg, const unsigned long _no = 0)
+		{
+			if (!*this)return;
+			if (drawFlg)return;
+
+			lightDatas.SetPLightUseFlg(_flg, _no);
+		}
+
 		inline void SetCamPos(const ChVec3& _camPos)
 		{
 			if (!*this)return;
@@ -172,12 +220,12 @@ namespace ChD3D11
 			lightDatas.SetCamPos(_camPos);
 		}
 
-		inline void SetLightData(const ShaderParts::ChLightHeader _ld)
+		inline void SetLightData(const ShaderParts::ChLightHeader::LightData& _ld)
 		{
 			if (!*this)return;
 			if (drawFlg)return;
 
-			lightDatas = _ld;
+			lightDatas.SetLightData(_ld);
 		}
 
 		inline void SetImportLightPowMap(ChPtr::Shared<Texture11>& _lightPowMap)
@@ -194,8 +242,6 @@ namespace ChD3D11
 		inline D3D11_CULL_MODE GetCullMode() { return cull; }
 
 		inline D3D11_FILL_MODE GetFillMode() { return fill; }
-
-		inline ShaderParts::ChLightHeader GetLightDatas() { return lightDatas; }
 
 		inline BaseDatas GetBaseData() { return bdObject; }
 
