@@ -72,7 +72,7 @@ namespace ChD3D11
 			ID3D11RenderTargetView* bbTargetView = nullptr;
 		};
 
-		class ChLightHeader final :public ChCp::Initializer,public ChCp::Releaser
+		class LightHeader final :public ChCp::Initializer,public ChCp::Releaser
 		{
 		public:
 
@@ -104,7 +104,7 @@ namespace ChD3D11
 			///////////////////////////////////////////////////////////////////////////////////
 			//InitAndRelease//
 
-			void Init(ID3D11Device* _device);
+			void Init(ID3D11Device* _device,const unsigned long _bufferRegisterNo,const unsigned long _textureRegisterNo);
 
 			void Release()override;
 
@@ -139,6 +139,8 @@ namespace ChD3D11
 
 			void SetImportLightPowMap(ChPtr::Shared<Texture11>& _lightPowMap);
 
+			void SetTexture(ID3D11DeviceContext* _dc);
+
 			///////////////////////////////////////////////////////////////////////////////////
 			//GetFunction//
 
@@ -149,8 +151,6 @@ namespace ChD3D11
 			void ClearImportLightPowMap();
 
 		private:
-
-			void SetTexture(ID3D11DeviceContext* _dc);
 
 			void Update(ID3D11DeviceContext* _dc);
 
@@ -169,6 +169,7 @@ namespace ChD3D11
 
 			Texture11 lightPow;
 			ChPtr::Shared<Texture11>importLightPowMap;
+			unsigned long textureRegisterNo = 0;
 		};
 
 	}

@@ -91,17 +91,17 @@ void DrawWindow::Draw()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
-//ChLightHeader Method
+//LightHeader Method
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::Init(ID3D11Device* _device)
+void LightHeader::Init(ID3D11Device* _device, const unsigned long _bufferRegisterNo, const unsigned long _textureRegisterNo)
 {
 	Release();
 
 	device = _device;
 
-	buf.CreateBuffer(_device, 10);
-
+	buf.CreateBuffer(_device, _bufferRegisterNo);
+	textureRegisterNo = _textureRegisterNo;
 
 	{
 		ChVec4 tmpCol[256];
@@ -130,7 +130,7 @@ void ChLightHeader::Init(ID3D11Device* _device)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::Release()
+void LightHeader::Release()
 {
 	if (!*this)return;
 
@@ -139,7 +139,7 @@ void ChLightHeader::Release()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::SetLightDiffuse(const ChVec3& _dif)
+void LightHeader::SetLightDiffuse(const ChVec3& _dif)
 {
 	if (!*this)return;
 
@@ -150,7 +150,7 @@ void ChLightHeader::SetLightDiffuse(const ChVec3& _dif)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::SetUseLightFlg(const ChStd::Bool& _flg)
+void LightHeader::SetUseLightFlg(const ChStd::Bool& _flg)
 {
 	if (!*this)return;
 
@@ -161,7 +161,7 @@ void ChLightHeader::SetUseLightFlg(const ChStd::Bool& _flg)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::SetLightDir(const ChVec3& _dir)
+void LightHeader::SetLightDir(const ChVec3& _dir)
 {
 	if (!*this)return;
 
@@ -172,7 +172,7 @@ void ChLightHeader::SetLightDir(const ChVec3& _dir)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::SetLightAmbientPow(const float _amb)
+void LightHeader::SetLightAmbientPow(const float _amb)
 {
 	if (!*this)return;
 
@@ -183,7 +183,7 @@ void ChLightHeader::SetLightAmbientPow(const float _amb)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::SetPLightPos(const ChVec3& _pos, const unsigned long _no)
+void LightHeader::SetPLightPos(const ChVec3& _pos, const unsigned long _no)
 {
 	if (!*this)return;
 	if (_no > 10)return;
@@ -195,7 +195,7 @@ void ChLightHeader::SetPLightPos(const ChVec3& _pos, const unsigned long _no)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::SetPLightLen(const float _len, const unsigned long _no)
+void LightHeader::SetPLightLen(const float _len, const unsigned long _no)
 {
 	if (!*this)return;
 	if (_no > 10)return;
@@ -207,7 +207,7 @@ void ChLightHeader::SetPLightLen(const float _len, const unsigned long _no)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::SetPLightDiffuse(const ChVec3& _dif, const unsigned long _no)
+void LightHeader::SetPLightDiffuse(const ChVec3& _dif, const unsigned long _no)
 {
 	if (!*this)return;
 	if (_no > 10)return;
@@ -219,7 +219,7 @@ void ChLightHeader::SetPLightDiffuse(const ChVec3& _dif, const unsigned long _no
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::SetPLightUseFlg(const ChStd::Bool& _flg, const unsigned long _no)
+void LightHeader::SetPLightUseFlg(const ChStd::Bool& _flg, const unsigned long _no)
 {
 	if (!*this)return;
 	if (_no > 10)return;
@@ -231,7 +231,7 @@ void ChLightHeader::SetPLightUseFlg(const ChStd::Bool& _flg, const unsigned long
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::SetCamPos(const ChVec3& _camPos)
+void LightHeader::SetCamPos(const ChVec3& _camPos)
 {
 	if (!*this)return;
 
@@ -242,7 +242,7 @@ void ChLightHeader::SetCamPos(const ChVec3& _camPos)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::SetLightData(const ChLightHeader::LightData& _ld)
+void LightHeader::SetLightData(const LightHeader::LightData& _ld)
 {
 	if (!*this)return;
 
@@ -258,41 +258,41 @@ void ChLightHeader::SetLightData(const ChLightHeader::LightData& _ld)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::SetPSDrawData(ID3D11DeviceContext* _dc)
+void LightHeader::SetPSDrawData(ID3D11DeviceContext* _dc)
 {
 	if (!*this)return;
 
 	Update(_dc);
 
-	buf.SetToPixelShader(_dc, 1);
+	buf.SetToPixelShader(_dc);
 
 	SetTexture(_dc);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::SetVSDrawData(ID3D11DeviceContext* _dc)
+void LightHeader::SetVSDrawData(ID3D11DeviceContext* _dc)
 {
 	if (!*this)return;
 
 	Update(_dc);
 
-	buf.SetToVertexShader(_dc, 1);
+	buf.SetToVertexShader(_dc);
 
 	SetTexture(_dc);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::SetDrawData(ID3D11DeviceContext* _dc)
+void LightHeader::SetDrawData(ID3D11DeviceContext* _dc)
 {
 
 	if (!*this)return;
 
 	Update(_dc);
 
-	buf.SetToVertexShader(_dc, 1);
-	buf.SetToPixelShader(_dc, 1);
+	buf.SetToVertexShader(_dc);
+	buf.SetToPixelShader(_dc);
 
 
 	SetTexture(_dc);
@@ -300,7 +300,7 @@ void ChLightHeader::SetDrawData(ID3D11DeviceContext* _dc)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::SetImportLightPowMap(ChPtr::Shared<Texture11>& _lightPowMap)
+void LightHeader::SetImportLightPowMap(ChPtr::Shared<Texture11>& _lightPowMap)
 {
 	if (!*this)return;
 
@@ -309,7 +309,7 @@ void ChLightHeader::SetImportLightPowMap(ChPtr::Shared<Texture11>& _lightPowMap)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChLightHeader::LightData ChLightHeader::GetLightData()
+LightHeader::LightData LightHeader::GetLightData()
 {
 	LightData Out;
 
@@ -328,7 +328,7 @@ ChLightHeader::LightData ChLightHeader::GetLightData()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::ClearImportLightPowMap()
+void LightHeader::ClearImportLightPowMap()
 {
 	if (!*this)return;
 
@@ -337,7 +337,7 @@ void ChLightHeader::ClearImportLightPowMap()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::SetTexture(ID3D11DeviceContext* _dc)
+void LightHeader::SetTexture(ID3D11DeviceContext* _dc)
 {
 
 	Texture11* tmpLightPow = &lightPow;
@@ -350,12 +350,12 @@ void ChLightHeader::SetTexture(ID3D11DeviceContext* _dc)
 		}
 	}
 
-	tmpLightPow->SetDrawData(_dc, 10);
+	tmpLightPow->SetDrawData(_dc, textureRegisterNo);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLightHeader::Update(ID3D11DeviceContext* _dc)
+void LightHeader::Update(ID3D11DeviceContext* _dc)
 {
 	if (!updateFlg)return;
 
