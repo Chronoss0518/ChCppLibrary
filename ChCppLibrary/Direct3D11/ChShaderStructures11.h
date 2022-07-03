@@ -265,9 +265,7 @@ namespace ChD3D11
 	template<class content>
 	class ConstantBuffer11 :public ShaderObjectBase11
 	{
-	public:
-		///////////////////////////////////////////////////////////////////////////////////////
-		//CreateFunction//
+	public://Create Functions//
 
 		//Createを呼ぶ前に必要な場合はフラグ関係を操作するメソッドを呼びます//
 		inline void CreateBuffer(
@@ -293,8 +291,9 @@ namespace ChD3D11
 			Init();
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
+	public://Set Functions//
+
+		inline void SetRegisterNo(const unsigned long _registerNo) { registerNo = _registerNo; }
 
 		inline void SetToVertexShader(
 			ID3D11DeviceContext* _dc,
@@ -307,9 +306,6 @@ namespace ChD3D11
 
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
-
 		inline void SetToPixelShader(
 			ID3D11DeviceContext* _dc,
 			const unsigned long updateCount = 1)
@@ -320,6 +316,10 @@ namespace ChD3D11
 			_dc->PSSetConstantBuffers(registerNo, updateCount, &buf);
 
 		}
+
+	public://Get Functions//
+
+		inline unsigned long GetRegisterNo() { return registerNo; }
 
 	protected:
 
