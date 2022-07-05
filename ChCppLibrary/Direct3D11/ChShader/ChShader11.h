@@ -16,8 +16,8 @@ namespace ChD3D11
 	class Sprite11;
 	class PolygonBoard11;
 
-	using DLight = ShaderParts::ChLightHeader::DirectionalLight;
-	using PLight = ShaderParts::ChLightHeader::PointLight;
+	using DLight = ShaderParts::LightHeader::DirectionalLight;
+	using PLight = ShaderParts::LightHeader::PointLight;
 
 	//※LightはShader内のBaseLightとPointLightを利用してください//
 	//独自で構築しているShaderクラス//
@@ -220,7 +220,7 @@ namespace ChD3D11
 			lightDatas.SetCamPos(_camPos);
 		}
 
-		inline void SetLightData(const ShaderParts::ChLightHeader::LightData& _ld)
+		inline void SetLightData(const ShaderParts::LightHeader::LightData& _ld)
 		{
 			if (!*this)return;
 			if (drawFlg)return;
@@ -406,7 +406,7 @@ namespace ChD3D11
 
 		ShaderParts::ViewPort view;
 		
-		ShaderParts::ChLightHeader lightDatas;
+		ShaderParts::LightHeader lightDatas;
 
 		//描画可能フラグ//
 		ChStd::Bool drawFlg = false;

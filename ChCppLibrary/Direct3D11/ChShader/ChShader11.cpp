@@ -124,7 +124,7 @@ void ShaderController11::Init(
 	view.SetTopLeftPos(ChVec2(0.0f, 0.0f));
 	view.SetSize(ChVec2(_width, _height));
 
-	lightDatas.Init(_device);
+	lightDatas.Init(_device,10,10);
 
 	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -227,9 +227,6 @@ void ShaderController11::DrawStart()
 	lightDatas.SetDrawData(dc);
 
 	SetDrawDatas();
-
-	//bdObject.projMat = bdObject.projMat.Transpose();
-	//bdObject.viewMat = bdObject.viewMat.Transpose();
 
 	if (bdUpdateFlg)
 	{
