@@ -31,12 +31,12 @@ namespace ChStd
 #ifdef _WIN32
 	
 	//Windowsで使用される相対パス・絶対パスの最大文字数//
-	static const unsigned short W_MAX_PATH_LEN = 258;
+	static constexpr unsigned short W_MAX_PATH_LEN = 258;
 
 #elif _WIN64
 
 	//Windowsで使用される相対パス・絶対パスの最大文字数//
-	static const unsigned short W_MAX_PATH_LEN = 258;
+	static constexpr unsigned short W_MAX_PATH_LEN = 258;
 
 #endif
 
@@ -44,15 +44,15 @@ namespace ChStd
 	//StanderdFunction
 	///////////////////////////////////////////////////////////////////////////////////////
 
-	const static unsigned char MAX_CHAR_BIT = 0x80;
-	const static unsigned short MAX_SHORT_BIT = 0x8000;
-	const static unsigned long MAX_LONG_BIT = 0x80000000;
-	const static unsigned long long MAX_LLONG_BIT = 0x8000000000000000;
+	constexpr static unsigned char MAX_CHAR_BIT = 0x80;
+	constexpr static unsigned short MAX_SHORT_BIT = 0x8000;
+	constexpr static unsigned long MAX_LONG_BIT = 0x80000000;
+	constexpr static unsigned long long MAX_LLONG_BIT = 0x8000000000000000;
 
 #ifdef _WIN64
-	const static unsigned int W_MAX_INT_BIT = MAX_LONG_BIT;
+	constexpr static unsigned int W_MAX_INT_BIT = MAX_LONG_BIT;
 #else
-	const static unsigned int W_MAX_INT_BIT = MAX_SHORT_BIT;
+	constexpr static unsigned int W_MAX_INT_BIT = MAX_SHORT_BIT;
 #endif
 
 	//EnumClassを基底型へキャストするためのクラス//

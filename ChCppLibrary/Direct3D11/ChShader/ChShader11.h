@@ -9,12 +9,15 @@ namespace ChD3D11
 	class DirectX3D11;
 
 	class Mesh11;
+	class TextureBase11;
 	class Texture11;
+	class RenderTarget11;
+	class DepthStencilTexture11;
 	class Sprite11;
 	class PolygonBoard11;
 
-	using DLight = ShaderParts::ChLightHeader::DirectionalLight;
-	using PLight = ShaderParts::ChLightHeader::PointLight;
+	using DLight = ShaderParts::LightHeader::DirectionalLight;
+	using PLight = ShaderParts::LightHeader::PointLight;
 
 	//※LightはShader内のBaseLightとPointLightを利用してください//
 	//独自で構築しているShaderクラス//
@@ -46,19 +49,13 @@ namespace ChD3D11
 			, const float& _windWitdh
 			, const float& _windHeight);
 
-	protected:
-
-		void InitShader();
-
-	public:
-
 		void Release()override;
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
 		//描画させるレンダーターゲットを登録する//
-		void SetRenderTarget(Texture11& _tex);
+		void SetRenderTarget(RenderTarget11& _tex);
 
 		inline void SetBackColor(const ChVec4& _color)
 		{
@@ -89,7 +86,7 @@ namespace ChD3D11
 		}
 
 		//描画をする際に利用するフィルタイプをセット//
-		inline void SetFilMode(const D3D11_FILL_MODE _fill)
+		inline void SetFillMode(const D3D11_FILL_MODE _fill)
 		{
 			if (!*this)return;
 			if (drawFlg)return;
@@ -138,7 +135,7 @@ namespace ChD3D11
 			if (!*this)return;
 			if (drawFlg)return;
 
-			view.SetWindPos(_pos);
+			view.SetTopLeftPos(_pos);
 
 		}
 
@@ -148,7 +145,7 @@ namespace ChD3D11
 			if (!*this)return;
 			if (drawFlg)return;
 
-			view.SetWindSize(_size);
+			view.SetSize(_size);
 		}
 
 		inline void SetLightDiffuse(const ChVec3& _dif)
@@ -223,7 +220,7 @@ namespace ChD3D11
 			lightDatas.SetCamPos(_camPos);
 		}
 
-		inline void SetLightData(const ShaderParts::ChLightHeader::LightData& _ld)
+		inline void SetLightData(const ShaderParts::LightHeader::LightData& _ld)
 		{
 			if (!*this)return;
 			if (drawFlg)return;
@@ -245,6 +242,14 @@ namespace ChD3D11
 		inline D3D11_CULL_MODE GetCullMode() { return cull; }
 
 		inline D3D11_FILL_MODE GetFillMode() { return fill; }
+
+		inline BaseDatas GetBaseData() { return bdObject; }
+
+		inline CharaDatas GetCharaData() { return cdObject; }
+
+		inline PolygonDatas GetPolygonData() { return pdObject; }
+
+		inline BoneDatas GetBoneData() { return bodObject; }
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
@@ -269,8 +274,6 @@ namespace ChD3D11
 		//描画開始前に呼ぶ関数//
 		void DrawStart();
 
-		///////////////////////////////////////////////////////////////////////////////////
-
 		//描画終了時に呼ぶ関数//
 		void DrawEnd();
 
@@ -280,6 +283,12 @@ namespace ChD3D11
 		void Draw(
 			Mesh11& _mesh
 			, const ChMat_11& _mat = ChMat_11());
+
+		void Draw(
+			Mesh11& _mesh,
+			VertexShader11& _userVS,
+			PixelShader11& _userPS,
+			const ChMat_11& _mat = ChMat_11());
 
 		//OutLine描画//
 		void DrawOutLine(
@@ -292,13 +301,20 @@ namespace ChD3D11
 		//板ポリゴン描画群//
 
 		void Draw(
-			Texture11& _tex
+			TextureBase11& _tex
 			, PolygonBoard11& _polygon
 			, const ChMat_11& _mat = ChMat_11());
 
+		void Draw(
+			TextureBase11& _tex,
+			PolygonBoard11& _polygon,
+			VertexShader11& _userVS,
+			PixelShader11& _userPS,
+			const ChMat_11& _mat = ChMat_11());
+
 		//円形で指定範囲を描画//
 		void DrawToCircleParsec(
-			Texture11& _tex
+			TextureBase11& _tex
 			, PolygonBoard11& _polygon
 			, const ChVec2& _startLine
 			, const float _drawRad
@@ -306,7 +322,7 @@ namespace ChD3D11
 
 		//四角形で指定範囲を描画//
 		void DrawSquareParsec(
-			Texture11& _tex
+			TextureBase11& _tex
 			, PolygonBoard11& _polygon
 			, const ChVec2& _startLine
 			, const float _drawRad
@@ -317,13 +333,20 @@ namespace ChD3D11
 
 		//通常描画//
 		void Draw(
-			Texture11& _tex
+			TextureBase11& _tex
 			, Sprite11& _sprite
 			, const ChMat_11& _mat = ChMat_11());
 
+		void Draw(
+			TextureBase11& _tex,
+			Sprite11& _sprite,
+			VertexShader11& _userVS,
+			PixelShader11& _userPS,
+			const ChMat_11& _mat = ChMat_11());
+
 		//円形で指定範囲を描画//
 		void DrawToCircleParsec(
-			Texture11& _tex
+			TextureBase11& _tex
 			, Sprite11& _sprite
 			, const ChVec2& _startLine
 			, const float _drawRad
@@ -331,7 +354,7 @@ namespace ChD3D11
 
 		//四角形で指定範囲を描画//
 		void DrawSquareParsec(
-			Texture11& _tex
+			TextureBase11& _tex
 			, Sprite11& _sprite
 			, const ChVec2& _startLine
 			, const float _drawRad
@@ -356,13 +379,12 @@ namespace ChD3D11
 		PixelShader11 bpModel;
 		VertexShader11 pvTex;
 
-
 		//板ポリゴンなどテクスチャ単体描画用シェーダー//
 		VertexShader11 spvTex;
 		PixelShader11 bpTex;
 
 		//ShadowMap生成用//
-		Texture11 depthShadowTex;
+		RenderTarget11 depthShadowTex;
 
 		//モデルの画像がない場合にセットする//
 		Texture11 whiteTex;
@@ -378,13 +400,13 @@ namespace ChD3D11
 		ID3D11DeviceContext* dc = nullptr;
 
 		//DepthStencilBuffer用//
-		Texture11 dsBuffer;
+		DepthStencilTexture11 dsBuffer;
 
 		ShaderParts::DrawWindow window;
 
 		ShaderParts::ViewPort view;
 		
-		ShaderParts::ChLightHeader lightDatas;
+		ShaderParts::LightHeader lightDatas;
 
 		//描画可能フラグ//
 		ChStd::Bool drawFlg = false;
@@ -401,41 +423,10 @@ namespace ChD3D11
 
 		ID3D11RasterizerState* rasteriser = nullptr;
 
-		ChStd::Bool rasteriserUpdate = false;
+		ChStd::Bool rasteriserUpdate = true;
 
 		//背景色//
 		ChVec4 backColor = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
-
-		struct BaseDatas
-		{
-			//ビュー変換行列//
-			ChMat_11 viewMat;
-			//射影変換行列//
-			ChMat_11 projMat;
-			//画面サイズ//
-			ChVec4 windSize;
-		};
-
-		struct CharaDatas
-		{
-			//モデル行列//
-			ChMat_11 modelMat;
-
-		};
-
-		struct PolygonDatas
-		{
-			//モデル行列//
-			ChMat_11 modelMat;
-			//スプライトベース色//
-			ChVec4 baseColor = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
-		};
-
-		struct BoneDatas
-		{
-			//スキンメッシュ用行列//
-			ChMat_11 skinWeightMat[1000];
-		};
 
 		ChStd::Bool bdUpdateFlg = true;
 
@@ -453,8 +444,8 @@ namespace ChD3D11
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		Texture11 out3D;
-		Texture11 out2D;
+		RenderTarget11 out3D;
+		RenderTarget11 out2D;
 
 		Sprite11 outSprite;
 

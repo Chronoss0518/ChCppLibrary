@@ -101,6 +101,12 @@ namespace ChD3D11
 			, const void* _binary
 			, const unsigned long _binarySize);
 
+		void InitChBaseModelVertexShader(ID3D11Device* _device);
+
+		void InitChPolygonboardTextureVertexShader(ID3D11Device* _device);
+
+		void InitChSpriteTextureVertexShader(ID3D11Device* _device);
+
 		void Release()override;
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -134,6 +140,10 @@ namespace ChD3D11
 		{
 			CreatePixelShader(_device, _binary, _binarySize);
 		}
+
+		void InitChBaseModelPixelShader(ID3D11Device* _device);
+
+		void InitChBaseTexturePixelShader(ID3D11Device* _device);
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction/
