@@ -16,8 +16,8 @@ namespace ChD3D11
 	class Sprite11;
 	class PolygonBoard11;
 
-	using DLight = ShaderParts::ChLightHeader::DirectionalLight;
-	using PLight = ShaderParts::ChLightHeader::PointLight;
+	using DLight = ShaderParts::LightHeader::DirectionalLight;
+	using PLight = ShaderParts::LightHeader::PointLight;
 
 	//※LightはShader内のBaseLightとPointLightを利用してください//
 	//独自で構築しているShaderクラス//
@@ -86,7 +86,7 @@ namespace ChD3D11
 		}
 
 		//描画をする際に利用するフィルタイプをセット//
-		inline void SetFilMode(const D3D11_FILL_MODE _fill)
+		inline void SetFillMode(const D3D11_FILL_MODE _fill)
 		{
 			if (!*this)return;
 			if (drawFlg)return;
@@ -135,7 +135,7 @@ namespace ChD3D11
 			if (!*this)return;
 			if (drawFlg)return;
 
-			view.SetWindPos(_pos);
+			view.SetTopLeftPos(_pos);
 
 		}
 
@@ -145,7 +145,7 @@ namespace ChD3D11
 			if (!*this)return;
 			if (drawFlg)return;
 
-			view.SetWindSize(_size);
+			view.SetSize(_size);
 		}
 
 		inline void SetLightDiffuse(const ChVec3& _dif)
@@ -220,7 +220,7 @@ namespace ChD3D11
 			lightDatas.SetCamPos(_camPos);
 		}
 
-		inline void SetLightData(const ShaderParts::ChLightHeader::LightData& _ld)
+		inline void SetLightData(const ShaderParts::LightHeader::LightData& _ld)
 		{
 			if (!*this)return;
 			if (drawFlg)return;
@@ -406,7 +406,7 @@ namespace ChD3D11
 
 		ShaderParts::ViewPort view;
 		
-		ShaderParts::ChLightHeader lightDatas;
+		ShaderParts::LightHeader lightDatas;
 
 		//描画可能フラグ//
 		ChStd::Bool drawFlg = false;

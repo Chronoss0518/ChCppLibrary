@@ -164,16 +164,16 @@ namespace ChD3D11
 			, const unsigned long _height
 			, const unsigned int _CPUFlg = 0);
 
+	public://Set Functions//
+
+		void SetBackColor(ID3D11DeviceContext* _dc, const ChVec4& _buckColor);
+
 	public://Get Functions//
 
 		inline ID3D11RenderTargetView* GetRTView()
 		{
 			return rtView;
 		}
-
-	public://Other Functions//
-
-		void ClearBackBuffer(ID3D11DeviceContext* _dc, const ChVec4& _buckColor);
 
 	private://Member Values//
 
