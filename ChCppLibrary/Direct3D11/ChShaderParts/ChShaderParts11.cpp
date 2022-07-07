@@ -133,11 +133,13 @@ void LightHeader::Init(ID3D11Device* _device, const unsigned long _bufferRegiste
 void LightHeader::Release()
 {
 	if (!*this)return;
+	
+	buf.Release();
+
+	lightPow.Release();
 
 	SetInitFlg(false);
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void LightHeader::SetLightDiffuse(const ChVec3& _dif)
 {
@@ -336,6 +338,21 @@ void LightHeader::ClearImportLightPowMap()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
+
+void LightHeader::SetRegisterNo(const unsigned long _registerNo)
+{
+	if (!*this)return;
+
+	buf.SetRegisterNo(_registerNo);
+
+}
+
+void LightHeader::SetTextureRegisterNo(const unsigned long _registerNo)
+{
+	if (!*this)return;
+
+	textureRegisterNo = _registerNo;
+}
 
 void LightHeader::SetTexture(ID3D11DeviceContext* _dc)
 {

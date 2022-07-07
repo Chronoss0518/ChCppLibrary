@@ -139,6 +139,10 @@ namespace ChD3D11
 
 			void SetImportLightPowMap(ChPtr::Shared<Texture11>& _lightPowMap);
 
+			void SetRegisterNo(const unsigned long _registerNo);
+
+			void SetTextureRegisterNo(const unsigned long _registerNo);
+
 			void SetTexture(ID3D11DeviceContext* _dc);
 
 			///////////////////////////////////////////////////////////////////////////////////
@@ -153,6 +157,7 @@ namespace ChD3D11
 		private:
 
 			void Update(ID3D11DeviceContext* _dc);
+
 
 			struct UseLightData
 			{
