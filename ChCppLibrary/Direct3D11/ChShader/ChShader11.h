@@ -148,93 +148,6 @@ namespace ChD3D11
 			view.SetSize(_size);
 		}
 
-		inline void SetLightDiffuse(const ChVec3& _dif)
-		{
-			if (!*this)return;
-			if (drawFlg)return;
-
-			lightDatas.SetLightDiffuse(_dif);
-		}
-
-		inline void SetUseLightFlg(const ChStd::Bool& _flg)
-		{
-			if (!*this)return;
-			if (drawFlg)return;
-
-			lightDatas.SetUseLightFlg(_flg);
-		}
-
-		inline void SetLightDir(const ChVec3& _dir)
-		{
-			if (!*this)return;
-			if (drawFlg)return;
-
-			lightDatas.SetLightDir(_dir);
-		}
-
-		inline void SetLightAmbientPow(const float _amb)
-		{
-			if (!*this)return;
-			if (drawFlg)return;
-
-			lightDatas.SetLightAmbientPow(_amb);
-		}
-
-		inline void SetPLightPos(const ChVec3& _pos, const unsigned long _no = 0)
-		{
-			if (!*this)return;
-			if (drawFlg)return;
-
-			lightDatas.SetPLightPos(_pos, _no);
-		}
-
-		inline void SetPLightLen(const float _len, const unsigned long _no = 0)
-		{
-			if (!*this)return;
-			if (drawFlg)return;
-
-			lightDatas.SetPLightLen(_len, _no);
-		}
-
-		inline void SetPLightDiffuse(const ChVec3& _dif, const unsigned long _no = 0)
-		{
-			if (!*this)return;
-			if (drawFlg)return;
-
-			lightDatas.SetPLightDiffuse(_dif, _no);
-		}
-
-		inline void SetPLightUseFlg(const ChStd::Bool& _flg, const unsigned long _no = 0)
-		{
-			if (!*this)return;
-			if (drawFlg)return;
-
-			lightDatas.SetPLightUseFlg(_flg, _no);
-		}
-
-		inline void SetCamPos(const ChVec3& _camPos)
-		{
-			if (!*this)return;
-			if (drawFlg)return;
-
-			lightDatas.SetCamPos(_camPos);
-		}
-
-		inline void SetLightData(const ShaderParts::LightHeader::LightData& _ld)
-		{
-			if (!*this)return;
-			if (drawFlg)return;
-
-			lightDatas.SetLightData(_ld);
-		}
-
-		inline void SetImportLightPowMap(ChPtr::Shared<Texture11>& _lightPowMap)
-		{
-			if (!*this)return;
-			if (drawFlg)return;
-
-			lightDatas.SetImportLightPowMap(_lightPowMap);
-		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
@@ -406,14 +319,9 @@ namespace ChD3D11
 
 		ShaderParts::ViewPort view;
 		
-		ShaderParts::LightHeader lightDatas;
-
 		//描画可能フラグ//
 		ChStd::Bool drawFlg = false;
 		ChStd::Bool rtDrawFlg = false;
-
-		//フォグ描画フラグ//
-		ChStd::Bool fogFlg = false;
 
 		//カリングタイプ//
 		D3D11_CULL_MODE cull = D3D11_CULL_MODE::D3D11_CULL_NONE;

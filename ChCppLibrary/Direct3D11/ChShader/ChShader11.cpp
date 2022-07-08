@@ -75,7 +75,6 @@ void ShaderController11::Init(
 	spvTex.InitChSpriteTextureVertexShader(_device);
 	bpTex.InitChBaseTexturePixelShader(_device);
 
-
 	whiteTex.CreateColorTexture(device, ChVec4(1.0f, 1.0f, 1.0f, 1.0f), 1, 1);
 
 	normalTex.CreateColorTexture(device, ChVec4(0.5f, 1.0f, 0.5f, 1.0f), 1, 1);
@@ -124,8 +123,6 @@ void ShaderController11::Init(
 	view.SetTopLeftPos(ChVec2(0.0f, 0.0f));
 	view.SetSize(ChVec2(_width, _height));
 
-	lightDatas.Init(_device,10,10);
-
 	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	SetInitFlg(true);
@@ -138,7 +135,6 @@ void ShaderController11::Release()
 	whiteTex.Release();
 	normalTex.Release();
 
-	lightDatas.Release();
 	window.Release();
 
 	SetInitFlg(false);
@@ -223,8 +219,6 @@ void ShaderController11::DrawStart()
 	}
 
 	view.SetDrawData(dc);
-
-	lightDatas.SetDrawData(dc);
 
 	SetDrawDatas();
 
