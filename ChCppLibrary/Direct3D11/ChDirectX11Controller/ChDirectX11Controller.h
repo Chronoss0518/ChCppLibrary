@@ -61,8 +61,8 @@ namespace ChD3D11
 
 		void CreateDevice(
 			HWND _hWnd
-			, const unsigned short _scrW
-			, const unsigned short _scrH);
+			, const unsigned long _scrW
+			, const unsigned long _scrH);
 
 	protected://Member Value//
 

@@ -67,8 +67,8 @@ void DirectX3D11::Release()
 
 void DirectX3D11::CreateDevice(
 	HWND _hWnd
-	, const unsigned short _scrW
-	, const unsigned short _scrH)
+	, const unsigned long _scrW
+	, const unsigned long _scrH)
 {
 
 	DXGI_SWAP_CHAIN_DESC scd;
@@ -76,8 +76,8 @@ void DirectX3D11::CreateDevice(
 	ZeroMemory(&scd, sizeof(DXGI_SWAP_CHAIN_DESC));
 
 	scd.BufferCount = 1;
-	scd.BufferDesc.Width = _scrW;
-	scd.BufferDesc.Height = _scrH;
+	scd.BufferDesc.Width = static_cast<unsigned int>(_scrW);
+	scd.BufferDesc.Height = static_cast<unsigned int>(_scrH);
 	scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 
 	//“h‚è‘Ö‚¦‚éŽžŠÔ//
