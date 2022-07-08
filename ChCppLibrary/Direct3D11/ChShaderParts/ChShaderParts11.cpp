@@ -45,6 +45,15 @@ void DrawWindow::Init(
 	SetInitFlg(true);
 }
 
+void DrawWindow::Init(ChD3D11::DirectX3D11& _app)
+{
+	if (!_app.IsInit())return;
+
+	Init(_app.GetDevice(), _app.GetSC());
+
+
+}
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 void DrawWindow::Release()
@@ -73,7 +82,7 @@ void DrawWindow::SetDrawData(ID3D11DeviceContext* _dc,ID3D11DepthStencilView* _d
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void DrawWindow::ClearView(ID3D11DeviceContext* _dc,const ChVec4& _color)
+void DrawWindow::SetBackGroundColor(ID3D11DeviceContext* _dc,const ChVec4& _color)
 {
 	if (ChPtr::NullCheck(_dc))return;
 	if (!*this)return;

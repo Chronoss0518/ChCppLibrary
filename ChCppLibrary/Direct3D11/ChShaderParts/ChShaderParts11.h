@@ -40,6 +40,8 @@ namespace ChD3D11
 			void Init(
 				ID3D11Device* _device
 				,IDXGISwapChain* _sc);
+			
+			void Init(ChD3D11::DirectX3D11& _app);
 
 			void Release();
 
@@ -52,7 +54,7 @@ namespace ChD3D11
 
 			///////////////////////////////////////////////////////////////////////////////////
 
-			void ClearView(ID3D11DeviceContext* _dc,const ChVec4& _color);
+			void SetBackGroundColor(ID3D11DeviceContext* _dc,const ChVec4& _color);
 
 			///////////////////////////////////////////////////////////////////////////////////
 
