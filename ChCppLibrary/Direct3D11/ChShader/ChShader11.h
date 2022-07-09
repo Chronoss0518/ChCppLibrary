@@ -16,9 +16,6 @@ namespace ChD3D11
 	class Sprite11;
 	class PolygonBoard11;
 
-	using DLight = ShaderParts::LightHeader::DirectionalLight;
-	using PLight = ShaderParts::LightHeader::PointLight;
-
 	//※LightはShader内のBaseLightとPointLightを利用してください//
 	//独自で構築しているShaderクラス//
 	class ShaderController11 final :public ChCp::Initializer,public ChCp::Releaser
@@ -96,15 +93,6 @@ namespace ChD3D11
 			rasteriserUpdate = true;
 		}
 
-		//霧効果を使用するか否かのフラグ//
-		inline void SetFogFlg(ChStd::Bool _flg)
-		{
-			if (!*this)return;
-			if (drawFlg)return;
-
-			fogFlg = _flg;
-		}
-
 		inline void SetViewMat(const ChMat_11& _viewMat)
 		{
 
@@ -126,7 +114,6 @@ namespace ChD3D11
 			bdObject.projMat = _projMat;
 
 			bdUpdateFlg = true;
-
 		}
 
 		inline void SetWindPos(const ChVec2& _pos)

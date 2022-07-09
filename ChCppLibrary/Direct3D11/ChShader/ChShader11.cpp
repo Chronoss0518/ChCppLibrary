@@ -207,7 +207,7 @@ void ShaderController11::DrawStart()
 	}
 	else
 	{
-		window.ClearView(dc, backColor);
+		window.SetBackGroundColor(dc, backColor);
 
 		dsBuffer.ClearDepthBuffer(dc);
 
