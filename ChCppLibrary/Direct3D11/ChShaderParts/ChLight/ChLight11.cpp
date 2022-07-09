@@ -245,7 +245,7 @@ void Light11::SetDrawData(ID3D11DeviceContext* _dc)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void Light11::SetImportLightPowMap(ChPtr::Shared<Texture11>& _lightPowMap)
+void Light11::SetImportLightPowMap(ChPtr::Shared<TextureBase11>& _lightPowMap)
 {
 	if (!*this)return;
 
@@ -300,7 +300,7 @@ void Light11::SetTextureRegisterNo(const unsigned long _registerNo)
 void Light11::SetTexture(ID3D11DeviceContext* _dc)
 {
 
-	Texture11* tmpLightPow = &lightPow;
+	TextureBase11* tmpLightPow = &lightPow;
 
 	if (importLightPowMap != nullptr)
 	{
