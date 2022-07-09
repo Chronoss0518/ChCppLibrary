@@ -21,9 +21,12 @@ namespace ChD3D11
 			const unsigned long _scrW,
 			const unsigned long _scrH);
 
+		/*
 		void Init(
 			ChWin::WindObject& _windObject,
 			const ChStd::Bool _fullScreenFlg);
+
+		*/
 
 		void Release()override;
 

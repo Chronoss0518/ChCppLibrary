@@ -1,14 +1,14 @@
 #include<Windows.h>
 #include"../../BaseIncluder/ChBase.h"
 
-#include"../../WindowsObject/WindObject/ChWindObject.h"
-
 #include"../../BaseIncluder/ChD3D11I.h"
 
+#include"../../WindowsObject/WindObject/ChWindObject.h"
 #include"ChDirectX11Controller.h"
 
 using namespace ChD3D11;
 
+#if 0
 void DirectX3D11::Init(
 	ChWin::WindObject& _windObject,
 	const ChStd::Bool _fullScreenFlg)
@@ -23,6 +23,7 @@ void DirectX3D11::Init(
 		static_cast<unsigned long>(windSize.h));
 
 }
+#endif
 
 void DirectX3D11::Init(
 	HWND _hWnd
