@@ -34,13 +34,13 @@ namespace ChD3D11
 			{
 				ChVec3 camPos;
 				DirectionalLight light;
-				PointLight pLight[10];
+				PointLight* pLight = nullptr;
 			};
 
 			///////////////////////////////////////////////////////////////////////////////////
 			//InitAndRelease//
 
-			void Init(ID3D11Device* _device, const unsigned long _bufferRegisterNo, const unsigned long _textureRegisterNo);
+			void Init(ID3D11Device* _device, const unsigned long _bufferRegisterNo, const unsigned long _textureRegisterNo,const unsigned long _pointLightCount = 10);
 
 			void Release()override;
 
@@ -55,13 +55,17 @@ namespace ChD3D11
 
 			void SetLightAmbientPow(const float _amb);
 
+			void SetDirectionLightData(const bool _useFlg, const ChVec3& _dif, const ChVec3& _dir, const float _ambPow);
+
 			void SetPLightPos(const ChVec3& _pos, const unsigned long _no = 0);
 
 			void SetPLightLen(const float _len, const unsigned long _no = 0);
 
 			void SetPLightDiffuse(const ChVec3& _dif, const unsigned long _no = 0);
 
-			void SetPLightUseFlg(const ChStd::Bool& _flg, const unsigned long _no = 0);
+			void SetPLightUseFlg(const bool& _flg, const unsigned long _no = 0);
+
+			void SetPointLightData(const bool _useFlg, const ChVec3& _dif, const ChVec3& _pos, const float _len, const unsigned long _no = 0);
 
 			void SetCamPos(const ChVec3& _camPos);
 
@@ -111,6 +115,8 @@ namespace ChD3D11
 			Texture11 lightPow;
 			ChPtr::Shared<Texture11>importLightPowMap;
 			unsigned long textureRegisterNo = 0;
+
+			unsigned long pointlightCount = 0;
 		};
 
 	}

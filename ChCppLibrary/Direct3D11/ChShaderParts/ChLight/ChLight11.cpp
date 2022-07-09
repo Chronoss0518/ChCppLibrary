@@ -101,6 +101,17 @@ void Light11::SetLightAmbientPow(const float _amb)
 	updateFlg = true;
 }
 
+void Light11::SetDirectionLightData(const bool _useFlg, const ChVec3& _dif, const ChVec3& _dir, const float _ambPow)
+{
+
+	lightDatas.light.useLightFlg = _useFlg;
+	lightDatas.light.dif = _dif;
+	lightDatas.light.dir = _dir;
+	lightDatas.light.ambPow = _ambPow;
+
+	updateFlg = true;
+}
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 void Light11::SetPLightPos(const ChVec3& _pos, const unsigned long _no)
@@ -139,12 +150,26 @@ void Light11::SetPLightDiffuse(const ChVec3& _dif, const unsigned long _no)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void Light11::SetPLightUseFlg(const ChStd::Bool& _flg, const unsigned long _no)
+void Light11::SetPLightUseFlg(const bool& _flg, const unsigned long _no)
 {
 	if (!*this)return;
 	if (_no > 10)return;
 
 	lightDatas.pLight[_no].useFlg = _flg;
+
+	updateFlg = true;
+}
+
+void Light11::SetPointLightData(const bool _useFlg, const ChVec3& _dif, const ChVec3& _pos, const float _len, const unsigned long _no)
+{
+
+	if (!*this)return;
+	if (_no > 10)return;
+
+	lightDatas.pLight[_no].useFlg = _useFlg;
+	lightDatas.pLight[_no].dif = _dif;
+	lightDatas.pLight[_no].pos = _pos;
+	lightDatas.pLight[_no].len = _len;
 
 	updateFlg = true;
 }
