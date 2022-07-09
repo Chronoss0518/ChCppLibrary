@@ -170,8 +170,6 @@ namespace ChD3D11
 		unsigned int cpuAccessFlg = 0;
 		D3D11_USAGE usage = D3D11_USAGE::D3D11_USAGE_DEFAULT;
 		D3D11_BIND_FLAG bindFlg = D3D11_BIND_FLAG::D3D11_BIND_VERTEX_BUFFER;
-
-
 	};
 
 	class IndexBuffer11 : public ShaderObjectBase11
