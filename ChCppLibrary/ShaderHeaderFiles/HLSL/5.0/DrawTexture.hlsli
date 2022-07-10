@@ -1,5 +1,5 @@
-#ifndef	Ch_TextureBase_h
-#define Ch_TextureBase_h
+#ifndef ChShader_PublicHeader_DT
+#define ChShader_PublicHeader_DT
 
 #ifndef DRAW_DATA_REGISTERNO
 #define DRAW_DATA_REGISTERNO 0
@@ -28,7 +28,7 @@ using float2 = ChVec2;
 #endif
 #endif
 
-#ifndef __SHADER__
+#ifdef __SHADER__
 #ifdef _SM5_0_
 cbuffer DrawData :register(b0)
 #else
@@ -38,35 +38,33 @@ cbuffer DrawData : register(b[DRAW_DATA_REGISTERNO])
 struct DrawData
 #endif
 {
-	row_major float4x4 ViewMat;
-	row_major float4x4 ProMat;
-	float4 WindSize = float4(1280.0f, 720.0f, 0, 0);
+	float4 windSize = float4(1280.0f, 720.0f, 0, 0);
 };
 
-#ifndef __SHADER__
+#ifdef __SHADER__
 #ifdef _SM5_0_
-cbuffer PolygonData:register(b1)
+cbuffer PolygonData : register(b1)
 #else
 cbuffer PolygonData : register(b[POLYGON_DATA_REGISTERNO])
 #endif
 #else
-struct DrawData
+struct PolygonData
 #endif
 {
-	row_major float4x4 ModelMat;
-	float4 BaseColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
-}
+	row_major float4x4 polyMat;
+	float4 baseColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
+};
 
 
 #ifdef __SHADER__
 #ifdef _SM5_0_
-texture2D tex : register(t0);
+texture2D baseTex : register(t0);
 
-sampler smp :register(s0);
+sampler baseSmp :register(s0);
 #else
-texture2D tex : register(t[BASE_TEXTURE_REGISTER]);
+texture2D baseTex : register(t[BASE_TEXTURE_REGISTER]);
 
-sampler smp :register(s[BASE_TEXTURE_REGISTER]);
+sampler baseSmp :register(s[BASE_TEXTURE_REGISTER]);
 #endif
 #endif
 
