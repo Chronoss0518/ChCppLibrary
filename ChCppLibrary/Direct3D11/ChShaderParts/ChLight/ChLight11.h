@@ -32,7 +32,7 @@ namespace ChD3D11
 			{
 				ChVec3 camPos;
 				DirectionalLight light;
-				PointLight pLight[10]
+				PointLight pLight[10];
 			};
 
 			///////////////////////////////////////////////////////////////////////////////////
