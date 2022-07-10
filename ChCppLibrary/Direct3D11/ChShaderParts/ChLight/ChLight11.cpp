@@ -70,7 +70,7 @@ void Light11::SetLightDiffuse(const ChVec3& _dif)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void Light11::SetUseLightFlg(const ChStd::Bool& _flg)
+void Light11::SetUseLightFlg(const bool& _flg)
 {
 	if (!*this)return;
 
