@@ -1,8 +1,9 @@
 
 #define __SHADER__
+#define _SM5_0_
 
 #include"TextureBase.hlsli"
-#include"../../../ShaderHeaderFiles/HLSL/5.0/DrawPolygon.hlsli"
+#include"../../../ShaderHeaderFiles/HLSL/5.0/DrawTexture.hlsli"
 
 //頂点シェダ(VertexShader)//
 //スプライトバージョン//
@@ -11,17 +12,17 @@ VS_OUT main(
 	, float2 uv : TEXCOORD0
 	, float4 color : COLOR0
 ) {
-	VS_OUT Out;
+	VS_OUT res;
 
-	Out.pos = pos;
+	res.pos = pos;
 
-	Out.pos = mul(Out.pos, modelMat);
+	res.pos = mul(res.pos, polyMat);
 
 	//テクスチャマップ上の位置情報//
-	Out.uv = uv;
+	res.uv = uv;
 
-	Out.color = color;
+	res.color = color;
 
 	//出力//
-	return Out;
+	return res;
 }

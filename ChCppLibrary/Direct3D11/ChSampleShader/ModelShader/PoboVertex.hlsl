@@ -1,6 +1,7 @@
 
 
 #define __SHADER__
+#define _SM5_0_
 
 #include"ModelBase.hlsli"
 
