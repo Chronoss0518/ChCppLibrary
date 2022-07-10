@@ -1,104 +1,54 @@
-//--------------------------
-//外部行列
-//--------------------------
 
+#define __SHADER__
 
-//--------------------------
-//共通データ
-//--------------------------
+#include"ModelBase.hlsli"
 
-#include"MShader.hlsli"
+#include"../../../ShaderHeaderFiles/HLSL/5.0/DrawPolygon.hlsli"
+#include"../../../ShaderHeaderFiles/HLSL/5.0/Light.hlsli"
 
-//--------------------------
-//ライトデータ
-//--------------------------
+float4 LightCol(VS_OUT _base, float4 _color);
 
-#include"../ShaderParts/Light.hlsli"
-
-//--------------------------
-//BaseShader
-//--------------------------
-
-float4 LightCol(VS_OUT _Base, float4 _Color);
-
-float4 PLightCol(PLight plight, VS_OUT _Base, float4 _Color);
+float4 PLightCol(PLight _plight, VS_OUT _base, float4 _color);
 
 struct RenderDatas
 {
-	float4 Main : SV_Target0;
-	float4 Temperature :SV_Target1;
-	float4 NightVision :SV_Target2;
+	float4 main : SV_Target0;
 };
 
 
 //ピクセルシェダ(PixelShader)//
 //通常描画//
-float4 main(VS_OUT In) :SV_Target0
+float4 main(VS_OUT _in) :SV_Target0
 {
 	//カメラの前方にあるかの判定//
 
-	float X = In.ProPos.x / In.ProPos.w;
-	float Y = In.ProPos.y / In.ProPos.w;
-	float Z = In.ProPos.z / In.ProPos.w;
-	//float X = In.Pos.x;
-	//float Y = In.Pos.y;
-	//float Z = In.Pos.z;
+	float x = _in.ProPos.x / _in.ProPos.w;
+	float y = _in.ProPos.y / _in.ProPos.w;
+	float z = _in.ProPos.z / _in.ProPos.w;
 
-	clip(X >= -1.0f && X <= 1.0f ? 1.0f : -1.0f);
-	clip(Y >= -1.0f && Y <= 1.0f ? 1.0f : -1.0f);
-	clip(Z >= 0.0f && Z <= 1.0f ? 1.0f : -1.0f);
+	clip(x >= -1.0f && x <= 1.0f ? 1.0f : -1.0f);
+	clip(y >= -1.0f && y <= 1.0f ? 1.0f : -1.0f);
+	clip(z >= 0.0f && z <= 1.0f ? 1.0f : -1.0f);
 
-//RenderDatas RDColor;
+	float4 color = _in.color;
 
-	float4 Color = In.Color;
+	color = diffuse * ModelTex.Sample(ModelSmp, In.UV) * color;
 
-	Color = Dif * ModelTex.Sample(ModelSmp, In.UV) * Color;
+	clip(color.a < 0.001f ? -1 : 1);
 
-	//Color = Dif;
-	//Color = ModelTex.Sample(ModelSmp, In.UV);
+	L_BaseColor lightCol;
+	lightCol.Color = color.rgb;
+	lightCol.WPos =_in.usePos.xyz;
+	lightCol.WFNormal = _in.normal;
+	lightCol.Specular = speCol;
 
-	clip(Color.a < 0.001f ? -1 : 1);
+	color.rgb = GetDirectionalLightColor(lightCol);
 
-	//Color = LightCol(In, Color);
-
-	L_BaseColor LightCol;
-	LightCol.Color = Color.rgb;
-	LightCol.WPos = In.UsePos.xyz;
-	LightCol.WFNormal = In.Normal;
-	LightCol.Specular = SpeCol;
-
-	Color.rgb = GetDirectionalLightColor(LightCol);
-
-	//Color.rgb = BackBuffers.Sample(BackBufferSmp, In.Pos.xy).rgb * (1.0f - Color.a)
-	//	+ Color.rgb * Color.a;
-
-	//Color.a = 1.0f;
-
-	//for (int i = 0; i < 10; i++)
-	//{
-	//	if (!LightUseFlg)break;
-
-	//	Color = PLightCol(pLight[i], In , Color);
-
-	//}
-
-	//float4 Temperature = float4(0.0f, 0.0f, 0.0f, 0.0f);
-	//
-	//RDColor.Main = Color;
-	//RDColor.Temperature = Temperature;
-
-	//float4 NightVision = float4(0.5f, 0.5f, 1.0f, 1.0f) * (length(Color) * 1.5f);
-
-	//NightVision.a = 1.0f;
-
-	//RDColor.NightVision = NightVision;
-
-
-	return Color;
+	return color;
 
 }
 
-
+/*
 float4 LightCol(VS_OUT _Base, float4 _Color)
 {
 
@@ -167,3 +117,5 @@ float4 PLightCol(PLight plight, VS_OUT _Base, float4 _Color)
 
 	return Col;
 }
+
+*/

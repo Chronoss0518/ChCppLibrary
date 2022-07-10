@@ -1,39 +1,30 @@
 
-//--------------------------
-//共通データ
-//--------------------------
+#define __SHADER__
 
-#include"MShader.hlsli"
-#include"BoneBlending.hlsli"
-
-//--------------------------
-//外部行列
-//--------------------------
-
-//--------------------------
-//出力データ
-//--------------------------
-
+#include"../../../ShaderHeaderFiles/HLSL/5.0/DrawPolygon.hlsli"
+#include"../../../ShaderHeaderFiles/HLSL/5.0/BoneBlending.hlsli"
+#include"ModelBase.hlsli"
 
 //頂点シェーダ(VertexShader)//
 //通常描画//
 VS_OUT main
 (
-	float4 Pos			: POSITION0,
-	float2 UV			: TEXCOORD0,
-	float4 Color		 : COLOR0,
-	float3 Normal		: NORMAL0,
-	float3 FaceNormal	: NORMAL1,
-	row_major uint4x4 Blend		: BLENDINDEX0,
-	row_major float4x4 BlendPow	: BLENDWEIGHT0,
-	uint BlendNum		: BLENDINDEX4
+	float4 _pos			: POSITION0,
+	float2 _uv			: TEXCOORD0,
+	float4 _color		 : COLOR0,
+	float3 _normal		: NORMAL0,
+	float3 _faceNormal	: NORMAL1,
+	row_major uint4x4 _blend		: BLENDINDEX0,
+	row_major float4x4 _blendPow	: BLENDWEIGHT0,
+	uint _blendNum		: BLENDINDEX4
 )
 {
 
-	VS_OUT Out;
+	VS_OUT res;
 
-	Out.Pos = Pos;
+	res.pos = _pos;
 
+	/*
 	float4x4 TmpMat
 		= float4x4(
 			1.0f, 0.0f, 0.0f, 0.0f
@@ -41,39 +32,30 @@ VS_OUT main
 			, 0.0f, 0.0f, 1.0f, 0.0f
 			, 0.0f, 0.0f, 0.0f, 1.0f);
 
-	//TmpMat = BlendNum > 0 ?  BlendMatrix(Blend, BlendPow, BlendNum) : TmpMat;
+	TmpMat = BlendNum > 0 ?  BlendMatrix(Blend, BlendPow, BlendNum) : TmpMat;
 
 	float4x4 WorldMat = mul(FrameMatrix, ModelMat);
 
 	//WorldMat = mul(WorldMat, TmpMat);
 
-	Out.Pos = mul(Out.Pos, WorldMat);
+	*/
 
-	Out.UsePos = Out.Pos;
+	MTWStruct tmp = ModelToWorld(res.pos, _uv, _normal, _faceNormal);
 
-	Out.Pos = mul(Out.Pos, ViewMat);
+	res.pos = tmp.pos;
+	res.viewPos = tmp.viewPos;
+	res.proPos = tmp.proPos;
+	res.usePos = tmp.usePos;
+	res.normal = tmp.normal;
+	res.faceNormal = tmp.faceNormal;
+	res.uv = tmp.uv;
 
-	Out.ViewPos = Out.Pos;
+	res.color = _color;
 
-	Out.Pos = mul(Out.Pos, ProMat);
-
-	Out.ProPos = Out.Pos;
-
-	Out.UV = UV;
-
-	//Out.Normal = normalize(mul(Normal, (float3x3)ModelMat));
-
-	float3x3 RotMat = WorldMat;
-
-	Out.Normal = normalize(mul(Normal, RotMat));
-	Out.FaceNormal = normalize(mul(FaceNormal, RotMat));
-
-	Out.Color = 1.0f;
-
-	Out.Temperature = 1.0f;
+	res.temperature = 1.0f;
 	//Out.Temperature = 0.0f;
 
-	return Out;
+	return res;
 }
 
 

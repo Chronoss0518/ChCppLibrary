@@ -3,7 +3,10 @@
 //共通データ
 //--------------------------
 
-#include"MShader.hlsli"
+#define __SHADER__
+
+#include"../../../ShaderHeaderFiles/HLSL/5.0/DrawPolygon.hlsli"
+#include"ModelBase.hlsli"
 
 //--------------------------
 //シェーダー
@@ -11,40 +14,27 @@
 //頂点シェダ(VertexShader)//
 //板ポリゴンバージョン//
 VS_OUT main(
-	float4 pos		: POSITION0
-	, float2 uv		: TEXCOORD0
-	, float4 color	: COLOR0
-	, float3 normal : NORMAL0
+	float4 _pos		: POSITION0
+	, float2 _uv		: TEXCOORD0
+	, float4 _color	: COLOR0
+	, float3 _normal : NORMAL0
 ) {
-	VS_OUT Out;
+	VS_OUT res;
 
-	Out.Pos = pos;
+	MTWStruct tmp = ModelToWorld(_pos, _uv, _normal, _normal);
 
-	Out.Pos = mul(Out.Pos, ModelMat);
-	//Out.Pos = mul(ModelMat, Out.Pos);
+	res.pos = tmp.pos;
+	res.viewPos = tmp.viewPos;
+	res.proPos = tmp.proPos;
+	res.usePos = tmp.usePos;
+	res.normal = tmp.normal;
+	res.faceNormal = tmp.faceNormal;
+	res.uv = tmp.uv;
 
-	Out.UsePos = Out.Pos;
+	res.color = _color;
 
-	Out.Pos = mul(Out.Pos, ViewMat);
-	//Out.Pos = mul(ViewMat, Out.Pos);
+	res.temperature = 1.0f;
+	//Out.Temperature = 0.0f;
 
-	Out.ViewPos = Out.Pos;
-
-	Out.Pos = mul(Out.Pos, ProMat);
-	//Out.Pos = mul(ProMat, Out.Pos);
-
-	Out.ProPos = Out.Pos;
-
-	//テクスチャマップ上の位置情報//
-	Out.UV = uv;
-
-	//頂点の色情報//
-	Out.Color = color;
-
-	Out.Normal = normal;
-	Out.FaceNormal = normal;
-
-	Out.Temperature = 0.0f;
-	//出力//
-	return Out;
+	return res;
 }

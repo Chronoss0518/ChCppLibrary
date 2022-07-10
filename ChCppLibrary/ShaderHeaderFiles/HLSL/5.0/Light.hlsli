@@ -1,25 +1,49 @@
+#ifndef ChShader_PublicHeader_Light
+#define ChShader_PublicHeader_Light
+
+#ifndef __SHADER__
+#ifndef SHADER_TO_CPP
+#define SHADER_TO_CPP
+
+#define row_magor
+using float4x4 = ChLMat;
+using float4 = ChVec4;
+using float3 = ChVec3;
+using float2 = ChVec2;
+
+#endif
+#endif
+
+#ifndef LIGHT_DATA_REGISTERNO
+#define LIGHT_DATA_REGISTERNO 10
+#endif
+
+#ifndef LIGHT_DATA_REGISTERNO
+#define LIGHT_TEXTURE_REGISTERNO 10
+#endif
+
 
 struct Light
 {
-	float3 Dif;
-	bool LightUseFlg;
-	float3 Dir;
-	float AmbPow;
+	float3 dif;
+	bool lightUseFlg;
+	float3 dir;
+	float ambPow;
 };
 
 struct PLight
 {
-	float3 Pos;
-	float Len;
-	float3 Dif;
-	bool Flg;
+	float3 pos;
+	float len;
+	float3 dif;
+	bool flg;
 };
 
-cbuffer LightData :register(b10)
+cbuffer LightData :register(b[LIGHT_DATA_REGISTERNO])
 {
-	float3 CamPos = float3(0.0f, 0.0f, 0.0f);
+	float3 camPos = float3(0.0f, 0.0f, 0.0f);
 
-	int PlightCnt = 10;
+	int pLightCnt = 10;
 
 	Light light;
 
@@ -27,11 +51,10 @@ cbuffer LightData :register(b10)
 
 };
 
-
-texture2D LightPowMap :register(t10);
+texture2D lightPowMap :register(t[LIGHT_TEXTURE_REGISTERNO]);
 
 //画像から1ピクセルの色を取得するための物//
-sampler LightSmp :register(s10)
+sampler lightSmp :register(s[LIGHT_TEXTURE_REGISTERNO])
 = sampler_state{
 	Filter = MIN_MAG_MIP_LINEAR;
 	AddressU = Clamp;
@@ -39,70 +62,70 @@ sampler LightSmp :register(s10)
 };
 
 
-float3 LamLightCol(float3 _Dif, float _Pow);
+float3 LamLightCol(float3 _dif, float _pow);
 
-float3 SpeLightCol(float3 _Dir, float3 _ModelPos, float3 _Normal,float4 _Speculer);
+float3 SpeLightCol(float3 _dir, float3 _modelPos, float3 _normal,float4 _speculer);
 
 float3 AmbLightCol();
 
 struct L_BaseColor
 {
-	float3 Color;
-	float3 WPos;
-	float3 WFNormal;
-	float4 Specular;
+	float3 color;
+	float3 wPos;
+	float3 wfNormal;
+	float4 specular;
 };
 
-float3 GetDirectionalLightColor(L_BaseColor _BCol)
+float3 GetDirectionalLightColor(L_BaseColor _bCol)
 {
-	float3 OCol = _BCol.Color;
+	float3 oCol = _bCol.Color;
 
-	if (!light.LightUseFlg)return OCol;
+	if (!light.LightUseFlg)return oCol;
 
-	float Dot = dot(_BCol.WFNormal, -light.Dir);
+	float dotSize = dot(_bCol.wfNormal, -light.dir);
 
-	Dot = (Dot + 1) * 0.5f;
+	dotSize = (dotSize + 1) * 0.5f;
 
-	Dot = Dot > light.AmbPow ? Dot : light.AmbPow;
+	dotSize = dotSize > light.ambPow ? dotSize : light.ambPow;
 
-	float3 LamPowMapCol = LightPowMap.Sample(LightSmp, float2(Dot, Dot)).rgb;
+	float3 lamPowMapCol = lightPowMap.Sample(lightSmp, float2(dotSize, dotSize)).rgb;
 
-	float LamPow = LamPowMapCol.r > LamPowMapCol.g ? LamPowMapCol.r : LamPowMapCol.g > LamPowMapCol.b ? LamPowMapCol.g : LamPowMapCol.b;
+	float lamPow = lamPowMapCol.r > lamPowMapCol.g ? lamPowMapCol.r : lamPowMapCol.g > lamPowMapCol.b ? lamPowMapCol.g : lamPowMapCol.b;
 
-	OCol *= LamPow * light.Dif;
+	oCol *= lamPow * light.dif;
 
-	float3 TmpVec = normalize(CamPos - _BCol.WPos);//ピクセルからのカメラ方向
+	float3 tmpVec = normalize(camPos - _bCol.wPos);//ピクセルからのカメラ方向
 
-	TmpVec = normalize(-light.Dir + TmpVec);
+	tmpVec = normalize(-light.dir + tmpVec);
 
-	float LCDot = dot(TmpVec, _BCol.WFNormal);
+	float lcDot = dot(tmpVec, _bCol.WFNormal);
 
-	float Pow = saturate(LCDot);
+	float pow = saturate(lcDot);
 
-	OCol += _BCol.Specular.rgb * pow(Pow, _BCol.Specular.a);
+	oCol += _bCol.specular.rgb * pow(pow, _bCol.specular.a);
 
-	return OCol;
+	return oCol;
 
 }
 
-float3 LamLightCol(float3 _Dif, float _Pow)
+float3 lamLightCol(float3 _dif, float _pow)
 {
 
-	float3 TmpLightCol = _Dif;
+	float3 tmpLightCol = _dif;
 
-	TmpLightCol *= _Pow;
+	tmpLightCol *= _pow;
 
-	return TmpLightCol;
+	return tmpLightCol;
 }
 
-float3 SpeLightCol(float3 _Dir, float3 _ModelPos, float3 _Normal, float4 _Speculer)
+float3 speLightCol(float3 _dir, float3 _modelPos, float3 _normal, float4 _speculer)
 {
 
-	float3 TmpVec = normalize(CamPos - _ModelPos);//ピクセルからのカメラ方向
+	float3 tmpVec = normalize(camPos - _modelPos);//ピクセルからのカメラ方向
 
-	TmpVec = normalize(-_Dir + TmpVec);
+	tmpVec = normalize(-_dir + tmpVec);
 
-	float LCDot = dot(TmpVec, _Normal);
+	float lcDot = dot(TmpVec, _Normal);
 
 	float Pow = saturate(LCDot);
 
@@ -121,3 +144,5 @@ float3 AmbLightCol()
 	return TmpLightCol;
 
 }
+
+#endif
