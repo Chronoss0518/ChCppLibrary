@@ -147,8 +147,6 @@ namespace ChD3D11
 
 	public://Is Functions//
 
-		void IsLight(const ChStd::Bool _flg);
-
 		//•`‰æ‰Â”\Šm”FŠÖ”//
 		inline ChStd::Bool IsDraw() { return drawFlg; }
 

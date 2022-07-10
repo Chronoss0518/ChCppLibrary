@@ -243,11 +243,11 @@ void ShaderController11::DrawEnd()
 	if (!*this)return;
 	if (!drawFlg)return;
 
-	if (ChPtr::NullCheck(device))return;
-
 	drawFlg = false;
 
 	if (rtDrawFlg)return;
+
+	if (ChPtr::NullCheck(device))return;
 
 	window.SetDrawData(dc, nullptr);
 
