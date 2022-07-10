@@ -117,8 +117,6 @@ sampler baseSmp : register(s[BASE_TEXTURE_REGISTER]);
 sampler normalSmp: register(s[NORMAL_TEXTURE_REGISTER]);
 #endif
 
-
-
 struct MTWStruct
 {
 	float4 pos;
@@ -177,6 +175,20 @@ MTWStruct ModelToWorld(
 
 	return res;
 }
+
+void FrustumCulling(float4 _proPos)
+{
+
+	float x = _proPos.x / _proPos.w;
+	float y = _proPos.y / _proPos.w;
+	float z = _proPos.z / _proPos.w;
+
+	clip(x >= -1.0f && x <= 1.0f ? 1.0f : -1.0f);
+	clip(y >= -1.0f && y <= 1.0f ? 1.0f : -1.0f);
+	clip(z >= 0.0f && z <= 1.0f ? 1.0f : -1.0f);
+
+}
+
 
 #endif
 
