@@ -1,9 +1,10 @@
 
 #define __SHADER__
 
+#include"ModelBase.hlsli"
+
 #include"../../../ShaderHeaderFiles/HLSL/5.0/DrawPolygon.hlsli"
 #include"../../../ShaderHeaderFiles/HLSL/5.0/BoneBlending.hlsli"
-#include"ModelBase.hlsli"
 
 //頂点シェーダ(VertexShader)//
 //通常描画//

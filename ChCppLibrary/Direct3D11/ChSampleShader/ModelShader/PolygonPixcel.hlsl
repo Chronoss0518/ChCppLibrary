@@ -10,11 +10,6 @@ float4 LightCol(VS_OUT _base, float4 _color);
 
 float4 PLightCol(PLight _plight, VS_OUT _base, float4 _color);
 
-struct RenderDatas
-{
-	float4 main : SV_Target0;
-};
-
 
 //ピクセルシェダ(PixelShader)//
 //通常描画//

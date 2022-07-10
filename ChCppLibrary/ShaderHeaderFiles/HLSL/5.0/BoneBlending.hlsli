@@ -30,6 +30,8 @@ struct BoneData
 	row_major float4x4 skinWeightMat[4 * 16];
 };
 
+#ifdef __SHADER__
+
 float4x4 BlendMatrix(uint4x4 _blend, float4x4 _blendPow, uint _blendNum)
 {
 	float4x4 BlendMat;
@@ -46,5 +48,6 @@ float4x4 BlendMatrix(uint4x4 _blend, float4x4 _blendPow, uint _blendNum)
 
 
 }
+#endif
 
 #endif

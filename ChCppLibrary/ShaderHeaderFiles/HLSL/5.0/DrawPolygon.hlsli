@@ -9,8 +9,8 @@
 #define CHARACTOR_POSITION_REGISTERNO 1
 #endif
 
-#ifndef MATERIAL_POSITION_REGISTERNO 
-#define MATERIAL_POSITION_REGISTERNO 2
+#ifndef MATERIAL_DATA_REGISTERNO 
+#define MATERIAL_DATA_REGISTERNO 2
 #endif
 
 #ifndef BASE_TEXTURE_REGISTER
@@ -62,7 +62,7 @@ struct CharaData
 
 
 #ifdef __SHADER__
-cbuffer Material :register(b[MATERIAL_POSITION_REGISTERNO])
+cbuffer Material :register(b[MATERIAL_DATA_REGISTERNO])
 #else
 struct Material
 #endif

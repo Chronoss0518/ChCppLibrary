@@ -2,8 +2,9 @@
 
 #define __SHADER__
 
-#include"../../../ShaderHeaderFiles/HLSL/5.0/DrawPolygon.hlsli"
 #include"ModelBase.hlsli"
+
+#include"../../../ShaderHeaderFiles/HLSL/5.0/DrawPolygon.hlsli"
 
 //板ポリゴンバージョン//
 VS_OUT main(
