@@ -11,7 +11,7 @@ VS_OUT main
 (
 	float4 _pos			: POSITION0,
 	float2 _uv			: TEXCOORD0,
-	float4 _color		 : COLOR0,
+	float4 _color		: COLOR0,
 	float3 _normal		: NORMAL0,
 	float3 _faceNormal	: NORMAL1,
 	row_major uint4x4 _blend		: BLENDINDEX0,
@@ -40,7 +40,9 @@ VS_OUT main
 
 	*/
 
-	MTWStruct tmp = ModelToWorld(res.pos, _uv, _normal, _faceNormal);
+	MTWStruct tmp;
+
+	tmp = ModelToWorld(res.pos, _uv, _normal, _faceNormal);
 
 	res.pos = tmp.pos;
 	res.viewPos = tmp.viewPos;

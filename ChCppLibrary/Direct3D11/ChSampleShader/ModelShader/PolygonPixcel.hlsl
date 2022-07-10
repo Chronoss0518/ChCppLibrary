@@ -22,9 +22,9 @@ float4 main(VS_OUT _in) :SV_Target0
 {
 	//ƒJƒƒ‰‚Ì‘O•û‚É‚ ‚é‚©‚Ì”»’è//
 
-	float x = _in.ProPos.x / _in.ProPos.w;
-	float y = _in.ProPos.y / _in.ProPos.w;
-	float z = _in.ProPos.z / _in.ProPos.w;
+	float x = _in.proPos.x / _in.proPos.w;
+	float y = _in.proPos.y / _in.proPos.w;
+	float z = _in.proPos.z / _in.proPos.w;
 
 	clip(x >= -1.0f && x <= 1.0f ? 1.0f : -1.0f);
 	clip(y >= -1.0f && y <= 1.0f ? 1.0f : -1.0f);
@@ -32,15 +32,15 @@ float4 main(VS_OUT _in) :SV_Target0
 
 	float4 color = _in.color;
 
-	color = diffuse * ModelTex.Sample(ModelSmp, In.UV) * color;
+	color = mateDiffuse * baseTex.Sample(baseSmp, _in.uv) * color;
 
 	clip(color.a < 0.001f ? -1 : 1);
 
 	L_BaseColor lightCol;
-	lightCol.Color = color.rgb;
-	lightCol.WPos =_in.usePos.xyz;
-	lightCol.WFNormal = _in.normal;
-	lightCol.Specular = speCol;
+	lightCol.color = color.rgb;
+	lightCol.wPos =_in.usePos.xyz;
+	lightCol.wfNormal = _in.normal;
+	lightCol.specular = speCol;
 
 	color.rgb = GetDirectionalLightColor(lightCol);
 

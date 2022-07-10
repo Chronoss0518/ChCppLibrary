@@ -21,6 +21,8 @@
 #define	NORMAL_TEXTURE_REGISTER 1
 #endif
 
+//#define __SHADER__‚Íhlsl‘¤‚Å’è‹`‚·‚é//
+
 #ifndef __SHADER__
 #ifndef SHADER_TO_CPP
 #define SHADER_TO_CPP
@@ -69,7 +71,7 @@ struct Material
 	float4 speCol;
 	float4 ambient;
 
-	row_major float4x4 FrameMatrix
+	row_major float4x4 frameMatrix
 #ifdef __SHADER__
 		= float4x4(
 			1.0f, 0.0f, 0.0f, 1.0f
@@ -81,7 +83,7 @@ struct Material
 #endif
 };
 
-#ifndef __SHADER__
+#ifdef __SHADER__
 
 texture2D baseTex :register(t[BASE_TEXTURE_REGISTER]);
 
@@ -124,7 +126,7 @@ MTWStruct ModelToWorld(
 
 	//TmpMat = BlendNum > 0 ?  BlendMatrix(Blend, BlendPow, BlendNum) : TmpMat;
 
-	float4x4 WorldMat = mul(FrameMatrix, ModelMat);
+	float4x4 worldMat = mul(frameMatrix, modelMat);
 
 	//WorldMat = mul(WorldMat, TmpMat);
 

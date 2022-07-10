@@ -1,3 +1,6 @@
+#ifndef Ch_ModelBase_h
+#define Ch_ModelBase_h
+
 
 struct VS_OUT
 {
@@ -11,3 +14,5 @@ struct VS_OUT
 	float4 proPos		:TEXCOORD3;
 	float2 uv			:TEXCOORD0;
 };
+
+#endif

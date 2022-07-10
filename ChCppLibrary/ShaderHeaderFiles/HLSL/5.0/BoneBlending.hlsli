@@ -1,7 +1,33 @@
+#ifndef ChShader_PublicHeader_BoneBlending
+#define ChShader_PublicHeader_BoneBlending
 
-cbuffer BoneData :register(b11)
+#ifndef BONE_DATA_REGISTERNO
+#define BONE_DATA_REGISTERNO 11
+#endif
+
+//#define __SHADER__‚Íhlsl‘¤‚Å’è‹`‚·‚é//
+
+#ifndef __SHADER__
+#ifndef SHADER_TO_CPP
+#define SHADER_TO_CPP
+
+#define row_magor
+using float4x4 = ChLMat;
+using float4 = ChVec4;
+using float3 = ChVec3;
+using float2 = ChVec2;
+
+#endif
+#endif
+
+
+#ifdef __SHADER__
+cbuffer BoneData :register(b[BONE_DATA_REGISTERNO])
+#else
+struct BoneData
+#endif
 {
-	row_major float4x4 SkinWeightMat[4 * 16];
+	row_major float4x4 skinWeightMat[4 * 16];
 };
 
 float4x4 BlendMatrix(uint4x4 _blend, float4x4 _blendPow, uint _blendNum)
@@ -13,10 +39,12 @@ float4x4 BlendMatrix(uint4x4 _blend, float4x4 _blendPow, uint _blendNum)
 		uint first = i / 4;
 		uint second = i % 4;
 
-		BlendMat += SkinWeightMat[_blend[first][second]] * _blendPow[first][second];
+		BlendMat += skinWeightMat[_blend[first][second]] * _blendPow[first][second];
 	}
 
 	return BlendMat;
 
 
 }
+
+#endif

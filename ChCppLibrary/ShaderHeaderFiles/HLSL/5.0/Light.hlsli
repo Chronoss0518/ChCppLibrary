@@ -1,6 +1,20 @@
 #ifndef ChShader_PublicHeader_Light
 #define ChShader_PublicHeader_Light
 
+#ifndef LIGHT_DATA_REGISTERNO
+#define LIGHT_DATA_REGISTERNO 10
+#endif
+
+#ifndef LIGHT_TEXTURE_REGISTERNO
+#define LIGHT_TEXTURE_REGISTERNO 10
+#endif
+
+#ifndef LIGHT_PLIGHTCOUNT
+#define LIGHT_PLIGHTCOUNT 10
+#endif
+
+//#define __SHADER__はhlsl側で定義する//
+
 #ifndef __SHADER__
 #ifndef SHADER_TO_CPP
 #define SHADER_TO_CPP
@@ -13,15 +27,6 @@ using float2 = ChVec2;
 
 #endif
 #endif
-
-#ifndef LIGHT_DATA_REGISTERNO
-#define LIGHT_DATA_REGISTERNO 10
-#endif
-
-#ifndef LIGHT_DATA_REGISTERNO
-#define LIGHT_TEXTURE_REGISTERNO 10
-#endif
-
 
 struct Light
 {
@@ -39,17 +44,22 @@ struct PLight
 	bool flg;
 };
 
-cbuffer LightData :register(b[LIGHT_DATA_REGISTERNO])
-{
-	float3 camPos = float3(0.0f, 0.0f, 0.0f);
 
-	int pLightCnt = 10;
+#ifdef __SHADER__
+cbuffer LightData :register(b[LIGHT_DATA_REGISTERNO])
+#else
+struct LightData
+#endif
+{
+	float4 camPos = float4(0.0f, 0.0f, 0.0f, 0.0f);
 
 	Light light;
 
-	PLight pLight[10];
+	PLight pLight[LIGHT_PLIGHTCOUNT];
 
 };
+
+#ifdef __SHADER__
 
 texture2D lightPowMap :register(t[LIGHT_TEXTURE_REGISTERNO]);
 
@@ -78,9 +88,9 @@ struct L_BaseColor
 
 float3 GetDirectionalLightColor(L_BaseColor _bCol)
 {
-	float3 oCol = _bCol.Color;
+	float3 oCol = _bCol.color;
 
-	if (!light.LightUseFlg)return oCol;
+	if (!light.lightUseFlg)return oCol;
 
 	float dotSize = dot(_bCol.wfNormal, -light.dir);
 
@@ -94,21 +104,21 @@ float3 GetDirectionalLightColor(L_BaseColor _bCol)
 
 	oCol *= lamPow * light.dif;
 
-	float3 tmpVec = normalize(camPos - _bCol.wPos);//ピクセルからのカメラ方向
+	float3 tmpVec = normalize(camPos.xyz - _bCol.wPos);//ピクセルからのカメラ方向
 
 	tmpVec = normalize(-light.dir + tmpVec);
 
-	float lcDot = dot(tmpVec, _bCol.WFNormal);
+	float lcDot = dot(tmpVec, _bCol.wfNormal);
 
-	float pow = saturate(lcDot);
+	float power = saturate(lcDot);
 
-	oCol += _bCol.specular.rgb * pow(pow, _bCol.specular.a);
+	oCol += _bCol.specular.rgb * pow(power, _bCol.specular.a);
 
 	return oCol;
 
 }
 
-float3 lamLightCol(float3 _dif, float _pow)
+float3 LamLightCol(float3 _dif, float _pow)
 {
 
 	float3 tmpLightCol = _dif;
@@ -118,31 +128,32 @@ float3 lamLightCol(float3 _dif, float _pow)
 	return tmpLightCol;
 }
 
-float3 speLightCol(float3 _dir, float3 _modelPos, float3 _normal, float4 _speculer)
+float3 SpeLightCol(float3 _dir, float3 _modelPos, float3 _normal, float4 _speculer)
 {
 
-	float3 tmpVec = normalize(camPos - _modelPos);//ピクセルからのカメラ方向
+	float3 tmpVec = normalize(camPos.xyz - _modelPos);//ピクセルからのカメラ方向
 
 	tmpVec = normalize(-_dir + tmpVec);
 
-	float lcDot = dot(TmpVec, _Normal);
+	float lcDot = dot(tmpVec, _normal);
 
-	float Pow = saturate(LCDot);
+	float power = saturate(lcDot);
 
-	float3 TmpLightCol = _Speculer.rgb * pow(Pow, _Speculer.a);
+	float3 tmpLightCol = _speculer.rgb * pow(power, _speculer.a);
 
-	return TmpLightCol;
+	return tmpLightCol;
 }
 
 float3 AmbLightCol()
 {
 
-	float3 TmpLightCol = light.Dif.rgb;
+	float3 tmpLightCol = light.dif.rgb;
 
-	TmpLightCol *= light.AmbPow;
+	tmpLightCol *= light.ambPow;
 
-	return TmpLightCol;
+	return tmpLightCol;
 
 }
+#endif
 
 #endif

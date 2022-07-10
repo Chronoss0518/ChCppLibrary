@@ -1,9 +1,8 @@
 
-//--------------------------
-//共通データ
-//--------------------------
+#define __SHADER__
 
-#include"TShader.hlsli"
+#include"TextureBase.hlsli"
+#include"../../../ShaderHeaderFiles/HLSL/5.0/DrawPolygon.hlsli"
 
 //頂点シェダ(VertexShader)//
 //スプライトバージョン//
@@ -14,14 +13,14 @@ VS_OUT main(
 ) {
 	VS_OUT Out;
 
-	Out.Pos = pos;
+	Out.pos = pos;
 
-	Out.Pos = mul(Out.Pos, ModelMat);
+	Out.pos = mul(Out.pos, modelMat);
 
 	//テクスチャマップ上の位置情報//
-	Out.UV = uv;
+	Out.uv = uv;
 
-	Out.Color = color;
+	Out.color = color;
 
 	//出力//
 	return Out;

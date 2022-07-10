@@ -1,17 +1,10 @@
 
-//--------------------------
-//共通データ
-//--------------------------
 
 #define __SHADER__
 
 #include"../../../ShaderHeaderFiles/HLSL/5.0/DrawPolygon.hlsli"
 #include"ModelBase.hlsli"
 
-//--------------------------
-//シェーダー
-//--------------------------
-//頂点シェダ(VertexShader)//
 //板ポリゴンバージョン//
 VS_OUT main(
 	float4 _pos		: POSITION0
