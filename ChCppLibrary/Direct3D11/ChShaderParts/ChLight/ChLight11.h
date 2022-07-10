@@ -47,7 +47,7 @@ namespace ChD3D11
 
 			void SetLightDiffuse(const ChVec3& _dif);
 
-			void SetUseLightFlg(const ChStd::Bool& _flg);
+			void SetUseLightFlg(const bool& _flg);
 
 			void SetLightDir(const ChVec3& _dir);
 

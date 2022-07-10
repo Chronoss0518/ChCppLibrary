@@ -24,15 +24,15 @@ void ViewPort::SetDrawData(ID3D11DeviceContext* _dc)
 
 void DrawWindow::Init(
 	ID3D11Device* _device
-	, IDXGISwapChain* _SC)
+	, IDXGISwapChain* _sc)
 {
 
 	if (ChPtr::NullCheck(_device))return;
-	if (ChPtr::NullCheck(_SC))return;
+	if (ChPtr::NullCheck(_sc))return;
 
 	Release();
 
-	window = _SC;
+	window = _sc;
 
 	ID3D11Texture2D* pBackBuffer = nullptr;
 
@@ -50,8 +50,6 @@ void DrawWindow::Init(ChD3D11::DirectX3D11& _app)
 	if (!_app.IsInit())return;
 
 	Init(_app.GetDevice(), _app.GetSC());
-
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
