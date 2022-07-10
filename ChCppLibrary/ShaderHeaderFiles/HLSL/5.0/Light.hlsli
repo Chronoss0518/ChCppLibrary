@@ -46,7 +46,11 @@ struct PLight
 
 
 #ifdef __SHADER__
-cbuffer LightData :register(b[LIGHT_DATA_REGISTERNO])
+#ifdef _SM5_0_
+cbuffer LightData :register(b10)
+#else
+cbuffer LightData : register(b[LIGHT_DATA_REGISTERNO])
+#endif
 #else
 struct LightData
 #endif
@@ -56,16 +60,22 @@ struct LightData
 	Light light;
 
 	PLight pLight[LIGHT_PLIGHTCOUNT];
-
 };
 
 #ifdef __SHADER__
 
-texture2D lightPowMap :register(t[LIGHT_TEXTURE_REGISTERNO]);
+#ifdef _SM5_0_
+texture2D lightPowMap :register(t10);
+
+//画像から1ピクセルの色を取得するための物//
+sampler lightSmp :register(s10)
+#else
+texture2D lightPowMap : register(t[LIGHT_TEXTURE_REGISTERNO]);
 
 //画像から1ピクセルの色を取得するための物//
 sampler lightSmp :register(s[LIGHT_TEXTURE_REGISTERNO])
-= sampler_state{
+#endif
+= sampler_state {
 	Filter = MIN_MAG_MIP_LINEAR;
 	AddressU = Clamp;
 	AddressV = Clamp;

@@ -29,7 +29,11 @@ using float2 = ChVec2;
 #endif
 
 #ifndef __SHADER__
-cbuffer DrawData :register(b[DRAW_DATA_REGISTERNO])
+#ifdef _SM5_0_
+cbuffer DrawData :register(b0)
+#else
+cbuffer DrawData : register(b[DRAW_DATA_REGISTERNO])
+#endif
 #else
 struct DrawData
 #endif
@@ -40,7 +44,11 @@ struct DrawData
 };
 
 #ifndef __SHADER__
-cbuffer PolygonData:register(b[POLYGON_DATA_REGISTERNO])
+#ifdef _SM5_0_
+cbuffer PolygonData:register(b1)
+#else
+cbuffer PolygonData : register(b[POLYGON_DATA_REGISTERNO])
+#endif
 #else
 struct DrawData
 #endif
@@ -51,9 +59,15 @@ struct DrawData
 
 
 #ifdef __SHADER__
+#ifdef _SM5_0_
+texture2D tex : register(t0);
+
+sampler smp :register(s0);
+#else
 texture2D tex : register(t[BASE_TEXTURE_REGISTER]);
 
 sampler smp :register(s[BASE_TEXTURE_REGISTER]);
+#endif
 #endif
 
 #endif

@@ -22,7 +22,11 @@ using float2 = ChVec2;
 
 
 #ifdef __SHADER__
-cbuffer BoneData :register(b[BONE_DATA_REGISTERNO])
+#ifdef _SM5_0_
+cbuffer BoneData :register(b11)
+#else
+cbuffer BoneData : register(b[BONE_DATA_REGISTERNO])
+#endif
 #else
 struct BoneData
 #endif

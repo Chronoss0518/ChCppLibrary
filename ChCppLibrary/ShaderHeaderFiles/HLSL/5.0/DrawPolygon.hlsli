@@ -38,7 +38,11 @@ using float2 = ChVec2;
 
 
 #ifdef __SHADER__
-cbuffer DrawData :register(b[DRAW_DATA_REGISTERNO])
+#ifdef _SM5_0_
+cbuffer DrawData :register(b0)
+#else
+cbuffer DrawData : register(b[DRAW_DATA_REGISTERNO])
+#endif
 #else
 struct DrawData
 #endif
@@ -52,7 +56,11 @@ struct DrawData
 
 
 #ifdef __SHADER__
-cbuffer CharaData :register(b[CHARACTOR_POSITION_REGISTERNO])
+#ifdef _SM5_0_
+cbuffer CharaData :register(b1)
+#else
+cbuffer CharaData : register(b[CHARACTOR_POSITION_REGISTERNO])
+#endif
 #else
 struct CharaData
 #endif
@@ -62,7 +70,11 @@ struct CharaData
 
 
 #ifdef __SHADER__
-cbuffer Material :register(b[MATERIAL_DATA_REGISTERNO])
+#ifdef _SM5_0_
+cbuffer Material :register(b2)
+#else
+cbuffer Material : register(b[MATERIAL_DATA_REGISTERNO])
+#endif
 #else
 struct Material
 #endif
@@ -85,15 +97,27 @@ struct Material
 
 #ifdef __SHADER__
 
-texture2D baseTex :register(t[BASE_TEXTURE_REGISTER]);
-
-texture2D normalTex:register(t[NORMAL_TEXTURE_REGISTER]);
-
-//画像から1ピクセルの色を取得するための物//
-sampler baseSmp:register(s[BASE_TEXTURE_REGISTER]);
+#ifdef _SM5_0_
+texture2D baseTex :register(t0);
+texture2D normalTex:register(t1);
 
 //画像から1ピクセルの色を取得するための物//
-sampler normalSmp:register(s[NORMAL_TEXTURE_REGISTER]);
+sampler baseSmp:register(s0);
+
+//画像から1ピクセルの色を取得するための物//
+sampler normalSmp:register(s1);
+#else
+texture2D baseTex : register(t[BASE_TEXTURE_REGISTER]);
+texture2D normalTex : register(t[NORMAL_TEXTURE_REGISTER]);
+
+//画像から1ピクセルの色を取得するための物//
+sampler baseSmp : register(s[BASE_TEXTURE_REGISTER]);
+
+//画像から1ピクセルの色を取得するための物//
+sampler normalSmp: register(s[NORMAL_TEXTURE_REGISTER]);
+#endif
+
+
 
 struct MTWStruct
 {
