@@ -28,20 +28,20 @@ using float2 = ChVec2;
 #endif
 #endif
 
-struct Light
+struct DirectionalLight
 {
 	float3 dif;
-	bool lightUseFlg;
+	bool useFlg;
 	float3 dir;
 	float ambPow;
 };
 
-struct PLight
+struct PointLight
 {
 	float3 pos;
 	float len;
 	float3 dif;
-	bool flg;
+	bool useFlg;
 };
 
 
@@ -57,9 +57,9 @@ struct LightData
 {
 	float4 camPos = float4(0.0f, 0.0f, 0.0f, 0.0f);
 
-	Light light;
+	DirectionalLight light;
 
-	PLight pLight[LIGHT_PLIGHTCOUNT];
+	PointLight pLight[LIGHT_PLIGHTCOUNT];
 };
 
 #ifdef __SHADER__
@@ -100,7 +100,7 @@ float3 GetDirectionalLightColor(L_BaseColor _bCol)
 {
 	float3 oCol = _bCol.color;
 
-	if (!light.lightUseFlg)return oCol;
+	if (!light.useFlg)return oCol;
 
 	float dotSize = dot(_bCol.wfNormal, -light.dir);
 

@@ -74,7 +74,7 @@ void Light11::SetUseLightFlg(const bool& _flg)
 {
 	if (!*this)return;
 
-	lightDatas.light.useLightFlg = _flg;
+	lightDatas.light.useFlg = _flg;
 
 	updateFlg = true;
 }
@@ -104,7 +104,7 @@ void Light11::SetLightAmbientPow(const float _amb)
 void Light11::SetDirectionLightData(const bool _useFlg, const ChVec3& _dif, const ChVec3& _dir, const float _ambPow)
 {
 
-	lightDatas.light.useLightFlg = _useFlg;
+	lightDatas.light.useFlg = _useFlg;
 	lightDatas.light.dif = _dif;
 	lightDatas.light.dir = _dir;
 	lightDatas.light.ambPow = _ambPow;
@@ -187,7 +187,7 @@ void Light11::SetCamPos(const ChVec3& _camPos)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void Light11::SetLightData(const Light11::LightData& _ld)
+void Light11::SetLightData(const LightData& _ld)
 {
 	if (!*this)return;
 
@@ -254,21 +254,21 @@ void Light11::SetImportLightPowMap(ChPtr::Shared<TextureBase11>& _lightPowMap)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-Light11::LightData Light11::GetLightData()
+ChD3D11::ShaderParts::LightData Light11::GetLightData()
 {
-	LightData Out;
+	LightData res;
 
-	if (!*this)return Out;
+	if (!*this)return res;
 
-	Out.camPos = lightDatas.camPos;
-	Out.light = lightDatas.light;
+	res.camPos = lightDatas.camPos;
+	res.light = lightDatas.light;
 
 	for (unsigned long i = 0; i < 10; i++)
 	{
-		Out.pLight[i] = lightDatas.pLight[i];
+		res.pLight[i] = lightDatas.pLight[i];
 	}
 
-	return Out;
+	return res;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

@@ -6,34 +6,11 @@ namespace ChD3D11
 {
 	namespace ShaderParts
 	{
+#include"../../../ShaderHeaderFiles/HLSL/5.0/Light.hlsli"
+
 		class Light11 final :public ChCp::Initializer, public ChCp::Releaser
 		{
 		public:
-
-			///////////////////////////////////////////////////////////////////////////////////
-			//Structures//
-			struct DirectionalLight
-			{
-				ChVec3 dif;
-				bool useLightFlg = false;
-				ChVec3 dir;
-				float ambPow = 0.0f;
-			};
-
-			struct PointLight
-			{
-				ChVec3 pos;
-				float len = 10.0f;
-				ChVec3 dif;
-				bool useFlg = false;
-			};
-
-			struct LightData
-			{
-				ChVec3 camPos;
-				DirectionalLight light;
-				PointLight pLight[10];
-			};
 
 			///////////////////////////////////////////////////////////////////////////////////
 			//InitAndRelease//
