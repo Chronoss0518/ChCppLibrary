@@ -73,18 +73,9 @@ namespace ChD3D11
 
 			void Update(ID3D11DeviceContext* _dc);
 
-
-			struct UseLightData
-			{
-				ChVec3 camPos;
-				int pLightCount = 10;
-				DirectionalLight light;
-				PointLight pLight[10];
-			};
-
-			UseLightData lightDatas;
+			LightData lightDatas;
 			ID3D11Device* device = nullptr;
-			ConstantBuffer11<UseLightData> buf;
+			ConstantBuffer11<LightData> buf;
 			ChStd::Bool updateFlg = true;
 
 			Texture11 lightPow;
