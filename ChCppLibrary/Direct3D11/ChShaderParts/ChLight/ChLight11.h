@@ -2,16 +2,10 @@
 #define Ch_D3D11_Light_h
 
 
-
-
-
 namespace ChD3D11
 {
-
-
 	namespace ShaderParts
 	{
-		
 		class Light11 final :public ChCp::Initializer, public ChCp::Releaser
 		{
 		public:
@@ -38,7 +32,7 @@ namespace ChD3D11
 			{
 				ChVec3 camPos;
 				DirectionalLight light;
-				PointLight pLight[10];
+				PointLight pLight[10]
 			};
 
 			///////////////////////////////////////////////////////////////////////////////////
@@ -81,7 +75,7 @@ namespace ChD3D11
 
 			void SetDrawData(ID3D11DeviceContext* _dc);
 
-			void SetImportLightPowMap(ChPtr::Shared<Texture11>& _lightPowMap);
+			void SetImportLightPowMap(ChPtr::Shared<TextureBase11>& _lightPowMap);
 
 			void SetRegisterNo(const unsigned long _registerNo);
 
@@ -117,8 +111,9 @@ namespace ChD3D11
 			ChStd::Bool updateFlg = true;
 
 			Texture11 lightPow;
-			ChPtr::Shared<Texture11>importLightPowMap;
+			ChPtr::Shared<TextureBase11>importLightPowMap;
 			unsigned long textureRegisterNo = 0;
+
 		};
 
 	}

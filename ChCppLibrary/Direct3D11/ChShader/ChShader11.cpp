@@ -75,9 +75,11 @@ void ShaderController11::Init(
 	spvTex.InitChSpriteTextureVertexShader(_device);
 	bpTex.InitChBaseTexturePixelShader(_device);
 
-	whiteTex.CreateColorTexture(device, ChVec4(1.0f, 1.0f, 1.0f, 1.0f), 1, 1);
+	Texture11::CreateWhiteTex(_device);
+	whiteTex = &Texture11::GetWhiteTex();
 
-	normalTex.CreateColorTexture(device, ChVec4(0.5f, 1.0f, 0.5f, 1.0f), 1, 1);
+	Texture11::CreateNormalTex(_device);
+	normalTex = &Texture11::GetNormalTex();
 
 	baseData.CreateBuffer(_device, 0);
 
@@ -132,9 +134,6 @@ void ShaderController11::Init(
 
 void ShaderController11::Release()
 {
-	whiteTex.Release();
-	normalTex.Release();
-
 	window.Release();
 
 	SetInitFlg(false);
@@ -406,7 +405,7 @@ void ShaderController11::Draw(
 
 	ChD3D11::TextureBase11* drawTex = &_tex;
 
-	if (!drawTex->IsTex())drawTex = &whiteTex;
+	if (!drawTex->IsTex())drawTex = whiteTex;
 
 	pvTex.SetShader(dc);
 
@@ -454,7 +453,7 @@ void ShaderController11::Draw(
 
 	ChD3D11::TextureBase11* drawTex = &_tex;
 
-	if (!drawTex->IsTex())drawTex = &whiteTex;
+	if (!drawTex->IsTex())drawTex = whiteTex;
 
 	_userPS.SetShader(dc);
 
@@ -489,7 +488,7 @@ void ShaderController11::Draw(
 
 	ChD3D11::TextureBase11* drawTex = &_tex;
 
-	if (!drawTex->IsTex())drawTex = &whiteTex;
+	if (!drawTex->IsTex())drawTex = whiteTex;
 
 	spvTex.SetShader(dc);
 
@@ -529,7 +528,7 @@ void ShaderController11::Draw(
 
 	ChD3D11::TextureBase11* drawTex = &_tex;
 
-	if (!drawTex->IsTex())drawTex = &whiteTex;
+	if (!drawTex->IsTex())drawTex = whiteTex;
 
 	spvTex.SetShader(dc);
 

@@ -337,6 +337,36 @@ void Texture11::CreateColorTexture(
 	Init(_device);
 }
 
+void Texture11::CreateWhiteTex(ID3D11Device* _device)
+{
+	auto white = GetWhiteTex();
+
+	if (white.IsTex())return;
+
+	white.CreateColorTexture(_device, ChVec4(1.0f, 1.0f, 1.0f, 1.0f), 1, 1);
+}
+
+void Texture11::CreateNormalTex(ID3D11Device* _device)
+{
+	auto normal = GetNormalTex();
+
+	if (normal.IsTex())return;
+
+	normal.CreateColorTexture(_device, ChVec4(0.5f, 1.0f, 0.5f, 1.0f), 1, 1);
+}
+
+Texture11& Texture11::GetWhiteTex()
+{
+	static Texture11 white;
+	return white;
+}
+
+Texture11& Texture11::GetNormalTex()
+{
+	static Texture11 normal;
+	return normal;
+}
+
 
 void RenderTarget11::Release()
 {

@@ -141,6 +141,14 @@ namespace ChD3D11
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
+		static void CreateWhiteTex(ID3D11Device* _device);
+
+		static void CreateNormalTex(ID3D11Device* _device);
+
+		static Texture11& GetWhiteTex();
+
+		static Texture11& GetNormalTex();
+
 	protected:
 
 	};

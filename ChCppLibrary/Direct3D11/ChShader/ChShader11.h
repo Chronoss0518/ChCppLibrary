@@ -20,11 +20,7 @@ namespace ChD3D11
 	//独自で構築しているShaderクラス//
 	class ShaderController11 final :public ChCp::Initializer,public ChCp::Releaser
 	{
-	public:
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//InitAndRelease//
-
+	public://Init And Release//
 
 		void Init(
 			DirectX3D11& _chDevice
@@ -48,8 +44,7 @@ namespace ChD3D11
 
 		void Release()override;
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
+	public://SetFunction//
 
 		//描画させるレンダーターゲットを登録する//
 		void SetRenderTarget(RenderTarget11& _tex);
@@ -136,8 +131,7 @@ namespace ChD3D11
 		}
 
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//GetFunction//
+	public://Get Functions//
 
 		inline D3D11_CULL_MODE GetCullMode() { return cull; }
 
@@ -151,8 +145,7 @@ namespace ChD3D11
 
 		inline BoneDatas GetBoneData() { return bodObject; }
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//IsFunction//
+	public://Is Functions//
 
 		void IsLight(const ChStd::Bool _flg);
 
@@ -161,7 +154,7 @@ namespace ChD3D11
 
 		inline ChStd::Bool IsRTDraw() { return rtDrawFlg; }
 
-		///////////////////////////////////////////////////////////////////////////////////
+	public://Othre Functions//
 
 		//描画対象となる画像群の登録を解除する//
 		inline void ClearRenderTargets()
@@ -169,7 +162,7 @@ namespace ChD3D11
 			renderTargets.clear();
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////
+	public://Draw Functions//
 
 		//描画開始前に呼ぶ関数//
 		void DrawStart();
@@ -260,19 +253,15 @@ namespace ChD3D11
 			, const float _drawRad
 			, const ChMat_11& _mat = ChMat_11());
 
-		///////////////////////////////////////////////////////////////////////////////////
-
-	protected:
+	protected://Set Functions//
 
 		//レンダーターゲット用フラグ//
 		inline void SetRTDraw(const ChStd::Bool _Flg) { rtDrawFlg = _Flg; }
 
-		///////////////////////////////////////////////////////////////////////////////////
-
 		//描画データの初期化//
 		void SetDrawDatas();
 
-		///////////////////////////////////////////////////////////////////////////////////
+	protected://Member Value//
 
 		//3Dモデル描画用シェーダー//
 		VertexShader11 bvModel;
@@ -287,10 +276,10 @@ namespace ChD3D11
 		RenderTarget11 depthShadowTex;
 
 		//モデルの画像がない場合にセットする//
-		Texture11 whiteTex;
+		TextureBase11* whiteTex;
 
 		//モデルの法線マップがない場合に使用する画像//
-		Texture11 normalTex;
+		TextureBase11* normalTex;
 
 		//描画対象に設定する画像群//
 		std::vector<ID3D11RenderTargetView*>renderTargets;
