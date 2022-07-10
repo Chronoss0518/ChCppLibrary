@@ -1,5 +1,6 @@
 
 #define __SHADER__
+#define _SM5_0_
 
 #include"ModelBase.hlsli"
 
@@ -8,7 +9,7 @@
 
 float4 LightCol(VS_OUT _base, float4 _color);
 
-float4 PLightCol(PLight _plight, VS_OUT _base, float4 _color);
+float4 PLightCol(PointLight _plight, VS_OUT _base, float4 _color);
 
 
 //ピクセルシェダ(PixelShader)//
@@ -16,14 +17,7 @@ float4 PLightCol(PLight _plight, VS_OUT _base, float4 _color);
 float4 main(VS_OUT _in) :SV_Target0
 {
 	//カメラの前方にあるかの判定//
-
-	float x = _in.proPos.x / _in.proPos.w;
-	float y = _in.proPos.y / _in.proPos.w;
-	float z = _in.proPos.z / _in.proPos.w;
-
-	clip(x >= -1.0f && x <= 1.0f ? 1.0f : -1.0f);
-	clip(y >= -1.0f && y <= 1.0f ? 1.0f : -1.0f);
-	clip(z >= 0.0f && z <= 1.0f ? 1.0f : -1.0f);
+	FrustumCulling(_in.proPos);
 
 	float4 color = _in.color;
 
