@@ -114,7 +114,7 @@ namespace ChWin
 			buttonType |= ChStd::EnumCast(_type);
 		}
 
-		inline void ClearDisplayButtonType(const DisplayButtonType _type)
+		inline void ClearDisplayButtonType()
 		{
 			buttonType = 0;
 		}
