@@ -1,14 +1,14 @@
 #ifndef Ch_D3D11_CB_Sprite_h
 #define Ch_D3D11_CB_Sprite_h
 
-
+#include"../ChCBBase11.h"
 #include"../../../ShaderHeaderFiles/HLSL/5.0/DrawSprite.hlsli"
 
 namespace ChD3D11
 {
 	namespace CB
 	{
-		class CBSprite11 final :public ChCp::Initializer, public ChCp::Releaser
+		class CBSprite11 final :public CBBase11
 		{
 		public:
 

@@ -1,7 +1,7 @@
 #ifndef Ch_D3D11_CB_Light_h
 #define Ch_D3D11_CB_Light_h
 
-
+#include"../ChCBBase11.h"
 #include"../../../ShaderHeaderFiles/HLSL/5.0/Light.hlsli"
 
 namespace ChD3D11
@@ -9,7 +9,7 @@ namespace ChD3D11
 	namespace CB
 	{
 
-		class CBLight11 final :public ChCp::Initializer, public ChCp::Releaser
+		class CBLight11 final :public CBBase11
 		{
 		public:
 

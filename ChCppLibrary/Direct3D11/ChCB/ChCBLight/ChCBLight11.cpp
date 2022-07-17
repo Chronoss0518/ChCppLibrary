@@ -16,7 +16,7 @@ void CBLight11::Init(ID3D11Device* _device)
 {
 	Release();
 
-	device = _device;
+	CBBase11::Init(_device);
 
 	buf.CreateBuffer(_device, LIGHT_DATA_REGISTERNO);
 	{
@@ -243,20 +243,7 @@ void CBLight11::SetDrawData(ID3D11DeviceContext* _dc)
 
 void CBLight11::SetTexture(ID3D11DeviceContext* _dc)
 {
-	if (!*this)return;
-
-	TextureBase11* tmpLightPow = &lightPow;
-
-	if (!importLightPowMap.expired())
-	{
-		auto tex = importLightPowMap.lock();
-		if (tex->IsTex())
-		{
-			tmpLightPow = tex.get();
-		}
-	}
-
-	tmpLightPow->SetDrawData(_dc, LIGHT_TEXTURE_REGISTERNO);
+	CBBase11::SetShaderTexture(_dc, importLightPowMap, &lightPow, LIGHT_TEXTURE_REGISTERNO);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

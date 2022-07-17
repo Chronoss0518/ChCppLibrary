@@ -1,14 +1,14 @@
 #ifndef Ch_D3D11_CB_Polygon_h
 #define Ch_D3D11_CB_Polygon_h
 
-
+#include"../ChCBBase11.h"
 #include"../../../ShaderHeaderFiles/HLSL/5.0/DrawPolygon.hlsli"
 
 namespace ChD3D11
 {
 	namespace CB
 	{
-		class CBPolygon11 final :public ChCp::Initializer, public ChCp::Releaser
+		class CBPolygon11 final :public CBBase11
 		{
 		public:
 
@@ -82,8 +82,6 @@ namespace ChD3D11
 			void UpdateCD(ID3D11DeviceContext* _dc);
 
 			void UpdateMD(ID3D11DeviceContext* _dc);
-
-			void SetShaderTexture(ID3D11DeviceContext* _dc, ChPtr::Weak<TextureBase11> _tex, TextureBase11& _defaultTex, const unsigned long _registerNo);
 
 			ChP_DrawData drawData;
 			ConstantBuffer11<ChP_DrawData> drawBuf;

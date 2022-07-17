@@ -16,7 +16,7 @@ void CBPolygon11::Init(ID3D11Device* _device)
 {
 	Release();
 
-	device = _device;
+	CBBase11::Init(_device);
 
 	drawBuf.CreateBuffer(device, DRAW_DATA_REGISTERNO);
 	charaBuf.CreateBuffer(device, CHARACTOR_POSITION_REGISTERNO);
@@ -233,26 +233,8 @@ void CBPolygon11::SetShaderTexture(ID3D11DeviceContext* _dc)
 {
 	if (!*this)return;
 
-	SetShaderTexture(_dc, baseTex, Texture11::GetWhiteTex(), BASE_TEXTURE_REGISTER);
-	SetShaderTexture(_dc, normalTex, Texture11::GetNormalTex(), NORMAL_TEXTURE_REGISTER);
-
-}
-
-void CBPolygon11::SetShaderTexture(ID3D11DeviceContext* _dc, ChPtr::Weak<TextureBase11> _tex, TextureBase11& _defaultTex, const unsigned long _registerNo)
-{
-
-	TextureBase11* tmpTex = &_defaultTex;
-
-	if (!_tex.expired())
-	{
-		auto tex = _tex.lock();
-		if (tex->IsTex())
-		{
-			tmpTex = tex.get();
-		}
-	}
-
-	tmpTex->SetDrawData(_dc, _registerNo);
+	CBBase11::SetShaderTexture(_dc, baseTex, Texture11::GetWhiteTex(), BASE_TEXTURE_REGISTER);
+	CBBase11::SetShaderTexture(_dc, normalTex, Texture11::GetNormalTex(), NORMAL_TEXTURE_REGISTER);
 }
 
 void CBPolygon11::UpdateDD(ID3D11DeviceContext* _dc)
