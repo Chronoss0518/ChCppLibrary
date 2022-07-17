@@ -15,7 +15,10 @@
 #ifndef SHADER_TO_CPP
 #define SHADER_TO_CPP
 
-#define row_magor
+#ifndef row_magor
+#define row_major
+#endif
+
 using float4x4 = ChLMat;
 using float3x3 = ChLMat;
 using float2x2 = ChLMat;
