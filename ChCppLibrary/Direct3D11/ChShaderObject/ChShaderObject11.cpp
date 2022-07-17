@@ -291,7 +291,7 @@ void VertexShader11::Release()
 
 }
 
-void PixelShader11::InitChBaseModelPixelShader(ID3D11Device* _device)
+void PixelShader11::InitChBasePolygonPixelShader(ID3D11Device* _device)
 {
 #include"../ChSampleShader/PolygonPixcel.inc"
 
@@ -299,7 +299,7 @@ void PixelShader11::InitChBaseModelPixelShader(ID3D11Device* _device)
 
 }
 
-void PixelShader11::InitChBaseTexturePixelShader(ID3D11Device* _device)
+void PixelShader11::InitChBaseSpritePixelShader(ID3D11Device* _device)
 {
 #include"../ChSampleShader/TexturePixel.inc"
 

@@ -141,9 +141,9 @@ namespace ChD3D11
 			CreatePixelShader(_device, _binary, _binarySize);
 		}
 
-		void InitChBaseModelPixelShader(ID3D11Device* _device);
+		void InitChBasePolygonPixelShader(ID3D11Device* _device);
 
-		void InitChBaseTexturePixelShader(ID3D11Device* _device);
+		void InitChBaseSpritePixelShader(ID3D11Device* _device);
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction/

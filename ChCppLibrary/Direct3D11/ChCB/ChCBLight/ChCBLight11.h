@@ -1,5 +1,5 @@
-#ifndef Ch_D3D11_Light_h
-#define Ch_D3D11_Light_h
+#ifndef Ch_D3D11_CB_Light_h
+#define Ch_D3D11_CB_Light_h
 
 
 #include"../../../ShaderHeaderFiles/HLSL/5.0/Light.hlsli"
@@ -9,7 +9,7 @@ namespace ChD3D11
 	namespace CB
 	{
 
-		class Light11 final :public ChCp::Initializer, public ChCp::Releaser
+		class CBLight11 final :public ChCp::Initializer, public ChCp::Releaser
 		{
 		public:
 
@@ -53,6 +53,8 @@ namespace ChD3D11
 
 			void SetDrawData(ID3D11DeviceContext* _dc);
 
+			void SetTexture(ID3D11DeviceContext* _dc);
+
 			void SetImportLightPowMap(ChPtr::Shared<TextureBase11>& _lightPowMap);
 
 			///////////////////////////////////////////////////////////////////////////////////
@@ -65,8 +67,6 @@ namespace ChD3D11
 			void ClearImportLightPowMap();
 
 		private:
-
-			void SetTexture(ID3D11DeviceContext* _dc);
 
 			void Update(ID3D11DeviceContext* _dc);
 
