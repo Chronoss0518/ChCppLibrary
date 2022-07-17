@@ -29,7 +29,7 @@ float4 main(VS_OUT _in) :SV_Target0
 	lightCol.color = color.rgb;
 	lightCol.wPos =_in.worldPos.xyz;
 	lightCol.wfNormal = _in.normal;
-	lightCol.specular = speCol;
+	lightCol.specular = float4(mate.speCol, mate.spePow);
 
 	color.rgb = GetDirectionalLightColor(lightCol);
 
