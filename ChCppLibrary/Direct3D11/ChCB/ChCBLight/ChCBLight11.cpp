@@ -3,10 +3,10 @@
 #include"../../../BaseIncluder/ChD3D11I.h"
 
 #include"../../ChTexture/ChTexture11.h"
-#include"ChLight11.h"
+#include"ChCBLight11.h"
 
 using namespace ChD3D11;
-using namespace ShaderParts;
+using namespace CB;
 
 ///////////////////////////////////////////////////////////////////////////////////
 //LightHeader Method

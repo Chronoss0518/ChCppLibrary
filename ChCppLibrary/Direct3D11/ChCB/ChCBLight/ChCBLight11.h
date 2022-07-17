@@ -6,7 +6,7 @@
 
 namespace ChD3D11
 {
-	namespace ShaderParts
+	namespace CB
 	{
 
 		class Light11 final :public ChCp::Initializer, public ChCp::Releaser
