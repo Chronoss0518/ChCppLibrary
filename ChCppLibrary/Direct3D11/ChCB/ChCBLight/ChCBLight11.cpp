@@ -12,15 +12,13 @@ using namespace CB;
 //LightHeader Method
 ///////////////////////////////////////////////////////////////////////////////////
 
-void Light11::Init(ID3D11Device* _device, const unsigned long _bufferRegisterNo, const unsigned long _textureRegisterNo)
+void Light11::Init(ID3D11Device* _device)
 {
 	Release();
 
 	device = _device;
 
-	buf.CreateBuffer(_device, _bufferRegisterNo);
-	textureRegisterNo = _textureRegisterNo;
-
+	buf.CreateBuffer(_device, LIGHT_DATA_REGISTERNO);
 	{
 		ChVec4 tmpCol[256];
 
@@ -280,23 +278,6 @@ void Light11::ClearImportLightPowMap()
 	importLightPowMap = nullptr;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
-void Light11::SetRegisterNo(const unsigned long _registerNo)
-{
-	if (!*this)return;
-
-	buf.SetRegisterNo(_registerNo);
-
-}
-
-void Light11::SetTextureRegisterNo(const unsigned long _registerNo)
-{
-	if (!*this)return;
-
-	textureRegisterNo = _registerNo;
-}
-
 void Light11::SetTexture(ID3D11DeviceContext* _dc)
 {
 
@@ -310,7 +291,7 @@ void Light11::SetTexture(ID3D11DeviceContext* _dc)
 		}
 	}
 
-	tmpLightPow->SetDrawData(_dc, textureRegisterNo);
+	tmpLightPow->SetDrawData(_dc, LIGHT_TEXTURE_REGISTERNO);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

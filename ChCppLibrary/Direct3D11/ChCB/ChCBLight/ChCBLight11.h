@@ -16,7 +16,7 @@ namespace ChD3D11
 			///////////////////////////////////////////////////////////////////////////////////
 			//InitAndRelease//
 
-			void Init(ID3D11Device* _device, const unsigned long _bufferRegisterNo, const unsigned long _textureRegisterNo);
+			void Init(ID3D11Device* _device);
 
 			void Release()override;
 
@@ -55,10 +55,6 @@ namespace ChD3D11
 
 			void SetImportLightPowMap(ChPtr::Shared<TextureBase11>& _lightPowMap);
 
-			void SetRegisterNo(const unsigned long _registerNo);
-
-			void SetTextureRegisterNo(const unsigned long _registerNo);
-
 			void SetTexture(ID3D11DeviceContext* _dc);
 
 			///////////////////////////////////////////////////////////////////////////////////
@@ -81,7 +77,6 @@ namespace ChD3D11
 
 			Texture11 lightPow;
 			ChPtr::Shared<TextureBase11>importLightPowMap;
-			unsigned long textureRegisterNo = 0;
 
 		};
 
