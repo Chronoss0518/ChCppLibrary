@@ -21,7 +21,7 @@ float4 main(VS_OUT _in) :SV_Target0
 
 	float4 color = _in.color;
 
-	color = mateDiffuse * baseTex.Sample(baseSmp, _in.uv) * color;
+	color = mate.dif * baseTex.Sample(baseSmp, _in.uv) * color;
 
 	clip(color.a < 0.001f ? -1 : 1);
 
