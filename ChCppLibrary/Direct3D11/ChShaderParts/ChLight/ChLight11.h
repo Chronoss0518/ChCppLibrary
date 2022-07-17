@@ -2,11 +2,12 @@
 #define Ch_D3D11_Light_h
 
 
+#include"../../../ShaderHeaderFiles/HLSL/5.0/Light.hlsli"
+
 namespace ChD3D11
 {
 	namespace ShaderParts
 	{
-#include"../../../ShaderHeaderFiles/HLSL/5.0/Light.hlsli"
 
 		class Light11 final :public ChCp::Initializer, public ChCp::Releaser
 		{
@@ -44,7 +45,7 @@ namespace ChD3D11
 
 			void SetCamPos(const ChVec3& _camPos);
 
-			void SetLightData(const LightData& _ld);
+			void SetLightData(const ChLightData& _ld);
 
 			void SetPSDrawData(ID3D11DeviceContext* _dc);
 
@@ -63,7 +64,7 @@ namespace ChD3D11
 			///////////////////////////////////////////////////////////////////////////////////
 			//GetFunction//
 
-			LightData GetLightData();
+			ChLightData GetLightData();
 
 			///////////////////////////////////////////////////////////////////////////////////
 
@@ -73,9 +74,9 @@ namespace ChD3D11
 
 			void Update(ID3D11DeviceContext* _dc);
 
-			LightData lightDatas;
+			ChLightData lightDatas;
 			ID3D11Device* device = nullptr;
-			ConstantBuffer11<LightData> buf;
+			ConstantBuffer11<ChLightData> buf;
 			ChStd::Bool updateFlg = true;
 
 			Texture11 lightPow;

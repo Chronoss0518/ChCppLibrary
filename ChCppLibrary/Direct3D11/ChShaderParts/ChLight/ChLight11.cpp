@@ -117,7 +117,7 @@ void Light11::SetDirectionLightData(const bool _useFlg, const ChVec3& _dif, cons
 void Light11::SetPLightPos(const ChVec3& _pos, const unsigned long _no)
 {
 	if (!*this)return;
-	if (_no > 10)return;
+	if (_no > LIGHT_PLIGHTCOUNT)return;
 
 	lightDatas.pLight[_no].pos = _pos;
 
@@ -129,7 +129,7 @@ void Light11::SetPLightPos(const ChVec3& _pos, const unsigned long _no)
 void Light11::SetPLightLen(const float _len, const unsigned long _no)
 {
 	if (!*this)return;
-	if (_no > 10)return;
+	if (_no > LIGHT_PLIGHTCOUNT)return;
 
 	lightDatas.pLight[_no].len = _len;
 
@@ -141,7 +141,7 @@ void Light11::SetPLightLen(const float _len, const unsigned long _no)
 void Light11::SetPLightDiffuse(const ChVec3& _dif, const unsigned long _no)
 {
 	if (!*this)return;
-	if (_no > 10)return;
+	if (_no > LIGHT_PLIGHTCOUNT)return;
 
 	lightDatas.pLight[_no].dif = _dif;
 
@@ -153,7 +153,7 @@ void Light11::SetPLightDiffuse(const ChVec3& _dif, const unsigned long _no)
 void Light11::SetPLightUseFlg(const bool& _flg, const unsigned long _no)
 {
 	if (!*this)return;
-	if (_no > 10)return;
+	if (_no > LIGHT_PLIGHTCOUNT)return;
 
 	lightDatas.pLight[_no].useFlg = _flg;
 
@@ -164,7 +164,7 @@ void Light11::SetPointLightData(const bool _useFlg, const ChVec3& _dif, const Ch
 {
 
 	if (!*this)return;
-	if (_no > 10)return;
+	if (_no > LIGHT_PLIGHTCOUNT)return;
 
 	lightDatas.pLight[_no].useFlg = _useFlg;
 	lightDatas.pLight[_no].dif = _dif;
@@ -187,7 +187,7 @@ void Light11::SetCamPos(const ChVec3& _camPos)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void Light11::SetLightData(const LightData& _ld)
+void Light11::SetLightData(const ChLightData& _ld)
 {
 	if (!*this)return;
 
@@ -254,9 +254,9 @@ void Light11::SetImportLightPowMap(ChPtr::Shared<TextureBase11>& _lightPowMap)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChD3D11::ShaderParts::LightData Light11::GetLightData()
+ChLightData Light11::GetLightData()
 {
-	LightData res;
+	ChLightData res;
 
 	if (!*this)return res;
 
