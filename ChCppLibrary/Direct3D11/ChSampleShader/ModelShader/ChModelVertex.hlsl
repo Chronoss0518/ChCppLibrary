@@ -11,45 +11,33 @@
 //’Êí•`‰æ//
 VS_OUT main
 (
-	float4 _pos			: POSITION0,
-	float2 _uv			: TEXCOORD0,
-	float4 _color		: COLOR0,
-	float3 _normal		: NORMAL0,
-	float3 _faceNormal	: NORMAL1,
+	float4 _pos						: POSITION0,
+	float2 _uv						: TEXCOORD0,
+	float4 _color					: COLOR0,
+	float3 _normal					: NORMAL0,
+	float3 _faceNormal				: NORMAL1,
 	row_major uint4x4 _blend		: BLENDINDEX0,
 	row_major float4x4 _blendPow	: BLENDWEIGHT0,
-	uint _blendNum		: BLENDINDEX4
+	uint _blendNum					: BLENDINDEX4
 )
 {
 
 	VS_OUT res;
 
-	res.pos = _pos;
+	res.worldPos = _pos;
 
-	/*
-	float4x4 TmpMat
-		= float4x4(
-			1.0f, 0.0f, 0.0f, 0.0f
-			, 0.0f, 1.0f, 0.0f, 0.0f
-			, 0.0f, 0.0f, 1.0f, 0.0f
-			, 0.0f, 0.0f, 0.0f, 1.0f);
+	float4x4 tmpMat = GetInitMatrix4x4();
 
-	TmpMat = BlendNum > 0 ?  BlendMatrix(Blend, BlendPow, BlendNum) : TmpMat;
+	tmpMat = _blendNum > 0 ? BlendMatrix(_blend, _blendPow, _blendNum) : tmpMat;
+	
+	res.worldPos = mul(res.worldPos, tmpMat);
 
-	float4x4 WorldMat = mul(FrameMatrix, ModelMat);
+	MTWStruct tmp = ModelToWorld(res.worldPos, _uv, _normal, _faceNormal);
 
-	//WorldMat = mul(WorldMat, TmpMat);
-
-	*/
-
-	MTWStruct tmp;
-
-	tmp = ModelToWorld(res.pos, _uv, _normal, _faceNormal);
-
-	res.pos = tmp.pos;
+	res.worldPos = tmp.worldPos;
 	res.viewPos = tmp.viewPos;
 	res.proPos = tmp.proPos;
-	res.usePos = tmp.usePos;
+	res.pos = tmp.proPos;
 	res.normal = tmp.normal;
 	res.faceNormal = tmp.faceNormal;
 	res.uv = tmp.uv;

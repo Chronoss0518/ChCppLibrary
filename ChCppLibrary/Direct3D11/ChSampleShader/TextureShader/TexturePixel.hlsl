@@ -5,7 +5,6 @@
 #include"TextureBase.hlsli"
 #include"../../../ShaderHeaderFiles/HLSL/5.0/DrawTexture.hlsli"
 
-
 //ピクセルシェダ(PixelShader)//
 //共用//
 float4 main(VS_OUT _in) : SV_Target0

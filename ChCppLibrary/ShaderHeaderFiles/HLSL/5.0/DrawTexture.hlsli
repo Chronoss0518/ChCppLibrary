@@ -1,6 +1,10 @@
 #ifndef ChShader_PublicHeader_DT
 #define ChShader_PublicHeader_DT
 
+//#define __SHADER__‚ðhlsl‘¤‚Å’è‹`‚·‚é//
+
+#include"../ShaderPublicInclude.hlsli"
+
 #ifndef DRAW_DATA_REGISTERNO
 #define DRAW_DATA_REGISTERNO 0
 #endif
@@ -13,24 +17,9 @@
 #define	BASE_TEXTURE_REGISTER 0
 #endif
 
-//#define __SHADER__‚Íhlsl‘¤‚Å’è‹`‚·‚é//
-
-#ifndef __SHADER__
-#ifndef SHADER_TO_CPP
-#define SHADER_TO_CPP
-
-#define row_magor
-using float4x4 = ChLMat;
-using float4 = ChVec4;
-using float3 = ChVec3;
-using float2 = ChVec2;
-
-#endif
-#endif
-
 #ifdef __SHADER__
 #ifdef _SM5_0_
-cbuffer DrawData :register(b0)
+cbuffer DrawData :register(CHANGE_CBUFFER_5(DRAW_DATA_REGISTERNO))
 #else
 cbuffer DrawData : register(b[DRAW_DATA_REGISTERNO])
 #endif
@@ -43,7 +32,7 @@ struct DrawData
 
 #ifdef __SHADER__
 #ifdef _SM5_0_
-cbuffer PolygonData : register(b1)
+cbuffer PolygonData : register(CHANGE_CBUFFER_5(POLYGON_DATA_REGISTERNO))
 #else
 cbuffer PolygonData : register(b[POLYGON_DATA_REGISTERNO])
 #endif
@@ -58,9 +47,9 @@ struct PolygonData
 
 #ifdef __SHADER__
 #ifdef _SM5_0_
-texture2D baseTex : register(t0);
+texture2D baseTex : register(CHANGE_TBUFFER_5(BASE_TEXTURE_REGISTER));
 
-sampler baseSmp :register(s0);
+sampler baseSmp :register(CHANGE_SBUFFER_5(BASE_TEXTURE_REGISTER));
 #else
 texture2D baseTex : register(t[BASE_TEXTURE_REGISTER]);
 

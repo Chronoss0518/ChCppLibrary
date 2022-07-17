@@ -9,7 +9,7 @@
 
 float4 LightCol(VS_OUT _base, float4 _color);
 
-float4 PLightCol(PointLight _plight, VS_OUT _base, float4 _color);
+float4 PLightCol(ChPointLight _plight, VS_OUT _base, float4 _color);
 
 
 //ピクセルシェダ(PixelShader)//
@@ -27,7 +27,7 @@ float4 main(VS_OUT _in) :SV_Target0
 
 	L_BaseColor lightCol;
 	lightCol.color = color.rgb;
-	lightCol.wPos =_in.usePos.xyz;
+	lightCol.wPos =_in.worldPos.xyz;
 	lightCol.wfNormal = _in.normal;
 	lightCol.specular = speCol;
 
@@ -68,7 +68,7 @@ float4 LightCol(VS_OUT _Base, float4 _Color)
 	return Col;
 }
 
-float4 PLightCol(PLight plight, VS_OUT _Base, float4 _Color)
+float4 PLightCol(ChPointLight plight, VS_OUT _Base, float4 _Color)
 {
 
 	float4 Col = _Color;
