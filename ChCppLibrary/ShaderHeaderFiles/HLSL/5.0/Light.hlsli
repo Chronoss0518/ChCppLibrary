@@ -102,7 +102,7 @@ float3 GetDirectionalLightColor(L_BaseColor _bCol)
 
 	float3 lamPowMapCol = lightPowMap.Sample(lightSmp, float2(dotSize, dotSize)).rgb;
 
-	float lamPow = lamPowMapCol.r > lamPowMapCol.g ? lamPowMapCol.r : lamPowMapCol.g > lamPowMapCol.b ? lamPowMapCol.g : lamPowMapCol.b;
+	float lamPow = lamPowMapCol.r;
 
 	oCol *= lamPow * light.dif;
 

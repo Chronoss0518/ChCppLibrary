@@ -56,7 +56,6 @@ struct ChP_CharaData
 	row_major float4x4 worldMat;
 };
 
-
 struct ChP_Material
 {
 
