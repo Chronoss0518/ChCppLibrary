@@ -76,7 +76,7 @@ namespace ChD3D11
 			ChStd::Bool updateFlg = true;
 
 			Texture11 lightPow;
-			ChPtr::Shared<TextureBase11>importLightPowMap;
+			ChPtr::Weak<TextureBase11>importLightPowMap;
 
 		};
 

@@ -275,7 +275,7 @@ void Light11::ClearImportLightPowMap()
 {
 	if (!*this)return;
 
-	importLightPowMap = nullptr;
+	importLightPowMap.reset();
 }
 
 void Light11::SetTexture(ID3D11DeviceContext* _dc)
@@ -283,11 +283,11 @@ void Light11::SetTexture(ID3D11DeviceContext* _dc)
 
 	TextureBase11* tmpLightPow = &lightPow;
 
-	if (importLightPowMap != nullptr)
+	if (!importLightPowMap.expired())
 	{
-		if (importLightPowMap->IsTex())
+		if (importLightPowMap.lock()->IsTex())
 		{
-			tmpLightPow = importLightPowMap.get();
+			tmpLightPow = importLightPowMap.lock().get();
 		}
 	}
 
