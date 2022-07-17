@@ -9,8 +9,8 @@
 #define DRAW_DATA_REGISTERNO 0
 #endif
 
-#ifndef POLYGON_DATA_REGISTERNO
-#define POLYGON_DATA_REGISTERNO 1
+#ifndef SPRITE_DATA_REGISTERNO
+#define SPRITE_DATA_REGISTERNO 1
 #endif
 
 #ifndef BASE_TEXTURE_REGISTER
@@ -24,7 +24,7 @@ cbuffer DrawData :register(CHANGE_CBUFFER_5(DRAW_DATA_REGISTERNO))
 cbuffer DrawData : register(b[DRAW_DATA_REGISTERNO])
 #endif
 #else
-struct DrawData
+struct ChT_DrawData
 #endif
 {
 	float4 windSize = float4(1280.0f, 720.0f, 0, 0);
@@ -32,12 +32,12 @@ struct DrawData
 
 #ifdef __SHADER__
 #ifdef _SM5_0_
-cbuffer PolygonData : register(CHANGE_CBUFFER_5(POLYGON_DATA_REGISTERNO))
+cbuffer SpriteData : register(CHANGE_CBUFFER_5(SPRITE_DATA_REGISTERNO))
 #else
-cbuffer PolygonData : register(b[POLYGON_DATA_REGISTERNO])
+cbuffer SpriteData : register(b[SPRITE_DATA_REGISTERNO])
 #endif
 #else
-struct PolygonData
+struct ChT_SpriteData
 #endif
 {
 	row_major float4x4 polyMat;

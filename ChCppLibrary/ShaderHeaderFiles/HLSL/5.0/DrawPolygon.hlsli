@@ -32,7 +32,7 @@ cbuffer DrawData :register(CHANGE_CBUFFER_5(DRAW_DATA_REGISTERNO))
 cbuffer DrawData : register(b[DRAW_DATA_REGISTERNO])
 #endif
 #else
-struct DrawData
+struct ChP_DrawData
 #endif
 {
 	row_major float4x4 viewMat;
@@ -50,24 +50,18 @@ cbuffer CharaData :register(CHANGE_CBUFFER_5(CHARACTOR_POSITION_REGISTERNO))
 cbuffer CharaData : register(b[CHARACTOR_POSITION_REGISTERNO])
 #endif
 #else
-struct CharaData
+struct ChP_CharaData
 #endif
 {
-	row_major float4x4 modelMat;
+	row_major float4x4 worldMat;
 };
 
 
-#ifdef __SHADER__
-#ifdef _SM5_0_
-cbuffer Material :register(CHANGE_CBUFFER_5(MATERIAL_DATA_REGISTERNO))
-#else
-cbuffer Material : register(b[MATERIAL_DATA_REGISTERNO])
-#endif
-#else
-struct Material
-#endif
+struct ChP_Material
 {
-	float4 mateDiffuse = float4(1.0f, 1.0f, 1.0f, 1.0f);
+
+	//diffuse//
+	float4 dif = float4(1.0f, 1.0f, 1.0f, 1.0f);
 	float4 speCol;
 	float4 ambient;
 
@@ -82,6 +76,16 @@ struct Material
 		;
 #endif
 };
+#ifdef __SHADER__
+#ifdef _SM5_0_
+cbuffer Material :register(CHANGE_CBUFFER_5(MATERIAL_DATA_REGISTERNO))
+#else
+cbuffer Material : register(b[MATERIAL_DATA_REGISTERNO])
+#endif
+{
+	ChP_Material mate;
+}
+#endif
 
 #ifdef __SHADER__
 
@@ -140,9 +144,9 @@ MTWStruct ModelToWorld(
 {
 	MTWStruct res;
 
-	float4x4 worldMat = mul(frameMatrix, modelMat);
+	float4x4 tmpMat = mul(mate.frameMatrix, worldMat);
 
-	res.worldPos = mul(_pos, worldMat);
+	res.worldPos = mul(_pos, tmpMat);
 
 	res.viewPos = mul(res.worldPos, viewMat);
 
@@ -150,7 +154,7 @@ MTWStruct ModelToWorld(
 
 	res.uv = _uv;
 
-	float3x3 rotMat = (float3x3)worldMat;
+	float3x3 rotMat = (float3x3)tmpMat;
 
 	res.normal = normalize(mul(_normal, rotMat));
 	res.faceNormal = normalize(mul(_faceNormal, rotMat));
