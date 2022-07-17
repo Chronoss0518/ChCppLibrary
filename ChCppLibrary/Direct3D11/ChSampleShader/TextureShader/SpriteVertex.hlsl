@@ -3,7 +3,7 @@
 #define _SM5_0_
 
 #include"TextureBase.hlsli"
-#include"../../../ShaderHeaderFiles/HLSL/5.0/DrawTexture.hlsli"
+#include"../../../ShaderHeaderFiles/HLSL/5.0/DrawSprite.hlsli"
 
 //頂点シェダ(VertexShader)//
 //スプライトバージョン//
@@ -16,7 +16,7 @@ VS_OUT main(
 
 	res.pos = pos;
 
-	res.pos = mul(res.pos, polyMat);
+	res.pos = mul(res.pos, spriteMat);
 
 	//テクスチャマップ上の位置情報//
 	res.uv = uv;
