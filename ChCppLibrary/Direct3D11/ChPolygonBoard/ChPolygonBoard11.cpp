@@ -31,7 +31,8 @@ void PolygonBoard11::Init(ID3D11Device* _device)
 	indexBuffer.CreateBuffer(_device, indexs, 3);
 
 	material.diffuse = ChVec4(1.0f);
-	material.specular = ChVec4(0.0f);
+	material.specularColor = ChVec3(0.0f);
+	material.specularPower = 1.0f;
 	material.ambient = ChVec4(0.0f);
 
 	materialBuffer.CreateBuffer(_device, 2);

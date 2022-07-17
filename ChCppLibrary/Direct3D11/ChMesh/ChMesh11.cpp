@@ -218,7 +218,10 @@ namespace ChD3D11
 
 				prim->mate->material.ambient = ChVec4(mateList[i]->ambient);
 				prim->mate->material.diffuse = mateList[i]->diffuse;
-				prim->mate->material.specular = mateList[i]->specular;
+				prim->mate->material.specularColor.r = mateList[i]->specular.r;
+				prim->mate->material.specularColor.g = mateList[i]->specular.g;
+				prim->mate->material.specularColor.b = mateList[i]->specular.b;
+				prim->mate->material.specularPower = mateList[i]->specular.a;
 				prim->mate->materialName = mateList[i]->materialName;
 
 				prim->mate->material.frameMatrix = _baseModels.baseLMat;
