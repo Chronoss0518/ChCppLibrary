@@ -252,25 +252,6 @@ void Light11::SetImportLightPowMap(ChPtr::Shared<TextureBase11>& _lightPowMap)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChLightData Light11::GetLightData()
-{
-	ChLightData res;
-
-	if (!*this)return res;
-
-	res.camPos = lightDatas.camPos;
-	res.light = lightDatas.light;
-
-	for (unsigned long i = 0; i < 10; i++)
-	{
-		res.pLight[i] = lightDatas.pLight[i];
-	}
-
-	return res;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
 void Light11::ClearImportLightPowMap()
 {
 	if (!*this)return;
