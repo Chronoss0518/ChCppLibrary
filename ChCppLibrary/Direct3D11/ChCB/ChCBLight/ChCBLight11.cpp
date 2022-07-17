@@ -243,7 +243,7 @@ void CBLight11::SetDrawData(ID3D11DeviceContext* _dc)
 
 void CBLight11::SetTexture(ID3D11DeviceContext* _dc)
 {
-	CBBase11::SetShaderTexture(_dc, importLightPowMap, &lightPow, LIGHT_TEXTURE_REGISTERNO);
+	CBBase11::SetShaderTexture(_dc, importLightPowMap, lightPow, LIGHT_TEXTURE_REGISTERNO);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
