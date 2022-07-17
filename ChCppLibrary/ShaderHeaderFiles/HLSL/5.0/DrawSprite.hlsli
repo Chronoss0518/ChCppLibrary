@@ -24,7 +24,7 @@ cbuffer DrawData :register(CHANGE_CBUFFER_5(DRAW_DATA_REGISTERNO))
 cbuffer DrawData : register(b[DRAW_DATA_REGISTERNO])
 #endif
 #else
-struct ChT_DrawData
+struct ChS_DrawData
 #endif
 {
 	float4 windSize = float4(1280.0f, 720.0f, 0, 0);
@@ -37,10 +37,10 @@ cbuffer SpriteData : register(CHANGE_CBUFFER_5(SPRITE_DATA_REGISTERNO))
 cbuffer SpriteData : register(b[SPRITE_DATA_REGISTERNO])
 #endif
 #else
-struct ChT_SpriteData
+struct ChS_SpriteData
 #endif
 {
-	row_major float4x4 polyMat;
+	row_major float4x4 spriteMat;
 	float4 baseColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
 };
 
