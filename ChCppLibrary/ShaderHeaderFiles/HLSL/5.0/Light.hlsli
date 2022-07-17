@@ -19,8 +19,10 @@
 
 struct ChDirectionalLight
 {
+	//diffuse//
 	float3 dif;
 	bool useFlg;
+	//direction//
 	float3 dir;
 	float ambPow;
 };
@@ -29,6 +31,7 @@ struct ChPointLight
 {
 	float3 pos;
 	float len;
+	//diffuse//
 	float3 dif;
 	bool useFlg;
 };

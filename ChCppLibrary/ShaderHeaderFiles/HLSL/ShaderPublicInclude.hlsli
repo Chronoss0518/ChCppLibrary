@@ -19,6 +19,10 @@
 #define row_major
 #endif
 
+#ifndef column_major
+#define column_major
+#endif
+
 using float4x4 = ChLMat;
 using float3x3 = ChLMat;
 using float2x2 = ChLMat;
