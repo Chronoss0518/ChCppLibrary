@@ -61,22 +61,16 @@ struct ChP_Material
 {
 
 	//diffuse//
-	float4 dif = float4(1.0f, 1.0f, 1.0f, 1.0f);
-	//a‚ÍPower‚Æ‚µ‚Ä—˜—p//
-	float4 speCol;
+	float4 dif;
+	//specular//
+	float3 speCol;
+	float spePow;
+	//ambient//
 	float4 ambient;
 
-	row_major float4x4 frameMatrix
-#ifdef __SHADER__
-		= float4x4(
-			1.0f, 0.0f, 0.0f, 1.0f
-			, 0.0f, 1.0f, 0.0f, 1.0f
-			, 0.0f, 0.0f, 1.0f, 1.0f
-			, 0.0f, 0.0f, 0.0f, 1.0f);
-#else
-		;
-#endif
+	row_major float4x4 frameMatrix;
 };
+
 #ifdef __SHADER__
 #ifdef _SM5_0_
 cbuffer Material :register(CHANGE_CBUFFER_5(MATERIAL_DATA_REGISTERNO))
@@ -85,7 +79,7 @@ cbuffer Material : register(b[MATERIAL_DATA_REGISTERNO])
 #endif
 {
 	ChP_Material mate;
-}
+};
 #endif
 
 #ifdef __SHADER__
@@ -123,10 +117,10 @@ struct MTWStruct
 float4x4 GetInitMatrix4x4()
 {
 	return float4x4(
-		1.0f, 0.0f, 0.0f, 0.0f
-		, 0.0f, 1.0f, 0.0f, 0.0f
-		, 0.0f, 0.0f, 1.0f, 0.0f
-		, 0.0f, 0.0f, 0.0f, 1.0f);
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 float3x3 GetInitMatrix3x3()
