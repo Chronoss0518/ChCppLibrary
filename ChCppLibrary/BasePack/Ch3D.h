@@ -70,7 +70,8 @@ namespace Ch3D
 	struct Material
 	{
 		ChVec4 diffuse = 1.0f;
-		ChVec4 specular = 0.0f;
+		ChVec3 specularColor = 0.0f;
+		float specularPower = 1.0f;
 		ChVec4 ambient = 0.3f;
 	};
 
