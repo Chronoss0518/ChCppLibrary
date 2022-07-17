@@ -71,7 +71,6 @@ namespace ChD3D11
 			void Update(ID3D11DeviceContext* _dc);
 
 			ChLightData lightDatas;
-			ID3D11Device* device = nullptr;
 			ConstantBuffer11<ChLightData> buf;
 			ChStd::Bool updateFlg = true;
 

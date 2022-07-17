@@ -93,8 +93,6 @@ namespace ChD3D11
 			ConstantBuffer11<ChP_Material> mateBuf;
 			ChStd::Bool mUpdateFlg = true;
 
-			ID3D11Device* device = nullptr;
-
 			ChPtr::Weak<TextureBase11>baseTex;
 			ChPtr::Weak<TextureBase11>normalTex;
 

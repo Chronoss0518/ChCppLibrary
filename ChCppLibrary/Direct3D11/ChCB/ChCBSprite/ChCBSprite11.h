@@ -68,8 +68,6 @@ namespace ChD3D11
 			ConstantBuffer11<ChS_SpriteData> spBuf;
 			ChStd::Bool sUpdateFlg = true;
 
-			ID3D11Device* device = nullptr;
-
 			ChPtr::Weak<TextureBase11>baseTex;
 		};
 
