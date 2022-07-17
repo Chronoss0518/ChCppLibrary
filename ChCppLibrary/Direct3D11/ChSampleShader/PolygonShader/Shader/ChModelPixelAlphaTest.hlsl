@@ -3,8 +3,8 @@
 
 #include"ModelBase.hlsli"
 
-#include"../../../ShaderHeaderFiles/HLSL/5.0/DrawPolygon.hlsli"
-#include"../../../ShaderHeaderFiles/HLSL/5.0/Light.hlsli"
+#include"../../../../ShaderHeaderFiles/HLSL/5.0/DrawPolygon.hlsli"
+#include"../../../../ShaderHeaderFiles/HLSL/5.0/Light.hlsli"
 
 float4 LightCol(VS_OUT _Base, float4 _Color);
 

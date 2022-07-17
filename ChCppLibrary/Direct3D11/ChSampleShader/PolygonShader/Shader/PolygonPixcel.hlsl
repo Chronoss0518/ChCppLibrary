@@ -2,10 +2,10 @@
 #define __SHADER__
 #define _SM5_0_
 
-#include"ModelBase.hlsli"
+#include"PolygonBase.hlsli"
 
-#include"../../../ShaderHeaderFiles/HLSL/5.0/DrawPolygon.hlsli"
-#include"../../../ShaderHeaderFiles/HLSL/5.0/Light.hlsli"
+#include"../../../../ShaderHeaderFiles/HLSL/5.0/DrawPolygon.hlsli"
+#include"../../../../ShaderHeaderFiles/HLSL/5.0/Light.hlsli"
 
 float4 LightCol(VS_OUT _base, float4 _color);
 
@@ -29,7 +29,8 @@ float4 main(VS_OUT _in) :SV_Target0
 	lightCol.color = color.rgb;
 	lightCol.wPos =_in.worldPos.xyz;
 	lightCol.wfNormal = _in.normal;
-	lightCol.specular = float4(mate.speCol, mate.spePow);
+	lightCol.specular.rgb = mate.speCol;
+	lightCol.specular.a = mate.spePow;
 
 	color.rgb = GetDirectionalLightColor(lightCol);
 

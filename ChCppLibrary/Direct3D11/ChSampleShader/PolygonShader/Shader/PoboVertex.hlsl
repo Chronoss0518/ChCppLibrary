@@ -3,9 +3,9 @@
 #define __SHADER__
 #define _SM5_0_
 
-#include"ModelBase.hlsli"
+#include"PolygonBase.hlsli"
 
-#include"../../../ShaderHeaderFiles/HLSL/5.0/DrawPolygon.hlsli"
+#include"../../../../ShaderHeaderFiles/HLSL/5.0/DrawPolygon.hlsli"
 
 //板ポリゴンバージョン//
 VS_OUT main(

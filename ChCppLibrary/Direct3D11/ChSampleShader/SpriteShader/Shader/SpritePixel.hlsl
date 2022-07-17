@@ -2,8 +2,8 @@
 #define __SHADER__
 #define _SM5_0_
 
-#include"TextureBase.hlsli"
-#include"../../../ShaderHeaderFiles/HLSL/5.0/DrawSprite.hlsli"
+#include"SpriteBase.hlsli"
+#include"../../../../ShaderHeaderFiles/HLSL/5.0/DrawSprite.hlsli"
 
 //ピクセルシェダ(PixelShader)//
 //共用//
