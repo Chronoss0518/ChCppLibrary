@@ -261,7 +261,6 @@ void Light11::ClearImportLightPowMap()
 
 void Light11::SetTexture(ID3D11DeviceContext* _dc)
 {
-
 	TextureBase11* tmpLightPow = &lightPow;
 
 	if (!importLightPowMap.expired())

@@ -55,8 +55,6 @@ namespace ChD3D11
 
 			void SetImportLightPowMap(ChPtr::Shared<TextureBase11>& _lightPowMap);
 
-			void SetTexture(ID3D11DeviceContext* _dc);
-
 			///////////////////////////////////////////////////////////////////////////////////
 			//GetFunction//
 
@@ -67,6 +65,8 @@ namespace ChD3D11
 			void ClearImportLightPowMap();
 
 		private:
+
+			void SetTexture(ID3D11DeviceContext* _dc);
 
 			void Update(ID3D11DeviceContext* _dc);
 
