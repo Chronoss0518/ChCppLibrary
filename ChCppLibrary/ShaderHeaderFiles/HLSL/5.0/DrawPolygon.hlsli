@@ -62,6 +62,7 @@ struct ChP_Material
 
 	//diffuse//
 	float4 dif = float4(1.0f, 1.0f, 1.0f, 1.0f);
+	//a‚ÍPower‚Æ‚µ‚Ä—˜—p//
 	float4 speCol;
 	float4 ambient;
 
