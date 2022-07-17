@@ -19,7 +19,7 @@
 #include"Direct3D11/ChPolygonBoard/ChPolygonBoard11.h"
 #include"Direct3D11/ChSprite/ChSprite11.h"
 //ライブラリで用意したShaderを利用するクラス//
-#include"Direct3D11/ChShaderParts/ChLight/ChLight11.h"
+#include"Direct3D11/ChCB/ChCBLight/ChCBLight11.h"
 //空間操作//
 #include"Direct3D11/ChCameraController/ChCameraController11.h"
 //Object操作//
