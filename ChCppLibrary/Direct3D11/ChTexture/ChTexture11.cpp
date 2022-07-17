@@ -344,6 +344,18 @@ void Texture11::CreateWhiteTex(ID3D11Device* _device)
 	if (white.IsTex())return;
 
 	white.CreateColorTexture(_device, ChVec4(1.0f, 1.0f, 1.0f, 1.0f), 1, 1);
+
+	{
+
+		D3D11_SAMPLER_DESC samp;
+
+		samp.AddressU = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_CLAMP;
+		samp.AddressV = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_CLAMP;
+		samp.Filter = D3D11_FILTER::D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
+
+		white.SetSampler(samp);
+	}
+
 }
 
 void Texture11::CreateNormalTex(ID3D11Device* _device)
@@ -353,6 +365,17 @@ void Texture11::CreateNormalTex(ID3D11Device* _device)
 	if (normal.IsTex())return;
 
 	normal.CreateColorTexture(_device, ChVec4(0.5f, 1.0f, 0.5f, 1.0f), 1, 1);
+
+	{
+
+		D3D11_SAMPLER_DESC samp;
+
+		samp.AddressU = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_CLAMP;
+		samp.AddressV = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_CLAMP;
+		samp.Filter = D3D11_FILTER::D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
+
+		normal.SetSampler(samp);
+	}
 }
 
 Texture11& Texture11::GetWhiteTex()
