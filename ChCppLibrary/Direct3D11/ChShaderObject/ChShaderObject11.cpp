@@ -223,7 +223,7 @@ void VertexShader11::Init(
 void VertexShader11::InitChBaseModelVertexShader(ID3D11Device* _device)
 {
 
-#include"../ChSampleShader/ChModelVertex.inc"
+#include"../ChSampleShader/PolygonShader/MeshVertex.inc"
 
 	D3D11_INPUT_ELEMENT_DESC Decl[14];
 
@@ -248,7 +248,7 @@ void VertexShader11::InitChBaseModelVertexShader(ID3D11Device* _device)
 
 void VertexShader11::InitChPolygonboardTextureVertexShader(ID3D11Device* _device)
 {
-#include"../ChSampleShader/PoboVertex.inc"
+#include"../ChSampleShader/PolygonShader/PoboVertex.inc"
 
 	D3D11_INPUT_ELEMENT_DESC Decl[4];
 
@@ -264,7 +264,7 @@ void VertexShader11::InitChPolygonboardTextureVertexShader(ID3D11Device* _device
 
 void VertexShader11::InitChSpriteTextureVertexShader(ID3D11Device* _device)
 {
-#include"../ChSampleShader/SpriteVertex.inc"
+#include"../ChSampleShader/SpriteShader/SpriteVertex.inc"
 
 	D3D11_INPUT_ELEMENT_DESC Decl[3];
 
@@ -293,7 +293,7 @@ void VertexShader11::Release()
 
 void PixelShader11::InitChBasePolygonPixelShader(ID3D11Device* _device)
 {
-#include"../ChSampleShader/PolygonPixcel.inc"
+#include"../ChSampleShader/PolygonShader/PolygonPixcel.inc"
 
 	Init(_device, main, sizeof(main));
 
@@ -301,7 +301,7 @@ void PixelShader11::InitChBasePolygonPixelShader(ID3D11Device* _device)
 
 void PixelShader11::InitChBaseSpritePixelShader(ID3D11Device* _device)
 {
-#include"../ChSampleShader/TexturePixel.inc"
+#include"../ChSampleShader/SpriteShader/SpritePixel.inc"
 
 	Init(_device, &main, sizeof(main));
 
