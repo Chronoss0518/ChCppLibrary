@@ -179,8 +179,6 @@ void ShaderController11::SetDrawDatas()
 
 		device->CreateRasterizerState(&RasteriserDesc, &rasteriser);
 
-		dc->RSSetState(rasteriser);
-
 		rasteriserUpdate = false;
 
 	}
