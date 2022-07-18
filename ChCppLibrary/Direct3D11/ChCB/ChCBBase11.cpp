@@ -18,6 +18,8 @@ void CBBase11::Init(ID3D11Device* _device)
 void CBBase11::SetShaderTexture(ID3D11DeviceContext* _dc, ChPtr::Weak<TextureBase11> _tex, TextureBase11& _defaultTex, const unsigned long _registerNo)
 {
 
+	if (ChPtr::NullCheck(_dc))return;
+
 	TextureBase11* tmpTex = &_defaultTex;
 
 	if (!_tex.expired())
