@@ -17,6 +17,10 @@ namespace ChD3D11
 
 			void SetShaderTexture(ID3D11DeviceContext* _dc, ChPtr::Weak<TextureBase11> _tex, TextureBase11& _defaultTex, const unsigned long _registerNo);
 
+			inline ID3D11Device* GetDevice() { return device; };
+
+		private:
+
 			ID3D11Device* device = nullptr;
 
 		};

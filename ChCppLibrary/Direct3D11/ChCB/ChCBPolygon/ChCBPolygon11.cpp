@@ -18,12 +18,12 @@ void CBPolygon11::Init(ID3D11Device* _device)
 
 	CBBase11::Init(_device);
 
-	drawBuf.CreateBuffer(device, DRAW_DATA_REGISTERNO);
-	charaBuf.CreateBuffer(device, CHARACTOR_POSITION_REGISTERNO);
-	mateBuf.CreateBuffer(device, MATERIAL_DATA_REGISTERNO);
+	drawBuf.CreateBuffer(GetDevice(), DRAW_DATA_REGISTERNO);
+	charaBuf.CreateBuffer(GetDevice(), CHARACTOR_POSITION_REGISTERNO);
+	mateBuf.CreateBuffer(GetDevice(), MATERIAL_DATA_REGISTERNO);
 
-	Texture11::CreateWhiteTex(device);
-	Texture11::CreateNormalTex(device);
+	Texture11::CreateWhiteTex(GetDevice());
+	Texture11::CreateNormalTex(GetDevice());
 
 	SetInitFlg(true);
 }

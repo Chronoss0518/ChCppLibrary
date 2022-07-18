@@ -27,7 +27,7 @@ void CBLight11::Init(ID3D11Device* _device)
 			tmpCol[i] = ChVec4(i / 256.0f, i / 256.0f, i / 256.0f, 1.0f);
 		}
 
-		lightPow.CreateColorTexture(device, tmpCol, 256, 1);
+		lightPow.CreateColorTexture(GetDevice(), tmpCol, 256, 1);
 
 
 		D3D11_SAMPLER_DESC samp;

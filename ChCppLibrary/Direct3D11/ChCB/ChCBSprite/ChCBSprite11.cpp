@@ -14,10 +14,10 @@ void CBSprite11::Init(ID3D11Device* _device)
 
 	CBBase11::Init(_device);
 
-	drawBuf.CreateBuffer(device, DRAW_DATA_REGISTERNO);
-	spBuf.CreateBuffer(device, SPRITE_DATA_REGISTERNO);
+	drawBuf.CreateBuffer(GetDevice(), DRAW_DATA_REGISTERNO);
+	spBuf.CreateBuffer(GetDevice(), SPRITE_DATA_REGISTERNO);
 
-	Texture11::CreateWhiteTex(device);
+	Texture11::CreateWhiteTex(GetDevice());
 
 	SetInitFlg(true);
 }
