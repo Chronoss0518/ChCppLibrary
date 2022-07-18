@@ -11,30 +11,36 @@ float4 LightCol(VS_OUT _base, float4 _color);
 
 float4 PLightCol(ChPointLight _plight, VS_OUT _base, float4 _color);
 
+struct OutColor
+{
+	float4 color :SV_Target0;
+	float depth : SV_Depth;
+};
 
 //ピクセルシェダ(PixelShader)//
 //通常描画//
-float4 main(VS_OUT _in) :SV_Target0
+OutColor main(VS_OUT _in)
 {
 	//カメラの前方にあるかの判定//
 	FrustumCulling(_in.proPos);
+	OutColor outColor;
+	outColor.color = _in.color;
 
-	float4 color = _in.color;
+	outColor.color = mate.dif * baseTex.Sample(baseSmp, _in.uv) * outColor.color;
 
-	color = mate.dif * baseTex.Sample(baseSmp, _in.uv) * color;
-
-	clip(color.a < 0.001f ? -1 : 1);
+	clip(outColor.color.a < 0.001f ? -1 : 1);
+	outColor.depth = outColor.color.a >= 0.99f ? (_in.proPos.z / _in.proPos.w) : 1.0f;
 
 	L_BaseColor lightCol;
-	lightCol.color = color.rgb;
+	lightCol.color = outColor.color.rgb;
 	lightCol.wPos =_in.worldPos.xyz;
 	lightCol.wfNormal = _in.normal;
 	lightCol.specular.rgb = mate.speCol;
 	lightCol.specular.a = mate.spePow;
 
-	color.rgb = GetDirectionalLightColor(lightCol);
+	outColor.color.rgb = GetDirectionalLightColor(lightCol);
 
-	return color;
+	return outColor;
 
 }
 
