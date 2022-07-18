@@ -3,10 +3,17 @@
 #include"../../BaseIncluder/ChD3D11I.h"
 
 #include"../ChTexture/ChTexture11.h"
-#include"ChSSBase11.h"
+#include"ChSampleShaderBase11.h"
 
 using namespace ChD3D11;
 using namespace Shader;
+
+void SampleShaderBase11::Init(ID3D11Device* _device)
+{
+	if (ChPtr::NullCheck(_device))return;
+
+	device = _device;
+}
 
 void SampleShaderBase11::Release()
 {
@@ -17,30 +24,52 @@ void SampleShaderBase11::Release()
 	GetVBaseSprite().Release();
 	GetPBaseSprite().Release();
 
+	if (ChPtr::NotNullCheck(rasteriser))
+	{
+		rasteriser->Release();
+		rasteriser = nullptr;
+	}
 }
 
-void SampleShaderBase11::InitBaseMesh(ID3D11Device* _device)
+void SampleShaderBase11::InitBaseMesh()
 {
-	if (ChPtr::NullCheck(_device))return;
+	if (ChPtr::NullCheck(device))return;
 
-	InitVBaseMesh(_device);
-	InitPBasePolygon(_device);
+	InitVBaseMesh(device);
+	InitPBasePolygon(device);
 }
 
-void SampleShaderBase11::InitBasePolygonBoard(ID3D11Device* _device)
+void SampleShaderBase11::InitBasePolygonBoard()
 {
-	if (ChPtr::NullCheck(_device))return;
+	if (ChPtr::NullCheck(device))return;
 
-	InitVBasePobo(_device);
-	InitPBasePolygon(_device);
+	InitVBasePobo(device);
+	InitPBasePolygon(device);
 }
 
-void SampleShaderBase11::InitBaseSprite(ID3D11Device* _device)
+void SampleShaderBase11::InitBaseSprite()
 {
-	if (ChPtr::NullCheck(_device))return;
+	if (ChPtr::NullCheck(device))return;
 
-	InitVBaseSprite(_device);
-	InitPBaseSprite(_device);
+	InitVBaseSprite(device);
+	InitPBaseSprite(device);
+}
+
+void SampleShaderBase11::SetShaderRasteriser(ID3D11DeviceContext* _dc)
+{
+	if (ChPtr::NullCheck(_dc))return;
+	if (ChPtr::NullCheck(rasteriser))return;
+
+	_dc->RSSetState(rasteriser);
+}
+
+void SampleShaderBase11::CreateRasteriser(const D3D11_RASTERIZER_DESC& _desc)
+{
+	if (ChPtr::NullCheck(device))return;
+	if (ChPtr::NotNullCheck(rasteriser))return;
+
+	device->CreateRasterizerState(&_desc, &rasteriser);
+
 }
 
 void SampleShaderBase11::InitVBaseMesh(ID3D11Device* _device)

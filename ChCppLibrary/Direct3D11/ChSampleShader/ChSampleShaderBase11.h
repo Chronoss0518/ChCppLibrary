@@ -12,15 +12,23 @@ namespace ChD3D11
 		{
 		public://Init And Release//
 
+			void Init(ID3D11Device* _device);
+
 			void Release()override;
 
-		protected:
+		protected://Init And Release//
 
-			void InitBaseMesh(ID3D11Device* _device);
+			void InitBaseMesh();
 
-			void InitBasePolygonBoard(ID3D11Device* _device);
+			void InitBasePolygonBoard();
 
-			void InitBaseSprite(ID3D11Device* _device);
+			void InitBaseSprite();
+
+		protected://Get Functions//
+
+			void SetShaderRasteriser(ID3D11DeviceContext* _dc);
+
+		protected://Get Instance Functions//
 
 			inline VertexShader11& GetVBaseMesh()
 			{
@@ -52,6 +60,9 @@ namespace ChD3D11
 				return ins;
 			}
 
+		protected://Other Functions//
+
+			void CreateRasteriser(const D3D11_RASTERIZER_DESC& _desc);
 
 		private://Init Functions//
 
@@ -61,6 +72,11 @@ namespace ChD3D11
 
 			void InitVBaseSprite(ID3D11Device* _device);
 			void InitPBaseSprite(ID3D11Device* _device);
+
+		private://Member Value//
+
+			ID3D11RasterizerState* rasteriser = nullptr;
+			ID3D11Device* device = nullptr;
 
 		};
 	}
