@@ -1,6 +1,14 @@
 #ifndef ChShader_PublicHeader_Light
 #define ChShader_PublicHeader_Light
 
+//#define __SHADER__をhlsl側で定義する//
+
+#include"../ShaderPublicInclude.hlsli"
+
+#ifndef LIGHT_PLIGHTCOUNT
+#define LIGHT_PLIGHTCOUNT 10
+#endif
+
 #ifndef LIGHT_DATA_REGISTERNO
 #define LIGHT_DATA_REGISTERNO 10
 #endif
@@ -9,37 +17,21 @@
 #define LIGHT_TEXTURE_REGISTERNO 10
 #endif
 
-#ifndef LIGHT_PLIGHTCOUNT
-#define LIGHT_PLIGHTCOUNT 10
-#endif
-
-//#define __SHADER__はhlsl側で定義する//
-
-#ifndef __SHADER__
-#ifndef SHADER_TO_CPP
-#define SHADER_TO_CPP
-
-#define row_magor
-using float4x4 = ChLMat;
-using float4 = ChVec4;
-using float3 = ChVec3;
-using float2 = ChVec2;
-
-#endif
-#endif
-
-struct DirectionalLight
+struct ChDirectionalLight
 {
+	//diffuse//
 	float3 dif;
 	bool useFlg;
+	//direction//
 	float3 dir;
 	float ambPow;
 };
 
-struct PointLight
+struct ChPointLight
 {
 	float3 pos;
 	float len;
+	//diffuse//
 	float3 dif;
 	bool useFlg;
 };
@@ -47,28 +39,28 @@ struct PointLight
 
 #ifdef __SHADER__
 #ifdef _SM5_0_
-cbuffer LightData :register(b10)
+cbuffer LightData :register(CHANGE_CBUFFER_5(LIGHT_DATA_REGISTERNO))
 #else
 cbuffer LightData : register(b[LIGHT_DATA_REGISTERNO])
 #endif
 #else
-struct LightData
+struct ChLightData
 #endif
 {
 	float4 camPos = float4(0.0f, 0.0f, 0.0f, 0.0f);
 
-	DirectionalLight light;
+	ChDirectionalLight light;
 
-	PointLight pLight[LIGHT_PLIGHTCOUNT];
+	ChPointLight pLight[LIGHT_PLIGHTCOUNT];
 };
 
 #ifdef __SHADER__
 
 #ifdef _SM5_0_
-texture2D lightPowMap :register(t10);
+texture2D lightPowMap :register(CHANGE_TBUFFER_5(LIGHT_TEXTURE_REGISTERNO));
 
 //画像から1ピクセルの色を取得するための物//
-sampler lightSmp :register(s10)
+sampler lightSmp :register(CHANGE_SBUFFER_5(LIGHT_TEXTURE_REGISTERNO))
 #else
 texture2D lightPowMap : register(t[LIGHT_TEXTURE_REGISTERNO]);
 
@@ -110,7 +102,7 @@ float3 GetDirectionalLightColor(L_BaseColor _bCol)
 
 	float3 lamPowMapCol = lightPowMap.Sample(lightSmp, float2(dotSize, dotSize)).rgb;
 
-	float lamPow = lamPowMapCol.r > lamPowMapCol.g ? lamPowMapCol.r : lamPowMapCol.g > lamPowMapCol.b ? lamPowMapCol.g : lamPowMapCol.b;
+	float lamPow = lamPowMapCol.r;
 
 	oCol *= lamPow * light.dif;
 

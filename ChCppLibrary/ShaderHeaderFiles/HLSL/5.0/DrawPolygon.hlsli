@@ -1,6 +1,10 @@
 #ifndef ChShader_PublicHeader_DP
 #define ChShader_PublicHeader_DP
 
+//#define __SHADER__をhlsl側で定義する//
+
+#include"../ShaderPublicInclude.hlsli"
+
 #ifndef DRAW_DATA_REGISTERNO
 #define DRAW_DATA_REGISTERNO 0
 #endif
@@ -21,30 +25,14 @@
 #define	NORMAL_TEXTURE_REGISTER 1
 #endif
 
-//#define __SHADER__はhlsl側で定義する//
-
-#ifndef __SHADER__
-#ifndef SHADER_TO_CPP
-#define SHADER_TO_CPP
-
-#define row_magor
-using float4x4 = ChLMat;
-using float4 = ChVec4;
-using float3 = ChVec3;
-using float2 = ChVec2;
-
-#endif
-#endif
-
-
 #ifdef __SHADER__
 #ifdef _SM5_0_
-cbuffer DrawData :register(b0)
+cbuffer DrawData :register(CHANGE_CBUFFER_5(DRAW_DATA_REGISTERNO))
 #else
 cbuffer DrawData : register(b[DRAW_DATA_REGISTERNO])
 #endif
 #else
-struct DrawData
+struct ChP_DrawData
 #endif
 {
 	row_major float4x4 viewMat;
@@ -57,55 +45,53 @@ struct DrawData
 
 #ifdef __SHADER__
 #ifdef _SM5_0_
-cbuffer CharaData :register(b1)
+cbuffer CharaData :register(CHANGE_CBUFFER_5(CHARACTOR_POSITION_REGISTERNO))
 #else
 cbuffer CharaData : register(b[CHARACTOR_POSITION_REGISTERNO])
 #endif
 #else
-struct CharaData
+struct ChP_CharaData
 #endif
 {
-	row_major float4x4 modelMat;
+	row_major float4x4 worldMat;
 };
 
+struct ChP_Material
+{
+
+	//diffuse//
+	float4 dif;
+	//specular//
+	float3 speCol;
+	float spePow;
+	//ambient//
+	float4 ambient;
+
+	row_major float4x4 frameMatrix;
+};
 
 #ifdef __SHADER__
 #ifdef _SM5_0_
-cbuffer Material :register(b2)
+cbuffer Material :register(CHANGE_CBUFFER_5(MATERIAL_DATA_REGISTERNO))
 #else
 cbuffer Material : register(b[MATERIAL_DATA_REGISTERNO])
 #endif
-#else
-struct Material
-#endif
 {
-	float4 mateDiffuse = float4(1.0f, 1.0f, 1.0f, 1.0f);
-	float4 speCol;
-	float4 ambient;
-
-	row_major float4x4 frameMatrix
-#ifdef __SHADER__
-		= float4x4(
-			1.0f, 0.0f, 0.0f, 1.0f
-			, 0.0f, 1.0f, 0.0f, 1.0f
-			, 0.0f, 0.0f, 1.0f, 1.0f
-			, 0.0f, 0.0f, 0.0f, 1.0f);
-#else
-		;
-#endif
+	ChP_Material mate;
 };
+#endif
 
 #ifdef __SHADER__
 
 #ifdef _SM5_0_
-texture2D baseTex :register(t0);
-texture2D normalTex:register(t1);
+texture2D baseTex :register(CHANGE_TBUFFER_5(BASE_TEXTURE_REGISTER));
+texture2D normalTex:register(CHANGE_TBUFFER_5(NORMAL_TEXTURE_REGISTER));
 
 //画像から1ピクセルの色を取得するための物//
-sampler baseSmp:register(s0);
+sampler baseSmp:register(CHANGE_SBUFFER_5(BASE_TEXTURE_REGISTER));
 
 //画像から1ピクセルの色を取得するための物//
-sampler normalSmp:register(s1);
+sampler normalSmp:register(CHANGE_SBUFFER_5(NORMAL_TEXTURE_REGISTER));
 #else
 texture2D baseTex : register(t[BASE_TEXTURE_REGISTER]);
 texture2D normalTex : register(t[NORMAL_TEXTURE_REGISTER]);
@@ -119,14 +105,30 @@ sampler normalSmp: register(s[NORMAL_TEXTURE_REGISTER]);
 
 struct MTWStruct
 {
-	float4 pos;
 	float3 normal;
 	float3 faceNormal;
-	float4 usePos;
+	float4 worldPos;
 	float4 viewPos;
 	float4 proPos;
 	float2 uv;
 };
+
+float4x4 GetInitMatrix4x4()
+{
+	return float4x4(
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f);
+}
+
+float3x3 GetInitMatrix3x3()
+{
+	return float3x3(
+		1.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 
+		0.0f, 0.0f, 1.0f);
+}
 
 MTWStruct ModelToWorld(
 	float4 _pos,
@@ -136,39 +138,17 @@ MTWStruct ModelToWorld(
 {
 	MTWStruct res;
 
+	float4x4 tmpMat = mul(mate.frameMatrix, worldMat);
 
-	res.pos = _pos;
+	res.worldPos = mul(_pos, tmpMat);
 
-	float4x4 TmpMat
-		= float4x4(
-			1.0f, 0.0f, 0.0f, 0.0f
-			, 0.0f, 1.0f, 0.0f, 0.0f
-			, 0.0f, 0.0f, 1.0f, 0.0f
-			, 0.0f, 0.0f, 0.0f, 1.0f);
+	res.viewPos = mul(res.worldPos, viewMat);
 
-	//TmpMat = BlendNum > 0 ?  BlendMatrix(Blend, BlendPow, BlendNum) : TmpMat;
-
-	float4x4 worldMat = mul(frameMatrix, modelMat);
-
-	//WorldMat = mul(WorldMat, TmpMat);
-
-	res.pos = mul(res.pos, worldMat);
-
-	res.usePos = res.pos;
-
-	res.pos = mul(res.pos, viewMat);
-
-	res.viewPos = res.pos;
-
-	res.pos = mul(res.pos, proMat);
-
-	res.proPos = res.pos;
+	res.proPos = mul(res.viewPos, proMat);
 
 	res.uv = _uv;
 
-	//Out.Normal = normalize(mul(Normal, (float3x3)ModelMat));
-
-	float3x3 rotMat = worldMat;
+	float3x3 rotMat = (float3x3)tmpMat;
 
 	res.normal = normalize(mul(_normal, rotMat));
 	res.faceNormal = normalize(mul(_faceNormal, rotMat));
@@ -176,17 +156,15 @@ MTWStruct ModelToWorld(
 	return res;
 }
 
-void FrustumCulling(float4 _proPos)
+void FrustumCulling(float4 _pos)
 {
-
-	float x = _proPos.x / _proPos.w;
-	float y = _proPos.y / _proPos.w;
-	float z = _proPos.z / _proPos.w;
+	float x = _pos.x / _pos.w;
+	float y = _pos.y / _pos.w;
+	float z = _pos.z / _pos.w;
 
 	clip(x >= -1.0f && x <= 1.0f ? 1.0f : -1.0f);
 	clip(y >= -1.0f && y <= 1.0f ? 1.0f : -1.0f);
 	clip(z >= 0.0f && z <= 1.0f ? 1.0f : -1.0f);
-
 }
 
 

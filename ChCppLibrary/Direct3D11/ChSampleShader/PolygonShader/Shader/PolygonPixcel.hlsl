@@ -2,14 +2,14 @@
 #define __SHADER__
 #define _SM5_0_
 
-#include"ModelBase.hlsli"
+#include"PolygonBase.hlsli"
 
-#include"../../../ShaderHeaderFiles/HLSL/5.0/DrawPolygon.hlsli"
-#include"../../../ShaderHeaderFiles/HLSL/5.0/Light.hlsli"
+#include"../../../../ShaderHeaderFiles/HLSL/5.0/DrawPolygon.hlsli"
+#include"../../../../ShaderHeaderFiles/HLSL/5.0/Light.hlsli"
 
 float4 LightCol(VS_OUT _base, float4 _color);
 
-float4 PLightCol(PointLight _plight, VS_OUT _base, float4 _color);
+float4 PLightCol(ChPointLight _plight, VS_OUT _base, float4 _color);
 
 
 //ピクセルシェダ(PixelShader)//
@@ -21,15 +21,16 @@ float4 main(VS_OUT _in) :SV_Target0
 
 	float4 color = _in.color;
 
-	color = mateDiffuse * baseTex.Sample(baseSmp, _in.uv) * color;
+	color = mate.dif * baseTex.Sample(baseSmp, _in.uv) * color;
 
 	clip(color.a < 0.001f ? -1 : 1);
 
 	L_BaseColor lightCol;
 	lightCol.color = color.rgb;
-	lightCol.wPos =_in.usePos.xyz;
+	lightCol.wPos =_in.worldPos.xyz;
 	lightCol.wfNormal = _in.normal;
-	lightCol.specular = speCol;
+	lightCol.specular.rgb = mate.speCol;
+	lightCol.specular.a = mate.spePow;
 
 	color.rgb = GetDirectionalLightColor(lightCol);
 
@@ -68,7 +69,7 @@ float4 LightCol(VS_OUT _Base, float4 _Color)
 	return Col;
 }
 
-float4 PLightCol(PLight plight, VS_OUT _Base, float4 _Color)
+float4 PLightCol(ChPointLight plight, VS_OUT _Base, float4 _Color)
 {
 
 	float4 Col = _Color;

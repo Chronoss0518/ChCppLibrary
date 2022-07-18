@@ -157,7 +157,7 @@ namespace ChD3D11
 	{
 	public://InitAndRelease//
 
-		void Release();
+		void Release()override;
 
 	public://Create Functions//
 

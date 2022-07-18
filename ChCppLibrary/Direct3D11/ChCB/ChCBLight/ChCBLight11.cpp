@@ -3,24 +3,22 @@
 #include"../../../BaseIncluder/ChD3D11I.h"
 
 #include"../../ChTexture/ChTexture11.h"
-#include"ChLight11.h"
+#include"ChCBLight11.h"
 
 using namespace ChD3D11;
-using namespace ShaderParts;
+using namespace CB;
 
 ///////////////////////////////////////////////////////////////////////////////////
 //LightHeader Method
 ///////////////////////////////////////////////////////////////////////////////////
 
-void Light11::Init(ID3D11Device* _device, const unsigned long _bufferRegisterNo, const unsigned long _textureRegisterNo)
+void CBLight11::Init(ID3D11Device* _device)
 {
 	Release();
 
-	device = _device;
+	CBBase11::Init(_device);
 
-	buf.CreateBuffer(_device, _bufferRegisterNo);
-	textureRegisterNo = _textureRegisterNo;
-
+	buf.CreateBuffer(_device, LIGHT_DATA_REGISTERNO);
 	{
 		ChVec4 tmpCol[256];
 
@@ -29,7 +27,7 @@ void Light11::Init(ID3D11Device* _device, const unsigned long _bufferRegisterNo,
 			tmpCol[i] = ChVec4(i / 256.0f, i / 256.0f, i / 256.0f, 1.0f);
 		}
 
-		lightPow.CreateColorTexture(device, tmpCol, 256, 1);
+		lightPow.CreateColorTexture(GetDevice(), tmpCol, 256, 1);
 
 
 		D3D11_SAMPLER_DESC samp;
@@ -48,7 +46,7 @@ void Light11::Init(ID3D11Device* _device, const unsigned long _bufferRegisterNo,
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void Light11::Release()
+void CBLight11::Release()
 {
 	if (!*this)return;
 
@@ -59,7 +57,7 @@ void Light11::Release()
 	SetInitFlg(false);
 }
 
-void Light11::SetLightDiffuse(const ChVec3& _dif)
+void CBLight11::SetLightDiffuse(const ChVec3& _dif)
 {
 	if (!*this)return;
 
@@ -70,7 +68,7 @@ void Light11::SetLightDiffuse(const ChVec3& _dif)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void Light11::SetUseLightFlg(const bool& _flg)
+void CBLight11::SetUseLightFlg(const bool& _flg)
 {
 	if (!*this)return;
 
@@ -81,7 +79,7 @@ void Light11::SetUseLightFlg(const bool& _flg)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void Light11::SetLightDir(const ChVec3& _dir)
+void CBLight11::SetLightDir(const ChVec3& _dir)
 {
 	if (!*this)return;
 
@@ -92,7 +90,7 @@ void Light11::SetLightDir(const ChVec3& _dir)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void Light11::SetLightAmbientPow(const float _amb)
+void CBLight11::SetLightAmbientPow(const float _amb)
 {
 	if (!*this)return;
 
@@ -101,7 +99,7 @@ void Light11::SetLightAmbientPow(const float _amb)
 	updateFlg = true;
 }
 
-void Light11::SetDirectionLightData(const bool _useFlg, const ChVec3& _dif, const ChVec3& _dir, const float _ambPow)
+void CBLight11::SetDirectionLightData(const bool _useFlg, const ChVec3& _dif, const ChVec3& _dir, const float _ambPow)
 {
 
 	lightDatas.light.useFlg = _useFlg;
@@ -114,10 +112,10 @@ void Light11::SetDirectionLightData(const bool _useFlg, const ChVec3& _dif, cons
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void Light11::SetPLightPos(const ChVec3& _pos, const unsigned long _no)
+void CBLight11::SetPLightPos(const ChVec3& _pos, const unsigned long _no)
 {
 	if (!*this)return;
-	if (_no > 10)return;
+	if (_no > LIGHT_PLIGHTCOUNT)return;
 
 	lightDatas.pLight[_no].pos = _pos;
 
@@ -126,10 +124,10 @@ void Light11::SetPLightPos(const ChVec3& _pos, const unsigned long _no)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void Light11::SetPLightLen(const float _len, const unsigned long _no)
+void CBLight11::SetPLightLen(const float _len, const unsigned long _no)
 {
 	if (!*this)return;
-	if (_no > 10)return;
+	if (_no > LIGHT_PLIGHTCOUNT)return;
 
 	lightDatas.pLight[_no].len = _len;
 
@@ -138,10 +136,10 @@ void Light11::SetPLightLen(const float _len, const unsigned long _no)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void Light11::SetPLightDiffuse(const ChVec3& _dif, const unsigned long _no)
+void CBLight11::SetPLightDiffuse(const ChVec3& _dif, const unsigned long _no)
 {
 	if (!*this)return;
-	if (_no > 10)return;
+	if (_no > LIGHT_PLIGHTCOUNT)return;
 
 	lightDatas.pLight[_no].dif = _dif;
 
@@ -150,21 +148,21 @@ void Light11::SetPLightDiffuse(const ChVec3& _dif, const unsigned long _no)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void Light11::SetPLightUseFlg(const bool& _flg, const unsigned long _no)
+void CBLight11::SetPLightUseFlg(const bool& _flg, const unsigned long _no)
 {
 	if (!*this)return;
-	if (_no > 10)return;
+	if (_no > LIGHT_PLIGHTCOUNT)return;
 
 	lightDatas.pLight[_no].useFlg = _flg;
 
 	updateFlg = true;
 }
 
-void Light11::SetPointLightData(const bool _useFlg, const ChVec3& _dif, const ChVec3& _pos, const float _len, const unsigned long _no)
+void CBLight11::SetPointLightData(const bool _useFlg, const ChVec3& _dif, const ChVec3& _pos, const float _len, const unsigned long _no)
 {
 
 	if (!*this)return;
-	if (_no > 10)return;
+	if (_no > LIGHT_PLIGHTCOUNT)return;
 
 	lightDatas.pLight[_no].useFlg = _useFlg;
 	lightDatas.pLight[_no].dif = _dif;
@@ -176,7 +174,7 @@ void Light11::SetPointLightData(const bool _useFlg, const ChVec3& _dif, const Ch
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void Light11::SetCamPos(const ChVec3& _camPos)
+void CBLight11::SetCamPos(const ChVec3& _camPos)
 {
 	if (!*this)return;
 
@@ -187,7 +185,7 @@ void Light11::SetCamPos(const ChVec3& _camPos)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void Light11::SetLightData(const LightData& _ld)
+void CBLight11::SetLightData(const ChLightData& _ld)
 {
 	if (!*this)return;
 
@@ -203,7 +201,7 @@ void Light11::SetLightData(const LightData& _ld)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void Light11::SetPSDrawData(ID3D11DeviceContext* _dc)
+void CBLight11::SetPSDrawData(ID3D11DeviceContext* _dc)
 {
 	if (!*this)return;
 
@@ -216,7 +214,7 @@ void Light11::SetPSDrawData(ID3D11DeviceContext* _dc)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void Light11::SetVSDrawData(ID3D11DeviceContext* _dc)
+void CBLight11::SetVSDrawData(ID3D11DeviceContext* _dc)
 {
 	if (!*this)return;
 
@@ -229,7 +227,7 @@ void Light11::SetVSDrawData(ID3D11DeviceContext* _dc)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void Light11::SetDrawData(ID3D11DeviceContext* _dc)
+void CBLight11::SetDrawData(ID3D11DeviceContext* _dc)
 {
 
 	if (!*this)return;
@@ -243,9 +241,14 @@ void Light11::SetDrawData(ID3D11DeviceContext* _dc)
 	SetTexture(_dc);
 }
 
+void CBLight11::SetTexture(ID3D11DeviceContext* _dc)
+{
+	CBBase11::SetShaderTexture(_dc, importLightPowMap, lightPow, LIGHT_TEXTURE_REGISTERNO);
+}
+
 ///////////////////////////////////////////////////////////////////////////////////
 
-void Light11::SetImportLightPowMap(ChPtr::Shared<TextureBase11>& _lightPowMap)
+void CBLight11::SetImportLightPowMap(ChPtr::Shared<TextureBase11>& _lightPowMap)
 {
 	if (!*this)return;
 
@@ -254,68 +257,16 @@ void Light11::SetImportLightPowMap(ChPtr::Shared<TextureBase11>& _lightPowMap)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChD3D11::ShaderParts::LightData Light11::GetLightData()
+void CBLight11::ClearImportLightPowMap()
 {
-	LightData res;
+	if (!*this)return;
 
-	if (!*this)return res;
-
-	res.camPos = lightDatas.camPos;
-	res.light = lightDatas.light;
-
-	for (unsigned long i = 0; i < 10; i++)
-	{
-		res.pLight[i] = lightDatas.pLight[i];
-	}
-
-	return res;
+	importLightPowMap.reset();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void Light11::ClearImportLightPowMap()
-{
-	if (!*this)return;
-
-	importLightPowMap = nullptr;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void Light11::SetRegisterNo(const unsigned long _registerNo)
-{
-	if (!*this)return;
-
-	buf.SetRegisterNo(_registerNo);
-
-}
-
-void Light11::SetTextureRegisterNo(const unsigned long _registerNo)
-{
-	if (!*this)return;
-
-	textureRegisterNo = _registerNo;
-}
-
-void Light11::SetTexture(ID3D11DeviceContext* _dc)
-{
-
-	TextureBase11* tmpLightPow = &lightPow;
-
-	if (importLightPowMap != nullptr)
-	{
-		if (importLightPowMap->IsTex())
-		{
-			tmpLightPow = importLightPowMap.get();
-		}
-	}
-
-	tmpLightPow->SetDrawData(_dc, textureRegisterNo);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void Light11::Update(ID3D11DeviceContext* _dc)
+void CBLight11::Update(ID3D11DeviceContext* _dc)
 {
 	if (!updateFlg)return;
 

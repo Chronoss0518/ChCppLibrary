@@ -1,21 +1,22 @@
-#ifndef Ch_D3D11_Light_h
-#define Ch_D3D11_Light_h
+#ifndef Ch_D3D11_CB_Light_h
+#define Ch_D3D11_CB_Light_h
 
+#include"../ChCBBase11.h"
+#include"../../../ShaderHeaderFiles/HLSL/5.0/Light.hlsli"
 
 namespace ChD3D11
 {
-	namespace ShaderParts
+	namespace CB
 	{
-#include"../../../ShaderHeaderFiles/HLSL/5.0/Light.hlsli"
 
-		class Light11 final :public ChCp::Initializer, public ChCp::Releaser
+		class CBLight11 final :public CBBase11
 		{
 		public:
 
 			///////////////////////////////////////////////////////////////////////////////////
 			//InitAndRelease//
 
-			void Init(ID3D11Device* _device, const unsigned long _bufferRegisterNo, const unsigned long _textureRegisterNo);
+			void Init(ID3D11Device* _device);
 
 			void Release()override;
 
@@ -44,7 +45,7 @@ namespace ChD3D11
 
 			void SetCamPos(const ChVec3& _camPos);
 
-			void SetLightData(const LightData& _ld);
+			void SetLightData(const ChLightData& _ld);
 
 			void SetPSDrawData(ID3D11DeviceContext* _dc);
 
@@ -52,18 +53,14 @@ namespace ChD3D11
 
 			void SetDrawData(ID3D11DeviceContext* _dc);
 
-			void SetImportLightPowMap(ChPtr::Shared<TextureBase11>& _lightPowMap);
-
-			void SetRegisterNo(const unsigned long _registerNo);
-
-			void SetTextureRegisterNo(const unsigned long _registerNo);
-
 			void SetTexture(ID3D11DeviceContext* _dc);
+
+			void SetImportLightPowMap(ChPtr::Shared<TextureBase11>& _lightPowMap);
 
 			///////////////////////////////////////////////////////////////////////////////////
 			//GetFunction//
 
-			LightData GetLightData();
+			inline ChLightData GetLightData() { return lightDatas; }
 
 			///////////////////////////////////////////////////////////////////////////////////
 
@@ -73,14 +70,12 @@ namespace ChD3D11
 
 			void Update(ID3D11DeviceContext* _dc);
 
-			LightData lightDatas;
-			ID3D11Device* device = nullptr;
-			ConstantBuffer11<LightData> buf;
+			ChLightData lightDatas;
+			ConstantBuffer11<ChLightData> buf;
 			ChStd::Bool updateFlg = true;
 
 			Texture11 lightPow;
-			ChPtr::Shared<TextureBase11>importLightPowMap;
-			unsigned long textureRegisterNo = 0;
+			ChPtr::Weak<TextureBase11>importLightPowMap;
 
 		};
 

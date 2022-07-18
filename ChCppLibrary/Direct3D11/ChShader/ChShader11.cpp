@@ -70,10 +70,10 @@ void ShaderController11::Init(
 
 	bvModel.InitChBaseModelVertexShader(_device);
 	pvTex.InitChPolygonboardTextureVertexShader(_device);
-	bpModel.InitChBaseModelPixelShader(_device);
+	bpModel.InitChBasePolygonPixelShader(_device);
 
 	spvTex.InitChSpriteTextureVertexShader(_device);
-	bpTex.InitChBaseTexturePixelShader(_device);
+	bpTex.InitChBaseSpritePixelShader(_device);
 
 	Texture11::CreateWhiteTex(_device);
 	whiteTex = &Texture11::GetWhiteTex();
