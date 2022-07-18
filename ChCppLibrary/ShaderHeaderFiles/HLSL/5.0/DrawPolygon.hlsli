@@ -105,7 +105,7 @@ sampler normalSmp: register(s[NORMAL_TEXTURE_REGISTER]);
 
 struct MTWStruct
 {
-	float3 normal;
+	float3 vertexNormal;
 	float3 faceNormal;
 	float4 worldPos;
 	float4 viewPos;
@@ -150,7 +150,7 @@ MTWStruct ModelToWorld(
 
 	float3x3 rotMat = (float3x3)tmpMat;
 
-	res.normal = normalize(mul(_normal, rotMat));
+	res.vertexNormal = normalize(mul(_normal, rotMat));
 	res.faceNormal = normalize(mul(_faceNormal, rotMat));
 
 	return res;

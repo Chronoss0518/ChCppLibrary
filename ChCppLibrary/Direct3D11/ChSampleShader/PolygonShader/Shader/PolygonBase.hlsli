@@ -5,7 +5,7 @@
 struct VS_OUT
 {
 	float4 pos			:SV_POSITION;
-	float3 normal		:NORMAL0;
+	float3 vertexNormal	:NORMAL0;
 	float3 faceNormal	:NORMAL1;
 	float4 color		:COLOR0;
 	float4 worldPos		:TEXCOORD1;

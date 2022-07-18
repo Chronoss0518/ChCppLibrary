@@ -34,7 +34,7 @@ OutColor main(VS_OUT _in)
 	L_BaseColor lightCol;
 	lightCol.color = outColor.color.rgb;
 	lightCol.wPos =_in.worldPos.xyz;
-	lightCol.wfNormal = _in.normal;
+	lightCol.wfNormal = _in.vertexNormal;
 	lightCol.specular.rgb = mate.speCol;
 	lightCol.specular.a = mate.spePow;
 

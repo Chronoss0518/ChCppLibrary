@@ -38,7 +38,7 @@ VS_OUT main
 	res.viewPos = tmp.viewPos;
 	res.proPos = tmp.proPos;
 	res.pos = tmp.proPos;
-	res.normal = tmp.normal;
+	res.vertexNormal = tmp.vertexNormal;
 	res.faceNormal = tmp.faceNormal;
 	res.uv = tmp.uv;
 
