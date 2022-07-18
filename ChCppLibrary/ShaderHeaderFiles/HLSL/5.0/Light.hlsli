@@ -47,7 +47,9 @@ cbuffer LightData : register(b[LIGHT_DATA_REGISTERNO])
 struct ChLightData
 #endif
 {
-	float4 camPos = float4(0.0f, 0.0f, 0.0f, 0.0f);
+	float3 camPos = float3(0.0f, 0.0f, 0.0f);
+
+	int colorType = 0;
 
 	ChDirectionalLight light;
 
@@ -102,7 +104,7 @@ float3 GetDirectionalLightColor(L_BaseColor _bCol)
 
 	float3 lamPowMapCol = lightPowMap.Sample(lightSmp, float2(dotSize, dotSize)).rgb;
 
-	float lamPow = lamPowMapCol.r;
+	float lamPow = lamPowMapCol[colorType];
 
 	oCol *= lamPow * light.dif;
 
