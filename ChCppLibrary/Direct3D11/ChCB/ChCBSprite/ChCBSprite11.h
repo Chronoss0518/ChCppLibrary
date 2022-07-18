@@ -47,7 +47,11 @@ namespace ChD3D11
 			///////////////////////////////////////////////////////////////////////////////////
 			//GetFunction//
 
-			inline ChS_SpriteData GetCharaData() { return spData; }
+			inline ChS_SpriteData GetSpriteData() { return spData; }
+
+			inline ChLMat GetSpriteMatrix() { return spData.spriteMat; }
+
+			inline ChVec4 GetBaseColor() { return spData.baseColor; }
 
 		private:
 

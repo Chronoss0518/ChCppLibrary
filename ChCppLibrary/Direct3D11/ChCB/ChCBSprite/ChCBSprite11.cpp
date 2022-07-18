@@ -23,7 +23,7 @@ void CBSprite11::Init(ID3D11Device* _device)
 
 void CBSprite11::Release()
 {
-	if (!*this)return;
+	if (!IsInit())return;
 
 	spBuf.Release();
 
@@ -34,8 +34,6 @@ void CBSprite11::Release()
 
 void CBSprite11::SetSpriteMatrix(const ChLMat& _mat)
 {
-	if (!*this)return;
-
 	spData.spriteMat = _mat;
 
 	sUpdateFlg = true;
@@ -43,8 +41,6 @@ void CBSprite11::SetSpriteMatrix(const ChLMat& _mat)
 
 void CBSprite11::SetBaseColor(const ChVec4& _color)
 {
-	if (!*this)return;
-
 	spData.baseColor = _color;
 
 	sUpdateFlg = true;
@@ -52,8 +48,6 @@ void CBSprite11::SetBaseColor(const ChVec4& _color)
 
 void CBSprite11::SetSpriteData(const ChS_SpriteData& _data)
 {
-	if (!*this)return;
-
 	spData = _data;
 
 	sUpdateFlg = true;
