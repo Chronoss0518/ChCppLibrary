@@ -8,6 +8,12 @@
 
 namespace Ch3D
 {
+	enum class ShaderAxisType
+	{
+		LeftHand,
+		RightHand
+	};
+
 	struct Position
 	{
 		ChVec3 pos;
@@ -40,7 +46,7 @@ namespace Ch3D
 		unsigned long boneNo[Num];
 	};
 
-	struct HaveVertex:
+	struct SaveVertex:
 		public Position,
 		public Color
 	{};
@@ -61,10 +67,24 @@ namespace Ch3D
 		public FaceNormal
 	{};
 
+	template<unsigned long Num>
+	struct SkinMeshVertex :
+		public MeshVertex,
+		public Bone<Num>
+	{
+		unsigned long boneNum = Num;
+	};
+
 	//‘ÎÛ‚Ì’¸“_‚ğŠÇ—‚·‚é//
 	struct Polygon
 	{
 		 std::vector<unsigned long> vertexNo;
+		 FaceNormal faceNormal;
+	};
+
+	struct BoneData
+	{
+		std::map<unsigned long,std::vector<float>> vertexData;
 	};
 
 	struct Material
@@ -113,26 +133,21 @@ namespace Ch3D
 	};
 
 	//Material‚É‘Î‰‚·‚é–Ê‚ğŠÇ—‚·‚é//
-	template<class vertex = Vertex>
 	class Primitive
 	{
-		std::vector<ChPtr::Shared<Polygon>> polygons = nullptr;
-		Vertex* vertexList = nullptr;
+		std::vector<ChPtr::Shared<Polygon>> polygons;
 
 		Material mate;
 	};
 
-	template<class vertex = Vertex,class primitive = Primitive<vertex>>
+	template<class vertex = Vertex,class primitive = Primitive>
 	class Frame
 	{
 	public:
 
-		std::vector<ChPtr::Shared<primitive>> primitives = nullptr;
+		std::vector<ChPtr::Shared<primitive>> primitives;
+		std::vector<ChPtr::Shared<vertex>> vertexList;
 		std::map<std::string, unsigned long>mateNames;
-		Transform transform;
-
-		std::vector<ChPtr::Shared<Frame<Vertex>>> parent;
-
 	};
 
 
