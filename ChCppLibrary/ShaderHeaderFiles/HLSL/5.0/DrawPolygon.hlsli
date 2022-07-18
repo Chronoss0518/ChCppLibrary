@@ -38,8 +38,6 @@ struct ChP_DrawData
 	row_major float4x4 viewMat;
 
 	row_major float4x4 proMat;
-
-	float4 windSize = float4(1280.0f, 720.0f, 0, 0);
 };
 
 

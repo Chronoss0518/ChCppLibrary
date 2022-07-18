@@ -79,15 +79,6 @@ void CBPolygon11::SetProjectionMatrix(const ChLMat& _mat)
 	dUpdateFlg = true;
 }
 
-void CBPolygon11::SetWindSize(const ChVec2& _size)
-{
-	if (!*this)return;
-
-	drawData.windSize = _size;
-
-	dUpdateFlg = true;
-}
-
 void CBPolygon11::SetMateDiffuse(const ChVec4& _diffuseCol)
 {
 	if (!*this)return;

@@ -5,30 +5,13 @@
 
 #include"../ShaderPublicInclude.hlsli"
 
-#ifndef DRAW_DATA_REGISTERNO
-#define DRAW_DATA_REGISTERNO 0
-#endif
-
 #ifndef SPRITE_DATA_REGISTERNO
-#define SPRITE_DATA_REGISTERNO 1
+#define SPRITE_DATA_REGISTERNO 0
 #endif
 
 #ifndef BASE_TEXTURE_REGISTER
 #define	BASE_TEXTURE_REGISTER 0
 #endif
-
-#ifdef __SHADER__
-#ifdef _SM5_0_
-cbuffer DrawData :register(CHANGE_CBUFFER_5(DRAW_DATA_REGISTERNO))
-#else
-cbuffer DrawData : register(b[DRAW_DATA_REGISTERNO])
-#endif
-#else
-struct ChS_DrawData
-#endif
-{
-	float4 windSize = float4(1280.0f, 720.0f, 0, 0);
-};
 
 #ifdef __SHADER__
 #ifdef _SM5_0_

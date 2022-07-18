@@ -21,7 +21,6 @@ VS_OUT main
 	uint _blendNum					: BLENDINDEX4
 )
 {
-
 	VS_OUT res;
 
 	res.worldPos = _pos;

@@ -30,8 +30,6 @@ namespace ChD3D11
 
 			void SetProjectionMatrix(const ChLMat& _mat);
 
-			void SetWindSize(const ChVec2& _size);
-
 			void SetMateDiffuse(const ChVec4& _diffuseCol);
 
 			void SetMateSpecularColor(const ChVec3& _specularCol);

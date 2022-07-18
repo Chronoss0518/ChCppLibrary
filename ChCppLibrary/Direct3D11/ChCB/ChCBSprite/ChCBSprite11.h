@@ -28,8 +28,6 @@ namespace ChD3D11
 
 			void SetBaseColor(const ChVec4& _color);
 
-			void SetDrawData(const ChS_DrawData& _data);
-
 			void SetSpriteData(const ChS_SpriteData& _data);
 
 			void SetPSDrawData(ID3D11DeviceContext* _dc);
@@ -49,21 +47,14 @@ namespace ChD3D11
 			///////////////////////////////////////////////////////////////////////////////////
 			//GetFunction//
 
-			inline ChS_DrawData GetDrawData() { return drawData; }
-
 			inline ChS_SpriteData GetCharaData() { return spData; }
 
 		private:
-
-			void UpdateDD(ID3D11DeviceContext* _dc);
 
 			void UpdateSD(ID3D11DeviceContext* _dc);
 
 			void SetShaderTexture(ID3D11DeviceContext* _dc, ChPtr::Weak<TextureBase11> _tex, TextureBase11& _defaultTex, const unsigned long _registerNo);
 
-			ChS_DrawData drawData;
-			ConstantBuffer11<ChS_DrawData> drawBuf;
-			ChStd::Bool dUpdateFlg = true;
 			ChS_SpriteData spData;
 			ConstantBuffer11<ChS_SpriteData> spBuf;
 			ChStd::Bool sUpdateFlg = true;
