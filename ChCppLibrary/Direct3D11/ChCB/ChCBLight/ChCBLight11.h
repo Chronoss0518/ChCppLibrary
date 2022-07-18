@@ -9,6 +9,14 @@ namespace ChD3D11
 	namespace CB
 	{
 
+		enum class UseColorType:int
+		{
+			Red,
+			Green,
+			Blue,
+			Alpha
+		};
+
 		class CBLight11 final :public CBBase11
 		{
 		public:
@@ -33,6 +41,8 @@ namespace ChD3D11
 
 			void SetDirectionLightData(const bool _useFlg, const ChVec3& _dif, const ChVec3& _dir, const float _ambPow);
 
+			void SetDirectionLightData(const ChDirectionalLight& _data);
+
 			void SetPLightPos(const ChVec3& _pos, const unsigned long _no = 0);
 
 			void SetPLightLen(const float _len, const unsigned long _no = 0);
@@ -43,7 +53,11 @@ namespace ChD3D11
 
 			void SetPointLightData(const bool _useFlg, const ChVec3& _dif, const ChVec3& _pos, const float _len, const unsigned long _no = 0);
 
+			void SetPointLightData(const ChPointLight& _data, const unsigned long _no = 0);
+
 			void SetCamPos(const ChVec3& _camPos);
+
+			void SetUseColorType(const UseColorType& _colorType);
 
 			void SetLightData(const ChLightData& _ld);
 
@@ -61,6 +75,18 @@ namespace ChD3D11
 			//GetFunction//
 
 			inline ChLightData GetLightData() { return lightDatas; }
+
+			inline ChDirectionalLight GetDirectionalLightData() { return lightDatas.light; }
+
+			inline ChPointLight GetPointLightData(const unsigned long _no)
+			{
+				if (_no >= LIGHT_PLIGHTCOUNT)return ChPointLight();
+				return lightDatas.pLight[_no];
+			}
+
+			inline ChVec3 GetCameraPos() { return lightDatas.camPos; }
+
+			inline UseColorType GetColorType() { return static_cast<UseColorType>(lightDatas.colorType); }
 
 			///////////////////////////////////////////////////////////////////////////////////
 

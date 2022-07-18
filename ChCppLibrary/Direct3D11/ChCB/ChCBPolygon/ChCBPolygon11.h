@@ -69,9 +69,13 @@ namespace ChD3D11
 
 			inline ChP_DrawData GetDrawData() { return drawData; }
 
+			inline ChLMat GetProjectionMatrix() { return drawData.proMat; }
+
+			inline ChLMat GetViewMatrix() { return drawData.viewMat; }
+
 			inline ChP_CharaData GetCharaData() { return charaData; }
 
-			inline ChP_Material GetMateData() { return mateData; }
+			inline ChLMat GetWorldMatrix() { return charaData.worldMat; }
 
 		private:
 

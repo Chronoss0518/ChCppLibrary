@@ -17,7 +17,6 @@ void CBPolygon11::Init(ID3D11Device* _device)
 	Release();
 
 	CBBase11::Init(_device);
-
 	drawBuf.CreateBuffer(GetDevice(), DRAW_DATA_REGISTERNO);
 	charaBuf.CreateBuffer(GetDevice(), CHARACTOR_POSITION_REGISTERNO);
 	mateBuf.CreateBuffer(GetDevice(), MATERIAL_DATA_REGISTERNO);
@@ -45,8 +44,6 @@ void CBPolygon11::Release()
 
 void CBPolygon11::SetFrameMatrix(const ChLMat& _mat)
 {
-	if (!*this)return;
-
 	mateData.frameMatrix = _mat;
 
 	mUpdateFlg = true;
@@ -54,8 +51,6 @@ void CBPolygon11::SetFrameMatrix(const ChLMat& _mat)
 
 void CBPolygon11::SetWorldMatrix(const ChLMat& _mat)
 {
-	if (!*this)return;
-
 	charaData.worldMat = _mat;
 
 	cUpdateFlg = true;
@@ -63,8 +58,6 @@ void CBPolygon11::SetWorldMatrix(const ChLMat& _mat)
 
 void CBPolygon11::SetViewMatrix(const ChLMat& _mat)
 {
-	if (!*this)return;
-
 	drawData.viewMat = _mat;
 
 	dUpdateFlg = true;
@@ -72,8 +65,6 @@ void CBPolygon11::SetViewMatrix(const ChLMat& _mat)
 
 void CBPolygon11::SetProjectionMatrix(const ChLMat& _mat)
 {
-	if (!*this)return;
-
 	drawData.proMat = _mat;
 
 	dUpdateFlg = true;
@@ -81,8 +72,6 @@ void CBPolygon11::SetProjectionMatrix(const ChLMat& _mat)
 
 void CBPolygon11::SetMateDiffuse(const ChVec4& _diffuseCol)
 {
-	if (!*this)return;
-
 	mateData.dif = _diffuseCol;
 
 	mUpdateFlg = true;
@@ -90,8 +79,6 @@ void CBPolygon11::SetMateDiffuse(const ChVec4& _diffuseCol)
 
 void CBPolygon11::SetMateSpecularColor(const ChVec3& _specularCol)
 {
-	if (!*this)return;
-
 	mateData.speCol = _specularCol;
 
 	mUpdateFlg = true;
@@ -99,8 +86,6 @@ void CBPolygon11::SetMateSpecularColor(const ChVec3& _specularCol)
 
 void CBPolygon11::SetMateSpecularPower(const float _specularPow)
 {
-	if (!*this)return;
-
 	mateData.spePow = _specularPow;
 
 	mUpdateFlg = true;
@@ -108,8 +93,6 @@ void CBPolygon11::SetMateSpecularPower(const float _specularPow)
 
 void CBPolygon11::SetMateAmbientColor(const ChVec3& _ambientCol)
 {
-	if (!*this)return;
-
 	mateData.ambient = _ambientCol;
 
 	mUpdateFlg = true;
@@ -117,8 +100,6 @@ void CBPolygon11::SetMateAmbientColor(const ChVec3& _ambientCol)
 
 void CBPolygon11::SetDrawData(const ChP_DrawData& _data)
 {
-	if (!*this)return;
-
 	drawData = _data;
 
 	dUpdateFlg = true;
@@ -126,8 +107,6 @@ void CBPolygon11::SetDrawData(const ChP_DrawData& _data)
 
 void CBPolygon11::SetCharaData(const ChP_CharaData& _data)
 {
-	if (!*this)return;
-
 	charaData = _data;
 
 	cUpdateFlg = true;
@@ -135,8 +114,6 @@ void CBPolygon11::SetCharaData(const ChP_CharaData& _data)
 
 void CBPolygon11::SetMaterialData(const ChP_Material& _data)
 {
-	if (!*this)return;
-
 	mateData = _data;
 
 	mUpdateFlg = true;

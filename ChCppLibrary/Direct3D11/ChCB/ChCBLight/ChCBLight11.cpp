@@ -110,11 +110,17 @@ void CBLight11::SetDirectionLightData(const bool _useFlg, const ChVec3& _dif, co
 	updateFlg = true;
 }
 
+void CBLight11::SetDirectionLightData(const ChDirectionalLight& _data)
+{
+	lightDatas.light = _data;
+
+	updateFlg = true;
+}
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 void CBLight11::SetPLightPos(const ChVec3& _pos, const unsigned long _no)
 {
-	if (!*this)return;
 	if (_no > LIGHT_PLIGHTCOUNT)return;
 
 	lightDatas.pLight[_no].pos = _pos;
@@ -126,7 +132,6 @@ void CBLight11::SetPLightPos(const ChVec3& _pos, const unsigned long _no)
 
 void CBLight11::SetPLightLen(const float _len, const unsigned long _no)
 {
-	if (!*this)return;
 	if (_no > LIGHT_PLIGHTCOUNT)return;
 
 	lightDatas.pLight[_no].len = _len;
@@ -138,7 +143,6 @@ void CBLight11::SetPLightLen(const float _len, const unsigned long _no)
 
 void CBLight11::SetPLightDiffuse(const ChVec3& _dif, const unsigned long _no)
 {
-	if (!*this)return;
 	if (_no > LIGHT_PLIGHTCOUNT)return;
 
 	lightDatas.pLight[_no].dif = _dif;
@@ -150,7 +154,6 @@ void CBLight11::SetPLightDiffuse(const ChVec3& _dif, const unsigned long _no)
 
 void CBLight11::SetPLightUseFlg(const bool& _flg, const unsigned long _no)
 {
-	if (!*this)return;
 	if (_no > LIGHT_PLIGHTCOUNT)return;
 
 	lightDatas.pLight[_no].useFlg = _flg;
@@ -161,7 +164,6 @@ void CBLight11::SetPLightUseFlg(const bool& _flg, const unsigned long _no)
 void CBLight11::SetPointLightData(const bool _useFlg, const ChVec3& _dif, const ChVec3& _pos, const float _len, const unsigned long _no)
 {
 
-	if (!*this)return;
 	if (_no > LIGHT_PLIGHTCOUNT)return;
 
 	lightDatas.pLight[_no].useFlg = _useFlg;
@@ -172,6 +174,14 @@ void CBLight11::SetPointLightData(const bool _useFlg, const ChVec3& _dif, const 
 	updateFlg = true;
 }
 
+void CBLight11::SetPointLightData(const ChPointLight& _data, const unsigned long _no)
+{
+	if (_no > LIGHT_PLIGHTCOUNT)return;
+
+	lightDatas.pLight[_no] = _data;
+
+	updateFlg = true;
+}
 ///////////////////////////////////////////////////////////////////////////////////
 
 void CBLight11::SetCamPos(const ChVec3& _camPos)
@@ -179,6 +189,15 @@ void CBLight11::SetCamPos(const ChVec3& _camPos)
 	if (!*this)return;
 
 	lightDatas.camPos = _camPos;
+
+	updateFlg = true;
+}
+
+void CBLight11::SetUseColorType(const UseColorType& _colorType)
+{
+	if (!*this)return;
+
+	lightDatas.colorType = ChStd::EnumCast(_colorType);
 
 	updateFlg = true;
 }
