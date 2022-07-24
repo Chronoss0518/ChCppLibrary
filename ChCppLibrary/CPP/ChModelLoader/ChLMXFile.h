@@ -1,10 +1,7 @@
 #ifndef Ch_CPP_XMesh_h
 #define Ch_CPP_XMesh_h
 
-#ifndef Ch_CPP_MLoader_h
-#include"ChModelLoader.h"
-#endif
-
+#include"ChModelLoaderBase.h"
 
 namespace ChCpp
 {
@@ -18,24 +15,14 @@ namespace ChCpp
 
 			struct XFileModelFrame
 			{
-				struct XVertex
-				{
-					ChVec3 pos;
-					ChVec2 uvPos;
-					ChVec3 normal;
-				};
+				struct XVertex :public Ch3D::PolyVertex
+				{};
 
-				struct XMaterial
+				struct XMaterial :public Ch3D::Material
 				{
 					std::string materialName;
 
-					ChVec4 diffuse;
-					float specularPower = 0.0f;
-					ChVec3 specular;
-					ChVec3 ambient;
-
 					std::vector<std::string>textureNameList;
-
 				};
 
 				struct XFace
@@ -53,6 +40,7 @@ namespace ChCpp
 					ChLMat boneOffset;
 
 				};
+
 				struct XMesh
 				{
 					std::vector<ChPtr::Shared<XVertex>>vertexList;
@@ -93,18 +81,18 @@ namespace ChCpp
 			};
 
 			//モデルデータの読み込み口//
-			void CreateModel(const std::string& _filePath)override;
+			void CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& _filePath)override;
 
 			///////////////////////////////////////////////////////////////////////////////////////
 
 			//ChModelへ変換//
 			void XFrameToChFrame(
-				ChPtr::Shared<ModelFrame::Frame>& _chFrame
+				ChPtr::Shared<FrameObject> _chFrame
 				, const ChPtr::Shared<XFileModelFrame::XFrame>& _xFrame);
 
 			///////////////////////////////////////////////////////////////////////////////////////
 
-			void OutModelFile(const std::string& _filePath)override;
+			void OutModelFile(const ChPtr::Shared<ModelObject> _model, const std::string& _filePath)override;
 
 			///////////////////////////////////////////////////////////////////////////////////////
 			//SetFunction//
