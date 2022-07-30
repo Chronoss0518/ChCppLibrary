@@ -24,17 +24,14 @@ namespace ChD3D11
 
 			void SetSpriteMatrix(const ChLMat& _mat);
 
-			void SetWindSize(const ChVec2& _size);
-
 			void SetBaseColor(const ChVec4& _color);
 
+			inline void SetBaseTexture(ChPtr::Weak<TextureBase11> _tex)
+			{
+				baseTex = _tex;
+			}
+
 			void SetSpriteData(const ChS_SpriteData& _data);
-
-			void SetPSDrawData(ID3D11DeviceContext* _dc);
-
-			void SetVSDrawData(ID3D11DeviceContext* _dc);
-
-			void SetShaderDrawData(ID3D11DeviceContext* _dc);
 
 			void SetPSSpriteData(ID3D11DeviceContext* _dc);
 

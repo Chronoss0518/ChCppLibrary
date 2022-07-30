@@ -38,6 +38,16 @@ namespace ChD3D11
 
 			void SetMateAmbientColor(const ChVec3& _ambientCol);
 
+			void SetBaseTexture(ChPtr::Weak<Texture11>_tex)
+			{
+				baseTex = _tex;
+			}
+
+			void SetNormalTexture(ChPtr::Weak<Texture11>_tex)
+			{
+				normalTex = _tex;
+			}
+
 			void SetDrawData(const ChP_DrawData& _data);
 
 			void SetCharaData(const ChP_CharaData& _data);
