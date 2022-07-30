@@ -53,14 +53,6 @@ void CBSprite11::SetSpriteData(const ChS_SpriteData& _data)
 	sUpdateFlg = true;
 }
 
-void CBSprite11::SetShaderDrawData(ID3D11DeviceContext* _dc)
-{
-	if (!*this)return;
-
-	SetVSDrawData(_dc);
-	SetPSDrawData(_dc);
-}
-
 void CBSprite11::SetPSSpriteData(ID3D11DeviceContext* _dc)
 {
 	if (!*this)return;
