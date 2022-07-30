@@ -737,7 +737,6 @@ void XFile::XFrameToChFrame(
 
 			if (lookFlg)continue;
 
-
 			summarizeVertex[i] = chVertexList.size();
 
 			auto chVertex = ChPtr::Make_S<SavePolyVertex>();
@@ -795,7 +794,7 @@ void XFile::XFrameToChFrame(
 	//SetMaterial//
 
 	{
-		auto& chMateList = mesh->material;
+		auto& chMateList = mesh->materialList;
 		auto& chMateNos = mesh->mateNames;
 
 		unsigned long i = 0;
