@@ -102,6 +102,17 @@ void FrameObject::UpdateDrawTransform()
 	drawTrans.scl = tmpMat.GetScalling();
 }
 
+ChStd::Bool FrameObject::IsMesh()
+{
+	auto frame = GetComponent<FrameComponent>();
+
+	if (frame == nullptr)return false;
+
+	if (frame->vertexList.empty())return false;
+
+	return true;
+}
+
 void ModelObject::AddAnimationName(const std::string& _name)
 {
 	animationNames.push_back(_name);

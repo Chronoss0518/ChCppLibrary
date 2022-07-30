@@ -21,7 +21,7 @@ namespace ChCpp
 	struct FrameComponent:public ChCpp::BaseComponent
 	{
 		std::vector<ChPtr::Shared<Ch3D::Primitive>> primitives;
-		std::vector<ChPtr::Shared<Ch3D::MaterialData>>material;
+		std::vector<ChPtr::Shared<Ch3D::MaterialData>>materialList;
 		std::vector<ChPtr::Shared<SavePolyVertex>> vertexList;
 		std::map<std::string, unsigned long>mateNames;
 	};
@@ -77,6 +77,10 @@ namespace ChCpp
 		void UpdateDrawTransform();
 
 		void SetAnimationName(const std::string& _name);
+
+	public://Is Function//
+
+		ChStd::Bool IsMesh();
 
 	protected:
 
