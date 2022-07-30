@@ -8,7 +8,7 @@
 
 namespace Ch3D
 {
-	enum class ShaderAxisType
+	enum class ShaderAxisType:unsigned char
 	{
 		LeftHand,
 		RightHand
@@ -19,25 +19,55 @@ namespace Ch3D
 		ChVec3 pos;
 	};
 
+	void SetPosition(Position* _pos, ChVec3& _val)
+	{
+		if (ChPtr::NullCheck(_pos))return;
+		_pos->pos = _val;
+	}
+
 	struct UV
 	{
 		ChVec2 uv;
 	};
+
+	void SetUV(UV* _uv, ChVec2& _val)
+	{
+		if (ChPtr::NullCheck(_uv))return;
+		_uv->uv = _val;
+	}
 
 	struct Color
 	{
 		ChVec4 color = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
 	};
 
+	void SetColor(Color* _color, ChVec4& _val)
+	{
+		if (ChPtr::NullCheck(_color))return;
+		_color->color = _val;
+	}
+
 	struct Normal
 	{
 		ChVec3 normal = ChVec3(0.0f,1.0f,0.0f);
 	};
 
+	void SetNormal(Normal* _normal, ChVec3& _val)
+	{
+		if (ChPtr::NullCheck(_normal))return;
+		_normal->normal = _val;
+	}
+
 	struct FaceNormal
 	{
 		ChVec3 faceNormal = ChVec3(0.0f, 1.0f, 0.0f);
 	};
+
+	void SetFaceNormal(FaceNormal* _faceNormal, ChVec3& _val)
+	{
+		if (ChPtr::NullCheck(_faceNormal))return;
+		_faceNormal->faceNormal = _val;
+	}
 
 	template<unsigned long Num>
 	struct Bone
@@ -45,11 +75,6 @@ namespace Ch3D
 		float brendPows[Num];
 		unsigned long boneNo[Num];
 	};
-
-	struct SaveVertex:
-		public Position,
-		public Color
-	{};
 
 	struct Vertex:
 		public Position,
@@ -75,11 +100,9 @@ namespace Ch3D
 		unsigned long boneNum = Num;
 	};
 
-	//‘ÎÛ‚Ì’¸“_‚ğŠÇ—‚·‚é//
-	struct Polygon
+	struct SavePolyData:public UV
 	{
-		 std::vector<unsigned long> vertexNo;
-		 FaceNormal faceNormal;
+		unsigned long vertexNo;
 	};
 
 	struct BoneData
@@ -104,7 +127,15 @@ namespace Ch3D
 		Bump,
 		Alpha,
 		Normal,
-		Metallic
+		Metallic,
+		None
+	};
+
+	struct MaterialData
+	{
+		Material mate;
+		std::string mateName;
+		std::map<TextureType, std::string>textures;
 	};
 
 	struct Transform
@@ -133,24 +164,14 @@ namespace Ch3D
 	};
 
 	//Material‚É‘Î‰‚·‚é–Ê‚ğŠÇ—‚·‚é//
-	class Primitive
+	struct Primitive:public FaceNormal
 	{
-		std::vector<ChPtr::Shared<Polygon>> polygons;
-
-		Material mate;
-	};
-
-	template<class vertex = Vertex,class primitive = Primitive>
-	class Frame
-	{
-	public:
-
-		std::vector<ChPtr::Shared<primitive>> primitives;
-		std::vector<ChPtr::Shared<vertex>> vertexList;
-		std::map<std::string, unsigned long>mateNames;
+		std::vector<ChPtr::Shared<SavePolyData>> vertexData;
+		unsigned long mateNo;
 	};
 
 
+	
 
 }
 
