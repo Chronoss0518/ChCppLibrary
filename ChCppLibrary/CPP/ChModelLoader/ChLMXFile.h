@@ -160,7 +160,8 @@ namespace ChCpp
 				std::string useText = "";
 
 				{
-					size_t tmpEnd = _text.find(_endChar, _startPos);
+					size_t tmpEnd = _text.find(";", _startPos);
+					tmpEnd = _text.find(_endChar, tmpEnd + 1);
 					tmpEnd += _endChar.length();
 
 					useText = _text.substr(_startPos, tmpEnd - _startPos);
@@ -170,7 +171,7 @@ namespace ChCpp
 				size_t tmpPos = 0;
 				tmpPos = useText.find(";");
 
-				if (tmpPos >= useText.size())return out;
+				if (tmpPos > useText.size())tmpPos = useText.size();
 
 				unsigned long arrayCount = 0;
 

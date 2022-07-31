@@ -327,7 +327,7 @@ ChStd::Bool XFile::SetMeshMaterialList(
 
 	tmpPos += 1;
 
-	auto mateNo = GetArrayValues<XDWORD>(_text, tmpPos, ",", ";;");
+	auto mateNo = GetArrayValues<XDWORD>(_text, tmpPos, ",", ";");
 
 	auto& faces = _frames->mesh->faceList;
 
@@ -710,11 +710,12 @@ void XFile::XFrameToChFrame(
 	auto mesh = _chFrame->SetComponent<FrameComponent>();
 
 	if (_xFrame->mesh == nullptr)return;
+
+	auto& chVertexList = mesh->vertexList;
 	//SetVertexList//
 	{
 		auto& xVertexList = _xFrame->mesh->vertexList;
 
-		auto& chVertexList = mesh->vertexList;
 
 		for (unsigned long i = 0; i < xVertexList.size(); i++)
 		{
@@ -777,11 +778,12 @@ void XFile::XFrameToChFrame(
 
 				chVertexData->vertexNo = VertexNo;
 				chVertexData->uv = xVertexList[xFace->vertexNos[i]]->uv;
-
-				chFace->mateNo = xFace->mateNo;
+				chFace->faceNormal += chVertexList[VertexNo]->normal;
 
 				chFace->vertexData.push_back(chVertexData);
 			}
+			chFace->faceNormal.Normalize();
+			chFace->mateNo = xFace->mateNo;
 			chFaceList.push_back(chFace);
 		}
 
@@ -818,6 +820,23 @@ void XFile::XFrameToChFrame(
 			chMateList.push_back(chMate);
 
 			i++;
+
+		}
+
+		if (chMateList.empty())
+		{
+
+			auto chMate = ChPtr::Make_S<Ch3D::MaterialData>();
+
+			chMate->mate.diffuse = ChVec4(1.0f);
+			chMate->mateName = "tmp Material";
+			chMate->mate.specularColor = ChVec3(1.0f);
+			chMate->mate.specularPower = 0.3f;
+			chMate->mate.ambient = ChVec4(0.3f);
+
+			chMateNos[chMate->mateName] = 0;
+
+			chMateList.push_back(chMate);
 
 		}
 
