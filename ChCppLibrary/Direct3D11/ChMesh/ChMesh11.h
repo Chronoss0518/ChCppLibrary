@@ -12,51 +12,53 @@ namespace ChD3D11
 	class Texture11;
 	class Mesh11;
 
-	template<class vertex = Ch3D::Vertex>
-	struct PrimitiveData11 :public ChCpp::BaseComponent
+	struct  DrawPrimitiveData11
 	{
-		IndexBuffer11 indexBuffer;
-		VertexBuffer11<vertex> vertexBuffer;
+		~DrawPrimitiveData11()
+		{
+			vertexBuffer.Release();
+			indexBuffer.Release();
+		}
 
-		typename std::enable_if<std::is_base_of<Ch3D::Vertex, vertex>::value, std::vector<vertex>>::type vertexArray;
+		IndexBuffer11 indexBuffer;
+		VertexBuffer11<Ch3D::MeshVertex> vertexBuffer;
+
+		std::vector<Ch3D::MeshVertex> vertexArray;
 		std::vector<unsigned long> indexArray;
 
-		ChPtr::Shared<Material11> mate = nullptr;
+		//unsigned long startNum = 0;
+		unsigned char mateNo = 0;
+		ChLMat drawMat;
 
+		std::map<Ch3D::TextureType, ChPtr::Shared<Texture11>>textures;
 	};
 
-	struct BoneData11
+	class FrameComponent11 :public ChCpp::BaseUniqueComponent
 	{
-		unsigned long skinWeightCount = 0;
-		ChMath::Vector3Base<unsigned long> tmpBuffer;
-		ChMat_11 animationMat[96];
+	public:
 
-	};
+		//子オブジェクトすべてを作成する。//
+		void CreateAll(ID3D11Device* _device);
 
-	struct FrameData11
-	{
-		friend Mesh11;
+		void UpdateDrawMatrix();
 
-		std::map<std::string,ChPtr::Shared<PrimitiveData11<SkinMeshVertex11>>>primitiveDatas;
+		void SetPrimitives(ChPtr::Shared<DrawPrimitiveData11> _primitive)
+		{
+			primitives.push_back(_primitive);
+		}
 
-		std::string frameName;
-
-		ChMat_11 baseMat;
-		ChMat_11 animationMat;
-
-		ChPtr::Weak<FrameData11> parentFrame;
-
-		std::vector<ChPtr::Shared<FrameData11>>childFrame;
-
-		inline ChMat_11 GetDrawMatrix() { return drawMat; }
+		std::vector<ChPtr::Shared<DrawPrimitiveData11>> GetPrimitives()
+		{
+			return primitives;
+		}
 
 	private:
 
-		ChMat_11 drawMat;
+		std::vector<ChPtr::Shared<DrawPrimitiveData11>>primitives;
 
 	};
 
-	class Mesh11:public ChCp::Initializer
+	class Mesh11:public ChCpp::ModelObject,public ChCp::Initializer
 	{
 	public:
 
@@ -70,64 +72,18 @@ namespace ChD3D11
 		void Release();
 
 		///////////////////////////////////////////////////////////////////////////////////////
-		//IsFunction//
-
-		inline ChStd::Bool IsMesh() const { return modelData != nullptr; }
-
-		///////////////////////////////////////////////////////////////////////////////////////
 		//Creater//
 
-		virtual void Create(const ChCpp::ModelObject& _baseModels);
-
-		///////////////////////////////////////////////////////////////////////////////////////
-
-		void SetDrawData(ID3D11DeviceContext* _dc);
-
-		void SetDrawData(ID3D11DeviceContext* _dc,const std::string& _frameName);
+		void Create();
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
-		inline ChPtr::Shared<FrameData11> GetRootFrame() { return modelData; }
-
-		inline ChPtr::Shared<FrameData11> GetFrame(const std::string& _frameName)
-		{
-			return (frameNames.find(_frameName) != frameNames.end()) ? frameNames[_frameName].lock() : nullptr;
-		}
-
-		inline std::vector<std::string> GetFrameNames()
-		{
-			std::vector<std::string> out;
-
-			for (auto&& frame : frameNames)
-			{
-				out.push_back(frame.first);
-			}
-
-			return out;
-		}
-
 		inline ID3D11Device* GetDevice() { return device; }
-
-		ChMat_11 GetParentAnimationMatrixs(FrameData11& _frame);
 
 	protected:
 
-		void CreateFrames(
-			ChPtr::Shared<FrameData11>& _frames
-			, const ChCpp::ModelFrame::Frame& _baseModels);
-
-		void CreatePrimitiveData(
-			ChPtr::Shared<FrameData11>& _frames
-			, const ChCpp::ModelFrame::Frame& _baseModels);
-
-		std::vector<std::vector<ChPtr::Shared<ChCpp::ModelFrame::SurFace>>>
-			CreateSurfaceList(
-			const ChCpp::ModelFrame::Frame& _baseModels);
-
-		///////////////////////////////////////////////////////////////////////////////////////
-
-		void UpdateFrameDrawMatrix();
+		void CreateFrames();
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
@@ -135,20 +91,7 @@ namespace ChD3D11
 		using MaterialNo = unsigned long;
 		using MaterialName = std::string;
 
-		std::map<std::string,ChPtr::Weak<FrameData11>>frameNames;
-
-		std::vector<ChPtr::Weak<FrameData11>>drawFrames;
-
-		ChPtr::Shared<FrameData11> modelData = nullptr;
-
-		ChMat_11* boneList = nullptr;
-
-		ConstantBuffer11<ShaderUseMaterial11> materialBuffer;
-
 	private:
-
-		ChPtr::Shared<Texture11>whiteTex = nullptr;
-		ChPtr::Shared<Texture11>normalTex = nullptr;
 
 		ID3D11Device* device = nullptr;
 	};

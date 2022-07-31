@@ -3,10 +3,17 @@
 
 #include"../ChSampleShaderBase11.h"
 
+namespace ChCpp
+{
+	class BaseObject;
+}
+
+
 namespace ChD3D11
 {
 
 	class Mesh11;
+
 
 	namespace Shader
 	{
@@ -61,6 +68,16 @@ namespace ChD3D11
 				const ChMat_11& _mat = ChMat_11());
 
 		private:
+
+			void Draw(
+				ID3D11DeviceContext* _dc,
+				ChCpp::FrameObject* _object,
+				const ChLMat _parentFrameMat = ChLMat());
+
+			void DrawMain(
+				ID3D11DeviceContext* _dc,
+				ChCpp::FrameObject* _object,
+				const ChLMat _parentFrameMat = ChLMat());
 
 			void Update();
 

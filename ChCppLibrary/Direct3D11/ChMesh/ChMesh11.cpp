@@ -7,353 +7,173 @@
 #include"../ChTexture/ChTexture11.h"
 #include"ChMesh11.h"
 
-namespace ChD3D11
+using namespace Ch3D;
+using namespace ChCpp;
+using namespace ChD3D11;
+
+///////////////////////////////////////////////////////////////////////////////////////
+//ChMesh11 Method
+///////////////////////////////////////////////////////////////////////////////////////
+
+void FrameComponent11::CreateAll(ID3D11Device* _device)
 {
-	///////////////////////////////////////////////////////////////////////////////////////
-	//ChMesh11 Method
-	///////////////////////////////////////////////////////////////////////////////////////
+	if (ChPtr::NullCheck(_device))return;
 
-	void Mesh11::Init(
-		ID3D11Device* _device)
+	auto&& frameBase = LookObj()->GetComponent<ChCpp::FrameComponent>();
+
+	if (frameBase != nullptr)
 	{
-		if (_device == nullptr)return;
 
-		Release();
-
-		device = _device;
-
-		normalTex = ChPtr::Make_S<Texture11>();
-		whiteTex = ChPtr::Make_S<Texture11>();
-
-		normalTex->CreateColorTexture(_device, ChVec4(0.5f, 1.0f, 0.5f, 1.0f), 1, 1);
-		whiteTex->CreateColorTexture(_device, ChVec4(1.0f), 1, 1);
-
-		materialBuffer.CreateBuffer(_device, 2);
-
-		SetInitFlg(true);
-
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////////
-
-	void Mesh11::Init()
-	{
-		if (!D3D11API().IsInit())return;
-
-		Init(D3D11Device());
-
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////////
-
-	void Mesh11::Release()
-	{
-		if(!drawFrames.empty())drawFrames.clear();
-		if (!frameNames.empty())frameNames.clear();
-		materialBuffer.Release();
-		modelData = nullptr;
-
-		normalTex = nullptr;
-		whiteTex = nullptr;
-
-		SetInitFlg(false);
-
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////////
-
-	ChMat_11 Mesh11::GetParentAnimationMatrixs(FrameData11& _frame)
-	{
-		auto pFrame = _frame.parentFrame.lock();
-
-		if (pFrame == nullptr)
+		for (auto&& primitive : frameBase->primitives)
 		{
-			_frame.drawMat = _frame.animationMat * _frame.baseMat;
-			return _frame.drawMat;
-		}
+			auto&& primitive11 = ChPtr::Make_S< DrawPrimitiveData11>();
 
-		auto parentAniamtionMat = GetParentAnimationMatrixs(*pFrame);
-		
-		_frame.drawMat = parentAniamtionMat * _frame.animationMat * _frame.baseMat;
+			std::vector<unsigned long>indexs;
 
-		return _frame.drawMat;
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////
+			for (auto&& vertex : primitive->vertexData)
+			{
+				unsigned long vertexNo = vertex->vertexNo;
 
-	void Mesh11::Create(const ChCpp::ModelObject& _baseModels)
-	{
-		if (!IsInit())return;
-		if (_baseModels.GetModel() == nullptr)return;
-		auto model = _baseModels.GetModel();
-		if (model->modelData == nullptr)return;
+				auto tmpVertex = frameBase->vertexList[vertexNo];
 
-		modelData = nullptr;
+				indexs.push_back(vertexNo);
 
-		CreateFrames(modelData,*model->modelData);
+				Ch3D::MeshVertex mVertex;
+				Ch3D::SetPosition(&mVertex, tmpVertex->pos);
+				Ch3D::SetUV(&mVertex, vertex->uv);
+				Ch3D::SetColor(&mVertex, tmpVertex->color);
+				Ch3D::SetNormal(&mVertex, tmpVertex->normal);
+				Ch3D::SetFaceNormal(&mVertex, primitive->faceNormal);
 
-		modelData->frameName = model->modelData->myName;
+				primitive11->vertexArray.push_back(mVertex);
+			}
 
-	}
+			bool lRotFlg = true;
 
-	///////////////////////////////////////////////////////////////////////////////////////
-
-	void Mesh11::CreateFrames(
-		ChPtr::Shared<FrameData11>& _frames
-		, const ChCpp::ModelFrame::Frame& _baseModels)
-	{
-
-		_frames = ChPtr::Make_S<FrameData11>();
-		
-		_frames->frameName = _baseModels.myName;
-		_frames->baseMat = _baseModels.baseLMat;
-
-		CreatePrimitiveData(_frames, _baseModels);
-
-		for (auto&& models : _baseModels.childFrames)
-		{
-			ChPtr::Shared<FrameData11> tmp;
-			CreateFrames(tmp, *models);
-			_frames->childFrame.push_back(tmp);
-			tmp->parentFrame = _frames;
-		}
-
-		frameNames[_frames->frameName] = _frames;
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////////
-
-	void Mesh11::CreatePrimitiveData(
-		ChPtr::Shared<FrameData11>& _frames
-		, const ChCpp::ModelFrame::Frame& _baseModels)
-	{
-
-		if (_baseModels.mesh == nullptr)return;
-
-
-		_frames->baseMat = _baseModels.baseLMat;
-
-		auto surfaceList = CreateSurfaceList(_baseModels);
-
-		unsigned long mateNum = _baseModels.mesh->materialList.size();
-
-		if (mateNum <= 0)
-		{
-			auto mate = ChPtr::Make_S<ChCpp::ModelFrame::Material>();
-
-			_baseModels.mesh->materialList.push_back(mate);
-
-			mate->diffuse = ChVec4(1.0f);
-			mate->materialName = "Material1";
-			mate->specular = ChVec4(0.0f);
-			mate->ambient = (0.0f);
-
-			mateNum = _baseModels.mesh->materialList.size();
-		}
-
-		auto& mateList = _baseModels.mesh->materialList;
-
-		auto& verList = _baseModels.mesh->vertexList;
-
-		//PrimitiveCount//
-		for (unsigned long i = 0; i< mateNum;i++)
-		{
-
-			auto& faces = surfaceList[i];
-			
-			if (faces.size() > 0)
+			for (unsigned long i = 1; i < indexs.size() - 1; i++)
 			{
 
-				auto prim = ChPtr::Make_S<PrimitiveData11<SkinMeshVertex11>>();
+				unsigned long tmpIndexs[] = { 0,i,i + 1 };
 
-				unsigned long vertexNum = faces.size() * 3;
-				unsigned long indexNum = faces.size() * 3;
-
-
-				prim->vertexArray.resize(vertexNum);
-
-				prim->indexArray.resize(indexNum);
-
-				unsigned long nowCount = 0;
-
-				//FaceCount//
-				for (unsigned long fCount = 0; fCount < faces.size(); fCount++)
+				if (!lRotFlg)
 				{
-
-					ChVec3_11 faceNormal = 0.0f;
-					faceNormal = faces[fCount]->normal;
-					//ChVec3_11 faceNormal = 0.0f;
-					//faceNormal += verList[faces[fCount]->vertexData[0].vertexNo]->normal;
-					//faceNormal += verList[faces[fCount]->vertexData[1].vertexNo]->normal;
-					//faceNormal += verList[faces[fCount]->vertexData[2].vertexNo]->normal;
-
-					//faceNormal.Normalize();
-
-					//VertexCount//
-					for (unsigned long j = 0; j < 3; j++)
-					{
-
-						auto& vertexs = (prim->vertexArray[nowCount]);
-
-						vertexs.pos = verList[faces[fCount]->vertexData[j].vertexNo]->pos;
-						vertexs.normal = verList[faces[fCount]->vertexData[j].vertexNo]->normal;
-						vertexs.faceNormal = faceNormal;
-						//vertexs.blendPow = verList[faces[fCount]->vertexData[j].vertexNo]->blendPow;
-						//vertexs.blendIndex = verList[faces[fCount]->vertexData[j].vertexNo]->boneNo;
-
-						vertexs.uv = faces[fCount]->vertexData[j].uvPos;
-
-						prim->indexArray[nowCount] = nowCount;
-
-						nowCount++;
-
-					}
-
+					tmpIndexs[1] += tmpIndexs[2];
+					tmpIndexs[2] = tmpIndexs[1] - tmpIndexs[2];
+					tmpIndexs[1] = tmpIndexs[1] - tmpIndexs[2];
 				}
 
-				prim->vertexBuffer.CreateBuffer(GetDevice(), &prim->vertexArray[0], vertexNum);
-				prim->indexBuffer.CreateBuffer(GetDevice(), &prim->indexArray[0], indexNum);
-
-				prim->mate = ChPtr::Make_S<Material11>();
-
-				prim->mate->material.ambient = ChVec4(mateList[i]->ambient);
-				prim->mate->material.diffuse = mateList[i]->diffuse;
-				prim->mate->material.specularColor.r = mateList[i]->specular.r;
-				prim->mate->material.specularColor.g = mateList[i]->specular.g;
-				prim->mate->material.specularColor.b = mateList[i]->specular.b;
-				prim->mate->material.specularPower = mateList[i]->specular.a;
-				prim->mate->materialName = mateList[i]->materialName;
-
-				prim->mate->material.frameMatrix = _baseModels.baseLMat;
-
-				if (mateList[i]->textureNames.size() > 0)
+				for (unsigned long j = 0; j < 3; j++)
 				{
-					auto tex = ChPtr::Make_S<Texture11>();
-
-					tex->CreateTexture(mateList[i]->textureNames[0], GetDevice());
-					if (!tex->IsTex())tex = whiteTex;
-
-					prim->mate->textures[Ch3D::TextureType::Diffuse] = tex;
+					primitive11->indexArray.push_back(tmpIndexs[j]);
 				}
 
-				if (mateList[i]->textureNames.size() > 1)
-				{
-					auto tex = ChPtr::Make_S<Texture11>();
-
-					tex->CreateTexture(mateList[i]->textureNames[1], GetDevice());
-					if (!tex->IsTex())tex = normalTex;
-
-					prim->mate->textures[Ch3D::TextureType::Normal] = tex;
-				}
-
-				_frames->primitiveDatas[mateList[i]->materialName] = prim;
+				lRotFlg = !lRotFlg;
 
 			}
 
-		}
+			primitive11->indexBuffer.CreateBuffer(
+				_device,
+				&primitive11->indexArray[0],
+				primitive11->indexArray.size());
 
-		drawFrames.push_back(_frames);
+			primitive11->vertexBuffer.CreateBuffer(
+				_device,
+				&primitive11->vertexArray[0],
+				primitive11->vertexArray.size());
 
+			primitive11->mateNo = primitive->mateNo;
 
+			auto&& material = frameBase->materialList[primitive11->mateNo];
 
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////
-
-	std::vector<std::vector<ChPtr::Shared<ChCpp::ModelFrame::SurFace>>>
-		Mesh11::CreateSurfaceList(
-			const ChCpp::ModelFrame::Frame& _baseModels)
-	{
-
-		std::vector<std::vector<ChPtr::Shared<ChCpp::ModelFrame::SurFace>>>surfaceList;
-
-		unsigned long mateNum = _baseModels.mesh->materialList.size();
-
-
-		if (mateNum < 2)
-		{
-			surfaceList.push_back(_baseModels.mesh->faceList);
-			return surfaceList;
-		}
-
-		unsigned long verCount = _baseModels.mesh->faceList.size();
-
-		for (unsigned long i = 0; i < mateNum; i++)
-		{
-			std::vector<ChPtr::Shared<ChCpp::ModelFrame::SurFace>> tmp;
-
-			for (unsigned long j = 0; j < verCount; j++)
+			for (unsigned long i = 0; i < ChStd::EnumCast(Ch3D::TextureType::None); i++)
 			{
-				if (_baseModels.mesh->faceList[j]->materialNo != i)continue;
+				Ch3D::TextureType type = static_cast<Ch3D::TextureType>(i);
 
-				auto tmpFace = _baseModels.mesh->faceList[j];
+				std::string texPath = material->textures[type];
+				if (texPath.empty())continue;
 
-				tmp.push_back(tmpFace);
+				auto texture = ChPtr::Make_S<Texture11>();
+				texture->CreateTexture(texPath, _device);
+
+				if (!texture->IsTex())texture = nullptr;
+
+				primitive11->textures[type] = texture;
 			}
-			surfaceList.push_back(tmp);
-		}
 
-		return surfaceList;
-	}
+			primitives.push_back(primitive11);
 
-	///////////////////////////////////////////////////////////////////////////////////////
-
-	void Mesh11::SetDrawData(ID3D11DeviceContext* _dc)
-	{
-
-
-		if (modelData == nullptr)return;
-
-		unsigned int offsets = 0;
-
-
-		for (auto&& fPtr : drawFrames)
-		{
-			auto frame = fPtr.lock();
-			if (frame == nullptr)continue;
-
-			for (auto&& prim : frame->primitiveDatas)
-			{
-				prim.second->vertexBuffer.SetVertexBuffer(_dc, offsets);
-				prim.second->indexBuffer.SetIndexBuffer(_dc);
-
-				prim.second->mate->material.frameMatrix = GetParentAnimationMatrixs(*frame);
-
-				materialBuffer.UpdateResouce(_dc, &prim.second->mate->material);
-
-				{
-					auto diffuseMap = prim.second->mate->textures[Ch3D::TextureType::Diffuse];
-					if (diffuseMap == nullptr)diffuseMap = whiteTex;
-					if (!diffuseMap->IsTex())diffuseMap = whiteTex;
-					diffuseMap->SetDrawData(_dc, 0);
-				}
-
-				{
-					auto normalMap = prim.second->mate->textures[Ch3D::TextureType::Normal];
-					if (normalMap == nullptr)normalMap = whiteTex;
-					if (!normalMap->IsTex())normalMap = whiteTex;
-					normalMap->SetDrawData(_dc, 1);
-				}
-
-				materialBuffer.SetToVertexShader(_dc, 1);
-				materialBuffer.SetToPixelShader(_dc, 1);
-
-				_dc->DrawIndexed(prim.second->indexArray.size(), 0, 0);
-
-				_dc->Flush();
-			}
 		}
 
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////////
-
-	void Mesh11::SetDrawData(ID3D11DeviceContext* _dc,const std::string& _frameName)
+	for (auto&& wObj : LookObj<FrameObject>()->GetChildlen())
 	{
-		if (modelData == nullptr)return;
+		if (wObj.expired())return;
+		auto child = wObj.lock();
 
+		auto com = child->SetComponent<FrameComponent11>();
 
+		com->CreateAll(_device);
 	}
-
 
 }
+
+void FrameComponent11::UpdateDrawMatrix()
+{
+
+}
+
+void Mesh11::Init(ID3D11Device* _device)
+{
+	if (_device == nullptr)return;
+
+	Release();
+
+	device = _device;
+	Texture11::CreateWhiteTex(_device);
+	Texture11::CreateNormalTex(_device);
+
+	SetInitFlg(true);
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+void Mesh11::Init()
+{
+	if (!D3D11API().IsInit())return;
+
+	Init(D3D11Device());
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+void Mesh11::Release()
+{
+	SetInitFlg(false);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+void Mesh11::Create()
+{
+	if (!IsInit())return;
+	if (IsMesh())return;
+
+	CreateFrames();
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+void Mesh11::CreateFrames()
+{
+
+	auto frame = SetComponent<FrameComponent11>();
+
+	frame->CreateAll(device);
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
