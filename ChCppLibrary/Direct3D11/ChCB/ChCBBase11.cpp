@@ -33,3 +33,21 @@ void CBBase11::SetShaderTexture(ID3D11DeviceContext* _dc, ChPtr::Weak<TextureBas
 
 	tmpTex->SetDrawData(_dc, _registerNo);
 }
+
+void CBBase11::SetShaderTexture(ID3D11DeviceContext* _dc, TextureBase11* _tex, TextureBase11& _defaultTex, const unsigned long _registerNo)
+{
+
+	if (ChPtr::NullCheck(_dc))return;
+
+	TextureBase11* tmpTex = &_defaultTex;
+
+	if (ChPtr::NotNullCheck(_tex))
+	{
+		if (_tex->IsTex())
+		{
+			tmpTex = _tex;
+		}
+	}
+
+	tmpTex->SetDrawData(_dc, _registerNo);
+}
