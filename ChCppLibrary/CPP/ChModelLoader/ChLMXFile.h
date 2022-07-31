@@ -80,8 +80,16 @@ namespace ChCpp
 				std::vector<ChPtr::Shared<TemplateRange>> nest;
 			};
 
+		public:
+
 			//モデルデータの読み込み口//
 			void CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& _filePath)override;
+
+			///////////////////////////////////////////////////////////////////////////////////////
+
+			void OutModelFile(const ChPtr::Shared<ModelObject> _model, const std::string& _filePath)override;
+
+		protected:
 
 			///////////////////////////////////////////////////////////////////////////////////////
 
@@ -89,10 +97,6 @@ namespace ChCpp
 			void XFrameToChFrame(
 				ChPtr::Shared<FrameObject> _chFrame
 				, const ChPtr::Shared<XFileModelFrame::XFrame>& _xFrame);
-
-			///////////////////////////////////////////////////////////////////////////////////////
-
-			void OutModelFile(const ChPtr::Shared<ModelObject> _model, const std::string& _filePath)override;
 
 			///////////////////////////////////////////////////////////////////////////////////////
 			//SetFunction//

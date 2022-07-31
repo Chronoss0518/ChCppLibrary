@@ -778,14 +778,11 @@ void XFile::XFrameToChFrame(
 				chVertexData->vertexNo = VertexNo;
 				chVertexData->uv = xVertexList[xFace->vertexNos[i]]->uv;
 
-
-				chFace->vertexData[i]->uv = chVertexData->uv;
-				chFace->vertexData[i]->vertexNo = chVertexData->vertexNo;
-
 				chFace->mateNo = xFace->mateNo;
 
-				chFaceList.push_back(chFace);
+				chFace->vertexData.push_back(chVertexData);
 			}
+			chFaceList.push_back(chFace);
 		}
 
 
@@ -809,24 +806,10 @@ void XFile::XFrameToChFrame(
 			chMate->mate.specularPower = xMate->specularPower;
 			chMate->mate.ambient = xMate->ambient.Len() / 4.0f;
 
-			for (unsigned long i = 0; i < xMate->textureNameList.size(); i++)
+			for (unsigned long j = 0; j < xMate->textureNameList.size(); j++)
 			{
-				if (i > ChStd::EnumCast(Ch3D::TextureType::Metallic))break;
-				chMate->textures[static_cast<Ch3D::TextureType>(i)] = xMate->textureNameList[i];
-
-				//switch (i)
-				//{
-				//case 0:chMate->diffuse = xMate->textureNameList[i]; break;
-				//case 1:chMate->normalMap = xMate->textureNameList[i]; break;
-				//case 2:chMate->ambientMap = xMate->textureNameList[i]; break;
-				//case 3:chMate->specularMap = xMate->textureNameList[i]; break;
-				//case 4:chMate->specularHighLightMap = xMate->textureNameList[i]; break;
-				//case 5:chMate->bumpMap = xMate->textureNameList[i]; break;
-				//case 6:chMate->alphaMap = xMate->textureNameList[i]; break;
-				//case 7:chMate->metallicMap = xMate->textureNameList[i]; break;
-				//default:
-				//	break;
-				//}
+				if (j > ChStd::EnumCast(Ch3D::TextureType::Metallic))break;
+				chMate->textures[static_cast<Ch3D::TextureType>(j)] = xMate->textureNameList[j];
 
 			}
 
@@ -839,7 +822,4 @@ void XFile::XFrameToChFrame(
 		}
 
 	}
-
-	mesh;
-
 }
