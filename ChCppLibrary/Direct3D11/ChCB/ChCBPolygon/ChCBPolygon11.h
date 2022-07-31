@@ -38,12 +38,12 @@ namespace ChD3D11
 
 			void SetMateAmbientColor(const ChVec3& _ambientCol);
 
-			void SetBaseTexture(ChPtr::Weak<Texture11>_tex)
+			void SetBaseTexture(Texture11*_tex)
 			{
 				baseTex = _tex;
 			}
 
-			void SetNormalTexture(ChPtr::Weak<Texture11>_tex)
+			void SetNormalTexture(Texture11*_tex)
 			{
 				normalTex = _tex;
 			}
@@ -105,8 +105,8 @@ namespace ChD3D11
 			ConstantBuffer11<ChP_Material> mateBuf;
 			ChStd::Bool mUpdateFlg = true;
 
-			ChPtr::Weak<TextureBase11>baseTex;
-			ChPtr::Weak<TextureBase11>normalTex;
+			TextureBase11* baseTex;
+			TextureBase11* normalTex;
 
 		};
 
