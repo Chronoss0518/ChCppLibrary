@@ -30,16 +30,6 @@ namespace ChCpp
 
 	protected:
 
-		void SetPosition(Ch3D::Position* _pos, ChVec3 _val);
-
-		void SetPosition(Ch3D::UV* _uv, ChVec2 _val);
-
-		void SetPosition(Ch3D::Color* _col, ChVec4 _val);
-
-		void SetPosition(Ch3D::Normal* _normal, ChVec3 _val);
-
-		void SetPosition(Ch3D::FaceNormal* _faceNormal, ChVec3 _val);
-
 		//カレントディレクトリからのルートパス取得//
 		std::string GetRoutePath(const std::string& _filePath);
 
