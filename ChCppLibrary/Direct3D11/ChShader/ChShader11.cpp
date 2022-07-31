@@ -85,7 +85,7 @@ void ShaderController11::Init(
 
 	charaData.CreateBuffer(_device, 1);
 
-	polygonData.CreateBuffer(_device, 1);
+	polygonData.CreateBuffer(_device, 0);
 
 	boneData.CreateBuffer(_device, 11);
 
@@ -253,6 +253,8 @@ void ShaderController11::DrawEnd()
 
 	bpTex.SetShader(dc);
 
+	pdObject.modelMat.Identity();
+
 	polygonData.UpdateResouce(dc, &pdObject);
 
 	polygonData.SetToVertexShader(dc, 1);
@@ -261,15 +263,6 @@ void ShaderController11::DrawEnd()
 	out3D.SetDrawData(dc, 0);
 
 	outSprite.SetDrawData(dc);
-
-	spvTex.SetShader(dc);
-
-	bpTex.SetShader(dc);
-
-	polygonData.UpdateResouce(dc, &pdObject);
-
-	polygonData.SetToVertexShader(dc, 1);
-	polygonData.SetToPixelShader(dc, 1);
 
 	out2D.SetDrawData(dc, 0);
 
@@ -308,7 +301,7 @@ void ShaderController11::Draw(
 	charaData.SetToVertexShader(dc, 1);
 	charaData.SetToPixelShader(dc, 1);
 
-	_mesh.SetDrawData(dc);
+	//_mesh.SetDrawData(dc);
 
 }
 
@@ -349,7 +342,7 @@ void ShaderController11::Draw(
 
 	_userPS.SetShader(dc);
 
-	_mesh.SetDrawData(dc);
+	//_mesh.SetDrawData(dc);
 
 }
 
@@ -418,6 +411,7 @@ void ShaderController11::Draw(
 
 	_polygon.SetDrawData(dc);
 
+	dc->Flush();
 }
 
 void ShaderController11::Draw(
