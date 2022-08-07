@@ -118,7 +118,7 @@ namespace Ch3D
 		ChVec4 ambient = 0.3f;
 	};
 
-	enum class TextureType
+	enum class TextureType:unsigned char
 	{
 		Diffuse,
 		Ambient,
@@ -142,25 +142,26 @@ namespace Ch3D
 	{
 		ChVec3 pos;
 		ChVec3 rot;
-		ChVec3 scl;
+		ChVec3 scl = 1.0f;
 
-		inline ChLMat GetLeftHandMatrix()
+		inline ChLMat& GetLeftHandMatrix()
 		{
-			ChLMat out;
+			static ChLMat out;
 			out.SetPosition(pos);
 			out.SetRotation(rot);
 			out.SetScalling(scl);
 			return out;
 		}
 
-		inline ChRMat GetRightHandMatrix()
+		inline ChRMat& GetRightHandMatrix()
 		{
-			ChRMat out;
+			static ChRMat out;
 			out.SetPosition(pos);
 			out.SetRotation(rot);
 			out.SetScalling(scl);
 			return out;
 		}
+
 	};
 
 	//Material‚É‘Î‰‚·‚é–Ê‚ğŠÇ—‚·‚é//
