@@ -8,24 +8,6 @@
 
 using namespace ChCpp;
 
-void FrameObject::SetAnimationTransform(const Ch3D::Transform& _trans)
-{
-	animationMat.SetPosition(_trans.pos);
-	animationMat.SetRotation(_trans.rot);
-	animationMat.SetScalling(_trans.scl);
-}
-
-void FrameObject::SetAnimationTransform(const ChLMat& _mat)
-{
-	animationMat = _mat;
-}
-
-void FrameObject::SetAnimationTransform(const ChRMat& _mat)
-{
-
-	animationMat = _mat.ConvertAxis();
-}
-
 void FrameObject::SetOutSizdTransform(const Ch3D::Transform& _trans)
 {
 	outSideMat.SetPosition(_trans.pos);
@@ -80,7 +62,7 @@ ChLMat FrameObject::GetDrawLHandMatrix()
 
 	}
 
-	drawMat = outSideMat * animationMat * frameMat * parentDrawMat;
+	drawMat = outSideMat * frameMat * parentDrawMat;
 
 	return drawMat;
 }
@@ -99,7 +81,7 @@ ChRMat FrameObject::GetDrawRHandMatrix()
 
 	}
 
-	drawMat = outSideMat * animationMat * frameMat * parentDrawMat;
+	drawMat = outSideMat * frameMat * parentDrawMat;
 
 	return drawMat.ConvertAxis();
 }
@@ -118,7 +100,7 @@ void FrameObject::UpdateDrawTransform()
 
 	}
 
-	drawMat = outSideMat * animationMat * frameMat * parentDrawMat;
+	drawMat = outSideMat * frameMat * parentDrawMat;
 }
 
 void ModelObject::AddAnimationName(const std::string& _name)

@@ -52,18 +52,12 @@ namespace ChCpp
 	{
 	public://Set Functions//
 
-		void SetAnimationTransform(const Ch3D::Transform& _trans);
-
-		void SetAnimationTransform(const ChLMat& _mat);
-
-		void SetAnimationTransform(const ChRMat& _mat);
-
 		void SetOutSizdTransform(const Ch3D::Transform& _trans);
 
 		void SetOutSizdTransform(const ChLMat& _mat);
 
 		void SetOutSizdTransform(const ChRMat& _mat);
-
+		
 		void SetFrameTransform(const Ch3D::Transform& _mat);
 
 		void SetFrameTransform(const ChLMat& _mat);
@@ -71,11 +65,6 @@ namespace ChCpp
 		void SetFrameTransform(const ChRMat& _mat);
 
 	public://Get Functions//
-
-		inline ChLMat GetDrawTransform()
-		{
-			return drawMat;
-		};
 
 		ChLMat GetDrawLHandMatrix();
 
@@ -95,7 +84,6 @@ namespace ChCpp
 
 		ChLMat frameMat;
 		ChLMat outSideMat;
-		ChLMat animationMat;
 
 	private:
 
@@ -104,9 +92,19 @@ namespace ChCpp
 
 	};
 
-	class ModelObject :public FrameObject
+	class ModelObject :public FrameObject, public ChCp::Initializer
 	{
 	public:
+
+		inline void Init()override
+		{
+			SetInitFlg(true);
+		}
+
+		inline void Release()override
+		{
+			SetInitFlg(false);
+		}
 
 		inline void SetShaderAxisType(const Ch3D::ShaderAxisType _type)
 		{
@@ -121,6 +119,8 @@ namespace ChCpp
 		}
 
 		void AddAnimationName(const std::string& _name);
+
+		virtual void Create(){}
 
 	private:
 
