@@ -14,6 +14,9 @@ void AnimationCreater::Init(ModelObject* _model)
 	model = _model;
 }
 
+
+#if 0
+
 ///////////////////////////////////////////////////////////////////////////////////////
 
 std::string& AnimationCreater::ModelNameIns()
@@ -27,3 +30,5 @@ void AnimationCreater::SetModel(ChPtr::Shared<ModelFrame> _models)
 {
 	model->model = _models;
 }
+
+#endif
