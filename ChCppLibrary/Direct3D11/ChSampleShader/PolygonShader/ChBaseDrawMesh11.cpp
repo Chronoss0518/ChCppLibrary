@@ -14,6 +14,8 @@ using namespace ChCpp;
 using namespace ChD3D11;
 using namespace Shader;
 
+#define DEBUG 0
+
 
 void BaseDrawMesh::Init(ID3D11Device* _device)
 {
@@ -99,8 +101,6 @@ void BaseDrawMesh::Draw(
 
 	SetShaderRasteriser(_dc);
 
-	//Update();
-
 	polyData.SetWorldMatrix(_mat);
 
 	polyData.UpdateCD(_dc);
@@ -112,37 +112,46 @@ void BaseDrawMesh::Draw(
 
 void BaseDrawMesh::Draw(
 	ID3D11DeviceContext* _dc,
-	FrameObject* _object,
-	const ChLMat _parentFrameMat)
+	FrameObject* _object)
 {
-	_object->UpdateDrawTransform();
+#if DEBUG
+	unsigned long start, end;
 
-	DrawMain(_dc, _object, _parentFrameMat);
+	std::string debug;
 
-	for (auto&& child : _object->GetChildlen<FrameObject>())
+	debug = "Draw Start:" + _object->GetMyName() + "\n";
+
+	OutputDebugString(debug.c_str());
+
+	start = timeGetTime();
+#endif
+	DrawMain(_dc, _object);
+#if DEBUG
+	end = timeGetTime();
+	debug = "Draw End Time:" + std::to_string(end - start) + "\n";
+	OutputDebugString(debug.c_str());
+	OutputDebugString(">\n");
+	OutputDebugString(">\n");
+#endif
+	auto&& childlen = _object->GetChildlen<FrameObject>();
+
+	for (auto&& child : childlen)
 	{
 		auto childObj = child.lock();
 		if (childObj == nullptr)continue;
-		Draw(_dc,childObj.get(), _object->GetDrawTransform().GetLeftHandMatrix());
+		Draw(_dc,childObj.get());
 	}
 
 }
 
 void BaseDrawMesh::DrawMain(
 	ID3D11DeviceContext* _dc,
-	ChCpp::FrameObject* _object,
-	const ChLMat _parentFrameMat)
+	ChCpp::FrameObject* _object)
 {
 
-	unsigned int offsets = 0;
+	auto drawMatrix = _object->GetDrawLHandMatrix();
 
-	auto baseFrame = _object->GetComponent<FrameComponent>();
-
-	if (baseFrame == nullptr)return;
-
-	if (baseFrame->primitives.empty())return;
-
-	auto frameCom = _object->GetComponent<FrameComponent11>();
+	auto&& frameCom = _object->GetComponent<FrameComponent11>();
 
 	if (frameCom == nullptr)return;
 
@@ -150,40 +159,36 @@ void BaseDrawMesh::DrawMain(
 
 	if (primitives.empty())return;
 
-	polyData.SetFrameMatrix(_object->GetDrawTransform().GetLeftHandMatrix());
+	auto&& materialList = frameCom->GetMaterialList();
+
+	if (materialList.empty())return;
+
+	unsigned int offsets = 0;
+
+	polyData.SetFrameMatrix(drawMatrix);
 
 	for (auto&& prim : primitives)
 	{
 		if (prim == nullptr)continue;
 
+		auto&& mate11 = *materialList[prim->mateNo];
+
+		polyData.SetMateDiffuse(mate11.mate.diffuse);
+		polyData.SetMateSpecularColor(mate11.mate.specularColor);
+		polyData.SetMateSpecularPower(mate11.mate.specularPower);
+		polyData.SetMateAmbientColor(mate11.mate.ambient);
+
+		polyData.SetBaseTexture(prim->textures[Ch3D::TextureType::Diffuse].get());
+		polyData.SetNormalTexture(prim->textures[Ch3D::TextureType::Normal].get());
+
 		prim->vertexBuffer.SetVertexBuffer(_dc, offsets);
 		prim->indexBuffer.SetIndexBuffer(_dc);
 
-		auto&& mate11 = baseFrame->materialList[prim->mateNo];
-
-		ChP_Material mate;
-		mate.dif = mate11->mate.diffuse;
-		mate.speCol = mate11->mate.specularColor;
-		mate.spePow = mate11->mate.specularPower;
-		mate.ambient = mate11->mate.ambient;
-
-		polyData.SetMaterialData(mate);
-
-		{
-			Texture11* diffuseMap = prim->textures[Ch3D::TextureType::Diffuse].get();
-			polyData.SetBaseTexture(diffuseMap);
-		}
-
-		{
-			Texture11* normalMap = prim->textures[Ch3D::TextureType::Normal].get();
-			polyData.SetNormalTexture(normalMap);
-		}
+		polyData.SetShaderMaterialData(_dc);
 
 		polyData.SetShaderTexture(_dc);
 
 		_dc->DrawIndexed(prim->indexArray.size(), 0, 0);
-
-		_dc->Flush();
 
 	}
 

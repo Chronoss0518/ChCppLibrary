@@ -71,13 +71,11 @@ namespace ChD3D11
 
 			void Draw(
 				ID3D11DeviceContext* _dc,
-				ChCpp::FrameObject* _object,
-				const ChLMat _parentFrameMat = ChLMat());
+				ChCpp::FrameObject* _object);
 
 			void DrawMain(
 				ID3D11DeviceContext* _dc,
-				ChCpp::FrameObject* _object,
-				const ChLMat _parentFrameMat = ChLMat());
+				ChCpp::FrameObject* _object);
 
 			void Update();
 

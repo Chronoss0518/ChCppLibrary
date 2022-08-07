@@ -27,7 +27,7 @@ namespace ChD3D11
 		std::vector<unsigned long> indexArray;
 
 		//unsigned long startNum = 0;
-		unsigned char mateNo = 0;
+		unsigned long mateNo = 0;
 		ChLMat drawMat;
 
 		std::map<Ch3D::TextureType, ChPtr::Shared<Texture11>>textures;
@@ -40,8 +40,6 @@ namespace ChD3D11
 		//子オブジェクトすべてを作成する。//
 		void CreateAll(ID3D11Device* _device);
 
-		void UpdateDrawMatrix();
-
 		void SetPrimitives(ChPtr::Shared<DrawPrimitiveData11> _primitive)
 		{
 			primitives.push_back(_primitive);
@@ -53,9 +51,9 @@ namespace ChD3D11
 		}
 
 		ChCpp::FrameComponent* GetFrameCom() { return frameCom; }
-
+		std::vector<ChPtr::Shared<Ch3D::MaterialData>>& GetMaterialList() { return mateList; }
 	private:
-
+		std::vector<ChPtr::Shared<Ch3D::MaterialData>> mateList;
 		ChCpp::FrameComponent* frameCom = nullptr;
 		std::vector<ChPtr::Shared<DrawPrimitiveData11>>primitives;
 

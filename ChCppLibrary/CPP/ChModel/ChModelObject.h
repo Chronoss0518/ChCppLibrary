@@ -18,7 +18,7 @@ namespace ChCpp
 		Ch3D::Transform transform;
 	};
 
-	struct FrameComponent:public ChCpp::BaseUniqueComponent
+	struct FrameComponent:public ChCpp::BaseComponent
 	{
 		std::vector<ChPtr::Shared<Ch3D::Primitive>> primitives;
 		std::vector<ChPtr::Shared<Ch3D::MaterialData>>materialList;
@@ -26,13 +26,13 @@ namespace ChCpp
 		std::map<std::string, unsigned long>mateNames;
 	};
 
-	struct BoneComponent :public ChCpp::BaseUniqueComponent
+	struct BoneComponent :public ChCpp::BaseComponent
 	{
 		Ch3D::BoneData boneDatas;
 		BoneObject* boneObject = nullptr;
 	};
 
-	struct AnimationComponent:public ChCpp::BaseUniqueComponent
+	struct AnimationComponent:public ChCpp::BaseComponent
 	{
 		struct AnimationObject
 		{
@@ -72,10 +72,14 @@ namespace ChCpp
 
 	public://Get Functions//
 
-		inline Ch3D::Transform GetDrawTransform() 
+		inline ChLMat GetDrawTransform()
 		{
-			return drawTrans;
+			return drawMat;
 		};
+
+		ChLMat GetDrawLHandMatrix();
+
+		ChRMat GetDrawRHandMatrix();
 
 	public://Update Functions//
 
@@ -87,17 +91,15 @@ namespace ChCpp
 
 	public://Is Function//
 
-		ChStd::Bool IsMesh();
-
 	protected:
 
-		Ch3D::Transform frameTrans;
-		Ch3D::Transform outSideTrans;
-		Ch3D::Transform animationTrans;
+		ChLMat frameMat;
+		ChLMat outSideMat;
+		ChLMat animationMat;
 
 	private:
 
-		Ch3D::Transform drawTrans;
+		ChLMat drawMat;
 		std::string animationName = "";
 
 	};

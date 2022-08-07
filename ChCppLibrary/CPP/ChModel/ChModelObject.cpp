@@ -10,61 +10,54 @@ using namespace ChCpp;
 
 void FrameObject::SetAnimationTransform(const Ch3D::Transform& _trans)
 {
-	animationTrans = _trans;
+	animationMat.SetPosition(_trans.pos);
+	animationMat.SetRotation(_trans.rot);
+	animationMat.SetScalling(_trans.scl);
 }
 
 void FrameObject::SetAnimationTransform(const ChLMat& _mat)
 {
-	animationTrans.pos = _mat.GetPosition();
-	animationTrans.rot = _mat.GetRotation();
-	animationTrans.scl = _mat.GetScalling();
+	animationMat = _mat;
 }
 
 void FrameObject::SetAnimationTransform(const ChRMat& _mat)
 {
 
-	animationTrans.pos = _mat.GetPosition();
-	animationTrans.rot = _mat.GetRotation();
-	animationTrans.scl = _mat.GetScalling();
+	animationMat = _mat.ConvertAxis();
 }
 
 void FrameObject::SetOutSizdTransform(const Ch3D::Transform& _trans)
 {
-	outSideTrans = _trans;
+	outSideMat.SetPosition(_trans.pos);
+	outSideMat.SetRotation(_trans.rot);
+	outSideMat.SetScalling(_trans.scl);
 }
 
 void FrameObject::SetOutSizdTransform(const ChLMat& _mat)
 {
-	outSideTrans.pos = _mat.GetPosition();
-	outSideTrans.rot = _mat.GetRotation();
-	outSideTrans.scl = _mat.GetScalling();
+	outSideMat = _mat;
 }
 
 void FrameObject::SetOutSizdTransform(const ChRMat& _mat)
 {
-
-	outSideTrans.pos = _mat.GetPosition();
-	outSideTrans.rot = _mat.GetRotation();
-	outSideTrans.scl = _mat.GetScalling();
+	outSideMat = _mat.ConvertAxis();
 }
 
 void FrameObject::SetFrameTransform(const Ch3D::Transform& _trans)
 {
-	frameTrans = _trans;
+	frameMat.SetPosition(_trans.pos);
+	frameMat.SetRotation(_trans.rot);
+	frameMat.SetScalling(_trans.scl);
 }
 
 void FrameObject::SetFrameTransform(const ChLMat& _mat)
 {
-	frameTrans.pos = _mat.GetPosition();
-	frameTrans.rot = _mat.GetRotation();
-	frameTrans.scl = _mat.GetScalling();
+	frameMat = _mat;
 }
 
 void FrameObject::SetFrameTransform(const ChRMat& _mat)
 {
-	frameTrans.pos = _mat.GetPosition();
-	frameTrans.rot = _mat.GetRotation();
-	frameTrans.scl = _mat.GetScalling();
+	frameMat = _mat.ConvertAxis();
 }
 
 void FrameObject::Update()
@@ -72,45 +65,60 @@ void FrameObject::Update()
 	UpdateDrawTransform();
 }
 
-void FrameObject::UpdateDrawTransform()
+ChLMat FrameObject::GetDrawLHandMatrix()
 {
-	Ch3D::Transform parentTransform;
 
-	auto w_parent = GetParent();
+	ChLMat parentDrawMat;
 
-	if (!w_parent.expired())
 	{
-		auto parent = ChPtr::SharedSafeCast<FrameObject>(w_parent.lock());
+		auto parent = ChPtr::SharedSafeCast<FrameObject>(GetParent().lock());
 
 		if (parent != nullptr)
 		{
-			parentTransform = parent->drawTrans;
+			parentDrawMat = parent->drawMat;
 		}
 
 	}
 
-	auto parentDrawMat = parentTransform.GetLeftHandMatrix();
+	drawMat = outSideMat * animationMat * frameMat * parentDrawMat;
 
-	auto frameMat = frameTrans.GetLeftHandMatrix();
-
-	auto aniMat = animationTrans.GetLeftHandMatrix();
-
-	auto tmpMat = parentDrawMat * aniMat * frameMat;
-
-	drawTrans.pos = tmpMat.GetPosition();
-	drawTrans.rot = tmpMat.GetRotation();
-	drawTrans.scl = tmpMat.GetScalling();
+	return drawMat;
 }
 
-ChStd::Bool FrameObject::IsMesh()
+ChRMat FrameObject::GetDrawRHandMatrix()
 {
-	auto frame = GetComponent<FrameComponent>();
+	ChLMat parentDrawMat;
 
-	if (frame == nullptr)return false;
+	{
+		auto parent = ChPtr::SharedSafeCast<FrameObject>(GetParent().lock());
 
-	if (frame->vertexList.empty())return false;
+		if (parent != nullptr)
+		{
+			parentDrawMat = parent->drawMat;
+		}
 
-	return true;
+	}
+
+	drawMat = outSideMat * animationMat * frameMat * parentDrawMat;
+
+	return drawMat.ConvertAxis();
+}
+
+void FrameObject::UpdateDrawTransform()
+{
+	ChLMat parentDrawMat;
+
+	{
+		auto parent = ChPtr::SharedSafeCast<FrameObject>(GetParent().lock());
+
+		if (parent != nullptr)
+		{
+			parentDrawMat = parent->drawMat;
+		}
+
+	}
+
+	drawMat = outSideMat * animationMat * frameMat * parentDrawMat;
 }
 
 void ModelObject::AddAnimationName(const std::string& _name)

@@ -24,11 +24,15 @@ void FrameComponent11::CreateAll(ID3D11Device* _device)
 	if (frameBase != nullptr)
 	{
 		frameCom = frameBase.get();
+		mateList = frameBase->materialList;
+
 		for (auto&& primitive : frameBase->primitives)
 		{
 			auto&& primitive11 = ChPtr::Make_S<DrawPrimitiveData11>();
 
 			std::vector<unsigned long>indexs;
+
+			unsigned long indexCount = 0;
 
 			for (auto&& vertex : primitive->vertexData)
 			{
@@ -36,7 +40,7 @@ void FrameComponent11::CreateAll(ID3D11Device* _device)
 
 				auto tmpVertex = frameBase->vertexList[vertexNo];
 
-				indexs.push_back(vertexNo);
+				indexs.push_back(indexCount);
 
 				Ch3D::MeshVertex mVertex;
 				Ch3D::SetPosition(&mVertex, tmpVertex->pos);
@@ -46,6 +50,8 @@ void FrameComponent11::CreateAll(ID3D11Device* _device)
 				Ch3D::SetFaceNormal(&mVertex, primitive->faceNormal);
 
 				primitive11->vertexArray.push_back(mVertex);
+
+				indexCount++;
 			}
 
 			bool lRotFlg = true;
@@ -85,7 +91,7 @@ void FrameComponent11::CreateAll(ID3D11Device* _device)
 
 			auto&& material = frameBase->materialList[primitive11->mateNo];
 
-			for (unsigned long i = 0; i < ChStd::EnumCast(Ch3D::TextureType::None); i++)
+			for (unsigned char i = 0; i < ChStd::EnumCast(Ch3D::TextureType::None); i++)
 			{
 				Ch3D::TextureType type = static_cast<Ch3D::TextureType>(i);
 
@@ -108,18 +114,13 @@ void FrameComponent11::CreateAll(ID3D11Device* _device)
 
 	for (auto&& wObj : LookObj<FrameObject>()->GetChildlen())
 	{
-		if (wObj.expired())return;
+		if (wObj.expired())continue;
 		auto child = wObj.lock();
 
-		auto com = child->SetComponent<FrameComponent11>();
+		auto&& com = child->SetComponent<FrameComponent11>();
 
 		com->CreateAll(_device);
 	}
-
-}
-
-void FrameComponent11::UpdateDrawMatrix()
-{
 
 }
 
@@ -159,7 +160,6 @@ void Mesh11::Release()
 void Mesh11::Create()
 {
 	if (!IsInit())return;
-	if (IsMesh())return;
 
 	CreateFrames();
 
