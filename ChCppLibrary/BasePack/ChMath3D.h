@@ -955,7 +955,7 @@ struct ChRMatrix : public ChMath::BaseMatrix4x4<float>
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	ChLMatrix ConvertAxis();
+	ChLMatrix ConvertAxis()const;
 
 };
 

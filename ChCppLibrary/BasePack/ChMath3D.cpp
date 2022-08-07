@@ -1589,7 +1589,7 @@ ChVec4 ChRMatrix::TransformCoord(const ChVec4 _Base)const
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChLMatrix ChRMatrix::ConvertAxis()
+ChLMatrix ChRMatrix::ConvertAxis()const
 {
 	ChLMatrix tmp;
 
