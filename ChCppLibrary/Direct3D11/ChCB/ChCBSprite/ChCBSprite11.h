@@ -26,7 +26,7 @@ namespace ChD3D11
 
 			void SetBaseColor(const ChVec4& _color);
 
-			inline void SetBaseTexture(ChPtr::Weak<TextureBase11> _tex)
+			inline void SetBaseTexture(TextureBase11* _tex)
 			{
 				baseTex = _tex;
 			}
@@ -54,13 +54,11 @@ namespace ChD3D11
 
 			void UpdateSD(ID3D11DeviceContext* _dc);
 
-			void SetShaderTexture(ID3D11DeviceContext* _dc, ChPtr::Weak<TextureBase11> _tex, TextureBase11& _defaultTex, const unsigned long _registerNo);
-
 			ChS_SpriteData spData;
 			ConstantBuffer11<ChS_SpriteData> spBuf;
 			ChStd::Bool sUpdateFlg = true;
 
-			ChPtr::Weak<TextureBase11>baseTex;
+			TextureBase11*baseTex = nullptr;
 		};
 
 	}

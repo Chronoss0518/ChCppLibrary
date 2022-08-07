@@ -87,13 +87,15 @@ namespace ChD3D11
 
 			inline ChLMat GetWorldMatrix() { return charaData.worldMat; }
 
-		private:
+		public://Update Function//
 
 			void UpdateDD(ID3D11DeviceContext* _dc);
 
 			void UpdateCD(ID3D11DeviceContext* _dc);
 
 			void UpdateMD(ID3D11DeviceContext* _dc);
+
+		private:
 
 			ChP_DrawData drawData;
 			ConstantBuffer11<ChP_DrawData> drawBuf;
@@ -105,8 +107,8 @@ namespace ChD3D11
 			ConstantBuffer11<ChP_Material> mateBuf;
 			ChStd::Bool mUpdateFlg = true;
 
-			TextureBase11* baseTex;
-			TextureBase11* normalTex;
+			TextureBase11* baseTex = nullptr;
+			TextureBase11* normalTex = nullptr;
 
 		};
 
