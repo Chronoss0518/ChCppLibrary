@@ -282,7 +282,6 @@ void ShaderController11::Draw(
 
 	if (!*this)return;
 	if (!drawFlg)return;
-	if (!_mesh.IsMesh())return;
 
 	if (!rtDrawFlg)
 	{
@@ -316,7 +315,6 @@ void ShaderController11::Draw(
 
 	if (!*this)return;
 	if (!drawFlg)return;
-	if (!_mesh.IsMesh())return;
 	if (!_userVS.IsInit())return;
 	if (!_userPS.IsInit())return;
 
@@ -358,7 +356,6 @@ void ShaderController11::DrawOutLine(
 	if (!*this)return;
 	if (_Size < 0.0f)return;
 	if (!drawFlg)return;
-	if (_Mesh.IsMesh())return;
 
 	if (!rtDrawFlg)
 	{
@@ -411,7 +408,6 @@ void ShaderController11::Draw(
 
 	_polygon.SetDrawData(dc);
 
-	dc->Flush();
 }
 
 void ShaderController11::Draw(
