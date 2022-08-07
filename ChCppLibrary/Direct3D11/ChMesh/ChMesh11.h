@@ -33,7 +33,7 @@ namespace ChD3D11
 		std::map<Ch3D::TextureType, ChPtr::Shared<Texture11>>textures;
 	};
 
-	class FrameComponent11 :public ChCpp::BaseUniqueComponent
+	class FrameComponent11 :public ChCpp::BaseComponent
 	{
 	public:
 
@@ -52,8 +52,11 @@ namespace ChD3D11
 			return primitives;
 		}
 
+		ChCpp::FrameComponent* GetFrameCom() { return frameCom; }
+
 	private:
 
+		ChCpp::FrameComponent* frameCom = nullptr;
 		std::vector<ChPtr::Shared<DrawPrimitiveData11>>primitives;
 
 	};

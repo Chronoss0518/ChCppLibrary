@@ -23,10 +23,10 @@ void FrameComponent11::CreateAll(ID3D11Device* _device)
 
 	if (frameBase != nullptr)
 	{
-
+		frameCom = frameBase.get();
 		for (auto&& primitive : frameBase->primitives)
 		{
-			auto&& primitive11 = ChPtr::Make_S< DrawPrimitiveData11>();
+			auto&& primitive11 = ChPtr::Make_S<DrawPrimitiveData11>();
 
 			std::vector<unsigned long>indexs;
 
