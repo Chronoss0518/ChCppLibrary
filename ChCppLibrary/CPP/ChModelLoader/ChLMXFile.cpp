@@ -692,8 +692,9 @@ void XFile::XFrameToChFrame(
 	, const ChPtr::Shared<XFileModelFrame::XFrame>& _xFrame)
 {
 
-	_chFrame->SetFrameTransform(_xFrame->frameMatrix);
 	_chFrame->SetMyName(_xFrame->fName);
+
+	_chFrame->SetFrameTransform(_xFrame->frameMatrix);
 
 	for (auto&& frame : _xFrame->next)
 	{
@@ -705,11 +706,11 @@ void XFile::XFrameToChFrame(
 
 	}
 
+	if (_xFrame->mesh == nullptr)return;
+
 	std::map<unsigned long, unsigned long>summarizeVertex;
 
 	auto mesh = _chFrame->SetComponent<FrameComponent>();
-
-	if (_xFrame->mesh == nullptr)return;
 
 	auto& chVertexList = mesh->vertexList;
 	//SetVertexList//
