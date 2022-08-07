@@ -339,7 +339,7 @@ void Texture11::CreateColorTexture(
 
 void Texture11::CreateWhiteTex(ID3D11Device* _device)
 {
-	auto white = GetWhiteTex();
+	auto&& white = GetWhiteTex();
 
 	if (white.IsTex())return;
 
@@ -360,7 +360,7 @@ void Texture11::CreateWhiteTex(ID3D11Device* _device)
 
 void Texture11::CreateNormalTex(ID3D11Device* _device)
 {
-	auto normal = GetNormalTex();
+	auto&& normal = GetNormalTex();
 
 	if (normal.IsTex())return;
 
