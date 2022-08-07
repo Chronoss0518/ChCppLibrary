@@ -46,13 +46,20 @@ void BaseDrawSprite::Draw(
 
 	SetShaderRasteriser(_dc);
 
-	Update();
+	//Update();
 
 	spriteData.SetSpriteMatrix(_mat);
 
+	spriteData.SetBaseColor(ChVec4(1.0f));
+
 	spriteData.SetShaderSpriteData(_dc);
 
-	_tex.SetDrawData(_dc,);
+	spriteData.SetBaseTexture(&_tex);
+
+	spriteData.SetShaderTexture(_dc);
+
+	_sprite.SetDrawData(_dc);
+
 }
 
 void BaseDrawSprite::Update()
