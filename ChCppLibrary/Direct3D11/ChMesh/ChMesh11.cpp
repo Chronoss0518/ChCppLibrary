@@ -134,7 +134,7 @@ void Mesh11::Init(ID3D11Device* _device)
 	Texture11::CreateWhiteTex(_device);
 	Texture11::CreateNormalTex(_device);
 
-	SetInitFlg(true);
+	ModelObject::Init();
 
 }
 
@@ -152,7 +152,7 @@ void Mesh11::Init()
 
 void Mesh11::Release()
 {
-	SetInitFlg(false);
+	ModelObject::Release();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -169,6 +169,10 @@ void Mesh11::Create()
 
 void Mesh11::CreateFrames()
 {
+
+	auto fCom11 = GetComponent<FrameComponent11>();
+
+	if (fCom11 != nullptr)return;
 
 	auto frame = SetComponent<FrameComponent11>();
 

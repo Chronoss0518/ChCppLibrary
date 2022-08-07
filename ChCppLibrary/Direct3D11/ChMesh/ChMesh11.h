@@ -59,7 +59,7 @@ namespace ChD3D11
 
 	};
 
-	class Mesh11:public ChCpp::ModelObject,public ChCp::Initializer
+	class Mesh11:public ChCpp::ModelObject
 	{
 	public:
 
@@ -68,14 +68,14 @@ namespace ChD3D11
 
 		void Init(ID3D11Device* _device);
 
-		void Init();
+		void Init()override;
 
-		void Release();
+		void Release()override;
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//Creater//
 
-		void Create();
+		void Create()override;
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
