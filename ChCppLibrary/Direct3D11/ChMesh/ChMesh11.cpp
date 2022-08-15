@@ -112,10 +112,11 @@ void FrameComponent11::CreateAll(ID3D11Device* _device)
 
 	}
 
-	for (auto&& wObj : LookObj<FrameObject>()->GetChildlen())
+	for (auto&& cbildObj : LookObj()->GetChildlen())
 	{
-		if (wObj.expired())continue;
-		auto child = wObj.lock();
+		auto child = ChPtr::SharedSafeCast<FrameObject>(cbildObj);
+
+		if (child == nullptr)continue;
 
 		auto&& com = child->SetComponent<FrameComponent11>();
 

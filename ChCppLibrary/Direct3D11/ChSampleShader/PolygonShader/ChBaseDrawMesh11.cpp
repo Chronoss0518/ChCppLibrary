@@ -98,21 +98,20 @@ void BaseDrawMesh::Draw(
 	const ChMat_11& _mat)
 {
 	//if (!_mesh.IsMesh())return;
-
 	SetShaderRasteriser(_dc);
 
 	polyData.SetWorldMatrix(_mat);
 
 	polyData.UpdateCD(_dc);
 
-	polyData.SetShaderCharaData(_dc);
+	PVWMat = polyData.GetProjectionMatrix() * polyData.GetViewMatrix() * _mat;
 
-	Draw(_dc, &_mesh);
+	DrawUpdate(_dc, _mesh);
 }
 
-void BaseDrawMesh::Draw(
+void BaseDrawMesh::DrawUpdate(
 	ID3D11DeviceContext* _dc,
-	FrameObject* _object)
+	FrameObject& _object)
 {
 #if DEBUG
 	unsigned long start, end;
@@ -133,25 +132,25 @@ void BaseDrawMesh::Draw(
 	OutputDebugString(">\n");
 	OutputDebugString(">\n");
 #endif
-	auto&& childlen = _object->GetChildlen<FrameObject>();
+	auto&& childlen = _object.GetChildlen();
 
 	for (auto&& child : childlen)
 	{
-		auto childObj = child.lock();
+		auto&& childObj = ChPtr::SharedSafeCast<FrameObject>(child);
 		if (childObj == nullptr)continue;
-		Draw(_dc,childObj.get());
+		DrawUpdate(_dc,*childObj);
 	}
 
 }
 
 void BaseDrawMesh::DrawMain(
 	ID3D11DeviceContext* _dc,
-	ChCpp::FrameObject* _object)
+	ChCpp::FrameObject& _object)
 {
 
-	auto drawMatrix = _object->GetDrawLHandMatrix();
+	auto drawMatrix = _object.GetDrawLHandMatrix();
 
-	auto&& frameCom = _object->GetComponent<FrameComponent11>();
+	auto&& frameCom = _object.GetComponent<FrameComponent11>();
 
 	if (frameCom == nullptr)return;
 
@@ -167,26 +166,35 @@ void BaseDrawMesh::DrawMain(
 
 	polyData.SetFrameMatrix(drawMatrix);
 
+	polyData.SetVSCharaData(_dc);
+
+	unsigned long nowSetMateNo = -1;
+
 	for (auto&& prim : primitives)
 	{
 		if (prim == nullptr)continue;
 
-		auto&& mate11 = *materialList[prim->mateNo];
+		if (nowSetMateNo != prim->mateNo)
+		{
+			nowSetMateNo = prim->mateNo;
+			auto&& mate11 = *materialList[nowSetMateNo];
 
-		polyData.SetMateDiffuse(mate11.mate.diffuse);
-		polyData.SetMateSpecularColor(mate11.mate.specularColor);
-		polyData.SetMateSpecularPower(mate11.mate.specularPower);
-		polyData.SetMateAmbientColor(mate11.mate.ambient);
+			polyData.SetMateDiffuse(mate11.mate.diffuse);
+			polyData.SetMateSpecularColor(mate11.mate.specularColor);
+			polyData.SetMateSpecularPower(mate11.mate.specularPower);
+			polyData.SetMateAmbientColor(mate11.mate.ambient);
+
+			polyData.SetShaderMaterialData(_dc);
+
+		}
 
 		polyData.SetBaseTexture(prim->textures[Ch3D::TextureType::Diffuse].get());
 		polyData.SetNormalTexture(prim->textures[Ch3D::TextureType::Normal].get());
 
+		polyData.SetShaderTexture(_dc);
+
 		prim->vertexBuffer.SetVertexBuffer(_dc, offsets);
 		prim->indexBuffer.SetIndexBuffer(_dc);
-
-		polyData.SetShaderMaterialData(_dc);
-
-		polyData.SetShaderTexture(_dc);
 
 		_dc->DrawIndexed(prim->indexArray.size(), 0, 0);
 
