@@ -99,6 +99,11 @@ namespace ChCpp
 			return tmpComList;
 		}
 
+		inline std::vector<ChPtr::Shared<BaseObject>>&GetChildlen()
+		{
+			return childList;
+		}
+
 		//子オブジェクト群の取得//
 		template<class T = BaseObject>
 		inline std::vector<ChPtr::Weak<
