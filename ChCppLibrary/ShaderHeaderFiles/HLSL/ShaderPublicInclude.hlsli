@@ -19,6 +19,10 @@
 #define row_major
 #endif
 
+#ifndef uniform
+#define uniform
+#endif
+
 #ifndef column_major
 #define column_major
 #endif
