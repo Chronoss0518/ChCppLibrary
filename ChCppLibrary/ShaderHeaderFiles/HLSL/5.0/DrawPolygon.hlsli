@@ -35,9 +35,9 @@ cbuffer DrawData : register(b[DRAW_DATA_REGISTERNO])
 struct ChP_DrawData
 #endif
 {
-	row_major float4x4 viewMat;
+	uniform row_major float4x4 viewMat;
 
-	row_major float4x4 proMat;
+	uniform row_major float4x4 proMat;
 };
 
 
@@ -51,7 +51,9 @@ cbuffer CharaData : register(b[CHARACTOR_POSITION_REGISTERNO])
 struct ChP_CharaData
 #endif
 {
-	row_major float4x4 worldMat;
+	uniform row_major float4x4 worldMat;
+
+	row_major float4x4 frameMatrix;
 };
 
 struct ChP_Material
@@ -64,8 +66,6 @@ struct ChP_Material
 	float spePow;
 	//ambient//
 	float4 ambient;
-
-	row_major float4x4 frameMatrix;
 };
 
 #ifdef __SHADER__
@@ -75,7 +75,7 @@ cbuffer Material :register(CHANGE_CBUFFER_5(MATERIAL_DATA_REGISTERNO))
 cbuffer Material : register(b[MATERIAL_DATA_REGISTERNO])
 #endif
 {
-	ChP_Material mate;
+	uniform ChP_Material mate;
 };
 #endif
 
@@ -136,7 +136,7 @@ MTWStruct ModelToWorld(
 {
 	MTWStruct res;
 
-	float4x4 tmpMat = mul(mate.frameMatrix, worldMat);
+	float4x4 tmpMat = mul(frameMatrix, worldMat);
 
 	res.worldPos = mul(_pos, tmpMat);
 
@@ -146,10 +146,8 @@ MTWStruct ModelToWorld(
 
 	res.uv = _uv;
 
-	float3x3 rotMat = (float3x3)tmpMat;
-
-	res.vertexNormal = normalize(mul(_normal, rotMat));
-	res.faceNormal = normalize(mul(_faceNormal, rotMat));
+	res.vertexNormal = normalize(mul(_normal, (float3x3)tmpMat));
+	res.faceNormal = normalize(mul(_faceNormal, (float3x3)tmpMat));
 
 	return res;
 }
@@ -160,9 +158,14 @@ void FrustumCulling(float4 _pos)
 	float y = _pos.y / _pos.w;
 	float z = _pos.z / _pos.w;
 
-	clip(x >= -1.0f && x <= 1.0f ? 1.0f : -1.0f);
-	clip(y >= -1.0f && y <= 1.0f ? 1.0f : -1.0f);
-	clip(z >= 0.0f && z <= 1.0f ? 1.0f : -1.0f);
+
+	clip((x < -1.0f || x > 1.0f) || 
+		(y < -1.0f || y > 1.0f) || 
+		(z < 0.0f || z > 1.0f) 
+		? -1.0f : 1.0f);
+	//clip(x >= -1.0f && x <= 1.0f ? 1.0f : -1.0f);
+	//clip(y >= -1.0f && y <= 1.0f ? 1.0f : -1.0f);
+	//clip(z >= 0.0f && z <= 1.0f ? 1.0f : -1.0f);
 }
 
 

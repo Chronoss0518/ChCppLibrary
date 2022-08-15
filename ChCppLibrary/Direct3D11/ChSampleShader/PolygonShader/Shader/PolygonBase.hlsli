@@ -10,9 +10,9 @@ struct VS_OUT
 	float4 color		:COLOR0;
 	float4 worldPos		:TEXCOORD1;
 	float4 viewPos		:TEXCOORD2;
-	float4 proPos		:TEXCOORD3;
+	float4 proPos		:POSITIONT;
 	float2 uv			:TEXCOORD0;
-	float temperature	:TEXCOORD4;
+	float temperature	:TEXCOORD3;
 };
 
 #endif

@@ -19,7 +19,7 @@
 //
 // Name                                 Type  Format         Dim      HLSL Bind  Count
 // ------------------------------ ---------- ------- ----------- -------------- ------
-// SpriteData                        cbuffer      NA          NA            cb1      1 
+// SpriteData                        cbuffer      NA          NA            cb0      1 
 //
 //
 //
@@ -42,7 +42,7 @@
 //
 vs_5_0
 dcl_globalFlags refactoringAllowed
-dcl_constantbuffer CB1[4], immediateIndexed
+dcl_constantbuffer CB0[4], immediateIndexed
 dcl_input v0.xyzw
 dcl_input v1.xy
 dcl_input v2.xyzw
@@ -50,10 +50,10 @@ dcl_output_siv o0.xyzw, position
 dcl_output o1.xyzw
 dcl_output o2.xy
 dcl_temps 1
-mul r0.xyzw, v0.yyyy, cb1[1].xyzw
-mad r0.xyzw, v0.xxxx, cb1[0].xyzw, r0.xyzw
-mad r0.xyzw, v0.zzzz, cb1[2].xyzw, r0.xyzw
-mad o0.xyzw, v0.wwww, cb1[3].xyzw, r0.xyzw
+mul r0.xyzw, v0.yyyy, cb0[1].xyzw
+mad r0.xyzw, v0.xxxx, cb0[0].xyzw, r0.xyzw
+mad r0.xyzw, v0.zzzz, cb0[2].xyzw, r0.xyzw
+mad o0.xyzw, v0.wwww, cb0[3].xyzw, r0.xyzw
 mov o1.xyzw, v2.xyzw
 mov o2.xy, v1.xyxx
 ret 
@@ -62,10 +62,10 @@ ret
 
 const BYTE main[] =
 {
-     68,  88,  66,  67, 126,  62, 
-     80, 194,  38, 172, 199, 217, 
-     25, 180,  39, 168,  89,  56, 
-    202, 122,   1,   0,   0,   0, 
+     68,  88,  66,  67, 113,  71, 
+    154, 188,  41, 251, 154, 146, 
+    244,  70, 238,  73,  92,  88, 
+    204,   7,   1,   0,   0,   0, 
     112,   4,   0,   0,   5,   0, 
       0,   0,  52,   0,   0,   0, 
     180,   1,   0,   0,  36,   2, 
@@ -85,7 +85,7 @@ const BYTE main[] =
      92,   0,   0,   0,   0,   0, 
       0,   0,   0,   0,   0,   0, 
       0,   0,   0,   0,   0,   0, 
-      0,   0,   1,   0,   0,   0, 
+      0,   0,   0,   0,   0,   0, 
       1,   0,   0,   0,   1,   0, 
       0,   0,  83, 112, 114, 105, 
     116, 101,  68,  97, 116,  97, 
@@ -177,7 +177,7 @@ const BYTE main[] =
      80,   0,   1,   0,  77,   0, 
       0,   0, 106,   8,   0,   1, 
      89,   0,   0,   4,  70, 142, 
-     32,   0,   1,   0,   0,   0, 
+     32,   0,   0,   0,   0,   0, 
       4,   0,   0,   0,  95,   0, 
       0,   3, 242,  16,  16,   0, 
       0,   0,   0,   0,  95,   0, 
@@ -196,26 +196,26 @@ const BYTE main[] =
       0,   8, 242,   0,  16,   0, 
       0,   0,   0,   0,  86,  21, 
      16,   0,   0,   0,   0,   0, 
-     70, 142,  32,   0,   1,   0, 
+     70, 142,  32,   0,   0,   0, 
       0,   0,   1,   0,   0,   0, 
      50,   0,   0,  10, 242,   0, 
      16,   0,   0,   0,   0,   0, 
       6,  16,  16,   0,   0,   0, 
       0,   0,  70, 142,  32,   0, 
-      1,   0,   0,   0,   0,   0, 
+      0,   0,   0,   0,   0,   0, 
       0,   0,  70,  14,  16,   0, 
       0,   0,   0,   0,  50,   0, 
       0,  10, 242,   0,  16,   0, 
       0,   0,   0,   0, 166,  26, 
      16,   0,   0,   0,   0,   0, 
-     70, 142,  32,   0,   1,   0, 
+     70, 142,  32,   0,   0,   0, 
       0,   0,   2,   0,   0,   0, 
      70,  14,  16,   0,   0,   0, 
       0,   0,  50,   0,   0,  10, 
     242,  32,  16,   0,   0,   0, 
       0,   0, 246,  31,  16,   0, 
       0,   0,   0,   0,  70, 142, 
-     32,   0,   1,   0,   0,   0, 
+     32,   0,   0,   0,   0,   0, 
       3,   0,   0,   0,  70,  14, 
      16,   0,   0,   0,   0,   0, 
      54,   0,   0,   5, 242,  32, 
