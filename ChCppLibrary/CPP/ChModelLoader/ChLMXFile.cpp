@@ -78,6 +78,7 @@ void XFile::CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& _f
 
 	XFrameToChFrame(_model, xModel->modelData);
 
+	_model->Create();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
