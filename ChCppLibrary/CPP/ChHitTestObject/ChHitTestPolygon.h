@@ -18,19 +18,19 @@ namespace ChCpp
 		//SetFunction//
 
 		inline void SetPolygon(const std::vector<ChPtr::Shared<HitTestVertexs>>& _poly) { polygonList = _poly; }
-		
-		inline void SetPolygon(const std::vector<ChPtr::Shared<Ch3D::Polygon>>& _polyList,const std::vector<ChPtr::Shared<Ch3D::Vertex>>& _vertexList) 
+#if 1
+		inline void SetPolygon(const std::vector<ChPtr::Shared<Ch3D::Primitive>>& _polyList,const std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>>& _vertexList)
 		{ 
 			for (auto&& poly : _polyList)
 			{
-				if (poly->vertexNo.size() <= 2)continue;
+				if (poly->vertexData.size() <= 2)continue;
 
-				for (unsigned long i = 1; i < poly->vertexNo.size() - 1; i++)
+				for (unsigned long i = 1; i < poly->vertexData.size() - 1; i++)
 				{
 					auto vertexs = ChPtr::Make_S<HitTestVertexs>();
-					vertexs->poss[0] = _vertexList[poly->vertexNo[0]]->pos;
-					vertexs->poss[1] = _vertexList[poly->vertexNo[i]]->pos;
-					vertexs->poss[2] = _vertexList[poly->vertexNo[i + 1]]->pos;
+					vertexs->poss[0] = _vertexList[poly->vertexData[0]->vertexNo]->pos;
+					vertexs->poss[1] = _vertexList[poly->vertexData[i]->vertexNo]->pos;
+					vertexs->poss[2] = _vertexList[poly->vertexData[i + 1]->vertexNo]->pos;
 
 					polygonList.push_back(vertexs);
 				}
@@ -38,6 +38,7 @@ namespace ChCpp
 
 			}
 		}
+#endif
 
 		inline void AddPolygon(const HitTestVertexs& _vertexs)
 		{

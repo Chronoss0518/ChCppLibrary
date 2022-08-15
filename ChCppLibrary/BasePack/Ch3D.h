@@ -100,6 +100,12 @@ namespace Ch3D
 		unsigned long boneNum = Num;
 	};
 
+	struct SavePolyVertex :
+		public Position,
+		public Color,
+		public Normal
+	{};
+
 	struct SavePolyData:public UV
 	{
 		unsigned long vertexNo;

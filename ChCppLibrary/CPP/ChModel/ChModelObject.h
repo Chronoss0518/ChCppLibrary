@@ -7,12 +7,6 @@
 namespace ChCpp
 {
 
-	struct SavePolyVertex :
-		public Ch3D::Position,
-		public Ch3D::Color,
-		public Ch3D::Normal
-	{};
-
 	struct BoneObject :public ChCpp::BaseObject
 	{
 		Ch3D::Transform transform;
@@ -22,7 +16,7 @@ namespace ChCpp
 	{
 		std::vector<ChPtr::Shared<Ch3D::Primitive>> primitives;
 		std::vector<ChPtr::Shared<Ch3D::MaterialData>>materialList;
-		std::vector<ChPtr::Shared<SavePolyVertex>> vertexList;
+		std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>> vertexList;
 		std::map<std::string, unsigned long>mateNames;
 	};
 
