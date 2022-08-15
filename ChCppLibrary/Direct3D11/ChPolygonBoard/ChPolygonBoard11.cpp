@@ -160,7 +160,6 @@ void PolygonBoard11::SetDrawData(ID3D11DeviceContext* _dc)
 
 		_dc->DrawIndexed(3, 0, 0);
 
-		_dc->Flush();
 	}
 
 }

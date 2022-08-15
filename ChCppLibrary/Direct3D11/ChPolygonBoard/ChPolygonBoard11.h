@@ -78,8 +78,8 @@ namespace ChD3D11
 			Ch3D::PolyVertex drawVertexs[3];
 			VertexBuffer11<Ch3D::PolyVertex> vertexBuffer;
 			IndexBuffer11 indexBuffer;
-			ShaderUseMaterial11 material;
-			ConstantBuffer11<ShaderUseMaterial11> materialBuffer;
+			Ch3D::Material material;
+			ConstantBuffer11<Ch3D::Material> materialBuffer;
 	};
 }
 
