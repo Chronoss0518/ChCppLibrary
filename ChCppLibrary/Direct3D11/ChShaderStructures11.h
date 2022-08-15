@@ -41,6 +41,7 @@ namespace ChD3D11
 		//モデル行列//
 		ChMat_11 modelMat;
 
+		ChMat_11 frameMatrix;
 	};
 
 	struct PolygonDatas
@@ -194,6 +195,31 @@ namespace ChD3D11
 
 			D3D11_SUBRESOURCE_DATA data = CreateSubresourceData(_indexBuffer);
 
+			format = DXGI_FORMAT_R32_UINT;
+
+			_device->CreateBuffer(&desc, &data, &buf);
+
+			Init();
+		}
+
+		//Createを呼ぶ前に必要な場合はフラグ関係を操作するメソッドを呼びます//
+		inline void CreateBuffer(
+			ID3D11Device* _device,
+			unsigned char* _indexBuffer,
+			const unsigned char _indexNum)
+		{
+			if (ChPtr::NullCheck(_device))return;
+
+			Release();
+
+			bindFlg = D3D11_BIND_INDEX_BUFFER;
+
+			D3D11_BUFFER_DESC desc = CreateBufferDesc<unsigned char>(_indexNum);
+
+			D3D11_SUBRESOURCE_DATA data = CreateSubresourceData(_indexBuffer);
+
+			format = DXGI_FORMAT_R8_UINT;
+
 			_device->CreateBuffer(&desc, &data, &buf);
 
 			Init();
@@ -207,8 +233,11 @@ namespace ChD3D11
 			if (!*this)return;
 			if (ChPtr::NullCheck(_dc))return;
 
-			_dc->IASetIndexBuffer(buf, DXGI_FORMAT_R32_UINT, 0);
+			_dc->IASetIndexBuffer(buf, format, 0);
 		}
+
+	private:
+		DXGI_FORMAT format = DXGI_FORMAT_R32_UINT;
 
 	};
 
