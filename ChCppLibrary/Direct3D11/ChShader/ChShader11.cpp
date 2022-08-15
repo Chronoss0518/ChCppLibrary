@@ -399,6 +399,8 @@ void ShaderController11::Draw(
 
 	bpModel.SetShader(dc);
 
+	cdObject.frameMatrix.Identity();
+
 	charaData.UpdateResouce(dc, &cdObject);
 
 	charaData.SetToVertexShader(dc, 1);
