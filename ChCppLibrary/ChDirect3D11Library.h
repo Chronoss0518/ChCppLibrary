@@ -24,7 +24,7 @@
 #include"Direct3D11/ChCB/ChCBSprite/ChCBSprite11.h"
 #include"Direct3D11/ChCB/ChCBLight/ChCBLight11.h"
 //サンプルシェーダー//
-
+#include"Direct3D11/ChSampleShader/PolygonShader/ChBaseDrawMesh11.h"
 
 //空間操作//
 #include"Direct3D11/ChCameraController/ChCameraController11.h"
