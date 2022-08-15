@@ -742,7 +742,7 @@ void XFile::XFrameToChFrame(
 
 			summarizeVertex[i] = chVertexList.size();
 
-			auto chVertex = ChPtr::Make_S<SavePolyVertex>();
+			auto chVertex = ChPtr::Make_S<Ch3D::SavePolyVertex>();
 
 			chVertex->pos = xVertexList[i]->pos;
 			chVertex->normal += xVertexList[i]->normal;
