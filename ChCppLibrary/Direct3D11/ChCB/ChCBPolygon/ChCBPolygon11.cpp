@@ -44,9 +44,9 @@ void CBPolygon11::Release()
 
 void CBPolygon11::SetFrameMatrix(const ChLMat& _mat)
 {
-	mateData.frameMatrix = _mat;
+	charaData.frameMatrix = _mat;
 
-	mUpdateFlg = true;
+	cUpdateFlg = true;
 }
 
 void CBPolygon11::SetWorldMatrix(const ChLMat& _mat)
