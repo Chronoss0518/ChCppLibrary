@@ -134,6 +134,7 @@ namespace Ch3D
 		Alpha,
 		Normal,
 		Metallic,
+		Other,
 		None
 	};
 
