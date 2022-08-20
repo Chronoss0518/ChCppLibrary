@@ -87,6 +87,8 @@ namespace ChD3D11
 
 			inline ChLMat GetWorldMatrix() { return charaData.worldMat; }
 
+			inline ChLMat GetFrameMatrix() { return charaData.frameMatrix; }
+
 		public://Update Function//
 
 			void UpdateDD(ID3D11DeviceContext* _dc);
