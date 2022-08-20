@@ -298,7 +298,7 @@ namespace ChD3D11
 		ChStd::Bool rtDrawFlg = false;
 
 		//カリングタイプ//
-		D3D11_CULL_MODE cull = D3D11_CULL_MODE::D3D11_CULL_NONE;
+		D3D11_CULL_MODE cull = D3D11_CULL_MODE::D3D11_CULL_BACK;
 
 		//面描画タイプ//
 		D3D11_FILL_MODE fill = D3D11_FILL_MODE::D3D11_FILL_SOLID;

@@ -156,18 +156,22 @@ void ShaderController11::SetRenderTarget(RenderTarget11& _tex)
 void ShaderController11::SetDrawDatas()
 {
 
-	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	dc->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	if (rasteriserUpdate)
 	{
-		if(ChPtr::NotNullCheck(rasteriser))rasteriser->Release();
+		if (ChPtr::NotNullCheck(rasteriser)) 
+		{
+			rasteriser->Release();
+			rasteriser = nullptr;
+		}
 
 		//•`‰æ•û–@//
 		D3D11_RASTERIZER_DESC RasteriserDesc
 		{
 			fill,
 			cull,
-			true,
+			false,
 			0,
 			0.0f,
 			0.0f,
