@@ -30,9 +30,19 @@ OutColor main(VS_OUT _in)
 {
 	//ÉJÉÅÉâÇÃëOï˚Ç…Ç†ÇÈÇ©ÇÃîªíË//
 	FrustumCulling(_in.proPos);
+	
 
 	OutColor outColor;
-	//outColor.color = float4(1.0f, 0.0f, 0.0f, 1.0f);
+	
+	outColor.color = float4(1.0f, 0.0f, 0.0f, 1.0f);
+	//outColor.color = _in.pos;
+	//outColor.color.z = 0.0f;
+	//outColor.color.x = _in.proPos.x / _in.proPos.w;
+	//outColor.color.y = _in.proPos.y / _in.proPos.w;
+	//outColor.color.z = _in.proPos.z / _in.proPos.w;
+	//outColor.color.r = outColor.depth;
+
+
 	outColor.color = _in.color;
 
 	outColor.color = mate.dif * baseTex.Sample(baseSmp, _in.uv) * outColor.color;
@@ -40,8 +50,7 @@ OutColor main(VS_OUT _in)
 	clip(outColor.color.a < 0.001f ? -1 : 1);
 
 	outColor.depth = outColor.color.a <= 0.99f ? 1.0f: (_in.proPos.z / _in.proPos.w);
-	//outColor.color.r = outColor.depth;
-
+	
 	L_BaseColor lightCol;
 	lightCol.color = outColor.color.rgb;
 	lightCol.wPos =_in.worldPos.xyz;

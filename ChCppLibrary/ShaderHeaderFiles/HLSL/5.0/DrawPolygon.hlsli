@@ -51,7 +51,7 @@ cbuffer CharaData : register(b[CHARACTOR_POSITION_REGISTERNO])
 struct ChP_CharaData
 #endif
 {
-	uniform row_major float4x4 worldMat;
+	row_major float4x4 worldMat;
 
 	row_major float4x4 frameMatrix;
 };
