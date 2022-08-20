@@ -1278,6 +1278,21 @@ namespace ChMath
 
 		unsigned long GetRow()const { return Row; }
 
+		bool IsValue(const MatrixBase& _mat)const
+		{
+			for (unsigned long i = 0; i < Row; i++)
+			{
+				for (unsigned long j = 0; j < Column; j++)
+				{
+					float test = m[i][j] - _mat.m[i][j];
+					if (test < 0.001f && test > -0.001f)continue;
+					return false;
+				}
+			}
+
+			return true;
+		}
+
 		///////////////////////////////////////////////////////////////////////////////////
 
 		void Identity()

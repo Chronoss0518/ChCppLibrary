@@ -704,6 +704,9 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 	ChLMatrix& operator /= (const ChLMatrix& _mat);
 	ChLMatrix const operator / (const ChLMatrix& _mat)const;
 
+	bool operator == (const ChLMatrix& _mat)const;
+	bool operator != (const ChLMatrix& _mat)const;
+
 	operator const D3DXMATRIX() const;
 	operator const D3DXMATRIX* () const;
 
@@ -852,6 +855,9 @@ struct ChRMatrix : public ChMath::BaseMatrix4x4<float>
 
 	ChRMatrix& operator /= (const ChRMatrix& _mat);
 	ChRMatrix const operator / (const ChRMatrix& _mat)const;
+
+	bool operator == (const ChRMatrix& _mat)const;
+	bool operator != (const ChRMatrix& _mat)const;
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//ConstructerDestructer//

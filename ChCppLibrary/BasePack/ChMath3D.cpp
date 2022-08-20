@@ -1085,6 +1085,16 @@ ChLMatrix const ChLMatrix::operator / (const ChLMatrix& _mat)const
 	return out;
 }
 
+bool ChLMatrix::operator == (const ChLMatrix& _mat)const
+{
+	return m.IsValue(_mat.m);
+}
+
+bool ChLMatrix::operator != (const ChLMatrix& _mat)const
+{
+	return !m.IsValue(_mat.m);
+}
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChLMatrix::SetPosition(const ChVec3& _vec)
@@ -1369,6 +1379,16 @@ ChRMatrix const ChRMatrix::operator / (const ChRMatrix& _mat)const
 	ChRMatrix out = *this;
 	out /= _mat;
 	return out;
+}
+
+bool ChRMatrix::operator == (const ChRMatrix& _mat)const
+{
+	return m.IsValue(_mat.m);
+}
+
+bool ChRMatrix::operator != (const ChRMatrix& _mat)const
+{
+	return !m.IsValue(_mat.m);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
