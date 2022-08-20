@@ -67,8 +67,16 @@ namespace ChCpp
 
 			///////////////////////////////////////////////////////////////////////////////////////
 
+		public:
+
 			//モデルデータの読み込み口//
 			void CreateModel(ChPtr::Shared<ModelObject> _model,const std::string& _filePath)override;
+
+			void OutModelFile(const ChPtr::Shared<ModelObject> _model, const std::string& _filePath)override;
+
+			///////////////////////////////////////////////////////////////////////////////////////
+
+		protected:
 
 			void CreateObject(const std::string& _objectName);
 
@@ -77,10 +85,6 @@ namespace ChCpp
 			void CreateMaterial(const std::string& _aatName);
 
 			void CreateChFrame(ChPtr::Shared<ChCpp::FrameObject> _frame);
-
-			///////////////////////////////////////////////////////////////////////////////////////
-
-			void OutModelFile(const ChPtr::Shared<ModelObject> _model, const std::string& _filePath)override;
 
 			///////////////////////////////////////////////////////////////////////////////////////
 			//SetFunction//

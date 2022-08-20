@@ -18,6 +18,9 @@ using namespace ModelLoader;
 
 void ObjFile::CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& _filePath)
 {
+
+	if (!_model->IsInit())return;
+
 	if (_filePath.size() <= 0)return;
 
 	ChCpp::TextObject text;
@@ -61,14 +64,16 @@ void ObjFile::CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& 
 
 	if (objects.size() <= 0)return;
 
-	_model = ChPtr::Make_S<ModelObject>();
 
 	_model->SetModelName(_filePath);
 
 	_model->SetMyName("Root");
 
+	_model->SetComponent<FrameComponent>();
+	
 	CreateChFrame(_model);
 
+	_model->Create();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -165,44 +170,61 @@ void ObjFile::CreateMaterial(const std::string& _matName)
 
 void ObjFile::CreateChFrame(ChPtr::Shared<ChCpp::FrameObject> _frame)
 {
-
-	auto frame = _frame->SetComponent<FrameComponent>();
-
+	
 
 	//for (auto&& Obj : ObjectMaps)
 	for (auto&& obj : objects)
 	{
 		unsigned long materialNo = 0;
 
+		auto&& mesh = ChPtr::Make_S<ChCpp::FrameObject>();
+
+		auto&& primitive = mesh->SetComponent<ChCpp::FrameComponent>();
 
 		//for (auto&& Vertexs : Obj.second->vertexPosList)
 		for (auto&& vertexs : obj->vertexPosList)
 		{
-			auto ver = ChPtr::Make_S<SavePolyVertex>();
+			auto ver = ChPtr::Make_S<Ch3D::SavePolyVertex>();
 
 			ver->pos = *vertexs;
 
-			frame->vertexList.push_back(ver);
+			primitive->vertexList.push_back(ver);
 
 		}
-
-		auto primitive = ChPtr::Make_S<Ch3D::Primitive>();
 
 		//for (auto&& Face : Obj.second->MeshDatas)
 		for (auto&& face : obj->meshDatas)
 		{
-
-			if (frame->mateNames.find(face->targetMaterialName) == frame->mateNames.end())
+			if (materialMaps.empty())
 			{
-
-				frame->mateNames[face->targetMaterialName] = materialNo;
+				primitive->mateNames[""] = materialNo;
 
 				auto mate = ChPtr::Make_S<Ch3D::MaterialData>();
 
+				mate->mateName = face->targetMaterialName;
 
-				auto& tmpMate = materialMaps[face->targetMaterialName];
+				mate->mate.diffuse =ChVec4(1.0f);
+
+				mate->mate.specularColor = ChVec3(1.0f);
+
+				mate->mate.specularPower = 0.0f;
+
+				mate->mate.ambient = 0.3f;
+
+				primitive->materialList.push_back(mate);
+				materialNo++;
+
+				mate = nullptr;
+			}
+			else if (primitive->mateNames.find(face->targetMaterialName) == primitive->mateNames.end())
+			{
+
+				primitive->mateNames[face->targetMaterialName] = materialNo;
+
+				auto mate = ChPtr::Make_S<Ch3D::MaterialData>();
 
 				mate->mateName = face->targetMaterialName;
+				auto& tmpMate = materialMaps[mate->mateName];
 
 				mate->mate.diffuse = tmpMate->diffuse;
 				mate->mate.diffuse.a = tmpMate->alpha;
@@ -215,25 +237,25 @@ void ObjFile::CreateChFrame(ChPtr::Shared<ChCpp::FrameObject> _frame)
 
 				mate->mate.ambient /= 3;
 
-				mate->textures[Ch3D::TextureType::Diffuse] = tmpMate->diffuseMap;
-				mate->textures[Ch3D::TextureType::Ambient] = tmpMate->ambientMap;
-				mate->textures[Ch3D::TextureType::Specular] = tmpMate->specularMap;
-				mate->textures[Ch3D::TextureType::SpecularHighLight] = tmpMate->specularHighLightMap;
-				mate->textures[Ch3D::TextureType::Bump] = tmpMate->bumpMap;
-				mate->textures[Ch3D::TextureType::Alpha] = tmpMate->alphaMap;
-				mate->textures[Ch3D::TextureType::Normal] = tmpMate->normalMap;
-				mate->textures[Ch3D::TextureType::Metallic] = tmpMate->metallicMap;
+				mate->textures[Ch3D::TextureType::Diffuse] = (tmpMate->diffuseMap);
+				mate->textures[Ch3D::TextureType::Ambient] = (tmpMate->ambientMap);
+				mate->textures[Ch3D::TextureType::Specular] = (tmpMate->specularMap);
+				mate->textures[Ch3D::TextureType::SpecularHighLight] = (tmpMate->specularHighLightMap);
+				mate->textures[Ch3D::TextureType::Bump] = (tmpMate->bumpMap);
+				mate->textures[Ch3D::TextureType::Alpha] = (tmpMate->alphaMap);
+				mate->textures[Ch3D::TextureType::Normal] = (tmpMate->normalMap);
+				mate->textures[Ch3D::TextureType::Metallic] = (tmpMate->metallicMap);
 
 
-
-				frame->material.push_back(mate);
-
+				primitive->materialList.push_back(mate);
 				materialNo++;
 
 				mate = nullptr;
 			}
 
-			std::vector<ChPtr::Shared<Ch3D::SavePolyData>>fVList;
+			auto fVList = ChPtr::Make_S<Ch3D::Primitive>();
+
+			fVList->mateNo = primitive->mateNames[face->targetMaterialName];
 
 			for (auto&& values : face->values)
 			{
@@ -251,41 +273,28 @@ void ObjFile::CreateChFrame(ChPtr::Shared<ChCpp::FrameObject> _frame)
 				//if(Obj.second->UVDatas.size() > NUV)faceVertex->UVPos = *Obj.second->UVDatas[NUV];
 				if (obj->vertexUvPosList.size() > nUV)faceVertex->uv = *obj->vertexUvPosList[nUV];
 
-				fVList.push_back(faceVertex);
+				fVList->vertexData.push_back(faceVertex);
 
 				//mesh->VertexList[NVertex]->Normal += *Obj.second->vertexNormalList[NNormal];
-				primitive->faceNormal += *obj->vertexNormalList[nNormal];
-			}
-
-			if (fVList.size() >= 3)
-			{
-
-				for (unsigned long i = 0; i < fVList.size(); i++)
-				{
-					primitive->vertexData.push_back(fVList[i]);
-				}
-
-				primitive->mateNo = materialNo - 1;
-
-				frame->primitives.push_back(primitive);
+				primitive->vertexList[nVertex]->normal += *obj->vertexNormalList[nNormal];
 
 			}
 
+			primitive->primitives.push_back(fVList);
 
-			for (auto&& ver : frame->vertexList)
+
+			for (auto&& ver : primitive->vertexList)
 			{
 				ver->normal.Normalize();
 			}
 
 		}
 
+		mesh->SetMyName(obj->objectName);
 
-		//Frame->MyName = Obj.first;
-		_frame->SetMyName(obj->objectName);
-		frame->primitives.push_back(primitive);
+		_frame->SetChild(mesh);
 
 	}
-
 
 }
 
