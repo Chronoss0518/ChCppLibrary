@@ -60,6 +60,16 @@ namespace ChD3D11
 				return ins;
 			}
 
+		protected://Is Functions//
+
+			ChStd::Bool IsDraw()const { return drawFlg; }
+
+		public://Other Functions//
+
+			virtual void DrawStart(ID3D11DeviceContext* _dc) { drawFlg = true; }
+
+			virtual void DrawEnd() { drawFlg = false; }
+
 		protected://Other Functions//
 
 			void CreateRasteriser(const D3D11_RASTERIZER_DESC& _desc);
@@ -77,6 +87,8 @@ namespace ChD3D11
 
 			ID3D11RasterizerState* rasteriser = nullptr;
 			ID3D11Device* device = nullptr;
+
+			static ChStd::Bool drawFlg;
 
 		};
 	}

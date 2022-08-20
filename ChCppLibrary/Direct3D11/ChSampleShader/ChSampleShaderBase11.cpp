@@ -8,6 +8,8 @@
 using namespace ChD3D11;
 using namespace Shader;
 
+ChStd::Bool SampleShaderBase11::drawFlg = false;
+
 void SampleShaderBase11::Init(ID3D11Device* _device)
 {
 	if (ChPtr::NullCheck(_device))return;
@@ -17,13 +19,6 @@ void SampleShaderBase11::Init(ID3D11Device* _device)
 
 void SampleShaderBase11::Release()
 {
-	GetVBaseMesh().Release();
-	GetVBasePobo().Release();
-	GetPBasePolygon().Release();
-
-	GetVBaseSprite().Release();
-	GetPBaseSprite().Release();
-
 	if (ChPtr::NotNullCheck(rasteriser))
 	{
 		rasteriser->Release();
@@ -66,7 +61,11 @@ void SampleShaderBase11::SetShaderRasteriser(ID3D11DeviceContext* _dc)
 void SampleShaderBase11::CreateRasteriser(const D3D11_RASTERIZER_DESC& _desc)
 {
 	if (ChPtr::NullCheck(device))return;
-	if (ChPtr::NotNullCheck(rasteriser))return;
+	if (ChPtr::NotNullCheck(rasteriser))
+	{
+		rasteriser->Release();
+		rasteriser = nullptr;
+	}
 
 	device->CreateRasterizerState(&_desc, &rasteriser);
 
