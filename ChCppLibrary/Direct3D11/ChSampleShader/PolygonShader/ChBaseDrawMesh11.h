@@ -62,6 +62,8 @@ namespace ChD3D11
 
 		public://Other Functions//
 
+			void DrawStart(ID3D11DeviceContext* _dc)override;
+
 			void Draw(
 				ID3D11DeviceContext* _dc,
 				Mesh11& _mesh,
@@ -84,10 +86,10 @@ namespace ChD3D11
 			CB::CBLight11 light;
 			CB::CBPolygon11 polyData;
 
-			ChLMat PVWMat;
+			ChLMat VWMat;
 
 			D3D11_FILL_MODE fill = D3D11_FILL_MODE::D3D11_FILL_SOLID;
-			D3D11_CULL_MODE cull = D3D11_CULL_MODE::D3D11_CULL_BACK;
+			D3D11_CULL_MODE cull = D3D11_CULL_MODE::D3D11_CULL_NONE;
 			ChStd::Bool updateFlg = true;
 
 

@@ -26,6 +26,7 @@ void BaseDrawMesh::Init(ID3D11Device* _device)
 	polyData.Init(_device);
 
 	SetInitFlg(true);
+
 }
 
 void BaseDrawMesh::Release()
@@ -92,19 +93,29 @@ void BaseDrawMesh::SetShaderCharaData(ID3D11DeviceContext* _dc)
 	polyData.SetVSCharaData(_dc);
 }
 
+void BaseDrawMesh::DrawStart(ID3D11DeviceContext* _dc)
+{
+	if (IsDraw())return;
+
+	SampleShaderBase11::DrawStart(_dc);
+
+	SetShaderDrawData(_dc);
+
+	Update();
+
+	SetShaderRasteriser(_dc);
+}
+
 void BaseDrawMesh::Draw(
 	ID3D11DeviceContext* _dc,
 	Mesh11& _mesh,
 	const ChMat_11& _mat)
 {
-	//if (!_mesh.IsMesh())return;
-	SetShaderRasteriser(_dc);
+	if (!IsDraw())return;
 
 	polyData.SetWorldMatrix(_mat);
 
-	polyData.UpdateCD(_dc);
-
-	PVWMat = polyData.GetProjectionMatrix() * polyData.GetViewMatrix() * _mat;
+	//VWMat = polyData.GetViewMatrix() * _mat;
 
 	DrawUpdate(_dc, _mesh);
 }
@@ -113,6 +124,7 @@ void BaseDrawMesh::DrawUpdate(
 	ID3D11DeviceContext* _dc,
 	FrameObject& _object)
 {
+
 #if DEBUG
 	unsigned long start, end;
 
@@ -124,7 +136,9 @@ void BaseDrawMesh::DrawUpdate(
 
 	start = timeGetTime();
 #endif
+
 	DrawMain(_dc, _object);
+
 #if DEBUG
 	end = timeGetTime();
 	debug = "Draw End Time:" + std::to_string(end - start) + "\n";
@@ -132,11 +146,12 @@ void BaseDrawMesh::DrawUpdate(
 	OutputDebugString(">\n");
 	OutputDebugString(">\n");
 #endif
+
 	auto&& childlen = _object.GetChildlen();
 
 	for (auto&& child : childlen)
 	{
-		auto&& childObj = ChPtr::SharedSafeCast<FrameObject>(child);
+		auto childObj = ChPtr::SharedSafeCast<FrameObject>(child);
 		if (childObj == nullptr)continue;
 		DrawUpdate(_dc,*childObj);
 	}
@@ -164,29 +179,27 @@ void BaseDrawMesh::DrawMain(
 
 	unsigned int offsets = 0;
 
-	polyData.SetFrameMatrix(drawMatrix);
+	if (polyData.GetFrameMatrix() != drawMatrix)
+	{
 
-	polyData.SetVSCharaData(_dc);
+		polyData.SetFrameMatrix(drawMatrix);
 
-	unsigned long nowSetMateNo = -1;
+		polyData.SetVSCharaData(_dc);
+
+	}
 
 	for (auto&& prim : primitives)
 	{
 		if (prim == nullptr)continue;
 
-		if (nowSetMateNo != prim->mateNo)
-		{
-			nowSetMateNo = prim->mateNo;
-			auto&& mate11 = *materialList[nowSetMateNo];
+		auto&& mate11 = *prim->mate;
 
-			polyData.SetMateDiffuse(mate11.mate.diffuse);
-			polyData.SetMateSpecularColor(mate11.mate.specularColor);
-			polyData.SetMateSpecularPower(mate11.mate.specularPower);
-			polyData.SetMateAmbientColor(mate11.mate.ambient);
+		polyData.SetMateDiffuse(mate11.mate.diffuse);
+		polyData.SetMateSpecularColor(mate11.mate.specularColor);
+		polyData.SetMateSpecularPower(mate11.mate.specularPower);
+		polyData.SetMateAmbientColor(mate11.mate.ambient);
 
-			polyData.SetShaderMaterialData(_dc);
-
-		}
+		polyData.SetShaderMaterialData(_dc);
 
 		polyData.SetBaseTexture(prim->textures[Ch3D::TextureType::Diffuse].get());
 		polyData.SetNormalTexture(prim->textures[Ch3D::TextureType::Normal].get());
@@ -206,11 +219,12 @@ void BaseDrawMesh::Update()
 {
 	if (!updateFlg)return;
 
+	//•`‰æ•û–@//
 	D3D11_RASTERIZER_DESC desc
 	{
 		fill,
 		cull,
-		true,
+		false,
 		0,
 		0.0f,
 		0.0f,
@@ -220,7 +234,8 @@ void BaseDrawMesh::Update()
 		false
 	};
 
-	CreateRasteriser(desc);
+
+	SampleShaderBase11::CreateRasteriser(desc);
 
 	updateFlg = false;
 }

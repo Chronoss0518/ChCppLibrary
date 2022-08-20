@@ -26,8 +26,8 @@ namespace ChD3D11
 		std::vector<Ch3D::MeshVertex> vertexArray;
 		std::vector<unsigned long> indexArray;
 
-		//unsigned long startNum = 0;
-		unsigned long mateNo = 0;
+		ChPtr::Shared<Ch3D::MaterialData> mate;
+
 		ChLMat drawMat;
 
 		std::map<Ch3D::TextureType, ChPtr::Shared<Texture11>>textures;
