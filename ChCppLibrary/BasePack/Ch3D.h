@@ -106,11 +106,6 @@ namespace Ch3D
 		public Normal
 	{};
 
-	struct SavePolyData:public UV
-	{
-		unsigned long vertexNo;
-	};
-
 	struct BoneData
 	{
 		std::map<unsigned long,std::vector<float>> vertexData;
@@ -169,6 +164,11 @@ namespace Ch3D
 			return out;
 		}
 
+	};
+
+	struct SavePolyData :public UV
+	{
+		unsigned long vertexNo;
 	};
 
 	//Material‚É‘Î‰‚·‚é–Ê‚ğŠÇ—‚·‚é//
