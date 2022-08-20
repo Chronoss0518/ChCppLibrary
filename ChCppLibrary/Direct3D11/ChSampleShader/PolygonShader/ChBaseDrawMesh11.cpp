@@ -38,16 +38,6 @@ void BaseDrawMesh::Release()
 	SetInitFlg(false);
 }
 
-void BaseDrawMesh::SetDirectionalLightData(const ChDirectionalLight& _data)
-{
-	light.SetDirectionLightData(_data);
-}
-
-void BaseDrawMesh::SetPointLightData(const ChPointLight& _data, const unsigned long _no)
-{
-	light.SetPointLightData(_data, _no);
-}
-
 void BaseDrawMesh::SetProjectionMatrix(const ChLMat& _mat)
 {
 	polyData.SetProjectionMatrix(_mat);
@@ -70,13 +60,6 @@ void BaseDrawMesh::SetCullMode(const D3D11_CULL_MODE _cull)
 	cull = _cull;
 
 	updateFlg = true;
-}
-
-void BaseDrawMesh::SetShaderLightData(ID3D11DeviceContext* _dc)
-{
-	if (!IsInit())return;
-
-	light.SetPSDrawData(_dc);
 }
 
 void BaseDrawMesh::SetShaderDrawData(ID3D11DeviceContext* _dc)

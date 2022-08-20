@@ -14,7 +14,6 @@ namespace ChD3D11
 
 	class Mesh11;
 
-
 	namespace Shader
 	{
 
@@ -28,10 +27,6 @@ namespace ChD3D11
 
 		public://Set Functions//
 
-			void SetDirectionalLightData(const ChDirectionalLight& _data);
-
-			void SetPointLightData(const ChPointLight& _data, const unsigned long _no);
-
 			void SetProjectionMatrix(const ChLMat& _mat);
 
 			void SetViewMatrix(const ChLMat& _mat);
@@ -40,17 +35,11 @@ namespace ChD3D11
 			
 			void SetCullMode(const D3D11_CULL_MODE _cull);
 
-			void SetShaderLightData(ID3D11DeviceContext* _dc);
-
 			void SetShaderDrawData(ID3D11DeviceContext* _dc);
 
 			void SetShaderCharaData(ID3D11DeviceContext* _dc);
 
 		public://Get Functions//
-
-			inline ChDirectionalLight GetDirectionalLightData() { return light.GetDirectionalLightData(); }
-
-			inline ChPointLight GetPointLightData(const unsigned long _no) { return light.GetPointLightData(_no); }
 
 			inline ChLMat GetProjectionMatrix() { return polyData.GetProjectionMatrix(); }
 
@@ -83,7 +72,6 @@ namespace ChD3D11
 
 		private://Member Value//
 
-			CB::CBLight11 light;
 			CB::CBPolygon11 polyData;
 
 			ChLMat VWMat;
