@@ -142,11 +142,6 @@ void PolygonBoard11::SetDrawData(ID3D11DeviceContext* _dc)
 
 	drawVertexs[0] = *vertexs[0];
 
-	materialBuffer.UpdateResouce(_dc, &material);
-
-	materialBuffer.SetToVertexShader(_dc);
-	materialBuffer.SetToPixelShader(_dc);
-
 	for (unsigned long i = 1; i < vertexs.size() - 1; i++)
 	{
 		drawVertexs[1] = *vertexs[i];

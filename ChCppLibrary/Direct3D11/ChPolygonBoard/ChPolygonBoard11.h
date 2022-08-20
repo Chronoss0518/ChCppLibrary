@@ -34,6 +34,7 @@ namespace ChD3D11
 
 			inline void SetInitTri()
 			{
+				SetInitSquare();
 				vertexs.pop_back();
 			}
 
@@ -41,6 +42,16 @@ namespace ChD3D11
 
 			///////////////////////////////////////////////////////////////////////////////////
 			//GetFunction//
+
+			inline unsigned long GetVertexSize()const
+			{
+				return vertexs.size();
+			}
+
+			inline Ch3D::Material GetMaterial()const
+			{
+				return material;
+			}
 
 			inline ChVec3 GetPos(const unsigned char _num)
 			{
