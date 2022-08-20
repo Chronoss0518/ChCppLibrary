@@ -38,12 +38,12 @@ namespace ChD3D11
 
 			void SetMateAmbientColor(const ChVec3& _ambientCol);
 
-			void SetBaseTexture(Texture11*_tex)
+			void SetBaseTexture(TextureBase11*_tex)
 			{
 				baseTex = _tex;
 			}
 
-			void SetNormalTexture(Texture11*_tex)
+			void SetNormalTexture(TextureBase11*_tex)
 			{
 				normalTex = _tex;
 			}
