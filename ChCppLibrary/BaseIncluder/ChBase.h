@@ -22,6 +22,7 @@
 #include<sstream>
 #include<chrono>
 #include<codecvt>
+#include<array>
 
 #ifdef __d3d11_h__
 #include<windows.h>
