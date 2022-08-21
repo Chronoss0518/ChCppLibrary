@@ -17,13 +17,19 @@ namespace ChD3D11
 	namespace Shader
 	{
 
-		class BaseDrawMesh final :public SampleShaderBase11,public ChCp::Initializer
+		class BaseDrawMesh final :public SampleShaderBase11
 		{
 		public://Init And Release//
 
 			void Init(ID3D11Device* _device);
 
 			void Release();
+
+		protected://Init And Release//
+
+			void InitVertexShader()override;
+
+			void InitPixelShader()override;
 
 		public://Set Functions//
 
@@ -34,10 +40,6 @@ namespace ChD3D11
 			void SetFillMode(const D3D11_FILL_MODE _fill);
 			
 			void SetCullMode(const D3D11_CULL_MODE _cull);
-
-			void SetShaderDrawData(ID3D11DeviceContext* _dc);
-
-			void SetShaderCharaData(ID3D11DeviceContext* _dc);
 
 		public://Get Functions//
 
@@ -68,13 +70,11 @@ namespace ChD3D11
 				ID3D11DeviceContext* _dc,
 				ChCpp::FrameObject& _object);
 
-			void Update();
+			void Update()override;
 
 		private://Member Value//
 
 			CB::CBPolygon11 polyData;
-
-			ChLMat VWMat;
 
 			D3D11_FILL_MODE fill = D3D11_FILL_MODE::D3D11_FILL_SOLID;
 			D3D11_CULL_MODE cull = D3D11_CULL_MODE::D3D11_CULL_NONE;

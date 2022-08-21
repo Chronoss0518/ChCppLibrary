@@ -16,26 +16,55 @@ using namespace Shader;
 
 #define DEBUG 0
 
-
 void BaseDrawMesh::Init(ID3D11Device* _device)
 {
 	if (IsInit())return;
 
 	SampleShaderBase11::Init(_device);
-
-	polyData.Init(_device);
-
-	SetInitFlg(true);
-
+	
+	polyData.Init(_device,&GetWhiteTexture(), &GetNormalTexture());
 }
 
 void BaseDrawMesh::Release()
 {
-	if (!IsInit())return;
-
 	SampleShaderBase11::Release();
 
-	SetInitFlg(false);
+	polyData.Release();
+}
+
+void BaseDrawMesh::InitVertexShader()
+{
+
+#include"../PolygonShader/BaseMeshVertex.inc"
+
+	D3D11_INPUT_ELEMENT_DESC decl[5];
+
+	decl[0] = { "POSITION",  0, DXGI_FORMAT_R32G32B32_FLOAT,0, 0, D3D11_INPUT_PER_VERTEX_DATA };
+	decl[1] = { "TEXCOORD",  0, DXGI_FORMAT_R32G32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
+	decl[2] = { "COLOR",  0, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
+	decl[3] = { "NORMAL",  0, DXGI_FORMAT_R32G32B32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
+	decl[4] = { "NORMAL",  1, DXGI_FORMAT_R32G32B32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
+	//decl[5] = { "BLENDINDEX",  0, DXGI_FORMAT_R32G32B32A32_UINT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
+	//decl[6] = { "BLENDINDEX",  1, DXGI_FORMAT_R32G32B32A32_UINT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
+	//decl[7] = { "BLENDINDEX",  2, DXGI_FORMAT_R32G32B32A32_UINT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
+	//decl[8] = { "BLENDINDEX",  3, DXGI_FORMAT_R32G32B32A32_UINT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
+	//decl[9] = { "BLENDWEIGHT",  0, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
+	//decl[10] = { "BLENDWEIGHT",  1, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
+	//decl[11] = { "BLENDWEIGHT",  2, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
+	//decl[12] = { "BLENDWEIGHT",  3, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
+	//decl[13] = { "BLENDINDEX",  4, DXGI_FORMAT_R32_UINT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
+
+	SampleShaderBase11::InitVertexShader(decl, sizeof(decl)/sizeof(D3D11_INPUT_ELEMENT_DESC), main, sizeof(main));
+	
+}
+
+void BaseDrawMesh::InitPixelShader()
+{
+
+#include"../PolygonShader/BasePolygonPixcel.inc"
+
+	SampleShaderBase11::InitPixelShader(main, sizeof(main));
+
 }
 
 void BaseDrawMesh::SetProjectionMatrix(const ChLMat& _mat)
@@ -62,31 +91,16 @@ void BaseDrawMesh::SetCullMode(const D3D11_CULL_MODE _cull)
 	updateFlg = true;
 }
 
-void BaseDrawMesh::SetShaderDrawData(ID3D11DeviceContext* _dc)
-{
-	if (!IsInit())return;
-
-	polyData.SetVSDrawData(_dc);
-}
-
-void BaseDrawMesh::SetShaderCharaData(ID3D11DeviceContext* _dc)
-{
-	if (!IsInit())return;
-
-	polyData.SetVSCharaData(_dc);
-}
-
 void BaseDrawMesh::DrawStart(ID3D11DeviceContext* _dc)
 {
+	if (!IsInit())return;
 	if (IsDraw())return;
+
 
 	SampleShaderBase11::DrawStart(_dc);
 
-	SetShaderDrawData(_dc);
+	polyData.SetVSDrawData(_dc);
 
-	Update();
-
-	SetShaderRasteriser(_dc);
 }
 
 void BaseDrawMesh::Draw(
@@ -94,11 +108,10 @@ void BaseDrawMesh::Draw(
 	Mesh11& _mesh,
 	const ChMat_11& _mat)
 {
+	if (!IsInit())return;
 	if (!IsDraw())return;
 
 	polyData.SetWorldMatrix(_mat);
-
-	//VWMat = polyData.GetViewMatrix() * _mat;
 
 	DrawUpdate(_dc, _mesh);
 }
