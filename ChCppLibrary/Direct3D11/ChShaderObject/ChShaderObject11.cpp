@@ -222,7 +222,6 @@ void VertexShader11::Init(
 
 void VertexShader11::InitChBaseModelVertexShader(ID3D11Device* _device)
 {
-
 #include"../ChSampleShader/PolygonShader/BaseMeshVertex.inc"
 
 	D3D11_INPUT_ELEMENT_DESC Decl[14];

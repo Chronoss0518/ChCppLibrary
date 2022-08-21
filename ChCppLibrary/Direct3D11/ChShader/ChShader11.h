@@ -66,51 +66,6 @@ namespace ChD3D11
 			renderTargets.clear();
 		}
 
-		//描画をする際に利用するカリングタイプをセット//
-		inline void SetCullMode(const D3D11_CULL_MODE _cull)
-		{
-			if (!*this)return;
-			if (drawFlg)return;
-
-			cull = _cull;
-
-			rasteriserUpdate = true;
-		}
-
-		//描画をする際に利用するフィルタイプをセット//
-		inline void SetFillMode(const D3D11_FILL_MODE _fill)
-		{
-			if (!*this)return;
-			if (drawFlg)return;
-
-			fill = _fill;
-
-			rasteriserUpdate = true;
-		}
-
-		inline void SetViewMat(const ChMat_11& _viewMat)
-		{
-
-			if (!*this)return;
-			if (drawFlg)return;
-
-			bdObject.viewMat = _viewMat;
-
-			bdUpdateFlg = true;
-
-		}
-
-		inline void SetProjMat(const ChMat_11& _projMat)
-		{
-
-			if (!*this)return;
-			if (drawFlg)return;
-
-			bdObject.projMat = _projMat;
-
-			bdUpdateFlg = true;
-		}
-
 		inline void SetWindPos(const ChVec2& _pos)
 		{
 
@@ -130,20 +85,6 @@ namespace ChD3D11
 			view.SetSize(_size);
 		}
 
-
-	public://Get Functions//
-
-		inline D3D11_CULL_MODE GetCullMode() { return cull; }
-
-		inline D3D11_FILL_MODE GetFillMode() { return fill; }
-
-		inline BaseDatas GetBaseData() { return bdObject; }
-
-		inline CharaDatas GetCharaData() { return cdObject; }
-
-		inline PolygonDatas GetPolygonData() { return pdObject; }
-
-		inline BoneDatas GetBoneData() { return bodObject; }
 
 	public://Is Functions//
 
@@ -165,119 +106,33 @@ namespace ChD3D11
 		//描画開始前に呼ぶ関数//
 		void DrawStart();
 
-		//描画終了時に呼ぶ関数//
+		//3Dの描画開始前に呼ぶ関数//
+		void DrawStart3D();
+
+		//2Dの描画開始前に呼ぶ関数//
+		void DrawStart2D();
+
+		//すべての描画終了時に呼ぶ関数//
 		void DrawEnd();
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//Mesh描画群//
-
-		void Draw(
-			Mesh11& _mesh
-			, const ChMat_11& _mat = ChMat_11());
-
-		void Draw(
-			Mesh11& _mesh,
-			VertexShader11& _userVS,
-			PixelShader11& _userPS,
-			const ChMat_11& _mat = ChMat_11());
-
-		//OutLine描画//
-		void DrawOutLine(
-			Mesh11& _mesh
-			, const ChVec4& _color
-			, const ChMat_11& _mat = ChMat_11()
-			, const float _size = 1.0f);
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//板ポリゴン描画群//
-
-		void Draw(
-			TextureBase11& _tex
-			, PolygonBoard11& _polygon
-			, const ChMat_11& _mat = ChMat_11());
-
-		void Draw(
-			TextureBase11& _tex,
-			PolygonBoard11& _polygon,
-			VertexShader11& _userVS,
-			PixelShader11& _userPS,
-			const ChMat_11& _mat = ChMat_11());
-
-		//円形で指定範囲を描画//
-		void DrawToCircleParsec(
-			TextureBase11& _tex
-			, PolygonBoard11& _polygon
-			, const ChVec2& _startLine
-			, const float _drawRad
-			, const ChMat_11& _mat = ChMat_11());
-
-		//四角形で指定範囲を描画//
-		void DrawSquareParsec(
-			TextureBase11& _tex
-			, PolygonBoard11& _polygon
-			, const ChVec2& _startLine
-			, const float _drawRad
-			, const ChMat_11& _mat = ChMat_11());
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//Sprite描画群//
-
-		//通常描画//
-		void Draw(
-			TextureBase11& _tex
-			, Sprite11& _sprite
-			, const ChMat_11& _mat = ChMat_11());
-
-		void Draw(
-			TextureBase11& _tex,
-			Sprite11& _sprite,
-			VertexShader11& _userVS,
-			PixelShader11& _userPS,
-			const ChMat_11& _mat = ChMat_11());
-
-		//円形で指定範囲を描画//
-		void DrawToCircleParsec(
-			TextureBase11& _tex
-			, Sprite11& _sprite
-			, const ChVec2& _startLine
-			, const float _drawRad
-			, const ChMat_11& _mat = ChMat_11());
-
-		//四角形で指定範囲を描画//
-		void DrawSquareParsec(
-			TextureBase11& _tex
-			, Sprite11& _sprite
-			, const ChVec2& _startLine
-			, const float _drawRad
-			, const ChMat_11& _mat = ChMat_11());
 
 	protected://Set Functions//
 
 		//レンダーターゲット用フラグ//
 		inline void SetRTDraw(const ChStd::Bool _Flg) { rtDrawFlg = _Flg; }
 
-		//描画データの初期化//
-		void SetDrawDatas();
-
 	protected://Member Value//
-
-		//3Dモデル描画用シェーダー//
-		VertexShader11 bvModel;
-		PixelShader11 bpModel;
-		VertexShader11 pvTex;
 
 		//板ポリゴンなどテクスチャ単体描画用シェーダー//
 		VertexShader11 spvTex;
 		PixelShader11 bpTex;
 
-		//ShadowMap生成用//
-		RenderTarget11 depthShadowTex;
+		RenderTarget11 out3D;
+		RenderTarget11 out2D;
 
-		//モデルの画像がない場合にセットする//
-		TextureBase11* whiteTex;
+		Sprite11 outSprite;
 
-		//モデルの法線マップがない場合に使用する画像//
-		TextureBase11* normalTex;
+		ChPtr::Unique<Shader::BaseDrawSprite> spriteShader = nullptr;
 
 		//描画対象に設定する画像群//
 		std::vector<ID3D11RenderTargetView*>renderTargets;
@@ -297,39 +152,8 @@ namespace ChD3D11
 		ChStd::Bool drawFlg = false;
 		ChStd::Bool rtDrawFlg = false;
 
-		//カリングタイプ//
-		D3D11_CULL_MODE cull = D3D11_CULL_MODE::D3D11_CULL_BACK;
-
-		//面描画タイプ//
-		D3D11_FILL_MODE fill = D3D11_FILL_MODE::D3D11_FILL_SOLID;
-
-		ID3D11RasterizerState* rasteriser = nullptr;
-
-		ChStd::Bool rasteriserUpdate = true;
-
 		//背景色//
 		ChVec4 backColor = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
-
-		ChStd::Bool bdUpdateFlg = true;
-
-		BaseDatas bdObject;
-		ConstantBuffer11<BaseDatas> baseData;
-
-		CharaDatas cdObject;
-		ConstantBuffer11<CharaDatas> charaData;
-
-		PolygonDatas pdObject;
-		ConstantBuffer11<PolygonDatas> polygonData;
-
-		BoneDatas bodObject;
-		ConstantBuffer11<BoneDatas> boneData;
-
-		///////////////////////////////////////////////////////////////////////////////////
-
-		RenderTarget11 out3D;
-		RenderTarget11 out2D;
-
-		Sprite11 outSprite;
 
 	public:
 
