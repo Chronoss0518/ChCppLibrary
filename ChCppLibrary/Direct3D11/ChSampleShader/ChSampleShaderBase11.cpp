@@ -8,46 +8,70 @@
 using namespace ChD3D11;
 using namespace Shader;
 
-ChStd::Bool SampleShaderBase11::drawFlg = false;
-
 void SampleShaderBase11::Init(ID3D11Device* _device)
 {
+	if (IsInit())return;
 	if (ChPtr::NullCheck(_device))return;
 
 	device = _device;
+
+	whiteTex = ChPtr::Make_U<Texture11>();
+	normalTex = ChPtr::Make_U<Texture11>();
+
+	whiteTex->CreateColorTexture(_device, ChVec4(1.0f, 1.0f, 1.0f, 1.0f), 1, 1);
+	normalTex->CreateColorTexture(_device, ChVec4(0.5f, 1.0f, 0.5f, 1.0f), 1, 1);
+
+	InitVertexShader();
+	InitPixelShader();
+
+	SetInitFlg(true);
+}
+
+void SampleShaderBase11::InitVertexShader(
+	const D3D11_INPUT_ELEMENT_DESC* _decl,
+	unsigned long _declNum,
+	const unsigned char* _shaderByte,
+	unsigned long _shaderByteNum)
+{
+	if (ChPtr::NullCheck(device))return;
+
+	vs.Init(device, _decl, _declNum, _shaderByte, _shaderByteNum);
+}
+
+void SampleShaderBase11::InitPixelShader(
+	const unsigned char* _shaderByte,
+	unsigned long _shaderByteNum)
+{
+	if (ChPtr::NullCheck(device))return;
+
+	ps.Init(device, _shaderByte, _shaderByteNum);
 }
 
 void SampleShaderBase11::Release()
 {
+	if (!IsInit())return;
 	if (ChPtr::NotNullCheck(rasteriser))
 	{
 		rasteriser->Release();
 		rasteriser = nullptr;
 	}
+
+	vs.Release();
+	ps.Release();
+
+	whiteTex = nullptr;
+	normalTex = nullptr;
+
+	SetInitFlg(false);
 }
 
-void SampleShaderBase11::InitBaseMesh()
+
+void SampleShaderBase11::SetShader(ID3D11DeviceContext* _dc)
 {
-	if (ChPtr::NullCheck(device))return;
 
-	InitVBaseMesh(device);
-	InitPBasePolygon(device);
-}
-
-void SampleShaderBase11::InitBasePolygonBoard()
-{
-	if (ChPtr::NullCheck(device))return;
-
-	InitVBasePobo(device);
-	InitPBasePolygon(device);
-}
-
-void SampleShaderBase11::InitBaseSprite()
-{
-	if (ChPtr::NullCheck(device))return;
-
-	InitVBaseSprite(device);
-	InitPBaseSprite(device);
+	if (ChPtr::NullCheck(_dc))return;
+	vs.SetShader(_dc);
+	ps.SetShader(_dc);
 }
 
 void SampleShaderBase11::SetShaderRasteriser(ID3D11DeviceContext* _dc)
@@ -71,91 +95,22 @@ void SampleShaderBase11::CreateRasteriser(const D3D11_RASTERIZER_DESC& _desc)
 
 }
 
-void SampleShaderBase11::InitVBaseMesh(ID3D11Device* _device)
+void SampleShaderBase11::DrawStart(ID3D11DeviceContext* _dc)
 {
-	auto vertex = GetVBaseMesh();
-	if (vertex.IsInit())return;
+	if (GetShaderNowRunFlg())return;
 
-#include"PolygonShader/BaseMeshVertex.inc"
+	_dc->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		D3D11_INPUT_ELEMENT_DESC Decl[14];
 
-		Decl[0] = { "POSITION",  0, DXGI_FORMAT_R32G32B32_FLOAT,0, 0, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[1] = { "TEXCOORD",  0, DXGI_FORMAT_R32G32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[2] = { "COLOR",  0, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[3] = { "NORMAL",  0, DXGI_FORMAT_R32G32B32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[4] = { "NORMAL",  1, DXGI_FORMAT_R32G32B32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[5] = { "BLENDINDEX",  0, DXGI_FORMAT_R32G32B32A32_UINT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[6] = { "BLENDINDEX",  1, DXGI_FORMAT_R32G32B32A32_UINT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[7] = { "BLENDINDEX",  2, DXGI_FORMAT_R32G32B32A32_UINT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[8] = { "BLENDINDEX",  3, DXGI_FORMAT_R32G32B32A32_UINT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[9] = { "BLENDWEIGHT",  0, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[10] = { "BLENDWEIGHT",  1, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[11] = { "BLENDWEIGHT",  2, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[12] = { "BLENDWEIGHT",  3, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-		Decl[13] = { "BLENDINDEX",  4, DXGI_FORMAT_R32_UINT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
+	SetShader(_dc);
 
-		vertex.Init(_device, Decl, 14, main, sizeof(main));
+	Update();
 
-	
+	SetShaderRasteriser(_dc);
+
+
+	drawFlg = true; 
+
+	GetShaderNowRunFlg() = true;
 }
 
-void SampleShaderBase11::InitVBasePobo(ID3D11Device* _device)
-{
-
-	auto vertex = GetVBasePobo();
-	if (vertex.IsInit())return;
-
-#include"PolygonShader/BasePoboVertex.inc"
-
-	D3D11_INPUT_ELEMENT_DESC Decl[4];
-
-
-	Decl[0] = { "POSITION",  0, DXGI_FORMAT_R32G32B32_FLOAT,0, 0, D3D11_INPUT_PER_VERTEX_DATA };
-	Decl[1] = { "TEXCOORD",  0, DXGI_FORMAT_R32G32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-	Decl[2] = { "COLOR",  0, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-	Decl[3] = { "NORMAL",  0, DXGI_FORMAT_R32G32B32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-
-
-	vertex.Init(_device, Decl, 4, main, sizeof(main));
-}
-
-void SampleShaderBase11::InitPBasePolygon(ID3D11Device* _device)
-{
-
-	auto pixel = GetPBasePolygon();
-	if (pixel.IsInit())return;
-#include"PolygonShader/BasePolygonPixcel.inc"
-
-	pixel.Init(_device, main, sizeof(main));
-
-}
-
-void SampleShaderBase11::InitVBaseSprite(ID3D11Device* _device)
-{
-	auto vertex = GetVBaseSprite();
-	if (vertex.IsInit())return;
-
-#include"SpriteShader/BaseSpriteVertex.inc"
-
-	D3D11_INPUT_ELEMENT_DESC Decl[3];
-
-	Decl[0] = { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA };
-	Decl[1] = { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-	Decl[2] = { "COLOR",  0, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-
-
-	vertex.Init(_device, Decl, 3, main, sizeof(main));
-
-}
-
-void SampleShaderBase11::InitPBaseSprite(ID3D11Device* _device)
-{
-	auto pixel = GetPBaseSprite();
-	if (pixel.IsInit())return;
-
-#include"../ChSampleShader/SpriteShader/BaseSpritePixel.inc"
-
-	pixel.Init(_device, &main, sizeof(main));
-
-}

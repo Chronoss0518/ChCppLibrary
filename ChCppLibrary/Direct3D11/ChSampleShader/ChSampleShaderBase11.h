@@ -5,10 +5,12 @@
 
 namespace ChD3D11
 {
+	class Texture11;
+
 	namespace Shader
 	{
 
-		class SampleShaderBase11:public ChCp::Releaser
+		class SampleShaderBase11:public ChCp::Releaser, public ChCp::Initializer
 		{
 		public://Init And Release//
 
@@ -18,46 +20,40 @@ namespace ChD3D11
 
 		protected://Init And Release//
 
-			void InitBaseMesh();
+			virtual void InitVertexShader() = 0;
 
-			void InitBasePolygonBoard();
+			virtual void InitPixelShader() = 0;
 
-			void InitBaseSprite();
+			void InitVertexShader(
+				const D3D11_INPUT_ELEMENT_DESC* _decl,
+				unsigned long _declNum,
+				const unsigned char* _shaderByte,
+				unsigned long _shaderByteNum);
 
-		protected://Get Functions//
+			void InitPixelShader(
+				const unsigned char* _shaderByte,
+				unsigned long _shaderByteNum);
+
+		public://Set Functions//
+
+			void SetShader(ID3D11DeviceContext* _dc);
+
+		protected://Set Functions//
 
 			void SetShaderRasteriser(ID3D11DeviceContext* _dc);
 
-		protected://Get Instance Functions//
+		protected://Get Functions//
 
-			inline VertexShader11& GetVBaseMesh()
-			{
-				static VertexShader11 ins;
-				return ins;
-			}
+			inline Texture11& GetWhiteTexture() { return *whiteTex; }
 
-			inline VertexShader11& GetVBasePobo()
-			{
-				static VertexShader11 ins;
-				return ins;
-			}
+			inline Texture11& GetNormalTexture() { return *normalTex; }
 
-			inline PixelShader11& GetPBasePolygon()
-			{
-				static PixelShader11 ins;
-				return ins;
-			}
+		private://Get Functions//
 
-			inline VertexShader11& GetVBaseSprite()
+			inline static ChStd::Bool& GetShaderNowRunFlg()
 			{
-				static VertexShader11 ins;
-				return ins;
-			}
-
-			inline PixelShader11& GetPBaseSprite()
-			{
-				static PixelShader11 ins;
-				return ins;
+				static ChStd::Bool flg;
+				return flg;
 			}
 
 		protected://Is Functions//
@@ -66,29 +62,33 @@ namespace ChD3D11
 
 		public://Other Functions//
 
-			virtual void DrawStart(ID3D11DeviceContext* _dc) { drawFlg = true; }
+			virtual void DrawStart(ID3D11DeviceContext* _dc);
 
-			virtual void DrawEnd() { drawFlg = false; }
+			virtual inline void DrawEnd() 
+			{
+				if (!drawFlg)return;
+				drawFlg = false; 
+				GetShaderNowRunFlg() = false;
+			}
+
+			virtual void Update() {};
 
 		protected://Other Functions//
 
 			void CreateRasteriser(const D3D11_RASTERIZER_DESC& _desc);
-
-		private://Init Functions//
-
-			void InitVBaseMesh(ID3D11Device* _device);
-			void InitVBasePobo(ID3D11Device* _device);
-			void InitPBasePolygon(ID3D11Device* _device);
-
-			void InitVBaseSprite(ID3D11Device* _device);
-			void InitPBaseSprite(ID3D11Device* _device);
 
 		private://Member Value//
 
 			ID3D11RasterizerState* rasteriser = nullptr;
 			ID3D11Device* device = nullptr;
 
-			static ChStd::Bool drawFlg;
+			VertexShader11 vs;
+			PixelShader11 ps;
+
+			ChPtr::Unique<Texture11> whiteTex;
+			ChPtr::Unique<Texture11> normalTex;
+
+			ChStd::Bool drawFlg;
 
 		};
 	}
