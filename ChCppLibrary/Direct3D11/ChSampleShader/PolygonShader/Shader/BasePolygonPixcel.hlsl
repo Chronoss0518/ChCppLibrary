@@ -34,7 +34,7 @@ OutColor main(VS_OUT _in)
 
 	OutColor outColor;
 	
-	outColor.color = float4(1.0f, 0.0f, 0.0f, 1.0f);
+	//outColor.color = float4(1.0f, 0.0f, 0.0f, 1.0f);
 	//outColor.color = _in.pos;
 	//outColor.color.z = 0.0f;
 	//outColor.color.x = _in.proPos.x / _in.proPos.w;

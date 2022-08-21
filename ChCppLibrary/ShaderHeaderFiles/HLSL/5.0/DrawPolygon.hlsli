@@ -35,9 +35,9 @@ cbuffer DrawData : register(b[DRAW_DATA_REGISTERNO])
 struct ChP_DrawData
 #endif
 {
-	uniform row_major float4x4 viewMat;
+	row_major float4x4 viewMat;
 
-	uniform row_major float4x4 proMat;
+	row_major float4x4 proMat;
 };
 
 
