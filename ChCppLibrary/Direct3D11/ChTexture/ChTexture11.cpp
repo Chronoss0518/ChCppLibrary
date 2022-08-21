@@ -87,6 +87,11 @@ void TextureBase11::InitSampler()
 void TextureBase11::UpdateSampler()
 {
 	if (!sdUpdateFlg)return;
+	if (ChPtr::NotNullCheck(sampler))
+	{
+		sampler->Release();
+		sampler = nullptr;
+	}
 
 	device->CreateSamplerState(&sDesc, &sampler);
 
@@ -336,60 +341,6 @@ void Texture11::CreateColorTexture(
 
 	Init(_device);
 }
-
-void Texture11::CreateWhiteTex(ID3D11Device* _device)
-{
-	auto&& white = GetWhiteTex();
-
-	if (white.IsTex())return;
-
-	white.CreateColorTexture(_device, ChVec4(1.0f, 1.0f, 1.0f, 1.0f), 1, 1);
-
-	{
-
-		D3D11_SAMPLER_DESC samp;
-
-		samp.AddressU = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_CLAMP;
-		samp.AddressV = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_CLAMP;
-		samp.Filter = D3D11_FILTER::D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
-
-		white.SetSampler(samp);
-	}
-
-}
-
-void Texture11::CreateNormalTex(ID3D11Device* _device)
-{
-	auto&& normal = GetNormalTex();
-
-	if (normal.IsTex())return;
-
-	normal.CreateColorTexture(_device, ChVec4(0.5f, 1.0f, 0.5f, 1.0f), 1, 1);
-
-	{
-
-		D3D11_SAMPLER_DESC samp;
-
-		samp.AddressU = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_CLAMP;
-		samp.AddressV = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_CLAMP;
-		samp.Filter = D3D11_FILTER::D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
-
-		normal.SetSampler(samp);
-	}
-}
-
-Texture11& Texture11::GetWhiteTex()
-{
-	static Texture11 white;
-	return white;
-}
-
-Texture11& Texture11::GetNormalTex()
-{
-	static Texture11 normal;
-	return normal;
-}
-
 
 void RenderTarget11::Release()
 {

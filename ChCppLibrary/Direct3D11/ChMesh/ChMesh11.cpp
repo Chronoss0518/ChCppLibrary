@@ -129,8 +129,6 @@ void Mesh11::Init(ID3D11Device* _device)
 	Release();
 
 	device = _device;
-	Texture11::CreateWhiteTex(_device);
-	Texture11::CreateNormalTex(_device);
 
 	ModelObject::Init();
 
