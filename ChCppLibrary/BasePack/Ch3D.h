@@ -19,7 +19,7 @@ namespace Ch3D
 		ChVec3 pos;
 	};
 
-	inline void SetPosition(Position* _pos, ChVec3& _val)
+	inline void SetPosition(Position* _pos, const ChVec3& _val)
 	{
 		if (ChPtr::NullCheck(_pos))return;
 		_pos->pos = _val;
@@ -30,7 +30,7 @@ namespace Ch3D
 		ChVec2 uv;
 	};
 
-	inline void SetUV(UV* _uv, ChVec2& _val)
+	inline void SetUV(UV* _uv, const ChVec2& _val)
 	{
 		if (ChPtr::NullCheck(_uv))return;
 		_uv->uv = _val;
@@ -41,7 +41,7 @@ namespace Ch3D
 		ChVec4 color = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
 	};
 
-	inline void SetColor(Color* _color, ChVec4& _val)
+	inline void SetColor(Color* _color, const ChVec4& _val)
 	{
 		if (ChPtr::NullCheck(_color))return;
 		_color->color = _val;
@@ -52,7 +52,7 @@ namespace Ch3D
 		ChVec3 normal = ChVec3(0.0f,1.0f,0.0f);
 	};
 
-	inline void SetNormal(Normal* _normal, ChVec3& _val)
+	inline void SetNormal(Normal* _normal, const ChVec3& _val)
 	{
 		if (ChPtr::NullCheck(_normal))return;
 		_normal->normal = _val;
@@ -63,7 +63,7 @@ namespace Ch3D
 		ChVec3 faceNormal = ChVec3(0.0f, 1.0f, 0.0f);
 	};
 
-	inline void SetFaceNormal(FaceNormal* _faceNormal, ChVec3& _val)
+	inline void SetFaceNormal(FaceNormal* _faceNormal, const ChVec3& _val)
 	{
 		if (ChPtr::NullCheck(_faceNormal))return;
 		_faceNormal->faceNormal = _val;
