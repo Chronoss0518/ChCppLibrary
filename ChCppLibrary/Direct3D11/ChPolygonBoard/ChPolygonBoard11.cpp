@@ -24,18 +24,10 @@ void PolygonBoard11::Init(ID3D11Device* _device)
 {
 	SetInitSquare();
 
-	vertexBuffer.CreateBuffer(_device, drawVertexs, 3);
-
-	unsigned long indexs[3] = { 0,1,2 };
-
-	indexBuffer.CreateBuffer(_device, indexs, 3);
-
 	material.diffuse = ChVec4(1.0f);
 	material.specularColor = ChVec3(0.0f);
 	material.specularPower = 1.0f;
 	material.ambient = ChVec4(0.0f);
-
-	materialBuffer.CreateBuffer(_device, 2);
 
 }
 
@@ -44,8 +36,6 @@ void PolygonBoard11::Init(ID3D11Device* _device)
 void PolygonBoard11::Release()
 {
 	if (!vertexs.empty())vertexs.clear();
-	vertexBuffer.Release();
-	indexBuffer.Release();
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -136,6 +126,7 @@ void PolygonBoard11::SetInitSquare()
 
 void PolygonBoard11::SetDrawData(ID3D11DeviceContext* _dc)
 {
+#if 0 
 	if (vertexs.size() < 3)return;
 
 	unsigned int offsets = 0;
@@ -147,7 +138,7 @@ void PolygonBoard11::SetDrawData(ID3D11DeviceContext* _dc)
 		drawVertexs[1] = *vertexs[i];
 		drawVertexs[2] = *vertexs[i + 1];
 
-		vertexBuffer.UpdateResouce(_dc, drawVertexs);
+		vertexBuffer.UpdateResouce(_dc, &drawVertexs[0]);
 
 		vertexBuffer.SetVertexBuffer(_dc, offsets);
 
@@ -156,7 +147,7 @@ void PolygonBoard11::SetDrawData(ID3D11DeviceContext* _dc)
 		_dc->DrawIndexed(3, 0, 0);
 
 	}
-
+#endif
 }
 
 /////////////////////////////////////////////////////////////////////////////////

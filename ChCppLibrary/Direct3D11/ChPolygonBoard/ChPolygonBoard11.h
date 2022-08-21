@@ -43,6 +43,11 @@ namespace ChD3D11
 			///////////////////////////////////////////////////////////////////////////////////
 			//GetFunction//
 
+			inline const std::vector<ChPtr::Shared<Ch3D::PolyVertex>>& GetVertexs()
+			{
+				return vertexs;
+			}
+
 			inline unsigned long GetVertexSize()const
 			{
 				return vertexs.size();
@@ -86,11 +91,8 @@ namespace ChD3D11
 			
 			std::vector<ChPtr::Shared<Ch3D::PolyVertex>> vertexs;
 
-			Ch3D::PolyVertex drawVertexs[3];
-			VertexBuffer11<Ch3D::PolyVertex> vertexBuffer;
-			IndexBuffer11 indexBuffer;
 			Ch3D::Material material;
-			ConstantBuffer11<Ch3D::Material> materialBuffer;
+
 	};
 }
 

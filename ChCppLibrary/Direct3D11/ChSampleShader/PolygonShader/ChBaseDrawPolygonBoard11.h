@@ -13,13 +13,19 @@ namespace ChD3D11
 	namespace Shader
 	{
 
-		class BaseDrawPolygonBoard11 final :public SampleShaderBase11, public ChCp::Initializer
+		class BaseDrawPolygonBoard11 final :public SampleShaderBase11
 		{
 		public://Init And Release//
 
 			void Init(ID3D11Device* _device);
 
 			void Release();
+
+		protected://Init And Release//
+
+			void InitVertexShader()override;
+
+			void InitPixelShader()override;
 
 		public://Set Functions//
 
@@ -53,11 +59,16 @@ namespace ChD3D11
 
 		private:
 
-			void Update();
+			void Update()override;
 
 		private://Member Value//
 
 			CB::CBPolygon11 polyData;
+
+			Ch3D::PolyVertex drawVertexs[3];
+
+			VertexBuffer11<Ch3D::PolyVertex> vertexBuffer;
+			IndexBuffer11 indexBuffer;
 
 			D3D11_FILL_MODE fill = D3D11_FILL_MODE::D3D11_FILL_SOLID;
 			D3D11_CULL_MODE cull = D3D11_CULL_MODE::D3D11_CULL_NONE;
