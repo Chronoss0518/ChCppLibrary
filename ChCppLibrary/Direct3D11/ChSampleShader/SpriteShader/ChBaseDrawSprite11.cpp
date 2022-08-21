@@ -19,7 +19,17 @@ void BaseDrawSprite::Init(ID3D11Device* _device)
 
 	SampleShaderBase11::Init(_device);
 
-	SetInitFlg(true);
+	spriteData.Init(_device,&GetWhiteTexture());
+
+	std::array<Ch3D::Vertex, 4> vertexs;
+
+	vertexBuffer.CreateBuffer(_device, &vertexs[0], vertexs.size());
+
+	std::array<unsigned long, 6> indexs = { 0,1,2,0,2,3 };
+
+	indexBuffer.CreateBuffer(_device, &indexs[0], indexs.size());
+
+
 }
 
 void BaseDrawSprite::Release()
@@ -28,7 +38,30 @@ void BaseDrawSprite::Release()
 
 	SampleShaderBase11::Release();
 
-	SetInitFlg(false);
+	spriteData.Release();
+}
+
+void BaseDrawSprite::InitVertexShader()
+{
+#include"../SpriteShader/BaseSpriteVertex.inc"
+
+	D3D11_INPUT_ELEMENT_DESC decl[3];
+
+	decl[0] = { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA };
+	decl[1] = { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
+	decl[2] = { "COLOR",  0, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
+
+
+	SampleShaderBase11::InitVertexShader(decl, sizeof(decl) / sizeof(D3D11_INPUT_ELEMENT_DESC), main, sizeof(main));
+
+}
+
+void BaseDrawSprite::InitPixelShader()
+{
+
+#include"../SpriteShader/BaseSpritePixel.inc"
+
+	SampleShaderBase11::InitPixelShader(main, sizeof(main));
 }
 
 void BaseDrawSprite::SetSpriteMatrix(const ChLMat& _mat)
@@ -42,11 +75,9 @@ void BaseDrawSprite::Draw(
 	, Sprite11& _sprite
 	, const ChMat_11& _mat)
 {
+	if (!IsInit())return;
+	if (!IsDraw())return;
 	if (!_tex.IsTex())return;
-
-	SetShaderRasteriser(_dc);
-
-	//Update();
 
 	spriteData.SetSpriteMatrix(_mat);
 
@@ -58,7 +89,18 @@ void BaseDrawSprite::Draw(
 
 	spriteData.SetShaderTexture(_dc);
 
-	_sprite.SetDrawData(_dc);
+	unsigned int offsets = 0;
+
+	auto&& vertexs = _sprite.GetVertexs();
+
+	vertexBuffer.UpdateResouce(_dc, &vertexs[0]);
+
+	vertexBuffer.SetVertexBuffer(_dc, offsets);
+
+	indexBuffer.SetIndexBuffer(_dc);
+
+	_dc->DrawIndexed(6, 0, 0);
+
 
 }
 

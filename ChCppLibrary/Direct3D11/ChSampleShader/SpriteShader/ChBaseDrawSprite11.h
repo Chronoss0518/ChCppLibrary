@@ -7,18 +7,24 @@
 namespace ChD3D11
 {
 
-	class Mesh11;
+	class Sprite11;
 
 	namespace Shader
 	{
 
-		class BaseDrawSprite final :public SampleShaderBase11, public ChCp::Initializer
+		class BaseDrawSprite final :public SampleShaderBase11
 		{
 		public://Init And Release//
 
 			void Init(ID3D11Device* _device);
 
 			void Release();
+
+		protected://Init And Release//
+
+			void InitVertexShader()override;
+
+			void InitPixelShader()override;
 
 		public://Set Functions//
 
@@ -53,6 +59,8 @@ namespace ChD3D11
 			D3D11_CULL_MODE cull = D3D11_CULL_MODE::D3D11_CULL_NONE;
 			ChStd::Bool updateFlg = true;
 
+			VertexBuffer11<Ch3D::Vertex> vertexBuffer;
+			IndexBuffer11 indexBuffer;
 
 		};
 	}
