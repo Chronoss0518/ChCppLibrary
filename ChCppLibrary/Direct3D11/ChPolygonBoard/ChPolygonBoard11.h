@@ -30,8 +30,6 @@ namespace ChD3D11
 
 			void SetUV(const unsigned char _posNo, const ChVec2& _posData);
 
-			void SetDrawData(ID3D11DeviceContext* _CD);
-
 			inline void SetInitTri()
 			{
 				SetInitSquare();

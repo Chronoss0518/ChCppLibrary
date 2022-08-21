@@ -124,34 +124,6 @@ void PolygonBoard11::SetInitSquare()
 
 /////////////////////////////////////////////////////////////////////////////////
 
-void PolygonBoard11::SetDrawData(ID3D11DeviceContext* _dc)
-{
-#if 0 
-	if (vertexs.size() < 3)return;
-
-	unsigned int offsets = 0;
-
-	drawVertexs[0] = *vertexs[0];
-
-	for (unsigned long i = 1; i < vertexs.size() - 1; i++)
-	{
-		drawVertexs[1] = *vertexs[i];
-		drawVertexs[2] = *vertexs[i + 1];
-
-		vertexBuffer.UpdateResouce(_dc, &drawVertexs[0]);
-
-		vertexBuffer.SetVertexBuffer(_dc, offsets);
-
-		indexBuffer.SetIndexBuffer(_dc);
-
-		_dc->DrawIndexed(3, 0, 0);
-
-	}
-#endif
-}
-
-/////////////////////////////////////////////////////////////////////////////////
-
 void PolygonBoard11::AddVertex(const Ch3D::PolyVertex& _vertexs)
 {
 	return;
