@@ -15,7 +15,9 @@ namespace ChD3D11
 			///////////////////////////////////////////////////////////////////////////////////
 			//InitAndRelease//
 
-			void Init(ID3D11Device* _device);
+			void Init(
+				ID3D11Device* _device,
+				TextureBase11* _defaultBase);
 
 			void Release()override;
 
@@ -58,7 +60,9 @@ namespace ChD3D11
 			ConstantBuffer11<ChS_SpriteData> spBuf;
 			ChStd::Bool sUpdateFlg = true;
 
-			TextureBase11*baseTex = nullptr;
+			TextureBase11* baseTex = nullptr;
+			TextureBase11* defaultBase = nullptr;
+
 		};
 
 	}

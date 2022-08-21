@@ -12,24 +12,33 @@ using namespace CB;
 //LightHeader Method
 ///////////////////////////////////////////////////////////////////////////////////
 
-void CBPolygon11::Init(ID3D11Device* _device)
+void CBPolygon11::Init(
+	ID3D11Device* _device,
+	TextureBase11* _defaultBase,
+	TextureBase11* _defaultNormal)
 {
-	Release();
+	if (IsInit())return;
+
+	if (ChPtr::NullCheck(_defaultBase))return;
+	if (!_defaultBase->IsTex())return;
+
+	if (ChPtr::NullCheck(_defaultNormal))return;
+	if (!_defaultNormal->IsTex())return;
 
 	CBBase11::Init(_device);
 	drawBuf.CreateBuffer(GetDevice(), DRAW_DATA_REGISTERNO);
 	charaBuf.CreateBuffer(GetDevice(), CHARACTOR_POSITION_REGISTERNO);
 	mateBuf.CreateBuffer(GetDevice(), MATERIAL_DATA_REGISTERNO);
 
-	Texture11::CreateWhiteTex(GetDevice());
-	Texture11::CreateNormalTex(GetDevice());
+	defaultBase = _defaultBase;
+	defaultNormal = _defaultNormal;
 
 	SetInitFlg(true);
 }
 
 void CBPolygon11::Release()
 {
-	if (!*this)return;
+	if (!IsInit())return;
 
 	drawBuf.Release();
 	charaBuf.Release();
@@ -201,8 +210,8 @@ void CBPolygon11::SetShaderTexture(ID3D11DeviceContext* _dc)
 {
 	if (!*this)return;
 
-	CBBase11::SetShaderTexture(_dc, baseTex, Texture11::GetWhiteTex(), BASE_TEXTURE_REGISTER);
-	CBBase11::SetShaderTexture(_dc, normalTex, Texture11::GetNormalTex(), NORMAL_TEXTURE_REGISTER);
+	CBBase11::SetShaderTexture(_dc, baseTex, *defaultBase, BASE_TEXTURE_REGISTER);
+	CBBase11::SetShaderTexture(_dc, normalTex, *defaultNormal, NORMAL_TEXTURE_REGISTER);
 }
 
 void CBPolygon11::UpdateDD(ID3D11DeviceContext* _dc)

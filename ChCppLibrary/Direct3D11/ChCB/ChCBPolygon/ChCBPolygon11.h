@@ -6,6 +6,9 @@
 
 namespace ChD3D11
 {
+
+	class TextureBase11;
+
 	namespace CB
 	{
 		class CBPolygon11 final :public CBBase11
@@ -15,7 +18,10 @@ namespace ChD3D11
 			///////////////////////////////////////////////////////////////////////////////////
 			//InitAndRelease//
 
-			void Init(ID3D11Device* _device);
+			void Init(
+				ID3D11Device* _device,
+				TextureBase11* _defaultBase, 
+				TextureBase11* _defaultNormal);
 
 			void Release()override;
 
@@ -111,6 +117,9 @@ namespace ChD3D11
 
 			TextureBase11* baseTex = nullptr;
 			TextureBase11* normalTex = nullptr;
+
+			TextureBase11* defaultBase = nullptr;
+			TextureBase11* defaultNormal = nullptr;
 
 		};
 

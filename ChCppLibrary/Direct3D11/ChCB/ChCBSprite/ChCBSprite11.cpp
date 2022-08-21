@@ -8,15 +8,19 @@
 using namespace ChD3D11;
 using namespace CB;
 
-void CBSprite11::Init(ID3D11Device* _device)
+void CBSprite11::Init(
+	ID3D11Device* _device,
+	TextureBase11* _defaultBase)
 {
-	Release();
+	if (IsInit())return;
+	if (ChPtr::NullCheck(_defaultBase))return;
+	if (!_defaultBase->IsTex())return;
 
 	CBBase11::Init(_device);
 
 	spBuf.CreateBuffer(GetDevice(), SPRITE_DATA_REGISTERNO);
 
-	Texture11::CreateWhiteTex(GetDevice());
+	defaultBase = _defaultBase;
 
 	SetInitFlg(true);
 }
@@ -83,7 +87,7 @@ void CBSprite11::SetShaderTexture(ID3D11DeviceContext* _dc)
 {
 	if (!*this)return;
 
-	CBBase11::SetShaderTexture(_dc, baseTex, Texture11::GetWhiteTex(), BASE_TEXTURE_REGISTER);
+	CBBase11::SetShaderTexture(_dc, baseTex, *defaultBase, BASE_TEXTURE_REGISTER);
 }
 
 void CBSprite11::UpdateSD(ID3D11DeviceContext* _dc)
