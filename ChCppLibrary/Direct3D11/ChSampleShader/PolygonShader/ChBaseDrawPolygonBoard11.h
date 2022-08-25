@@ -47,6 +47,10 @@ namespace ChD3D11
 
 			inline D3D11_CULL_MODE GetCullMode() { return cull; }
 
+			inline ChLMat GetViewMatrix() { return polyData.GetViewMatrix(); }
+
+			inline ChLMat GetProjectionMatrix() { return polyData.GetProjectionMatrix(); }
+
 		public://Other Functions//
 
 			void DrawStart(ID3D11DeviceContext* _dc)override;
