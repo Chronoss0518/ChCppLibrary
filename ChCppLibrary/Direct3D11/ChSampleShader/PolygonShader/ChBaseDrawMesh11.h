@@ -17,7 +17,7 @@ namespace ChD3D11
 	namespace Shader
 	{
 
-		class BaseDrawMesh final :public SampleShaderBase11
+		class BaseDrawMesh11 final :public SampleShaderBase11
 		{
 		public://Init And Release//
 

@@ -16,7 +16,7 @@ using namespace Shader;
 
 #define DEBUG 0
 
-void BaseDrawMesh::Init(ID3D11Device* _device)
+void BaseDrawMesh11::Init(ID3D11Device* _device)
 {
 	if (IsInit())return;
 
@@ -25,14 +25,14 @@ void BaseDrawMesh::Init(ID3D11Device* _device)
 	polyData.Init(_device,&GetWhiteTexture(), &GetNormalTexture());
 }
 
-void BaseDrawMesh::Release()
+void BaseDrawMesh11::Release()
 {
 	SampleShaderBase11::Release();
 
 	polyData.Release();
 }
 
-void BaseDrawMesh::InitVertexShader()
+void BaseDrawMesh11::InitVertexShader()
 {
 
 #include"../PolygonShader/BaseMeshVertex.inc"
@@ -58,7 +58,7 @@ void BaseDrawMesh::InitVertexShader()
 	
 }
 
-void BaseDrawMesh::InitPixelShader()
+void BaseDrawMesh11::InitPixelShader()
 {
 
 #include"../PolygonShader/BasePolygonPixcel.inc"
@@ -67,31 +67,31 @@ void BaseDrawMesh::InitPixelShader()
 
 }
 
-void BaseDrawMesh::SetProjectionMatrix(const ChLMat& _mat)
+void BaseDrawMesh11::SetProjectionMatrix(const ChLMat& _mat)
 {
 	polyData.SetProjectionMatrix(_mat);
 }
 
-void BaseDrawMesh::SetViewMatrix(const ChLMat& _mat)
+void BaseDrawMesh11::SetViewMatrix(const ChLMat& _mat)
 {
 	polyData.SetViewMatrix(_mat);
 }
 
-void BaseDrawMesh::SetFillMode(const D3D11_FILL_MODE _fill)
+void BaseDrawMesh11::SetFillMode(const D3D11_FILL_MODE _fill)
 {
 	fill = _fill;
 
 	updateFlg = true;
 }
 
-void BaseDrawMesh::SetCullMode(const D3D11_CULL_MODE _cull)
+void BaseDrawMesh11::SetCullMode(const D3D11_CULL_MODE _cull)
 {
 	cull = _cull;
 
 	updateFlg = true;
 }
 
-void BaseDrawMesh::DrawStart(ID3D11DeviceContext* _dc)
+void BaseDrawMesh11::DrawStart(ID3D11DeviceContext* _dc)
 {
 	if (!IsInit())return;
 	if (IsDraw())return;
@@ -103,7 +103,7 @@ void BaseDrawMesh::DrawStart(ID3D11DeviceContext* _dc)
 
 }
 
-void BaseDrawMesh::Draw(
+void BaseDrawMesh11::Draw(
 	ID3D11DeviceContext* _dc,
 	Mesh11& _mesh,
 	const ChMat_11& _mat)
@@ -116,7 +116,7 @@ void BaseDrawMesh::Draw(
 	DrawUpdate(_dc, _mesh);
 }
 
-void BaseDrawMesh::DrawUpdate(
+void BaseDrawMesh11::DrawUpdate(
 	ID3D11DeviceContext* _dc,
 	FrameObject& _object)
 {
@@ -154,7 +154,7 @@ void BaseDrawMesh::DrawUpdate(
 
 }
 
-void BaseDrawMesh::DrawMain(
+void BaseDrawMesh11::DrawMain(
 	ID3D11DeviceContext* _dc,
 	ChCpp::FrameObject& _object)
 {
@@ -175,14 +175,10 @@ void BaseDrawMesh::DrawMain(
 
 	unsigned int offsets = 0;
 
-	if (polyData.GetFrameMatrix() != drawMatrix)
-	{
 
-		polyData.SetFrameMatrix(drawMatrix);
+	polyData.SetFrameMatrix(drawMatrix);
 
-		polyData.SetVSCharaData(_dc);
-
-	}
+	polyData.SetVSCharaData(_dc);
 
 	for (auto&& prim : primitives)
 	{
@@ -211,7 +207,7 @@ void BaseDrawMesh::DrawMain(
 
 }
 
-void BaseDrawMesh::Update()
+void BaseDrawMesh11::Update()
 {
 	if (!updateFlg)return;
 
