@@ -16,6 +16,16 @@ using namespace ModelLoader;
 //ChCMObjeFile Method//
 ///////////////////////////////////////////////////////////////////////////////////////
 
+void ObjFile::Release()
+{
+	objects.clear();
+	materialMaps.clear();
+	makeObject = nullptr;
+	targetMaterial = nullptr;
+	folderPath = "";
+	blockMaterial = "";
+}
+
 void ObjFile::CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& _filePath)
 {
 
@@ -42,10 +52,11 @@ void ObjFile::CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& 
 		}
 
 		text.SetText(tmp);
-
 	}
 
 	folderPath = GetRoutePath(_filePath);
+
+	Release();
 
 	for (auto line : text)
 	{
@@ -170,7 +181,6 @@ void ObjFile::CreateMaterial(const std::string& _matName)
 
 void ObjFile::CreateChFrame(ChPtr::Shared<ChCpp::FrameObject> _frame)
 {
-	
 
 	//for (auto&& Obj : ObjectMaps)
 	for (auto&& obj : objects)
@@ -263,9 +273,9 @@ void ObjFile::CreateChFrame(ChPtr::Shared<ChCpp::FrameObject> _frame)
 				//unsigned long NVertex = Values->VertexNum - Obj.second->SVertex - 1;
 				//unsigned long NUV = Values->UVNum - Obj.second->SUV - 1;
 				//unsigned long NNormal = Values->NormalNum - Obj.second->SNormal - 1;
-				unsigned long nVertex = values->vertexNum - obj->sVertex - 1;
-				unsigned long nUV = values->uvNum - obj->sUV - 1;
-				unsigned long nNormal = values->normalNum - obj->sNormal - 1;
+				unsigned long nVertex = values->vertexNum - 1 - obj->sVertex;
+				unsigned long nUV = values->uvNum - 1 - obj->sUV;
+				unsigned long nNormal = values->normalNum - 1 - obj->sNormal;
 
 				auto faceVertex = ChPtr::Make_S<Ch3D::SavePolyData>();
 

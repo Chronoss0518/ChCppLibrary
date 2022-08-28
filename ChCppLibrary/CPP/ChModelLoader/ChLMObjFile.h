@@ -78,6 +78,8 @@ namespace ChCpp
 
 		protected:
 
+			void Release();
+
 			void CreateObject(const std::string& _objectName);
 
 			void CreateMaterials(const std::string& _fileName);
