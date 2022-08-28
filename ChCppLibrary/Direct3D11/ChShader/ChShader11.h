@@ -132,11 +132,10 @@ namespace ChD3D11
 
 		Sprite11 outSprite;
 
-		ChPtr::Unique<Shader::BaseDrawSprite> spriteShader = nullptr;
+		ChPtr::Unique<Shader::BaseDrawSprite11> spriteShader = nullptr;
 
 		//•`‰æ‘ÎÛ‚Éİ’è‚·‚é‰æ‘œŒQ//
 		std::vector<ID3D11RenderTargetView*>renderTargets;
-		ID3D11RenderTargetView** tmpView = nullptr;
 
 		ID3D11Device* device = nullptr;
 		ID3D11DeviceContext* dc = nullptr;

@@ -75,7 +75,7 @@ void ShaderController11::Init(
 	spvTex.InitChSpriteTextureVertexShader(_device);
 	bpTex.InitChBaseSpritePixelShader(_device);
 
-	spriteShader = ChPtr::Make_U<Shader::BaseDrawSprite>();
+	spriteShader = ChPtr::Make_U<Shader::BaseDrawSprite11>();
 	spriteShader->Init(_device);
 
 	dsBuffer.CreateDepthBuffer(_device, _width, _height);
@@ -138,9 +138,7 @@ void ShaderController11::DrawStart()
 
 	if (rtDrawFlg)
 	{
-		tmpView = &renderTargets[0];
-		dc->OMSetRenderTargets(renderTargets.size(), tmpView, nullptr);
-
+		dc->OMSetRenderTargets(renderTargets.size(), &renderTargets[0], nullptr);
 	}
 	else
 	{
@@ -185,7 +183,7 @@ void ShaderController11::DrawStart2D()
 		ID3D11RenderTargetView* tmp = out2D.GetRTView();
 		dc->OMSetRenderTargets(1, &tmp, nullptr);
 
-		out3D.SetDrawData(dc, 12);
+		//out3D.SetDrawData(dc, 12);
 	}
 
 }
