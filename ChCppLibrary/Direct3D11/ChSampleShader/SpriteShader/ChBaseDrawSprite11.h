@@ -12,7 +12,7 @@ namespace ChD3D11
 	namespace Shader
 	{
 
-		class BaseDrawSprite final :public SampleShaderBase11
+		class BaseDrawSprite11 final :public SampleShaderBase11
 		{
 		public://Init And Release//
 

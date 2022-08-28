@@ -13,7 +13,7 @@ using namespace ChD3D11;
 using namespace Shader;
 
 
-void BaseDrawSprite::Init(ID3D11Device* _device)
+void BaseDrawSprite11::Init(ID3D11Device* _device)
 {
 	if (IsInit())return;
 
@@ -32,7 +32,7 @@ void BaseDrawSprite::Init(ID3D11Device* _device)
 
 }
 
-void BaseDrawSprite::Release()
+void BaseDrawSprite11::Release()
 {
 	if (!IsInit())return;
 
@@ -41,7 +41,7 @@ void BaseDrawSprite::Release()
 	spriteData.Release();
 }
 
-void BaseDrawSprite::InitVertexShader()
+void BaseDrawSprite11::InitVertexShader()
 {
 #include"../SpriteShader/BaseSpriteVertex.inc"
 
@@ -56,7 +56,7 @@ void BaseDrawSprite::InitVertexShader()
 
 }
 
-void BaseDrawSprite::InitPixelShader()
+void BaseDrawSprite11::InitPixelShader()
 {
 
 #include"../SpriteShader/BaseSpritePixel.inc"
@@ -64,12 +64,12 @@ void BaseDrawSprite::InitPixelShader()
 	SampleShaderBase11::InitPixelShader(main, sizeof(main));
 }
 
-void BaseDrawSprite::SetSpriteMatrix(const ChLMat& _mat)
+void BaseDrawSprite11::SetSpriteMatrix(const ChLMat& _mat)
 {
 	spriteData.SetSpriteMatrix(_mat);
 }
 
-void BaseDrawSprite::Draw(
+void BaseDrawSprite11::Draw(
 	ID3D11DeviceContext* _dc
 	, TextureBase11& _tex
 	, Sprite11& _sprite
@@ -104,7 +104,7 @@ void BaseDrawSprite::Draw(
 
 }
 
-void BaseDrawSprite::Update()
+void BaseDrawSprite11::Update()
 {
 	if (!updateFlg)return;
 
