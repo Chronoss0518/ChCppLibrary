@@ -18,7 +18,7 @@ namespace ChCpp
 		//SetFunction//
 
 		inline void SetPolygon(const std::vector<ChPtr::Shared<HitTestVertexs>>& _poly) { polygonList = _poly; }
-#if 1
+
 		inline void SetPolygon(const std::vector<ChPtr::Shared<Ch3D::Primitive>>& _polyList,const std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>>& _vertexList)
 		{ 
 			for (auto&& poly : _polyList)
@@ -38,7 +38,6 @@ namespace ChCpp
 
 			}
 		}
-#endif
 
 		inline void AddPolygon(const HitTestVertexs& _vertexs)
 		{

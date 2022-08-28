@@ -65,7 +65,7 @@ namespace ChCpp
 
 		float CreateDat(const ChVec3& _vec1, const ChVec3& _vec2, const ChVec3& _vec3);
 
-		ChStd::Bool HitTestTri(const ChVec3& _vec1, const ChVec3& _vec2, const ChVec3& _vec3);
+		ChStd::Bool HitTestTri(const ChVec3& _vec1, const ChVec3& _vec2, const ChVec3& _vec3, const HitTestObject* _target);
 
 
 		ChVec3 rayDir = ChVec3(0.0f, 0.0f, 1.0f);

@@ -19,9 +19,9 @@ ChStd::Bool HitTestRay::IsHit(
 {
 	auto square = _target->GetSquarePositions();
 
-	ChStd::Bool hitFlg = HitTestTri(square.pos[0], square.pos[1], square.pos[2]);
+	ChStd::Bool hitFlg = HitTestTri(square.pos[0], square.pos[1], square.pos[2], _target);
 
-	if (!hitFlg)hitFlg = HitTestTri(square.pos[0], square.pos[2], square.pos[3]);
+	if (!hitFlg)hitFlg = HitTestTri(square.pos[0], square.pos[2], square.pos[3], _target);
 
 	return hitFlg;
 }
@@ -52,13 +52,13 @@ ChStd::Bool  HitTestRay::IsHit(
 
 	for (auto poly : _target->GetPolygonList())
 	{
-		if (!HitTestTri(poly->poss[0], poly->poss[1], poly->poss[2]))continue;
+		if (!HitTestTri(poly->poss[0], poly->poss[1], poly->poss[2],_target))continue;
 		hitFlg = true;
 		if (minLenVec.Len() < GetHitVectol().Len())continue;
 		minLenVec = GetHitVectol();
 	}
 
-	if (hitFlg)_target->SetHitVector(minLenVec);
+	if (hitFlg)_target->SetHitVector(minLenVec * -1.0f);
 
 	return hitFlg;
 }
@@ -101,7 +101,7 @@ float HitTestRay::CreateDat(const ChVec3& _vec1, const ChVec3& _vec2, const ChVe
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool HitTestRay::HitTestTri(const ChVec3& _vec1, const ChVec3& _vec2, const ChVec3& _vec3)
+ChStd::Bool HitTestRay::HitTestTri(const ChVec3& _vec1, const ChVec3& _vec2, const ChVec3& _vec3, const HitTestObject* _target)
 {
 	//eg1 = (v1 - v0), eg2 = (v2 - v0);
 	//hitPos = spos + (dir * len)
@@ -118,8 +118,20 @@ ChStd::Bool HitTestRay::HitTestTri(const ChVec3& _vec1, const ChVec3& _vec2, con
 	//v = dat(eg1,v2sp,-dir)/dat(eg1.eg2.-dir)
 	//len = dat(eg1,eg2,v2sp)/dat(eg1.eg2.-dir)
 
-	ChVec3 pos = GetPos();
-	ChVec3 dir = GetMat().TransformCoord(rayDir);
+	ChVec3 pos;// = GetPos();
+	ChVec3 dir;// = GetMat().TransformCoord(rayDir);
+
+	{
+		ChLMat tmpMat;
+		tmpMat = _target->GetMat();
+		tmpMat.Inverse();
+		tmpMat = GetMat() * tmpMat;
+
+		pos = tmpMat.GetPosition();
+		dir = tmpMat.TransformCoord(rayDir);
+
+	}
+
 
 	float u = 0.0f, v = 0.0f, len = 0.0f;
 
@@ -452,8 +464,6 @@ ChStd::Bool HitTestSphere::IsHit(
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
-
-#include<windows.h>
 
 ChStd::Bool  HitTestSphere::IsHit(
 	HitTestSphere* _target)
