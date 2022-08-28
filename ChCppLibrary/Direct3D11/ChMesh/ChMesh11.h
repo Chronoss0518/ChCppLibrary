@@ -45,7 +45,7 @@ namespace ChD3D11
 			primitives.push_back(_primitive);
 		}
 
-		std::vector<ChPtr::Shared<DrawPrimitiveData11>> GetPrimitives()
+		std::vector<ChPtr::Shared<DrawPrimitiveData11>>& GetPrimitives()
 		{
 			return primitives;
 		}
