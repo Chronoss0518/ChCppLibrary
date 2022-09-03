@@ -1,89 +1,128 @@
-#ifndef Ch_CPP_MObj_h
-#define Ch_CPP_MObj_h
 
-#include"../ChModel/ChModel.h"
-#include"../ChModelLoader/ChModelLoader.h"
-#include"../ChModelLoader/ChAnimationCreater.h"
+#ifndef Ch_CPP_ModelObject_h
+#define Ch_CPP_ModelObject_h
 
+#include"../ChBaseObject/ChBaseObject.h"
 
 namespace ChCpp
 {
 
-	class ModelObject :public ChCp::Releaser
+	struct BoneObject :public ChCpp::BaseObject
 	{
-	public:
+		Ch3D::Transform transform;
+	};
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//InitAndRelease//
+	struct FrameComponent:public ChCpp::BaseComponent
+	{
+		std::vector<ChPtr::Shared<Ch3D::Primitive>> primitives;
+		std::vector<ChPtr::Shared<Ch3D::MaterialData>>materialList;
+		std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>> vertexList;
+		std::map<std::string, unsigned long>mateNames;
+	};
 
-		inline void Init() {};
+	struct BoneComponent :public ChCpp::BaseComponent
+	{
+		Ch3D::BoneData boneDatas;
+		BoneObject* boneObject = nullptr;
+	};
 
-		virtual void Release()override;
-
-		///////////////////////////////////////////////////////////////////////////////////////
-		//GetFunction//
-
-		ChPtr::Shared<ModelFrame> GetModel()const
+	struct AnimationComponent:public ChCpp::BaseComponent
+	{
+		struct AnimationObject
 		{
-			return model;
-		}
+			Ch3D::Transform start;
+			Ch3D::Transform end;
+			float animationTime = 0;
+		};
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
+		std::vector<ChPtr::Shared<AnimationObject>>keyframeAnimation;
 
-
-
-		///////////////////////////////////////////////////////////////////////////////////////
-		//InsFunction//
-
-		///////////////////////////////////////////////////////////////////////////////////////
-
-		template<class T>
-		auto CreateModel(const std::string& _filePath)->typename std::enable_if<
-			std::is_base_of<ModelLoaderBase, T>::value, void>::type
-		{
-			Release();
-
-			ChPtr::Shared<ModelLoaderBase> creater;
-			creater = ChPtr::Make_S<T>();
-
-			creater->Init(this);
-
-			creater->CreateModel(_filePath);
-		}
-
-		///////////////////////////////////////////////////////////////////////////////////////
-
-		template<class T>
-		auto OutModelFile(const std::string& _filePath)->typename std::enable_if<
-			std::is_base_of<ModelLoaderBase, T>::value, void>::type
-		{
-
-		}
-
-		friend ModelLoaderBase;
-		friend AnimationCreater;
-
-	protected:
-
-		ChPtr::Shared<ModelFrame>model = nullptr;
-
-		std::vector<std::string>animatorNames;
-
-	private:
-
-		using FrameName = std::string;
-		using  AnimationName = std::string;
-
-		using Animation = std::map<AnimationName, ChPtr::Shared<ModelAnimator>>;
-
-		static	std::map<FrameName, Animation>animatorList;
+		std::string animationName = "";
 
 	};
 
 
+	class FrameObject : public ChCpp::BaseObject
+	{
+	public://Set Functions//
 
+		void SetOutSizdTransform(const Ch3D::Transform& _trans);
 
+		void SetOutSizdTransform(const ChLMat& _mat);
+
+		void SetOutSizdTransform(const ChRMat& _mat);
+		
+		void SetFrameTransform(const Ch3D::Transform& _mat);
+
+		void SetFrameTransform(const ChLMat& _mat);
+
+		void SetFrameTransform(const ChRMat& _mat);
+
+	public://Get Functions//
+
+		ChLMat GetDrawLHandMatrix();
+
+		ChRMat GetDrawRHandMatrix();
+
+	public://Update Functions//
+
+		void Update()override;
+
+		void UpdateDrawTransform();
+
+		void SetAnimationName(const std::string& _name);
+
+	public://Is Function//
+
+	protected:
+
+		ChLMat frameMat;
+		ChLMat outSideMat;
+
+	private:
+
+		ChLMat drawMat;
+		std::string animationName = "";
+
+	};
+
+	class ModelObject :public FrameObject, public ChCp::Initializer
+	{
+	public:
+
+		inline void Init()override
+		{
+			SetInitFlg(true);
+		}
+
+		inline void Release()override
+		{
+			SetInitFlg(false);
+		}
+
+		inline void SetShaderAxisType(const Ch3D::ShaderAxisType _type)
+		{
+			axisType = _type;
+		}
+
+		void SetModelName(const std::string& _name);
+
+		inline std::string GetModelName() 
+		{
+			return modelName; 
+		}
+
+		void AddAnimationName(const std::string& _name);
+
+		virtual void Create(){}
+
+	private:
+
+		std::vector<std::string>animationNames;
+		std::string modelName = "";
+
+		Ch3D::ShaderAxisType axisType = Ch3D::ShaderAxisType::LeftHand;
+	};
 
 }
 

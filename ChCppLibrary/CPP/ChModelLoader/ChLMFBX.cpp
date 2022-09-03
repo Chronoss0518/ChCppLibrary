@@ -4,7 +4,7 @@
 
 #include"../ChModel/ChModelObject.h"
 
-#include"ChModelLoader.h"
+#include"ChModelLoaderBase.h"
 #include"ChLMFBX.h"
 
 using namespace ChCpp::ModelLoader;
@@ -13,7 +13,7 @@ using namespace ChCpp::ModelLoader;
 //ChFBXMesh Method//
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void FBX::CreateModel(const std::string& _filePath)
+void FBX::CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& _filePath)
 {
 	LoadFBXBinary(_filePath);
 
@@ -22,7 +22,7 @@ void FBX::CreateModel(const std::string& _filePath)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void FBX::OutModelFile(const std::string& _filePath)
+void FBX::OutModelFile(const ChPtr::Shared<ModelObject> _model, const std::string& _filePath)
 {
 
 }
@@ -137,27 +137,27 @@ void FBX::CreatePropetyRecord(PropertyRecord& _recode, const std::vector<char>& 
 	{
 	case 'Y':
 	{
-		MakeBaseType<short, FBXIntegerByte2>(_recode,_binarys,filePos);break;
+		MakeBaseType<short, FBXIntegerByte2>(_recode, _binarys, filePos); break;
 	}
 	case 'C':
 	{
-		MakeBaseType<unsigned char, FBXIntegerByte1>(_recode, _binarys, filePos);break;
+		MakeBaseType<unsigned char, FBXIntegerByte1>(_recode, _binarys, filePos); break;
 	}
 	case 'I':
 	{
-		MakeBaseType<long, FBXIntegerByte4>(_recode, _binarys, filePos);break;
+		MakeBaseType<long, FBXIntegerByte4>(_recode, _binarys, filePos); break;
 	}
 	case 'F':
 	{
-		MakeBaseType<float, FBXFloatingByte4>(_recode, _binarys, filePos);break;
+		MakeBaseType<float, FBXFloatingByte4>(_recode, _binarys, filePos); break;
 	}
 	case 'D':
 	{
-		MakeBaseType<double, FBXFloatingByte8>(_recode, _binarys, filePos);break;
+		MakeBaseType<double, FBXFloatingByte8>(_recode, _binarys, filePos); break;
 	}
 	case 'L':
 	{
-		MakeBaseType<long long, FBXIntegerByte8>(_recode, _binarys, filePos);break;
+		MakeBaseType<long long, FBXIntegerByte8>(_recode, _binarys, filePos); break;
 	}
 	case 'f':
 	case 'd':
@@ -231,7 +231,7 @@ void FBX::CreateArrayRecord(ArrayListDataRecord& _recode, const std::vector<char
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void FBX::CreateSpecialTypeRecord(SpecialDataRecode& _recode,const std::vector<char>& _binarys, const char _type)
+void FBX::CreateSpecialTypeRecord(SpecialDataRecode& _recode, const std::vector<char>& _binarys, const char _type)
 {
 
 	if (errorFlg)return;
@@ -244,7 +244,7 @@ void FBX::CreateSpecialTypeRecord(SpecialDataRecode& _recode,const std::vector<c
 	{
 	case 'S':
 	{
-		_recode.value = MakeSpecialType<FBXString>(_recode.length, _binarys, filePos);break;
+		_recode.value = MakeSpecialType<FBXString>(_recode.length, _binarys, filePos); break;
 	}
 	case 'R':
 	{

@@ -87,6 +87,11 @@ void TextureBase11::InitSampler()
 void TextureBase11::UpdateSampler()
 {
 	if (!sdUpdateFlg)return;
+	if (ChPtr::NotNullCheck(sampler))
+	{
+		sampler->Release();
+		sampler = nullptr;
+	}
 
 	device->CreateSamplerState(&sDesc, &sampler);
 
@@ -336,7 +341,6 @@ void Texture11::CreateColorTexture(
 
 	Init(_device);
 }
-
 
 void RenderTarget11::Release()
 {

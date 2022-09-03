@@ -71,11 +71,13 @@ namespace ChCpp
 		{
 			for (auto&& com : comList)
 			{
-				if (ChPtr::SharedSafeCast<T, BaseComponent>(com) != nullptr)
+				auto testCom = ChPtr::SharedSafeCast<T>(com);
+
+				if (testCom != nullptr)
 				{
-					if (com->dFlg)continue;
-					if (!com->useFlg)continue;
-					return ChPtr::SharedSafeCast<T, BaseComponent>(com);
+					if (testCom->dFlg)continue;
+					if (!testCom->useFlg)continue;
+					return testCom;
 				}
 			}
 			return nullptr;
@@ -95,6 +97,11 @@ namespace ChCpp
 				tmpComList.push_back(com);
 			}
 			return tmpComList;
+		}
+
+		inline std::vector<ChPtr::Shared<BaseObject>>&GetChildlen()
+		{
+			return childList;
 		}
 
 		//子オブジェクト群の取得//

@@ -139,8 +139,6 @@ namespace ChD3D11
 			, const unsigned long _height
 			, const unsigned int _CPUFlg = 0);
 
-		///////////////////////////////////////////////////////////////////////////////////////
-
 	protected:
 
 	};
@@ -149,7 +147,7 @@ namespace ChD3D11
 	{
 	public://InitAndRelease//
 
-		void Release();
+		void Release()override;
 
 	public://Create Functions//
 

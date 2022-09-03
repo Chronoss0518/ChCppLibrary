@@ -50,15 +50,6 @@ namespace ChCpp
 			ChVec4 ambient = 0.0f;
 			std::vector<std::string>textureNames = std::vector<std::string>(0);
 
-			//std::string diffuseMap;
-			//std::string ambientMap;
-			//std::string specularMap;
-			//std::string specularHighLightMap;
-			//std::string bumpMap;
-			//std::string alphaMap;
-			//std::string normalMap;
-			//std::string metallicMap;
-
 		};
 
 		struct SurFace

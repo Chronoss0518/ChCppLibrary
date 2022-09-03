@@ -222,14 +222,13 @@ void VertexShader11::Init(
 
 void VertexShader11::InitChBaseModelVertexShader(ID3D11Device* _device)
 {
-
-#include"../ChShader/MBVShader.inc"
+#include"../ChSampleShader/PolygonShader/BaseMeshVertex.inc"
 
 	D3D11_INPUT_ELEMENT_DESC Decl[14];
 
 	Decl[0] = { "POSITION",  0, DXGI_FORMAT_R32G32B32_FLOAT,0, 0, D3D11_INPUT_PER_VERTEX_DATA };
-	Decl[1] = { "COLOR",  0, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-	Decl[2] = { "TEXCOORD",  0, DXGI_FORMAT_R32G32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
+	Decl[1] = { "TEXCOORD",  0, DXGI_FORMAT_R32G32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
+	Decl[2] = { "COLOR",  0, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
 	Decl[3] = { "NORMAL",  0, DXGI_FORMAT_R32G32B32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
 	Decl[4] = { "NORMAL",  1, DXGI_FORMAT_R32G32B32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
 	Decl[5] = { "BLENDINDEX",  0, DXGI_FORMAT_R32G32B32A32_UINT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
@@ -248,7 +247,7 @@ void VertexShader11::InitChBaseModelVertexShader(ID3D11Device* _device)
 
 void VertexShader11::InitChPolygonboardTextureVertexShader(ID3D11Device* _device)
 {
-#include"../ChShader/PTVShader.inc"
+#include"../ChSampleShader/PolygonShader/BasePoboVertex.inc"
 
 	D3D11_INPUT_ELEMENT_DESC Decl[4];
 
@@ -264,7 +263,7 @@ void VertexShader11::InitChPolygonboardTextureVertexShader(ID3D11Device* _device
 
 void VertexShader11::InitChSpriteTextureVertexShader(ID3D11Device* _device)
 {
-#include"../ChShader/STVShader.inc"
+#include"../ChSampleShader/SpriteShader/BaseSpriteVertex.inc"
 
 	D3D11_INPUT_ELEMENT_DESC Decl[3];
 
@@ -291,17 +290,17 @@ void VertexShader11::Release()
 
 }
 
-void PixelShader11::InitChBaseModelPixelShader(ID3D11Device* _device)
+void PixelShader11::InitChBasePolygonPixelShader(ID3D11Device* _device)
 {
-#include"../ChShader/MBPShader.inc"
+#include"../ChSampleShader/PolygonShader/BasePolygonPixcel.inc"
 
 	Init(_device, main, sizeof(main));
 
 }
 
-void PixelShader11::InitChBaseTexturePixelShader(ID3D11Device* _device)
+void PixelShader11::InitChBaseSpritePixelShader(ID3D11Device* _device)
 {
-#include"../ChShader/TPShader.inc"
+#include"../ChSampleShader/SpriteShader/BaseSpritePixel.inc"
 
 	Init(_device, &main, sizeof(main));
 

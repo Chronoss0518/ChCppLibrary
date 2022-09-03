@@ -14,7 +14,7 @@ namespace ChCpp
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
-		std::string& ModelNameIns();
+		//std::string& ModelNameIns();
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
@@ -30,7 +30,7 @@ namespace ChCpp
 
 	protected:
 
-		void SetModel(ChPtr::Shared<ModelFrame> _models);
+		//void SetModel(ChPtr::Shared<ModelFrame> _models);
 
 	private:
 
