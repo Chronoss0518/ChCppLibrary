@@ -492,7 +492,7 @@ namespace ChMath
 		///////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
-		unsigned long GetArray() { return Array; }
+		constexpr const unsigned long GetArray()const  { return Array; }
 
 		//ベクトルの要素の大きさを得る//
 		T GetElementsLen()
@@ -703,7 +703,7 @@ namespace ChMath
 		}
 
 	private:
-
+		
 		VectorTest<T, Array> val[Array];
 
 	};
@@ -1274,9 +1274,9 @@ namespace ChMath
 		}
 		*/
 
-		unsigned long GetColumn()const { return Column; }
+		constexpr const unsigned long GetColumn()const { return Column; }
 
-		unsigned long GetRow()const { return Row; }
+		constexpr const unsigned long GetRow()const { return Row; }
 
 		bool IsValue(const MatrixBase& _mat)const
 		{
