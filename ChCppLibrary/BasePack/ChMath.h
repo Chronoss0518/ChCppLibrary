@@ -702,6 +702,18 @@ namespace ChMath
 			return true;
 		}
 
+		static VectorBase Lerp(
+			const VectorBase& _start,
+			const VectorBase& _end,
+			const float _pow)
+		{
+			VectorBase out;
+
+			out = (_start * (1.0f - _pow)) + (_end * _pow);
+
+			return out;
+		}
+
 	private:
 		
 		VectorTest<T, Array> val[Array];
@@ -1304,6 +1316,22 @@ namespace ChMath
 					m[i][j] = static_cast<T>(i != j ? 0.0f : 1.0f);
 				}
 			}
+		}
+
+		static MatrixBase Lerp(
+			const MatrixBase& _start,
+			const MatrixBase& _end,
+			const float _pow)
+		{
+			MatrixBase out;
+
+			for (unsigned long i = 0; i < Row; i++)
+			{
+				out[i] = VectorBase<T, Column>::Lerp(_start[i], _end[i], _pow);
+			}
+
+
+			return out;
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////

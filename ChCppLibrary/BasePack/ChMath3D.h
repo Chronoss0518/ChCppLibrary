@@ -186,6 +186,16 @@ struct ChVector2 : public ChMath::Vector2Base<float>
 		const ChVector2& _vec2,
 		const unsigned long _digit = 6);
 
+	static ChVector2 Lerp(
+		const ChVector2& _start, 
+		const ChVector2& _end, 
+		const float _pow)
+	{
+		ChVector2 out;
+		out.val.Set(ChMath::VectorBase<float, 2>::Lerp(_start.val, _end.val, _pow));
+		return out;
+	}
+
 };
 
 using ChVec2 = ChVector2;
@@ -376,6 +386,16 @@ struct ChVector3 : public ChMath::Vector3Base<float>
 		const ChVector3& _vec1,
 		const ChVector3& _vec2,
 		const unsigned long _digit = 6);
+
+	static ChVector3 Lerp(
+		const ChVector3& _start,
+		const ChVector3& _end,
+		const float _pow)
+	{
+		ChVector3 out;
+		out.val.Set(ChMath::VectorBase<float, 3>::Lerp(_start.val, _end.val, _pow));
+		return out;
+	}
 
 };
 
@@ -580,6 +600,16 @@ struct ChVector4 : public ChMath::Vector4Base<float>
 	{
 		ChVector4 out;
 		out.val.Set(ChMath::Vector4Base<float>::OverlapsRect(_vec).val);
+		return out;
+	}
+
+	static ChVector4 Lerp(
+		const ChVector4& _start,
+		const ChVector4& _end,
+		const float _pow)
+	{
+		ChVector4 out;
+		out.val.Set(ChMath::VectorBase<float, 4>::Lerp(_start.val, _end.val, _pow));
 		return out;
 	}
 
@@ -832,6 +862,16 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 		m.Inverse();
 	}
 
+	static ChLMatrix Lerp(
+		const ChLMatrix& _start,
+		const ChLMatrix& _end,
+		const float _pow)
+	{
+		ChLMatrix out;
+		out.m.Set(ChMath::MatrixBase<float, 4, 4>::Lerp(_start.m, _end.m, _pow));
+		return out;
+	}
+
 	///////////////////////////////////////////////////////////////////////////////////
 
 	ChRMatrix ConvertAxis();
@@ -957,6 +997,16 @@ struct ChRMatrix : public ChMath::BaseMatrix4x4<float>
 	void Inverse()
 	{
 		m.Inverse();
+	}
+
+	static ChRMatrix Lerp(
+		const ChRMatrix& _start,
+		const ChRMatrix& _end,
+		const float _pow)
+	{
+		ChRMatrix out;
+		out.m.Set(ChMath::MatrixBase<float, 4, 4>::Lerp(_start.m, _end.m, _pow));
+		return out;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
