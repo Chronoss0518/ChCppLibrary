@@ -868,7 +868,7 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 		const float _pow)
 	{
 		ChLMatrix out;
-		out.m.Set(ChMath::MatrixBase<float, 4, 4>::Lerp(_start.m, _end.m, _pow));
+		out.m.Set(ChMath::SquareMatrixBase<float, 4>::Lerp(_start.m, _end.m, _pow));
 		return out;
 	}
 
@@ -1005,7 +1005,7 @@ struct ChRMatrix : public ChMath::BaseMatrix4x4<float>
 		const float _pow)
 	{
 		ChRMatrix out;
-		out.m.Set(ChMath::MatrixBase<float, 4, 4>::Lerp(_start.m, _end.m, _pow));
+		out.m.Set(ChMath::SquareMatrixBase<float, 4>::Lerp(_start.m, _end.m, _pow));
 		return out;
 	}
 

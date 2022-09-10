@@ -1354,6 +1354,9 @@ namespace ChMath
 
 	};
 
+	template<typename T,unsigned long Array>
+	using SquareMatrixBase = MatrixBase<T, Array, Array>;
+
 
 	template<typename T>
 	struct Vector2Base
@@ -1544,7 +1547,7 @@ namespace ChMath
 				T r_12, r_22;
 
 			};
-			MatrixBase<T, 2, 2> m;
+			SquareMatrixBase<T, 2> m;
 		};
 
 		inline BaseMatrix2x2()
@@ -1577,7 +1580,7 @@ namespace ChMath
 				T r_13, r_23, r_33;
 
 			};
-			MatrixBase<T, 3, 3> m;
+			SquareMatrixBase<T, 3> m;
 		};
 
 		inline BaseMatrix3x3()
@@ -1612,7 +1615,7 @@ namespace ChMath
 				T r_14, r_24, r_34, r_44;
 
 			};
-			MatrixBase<T, 4, 4> m;
+			SquareMatrixBase<T, 4> m;
 		};
 
 		inline BaseMatrix4x4()
