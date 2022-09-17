@@ -11,77 +11,10 @@
 using namespace ChCpp;
 
 ///////////////////////////////////////////////////////////////////////////////////////
-//HitTestRay Method//
+//HitTestObject Method
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool HitTestRay::IsHit(
-	HitTestPanel* _target)
-{
-	auto square = _target->GetSquarePositions();
-
-	ChStd::Bool hitFlg = HitTestTri(square.pos[0], square.pos[1], square.pos[2], _target);
-
-	if (!hitFlg)hitFlg = HitTestTri(square.pos[0], square.pos[2], square.pos[3], _target);
-
-	return hitFlg;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-
-ChStd::Bool HitTestRay::IsHit(
-	HitTestBox* _target)
-{
-	return false;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-
-ChStd::Bool  HitTestRay::IsHit(
-	HitTestSphere* _target)
-{
-	return false;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-
-ChStd::Bool  HitTestRay::IsHit(
-	HitTestPolygon* _target)
-{
-	ChVec3 minLenVec = maxLen;
-	ChStd::Bool hitFlg = false;
-
-	for (auto poly : _target->GetPolygonList())
-	{
-		if (!HitTestTri(poly->poss[0], poly->poss[1], poly->poss[2],_target))continue;
-		hitFlg = true;
-		if (minLenVec.Len() < GetHitVectol().Len())continue;
-		minLenVec = GetHitVectol();
-	}
-
-	if (hitFlg)_target->SetHitVector(minLenVec * -1.0f);
-
-	return hitFlg;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-
-ChStd::Bool  HitTestRay::IsInnerHit(
-	HitTestBox* _target)
-{
-	return false;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-
-ChStd::Bool HitTestRay::IsInnerHit(
-	HitTestSphere* _target)
-{
-	return false;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-
-float HitTestRay::CreateDat(const ChVec3& _vec1, const ChVec3& _vec2, const ChVec3& _vec3)
+float HitTestObject::CreateDat(const ChVec3& _vec1, const ChVec3& _vec2, const ChVec3& _vec3)
 {
 
 	ChMath::BaseMatrix3x3<float> mat;
@@ -101,7 +34,13 @@ float HitTestRay::CreateDat(const ChVec3& _vec1, const ChVec3& _vec2, const ChVe
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool HitTestRay::HitTestTri(const ChVec3& _vec1, const ChVec3& _vec2, const ChVec3& _vec3, const HitTestObject* _target)
+ChStd::Bool HitTestObject::HitTestTri(
+	ChVec3& _thisHitVectol,
+	const ChVec3& _dir,
+	const ChVec3& _vec1,
+	const ChVec3& _vec2,
+	const ChVec3& _vec3,
+	const HitTestObject* _target)
 {
 	//eg1 = (v1 - v0), eg2 = (v2 - v0);
 	//hitPos = spos + (dir * len)
@@ -118,6 +57,8 @@ ChStd::Bool HitTestRay::HitTestTri(const ChVec3& _vec1, const ChVec3& _vec2, con
 	//v = dat(eg1,v2sp,-dir)/dat(eg1.eg2.-dir)
 	//len = dat(eg1,eg2,v2sp)/dat(eg1.eg2.-dir)
 
+	_thisHitVectol = ChVec3();
+
 	ChVec3 pos;// = GetPos();
 	ChVec3 dir;// = GetMat().TransformCoord(rayDir);
 
@@ -128,7 +69,7 @@ ChStd::Bool HitTestRay::HitTestTri(const ChVec3& _vec1, const ChVec3& _vec2, con
 		tmpMat = GetMat() * tmpMat;
 
 		pos = tmpMat.GetPosition();
-		dir = tmpMat.TransformCoord(rayDir);
+		dir = tmpMat.TransformCoord(_dir);
 
 	}
 
@@ -163,11 +104,99 @@ ChStd::Bool HitTestRay::HitTestTri(const ChVec3& _vec1, const ChVec3& _vec2, con
 	len = CreateDat(eg1, eg2, v2sp);
 	len = len / divDat;
 
-	if (len < 0.0f || len > maxLen)return false;
-
-	SetHitVector(dir * len);
+	_thisHitVectol = dir * len;
 
 	return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+//HitTestRay Method//
+///////////////////////////////////////////////////////////////////////////////////////
+
+ChStd::Bool HitTestRay::IsHit(
+	HitTestPanel* _target)
+{
+	auto square = _target->GetSquarePositions();
+
+	ChVec3 tmpVec;
+
+	ChStd::Bool hitFlg = HitTestTri(tmpVec, rayDir,square.pos[0], square.pos[1], square.pos[2], _target);
+
+	if (tmpVec.Len() > maxLen)hitFlg = false;
+
+	if (!hitFlg)hitFlg = HitTestTri(tmpVec, rayDir,square.pos[0], square.pos[2], square.pos[3], _target);
+
+	if (tmpVec.Len() > maxLen)hitFlg = false;
+
+	if (hitFlg)
+	{
+		SetHitVector(tmpVec);
+		_target->SetHitVector(tmpVec * -1.0f);
+	}
+
+	return hitFlg;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+ChStd::Bool HitTestRay::IsHit(
+	HitTestBox* _target)
+{
+	return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+ChStd::Bool  HitTestRay::IsHit(
+	HitTestSphere* _target)
+{
+	return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+ChStd::Bool  HitTestRay::IsHit(
+	HitTestPolygon* _target)
+{
+	float minLen = maxLen;
+	ChStd::Bool hitFlg = false;
+	ChVec3 hitVec;
+	ChVec3 tmpVec;
+
+	for (auto poly : _target->GetPolygonList())
+	{
+		if (!HitTestTri(tmpVec,rayDir,poly->poss[0], poly->poss[1], poly->poss[2],_target))continue;
+		float tmpLen = tmpVec.Len();
+		if (tmpLen > maxLen)continue;
+		hitFlg = true;
+		if (minLen < tmpLen)continue;
+		minLen = tmpLen;
+		hitVec = tmpVec;
+	}
+
+	if (hitFlg)
+	{
+		SetHitVector(hitVec);
+		_target->SetHitVector(hitVec * -1.0f);
+	}
+
+	return hitFlg;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+ChStd::Bool  HitTestRay::IsInnerHit(
+	HitTestBox* _target)
+{
+	return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+ChStd::Bool HitTestRay::IsInnerHit(
+	HitTestSphere* _target)
+{
+	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
