@@ -12,8 +12,10 @@ using namespace ChCpp;
 
 void FrameList::Update()
 {
-	if (nowFrame == nullptr)return;
-	nowFrame->Update();
+
+	auto&& nowframe = GetNowFrame();
+	if (nowframe == nullptr)return;
+	nowframe->Update();
 
 	Changes();
 }
@@ -33,15 +35,16 @@ void FrameList::Changes()
 {
 	if (nextFrame == nullptr)return;
 
-	if (nowFrame != nullptr)
+	auto&& nowframe = GetNowFrame();
+	if (nowframe != nullptr)
 	{
-		nowFrame->Release();
+		nowframe->Release();
 	}
 
 	nowFrameNo = nextFrameNo;
-	nowFrame = nextFrame;
+	nowframe = nextFrame;
 
-	nowFrame->Init();
+	nowframe->Init();
 
 	nextFrame = nullptr;
 	nextFrameNo = -1;

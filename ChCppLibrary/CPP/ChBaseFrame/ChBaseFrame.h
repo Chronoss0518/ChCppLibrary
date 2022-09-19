@@ -32,11 +32,11 @@ namespace ChCpp
 		}
 
 		template<class T>
-		auto GetNowFrame()->
+		static auto GetNowFrame()->
 			typename std::enable_if
 			<std::is_base_of<BaseFrame, T>::value, ChPtr::Weak<T>>::type
 		{
-			return ChPtr::SharedSafeCast<T>(nowFrame);
+			return ChPtr::SharedSafeCast<T>(GetNowFrame());
 		}
 
 
@@ -59,7 +59,7 @@ namespace ChCpp
 			}
 
 			nextFrame = nullptr;
-			nowFrame = nullptr;
+			GetNowFrame() = nullptr;
 
 		}
 	public://Other Function
@@ -105,7 +105,12 @@ namespace ChCpp
 		unsigned long nowFrameNo = -1;
 
 		ChPtr::Shared<BaseFrame>nextFrame = nullptr;
-		ChPtr::Shared<BaseFrame>nowFrame;
+		
+		static ChPtr::Shared<BaseFrame>& GetNowFrame() 
+		{
+			static ChPtr::Shared<BaseFrame> ins = nullptr;
+			return ins;
+		}
 
 		std::vector<std::function<ChPtr::Shared<BaseFrame>()>>frameList;
 	};
