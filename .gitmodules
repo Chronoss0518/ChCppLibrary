@@ -10,3 +10,6 @@
 [submodule "ChCppLibrary/External/LegacyDirectX"]
 	path = ChCppLibrary/External/LegacyDirectX
 	url = https://github.com/Chronoss0518/DirectX-End-User-Runtime
+[submodule "ChCppLibrary/External/Json11"]
+	path = ChCppLibrary/External/Json11
+	url = https://github.com/dropbox/json11
