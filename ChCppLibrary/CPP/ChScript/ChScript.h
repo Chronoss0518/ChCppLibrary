@@ -3,10 +3,11 @@
 
 namespace ChCpp
 {
+	class ScriptBase;
 
 	//スクリプト全体を管理するクラス//
 	//これを各地に配置して利用する//
-	typedef class ScriptController:public ChCp::Releaser
+	class ScriptController:public ChCp::Releaser
 	{
 
 	public:
@@ -23,11 +24,14 @@ namespace ChCpp
 		//SetFunction//
 
 		//登録しているScriptをセットする。//
-		void SetScript(
-			const std::function<void()> _update
-			, const std::function<void()> _draw = []() {}
-			, const std::function<void()> _enter = []() {}
-		, const std::function<void()> _exit = []() {});
+		template<class Script>
+		auto SetScript()->typename std::enable_if<std::is_base_of<ScriptBase, Script>::value, ChPtr::Shared<Script>>::type
+		{
+			ChPtr::Shared<ScriptBase> script = ChPtr::Make_S<Script>();
+			script->Init(this);
+			scriptList.push_back(script);
+			return ChPtr::SharedSafeCast<Script>(script);
+		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
@@ -41,23 +45,6 @@ namespace ChCpp
 
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////
-
-		void ChangeScript(const unsigned long _scriptNo = ULONG_MAX)
-		{
-
-			unsigned long tmp = 0;
-			if (nowScript.lock() != nullptr)
-			{
-				tmp = nowScript.lock()->myNum + 1;
-			}
-
-			if (scriptList.size() > _scriptNo)tmp = _scriptNo;
-			if (scriptList.size() <= tmp)tmp = nowScript.lock()->myNum;
-
-			nowScript = scriptList[tmp];
-
-		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//UpdateFunction//
@@ -68,17 +55,6 @@ namespace ChCpp
 			nowScript.lock()->update();
 			Chenge();
 		}
-
-		///////////////////////////////////////////////////////////////////////////////////
-
-		void Draw()
-		{
-
-			if (nowScript.lock() == nullptr)return;
-			nowScript.lock()->draw();
-			Chenge();
-		}
-
 		///////////////////////////////////////////////////////////////////////////////////
 
 		void ClearScript()
@@ -88,50 +64,97 @@ namespace ChCpp
 
 	protected:
 
-		void Chenge()
-		{
-			if (nextScript == nullptr)return;
+		void Change();
 
-			if (nowScript.lock() != nullptr)
-			{
-				nowScript.lock()->exit();
-			}
+		std::vector<ChPtr::Shared<ScriptBase>>scriptList;
 
-			nowScript = nextScript;
+		unsigned long nowScriptNo = 0;
 
-			nowScript.lock()->enter();
+	};
 
-			nextScript = nullptr;
-		}
+	class ScriptBase
+	{
+	public:
 
-		struct ChScript
-		{
+		void Init(ScriptController* _controller,ChPtr::Weak<ScriptBase> _upScript = ChPtr::Shared<ScriptBase>());
 
-			///////////////////////////////////////////////////////////////////////////////////
-			//ConstructerDestructer//
+	public:
+
+		virtual void Update() = 0;
+
+	protected:
+
+		void NextScript();
+
+		ChPtr::Weak<ScriptBase> upScript;
+
+	private:
+
+		ScriptController* controller = nullptr;
+
+	};
+
+	class ScriptIfBase : public ScriptBase
+	{
+	public:
+
+		virtual bool UseFunction() = 0;
+
+	private:
+
+		void Update()override final{}
+
+	};
+
+	class ScriptIfTrue :public ScriptIfBase
+	{
+	public:
+
+		virtual bool IfFunction() { return true; }
+		
+		bool UseFunction()override final;
+
+	};
+
+	class ScriptIfFalse :public ScriptIfBase
+	{
+	public:
+
+		virtual bool IfFunction() { return true; }
+
+		bool UseFunction()override final;
+	};
+
+	class ScriptSequence :public ScriptBase
+	{
+	public:
+
+		void SetScript(ChPtr::Shared<ScriptBase> _script);
+
+	protected:
+
+		void Update()override;
+
+	private:
+
+		std::vector<ChPtr::Shared<ScriptBase>> scriptList;
+
+	};
+
+	class ScriptLoop final :public ScriptSequence
+	{
+	public:
+
+		void SetScript(ChPtr::Shared<ScriptBase> _script);
+
+		void Break();
+
+	private:
+
+		void Update()override final;
 
 
-			std::function<void()>enter = []() {};
-
-			std::function<void()>update = []() {};
-
-			std::function<void()>draw = []() {};
-
-			std::function<void()>exit = []() {};
-
-			unsigned long myNum = 0;
-
-		};
-
-		std::vector<ChPtr::Shared<ChScript>> scriptList;
-
-		ChPtr::Shared<ChScript> nextScript = nullptr;
-
-		ChPtr::Weak<ChScript>nowScript;
-
-	}ChScCon;
-
-
+	};
 }
 
 

@@ -9,26 +9,13 @@ using namespace ChCpp;
 //ChScriptControllerÉÅÉ\ÉbÉh
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ScriptController::SetScript(
-	const std::function<void()> _update
-	, const std::function<void()> _draw
-	, const std::function<void()> _enter
-	, const std::function<void()> _exit)
+void ScriptController::Chenge()
 {
-	auto TmpScr = ChPtr::Make_S<ChScript>();
+	if (nextScript == nullptr)return;
 
-	TmpScr->update = _update;
-	TmpScr->draw = _draw;
-	TmpScr->enter = _enter;
-	TmpScr->exit = _exit;
+	nowScript = nextScript;
 
-	TmpScr->myNum = scriptList.size();
+	nowScript->Init(this);
 
-	scriptList.push_back(TmpScr);
-
-	if (nowScript.lock() != nullptr)return;
-
-	ChangeScript(0);
-
-	Chenge();
+	nextScript = nullptr;
 }
