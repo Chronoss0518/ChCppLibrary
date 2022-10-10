@@ -92,8 +92,8 @@ namespace ChCpp
 			for (auto&& com : comList)
 			{
 				if (ChPtr::SharedSafeCast<T>(com) == nullptr)continue;
-				if (com->DFlg)continue;
-				if (!com->UseFlg)continue;
+				if (com->dFlg)continue;
+				if (!com->useFlg)continue;
 				tmpComList.push_back(com);
 			}
 			return tmpComList;
