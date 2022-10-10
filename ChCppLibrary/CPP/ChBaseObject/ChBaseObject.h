@@ -66,8 +66,9 @@ namespace ChCpp
 
 		//コンポーネントの取得//
 		template<class T = BaseComponent>
-		inline auto GetComponent()->typename std::enable_if
-			<std::is_base_of<BaseComponent, T>::value, ChPtr::Shared<T>>::type
+		inline auto GetComponent()->typename std::enable_if<
+			std::is_base_of<BaseComponent, T>::value,
+			ChPtr::Shared<T>>::type
 		{
 			for (auto&& com : comList)
 			{
@@ -85,8 +86,9 @@ namespace ChCpp
 
 		//コンポーネントリストの取得//
 		template<typename T = BaseComponent>
-		inline auto GetComponents()->typename std::enable_if
-			<std::is_base_of<BaseComponent, T>::value, std::vector<ChPtr::Shared<T>>&>::type
+		inline auto GetComponents()->typename std::enable_if<
+			std::is_base_of<BaseComponent, T>::value,
+			std::vector<ChPtr::Shared<T>>>::type
 		{
 			std::vector<ChPtr::Shared<T>>tmpComList;
 			for (auto&& com : comList)
@@ -106,8 +108,9 @@ namespace ChCpp
 
 		//子オブジェクト群の取得//
 		template<class T = BaseObject>
-		inline std::vector<ChPtr::Weak<
-			typename std::enable_if<std::is_base_of<BaseObject, T>::value, T>::type>>
+		inline typename std::enable_if<
+			std::is_base_of<BaseObject, T>::value, 
+			std::vector<ChPtr::Weak<T>>>::type
 			GetChildlen()
 		{
 			std::vector<ChPtr::Weak<T>>tmpObjList;
@@ -124,8 +127,9 @@ namespace ChCpp
 
 		//子オブジェクト群の取得//
 		template<class T = BaseObject>
-		inline std::vector<ChPtr::Weak<
-			typename std::enable_if<std::is_base_of<BaseObject, T>::value, T>::type>>
+		inline typename std::enable_if<
+			std::is_base_of<BaseObject, T>::value,
+			std::vector<ChPtr::Weak<T>>>::type
 			GetChildlenForName(const std::string& _name)
 		{
 			std::vector<ChPtr::Weak<BaseObject>>tmpObjList;
