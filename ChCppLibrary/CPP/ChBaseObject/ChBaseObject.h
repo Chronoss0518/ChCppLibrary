@@ -72,12 +72,13 @@ namespace ChCpp
 		{
 			for (auto&& com : comList)
 			{
+				if (com->dFlg)continue;
+				if (!com->useFlg)continue;
+
 				auto testCom = ChPtr::SharedSafeCast<T>(com);
 
 				if (testCom != nullptr)
 				{
-					if (testCom->dFlg)continue;
-					if (!testCom->useFlg)continue;
 					return testCom;
 				}
 			}
@@ -93,10 +94,12 @@ namespace ChCpp
 			std::vector<ChPtr::Shared<T>>tmpComList;
 			for (auto&& com : comList)
 			{
-				if (ChPtr::SharedSafeCast<T>(com) == nullptr)continue;
 				if (com->dFlg)continue;
 				if (!com->useFlg)continue;
-				tmpComList.push_back(com);
+
+				auto test = ChPtr::SharedSafeCast<T>(com);
+				if (test == nullptr)continue;
+				tmpComList.push_back(test);
 			}
 			return tmpComList;
 		}
@@ -117,7 +120,7 @@ namespace ChCpp
 
 			for (auto&& obj : childList)
 			{
-				auto&& test = ChPtr::SharedSafeCast<T>(obj);
+				auto test = ChPtr::SharedSafeCast<T>(obj);
 				if (test == nullptr)continue;
 				tmpObjList.push_back(test);
 			}
@@ -136,9 +139,10 @@ namespace ChCpp
 
 			for (auto&& obj : childList)
 			{
-				auto&& test = ChPtr::SharedSafeCast<T>(obj);
+				if (obj->GetMyName() != _name)continue;
+
+				auto test = ChPtr::SharedSafeCast<T>(obj);
 				if (test == nullptr)continue;
-				if (test->GetMyName() != _name)continue;
 				tmpObjList.push_back(test);
 			}
 
