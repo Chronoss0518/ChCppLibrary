@@ -98,13 +98,13 @@ namespace ChCpp
 	private:
 
 		//ÉZÉbÉgÇ≥ÇÍÇÈç€Ç…åƒÇŒÇÍÇÈ//
-		void BaseInit(ChPtr::Shared<BaseObject> _obj);
+		void BaseInit(BaseObject* _obj);
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		ChStd::Bool useFlg = true;
 
-		ChPtr::Weak<BaseObject> obj = ChPtr::Shared<BaseObject>();
+		BaseObject* obj = nullptr;
 
 		ChStd::Bool dFlg = false;
 

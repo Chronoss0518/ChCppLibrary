@@ -136,9 +136,9 @@ void BaseObject::DestroyComponentTest()
 void BaseObject::SetComponent(ChPtr::Shared<BaseComponent> _component)
 {
 	if (_component == nullptr)return;
-	if (!_component->obj.expired())return;
+	if (ChPtr::NotNullCheck(_component->obj))return;
 
-	_component->BaseInit(shared_from_this());
+	_component->BaseInit(this);
 
 	comList.push_back(_component);
 }

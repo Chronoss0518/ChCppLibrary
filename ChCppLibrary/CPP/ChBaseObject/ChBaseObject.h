@@ -170,7 +170,7 @@ namespace ChCpp
 
 			comList.push_back(tmpCom);
 
-			tmpCom->BaseInit(shared_from_this());
+			tmpCom->BaseInit(this);
 
 			return ChPtr::SharedSafeCast<T>(tmpCom);
 
