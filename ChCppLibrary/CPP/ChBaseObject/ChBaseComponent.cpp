@@ -28,5 +28,5 @@ void BaseComponent::DestroyObject()
 {
 	if (ChPtr::NullCheck(obj))return;
 	obj->Destroy();
-	obj == nullptr;
+	obj = nullptr;
 }
