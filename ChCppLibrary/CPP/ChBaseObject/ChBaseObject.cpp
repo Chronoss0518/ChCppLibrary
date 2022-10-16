@@ -133,6 +133,26 @@ void BaseObject::DestroyComponentTest()
 	}
 }
 
+std::vector<ChPtr::Shared<BaseObject>>& BaseObject::GetChildlen()
+{
+	return childList;
+}
+
+std::vector<ChPtr::Shared<BaseObject>>& BaseObject::GetAllChildlen()
+{
+	std::vector<ChPtr::Shared<BaseObject>>res = childList;
+
+	for (auto&& childObj : childList)
+	{
+		for (auto&& childChild : childObj->GetAllChildlen())
+		{
+			res.push_back(childChild);
+		}
+	}
+
+	return res;
+}
+
 void BaseObject::SetComponent(ChPtr::Shared<BaseComponent> _component)
 {
 	if (_component == nullptr)return;
