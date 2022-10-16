@@ -146,7 +146,7 @@ namespace ChCpp
 			return tmpObjList;
 		}
 
-		std::vector<ChPtr::Shared<BaseObject>>& GetAllChildlen();
+		std::vector<ChPtr::Shared<BaseObject>> GetAllChildlen();
 
 		//子オブジェクト群の取得//
 		template<class T = BaseObject>

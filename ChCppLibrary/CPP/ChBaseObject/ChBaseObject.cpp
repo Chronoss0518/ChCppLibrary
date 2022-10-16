@@ -138,7 +138,7 @@ std::vector<ChPtr::Shared<BaseObject>>& BaseObject::GetChildlen()
 	return childList;
 }
 
-std::vector<ChPtr::Shared<BaseObject>>& BaseObject::GetAllChildlen()
+std::vector<ChPtr::Shared<BaseObject>> BaseObject::GetAllChildlen()
 {
 	std::vector<ChPtr::Shared<BaseObject>>res = childList;
 
