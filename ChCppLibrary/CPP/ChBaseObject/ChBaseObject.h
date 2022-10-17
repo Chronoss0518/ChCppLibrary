@@ -146,6 +146,27 @@ namespace ChCpp
 			return tmpObjList;
 		}
 
+		//子オブジェクト群の取得//
+		template<class T = BaseObject>
+		inline typename std::enable_if<
+			std::is_base_of<BaseObject, T>::value,
+			std::vector<ChPtr::Weak<T>>>::type
+			GetChildlenConstainsName(const std::string& _name)
+		{
+			std::vector<ChPtr::Weak<T>>tmpObjList;
+
+			for (auto&& obj : childList)
+			{
+				if (obj->GetMyName().find(_name) == std::string::npos)continue;
+
+				auto test = ChPtr::SharedSafeCast<T>(obj);
+				if (test == nullptr)continue;
+				tmpObjList.push_back(test);
+			}
+
+			return tmpObjList;
+		}
+
 		std::vector<ChPtr::Shared<BaseObject>> GetAllChildlen();
 
 		//子オブジェクト群の取得//
@@ -196,6 +217,36 @@ namespace ChCpp
 				}
 
 				for (auto&& childObj : obj->GetAllChildlenForName<T>(_name))
+				{
+					res.push_back(childObj);
+				}
+
+			}
+
+			return res;
+		}
+
+		//子オブジェクト群の取得//
+		template<class T = BaseObject>
+		inline typename std::enable_if<
+			std::is_base_of<BaseObject, T>::value,
+			std::vector<ChPtr::Weak<T>>>::type
+			GetAllChildlenConstainsName(const std::string& _name)
+		{
+			std::vector<ChPtr::Weak<T>>res;
+
+			for (auto&& obj : childList)
+			{
+				if (obj->GetMyName().find(_name) != std::string::npos)
+				{
+					auto test = ChPtr::SharedSafeCast<T>(obj);
+					if (test != nullptr)
+					{
+						res.push_back(test);
+					}
+				}
+
+				for (auto&& childObj : obj->GetAllChildlenConstainsName<T>(_name))
 				{
 					res.push_back(childObj);
 				}
