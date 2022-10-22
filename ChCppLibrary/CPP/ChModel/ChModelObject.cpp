@@ -103,6 +103,24 @@ void FrameObject::UpdateDrawTransform()
 	drawMat = outSideMat * frameMat * parentDrawMat;
 }
 
+void FrameObject::UpdateAllDrawTransform()
+{
+
+	ChLMat parentDrawMat;
+
+	{
+		auto parent = ChPtr::SharedSafeCast<FrameObject>(GetParent().lock());
+
+		if (parent != nullptr)
+		{
+			parent->UpdateAllDrawTransform();
+			parentDrawMat = parent->drawMat;
+		}
+	}
+
+	drawMat = outSideMat * frameMat * parentDrawMat;
+}
+
 void ModelObject::AddAnimationName(const std::string& _name)
 {
 	animationNames.push_back(_name);

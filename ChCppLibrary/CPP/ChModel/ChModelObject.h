@@ -70,6 +70,8 @@ namespace ChCpp
 
 		void UpdateDrawTransform();
 
+		void UpdateAllDrawTransform();
+
 		void SetAnimationName(const std::string& _name);
 
 	public://Is Function//
