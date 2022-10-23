@@ -456,8 +456,6 @@ ChStd::Bool XFile::SetMaterial(
 
 		std::string texturePath = _text.substr(start + 1, end - start - 1);
 
-		texturePath = loadFilePath + texturePath;
-
 		mate->textureNameList.push_back(texturePath);
 
 	}
@@ -818,7 +816,8 @@ void XFile::XFrameToChFrame(
 			for (unsigned long j = 0; j < xMate->textureNameList.size(); j++)
 			{
 				if (j > ChStd::EnumCast(Ch3D::TextureType::Metallic))break;
-				chMate->textures[static_cast<Ch3D::TextureType>(j)] = xMate->textureNameList[j];
+				chMate->textures[static_cast<Ch3D::TextureType>(j)] = 
+					loadFilePath + xMate->textureNameList[j];
 
 			}
 
