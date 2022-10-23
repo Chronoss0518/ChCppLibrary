@@ -22,6 +22,7 @@ void XFile::CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& _f
 
 	std::string text;
 	{
+		loadFileName = _filePath;
 
 		ChCpp::File<> files;
 
@@ -73,6 +74,8 @@ void XFile::CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& _f
 	}
 
 	if (exceptionFlg)return;
+
+	loadFilePath = GetRoutePath(loadFileName);
 
 	_model->SetModelName(_filePath);
 
@@ -452,6 +455,8 @@ ChStd::Bool XFile::SetMaterial(
 		if (end >= tmp->end)continue;
 
 		std::string texturePath = _text.substr(start + 1, end - start - 1);
+
+		texturePath = loadFilePath + texturePath;
 
 		mate->textureNameList.push_back(texturePath);
 
