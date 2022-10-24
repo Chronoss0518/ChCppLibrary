@@ -22,6 +22,7 @@ void XFile::CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& _f
 
 	std::string text;
 	{
+		loadFileName = _filePath;
 
 		ChCpp::File<> files;
 
@@ -73,6 +74,8 @@ void XFile::CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& _f
 	}
 
 	if (exceptionFlg)return;
+
+	loadFilePath = GetRoutePath(loadFileName);
 
 	_model->SetModelName(_filePath);
 
@@ -712,7 +715,6 @@ void XFile::XFrameToChFrame(
 	std::map<unsigned long, unsigned long>summarizeVertex;
 
 	auto mesh = _chFrame->SetComponent<FrameComponent>();
-
 	auto& chVertexList = mesh->vertexList;
 	//SetVertexList//
 	{
@@ -749,12 +751,23 @@ void XFile::XFrameToChFrame(
 
 			chVertexList.push_back(chVertex);
 
+			mesh->maxPos.x = chVertex->pos.x > mesh->maxPos.x ? chVertex->pos.x : mesh->maxPos.x;
+			mesh->maxPos.y = chVertex->pos.y > mesh->maxPos.y ? chVertex->pos.y : mesh->maxPos.y;
+			mesh->maxPos.z = chVertex->pos.z > mesh->maxPos.z ? chVertex->pos.z : mesh->maxPos.z;
+			mesh->minPos.x = chVertex->pos.x < mesh->minPos.x ? chVertex->pos.x : mesh->minPos.x;
+			mesh->minPos.y = chVertex->pos.y < mesh->minPos.y ? chVertex->pos.y : mesh->minPos.y;
+			mesh->minPos.z = chVertex->pos.z < mesh->minPos.z ? chVertex->pos.z : mesh->minPos.z;
 		}
 
 		for (auto&& chVertex : chVertexList)
 		{
 			chVertex->normal.Normalize();
 		}
+
+		ChVec3 minToMaxVec = mesh->maxPos - mesh->minPos;
+
+		mesh->centerPos = (mesh->minPos + mesh->maxPos) / 2.0f;
+		mesh->boxSize = minToMaxVec / 2.0f;
 
 	}
 
@@ -813,7 +826,8 @@ void XFile::XFrameToChFrame(
 			for (unsigned long j = 0; j < xMate->textureNameList.size(); j++)
 			{
 				if (j > ChStd::EnumCast(Ch3D::TextureType::Metallic))break;
-				chMate->textures[static_cast<Ch3D::TextureType>(j)] = xMate->textureNameList[j];
+				chMate->textures[static_cast<Ch3D::TextureType>(j)] = 
+					loadFilePath + xMate->textureNameList[j];
 
 			}
 
