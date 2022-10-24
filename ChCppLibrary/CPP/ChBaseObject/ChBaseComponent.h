@@ -56,13 +56,14 @@ namespace ChCpp
 
 		//’¼Ú–{‘Ì‚ÉG‚è‚½‚¢‚Æ‚«‚ÉŒÄ‚ÔŠÖ”//
 		template<class Class = BaseObject>
-		ChStd::Bool LookObj(typename
-			std::enable_if<std::is_base_of<BaseObject, Class>::value, ChPtr::Shared<Class>>::type _out)
+		ChStd::Bool LookObj(typename std::enable_if<
+			std::is_base_of<BaseObject, Class>::value,
+			Class*>::type _out)
 			
 		{
-			auto testObj = ChPtr::SharedSafeCast<Class>(obj.lock());
+			auto&& testObj = ChPtr::SafeCast<Class>(obj);
 
-			if (testObj == nullptr)return false;
+			if (ChPtr::NullCheck(testObj))return false;
 
 			_out = testObj;
 
@@ -72,10 +73,11 @@ namespace ChCpp
 
 		//’¼Ú–{‘Ì‚ÉG‚è‚½‚¢‚Æ‚«‚ÉŒÄ‚ÔŠÖ”//
 		template<class Class = BaseObject>
-		auto LookObj()->
-			typename std::enable_if<std::is_base_of<BaseObject, Class>::value, ChPtr::Shared<Class>>::type
+		auto LookObj()->typename std::enable_if<
+			std::is_base_of<BaseObject, Class>::value,
+			Class*>::type
 		{
-			return ChPtr::SharedSafeCast<Class>(obj.lock());
+			return ChPtr::SafeCast<Class>(obj);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////

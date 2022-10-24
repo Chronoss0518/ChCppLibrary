@@ -519,8 +519,12 @@ namespace ChCpp
 
 			ChStd::Bool exceptionFlg = false;
 
+			std::string loadFileName  = "";
+			std::string loadFilePath = "";
+
 			///////////////////////////////////////////////////////////////////////////////////////
 			//XFileTemplateNames//
+
 
 			const std::string frameTags = "Frame ";
 

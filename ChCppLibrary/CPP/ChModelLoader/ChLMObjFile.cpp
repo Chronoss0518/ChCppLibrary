@@ -200,7 +200,18 @@ void ObjFile::CreateChFrame(ChPtr::Shared<ChCpp::FrameObject> _frame)
 
 			primitive->vertexList.push_back(ver);
 
+			primitive->maxPos.x = ver->pos.x > primitive->maxPos.x ? ver->pos.x : primitive->maxPos.x;
+			primitive->maxPos.y = ver->pos.y > primitive->maxPos.y ? ver->pos.y : primitive->maxPos.y;
+			primitive->maxPos.z = ver->pos.z > primitive->maxPos.z ? ver->pos.z : primitive->maxPos.z;
+			primitive->minPos.x = ver->pos.x < primitive->minPos.x ? ver->pos.x : primitive->minPos.x;
+			primitive->minPos.y = ver->pos.y < primitive->minPos.y ? ver->pos.y : primitive->minPos.y;
+			primitive->minPos.z = ver->pos.z < primitive->minPos.z ? ver->pos.z : primitive->minPos.z;
 		}
+
+		ChVec3 minToMaxVec = primitive->maxPos - primitive->minPos;
+
+		primitive->centerPos = (primitive->maxPos + primitive->minPos) / 2.0f;
+		primitive->boxSize = minToMaxVec / 2.0f;
 
 		//for (auto&& Face : Obj.second->MeshDatas)
 		for (auto&& face : obj->meshDatas)
