@@ -56,13 +56,14 @@ namespace ChCpp
 
 		//直接本体に触りたいときに呼ぶ関数//
 		template<class Class = BaseObject>
-		ChStd::Bool LookObj(typename
-			std::enable_if<std::is_base_of<BaseObject, Class>::value, ChPtr::Shared<Class>>::type _out)
+		ChStd::Bool LookObj(typename std::enable_if<
+			std::is_base_of<BaseObject, Class>::value,
+			Class*>::type _out)
 			
 		{
-			auto testObj = ChPtr::SharedSafeCast<Class>(obj.lock());
+			auto&& testObj = ChPtr::SafeCast<Class>(obj);
 
-			if (testObj == nullptr)return false;
+			if (ChPtr::NullCheck(testObj))return false;
 
 			_out = testObj;
 
@@ -72,10 +73,11 @@ namespace ChCpp
 
 		//直接本体に触りたいときに呼ぶ関数//
 		template<class Class = BaseObject>
-		auto LookObj()->
-			typename std::enable_if<std::is_base_of<BaseObject, Class>::value, ChPtr::Shared<Class>>::type
+		auto LookObj()->typename std::enable_if<
+			std::is_base_of<BaseObject, Class>::value,
+			Class*>::type
 		{
-			return ChPtr::SharedSafeCast<Class>(obj.lock());
+			return ChPtr::SafeCast<Class>(obj);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -98,13 +100,13 @@ namespace ChCpp
 	private:
 
 		//セットされる際に呼ばれる//
-		void BaseInit(ChPtr::Shared<BaseObject> _obj);
+		void BaseInit(BaseObject* _obj);
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		ChStd::Bool useFlg = true;
 
-		ChPtr::Weak<BaseObject> obj = ChPtr::Shared<BaseObject>();
+		BaseObject* obj = nullptr;
 
 		ChStd::Bool dFlg = false;
 
