@@ -57,17 +57,22 @@ OutColor main(VS_OUT _in)
 #else
 	outColor.color = _in.color;
 
-	outColor.color = mate.dif * baseTex.Sample(baseSmp, _in.uv) * outColor.color;
+	float4 diffuse = mate.dif;
+	diffuse.r = clamp(diffuse.r, 0.0f, 1.0f);
+	diffuse.g = clamp(diffuse.g, 0.0f, 1.0f);
+	diffuse.b = clamp(diffuse.b, 0.0f, 1.0f);
+
+	outColor.color = diffuse * baseTex.Sample(baseSmp, _in.uv) * outColor.color;
 
 	clip(outColor.color.a < 0.001f ? -1 : 1);
 
 	outColor.depth = outColor.color.a <= 0.99f ? 1.0f : (_in.proPos.z / _in.proPos.w);
 
-	outColor.lightBloomBase.a = 1.0f;
+	outColor.lightBloomBase.r = max(mate.dif.r - 1.0f, 0.0f);
+	outColor.lightBloomBase.g = max(mate.dif.g - 1.0f, 0.0f);
+	outColor.lightBloomBase.b = max(mate.dif.b - 1.0f, 0.0f);
 
-	outColor.lightBloomBase.r = max(outColor.color.r - 1.0f, 0.0f);
-	outColor.lightBloomBase.g = max(outColor.color.g - 1.0f, 0.0f);
-	outColor.lightBloomBase.b = max(outColor.color.b - 1.0f, 0.0f);
+	outColor.lightBloomBase.a = 1.0f;
 
 	outColor.color.rgb =
 		(outColor.lightBloomBase.r > 0.0f && 
