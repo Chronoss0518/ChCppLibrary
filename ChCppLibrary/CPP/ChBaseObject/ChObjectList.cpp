@@ -233,7 +233,7 @@ void ObjectList::ObjectDraw2D()
 	{
 		if (!obj->IsUseFlg())continue;
 		if (obj->parent.lock())continue;
-		obj->Draw3DFunction();
+		obj->Draw2DFunction();
 		if (objectList.empty())break;
 	}
 }
@@ -246,7 +246,7 @@ void ObjectList::ObjectDraw3D()
 	{
 		if (!obj->IsUseFlg())continue;
 		if (obj->parent.lock())continue;
-		obj->UpdateEndFunction();
+		obj->Draw3DFunction();
 		if (objectList.empty())break;
 	}
 }
