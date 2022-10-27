@@ -31,7 +31,6 @@ void ChMultiThread::Init(const std::function<void(void)> _func)
 
 void ChMultiThread::Join()
 {
-	if (endFlg)return;
 	thread.join();
 }
 
