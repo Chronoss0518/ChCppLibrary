@@ -100,7 +100,7 @@ void ObjectList::ObjectUpdateEnd()
 	for (auto&& obj : objectList)
 	{
 		if (!obj->IsUseFlg())continue;
-		if (!obj->parent.lock())continue;
+		if (obj->parent.lock())continue;
 		obj->UpdateEndFunction();
 		if (objectList.empty())break;
 	}
