@@ -68,6 +68,26 @@ namespace ChCpp
 
 		ChRMat GetDrawRHandMatrix();
 
+		inline ChLMat GetOutSizdTransformLMat()
+		{
+			return outSideMat;
+		}
+
+		inline ChRMat GetOutSizdTransformRMat()
+		{
+			return outSideMat.ConvertAxis();
+		}
+
+		inline ChLMat GetFrameTransformLMat()
+		{
+			return frameMat;
+		}
+
+		inline ChRMat GetFrameTransformRMat()
+		{
+			return frameMat.ConvertAxis();
+		}
+
 	public://Update Functions//
 
 		void Update()override;
