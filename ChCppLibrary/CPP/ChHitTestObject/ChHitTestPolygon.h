@@ -8,7 +8,8 @@ namespace ChCpp
 
 	struct HitTestVertexs
 	{
-		ChVec3 poss[3];
+		ChVec3 normal;
+		std::vector<ChPtr::Shared<ChVec3>> posList;
 	};
 
 	class HitTestPolygon :public HitTestObject
@@ -19,34 +20,30 @@ namespace ChCpp
 
 		inline void SetPolygon(const std::vector<ChPtr::Shared<HitTestVertexs>>& _poly) { polygonList = _poly; }
 
-		inline void SetPolygon(const std::vector<ChPtr::Shared<Ch3D::Primitive>>& _polyList,const std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>>& _vertexList)
+		inline void SetPolygon(const std::vector<ChPtr::Shared<Ch3D::Primitive>>& _polyList,const std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>>& _vertexList, const ChLMat& _frameMatrix)
 		{ 
+			
 			for (auto&& poly : _polyList)
 			{
 				if (poly->vertexData.size() <= 2)continue;
 
-				for (unsigned long i = 1; i < poly->vertexData.size() - 1; i++)
+				auto vertexs = ChPtr::Make_S<HitTestVertexs>();
+
+				for (unsigned long i = 0; i < poly->vertexData.size(); i++)
 				{
-					auto vertexs = ChPtr::Make_S<HitTestVertexs>();
-					vertexs->poss[0] = _vertexList[poly->vertexData[0]->vertexNo]->pos;
-					vertexs->poss[1] = _vertexList[poly->vertexData[i]->vertexNo]->pos;
-					vertexs->poss[2] = _vertexList[poly->vertexData[i + 1]->vertexNo]->pos;
-
-					polygonList.push_back(vertexs);
+					auto&& pos = _frameMatrix.Transform(_vertexList[poly->vertexData[i]->vertexNo]->pos);
+					vertexs->normal += pos;
+					vertexs->posList.push_back(ChPtr::Make_S<ChVec3>(pos));
 				}
-
-
+				vertexs->normal /= vertexs->posList.size() > 0 ? vertexs->posList.size() : 1;
+				polygonList.push_back(vertexs);
 			}
 		}
 
 		inline void AddPolygon(const HitTestVertexs& _vertexs)
 		{
 			auto hitTestVertexs = ChPtr::Make_S<HitTestVertexs>();
-
-			for (unsigned char i = 0; i < 3; i++)
-			{
-				hitTestVertexs->poss[i] = _vertexs.poss[i];
-			}
+			*hitTestVertexs = _vertexs;
 
 			polygonList.push_back(hitTestVertexs);
 		}
@@ -55,9 +52,11 @@ namespace ChCpp
 		{
 			auto hitTestVertexs = ChPtr::Make_S<HitTestVertexs>();
 
-			hitTestVertexs->poss[0] = _pos1;
-			hitTestVertexs->poss[1] = _pos2;
-			hitTestVertexs->poss[2] = _pos3;
+			hitTestVertexs->posList.push_back(ChPtr::Make_S<ChVec3>(_pos1));
+			hitTestVertexs->posList.push_back(ChPtr::Make_S<ChVec3>(_pos2));
+			hitTestVertexs->posList.push_back(ChPtr::Make_S<ChVec3>(_pos3));
+
+			hitTestVertexs->normal = (_pos1 + _pos2, _pos3) / 3.0f;
 
 			polygonList.push_back(hitTestVertexs);
 		}
