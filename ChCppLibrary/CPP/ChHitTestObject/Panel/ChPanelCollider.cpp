@@ -37,25 +37,31 @@ ChStd::Bool  PanelCollider::IsHit(
 
 	ChVec3 tmpVec;
 
+	ChVec3 pos;
 	ChVec3 ray = _target->GetRayDir();
 	float maxLen = _target->GetMaxLen();
 
-	ChLMat tmpMat = _target->GetMat();
-
-	tmpMat.Inverse();
-
-	tmpMat = GetMat() * tmpMat;
-
-	for (auto&& pos : square.pos)
 	{
-		pos = tmpMat.Transform(pos);
+		auto tmp = _target->GetMat();
+		pos = tmp.GetPosition();
+		ray = tmp.TransformCoord(ray);
+
 	}
 
-	ChStd::Bool hitFlg = HitTestTri(tmpVec, ray, square.pos[0], square.pos[1], square.pos[2], _target);
+	{
+		ChLMat tmpMat = GetMat();
+
+		for (auto&& pos : square.pos)
+		{
+			pos = tmpMat.Transform(pos);
+		}
+	}
+
+	ChStd::Bool hitFlg = HitTestTri(tmpVec, pos ,ray, square.pos[0], square.pos[1], square.pos[2]);
 
 	if (tmpVec.Len() > maxLen)hitFlg = false;
 
-	if (!hitFlg)hitFlg = HitTestTri(tmpVec, ray, square.pos[0], square.pos[2], square.pos[3], _target);
+	if (!hitFlg)hitFlg = HitTestTri(tmpVec, pos, ray, square.pos[0], square.pos[2], square.pos[3]);
 
 	if (tmpVec.Len() > maxLen)hitFlg = false;
 

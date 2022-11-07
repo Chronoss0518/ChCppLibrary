@@ -9,6 +9,7 @@
 #include"../ChHitTestRay.h"
 #include"../Sphere/ChSphereCollider.h"
 
+#include"../../ChMultiThread/ChMultiThread.h"
 
 using namespace ChCpp;
 
@@ -31,37 +32,93 @@ ChStd::Bool PolygonCollider::IsHit(
 ChStd::Bool  PolygonCollider::IsHit(
 	HitTestRay* _target)
 {
+
+	auto model = GetPolygonList();
+
+	if (ChPtr::NullCheck(model))return false;
+
 	float maxLen = _target->GetMaxLen();
-	float minLen = maxLen;
+	ChVec3 pos;
 	ChVec3 ray = _target->GetRayDir();
-	ChStd::Bool hitFlg = false;
-	ChVec3 hitVec;
-	ChVec3 tmpVec;
+	minLen = maxLen;
 
-	auto&& model = GetPolygonList();
-
-#if 0
-	for (auto poly :)
 	{
-		if (!HitTestTri(tmpVec, ray,poly->poss[0], poly->poss[1], poly->poss[2],_target))continue;
-		float tmpLen = tmpVec.Len();
-		if (tmpLen > maxLen)continue;
-		hitFlg = true;
-		if (minLen < tmpLen)continue;
-		minLen = tmpLen;
-		hitVec = tmpVec;
+		ChLMat tmp = _target->GetMat();
+		pos = tmp.GetPosition();
+		ray = tmp.TransformCoord(ray);
 	}
+
+	ChStd::Bool hitFlg = IsHitRayToMesh(*model,pos,ray,minLen);
+
 
 	if (hitFlg)
 	{
-		SetHitVector(hitVec);
-		_target->SetHitVector(hitVec * -1.0f);
+		_target->SetHitVector(GetHitVectol() * -1.0f);
 	}
 
 	return hitFlg;
-#endif
 
-	return false;
+}
+
+ChStd::Bool PolygonCollider::IsHitRayToMesh(FrameObject& _object, const ChVec3& _rayPos, const ChVec3& _rayDir, const float _rayLen, const ChStd::Bool _nowHitFlg)
+{
+	_object.UpdateDrawTransform();
+
+	ChStd::Bool hitFlg = _nowHitFlg;
+
+	auto frameCom = _object.GetComponent<FrameComponent>();
+	float minLen = _rayLen;
+
+	ChLMat tmpMat = _object.GetDrawLHandMatrix() * GetMat();
+
+	if (frameCom != nullptr)
+	{
+		if (frameCom->vertexList.size() >= 3)
+		{
+
+			std::vector<ChPtr::Shared<ChVec3>>posList;
+
+			for (unsigned long i = 0; i < frameCom->vertexList.size(); i++)
+			{
+				posList.push_back(ChPtr::Make_S<ChVec3>(tmpMat.Transform(frameCom->vertexList[i]->pos)));
+			}
+
+			for (auto&& primitive : frameCom->primitives)
+			{
+
+				ChVec3 firstPos = *posList[primitive->vertexData[0]->vertexNo];
+				for (unsigned long i = 1; i < primitive->vertexData.size() - 1; i++)
+				{
+					ChVec3 tmpVec;
+					
+					if (!HitTestTri(
+						tmpVec,
+						_rayPos,
+						_rayDir, 
+						firstPos,
+						*posList[primitive->vertexData[i]->vertexNo], 
+						*posList[primitive->vertexData[i + 1]->vertexNo]))continue;
+
+					float tmpLen = tmpVec.Len();
+					if (tmpLen > _rayLen)continue;
+					hitFlg = true;
+					if (minLen < tmpLen)continue;
+					minLen = tmpLen;
+					SetHitVector(tmpVec);
+					break;
+				}
+
+			}
+		}
+	}
+
+	for (auto&& child : _object.GetChildlen<FrameObject>())
+	{
+		hitFlg = IsHitRayToMesh(*child.lock(), _rayPos, _rayDir, minLen, hitFlg);
+	}
+
+
+	return hitFlg;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -78,4 +135,14 @@ ChStd::Bool PolygonCollider::IsInnerHit(
 	HitTestSphere* _target)
 {
 	return false;
+}
+
+void PolygonCollider::SetPolygon(ModelObject& _model)
+{
+	model = &_model;
+}
+
+ModelObject* PolygonCollider::GetPolygonList()const
+{
+	return model;
 }

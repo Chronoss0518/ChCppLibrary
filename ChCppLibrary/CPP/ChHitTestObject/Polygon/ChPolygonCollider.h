@@ -15,9 +15,9 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		void SetPolygon(const ModelObject& _model);
+		void SetPolygon(ModelObject& _model);
 
-		ModelObject& GetPolygonList()const;
+		ModelObject* GetPolygonList()const;
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
@@ -44,10 +44,12 @@ namespace ChCpp
 
 	private:
 
+		ChStd::Bool IsHitRayToMesh(FrameObject& _object, const ChVec3& _rayPos,const ChVec3& _rayDir,const float rayLen,const ChStd::Bool _nowHitFlg = false);
+
 		ChStd::Bool cullHitFlg = true;
 		ChStd::Bool lHandWorldFlg = true;
-		ModelObject* _model = nullptr;;
-
+		ModelObject* model = nullptr;;
+		float minLen = 0.0f;
 	};
 
 

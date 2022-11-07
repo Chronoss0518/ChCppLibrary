@@ -47,7 +47,7 @@ namespace ChCpp
 
 		float CreateDat(const ChVec3& _vec1, const ChVec3& _vec2, const ChVec3& _vec3);
 
-		ChStd::Bool HitTestTri(ChVec3& _thisHitVectol, const ChVec3& _dir, const ChVec3& _vec1, const ChVec3& _vec2, const ChVec3& _vec3, const HitTestObject* _target);
+		ChStd::Bool HitTestTri(ChVec3& _thisHitVectol, const ChVec3& _pos, const ChVec3& _dir, const ChVec3& _vec1, const ChVec3& _vec2, const ChVec3& _vec3);
 
 	private:
 

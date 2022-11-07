@@ -35,12 +35,12 @@ float HitTestObject::CreateDat(const ChVec3& _vec1, const ChVec3& _vec2, const C
 ///////////////////////////////////////////////////////////////////////////////////////
 
 ChStd::Bool HitTestObject::HitTestTri(
-	ChVec3& _thisHitVectol,
+	ChVec3& _thisHitVectol, 
+	const ChVec3& _pos,
 	const ChVec3& _dir,
 	const ChVec3& _vec1,
 	const ChVec3& _vec2,
-	const ChVec3& _vec3,
-	const HitTestObject* _target)
+	const ChVec3& _vec3)
 {
 	//eg1 = (v1 - v0), eg2 = (v2 - v0);
 	//hitPos = spos + (dir * len)
@@ -57,28 +57,13 @@ ChStd::Bool HitTestObject::HitTestTri(
 	//v = dat(eg1,v2sp,-dir)/dat(eg1.eg2.-dir)
 	//len = dat(eg1,eg2,v2sp)/dat(eg1.eg2.-dir)
 
-	_thisHitVectol = ChVec3();
-
-	ChVec3 pos;// = GetPos();
-	ChVec3 dir;// = GetMat().TransformCoord(rayDir);
-
-	{
-		ChLMat tmpMat;
-		tmpMat = _target->GetMat();
-		tmpMat.Inverse();
-		tmpMat = GetMat() * tmpMat;
-
-		pos = tmpMat.GetPosition();
-		dir = tmpMat.TransformCoord(_dir);
-
-	}
-
+	_thisHitVectol = 0.0f;
 
 	float u = 0.0f, v = 0.0f, len = 0.0f;
 
-	ChVec3 eg1 = _vec2 - _vec1, eg2 = _vec3 - _vec1, v2sp = pos - _vec1;
+	ChVec3 eg1 = _vec2 - _vec1, eg2 = _vec3 - _vec1, v2sp = _pos - _vec1;
 
-	ChVec3 mdir = dir * -1;
+	ChVec3 mdir = _dir * -1;
 	float divDat = 0.0f;
 
 
@@ -104,7 +89,7 @@ ChStd::Bool HitTestObject::HitTestTri(
 	len = CreateDat(eg1, eg2, v2sp);
 	len = len / divDat;
 
-	_thisHitVectol = dir * len;
+	_thisHitVectol = _dir * len;
 
 	return true;
 }
