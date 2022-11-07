@@ -158,11 +158,10 @@ void FrustumCulling(float4 _pos)
 	float y = _pos.y / _pos.w;
 	float z = _pos.z / _pos.w;
 
-
-	clip((x < -1.0f || x > 1.0f) || 
-		(y < -1.0f || y > 1.0f) || 
-		(z < 0.0f || z > 1.0f) 
-		? -1.0f : 1.0f);
+	clip((x < 1.0f && x > -1.0f) && 
+		(y < 1.0f && y > -1.0f) && 
+		(z < 1.0f && z > 0.0f) 
+		? 1.0f : -1.0f);
 	//clip(x >= -1.0f && x <= 1.0f ? 1.0f : -1.0f);
 	//clip(y >= -1.0f && y <= 1.0f ? 1.0f : -1.0f);
 	//clip(z >= 0.0f && z <= 1.0f ? 1.0f : -1.0f);

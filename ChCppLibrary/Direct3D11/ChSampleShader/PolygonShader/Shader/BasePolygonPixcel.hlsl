@@ -11,18 +11,25 @@ float4 LightCol(VS_OUT _base, float4 _color);
 
 float4 PLightCol(ChPointLight _plight, VS_OUT _base, float4 _color);
 
-#if 1
-struct OutColor
-{
-	float4 color :SV_Target0;
-	float depth : SV_Depth;
-};
-#else
+#define DebugFlgs 0
+
+#if DebugFlgs
 struct OutColor
 {
 	float4 color :SV_Target0;
 	//float depth : SV_Depth;
 };
+#else
+struct OutColor
+{
+	float4 color :SV_Target0;
+	float depth : SV_Depth;
+	float4 lightBloomBase :SV_Target1;
+	//float4 lightBloom :SV_Target2;
+};
+
+float3 GetLightColor(float4 _baseColor, VS_OUT _inVertex, ChP_Material _mate);
+
 #endif
 //ピクセルシェダ(PixelShader)//
 //通常描画//
@@ -33,34 +40,65 @@ OutColor main(VS_OUT _in)
 	
 
 	OutColor outColor;
-	
-	//outColor.color = float4(1.0f, 0.0f, 0.0f, 1.0f);
-	//outColor.color = _in.pos;
+
+#if DebugFlgs
+
+	outColor.color = float4(1.0f, 0.0f, 0.0f, 1.0f);
+	//outColor.color = _in.proPos;
 	//outColor.color.z = 0.0f;
-	//outColor.color.x = _in.proPos.x / _in.proPos.w;
-	//outColor.color.y = _in.proPos.y / _in.proPos.w;
-	//outColor.color.z = _in.proPos.z / _in.proPos.w;
+	//outColor.color.r = _in.pos.x / _in.pos.w * 2.0f;
+	//outColor.color.g = _in.pos.y / _in.pos.w * 2.0f;
+	//outColor.color.b = _in.pos.z / _in.pos.w * 2.0f;
+	outColor.color.r = _in.proPos.x / _in.proPos.w;
+	outColor.color.g = _in.proPos.y / _in.proPos.w;
+	outColor.color.b = _in.proPos.z / _in.proPos.w;
 	//outColor.color.r = outColor.depth;
 
-
+#else
 	outColor.color = _in.color;
 
-	outColor.color = mate.dif * baseTex.Sample(baseSmp, _in.uv) * outColor.color;
+	float4 diffuse = mate.dif;
+	diffuse.r = clamp(diffuse.r, 0.0f, 1.0f);
+	diffuse.g = clamp(diffuse.g, 0.0f, 1.0f);
+	diffuse.b = clamp(diffuse.b, 0.0f, 1.0f);
+
+	outColor.color = diffuse * baseTex.Sample(baseSmp, _in.uv) * outColor.color;
 
 	clip(outColor.color.a < 0.001f ? -1 : 1);
 
-	outColor.depth = outColor.color.a <= 0.99f ? 1.0f: (_in.proPos.z / _in.proPos.w);
-	
-	L_BaseColor lightCol;
-	lightCol.color = outColor.color.rgb;
-	lightCol.wPos =_in.worldPos.xyz;
-	lightCol.wfNormal = _in.faceNormal;
-	lightCol.specular.rgb = mate.speCol;
-	lightCol.specular.a = mate.spePow;
+	outColor.depth = outColor.color.a <= 0.99f ? 1.0f : (_in.proPos.z / _in.proPos.w);
 
-	outColor.color.rgb = GetDirectionalLightColor(lightCol);
+	outColor.lightBloomBase.r = max(mate.dif.r - 1.0f, 0.0f);
+	outColor.lightBloomBase.g = max(mate.dif.g - 1.0f, 0.0f);
+	outColor.lightBloomBase.b = max(mate.dif.b - 1.0f, 0.0f);
+
+	outColor.lightBloomBase.a = 1.0f;
+
+	outColor.color.rgb =
+		(outColor.lightBloomBase.r > 0.0f && 
+		outColor.lightBloomBase.g > 0.0f && 
+		outColor.lightBloomBase.b > 0.0f) ?
+		outColor.color.rgb : GetLightColor(outColor.color, _in, mate);
+
+
+#endif
 
 	return outColor;
+
+}
+
+
+float3 GetLightColor(float4 _baseColor, VS_OUT _inVertex, ChP_Material _mate)
+{
+
+	L_BaseColor lightCol;
+	lightCol.color = _baseColor.rgb;
+	lightCol.wPos = _inVertex.worldPos.xyz;
+	lightCol.wfNormal = _inVertex.faceNormal;
+	lightCol.specular.rgb = _mate.speCol;
+	lightCol.specular.a = _mate.spePow;
+
+	return GetDirectionalLightColor(lightCol);
 
 }
 

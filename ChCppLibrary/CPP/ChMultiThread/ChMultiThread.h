@@ -21,11 +21,15 @@ namespace ChCpp
 
 		ChMultiThread(const std::function<void(void)> _func);
 
+		~ChMultiThread() { Release(); }
+
 		///////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
 		//マルチスレッドで動かしたい関数をセットする//
 		void Init(const std::function<void(void)> _func);
+
+		void Release();
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
@@ -38,6 +42,9 @@ namespace ChCpp
 		//マルチスレッドで動いている関数が終わるまで待つ//
 		void Join();
 
+		//同じ関数を再度走らせる//
+		void ReRun();
+
 	protected:
 
 		void Function();
@@ -46,7 +53,7 @@ namespace ChCpp
 
 		std::function<void(void)> func = nullptr;
 
-		ChStd::Bool endFlg = false;
+		ChStd::Bool endFlg = true;
 
 	};
 

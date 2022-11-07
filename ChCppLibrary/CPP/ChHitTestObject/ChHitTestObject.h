@@ -3,13 +3,9 @@
 
 namespace ChCpp
 {
-	class HitTestRay;
-	class HitTestPanel;
-	class HitTestBox;
-	class HitTestSphere;
-	class HitTestPolygon;
-	
-	//引数として与えた物体から見て当たり判定を行うクラス//
+
+
+	//当たり判定を行う手法//
 	class HitTestObject
 	{
 
@@ -35,33 +31,6 @@ namespace ChCpp
 		inline ChVec3 GetHitVectol() { return hitVector; }
 
 		///////////////////////////////////////////////////////////////////////////////////////
-		//IsFunction//
-
-		//対象のオブジェクトの外から衝突しているかの判定//
-		virtual ChStd::Bool IsHit(
-			HitTestPanel* _target) = 0;
-
-		//対象のオブジェクトの外から衝突しているかの判定//
-		virtual ChStd::Bool IsHit(
-			HitTestBox* _target) = 0;
-
-		//対象のオブジェクトの外から衝突しているかの判定//
-		virtual ChStd::Bool IsHit(
-			HitTestSphere* _target) = 0;
-
-		//対象のオブジェクトの外から衝突しているかの判定//
-		virtual ChStd::Bool IsHit(
-			HitTestPolygon* _target) = 0;
-
-		//対象のオブジェクト内から衝突しているかの判定//
-		virtual ChStd::Bool IsInnerHit(
-			HitTestBox* _target) = 0;
-
-		//対象のオブジェクト内から衝突しているかの判定//
-		virtual ChStd::Bool IsInnerHit(
-			HitTestSphere* _target) = 0;
-
-		///////////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
 		inline ChVec3 GetPos() const { return mat.GetPosition(); }
@@ -78,7 +47,7 @@ namespace ChCpp
 
 		float CreateDat(const ChVec3& _vec1, const ChVec3& _vec2, const ChVec3& _vec3);
 
-		ChStd::Bool HitTestTri(ChVec3& _thisHitVectol, const ChVec3& _dir, const ChVec3& _vec1, const ChVec3& _vec2, const ChVec3& _vec3, const HitTestObject* _target);
+		ChStd::Bool HitTestTri(ChVec3& _thisHitVectol, const ChVec3& _pos, const ChVec3& _dir, const ChVec3& _vec1, const ChVec3& _vec2, const ChVec3& _vec3);
 
 	private:
 
