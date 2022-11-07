@@ -1,50 +1,43 @@
-#ifndef Ch_CPP_HTP_h
-#define Ch_CPP_HTP_h
+#ifndef Ch_CPP_HTB_h
+#define Ch_CPP_HTB_h
 
-#include"ChHitTestObject.h"
+#include"../ChCollider.h"
 
 namespace ChCpp
 {
 
-	struct Square
+	struct Cube
 	{
-		ChVec3 pos[4];
+		ChVec3 pos[8] = {
+			ChVec3(1.0f,1.0f,1.0f),
+			ChVec3(-1.0f,1.0f,1.0f),
+			ChVec3(-1.0f,-1.0f,1.0f),
+			ChVec3(1.0f,-1.0f,1.0f),
+			ChVec3(1.0f,1.0f,-1.0f),
+			ChVec3(-1.0f,1.0f,-1.0f),
+			ChVec3(-1.0f,-1.0f,-1.0f),
+			ChVec3(1.0f,-1.0f,-1.0f)
+		};
+
+		const unsigned char faces[6][4] =
+		{
+			{0,1,2,3},
+			{0,4,5,1},
+			{1,5,6,2},
+			{0,4,7,3},
+			{2,6,7,3},
+			{4,7,6,5},
+		};
 	};
 
-
-	//基本的に面は上向き//
-	class HitTestPanel :public HitTestObject
+	class BoxCollider :public Collider
 	{
-
 	public:
-
-		///////////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
-
-		inline void SetSize(const ChVec2& _size)
-		{
-			size = _size;
-		}
-
-		///////////////////////////////////////////////////////////////////////////////////////
-		//GetFunction//
-
-		inline ChVec2 GetSize()
-		{
-			return size;
-		}
-
-		Square GetSquarePositions();
-
 		///////////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
 		ChStd::Bool IsHit(
-			HitTestPanel* _target)override;
-
-		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
-		ChStd::Bool IsHit(
 			HitTestBox* _target)override;
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
@@ -53,7 +46,7 @@ namespace ChCpp
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
 		ChStd::Bool IsHit(
-			HitTestPolygon* _target)override;
+			HitTestRay* _target)override;
 
 		//対象のオブジェクトがオブジェクト内から衝突しているかの判定//
 		ChStd::Bool IsInnerHit(
@@ -63,14 +56,14 @@ namespace ChCpp
 		ChStd::Bool IsInnerHit(
 			HitTestSphere* _target)override;
 
-	private:
 
-		ChVec2 size;
+		///////////////////////////////////////////////////////////////////////////////////////
+		
+		Cube CreateCube(const ChLMat& _mat);
+
+
 
 	};
-
-
-
 
 }
 

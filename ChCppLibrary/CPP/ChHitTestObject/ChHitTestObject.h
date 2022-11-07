@@ -3,13 +3,9 @@
 
 namespace ChCpp
 {
-	class HitTestRay;
-	class HitTestPanel;
-	class HitTestBox;
-	class HitTestSphere;
-	class HitTestPolygon;
-	
-	//引数として与えた物体から見て当たり判定を行うクラス//
+
+
+	//当たり判定を行う手法//
 	class HitTestObject
 	{
 
@@ -33,33 +29,6 @@ namespace ChCpp
 
 		//衝突していた場合に中心から見てどの位置までめり込んでいたかの数値//
 		inline ChVec3 GetHitVectol() { return hitVector; }
-
-		///////////////////////////////////////////////////////////////////////////////////////
-		//IsFunction//
-
-		//対象のオブジェクトの外から衝突しているかの判定//
-		virtual ChStd::Bool IsHit(
-			HitTestPanel* _target) = 0;
-
-		//対象のオブジェクトの外から衝突しているかの判定//
-		virtual ChStd::Bool IsHit(
-			HitTestBox* _target) = 0;
-
-		//対象のオブジェクトの外から衝突しているかの判定//
-		virtual ChStd::Bool IsHit(
-			HitTestSphere* _target) = 0;
-
-		//対象のオブジェクトの外から衝突しているかの判定//
-		virtual ChStd::Bool IsHit(
-			HitTestPolygon* _target) = 0;
-
-		//対象のオブジェクト内から衝突しているかの判定//
-		virtual ChStd::Bool IsInnerHit(
-			HitTestBox* _target) = 0;
-
-		//対象のオブジェクト内から衝突しているかの判定//
-		virtual ChStd::Bool IsInnerHit(
-			HitTestSphere* _target) = 0;
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//

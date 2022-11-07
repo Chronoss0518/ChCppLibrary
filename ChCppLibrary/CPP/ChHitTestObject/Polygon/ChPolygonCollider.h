@@ -1,24 +1,29 @@
-#ifndef Ch_CPP_HTS_h
-#define Ch_CPP_HTS_h
+#ifndef Ch_CPP_HTM_h
+#define Ch_CPP_HTM_h
 
-#include"ChHitTestObject.h"
+#include"../ChCollider.h"
 
 namespace ChCpp
 {
 
-	class HitTestSphere :public HitTestObject
+	class FrameObject;
+	class ModelObject;
+
+	class PolygonCollider :public Collider
 	{
 	public:
+		///////////////////////////////////////////////////////////////////////////////////////
+		//SetFunction//
+
+		void SetPolygon(const ModelObject& _model);
+
+		ModelObject& GetPolygonList()const;
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
 		ChStd::Bool IsHit(
-			HitTestPanel* _target)override;
-
-		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
-		ChStd::Bool IsHit(
 			HitTestBox* _target)override;
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
@@ -27,7 +32,7 @@ namespace ChCpp
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
 		ChStd::Bool IsHit(
-			HitTestPolygon* _target)override;
+			HitTestRay* _target)override;
 
 		//対象のオブジェクトがオブジェクト内から衝突しているかの判定//
 		ChStd::Bool IsInnerHit(
@@ -36,6 +41,12 @@ namespace ChCpp
 		//対象のオブジェクトがオブジェクト内から衝突しているかの判定//
 		ChStd::Bool IsInnerHit(
 			HitTestSphere* _target)override;
+
+	private:
+
+		ChStd::Bool cullHitFlg = true;
+		ChStd::Bool lHandWorldFlg = true;
+		ModelObject* _model = nullptr;;
 
 	};
 
