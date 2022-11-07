@@ -126,7 +126,6 @@ void PolygonBoard11::SetInitSquare()
 
 void PolygonBoard11::AddVertex(const Ch3D::PolyVertex& _vertexs)
 {
-	return;
 	auto vertex = ChPtr::Make_S<Ch3D::PolyVertex>();
 	vertex->pos = _vertexs.pos;
 	vertex->uv = _vertexs.uv;
