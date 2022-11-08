@@ -85,19 +85,39 @@ ChStd::Bool PolygonCollider::IsHitRayToMesh(FrameObject& _object, const ChVec3& 
 
 			for (auto&& primitive : frameCom->primitives)
 			{
+				ChVec3 poss[3];
 
-				ChVec3 firstPos = *posList[primitive->vertexData[0]->vertexNo];
+				poss[0] = *posList[primitive->vertexData[0]->vertexNo];
+
+
+				if (!rightHandFlg)
+				{
+					poss[0] = *posList[primitive->vertexData[primitive->vertexData.size() - 1]->vertexNo];
+				}
+
 				for (unsigned long i = 1; i < primitive->vertexData.size() - 1; i++)
 				{
 					ChVec3 tmpVec;
-					
+
+					if (rightHandFlg)
+					{
+						poss[1] = *posList[primitive->vertexData[i]->vertexNo];
+						poss[2] = *posList[primitive->vertexData[i + 1]->vertexNo];
+					}
+					else
+					{
+						poss[1] = *posList[primitive->vertexData[primitive->vertexData.size() - 1 - i]->vertexNo];
+						poss[2] = *posList[primitive->vertexData[primitive->vertexData.size() - 2 - i]->vertexNo];
+					}
+
+
 					if (!HitTestTri(
 						tmpVec,
 						_rayPos,
 						_rayDir, 
-						firstPos,
-						*posList[primitive->vertexData[i]->vertexNo], 
-						*posList[primitive->vertexData[i + 1]->vertexNo]))continue;
+						poss[0],
+						poss[1],
+						poss[2]))continue;
 
 					float tmpLen = tmpVec.Len();
 					if (tmpLen > _rayLen)continue;
