@@ -89,6 +89,8 @@ ChStd::Bool HitTestObject::HitTestTri(
 	len = CreateDat(eg1, eg2, v2sp);
 	len = len / divDat;
 
+	if (len <= 0.0f)return false;
+
 	_thisHitVectol = _dir * len;
 
 	return true;
