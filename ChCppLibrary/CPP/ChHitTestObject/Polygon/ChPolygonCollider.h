@@ -7,7 +7,6 @@ namespace ChCpp
 {
 
 	class FrameObject;
-	class ModelObject;
 
 	class PolygonCollider :public Collider
 	{
@@ -15,9 +14,9 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		void SetPolygon(ModelObject& _model);
+		void SetModel(FrameObject& _model);
 
-		ModelObject* GetPolygonList()const;
+		FrameObject* GetModel()const;
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
@@ -48,7 +47,7 @@ namespace ChCpp
 
 		ChStd::Bool cullHitFlg = true;
 		ChStd::Bool lHandWorldFlg = true;
-		ModelObject* model = nullptr;;
+		FrameObject* model = nullptr;;
 		float minLen = 0.0f;
 	};
 

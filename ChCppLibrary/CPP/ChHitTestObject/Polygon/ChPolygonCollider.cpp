@@ -33,7 +33,7 @@ ChStd::Bool  PolygonCollider::IsHit(
 	HitTestRay* _target)
 {
 
-	auto model = GetPolygonList();
+	auto model = GetModel();
 
 	if (ChPtr::NullCheck(model))return false;
 
@@ -137,12 +137,12 @@ ChStd::Bool PolygonCollider::IsInnerHit(
 	return false;
 }
 
-void PolygonCollider::SetPolygon(ModelObject& _model)
+void PolygonCollider::SetModel(FrameObject& _model)
 {
 	model = &_model;
 }
 
-ModelObject* PolygonCollider::GetPolygonList()const
+FrameObject* PolygonCollider::GetModel()const
 {
 	return model;
 }
