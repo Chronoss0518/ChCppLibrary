@@ -45,6 +45,11 @@ namespace ChCpp
 
 	};
 
+	struct NearPointData
+	{
+		ChVec3 toVector = ChVec3();
+		std::string materialName = "";
+	};
 
 	class FrameObject : public ChCpp::BaseObject
 	{
@@ -87,6 +92,14 @@ namespace ChCpp
 		{
 			return frameMat.ConvertAxis();
 		}
+
+		void GetLenIsPointToPrimitive(std::vector<ChPtr::Shared<NearPointData>>& _res, const ChVec3& _point, const float _maxLen = FLT_MAX, const ChLMat& _mat = ChLMat());
+
+		std::vector<ChPtr::Shared<NearPointData>> GetLenToPointAllChildTest(const ChVec3& _point, const float _maxLen = FLT_MAX, const ChLMat& _mat = ChLMat());
+
+	private:
+
+		void GetLenToPointAllChildTest(std::vector<ChPtr::Shared<NearPointData>>& _outData, const ChVec3& _point, const float _maxLen = FLT_MAX, const ChLMat& _mat = ChLMat());
 
 	public://Update Functions//
 
