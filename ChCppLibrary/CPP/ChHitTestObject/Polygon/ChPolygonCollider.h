@@ -7,7 +7,6 @@ namespace ChCpp
 {
 
 	class FrameObject;
-	class ModelObject;
 
 	class PolygonCollider :public Collider
 	{
@@ -15,9 +14,18 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		void SetPolygon(ModelObject& _model);
+		void SetModel(FrameObject& _model);
 
-		ModelObject* GetPolygonList()const;
+		inline void SetRightHandFlg() { leftHandFlg = false; }
+
+		inline void SetLeftHandFlg() { leftHandFlg = true; }
+
+		///////////////////////////////////////////////////////////////////////////////////////
+		//GetFunction//
+
+		FrameObject* GetModel()const;
+
+		inline std::string GetHitMaterialName() { return hitMaterialName; }
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
@@ -46,9 +54,12 @@ namespace ChCpp
 
 		ChStd::Bool IsHitRayToMesh(FrameObject& _object, const ChVec3& _rayPos,const ChVec3& _rayDir,const float rayLen,const ChStd::Bool _nowHitFlg = false);
 
+		ChStd::Bool leftHandFlg = true;
+		std::string hitMaterialName = "";
+
 		ChStd::Bool cullHitFlg = true;
 		ChStd::Bool lHandWorldFlg = true;
-		ModelObject* model = nullptr;;
+		FrameObject* model = nullptr;;
 		float minLen = 0.0f;
 	};
 

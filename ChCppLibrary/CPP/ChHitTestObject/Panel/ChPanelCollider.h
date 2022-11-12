@@ -26,6 +26,10 @@ namespace ChCpp
 			size = _size;
 		}
 
+		inline void SetRightHandFlg() { leftHandFlg = false; }
+
+		inline void SetLeftHandFlg() { leftHandFlg = true; }
+
 		///////////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
@@ -60,6 +64,8 @@ namespace ChCpp
 			HitTestSphere* _target)override;
 
 	private:
+
+		ChStd::Bool leftHandFlg = true;
 
 		ChVec2 size;
 

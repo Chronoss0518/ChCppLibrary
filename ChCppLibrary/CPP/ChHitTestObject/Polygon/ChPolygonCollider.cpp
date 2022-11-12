@@ -33,7 +33,7 @@ ChStd::Bool  PolygonCollider::IsHit(
 	HitTestRay* _target)
 {
 
-	auto model = GetPolygonList();
+	auto model = GetModel();
 
 	if (ChPtr::NullCheck(model))return false;
 
@@ -85,25 +85,44 @@ ChStd::Bool PolygonCollider::IsHitRayToMesh(FrameObject& _object, const ChVec3& 
 
 			for (auto&& primitive : frameCom->primitives)
 			{
+				ChVec3 poss[3];
 
-				ChVec3 firstPos = *posList[primitive->vertexData[0]->vertexNo];
+				poss[0] = *posList[primitive->vertexData[0]->vertexNo];
+
+
+				if (!leftHandFlg)
+				{
+					poss[0] = *posList[primitive->vertexData[primitive->vertexData.size() - 1]->vertexNo];
+				}
+
 				for (unsigned long i = 1; i < primitive->vertexData.size() - 1; i++)
 				{
 					ChVec3 tmpVec;
-					
+
+					poss[1] = *posList[primitive->vertexData[i]->vertexNo];
+					poss[2] = *posList[primitive->vertexData[i + 1]->vertexNo];
+
+					if (!leftHandFlg)
+					{
+						poss[1] = *posList[primitive->vertexData[primitive->vertexData.size() - 1 - i]->vertexNo];
+						poss[2] = *posList[primitive->vertexData[primitive->vertexData.size() - 2 - i]->vertexNo];
+
+					}
+
 					if (!HitTestTri(
 						tmpVec,
 						_rayPos,
 						_rayDir, 
-						firstPos,
-						*posList[primitive->vertexData[i]->vertexNo], 
-						*posList[primitive->vertexData[i + 1]->vertexNo]))continue;
+						poss[0],
+						poss[1],
+						poss[2]))continue;
 
 					float tmpLen = tmpVec.Len();
 					if (tmpLen > _rayLen)continue;
 					hitFlg = true;
 					if (minLen < tmpLen)continue;
 					minLen = tmpLen;
+					hitMaterialName = frameCom->materialList[primitive->mateNo]->mateName;
 					SetHitVector(tmpVec);
 					break;
 				}
@@ -137,12 +156,12 @@ ChStd::Bool PolygonCollider::IsInnerHit(
 	return false;
 }
 
-void PolygonCollider::SetPolygon(ModelObject& _model)
+void PolygonCollider::SetModel(FrameObject& _model)
 {
 	model = &_model;
 }
 
-ModelObject* PolygonCollider::GetPolygonList()const
+FrameObject* PolygonCollider::GetModel()const
 {
 	return model;
 }

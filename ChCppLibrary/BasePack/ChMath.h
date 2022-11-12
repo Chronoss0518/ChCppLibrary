@@ -35,7 +35,10 @@ namespace ChMath
 	{
 		if (_base == 0.0)return 0.0;
 
-		long double out = _base;
+		long double out = std::sqrt(_base);
+
+		//”÷•ªÏ•ªŽ©•ª‚ÅŽg‚¦‚é‚æ‚¤‚É‚È‚Á‚Ä‚©‚çÄ“xl‚¦‚é//
+		return out;
 
 		unsigned long maxCount = _digit > 4931 ? 4931 : _digit;
 
