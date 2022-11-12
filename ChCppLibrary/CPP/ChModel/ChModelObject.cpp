@@ -87,6 +87,76 @@ ChRMat FrameObject::GetDrawRHandMatrix()
 	return drawMat.ConvertAxis();
 }
 
+ChStd::Bool FrameObject::GetLenIsPointToPolyBoard(ChVec3& _outVector, const ChVec3& _point, const Ch3D::Primitive& _prim, const std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>>& _vertexList, const float _maxLen, const ChLMat& _mat)
+{
+
+	if (_prim.vertexData.size() <= 2)return false;
+
+	std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>> vertexList;
+
+	for (auto&& vertex : _vertexList)
+	{
+		auto ver = ChPtr::Make_S< Ch3D::SavePolyVertex>();
+		*ver = *vertex;
+		ver->pos = _mat.Transform(ver->pos);
+		vertexList.push_back(ver);
+	}
+
+	return GetLenIsPointToPolyBoardFunction(_outVector,_point,_prim, vertexList,_maxLen);
+}
+
+ChStd::Bool FrameObject::GetLenIsPointToPolyBoardFunction(ChVec3& _outVector, const ChVec3& _point, const Ch3D::Primitive& _prim, const std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>>& _vertexList, const float _maxLen)
+{
+
+	if (_prim.vertexData.size() <= 2)return false;
+
+	auto&& vertexDataList = _prim.vertexData;
+
+
+	ChVec3 firstPos = _vertexList[vertexDataList[0]->vertexNo]->pos;
+
+	ChVec3 faceNormal = _vertexList[vertexDataList[1]->vertexNo]->pos - firstPos;
+	faceNormal.Cross(
+		faceNormal,
+		_vertexList[vertexDataList[vertexDataList.size() - 1]->vertexNo]->pos - firstPos);
+
+	{
+		ChVec3 testNormal = _point - firstPos;
+		testNormal.Normalize();
+		if (faceNormal.GetCos(faceNormal, testNormal) == 0.0f)return false;
+	}
+
+	float len = ChVec3::GetDot(faceNormal, _point - firstPos);
+
+	if (len < 0.0f)return false;
+	if (_maxLen < len)return false;
+
+	ChVec3 tmpPoint = _point + (faceNormal * -len);
+
+	ChStd::Bool onFaceFlg = true;
+
+	ChVec3 tmpNormal = ChVec3::GetCross(
+		firstPos - tmpPoint,
+		_vertexList[vertexDataList[1]->vertexNo]->pos - tmpPoint);
+
+	for (unsigned long i = 1; i < vertexDataList.size() - 1; i++)
+	{
+		if (tmpNormal == ChVec3::GetCross(
+			firstPos - tmpPoint,
+			_vertexList[vertexDataList[1]->vertexNo]->pos - tmpPoint))continue;
+
+		onFaceFlg = false;
+		break;
+	}
+
+	if (!onFaceFlg)return false;
+	auto data = ChPtr::Make_S<NearPointData>();
+
+	_outVector = faceNormal * -len;
+
+	return true;
+}
+
 void FrameObject::GetLenIsPointToPrimitive(std::vector<ChPtr::Shared<NearPointData>>& _res, const ChVec3& _point, const float _maxLen, const ChLMat& _mat)
 {
 	auto&& com = GetComponent<FrameComponent>();
@@ -94,16 +164,20 @@ void FrameObject::GetLenIsPointToPrimitive(std::vector<ChPtr::Shared<NearPointDa
 	if (com == nullptr)return;
 	if (com->vertexList.size() <= 2)return;
 
-	auto&& vertexList = com->vertexList;
+	std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>> vertexList;
 
 	{
 		ChLMat tmpMat = _mat;
 		tmpMat = GetDrawLHandMatrix() * tmpMat;
 
-		for (auto&& ver : vertexList)
+		for (auto&& vertex : com->vertexList)
 		{
+			auto ver = ChPtr::Make_S< Ch3D::SavePolyVertex>();
+			*ver = *vertex;
 			ver->pos = _mat.Transform(ver->pos);
+			vertexList.push_back(ver);
 		}
+
 
 	}
 
@@ -115,51 +189,11 @@ void FrameObject::GetLenIsPointToPrimitive(std::vector<ChPtr::Shared<NearPointDa
 		thread->Init([&] {
 			
 			auto primitive = prim;
-			
-			if (primitive->vertexData.size() <= 2)return;
-			
-			auto&& vertexDataList = primitive->vertexData;
-	
-
-			ChVec3 firstPos = vertexList[vertexDataList[0]->vertexNo]->pos;
-			
-			ChVec3 faceNormal = vertexList[vertexDataList[1]->vertexNo]->pos - firstPos;
-			faceNormal.Cross(
-				faceNormal,
-				vertexList[vertexDataList[vertexDataList.size() - 1]->vertexNo]->pos - firstPos);
-
-			{
-				ChVec3 testNormal = _point - firstPos;
-				testNormal.Normalize();
-				if (faceNormal.GetCos(faceNormal,testNormal) == 0.0f)return;
-			}
-
-			float len = ChVec3::GetDot(faceNormal, _point - firstPos);
-			
-			if (len < 0.0f)return;
-
-			ChVec3 tmpPoint = _point + (faceNormal * -len);
-			
-			ChStd::Bool onFaceFlg = true;
-			
-			ChVec3 tmpNormal = ChVec3::GetCross(
-				firstPos - tmpPoint,
-				vertexList[vertexDataList[1]->vertexNo]->pos - tmpPoint);
-
-			for (unsigned long i = 1;i< vertexDataList.size() - 1;i++)
-			{
-				if(tmpNormal == ChVec3::GetCross(
-					firstPos - tmpPoint,
-					vertexList[vertexDataList[1]->vertexNo]->pos - tmpPoint))continue;
-
-				onFaceFlg = false;
-				break;
-			}
-
-			if (!onFaceFlg)return;
+			ChVec3 res;
+			if (!GetLenIsPointToPolyBoardFunction(res,_point,*primitive, vertexList,_maxLen))return;
 			auto data = ChPtr::Make_S<NearPointData>();
 
-			data->toVector = faceNormal * -len;
+			data->toVector = res;
 			data->materialName = com->materialList[primitive->mateNo]->mateName;
 
 			_res.push_back(data);
