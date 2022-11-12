@@ -90,7 +90,7 @@ ChStd::Bool PolygonCollider::IsHitRayToMesh(FrameObject& _object, const ChVec3& 
 				poss[0] = *posList[primitive->vertexData[0]->vertexNo];
 
 
-				if (!rightHandFlg)
+				if (!leftHandFlg)
 				{
 					poss[0] = *posList[primitive->vertexData[primitive->vertexData.size() - 1]->vertexNo];
 				}
@@ -99,17 +99,15 @@ ChStd::Bool PolygonCollider::IsHitRayToMesh(FrameObject& _object, const ChVec3& 
 				{
 					ChVec3 tmpVec;
 
-					if (rightHandFlg)
-					{
-						poss[1] = *posList[primitive->vertexData[i]->vertexNo];
-						poss[2] = *posList[primitive->vertexData[i + 1]->vertexNo];
-					}
-					else
+					poss[1] = *posList[primitive->vertexData[i]->vertexNo];
+					poss[2] = *posList[primitive->vertexData[i + 1]->vertexNo];
+
+					if (!leftHandFlg)
 					{
 						poss[1] = *posList[primitive->vertexData[primitive->vertexData.size() - 1 - i]->vertexNo];
 						poss[2] = *posList[primitive->vertexData[primitive->vertexData.size() - 2 - i]->vertexNo];
-					}
 
+					}
 
 					if (!HitTestTri(
 						tmpVec,
@@ -124,6 +122,7 @@ ChStd::Bool PolygonCollider::IsHitRayToMesh(FrameObject& _object, const ChVec3& 
 					hitFlg = true;
 					if (minLen < tmpLen)continue;
 					minLen = tmpLen;
+					hitMaterialName = frameCom->materialList[primitive->mateNo]->mateName;
 					SetHitVector(tmpVec);
 					break;
 				}

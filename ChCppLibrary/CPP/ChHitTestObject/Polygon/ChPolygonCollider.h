@@ -16,14 +16,16 @@ namespace ChCpp
 
 		void SetModel(FrameObject& _model);
 
-		inline void SetRightHandFlg() { rightHandFlg = true; }
+		inline void SetRightHandFlg() { leftHandFlg = false; }
 
-		inline void SetLeftHandFlg() { rightHandFlg = false; }
+		inline void SetLeftHandFlg() { leftHandFlg = true; }
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
 		FrameObject* GetModel()const;
+
+		inline std::string GetHitMaterialName() { return hitMaterialName; }
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
@@ -52,7 +54,8 @@ namespace ChCpp
 
 		ChStd::Bool IsHitRayToMesh(FrameObject& _object, const ChVec3& _rayPos,const ChVec3& _rayDir,const float rayLen,const ChStd::Bool _nowHitFlg = false);
 
-		ChStd::Bool rightHandFlg = true;
+		ChStd::Bool leftHandFlg = true;
+		std::string hitMaterialName = "";
 
 		ChStd::Bool cullHitFlg = true;
 		ChStd::Bool lHandWorldFlg = true;

@@ -26,9 +26,9 @@ namespace ChCpp
 			size = _size;
 		}
 
-		inline void SetRightHandFlg() { rightHandFlg = true; }
+		inline void SetRightHandFlg() { leftHandFlg = false; }
 
-		inline void SetLeftHandFlg() { rightHandFlg = false; }
+		inline void SetLeftHandFlg() { leftHandFlg = true; }
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
@@ -65,7 +65,7 @@ namespace ChCpp
 
 	private:
 
-		ChStd::Bool rightHandFlg = true;
+		ChStd::Bool leftHandFlg = true;
 
 		ChVec2 size;
 

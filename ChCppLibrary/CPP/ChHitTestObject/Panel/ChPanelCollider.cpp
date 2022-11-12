@@ -59,7 +59,7 @@ ChStd::Bool  PanelCollider::IsHit(
 
 	unsigned long numbers[4]{ 0,1,2,3 };
 
-	if (!rightHandFlg)
+	if (!leftHandFlg)
 	{
 		numbers[0] = 3;
 		numbers[1] = 2;
