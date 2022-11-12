@@ -66,6 +66,9 @@ ChStd::Bool HitTestObject::HitTestTri(
 	ChVec3 mdir = _dir * -1;
 	float divDat = 0.0f;
 
+	ChVec3 cross = ChVec3::GetCross(eg1, eg2);
+	if (ChVec3::GetCos(cross, _dir) == 0.0f)return false;
+
 
 	divDat = CreateDat(eg1, eg2, mdir);
 
