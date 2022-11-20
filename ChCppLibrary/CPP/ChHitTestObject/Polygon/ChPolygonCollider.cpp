@@ -95,6 +95,26 @@ ChStd::Bool PolygonCollider::IsHitRayToMesh(FrameObject& _object, const ChVec3& 
 					poss[0] = *posList[primitive->vertexData[primitive->vertexData.size() - 1]->vertexNo];
 				}
 
+				poss[1] = *posList[primitive->vertexData[1]->vertexNo];
+				poss[2] = *posList[primitive->vertexData[2]->vertexNo];
+
+				if (!leftHandFlg)
+				{
+					poss[1] = *posList[primitive->vertexData[primitive->vertexData.size() - 2]->vertexNo];
+					poss[2] = *posList[primitive->vertexData[primitive->vertexData.size() - 3]->vertexNo];
+
+				}
+
+				{
+					ChVec3 faceNormal = ChVec3::GetCross((poss[1] - poss[0]), (poss[2] - poss[0]));
+					faceNormal.Normalize();
+					ChVec3 pos0ToRay = _rayPos - poss[0];
+
+					float faceLen = ChVec3::GetDot(faceNormal, pos0ToRay);
+
+					if (faceLen > minLen)continue;
+				}
+
 				for (unsigned long i = 1; i < primitive->vertexData.size() - 1; i++)
 				{
 					ChVec3 tmpVec;
@@ -107,6 +127,16 @@ ChStd::Bool PolygonCollider::IsHitRayToMesh(FrameObject& _object, const ChVec3& 
 						poss[1] = *posList[primitive->vertexData[primitive->vertexData.size() - 1 - i]->vertexNo];
 						poss[2] = *posList[primitive->vertexData[primitive->vertexData.size() - 2 - i]->vertexNo];
 
+					}
+
+					{
+						ChVec3 faceNormal = ChVec3::GetCross((poss[1] - poss[0]), (poss[2] - poss[0]));
+						faceNormal.Normalize();
+						ChVec3 pos0ToRay = _rayPos - poss[0];
+
+						float faceLen = ChVec3::GetDot(faceNormal, pos0ToRay);
+
+						if (faceLen > minLen)break;
 					}
 
 					if (!HitTestTri(
