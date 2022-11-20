@@ -83,26 +83,15 @@ ChStd::Bool PolygonCollider::IsHitRayToMesh(FrameObject& _object, const ChVec3& 
 				posList.push_back(ChPtr::Make_S<ChVec3>(tmpMat.Transform(frameCom->vertexList[i]->pos)));
 			}
 
+			ChVec3 poss[3];
+			unsigned long nos[3]{ 0,1,2 };
 			for (auto&& primitive : frameCom->primitives)
 			{
-				ChVec3 poss[3];
-
-				poss[0] = *posList[primitive->vertexData[0]->vertexNo];
-
-
-				if (!leftHandFlg)
+				for (unsigned char j = 0; j < 3; j++)
 				{
-					poss[0] = *posList[primitive->vertexData[primitive->vertexData.size() - 1]->vertexNo];
-				}
 
-				poss[1] = *posList[primitive->vertexData[1]->vertexNo];
-				poss[2] = *posList[primitive->vertexData[2]->vertexNo];
-
-				if (!leftHandFlg)
-				{
-					poss[1] = *posList[primitive->vertexData[primitive->vertexData.size() - 2]->vertexNo];
-					poss[2] = *posList[primitive->vertexData[primitive->vertexData.size() - 3]->vertexNo];
-
+					nos[j] = !leftHandFlg ? primitive->vertexData.size() - j - 1 : j;
+					poss[j] = *posList[primitive->vertexData[nos[j]]->vertexNo];
 				}
 
 				{
@@ -119,25 +108,14 @@ ChStd::Bool PolygonCollider::IsHitRayToMesh(FrameObject& _object, const ChVec3& 
 				{
 					ChVec3 tmpVec;
 
-					poss[1] = *posList[primitive->vertexData[i]->vertexNo];
-					poss[2] = *posList[primitive->vertexData[i + 1]->vertexNo];
-
-					if (!leftHandFlg)
+					for (unsigned char j = 1; j < 3; j++)
 					{
-						poss[1] = *posList[primitive->vertexData[primitive->vertexData.size() - 1 - i]->vertexNo];
-						poss[2] = *posList[primitive->vertexData[primitive->vertexData.size() - 2 - i]->vertexNo];
 
+						nos[j] = !leftHandFlg ? primitive->vertexData.size() - j - i : i + j - 1;
+						poss[j] = *posList[primitive->vertexData[nos[j]]->vertexNo];
 					}
 
-					{
-						ChVec3 faceNormal = ChVec3::GetCross((poss[1] - poss[0]), (poss[2] - poss[0]));
-						faceNormal.Normalize();
-						ChVec3 pos0ToRay = _rayPos - poss[0];
 
-						float faceLen = ChVec3::GetDot(faceNormal, pos0ToRay);
-
-						if (faceLen > minLen)break;
-					}
 
 					if (!HitTestTri(
 						tmpVec,
