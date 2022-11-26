@@ -76,6 +76,14 @@ namespace ChStr
 
 	///////////////////////////////////////////////////////////////////////////////////
 
+	//対象の文字で区切り配列にする//
+	std::vector<std::string> Split(const std::string& _str,const std::string& _splitChar);
+
+	//対象の文字で区切り配列にする//
+	std::vector<std::wstring> Split(const std::wstring& _str, const std::wstring& _splitChar);
+
+	///////////////////////////////////////////////////////////////////////////////////
+
 	//指定されたコード値の範囲の文字のみを返す//
 	std::string GetCharsToRangeCode(
 		const std::string& _str
