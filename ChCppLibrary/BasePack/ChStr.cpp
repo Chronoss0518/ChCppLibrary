@@ -178,7 +178,8 @@ namespace ChStr
 
 		while (testPos != std::string::npos)
 		{
-			out.push_back(_str.substr(nowPos, testPos - nowPos));
+			unsigned long tmp = testPos - nowPos;
+			out.push_back(tmp != 0 ? _str.substr(nowPos, testPos - nowPos) : "\0");
 			nowPos = testPos + _split.size();
 			testPos = _str.find(_split, nowPos);
 		}
