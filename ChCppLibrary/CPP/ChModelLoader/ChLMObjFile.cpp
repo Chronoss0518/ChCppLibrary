@@ -26,10 +26,10 @@ void ObjFile::Release()
 	blockMaterial = "";
 }
 
-void ObjFile::CreateModel(ModelObject& _model, const std::string& _filePath)
+void ObjFile::CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& _filePath)
 {
 
-	if (!_model.IsInit())return;
+	if (!_model->IsInit())return;
 
 	if (_filePath.size() <= 0)return;
 
@@ -76,15 +76,15 @@ void ObjFile::CreateModel(ModelObject& _model, const std::string& _filePath)
 	if (objects.size() <= 0)return;
 
 
-	_model.SetModelName(_filePath);
+	_model->SetModelName(_filePath);
 
-	_model.SetMyName("Root");
+	_model->SetMyName("Root");
 
-	_model.SetComponent<FrameComponent>();
+	_model->SetComponent<FrameComponent>();
 	
 	CreateChFrame(_model);
 
-	_model.Create();
+	_model->Create();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -179,7 +179,7 @@ void ObjFile::CreateMaterial(const std::string& _matName)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ObjFile::CreateChFrame(ChCpp::FrameObject& _frame)
+void ObjFile::CreateChFrame(ChPtr::Shared<ChCpp::FrameObject> _frame)
 {
 
 	//for (auto&& Obj : ObjectMaps)
@@ -313,7 +313,7 @@ void ObjFile::CreateChFrame(ChCpp::FrameObject& _frame)
 
 		mesh->SetMyName(obj->objectName);
 
-		_frame.SetChild(mesh);
+		_frame->SetChild(mesh);
 
 	}
 
@@ -321,7 +321,7 @@ void ObjFile::CreateChFrame(ChCpp::FrameObject& _frame)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ObjFile::OutModelFile(const ModelObject& _model, const std::string& _filePath)
+void ObjFile::OutModelFile(const ChPtr::Shared<ModelObject> _model, const std::string& _filePath)
 {
 	if (_filePath.size() <= 0)return;
 	if (_filePath.rfind(".") == std::string::npos)return;

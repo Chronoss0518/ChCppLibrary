@@ -83,11 +83,11 @@ namespace ChCpp
 		public:
 
 			//モデルデータの読み込み口//
-			void CreateModel(ModelObject& _model, const std::string& _filePath)override;
+			void CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& _filePath)override;
 
 			///////////////////////////////////////////////////////////////////////////////////////
 
-			void OutModelFile(const ModelObject& _model, const std::string& _filePath)override;
+			void OutModelFile(const ChPtr::Shared<ModelObject> _model, const std::string& _filePath)override;
 
 		protected:
 
@@ -95,7 +95,7 @@ namespace ChCpp
 
 			//ChModelへ変換//
 			void XFrameToChFrame(
-				FrameObject& _chFrame
+				ChPtr::Shared<FrameObject> _chFrame
 				, const ChPtr::Shared<XFileModelFrame::XFrame>& _xFrame);
 
 			///////////////////////////////////////////////////////////////////////////////////////
