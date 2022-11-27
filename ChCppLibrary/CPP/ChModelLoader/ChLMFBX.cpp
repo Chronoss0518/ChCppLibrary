@@ -13,7 +13,7 @@ using namespace ChCpp::ModelLoader;
 //ChFBXMesh Method//
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void FBX::CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& _filePath)
+void FBX::CreateModel(ModelObject& _model, const std::string& _filePath)
 {
 	LoadFBXBinary(_filePath);
 
@@ -22,7 +22,7 @@ void FBX::CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& _fil
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void FBX::OutModelFile(const ChPtr::Shared<ModelObject> _model, const std::string& _filePath)
+void FBX::OutModelFile(const ModelObject& _model, const std::string& _filePath)
 {
 
 }

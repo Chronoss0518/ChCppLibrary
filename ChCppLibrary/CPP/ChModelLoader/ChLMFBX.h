@@ -19,11 +19,11 @@ namespace ChCpp
 			///////////////////////////////////////////////////////////////////////////////////////
 
 			//モデルデータの読み込み口//
-			void CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& _filePath)override;
+			void CreateModel(ModelObject& _model, const std::string& _filePath)override;
 
 			///////////////////////////////////////////////////////////////////////////////////////
 
-			void OutModelFile(const ChPtr::Shared<ModelObject> _model, const std::string& _filePath)override;
+			void OutModelFile(const ModelObject& _model, const std::string& _filePath)override;
 
 			///////////////////////////////////////////////////////////////////////////////////////
 

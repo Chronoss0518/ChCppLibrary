@@ -17,11 +17,11 @@ namespace ChCpp
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
-		virtual void CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& _filePath) = 0;
+		virtual void CreateModel(ModelObject& _model, const std::string& _filePath) = 0;
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
-		virtual void OutModelFile(const ChPtr::Shared<ModelObject> _model, const std::string& _filePath) = 0;
+		virtual void OutModelFile(const ModelObject& _model, const std::string& _filePath) = 0;
 
 		///////////////////////////////////////////////////////////////////////////////////////
 

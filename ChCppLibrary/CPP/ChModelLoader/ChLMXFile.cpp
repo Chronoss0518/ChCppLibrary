@@ -16,7 +16,7 @@ using namespace ModelLoader;
 //ChXFileMesh Method//
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void XFile::CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& _filePath)
+void XFile::CreateModel(ModelObject& _model, const std::string& _filePath)
 {
 	if (_filePath.size() <= 0)return;
 
@@ -77,16 +77,16 @@ void XFile::CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& _f
 
 	loadFilePath = GetRoutePath(loadFileName);
 
-	_model->SetModelName(_filePath);
+	_model.SetModelName(_filePath);
 
 	XFrameToChFrame(_model, xModel->modelData);
 
-	_model->Create();
+	_model.Create();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void XFile::OutModelFile(const ChPtr::Shared<ModelObject> _model, const std::string& _filePath)
+void XFile::OutModelFile(const ModelObject& _model, const std::string& _filePath)
 {
 
 }
@@ -692,21 +692,21 @@ void XFile::SetToTemplate(
 ///////////////////////////////////////////////////////////////////////////////////////
 
 void XFile::XFrameToChFrame(
-	ChPtr::Shared<FrameObject> _chFrame
+	FrameObject& _chFrame
 	, const ChPtr::Shared<XFileModelFrame::XFrame>& _xFrame)
 {
 
-	_chFrame->SetMyName(_xFrame->fName);
+	_chFrame.SetMyName(_xFrame->fName);
 
-	_chFrame->SetFrameTransform(_xFrame->frameMatrix);
+	_chFrame.SetFrameTransform(_xFrame->frameMatrix);
 
 	for (auto&& frame : _xFrame->next)
 	{
 		auto chFrame = ChPtr::Make_S<FrameObject>();
 
-		XFrameToChFrame(chFrame, frame);
+		XFrameToChFrame(*chFrame, frame);
 
-		_chFrame->SetChild(chFrame);
+		_chFrame.SetChild(chFrame);
 
 	}
 
@@ -714,7 +714,7 @@ void XFile::XFrameToChFrame(
 
 	std::map<unsigned long, unsigned long>summarizeVertex;
 
-	auto mesh = _chFrame->SetComponent<FrameComponent>();
+	auto mesh = _chFrame.SetComponent<FrameComponent>();
 	auto& chVertexList = mesh->vertexList;
 	//SetVertexList//
 	{
