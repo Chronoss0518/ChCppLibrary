@@ -1,5 +1,5 @@
 
-#include"..././../BaseIncluder/ChBase.h"
+#include"../../../BaseIncluder/ChBase.h"
 #include"../../ChBitBool/ChBitBool.h"
 
 #include"../ChBaseCompressor.h"
