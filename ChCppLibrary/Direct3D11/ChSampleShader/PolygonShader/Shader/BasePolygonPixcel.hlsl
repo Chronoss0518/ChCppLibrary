@@ -23,14 +23,14 @@ struct OutColor
 struct OutColor
 {
 	float4 color :SV_Target0;
-	float depth : SV_Depth;
 	float4 lightBloomBase :SV_Target1;
 	//float4 lightBloom :SV_Target2;
 };
 
+#endif
+
 float3 GetLightColor(float4 _baseColor, VS_OUT _inVertex, ChP_Material _mate);
 
-#endif
 //ピクセルシェダ(PixelShader)//
 //通常描画//
 OutColor main(VS_OUT _in)
@@ -65,8 +65,6 @@ OutColor main(VS_OUT _in)
 	outColor.color = diffuse * baseTex.Sample(baseSmp, _in.uv) * outColor.color;
 
 	clip(outColor.color.a < 0.001f ? -1 : 1);
-
-	outColor.depth = outColor.color.a <= 0.99f ? 1.0f : (_in.proPos.z / _in.proPos.w);
 
 	outColor.lightBloomBase.r = max(mate.dif.r - 1.0f, 0.0f);
 	outColor.lightBloomBase.g = max(mate.dif.g - 1.0f, 0.0f);
