@@ -64,7 +64,7 @@ OutColor main(VS_OUT _in)
 
 	outColor.color = diffuse * baseTex.Sample(baseSmp, _in.uv) * outColor.color;
 
-	clip(outColor.color.a < 0.001f ? -1 : 1);
+	clip(outColor.color.a - 0.85f);
 
 	outColor.lightBloomBase.r = max(mate.dif.r - 1.0f, 0.0f);
 	outColor.lightBloomBase.g = max(mate.dif.g - 1.0f, 0.0f);
@@ -92,7 +92,7 @@ float3 GetLightColor(float4 _baseColor, VS_OUT _inVertex, ChP_Material _mate)
 	L_BaseColor lightCol;
 	lightCol.color = _baseColor.rgb;
 	lightCol.wPos = _inVertex.worldPos.xyz;
-	lightCol.wfNormal = _inVertex.faceNormal;
+	lightCol.wfNormal = _inVertex.vertexNormal;
 	lightCol.specular.rgb = _mate.speCol;
 	lightCol.specular.a = _mate.spePow;
 
