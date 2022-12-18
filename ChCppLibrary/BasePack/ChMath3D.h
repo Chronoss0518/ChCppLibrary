@@ -619,6 +619,23 @@ using ChVec4 = ChVector4;
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+enum class EulerMulOrder : unsigned char
+{
+	XYX,
+	XZX,
+	XYZ,
+	XZY,
+	YXY,
+	YZY,
+	YXZ,
+	YZX,
+	ZXZ,
+	ZYZ,
+	ZXY,
+	ZYX,
+	None
+};
+
 struct ChQuaternion : public ChMath::Vector4Base<float>
 {
 
@@ -693,19 +710,14 @@ struct ChQuaternion : public ChMath::Vector4Base<float>
 		, const unsigned int _digit = 6);
 
 	///////////////////////////////////////////////////////////////////////////////////
-	//GetFunction//
-
-	ChVec3 GetEulerAngleForVec3() const;
+	//SetFunction//
+	
+	void SetEulerRotation(const EulerMulOrder _order, const ChVec3& _euler);
 
 	///////////////////////////////////////////////////////////////////////////////////
+	//GetFunction//
 
-	inline void RotYPR(const ChVec3& _vec)
-	{
-		RotYPR(_vec.x, _vec.y, _vec.z);
-	}
-
-	void RotYPR(
-		const float _x, const float _y, const float _z);
+	ChVec3 GetEulerAngle()const;
 
 };
 
@@ -807,14 +819,18 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 
 	void SetPosition(const float _x, const float _y, const float _z);
 
-	void SetRotation(
+	void SetRotation(const ChQua& _qua, const unsigned long _digit = 6);
+
+	void SetEulerRotation(
+		const EulerMulOrder _order,
 		const ChVec3& _vec,
 		const unsigned long _digit = 6);
 
-	void SetRotation(
-		const float _x, 
-		const float _y, 
-		const float _z,
+	void SetEulerRotation(
+		const EulerMulOrder _order,
+		const float _1, 
+		const float _2, 
+		const float _3,
 		const unsigned long _digit = 6);
 
 	void SetRotationXAxis(const float _x);
@@ -838,7 +854,9 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 
 	ChVec3 GetPosition()const;
 
-	ChVec3 GetRotation(const unsigned long _digit = 6)const;
+	ChQua GetRotation(const unsigned long _digit = 6)const;
+
+	ChVec3 GetEulerAngle(const EulerMulOrder _order, const unsigned long _digit = 6);
 
 	ChVec3 GetScalling(const unsigned long _digit = 6)const;
 
@@ -881,6 +899,8 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 	///////////////////////////////////////////////////////////////////////////////////
 
 	ChRMatrix ConvertAxis();
+
+	static unsigned char GetMulOrder(const EulerMulOrder _order, unsigned char _orderNum);
 
 };
 

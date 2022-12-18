@@ -955,58 +955,6 @@ void ChQua::Deserialize(
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
-
-ChVec3 ChQua::GetEulerAngleForVec3()const
-{
-
-	float xx = x * x;
-	float xy = x * y;
-	float xz = x * z;
-	float xw = x * w;
-	float yy = y * y;
-	float yz = y * z;
-	float yw = y * w;
-	float zz = z * z;
-	float zw = z * w;
-	float ww = w * w;
-
-	ChVec3 out;
-
-	out.x = std::asin(2.0f * (xz - yw));
-	out.y = std::atan2(2.0f * (yz + xw), xx + yy - zz - ww);
-	out.z = std::atan2(2.0f * (zw + xy), xx - yy - zz + ww);
-
-	return out;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChQua::RotYPR(
-	const float _x
-	, const float _y
-	, const float _z)
-{
-
-	ChVec3 Cos;
-	ChVec3 Sin;
-
-	Cos.x = cos(_x / 2.0f);
-	Sin.x = sin(_x / 2.0f);
-
-	Cos.y = cos(_y / 2.0f);
-	Sin.y = sin(_y / 2.0f);
-
-	Cos.z = cos(_z / 2.0f);
-	Sin.z = sin(_z / 2.0f);
-
-	x = (Cos.y * Cos.x * Cos.z) + (Sin.y * Sin.x * Sin.z);
-	y = (Cos.y * Cos.x * Sin.z) - (Sin.y * Sin.x * Cos.z);
-	z = (Cos.y * Sin.x * Cos.z) + (Sin.y * Cos.x * Sin.z);
-	w = (Sin.y * Cos.x * Cos.z) + (Cos.y * Sin.x * Sin.z);
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////
 //ChLMatrix Method//
 ///////////////////////////////////////////////////////////////////////////////////
 
@@ -1113,36 +1061,90 @@ void ChLMatrix::SetPosition(const float _x, const float _y, const float _z)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLMatrix::ChLMatrix::SetRotation(
-	const ChVec3& _vec,
-	const unsigned long _digit)
+//以下のURLを参照//
+//https://qiita.com/aa_debdeb/items/3d02e28fb9ebfa357eaf#%E3%82%AF%E3%82%A9%E3%83%BC%E3%82%BF%E3%83%8B%E3%82%AA%E3%83%B3%E3%81%8B%E3%82%89%E5%9B%9E%E8%BB%A2%E8%A1%8C%E5%88%97
+//
+void ChLMatrix::SetRotation(const ChQua& _qua, const unsigned long _digit = 6)
 {
-	SetRotation(_vec.x, _vec.y, _vec.z,_digit);
+	float xy2 = _qua.x * _qua.y * 2;
+	float xz2 = _qua.x * _qua.z * 2;
+	float xw2 = _qua.x * _qua.w * 2;
+	float yz2 = _qua.y * _qua.z * 2;
+	float yw2 = _qua.y * _qua.w * 2;
+	float zw2 = _qua.z * _qua.w * 2;
+
+	float ww = _qua.w * _qua.w;
+
+	ChVec3 scl = GetScalling(_digit);
+
+	l_11 = (_qua.x * _qua.x + ww - 1) * scl.x;
+	l_22 = (_qua.y * _qua.y + ww - 1) * scl.x;
+	l_33 = (_qua.z * _qua.z + ww - 1) * scl.x;
+
+	l_12 = (xy2 - zw2) * scl.x;
+	l_13 = (xz2 + yw2) * scl.x;
+
+	l_21 = (xy2 + zw2) * scl.y;
+	l_23 = (yz2 - xw2) * scl.y;
+
+	l_31 = (xz2 - yw2) * scl.z;
+	l_32 = (yz2 + xw2) * scl.z;
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLMatrix::SetRotation(
-	const float _x, 
-	const float _y, 
-	const float _z,
+void ChLMatrix::SetEulerRotation(
+	const EulerMulOrder _order,
+	const ChVec3& _vec,
+	const unsigned long _digit)
+{
+	SetEulerRotation(_order,_vec.val[0], _vec.val[1], _vec.val[2], _digit);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+//以下のURLを参照//
+//https://qiita.com/aa_debdeb/items/3d02e28fb9ebfa357eaf#%E3%82%AF%E3%82%A9%E3%83%BC%E3%82%BF%E3%83%8B%E3%82%AA%E3%83%B3%E3%81%8B%E3%82%89%E5%9B%9E%E8%BB%A2%E8%A1%8C%E5%88%97
+//
+void ChLMatrix::SetEulerRotation(
+	const EulerMulOrder _order,
+	const float _1,
+	const float _2,
+	const float _3,
 	const unsigned long _digit)
 {
 
-	ChLMat XAxis, YAxis, ZAxis;
+	static std::function<ChLMat(const float)>rotationFunction[3] =
+	{
+		[&](const float _val)->ChLMat {
+			ChLMat res;
+			res.SetRotationXAxis(_val);
+			return res;
+		},
+		[&](const float _val)->ChLMat {
+			ChLMat res;
+			res.SetRotationYAxis(_val);
+			return res;
+		},
+		[&](const float _val)->ChLMat {
+			ChLMat res;
+			res.SetRotationZAxis(_val);
+			return res;
+		},
+	};
 
-	XAxis.SetRotationXAxis(_x);
-	YAxis.SetRotationYAxis(_y);
-	ZAxis.SetRotationZAxis(_z);
+	ChLMat res;
 
-	YAxis = XAxis * YAxis;
+	for (unsigned char i = 0; i < 3; i++)
+	{
+		res = res * rotationFunction[GetMulOrder(_order,2 - i)](_3);
+	}
 
-	YAxis = ZAxis * YAxis;
+	res.SetPosition(GetPosition());
+	res.SetScalling(GetScalling(_digit),_digit);
 
-	YAxis.SetPosition(GetPosition());
-	YAxis.SetScalling(GetScalling(_digit),_digit);
-
-	m.Set(YAxis.m);
+	m.Set(res.m);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -1220,8 +1222,56 @@ ChVec3 ChLMatrix::GetPosition()const
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVec3 ChLMatrix::GetRotation(const unsigned long _digit)const
+//以下のURLを参照//
+//https://qiita.com/aa_debdeb/items/3d02e28fb9ebfa357eaf#%E3%82%AF%E3%82%A9%E3%83%BC%E3%82%BF%E3%83%8B%E3%82%AA%E3%83%B3%E3%81%8B%E3%82%89%E5%9B%9E%E8%BB%A2%E8%A1%8C%E5%88%97
+//
+ChQua ChLMatrix::GetRotation(const unsigned long _digit)const
 {
+	ChVec3 tmpScl = GetScalling(_digit);
+
+	ChQua res;
+
+	res.w = std::sqrtf(l_11 + l_22 + l_33 + 1) / 2;
+
+	if (res.w != 0)
+	{
+		res.x = (l_32 - l_23) / (res.w * 4.0f);
+		res.y = (l_13 - l_31) / (res.w * 4.0f);
+		res.z = (l_21 - l_12) / (res.w * 4.0f);
+		return res;
+	}
+
+	res.z = std::sqrtf(-l_11 - l_22 + l_33 + 1) / 2;
+
+	if (res.z != 0)
+	{
+		res.x = (l_13 + l_31) / (res.z * 4.0f);
+		res.y = (l_32 + l_23) / (res.z * 4.0f);
+		return res;
+	}
+
+	res.y = std::sqrtf(-l_11 + l_22 - l_33 + 1) / 2;
+
+	if (res.y != 0)
+	{
+		res.x = (l_13 + l_31) / (res.z * 4.0f);
+		return res;
+	}
+
+	res.x = std::sqrtf(l_11 - l_22 - l_33 + 1) / 2;
+
+	return res;
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+//以下のURLを参照//
+//https://qiita.com/aa_debdeb/items/3d02e28fb9ebfa357eaf#%E3%82%AF%E3%82%A9%E3%83%BC%E3%82%BF%E3%83%8B%E3%82%AA%E3%83%B3%E3%81%8B%E3%82%89%E5%9B%9E%E8%BB%A2%E8%A1%8C%E5%88%97
+//
+ChVec3 ChLMatrix::GetEulerAngle(const EulerMulOrder _order, const unsigned long _digit)
+{
+
 	ChVec3 tmpScl = GetScalling(_digit);
 
 	float outM[4][4];
@@ -1333,6 +1383,31 @@ ChRMatrix ChLMatrix::ConvertAxis()
 	}
 
 	return tmp;
+}
+
+unsigned char ChLMatrix::GetMulOrder(const EulerMulOrder _order, unsigned char _orderNum)
+{
+
+	if (_orderNum >= 3)return 0;
+	if (_order == EulerMulOrder::None)return 0;
+
+	static unsigned char mulOrder[ChStd::EnumCast(EulerMulOrder::None)][3] =
+	{
+		{0,1,0},
+		{0,2,0},
+		{0,1,2},
+		{0,2,1},
+		{1,0,1},
+		{1,2,1},
+		{1,0,2},
+		{1,2,0},
+		{2,0,2},
+		{2,1,2},
+		{2,0,1},
+		{2,1,0},
+	};
+
+	return mulOrder[ChStd::EnumCast(_order)][_orderNum];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
