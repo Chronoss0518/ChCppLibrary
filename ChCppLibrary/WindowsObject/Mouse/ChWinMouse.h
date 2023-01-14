@@ -19,22 +19,11 @@ namespace ChWin
 		//InitAndRelease//
 
 		void Init(
-			const HWND& _hWnd
-			, const unsigned long _windWidth
-			, const unsigned long _windHeight);
+			const HWND& _hWnd);
 
 		void Init(const ChSystem::Windows& _win);
 
 		void Release()override;
-
-		inline void SetWindSize(
-			const unsigned long _windWidth
-			, const unsigned long _windHeight)
-		{
-			if (!*this)return;
-			windSize.w = _windWidth;
-			windSize.h = _windHeight;
-		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
@@ -106,10 +95,14 @@ namespace ChWin
 
 	private:
 		
+		void UpdateCenterPos();
+
+		MouseController() {}
+
 		POINTS wheelMoveVal{ 0,0 };
-		POINT centerPos{ 0,0 };
-		POINT nowPos{ 0,0 };
-		POINT beforPos{ 0,0 };
+		ChPOINT centerPos{ 0,0 };
+		ChPOINT nowPos{ 0,0 };
+		ChPOINT beforPos{ 0,0 };
 
 		ChStd::Bool wheelMoveFlg = true;
 		ChStd::Bool visFlg = false;
@@ -118,8 +111,6 @@ namespace ChWin
 		ChMath::Vector2Base<unsigned long>windSize;
 
 		HWND hWnd = nullptr;
-
-		MouseController(){}
 
 	public:
 
@@ -131,7 +122,7 @@ namespace ChWin
 
 	};
 
-	static const std::function<MouseController&()>Mouse = MouseController::GetIns;
+	static MouseController& Mouse() { return MouseController::GetIns(); }
 
 }
 
