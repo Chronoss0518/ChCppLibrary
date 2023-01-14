@@ -2,11 +2,7 @@
 #include<cmath>
 #include"../ChModel/ChModel.h"
 
-
-#include"ChHitTestObject.h"
 #include"ChCollider.h"
-
-#include"ChHitTestRay.h"
 
 using namespace ChCpp;
 
@@ -14,7 +10,7 @@ using namespace ChCpp;
 //HitTestObject Method
 ///////////////////////////////////////////////////////////////////////////////////////
 
-float HitTestObject::CreateDat(const ChVec3& _vec1, const ChVec3& _vec2, const ChVec3& _vec3)
+float Collider::CreateDat(const ChVec3& _vec1, const ChVec3& _vec2, const ChVec3& _vec3)
 {
 
 	ChMath::BaseMatrix3x3<float> mat;
@@ -34,7 +30,7 @@ float HitTestObject::CreateDat(const ChVec3& _vec1, const ChVec3& _vec2, const C
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool HitTestObject::HitTestTri(
+ChStd::Bool Collider::HitTestTri(
 	ChVec3& _thisHitVectol, 
 	const ChVec3& _pos,
 	const ChVec3& _dir,
@@ -97,4 +93,37 @@ ChStd::Bool HitTestObject::HitTestTri(
 	_thisHitVectol = _dir * len;
 
 	return true;
+}
+
+ChStd::Bool Collider::IsHitSphereToPanel(ChVec3& _thisHitVectol, const ChStd::Bool _leftHandFlg, const ChVec3& _spherePos, const ChVec3& _sphereSize, const std::vector<ChVec3*> _vertexs)
+{
+	if (_vertexs.empty())return false;
+
+	if (_vertexs.size() < 2)
+	{
+		return IsHitSphereToPos(_thisHitVectol, _spherePos, _sphereSize, *_vertexs[0]);
+	}
+
+	if (_vertexs.size() < 3) {
+		return IsHitSphereToLine(_thisHitVectol, _spherePos, _sphereSize, *_vertexs[0], *_vertexs[1]);
+	}
+
+	ChVec3 basePos = *_vertexs[0];
+
+	for (unsigned long i = 0; i < _vertexs.size() - 3; i++)
+	{
+
+	}
+
+
+}
+
+ChStd::Bool Collider::IsHitSphereToLine(ChVec3& _thisHitVectol, const ChVec3& _spherePos, const ChVec3& _sphereSize, const ChVec3& _v1, const ChVec3& _v2)
+{
+
+}
+
+ChStd::Bool Collider::IsHitSphereToPos(ChVec3& _thisHitVectol, const ChVec3& _spherePos, const ChVec3& _sphereSize, const ChVec3& _vertex)
+{
+
 }
