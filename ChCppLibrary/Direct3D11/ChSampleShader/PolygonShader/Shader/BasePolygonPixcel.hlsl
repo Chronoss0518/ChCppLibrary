@@ -17,12 +17,12 @@ float4 PLightCol(ChPointLight _plight, VS_OUT _base, float4 _color);
 struct OutColor
 {
 	float4 color :SV_Target0;
-	//float depth : SV_Depth;
 };
 #else
 struct OutColor
 {
 	float4 color :SV_Target0;
+	float depth : SV_DepthGreaterEqual;
 };
 
 #endif
@@ -51,32 +51,45 @@ OutColor main(VS_OUT _in)
 	outColor.color.b = _in.proPos.z / _in.proPos.w;
 	//outColor.color.r = outColor.depth;
 
-#else
+#elif 0
+
 	outColor.color = _in.color;
 
 	float3 lightBloomColor = outColor.color.rgb;
 
-	float4 diffuse = mate.dif;
-	diffuse.r = clamp(diffuse.r, 0.0f, 1.0f);
-	diffuse.g = clamp(diffuse.g, 0.0f, 1.0f);
-	diffuse.b = clamp(diffuse.b, 0.0f, 1.0f);
+	float4 baseTexCol = baseTex.Sample(baseSmp, _in.uv);
+
+	clip(baseTexCol.a - 0.1f);
+
+	float a = mate.dif.a * baseTexCol.a * outColor.color.a;
+
+	outColor.color = float4(a, a, a, 1);
+
+	outColor.depth = outColor.color.a > 0.99f ? 0.0f : 0.99f;
+
+#else
+
+	outColor.color = _in.color;
 
 	float4 baseTexCol = baseTex.Sample(baseSmp, _in.uv);
 
-	outColor.color = diffuse * baseTexCol * outColor.color;
-
 	clip(baseTexCol.a - 0.1f);
+
+	float3 lightBloomColor = outColor.color.rgb;
+
+	outColor.color = mate.dif * baseTexCol * outColor.color;
 
 	lightBloomColor.r = max(mate.dif.r - 1.0f, 0.0f);
 	lightBloomColor.g = max(mate.dif.g - 1.0f, 0.0f);
 	lightBloomColor.b = max(mate.dif.b - 1.0f, 0.0f);
 
 	outColor.color.rgb =
-		(lightBloomColor.r > 0.0f ||
+		lightBloomColor.r > 0.0f ||
 		lightBloomColor.g > 0.0f ||
-		lightBloomColor.b > 0.0f) ?
+		lightBloomColor.b > 0.0f ?
 		outColor.color.rgb : GetLightColor(outColor.color, _in, mate);
 
+	outColor.depth = outColor.color.a > 0.99f ? 0.0f : 0.99f;
 
 #endif
 
