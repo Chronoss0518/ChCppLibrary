@@ -23,8 +23,6 @@ struct OutColor
 struct OutColor
 {
 	float4 color :SV_Target0;
-	float4 lightBloomBase :SV_Target1;
-	//float4 lightBloom :SV_Target2;
 };
 
 #endif
@@ -38,7 +36,6 @@ OutColor main(VS_OUT _in)
 	//ƒJƒƒ‰‚Ì‘O•û‚É‚ ‚é‚©‚Ì”»’è//
 	FrustumCulling(_in.proPos);
 	
-
 	OutColor outColor;
 
 #if DebugFlgs
@@ -57,25 +54,27 @@ OutColor main(VS_OUT _in)
 #else
 	outColor.color = _in.color;
 
+	float3 lightBloomColor = outColor.color.rgb;
+
 	float4 diffuse = mate.dif;
 	diffuse.r = clamp(diffuse.r, 0.0f, 1.0f);
 	diffuse.g = clamp(diffuse.g, 0.0f, 1.0f);
 	diffuse.b = clamp(diffuse.b, 0.0f, 1.0f);
 
-	outColor.color = diffuse * baseTex.Sample(baseSmp, _in.uv) * outColor.color;
+	float4 baseTexCol = baseTex.Sample(baseSmp, _in.uv);
 
-	clip(outColor.color.a - 0.85f);
+	outColor.color = diffuse * baseTexCol * outColor.color;
 
-	outColor.lightBloomBase.r = max(mate.dif.r - 1.0f, 0.0f);
-	outColor.lightBloomBase.g = max(mate.dif.g - 1.0f, 0.0f);
-	outColor.lightBloomBase.b = max(mate.dif.b - 1.0f, 0.0f);
+	clip(baseTexCol.a - 0.1f);
 
-	outColor.lightBloomBase.a = 1.0f;
+	lightBloomColor.r = max(mate.dif.r - 1.0f, 0.0f);
+	lightBloomColor.g = max(mate.dif.g - 1.0f, 0.0f);
+	lightBloomColor.b = max(mate.dif.b - 1.0f, 0.0f);
 
 	outColor.color.rgb =
-		(outColor.lightBloomBase.r > 0.0f && 
-		outColor.lightBloomBase.g > 0.0f && 
-		outColor.lightBloomBase.b > 0.0f) ?
+		(lightBloomColor.r > 0.0f ||
+		lightBloomColor.g > 0.0f ||
+		lightBloomColor.b > 0.0f) ?
 		outColor.color.rgb : GetLightColor(outColor.color, _in, mate);
 
 

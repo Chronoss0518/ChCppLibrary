@@ -110,10 +110,13 @@ void BaseDrawMesh11::Draw(
 {
 	if (!IsInit())return;
 	if (!IsDraw())return;
+	if (ChPtr::NullCheck(_dc))return;
 
 	polyData.SetWorldMatrix(_mat);
 
 	DrawUpdate(_dc, _mesh);
+
+	DrawAlpha(_dc);
 }
 
 void BaseDrawMesh11::DrawUpdate(
@@ -159,7 +162,9 @@ void BaseDrawMesh11::DrawMain(
 	ChCpp::FrameObject& _object)
 {
 
-	auto drawMatrix = _object.GetDrawLHandMatrix();
+	auto alphaObject = ChPtr::Make_S<AlphaObject>();
+
+	alphaObject->drawMatrix = _object.GetDrawLHandMatrix();
 
 	auto&& frameCom = _object.GetComponent<FrameComponent11>();
 
@@ -176,7 +181,7 @@ void BaseDrawMesh11::DrawMain(
 	unsigned int offsets = 0;
 
 
-	polyData.SetFrameMatrix(drawMatrix);
+	polyData.SetFrameMatrix(alphaObject->drawMatrix);
 
 	polyData.SetVSCharaData(_dc);
 
@@ -185,6 +190,12 @@ void BaseDrawMesh11::DrawMain(
 		if (prim == nullptr)continue;
 
 		auto&& mate11 = *prim->mate;
+
+		if (mate11.mate.diffuse.a < alphaValue)
+		{
+			alphaObject->alphaObjects.push_back(prim);
+			continue;
+		}
 
 		polyData.SetMateDiffuse(mate11.mate.diffuse);
 		polyData.SetMateSpecularColor(mate11.mate.specularColor);
@@ -204,7 +215,53 @@ void BaseDrawMesh11::DrawMain(
 		_dc->DrawIndexed(prim->indexArray.size(), 0, 0);
 
 	}
+	
+	if (alphaObject->alphaObjects.empty())return;
+	alphaObjects.push_back(alphaObject);
 
+}
+
+void BaseDrawMesh11::DrawAlpha(
+	ID3D11DeviceContext* _dc)
+{
+	if (alphaObjects.empty())return;
+
+	unsigned int offsets = 0;
+
+	for (auto alphaObject : alphaObjects)
+	{
+
+		polyData.SetFrameMatrix(alphaObject->drawMatrix);
+
+		polyData.SetVSCharaData(_dc);
+
+		for (auto&& prim : alphaObject->alphaObjects)
+		{
+			if (prim == nullptr)continue;
+
+			auto&& mate11 = *prim->mate;
+
+			polyData.SetMateDiffuse(mate11.mate.diffuse);
+			polyData.SetMateSpecularColor(mate11.mate.specularColor);
+			polyData.SetMateSpecularPower(mate11.mate.specularPower);
+			polyData.SetMateAmbientColor(mate11.mate.ambient);
+
+			polyData.SetShaderMaterialData(_dc);
+
+			polyData.SetBaseTexture(prim->textures[Ch3D::TextureType::Diffuse].get());
+			polyData.SetNormalTexture(prim->textures[Ch3D::TextureType::Normal].get());
+
+			polyData.SetShaderTexture(_dc);
+
+			prim->vertexBuffer.SetVertexBuffer(_dc, offsets);
+			prim->indexBuffer.SetIndexBuffer(_dc);
+
+			_dc->DrawIndexed(prim->indexArray.size(), 0, 0);
+
+		}
+	}
+
+	alphaObjects.clear();
 }
 
 void BaseDrawMesh11::Update()

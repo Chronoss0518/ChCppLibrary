@@ -70,6 +70,9 @@ namespace ChD3D11
 				ID3D11DeviceContext* _dc,
 				ChCpp::FrameObject& _object);
 
+			void DrawAlpha(
+				ID3D11DeviceContext* _dc);
+
 			void Update()override;
 
 		private://Member Value//
@@ -80,7 +83,14 @@ namespace ChD3D11
 			D3D11_CULL_MODE cull = D3D11_CULL_MODE::D3D11_CULL_NONE;
 			ChStd::Bool updateFlg = true;
 
+			struct AlphaObject
+			{
+				std::vector < ChPtr::Shared<ChD3D11::DrawPrimitiveData11>> alphaObjects;
+				ChLMat drawMatrix;
+			};
 
+			float alphaValue = 0.99f;
+			std::vector<ChPtr::Shared<AlphaObject>>alphaObjects;
 		};
 	}
 }
