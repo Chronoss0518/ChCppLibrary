@@ -83,14 +83,6 @@ namespace ChD3D11
 			D3D11_CULL_MODE cull = D3D11_CULL_MODE::D3D11_CULL_NONE;
 			ChStd::Bool updateFlg = true;
 
-			struct AlphaObject
-			{
-				std::vector < ChPtr::Shared<ChD3D11::DrawPrimitiveData11>> alphaObjects;
-				ChLMat drawMatrix;
-			};
-
-			float alphaValue = 0.99f;
-			std::vector<ChPtr::Shared<AlphaObject>>alphaObjects;
 		};
 	}
 }

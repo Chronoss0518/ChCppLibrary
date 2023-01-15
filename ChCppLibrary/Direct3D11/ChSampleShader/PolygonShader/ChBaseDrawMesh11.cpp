@@ -14,6 +14,7 @@ using namespace ChCpp;
 using namespace ChD3D11;
 using namespace Shader;
 
+#define ALPHA_VALUE 0.99f
 #define DEBUG 0
 
 void BaseDrawMesh11::Init(ID3D11Device* _device)
@@ -23,6 +24,20 @@ void BaseDrawMesh11::Init(ID3D11Device* _device)
 	SampleShaderBase11::Init(_device);
 	
 	polyData.Init(_device,&GetWhiteTexture(), &GetNormalTexture());
+
+	D3D11_BLEND_DESC desc;
+	desc.AlphaToCoverageEnable = false;
+	desc.IndependentBlendEnable = false;
+	desc.RenderTarget[0].BlendEnable = true;
+	desc.RenderTarget[0].SrcBlend = D3D11_BLEND::D3D11_BLEND_SRC_COLOR;
+	desc.RenderTarget[0].DestBlend = D3D11_BLEND::D3D11_BLEND_INV_SRC_COLOR;
+	desc.RenderTarget[0].BlendOp = D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
+	desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND::D3D11_BLEND_ONE;
+	desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND::D3D11_BLEND_ZERO;
+	desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
+	desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	SampleShaderBase11::CreateBlender(desc);
 }
 
 void BaseDrawMesh11::Release()
@@ -96,7 +111,6 @@ void BaseDrawMesh11::DrawStart(ID3D11DeviceContext* _dc)
 	if (!IsInit())return;
 	if (IsDraw())return;
 
-
 	SampleShaderBase11::DrawStart(_dc);
 
 	polyData.SetVSDrawData(_dc);
@@ -116,7 +130,7 @@ void BaseDrawMesh11::Draw(
 
 	DrawUpdate(_dc, _mesh);
 
-	DrawAlpha(_dc);
+	//DrawAlpha(_dc);
 }
 
 void BaseDrawMesh11::DrawUpdate(
@@ -162,9 +176,7 @@ void BaseDrawMesh11::DrawMain(
 	ChCpp::FrameObject& _object)
 {
 
-	auto alphaObject = ChPtr::Make_S<AlphaObject>();
-
-	alphaObject->drawMatrix = _object.GetDrawLHandMatrix();
+	ChLMat drawMatrix = _object.GetDrawLHandMatrix();
 
 	auto&& frameCom = _object.GetComponent<FrameComponent11>();
 
@@ -181,7 +193,7 @@ void BaseDrawMesh11::DrawMain(
 	unsigned int offsets = 0;
 
 
-	polyData.SetFrameMatrix(alphaObject->drawMatrix);
+	polyData.SetFrameMatrix(drawMatrix);
 
 	polyData.SetVSCharaData(_dc);
 
@@ -191,10 +203,13 @@ void BaseDrawMesh11::DrawMain(
 
 		auto&& mate11 = *prim->mate;
 
-		if (mate11.mate.diffuse.a < alphaValue)
+		if (mate11.mate.diffuse.a < ALPHA_VALUE)
 		{
-			alphaObject->alphaObjects.push_back(prim);
-			continue;
+			SampleShaderBase11::SetShaderBlender(_dc);
+		}
+		else
+		{
+			SampleShaderBase11::SetShaderDefaultBlender(_dc);
 		}
 
 		polyData.SetMateDiffuse(mate11.mate.diffuse);
@@ -214,54 +229,11 @@ void BaseDrawMesh11::DrawMain(
 
 		_dc->DrawIndexed(prim->indexArray.size(), 0, 0);
 
-	}
-	
-	if (alphaObject->alphaObjects.empty())return;
-	alphaObjects.push_back(alphaObject);
 
-}
-
-void BaseDrawMesh11::DrawAlpha(
-	ID3D11DeviceContext* _dc)
-{
-	if (alphaObjects.empty())return;
-
-	unsigned int offsets = 0;
-
-	for (auto alphaObject : alphaObjects)
-	{
-
-		polyData.SetFrameMatrix(alphaObject->drawMatrix);
-
-		polyData.SetVSCharaData(_dc);
-
-		for (auto&& prim : alphaObject->alphaObjects)
-		{
-			if (prim == nullptr)continue;
-
-			auto&& mate11 = *prim->mate;
-
-			polyData.SetMateDiffuse(mate11.mate.diffuse);
-			polyData.SetMateSpecularColor(mate11.mate.specularColor);
-			polyData.SetMateSpecularPower(mate11.mate.specularPower);
-			polyData.SetMateAmbientColor(mate11.mate.ambient);
-
-			polyData.SetShaderMaterialData(_dc);
-
-			polyData.SetBaseTexture(prim->textures[Ch3D::TextureType::Diffuse].get());
-			polyData.SetNormalTexture(prim->textures[Ch3D::TextureType::Normal].get());
-
-			polyData.SetShaderTexture(_dc);
-
-			prim->vertexBuffer.SetVertexBuffer(_dc, offsets);
-			prim->indexBuffer.SetIndexBuffer(_dc);
-
-			_dc->DrawIndexed(prim->indexArray.size(), 0, 0);
-
-		}
 	}
 
-	alphaObjects.clear();
+	SampleShaderBase11::SetShaderDefaultBlender(_dc);
+
 }
 
 void BaseDrawMesh11::Update()
@@ -279,8 +251,8 @@ void BaseDrawMesh11::Update()
 		0.0f,
 		false,
 		false,
-		true,
-		false
+		false,
+		true
 	};
 
 
