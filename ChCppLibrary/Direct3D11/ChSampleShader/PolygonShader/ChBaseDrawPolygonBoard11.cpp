@@ -155,6 +155,11 @@ void BaseDrawPolygonBoard11::Draw(
 
 	drawVertexs[0] = *vertexs[0];
 
+	if (alphaBlendFlg)
+	{
+		SampleShaderBase11::SetShaderBlender(_dc);
+	}
+
 	for (unsigned long i = 1; i < vertexs.size() - 1; i++)
 	{
 		drawVertexs[1] = *vertexs[i];
@@ -168,6 +173,11 @@ void BaseDrawPolygonBoard11::Draw(
 
 		_dc->DrawIndexed(3, 0, 0);
 
+	}
+
+	if (alphaBlendFlg)
+	{
+		SampleShaderBase11::SetShaderDefaultBlender(_dc);
 	}
 }
 
@@ -186,8 +196,8 @@ void BaseDrawPolygonBoard11::Update()
 		0.0f,
 		false,
 		false,
-		true,
-		false
+		false,
+		true
 	};
 
 

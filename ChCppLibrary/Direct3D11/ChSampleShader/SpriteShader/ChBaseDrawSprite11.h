@@ -30,6 +30,8 @@ namespace ChD3D11
 
 			void SetSpriteMatrix(const ChLMat& _mat);
 
+			inline void SetAlphaBlendFlg(const ChStd::Bool _flg) { alphaBlendFlg = _flg; }
+
 		public://Get Functions//
 
 			inline ChLMat GetSpriteMatrix() { return spriteData.GetSpriteMatrix(); }
@@ -61,6 +63,8 @@ namespace ChD3D11
 
 			VertexBuffer11<Ch3D::Vertex> vertexBuffer;
 			IndexBuffer11 indexBuffer;
+
+			ChStd::Bool alphaBlendFlg = false;
 
 		};
 	}

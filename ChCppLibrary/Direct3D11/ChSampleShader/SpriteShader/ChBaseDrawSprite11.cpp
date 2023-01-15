@@ -89,6 +89,11 @@ void BaseDrawSprite11::Draw(
 
 	spriteData.SetShaderTexture(_dc);
 
+	if (alphaBlendFlg)
+	{
+		SampleShaderBase11::SetShaderBlender(_dc);
+	}
+
 	unsigned int offsets = 0;
 
 	auto&& vertexs = _sprite.GetVertexs();
@@ -101,7 +106,10 @@ void BaseDrawSprite11::Draw(
 
 	_dc->DrawIndexed(6, 0, 0);
 
-
+	if (alphaBlendFlg)
+	{
+		SampleShaderBase11::SetShaderDefaultBlender(_dc);
+	}
 }
 
 void BaseDrawSprite11::Update()
