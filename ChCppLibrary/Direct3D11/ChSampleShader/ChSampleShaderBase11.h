@@ -42,6 +42,10 @@ namespace ChD3D11
 
 			void SetShaderRasteriser(ID3D11DeviceContext* _dc);
 
+			void SetShaderBlender(ID3D11DeviceContext* _dc);
+
+			void SetShaderDefaultBlender(ID3D11DeviceContext* _dc);
+
 		protected://Get Functions//
 
 			inline Texture11& GetWhiteTexture() { return *whiteTex; }
@@ -77,6 +81,8 @@ namespace ChD3D11
 
 			void CreateRasteriser(const D3D11_RASTERIZER_DESC& _desc);
 
+			void CreateBlender(const D3D11_BLEND_DESC& _desc);
+
 		private://Member Value//
 
 			ID3D11RasterizerState* rasteriser = nullptr;
@@ -89,6 +95,8 @@ namespace ChD3D11
 			ChPtr::Unique<Texture11> normalTex;
 
 			ChStd::Bool drawFlg;
+
+			ID3D11BlendState* blender = nullptr;
 
 		};
 	}

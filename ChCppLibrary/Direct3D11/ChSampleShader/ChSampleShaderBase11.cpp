@@ -56,6 +56,12 @@ void SampleShaderBase11::Release()
 		rasteriser = nullptr;
 	}
 
+	if (ChPtr::NotNullCheck(blender))
+	{
+		blender->Release();
+		blender = nullptr;
+	}
+
 	vs.Release();
 	ps.Release();
 
@@ -82,6 +88,21 @@ void SampleShaderBase11::SetShaderRasteriser(ID3D11DeviceContext* _dc)
 	_dc->RSSetState(rasteriser);
 }
 
+void SampleShaderBase11::SetShaderBlender(ID3D11DeviceContext* _dc)
+{
+	if (ChPtr::NullCheck(_dc))return;
+	if (ChPtr::NullCheck(blender))return;
+
+	_dc->OMSetBlendState(blender, nullptr, 0xffffffff);
+}
+
+void SampleShaderBase11::SetShaderDefaultBlender(ID3D11DeviceContext* _dc)
+{
+	if (ChPtr::NullCheck(_dc))return;
+
+	_dc->OMSetBlendState(nullptr, nullptr, 0xffffffff);
+}
+
 void SampleShaderBase11::CreateRasteriser(const D3D11_RASTERIZER_DESC& _desc)
 {
 	if (ChPtr::NullCheck(device))return;
@@ -92,6 +113,19 @@ void SampleShaderBase11::CreateRasteriser(const D3D11_RASTERIZER_DESC& _desc)
 	}
 
 	device->CreateRasterizerState(&_desc, &rasteriser);
+
+}
+
+void SampleShaderBase11::CreateBlender(const D3D11_BLEND_DESC& _desc)
+{
+	if (ChPtr::NullCheck(device))return;
+	if (ChPtr::NotNullCheck(blender))
+	{
+		blender->Release();
+		blender = nullptr;
+	}
+
+	device->CreateBlendState(&_desc, &blender);
 
 }
 
