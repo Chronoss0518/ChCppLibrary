@@ -108,22 +108,70 @@ ChStd::Bool Collider::IsHitSphereToPanel(ChVec3& _thisHitVectol, const ChStd::Bo
 		return IsHitSphereToLine(_thisHitVectol, _spherePos, _sphereSize, *_vertexs[0], *_vertexs[1]);
 	}
 
-	ChVec3 basePos = *_vertexs[0];
+	ChVec3 tmpPos = MovePosToPanelUp(*_vertexs[0], *_vertexs[_leftHandFlg ? 1 : _vertexs.size() - 1], *_vertexs[_leftHandFlg ? 1 : _vertexs.size() - 2] ,_spherePos);
 
-	for (unsigned long i = 0; i < _vertexs.size() - 3; i++)
+	ChVec3 posOnPanel = _spherePos - tmpPos;
+
+	ChVec3 testNormal = ChVec3();
+
+	ChStd::Bool hitTest = true;
+
+	for (unsigned long i = 0; i < _vertexs.size() - 1; i++)
+	{
+
+		ChVec3 vertex1;
+		ChVec3 vertex2;
+
+		{
+			unsigned long v1Num = i + 1;
+			unsigned long v2Num = i + 2;
+			vertex1 = *_vertexs[_leftHandFlg ? v1Num : _vertexs.size() - v1Num];
+			vertex2 = *_vertexs[_leftHandFlg ? v2Num : _vertexs.size() - v2Num];
+		}
+
+		ChVec3 test = ChVec3::GetCross(posOnPanel - vertex1, vertex2 - vertex1);
+
+		if (testNormal.Len() < 0.1f)
+		{
+			testNormal = test;
+		}
+
+		if (testNormal == test)continue;
+		
+		hitTest = false;
+
+		break;
+	}
+
+	if (hitTest)
 	{
 
 	}
+	
 
 
+
+
+	return hitTest;
+
+}
+
+ChVec3 Collider::MovePosToPanelUp(const ChVec3& _v1, const ChVec3& _v2, const ChVec3& _v3, const ChVec3& _pos)
+{
+
+	ChVec3 normal = ChVec3::GetCross(_v2 - _v1, _v3 - _v1);
+
+	normal.Normalize();
+
+	return normal * ChVec3::GetDot(_pos - _v1, normal);
 }
 
 ChStd::Bool Collider::IsHitSphereToLine(ChVec3& _thisHitVectol, const ChVec3& _spherePos, const ChVec3& _sphereSize, const ChVec3& _v1, const ChVec3& _v2)
 {
-
+	return false;
 }
 
 ChStd::Bool Collider::IsHitSphereToPos(ChVec3& _thisHitVectol, const ChVec3& _spherePos, const ChVec3& _sphereSize, const ChVec3& _vertex)
 {
-
+	return false;
 }

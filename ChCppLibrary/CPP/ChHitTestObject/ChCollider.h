@@ -43,13 +43,15 @@ namespace ChCpp
 
 	protected:
 
-		float CreateDat(const ChVec3& _vec1, const ChVec3& _vec2, const ChVec3& _vec3);
-
 		ChStd::Bool HitTestTri(ChVec3& _thisHitVectol, const ChVec3& _pos, const ChVec3& _dir, const ChVec3& _vec1, const ChVec3& _vec2, const ChVec3& _vec3);
 
 		ChStd::Bool IsHitSphereToPanel(ChVec3& _thisHitVectol, const ChStd::Bool _leftHandFlg, const ChVec3& _spherePos, const ChVec3& _sphereSize, const std::vector<ChVec3*> _vertexs);
 
 	private:
+
+		float CreateDat(const ChVec3& _vec1, const ChVec3& _vec2, const ChVec3& _vec3);
+
+		ChVec3 MovePosToPanelUp(const ChVec3& _v1, const ChVec3& _v2, const ChVec3& _v3, const ChVec3& _pos);
 
 		ChStd::Bool IsHitSphereToLine(ChVec3& _thisHitVectol, const ChVec3& _spherePos, const ChVec3& _sphereSize, const ChVec3& _v1, const ChVec3& _v2);
 
