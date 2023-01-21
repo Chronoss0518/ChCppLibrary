@@ -98,7 +98,7 @@ float3 GetDirectionalLightColor(L_BaseColor _bCol)
 
 	float dotSize = dot(_bCol.wfNormal, -light.dir);
 
-	dotSize = (dotSize + 1) * 0.5f;
+	dotSize = (dotSize + 1.0f) * 0.5f;
 
 	dotSize = dotSize > light.ambPow ? dotSize : light.ambPow;
 
@@ -110,11 +110,11 @@ float3 GetDirectionalLightColor(L_BaseColor _bCol)
 
 	float3 tmpVec = normalize(camPos.xyz - _bCol.wPos);//ピクセルからのカメラ方向
 
-	tmpVec = normalize(-light.dir + tmpVec);
+	tmpVec = normalize(light.dir + tmpVec);
 
 	float lcDot = dot(tmpVec, _bCol.wfNormal);
 
-	float power = saturate(lcDot);
+	float power = (lcDot + 1.0f) * 0.5f;
 
 	oCol += _bCol.specular.rgb * pow(power, _bCol.specular.a);
 
