@@ -104,7 +104,7 @@ float3 GetLightColor(float4 _baseColor, VS_OUT _inVertex, ChP_Material _mate)
 	L_BaseColor lightCol;
 	lightCol.color = _baseColor.rgb;
 	lightCol.wPos = _inVertex.worldPos.xyz;
-	lightCol.wfNormal = _inVertex.vertexNormal;
+	lightCol.wfNormal = _inVertex.faceNormal;
 	lightCol.specular.rgb = _mate.speCol;
 	lightCol.specular.a = _mate.spePow;
 
