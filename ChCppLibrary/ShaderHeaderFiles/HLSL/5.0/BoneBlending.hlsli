@@ -20,7 +20,7 @@ cbuffer BoneData : register(b[BONE_DATA_REGISTERNO])
 struct BoneData
 #endif
 {
-	row_major float4x4 skinWeightMat[4 * 16];
+	row_major float4x4 skinWeightMat[4 * 4];
 };
 
 #ifdef __SHADER__
