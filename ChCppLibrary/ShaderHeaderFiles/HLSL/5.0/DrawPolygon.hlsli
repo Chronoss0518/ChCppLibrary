@@ -160,7 +160,7 @@ void FrustumCulling(float4 _pos)
 
 	clip(1.0f - x);
 	clip(1.0f - y);
-	clip(z >= 0.0f && z <= 1.0f ? 1.0f : -1.0f);
+	clip(1.0f - z);
 }
 
 
