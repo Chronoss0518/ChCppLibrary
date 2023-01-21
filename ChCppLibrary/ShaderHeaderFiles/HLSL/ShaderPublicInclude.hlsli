@@ -15,7 +15,7 @@
 #ifndef SHADER_TO_CPP
 #define SHADER_TO_CPP
 
-#ifndef row_magor
+#ifndef row_major
 #define row_major
 #endif
 
@@ -27,6 +27,8 @@
 #define column_major
 #endif
 
+using uint4x4 = ChMath::Vector4Base<unsigned int>;
+using uint = unsigned int;
 using float4x4 = ChLMat;
 using float3x3 = ChLMat;
 using float2x2 = ChLMat;
