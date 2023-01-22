@@ -132,11 +132,12 @@ MTWStruct ModelToWorld(
 	float4 _pos,
 	float2 _uv,
 	float3 _normal,
-	float3 _faceNormal)
+	float3 _faceNormal,
+	float4x4 _boneMatrix)
 {
 	MTWStruct res;
 
-	float4x4 tmpMat = mul(frameMatrix, worldMat);
+	float4x4 tmpMat = mul(_boneMatrix, mul(frameMatrix, worldMat));
 
 	res.worldPos = mul(_pos, tmpMat);
 

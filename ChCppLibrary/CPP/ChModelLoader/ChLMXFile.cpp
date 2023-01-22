@@ -764,6 +764,22 @@ void XFile::XFrameToChFrame(
 			chVertex->normal.Normalize();
 		}
 
+		for (unsigned long i = 0;i < _xFrame->skinWeightDatas.size() && i < maxBoneNum;i++)
+		{
+			auto&& skinWeight = _xFrame->skinWeightDatas[i];
+			for (unsigned long j = 0; j < chVertexList.size(); j++) 
+			{
+				auto&& chVertex = *chVertexList[j];
+				auto weitPow = skinWeight->weitPow.find(j);
+
+				chVertex.blendPow.push_back(weitPow == skinWeight->weitPow.end() ? 0.0f : (*weitPow).second);
+			}
+			auto boneData = ChPtr::Make_S<ChCpp::TargetBoneData>();
+			boneData->boneObjectName = skinWeight->targetFrameName;
+			boneData->boneOffset = skinWeight->boneOffset;
+			mesh->boneDatas.push_back(boneData);
+		};
+
 		ChVec3 minToMaxVec = mesh->maxPos - mesh->minPos;
 
 		mesh->centerPos = (mesh->minPos + mesh->maxPos) / 2.0f;

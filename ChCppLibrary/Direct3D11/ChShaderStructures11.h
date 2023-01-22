@@ -52,12 +52,6 @@ namespace ChD3D11
 		ChVec4 baseColor = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
 	};
 
-	struct BoneDatas
-	{
-		//スキンメッシュ用行列//
-		ChMat_11 skinWeightMat[1000];
-	};
-
 	class ShaderObjectBase11 :public ChCp::Releaser, public ChCp::Initializer
 	{
 	public:

@@ -78,6 +78,8 @@ namespace ChD3D11
 		private://Member Value//
 
 			CB::CBPolygon11 polyData;
+			CB::CBBone11 boneData;
+
 
 			D3D11_FILL_MODE fill = D3D11_FILL_MODE::D3D11_FILL_SOLID;
 			D3D11_CULL_MODE cull = D3D11_CULL_MODE::D3D11_CULL_NONE;
