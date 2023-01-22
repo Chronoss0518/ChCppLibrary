@@ -38,6 +38,7 @@ void CBBone11::SetBoneObjectDrawMatrix(const ChLMat& _mat, const unsigned long _
 {
 	if (!*this)return;
 	if (_no >= BONE_MAX_NUM)return;
+	if (bone.skinWeightMat[_no] == _mat)return;
 
 	bone.skinWeightMat[_no] = _mat;
 
@@ -48,6 +49,7 @@ void CBBone11::SetBoneOffsetMatrix(const ChLMat& _mat, const unsigned long _no)
 {
 	if (!*this)return;
 	if (_no >= BONE_MAX_NUM)return;
+	if (bone.boneOffsetMat[_no] == _mat)return;
 
 	bone.boneOffsetMat[_no] = _mat;
 	bone.boneOffsetInverseMat[_no] = _mat;
