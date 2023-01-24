@@ -92,6 +92,10 @@ void SampleShaderBase11::SetShader(ID3D11DeviceContext* _dc)
 	if (ChPtr::NullCheck(_dc))return;
 	vs.SetShader(_dc);
 	ps.SetShader(_dc);
+	gs.SetShader(_dc);
+	hs.SetShader(_dc);
+	ds.SetShader(_dc);
+	ps.SetShader(_dc);
 }
 
 void SampleShaderBase11::SetShaderRasteriser(ID3D11DeviceContext* _dc)

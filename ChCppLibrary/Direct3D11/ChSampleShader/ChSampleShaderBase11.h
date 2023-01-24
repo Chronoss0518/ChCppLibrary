@@ -89,7 +89,11 @@ namespace ChD3D11
 			ID3D11Device* device = nullptr;
 
 			VertexShader11 vs;
+			GeometryShader11 gs;
+			HullShader11 hs;
+			DomainShader11 ds;
 			PixelShader11 ps;
+			ComputeShader11 cs;
 
 			ChPtr::Unique<Texture11> whiteTex;
 			ChPtr::Unique<Texture11> normalTex;
