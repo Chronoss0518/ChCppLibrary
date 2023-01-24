@@ -41,7 +41,7 @@ void SampleShaderBase11::Init(ID3D11Device* _device)
 	SetInitFlg(true);
 }
 
-void SampleShaderBase11::InitVertexShader(
+void SampleShaderBase11::CreateVertexShader(
 	const D3D11_INPUT_ELEMENT_DESC* _decl,
 	unsigned long _declNum,
 	const unsigned char* _shaderByte,
@@ -52,13 +52,49 @@ void SampleShaderBase11::InitVertexShader(
 	vs.Init(device, _decl, _declNum, _shaderByte, _shaderByteNum);
 }
 
-void SampleShaderBase11::InitPixelShader(
+void SampleShaderBase11::CreatePixelShader(
 	const unsigned char* _shaderByte,
 	unsigned long _shaderByteNum)
 {
 	if (ChPtr::NullCheck(device))return;
 
 	ps.Init(device, _shaderByte, _shaderByteNum);
+}
+
+void SampleShaderBase11::CreateGeometryShader(
+	const unsigned char* _shaderByte,
+	unsigned long _shaderByteNum)
+{
+	if (ChPtr::NullCheck(device))return;
+
+	gs.Init(device, _shaderByte, _shaderByteNum);
+}
+
+void SampleShaderBase11::CreateHullShader(
+	const unsigned char* _shaderByte,
+	unsigned long _shaderByteNum)
+{
+	if (ChPtr::NullCheck(device))return;
+
+	hs.Init(device, _shaderByte, _shaderByteNum);
+}
+
+void SampleShaderBase11::CreateDomainShader(
+	const unsigned char* _shaderByte,
+	unsigned long _shaderByteNum)
+{
+	if (ChPtr::NullCheck(device))return;
+
+	ds.Init(device, _shaderByte, _shaderByteNum);
+}
+
+void SampleShaderBase11::CreateComputeShader(
+	const unsigned char* _shaderByte,
+	unsigned long _shaderByteNum)
+{
+	if (ChPtr::NullCheck(device))return;
+
+	cs.Init(device, _shaderByte, _shaderByteNum);
 }
 
 void SampleShaderBase11::Release()

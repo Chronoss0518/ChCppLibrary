@@ -23,14 +23,40 @@ namespace ChD3D11
 			virtual void InitVertexShader() = 0;
 
 			virtual void InitPixelShader() = 0;
+			
+			virtual void InitGeometryShader() {};
 
-			void InitVertexShader(
+			virtual void InitHullShader() {};
+
+			virtual void InitDomainShader() {};
+
+			virtual void InitComputeShader() {};
+
+		protected:
+
+			void CreateVertexShader(
 				const D3D11_INPUT_ELEMENT_DESC* _decl,
 				unsigned long _declNum,
 				const unsigned char* _shaderByte,
 				unsigned long _shaderByteNum);
 
-			void InitPixelShader(
+			void CreatePixelShader(
+				const unsigned char* _shaderByte,
+				unsigned long _shaderByteNum);
+
+			void CreateGeometryShader(
+				const unsigned char* _shaderByte,
+				unsigned long _shaderByteNum);
+
+			void CreateHullShader(
+				const unsigned char* _shaderByte,
+				unsigned long _shaderByteNum);
+
+			void CreateDomainShader(
+				const unsigned char* _shaderByte,
+				unsigned long _shaderByteNum);
+
+			void CreateComputeShader(
 				const unsigned char* _shaderByte,
 				unsigned long _shaderByteNum);
 
