@@ -109,16 +109,6 @@ float3 GetDirectionalLightColor(L_BaseColor _bCol)
 
 }
 
-float3 LamLightColBase(float3 _dif, float _pow)
-{
-
-	float3 tmpLightCol = _dif;
-
-	tmpLightCol *= _pow;
-
-	return tmpLightCol;
-}
-
 float3 LamLightDirection(float3 _normal)
 {
 	float dotSize = dot(_normal, -light.dir);
@@ -136,16 +126,6 @@ float3 LamLightDirection(float3 _normal)
 
 float3 LamLightPoint(float3 _dif, float _pow);
 
-float3 SpeLightColBase(float _lcDot, float4 _speculer)
-{
-
-	float power = saturate(_lcDot);
-
-	float3 tmpLightCol = _speculer.rgb * pow(power, _speculer.a);
-
-	return tmpLightCol;
-}
-
 float3 SpeLightDirection( float3 _modelPos, float3 _normal, float4 _speculer)
 {
 
@@ -158,16 +138,26 @@ float3 SpeLightDirection( float3 _modelPos, float3 _normal, float4 _speculer)
 	return SpeLightColBase(lcDot, _speculer);
 }
 
-float3 AmbLightCol()
+float3 LamLightColBase(float3 _dif, float _pow)
 {
 
-	float3 tmpLightCol = light.dif.rgb;
+	float3 tmpLightCol = _dif;
 
-	tmpLightCol *= light.ambPow;
+	tmpLightCol *= _pow;
 
 	return tmpLightCol;
-
 }
+
+float3 SpeLightColBase(float _lcDot, float4 _speculer)
+{
+
+	float power = saturate(_lcDot);
+
+	float3 tmpLightCol = _speculer.rgb * pow(power, _speculer.a);
+
+	return tmpLightCol;
+}
+
 #endif
 
 #endif
