@@ -124,9 +124,6 @@ namespace ChD3D11
 	protected://Member Value//
 
 		//板ポリゴンなどテクスチャ単体描画用シェーダー//
-		VertexShader11 spvTex;
-		PixelShader11 bpTex;
-
 		RenderTarget11 out3D;
 		RenderTarget11 out2D;
 

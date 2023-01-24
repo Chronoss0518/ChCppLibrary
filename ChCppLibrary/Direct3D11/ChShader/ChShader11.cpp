@@ -72,11 +72,9 @@ void ShaderController11::Init(
 	device = (_device);
 	dc = (_dc);
 
-	spvTex.InitChSpriteTextureVertexShader(_device);
-	bpTex.InitChBaseSpritePixelShader(_device);
-
 	spriteShader = ChPtr::Make_U<Shader::BaseDrawSprite11>();
 	spriteShader->Init(_device);
+
 
 	dsBuffer.CreateDepthBuffer(_device, _width, _height);
 

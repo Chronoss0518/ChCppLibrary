@@ -28,8 +28,6 @@ void BaseDrawSprite11::Init(ID3D11Device* _device)
 	std::array<unsigned long, 6> indexs = { 0,1,2,0,2,3 };
 
 	indexBuffer.CreateBuffer(_device, &indexs[0], indexs.size());
-
-
 }
 
 void BaseDrawSprite11::Release()
