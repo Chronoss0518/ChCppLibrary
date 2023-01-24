@@ -23,6 +23,10 @@ void SampleShaderBase11::Init(ID3D11Device* _device)
 
 	InitVertexShader();
 	InitPixelShader();
+	InitGeometryShader();
+	InitHullShader();
+	InitDomainShader();
+	InitComputeShader();
 
 	D3D11_BLEND_DESC desc;
 	desc.AlphaToCoverageEnable = false;
