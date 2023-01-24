@@ -59,7 +59,7 @@ void BaseDrawPolygonBoard11::InitVertexShader()
 	decl[3] = { "NORMAL",  0, DXGI_FORMAT_R32G32B32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
 
 
-	SampleShaderBase11::InitVertexShader(decl, sizeof(decl) / sizeof(D3D11_INPUT_ELEMENT_DESC), main, sizeof(main));
+	SampleShaderBase11::CreateVertexShader(decl, sizeof(decl) / sizeof(D3D11_INPUT_ELEMENT_DESC), main, sizeof(main));
 
 }
 
@@ -67,7 +67,7 @@ void BaseDrawPolygonBoard11::InitPixelShader()
 {
 #include"../PolygonShader/BasePolygonPixcel.inc"
 
-	SampleShaderBase11::InitPixelShader(main, sizeof(main));
+	SampleShaderBase11::CreatePixelShader(main, sizeof(main));
 }
 
 void BaseDrawPolygonBoard11::SetProjectionMatrix(const ChLMat& _mat)

@@ -54,7 +54,7 @@ void BaseDrawMesh11::InitVertexShader()
 	decl[8] = { "BLENDWEIGHT",  3, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
 	decl[9] = { "BLENDINDEX",  0, DXGI_FORMAT_R32_UINT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
 
-	SampleShaderBase11::InitVertexShader(decl, sizeof(decl)/sizeof(D3D11_INPUT_ELEMENT_DESC), main, sizeof(main));
+	SampleShaderBase11::CreateVertexShader(decl, sizeof(decl)/sizeof(D3D11_INPUT_ELEMENT_DESC), main, sizeof(main));
 }
 
 void BaseDrawMesh11::InitPixelShader()
@@ -62,7 +62,7 @@ void BaseDrawMesh11::InitPixelShader()
 
 #include"../PolygonShader/BasePolygonPixcel.inc"
 
-	SampleShaderBase11::InitPixelShader(main, sizeof(main));
+	SampleShaderBase11::CreatePixelShader(main, sizeof(main));
 
 }
 
