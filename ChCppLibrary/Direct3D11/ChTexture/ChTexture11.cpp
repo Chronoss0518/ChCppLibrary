@@ -109,6 +109,30 @@ void TextureBase11::SetDrawData(ID3D11DeviceContext* _dc, unsigned int _textureN
 
 }
 
+
+D3D11_TEXTURE2D_DESC TextureBase11::GetTextureDesc()
+{
+	D3D11_TEXTURE2D_DESC res;
+	ChStd::MZero(&res);
+
+	if (ChPtr::NullCheck(baseTex))return res;
+
+	baseTex->GetDesc(&res);
+
+	return res;
+}
+
+ChMath::Vector2Base<unsigned int> TextureBase11::GetTextureSize()
+{
+	D3D11_TEXTURE2D_DESC desc = GetTextureDesc();
+
+	ChMath::Vector2Base<unsigned int> res;
+	res.w = desc.Width;
+	res.h = desc.Height;
+
+	return res;
+}
+
 void TextureBase11::CreateSRV()
 {
 
