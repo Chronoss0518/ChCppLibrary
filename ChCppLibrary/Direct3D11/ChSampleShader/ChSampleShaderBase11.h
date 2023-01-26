@@ -86,6 +86,8 @@ namespace ChD3D11
 				return flg;
 			}
 
+			ID3D11Device* GetDevice() { return device; }
+
 		protected://Is Functions//
 
 			ChStd::Bool IsDraw()const { return drawFlg; }
