@@ -27,7 +27,9 @@
 #define column_major
 #endif
 
-using uint4x4 = ChMath::Vector4Base<unsigned int>;
+using uint4x4 = ChMath::BaseMatrix4x4<unsigned int>;
+using uint3 = ChMath::Vector3Base<unsigned int>;
+using uint2 = ChMath::Vector2Base<unsigned int>;
 using uint = unsigned int;
 using float4x4 = ChLMat;
 using float3x3 = ChLMat;
