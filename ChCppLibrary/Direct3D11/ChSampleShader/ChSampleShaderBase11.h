@@ -32,7 +32,7 @@ namespace ChD3D11
 
 			virtual void InitComputeShader() {};
 
-		protected:
+		protected://Create Shader Functions//
 
 			void CreateVertexShader(
 				const D3D11_INPUT_ELEMENT_DESC* _decl,
@@ -60,6 +60,12 @@ namespace ChD3D11
 				const unsigned char* _shaderByte,
 				unsigned long _shaderByteNum);
 
+		protected://Create Functions//
+
+			void CreateRasteriser(const D3D11_RASTERIZER_DESC& _desc);
+
+			void CreateBlender(const D3D11_BLEND_DESC& _desc);
+
 		public://Set Functions//
 
 			void SetShader(ID3D11DeviceContext* _dc);
@@ -78,6 +84,8 @@ namespace ChD3D11
 
 			inline Texture11& GetNormalTexture() { return *normalTex; }
 
+			ID3D11Device* GetDevice() { return device; }
+
 		private://Get Functions//
 
 			inline static ChStd::Bool& GetShaderNowRunFlg()
@@ -85,8 +93,6 @@ namespace ChD3D11
 				static ChStd::Bool flg;
 				return flg;
 			}
-
-			ID3D11Device* GetDevice() { return device; }
 
 		protected://Is Functions//
 
@@ -103,13 +109,7 @@ namespace ChD3D11
 				GetShaderNowRunFlg() = false;
 			}
 
-			virtual void Update() {};
-
-		protected://Other Functions//
-
-			void CreateRasteriser(const D3D11_RASTERIZER_DESC& _desc);
-
-			void CreateBlender(const D3D11_BLEND_DESC& _desc);
+			virtual void Update(ID3D11DeviceContext* _dc) {};
 
 		private://Member Value//
 

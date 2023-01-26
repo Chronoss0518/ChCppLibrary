@@ -196,7 +196,7 @@ void SampleShaderBase11::DrawStart(ID3D11DeviceContext* _dc)
 
 	SetShader(_dc);
 
-	Update();
+	Update(_dc);
 
 	SetShaderRasteriser(_dc);
 
