@@ -181,7 +181,7 @@ void BaseDrawPolygonBoard11::Draw(
 	}
 }
 
-void BaseDrawPolygonBoard11::Update()
+void BaseDrawPolygonBoard11::Update(ID3D11DeviceContext* _dc)
 {
 	if (!updateFlg)return;
 

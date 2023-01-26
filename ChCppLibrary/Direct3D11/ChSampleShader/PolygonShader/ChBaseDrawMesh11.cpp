@@ -223,7 +223,7 @@ void BaseDrawMesh11::DrawMain(
 
 }
 
-void BaseDrawMesh11::Update()
+void BaseDrawMesh11::Update(ID3D11DeviceContext* _dc)
 {
 	if (!updateFlg)return;
 

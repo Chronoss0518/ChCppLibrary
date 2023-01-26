@@ -73,7 +73,7 @@ namespace ChD3D11
 			void DrawAlpha(
 				ID3D11DeviceContext* _dc);
 
-			void Update()override;
+			void Update(ID3D11DeviceContext* _dc)override;
 
 		private://Member Value//
 

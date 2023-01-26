@@ -28,6 +28,23 @@ void BaseDrawSprite11::Init(ID3D11Device* _device)
 	std::array<unsigned long, 6> indexs = { 0,1,2,0,2,3 };
 
 	indexBuffer.CreateBuffer(_device, &indexs[0], indexs.size());
+
+
+	D3D11_RASTERIZER_DESC desc
+	{
+		D3D11_FILL_MODE::D3D11_FILL_SOLID,
+		D3D11_CULL_MODE::D3D11_CULL_NONE,
+		true,
+		0,
+		0.0f,
+		0.0f,
+		false,
+		false,
+		true,
+		false
+	};
+
+	CreateRasteriser(desc);
 }
 
 void BaseDrawSprite11::Release()
@@ -108,27 +125,4 @@ void BaseDrawSprite11::Draw(
 	{
 		SampleShaderBase11::SetShaderDefaultBlender(_dc);
 	}
-}
-
-void BaseDrawSprite11::Update()
-{
-	if (!updateFlg)return;
-
-	D3D11_RASTERIZER_DESC desc
-	{
-		D3D11_FILL_MODE::D3D11_FILL_SOLID,
-		D3D11_CULL_MODE::D3D11_CULL_NONE,
-		true,
-		0,
-		0.0f,
-		0.0f,
-		false,
-		false,
-		true,
-		false
-	};
-
-	CreateRasteriser(desc);
-
-	updateFlg = false;
 }

@@ -36,10 +36,6 @@ namespace ChD3D11
 
 			inline ChLMat GetSpriteMatrix() { return spriteData.GetSpriteMatrix(); }
 
-			inline D3D11_FILL_MODE GetFillMode() { return fill; }
-
-			inline D3D11_CULL_MODE GetCullMode() { return cull; }
-
 		public://Other Functions//
 
 		//í èÌï`âÊ//
@@ -51,15 +47,9 @@ namespace ChD3D11
 
 		private:
 
-			void Update();
-
 		private://Member Value//
 
 			CB::CBSprite11 spriteData;
-
-			D3D11_FILL_MODE fill = D3D11_FILL_MODE::D3D11_FILL_SOLID;
-			D3D11_CULL_MODE cull = D3D11_CULL_MODE::D3D11_CULL_NONE;
-			ChStd::Bool updateFlg = true;
 
 			VertexBuffer11<Ch3D::Vertex> vertexBuffer;
 			IndexBuffer11 indexBuffer;
