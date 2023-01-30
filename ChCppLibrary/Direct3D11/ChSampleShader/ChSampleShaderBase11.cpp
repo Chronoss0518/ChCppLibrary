@@ -191,7 +191,7 @@ void SampleShaderBase11::DrawStart(ID3D11DeviceContext* _dc)
 {
 	if (GetShaderNowRunFlg())return;
 
-	_dc->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	_dc->IASetPrimitiveTopology(primitiveTopology);
 
 
 	SetShader(_dc);

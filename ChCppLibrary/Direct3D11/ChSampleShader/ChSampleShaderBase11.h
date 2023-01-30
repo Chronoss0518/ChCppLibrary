@@ -78,6 +78,8 @@ namespace ChD3D11
 
 			void SetShaderDefaultBlender(ID3D11DeviceContext* _dc);
 
+			inline void SetPrimitiveTopology(const D3D_PRIMITIVE_TOPOLOGY _pt) { primitiveTopology = _pt; }
+
 		protected://Get Functions//
 
 			inline Texture11& GetWhiteTexture() { return *whiteTex; }
@@ -125,6 +127,8 @@ namespace ChD3D11
 
 			ChPtr::Unique<Texture11> whiteTex;
 			ChPtr::Unique<Texture11> normalTex;
+
+			D3D_PRIMITIVE_TOPOLOGY primitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
 			ChStd::Bool drawFlg;
 
