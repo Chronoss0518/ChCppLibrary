@@ -181,8 +181,6 @@ void FrameObject::GetLenIsPointToPrimitive(std::vector<ChPtr::Shared<NearPointDa
 
 	}
 
-	std::vector<ChPtr::Shared<ChMultiThread>>threadList;
-	
 	for (auto&& prim : com->primitives)
 	{
 
@@ -196,28 +194,6 @@ void FrameObject::GetLenIsPointToPrimitive(std::vector<ChPtr::Shared<NearPointDa
 
 		_res.push_back(data);
 
-		continue;
-
-		auto thread = ChPtr::Make_S<ChMultiThread>();
-		thread->Init([&] {
-			
-			auto primitive = prim;
-			ChVec3 res;
-			if (!GetLenIsPointToPolyBoardFunction(res,_point,*primitive, vertexList,_maxLen))return;
-			auto data = ChPtr::Make_S<NearPointData>();
-
-			data->toVector = res;
-			data->materialName = com->materialList[primitive->mateNo]->mateName;
-
-			_res.push_back(data);
-		});
-
-		threadList.push_back(thread);
-	}
-
-	for (auto&& thread : threadList)
-	{
-		thread->Join();
 	}
 
 	return;
