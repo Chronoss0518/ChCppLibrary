@@ -165,8 +165,6 @@ void ShaderObject11::SetVertexShader(
 	ID3D11DeviceContext* _DC
 	, ID3D11InputLayout* _lInput)
 {
-	if (!*this)return;
-
 	auto tmp = static_cast<ID3D11VertexShader*>(shader);
 
 	_DC->VSSetShader(tmp, nullptr, 0);
