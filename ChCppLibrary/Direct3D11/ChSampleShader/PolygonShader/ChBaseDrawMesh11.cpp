@@ -216,7 +216,6 @@ void BaseDrawMesh11::DrawMain(
 
 		_dc->DrawIndexed(prim->indexArray.size(), 0, 0);
 
-
 	}
 
 	SampleShaderBase11::SetShaderDefaultBlender(_dc);
