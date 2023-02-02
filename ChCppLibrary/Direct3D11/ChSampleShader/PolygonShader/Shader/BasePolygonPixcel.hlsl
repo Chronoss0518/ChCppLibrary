@@ -89,7 +89,7 @@ OutColor main(VS_OUT _in)
 		lightBloomColor.b > 0.0f ?
 		outColor.color.rgb : GetLightColor(outColor.color, _in, mate);
 
-	outColor.depth = outColor.color.a > 0.99f ? 0.0f : 0.99f;
+	outColor.depth = outColor.color.a > 0.99f ? _in.proPos.z / _in.proPos.w : 0.99f;
 
 #endif
 
