@@ -36,7 +36,8 @@ void BitBool::SetBitFalse(const unsigned char _argsNum)
 	if (_argsNum >= flgs.size() * 8)return;
 
 	unsigned char mask = BitBool::GetMask(_argsNum);
-	unsigned char byteCount = _argsNum / 8;
+	static unsigned char byteCount = 0;
+	byteCount = _argsNum / 8;
 	mask &= flgs[byteCount];
 
 	flgs[byteCount] -= mask;
