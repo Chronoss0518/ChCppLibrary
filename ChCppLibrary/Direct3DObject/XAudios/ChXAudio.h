@@ -83,7 +83,6 @@ namespace ChD3D
 
 	struct ChXAUDIO2_BUFFER :public XAUDIO2_BUFFER
 	{
-
 		std::vector<unsigned char> audioDataVector;
 	};
 
@@ -128,7 +127,7 @@ namespace ChD3D
 
 		XAudio2Manager(){}
 		
-		std::map<std::string, std::vector<XAUDIO2_BUFFER*>>audioDatas;
+		std::map<std::string, std::vector<ChPtr::Shared<XAUDIO2_BUFFER>>>audioDatas;
 
 		std::vector<AudioObject*>audios;
 		IXAudio2* audio = nullptr;

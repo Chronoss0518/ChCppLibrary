@@ -73,8 +73,8 @@ void AudioObject::Stop()
 
 	voice->FlushSourceBuffers();
 
-	voice->SubmitSourceBuffer(XAudioManager().audioDatas[fileName][0]);
-	voice->SubmitSourceBuffer(XAudioManager().audioDatas[fileName][1]);
+	voice->SubmitSourceBuffer(XAudioManager().audioDatas[fileName][0].get());
+	voice->SubmitSourceBuffer(XAudioManager().audioDatas[fileName][1].get());
 
 	nowPos = 1;
 
@@ -129,18 +129,14 @@ void XAudio2Manager::Release()
 
 	if (!*this)return;
 
-	for (auto&& data : audioDatas)
-	{
-		for (auto&& buffer : data.second)
-		{
-			delete buffer;
-		}
-	}
+	audioDatas.clear();
 
 	for (auto&& aObject : audios)
 	{
 		aObject->Release();
 	}
+
+	audios.clear();
 
 	if (ChPtr::NotNullCheck(audioMV)) { audioMV->DestroyVoice(); audioMV = nullptr; };
 	if (ChPtr::NotNullCheck(audio)) { audio->Release(); audio = nullptr; };
@@ -195,7 +191,7 @@ void XAudio2Manager::CreateSound(AudioObject* _Object, const std::string& _fileN
 	DWORD streamFlg = 0;
 	LONGLONG streamLen = 0;
 
-	std::vector<XAUDIO2_BUFFER*> fileDatas;
+	std::vector<ChPtr::Shared<XAUDIO2_BUFFER>> fileDatas;
 
 	while (true)
 	{
@@ -220,7 +216,7 @@ void XAudio2Manager::CreateSound(AudioObject* _Object, const std::string& _fileN
 
 		mediaBuffer->Lock(&Data, &maxStreamLen, &currentLen);
 
-		auto fileData = new ChXAUDIO2_BUFFER();
+		auto fileData = ChPtr::Make_S<ChXAUDIO2_BUFFER>();
 
 		for (DWORD i = 0; i < maxStreamLen; i++)
 		{
@@ -244,8 +240,8 @@ void XAudio2Manager::CreateSound(AudioObject* _Object, const std::string& _fileN
 
 	audio->CreateSourceVoice(&_Object->voice, waveFormat);
 
-	_Object->voice->SubmitSourceBuffer(fileDatas[0]);
-	_Object->voice->SubmitSourceBuffer(fileDatas[1]);
+	_Object->voice->SubmitSourceBuffer(fileDatas[0].get());
+	_Object->voice->SubmitSourceBuffer(fileDatas[1].get());
 
 	_Object->fileName = _fileName;
 	audioDatas[_Object->fileName] = fileDatas;
@@ -288,7 +284,7 @@ void XAudio2Manager::Update()
 
 		audio->nowPos = nowPos;
 
-		audio->voice->SubmitSourceBuffer(audioDatas[audio->fileName][nowPos]);
+		audio->voice->SubmitSourceBuffer(audioDatas[audio->fileName][nowPos].get());
 
 	}
 }
