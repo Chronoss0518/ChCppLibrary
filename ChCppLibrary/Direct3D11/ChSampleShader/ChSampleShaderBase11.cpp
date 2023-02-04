@@ -189,10 +189,10 @@ void SampleShaderBase11::CreateBlender(const D3D11_BLEND_DESC& _desc)
 
 void SampleShaderBase11::DrawStart(ID3D11DeviceContext* _dc)
 {
+	if (ChPtr::NullCheck(_dc))return;
 	if (GetShaderNowRunFlg())return;
 
 	_dc->IASetPrimitiveTopology(primitiveTopology);
-
 
 	SetShader(_dc);
 
@@ -204,5 +204,13 @@ void SampleShaderBase11::DrawStart(ID3D11DeviceContext* _dc)
 	drawFlg = true; 
 
 	GetShaderNowRunFlg() = true;
+
 }
 
+void SampleShaderBase11::DrawEnd()
+{
+	if (!drawFlg)return;
+	drawFlg = false;
+	GetShaderNowRunFlg() = false;
+
+}

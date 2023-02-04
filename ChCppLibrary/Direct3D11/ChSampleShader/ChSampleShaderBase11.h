@@ -104,12 +104,7 @@ namespace ChD3D11
 
 			virtual void DrawStart(ID3D11DeviceContext* _dc);
 
-			virtual inline void DrawEnd() 
-			{
-				if (!drawFlg)return;
-				drawFlg = false; 
-				GetShaderNowRunFlg() = false;
-			}
+			virtual void DrawEnd();
 
 			virtual void Update(ID3D11DeviceContext* _dc) {};
 
