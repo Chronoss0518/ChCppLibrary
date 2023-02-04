@@ -22,7 +22,7 @@ void BitBool::SetBitTrue(const unsigned char _argsNum)
 {
 	if (_argsNum >= flgs.size() * 8)return;
 
-	unsigned char mask = BitBool::GetMask(_argsNum % 8);
+	unsigned char mask = BitBool::GetMask(_argsNum);
 	mask &= 0xff;
 	
 	flgs[_argsNum / 8] |= mask;
@@ -35,10 +35,11 @@ void BitBool::SetBitFalse(const unsigned char _argsNum)
 {
 	if (_argsNum >= flgs.size() * 8)return;
 
-	unsigned char mask = BitBool::GetMask(_argsNum % 8);
-	mask &= flgs[_argsNum / 8];
+	unsigned char mask = BitBool::GetMask(_argsNum);
+	unsigned char byteCount = _argsNum / 8;
+	mask &= flgs[byteCount];
 
-	flgs[_argsNum / 8] |= mask;
+	flgs[byteCount] -= mask;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -56,7 +57,7 @@ ChStd::Bool BitBool::GetBitFlg(const unsigned char _argsNum)
 {
 	if (_argsNum >= flgs.size() * 8)return false;
 
-	return flgs[static_cast<size_t>(_argsNum / 8)] & GetMask(_argsNum);
+	return flgs[_argsNum / 8] & GetMask(_argsNum);
 }
 
 unsigned char BitBool::GetMask(const unsigned char _argsNum)
