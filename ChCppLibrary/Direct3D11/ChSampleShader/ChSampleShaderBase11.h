@@ -66,6 +66,8 @@ namespace ChD3D11
 
 			void CreateBlender(const D3D11_BLEND_DESC& _desc);
 
+			void CreateDepthStencilTester(const D3D11_DEPTH_STENCIL_DESC& _desc);
+
 		public://Set Functions//
 
 			void SetShader(ID3D11DeviceContext* _dc);
@@ -74,9 +76,13 @@ namespace ChD3D11
 
 			void SetShaderRasteriser(ID3D11DeviceContext* _dc);
 
-			void SetShaderBlender(ID3D11DeviceContext* _dc);
+			void SetShaderBlender(ID3D11DeviceContext* _dc,float* _blendFacotr = nullptr, unsigned int _sampleMask = 0xffffffff);
 
 			void SetShaderDefaultBlender(ID3D11DeviceContext* _dc);
+
+			void SetShaderDepthStencilTester(ID3D11DeviceContext* _dc, unsigned int _stencilRef = 0);
+
+			void SetShaderDefaultDepthStencilTester(ID3D11DeviceContext* _dc);
 
 			inline void SetPrimitiveTopology(const D3D_PRIMITIVE_TOPOLOGY _pt) { primitiveTopology = _pt; }
 
@@ -111,6 +117,7 @@ namespace ChD3D11
 		private://Member Value//
 
 			ID3D11RasterizerState* rasteriser = nullptr;
+			ID3D11DepthStencilState* depthStencilTester = nullptr;
 			ID3D11Device* device = nullptr;
 
 			VertexShader11 vs;
