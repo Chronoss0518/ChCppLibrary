@@ -235,10 +235,10 @@ void BaseDrawMesh11::Update(ID3D11DeviceContext* _dc)
 		0,
 		0.0f,
 		0.0f,
+		true,
 		false,
-		false,
-		false,
-		true
+		true,
+		false
 	};
 
 
