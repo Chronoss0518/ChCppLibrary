@@ -111,9 +111,7 @@ float3 GetDirectionalLightColor(L_BaseColor _bCol)
 
 float3 LamLightDirection(float3 _normal)
 {
-	float dotSize = dot(_normal, -light.dir);
-
-	dotSize = (dotSize + 1.0f) * 0.5f;
+	float dotSize = dot(normalize(_normal), normalize(-light.dir));
 
 	dotSize = dotSize > light.ambPow ? dotSize : light.ambPow;
 
@@ -129,9 +127,9 @@ float3 LamLightPoint(float3 _dif, float _pow);
 float3 SpeLightDirection( float3 _modelPos, float3 _normal, float4 _speculer)
 {
 
-	float3 tmpVec = normalize(camPos.xyz - _modelPos) + normalize(-light.dir);//ピクセルからのカメラ方向
+	float3 tmpVec = normalize(camPos.xyz - _modelPos) + normalize(-light.dir);
 
-	tmpVec *= 0.5f;
+	tmpVec = normalize(tmpVec);
 
 	float lcDot = dot(tmpVec, _normal);
 
