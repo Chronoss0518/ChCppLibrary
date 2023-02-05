@@ -22,7 +22,7 @@ struct OutColor
 struct OutColor
 {
 	float4 color :SV_Target0;
-	float depth : SV_DepthGreaterEqual;
+	//float depth : SV_DepthGreaterEqual;
 };
 
 #endif
@@ -65,7 +65,7 @@ OutColor main(VS_OUT _in)
 
 	outColor.color = float4(a, a, a, 1);
 
-	outColor.depth = outColor.color.a > 0.99f ? 0.0f : 0.99f;
+	//outColor.depth = outColor.color.a > 0.99f ? 0.0f : 0.99f;
 
 #else
 
@@ -89,7 +89,7 @@ OutColor main(VS_OUT _in)
 		lightBloomColor.b > 0.0f ?
 		outColor.color.rgb : GetLightColor(outColor.color, _in, mate);
 
-	outColor.depth = outColor.color.a > 0.99f ? 0.0f : 0.99f;
+	//outColor.depth = outColor.color.a > 0.99f ? 0.0f : 0.99f;
 
 #endif
 
