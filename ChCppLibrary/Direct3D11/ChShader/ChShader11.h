@@ -52,53 +52,22 @@ namespace ChD3D11
 		inline void SetBackColor(const ChVec4& _color)
 		{
 			if (!*this)return;
-			if (drawFlg)return;
 
 			backColor = _color;
 		}
 
-		//描画対象をバックバッファにする//
-		inline void SetBackBuffer()
-		{
-			if (!*this)return;
-			if (drawFlg)return;
-
-			renderTargets.clear();
-		}
-
 		inline void SetWindPos(const ChVec2& _pos)
 		{
-
 			if (!*this)return;
-			if (drawFlg)return;
 
 			view.SetTopLeftPos(_pos);
-
 		}
 
 		inline void SetWindSize(const ChVec2& _size)
 		{
-
 			if (!*this)return;
-			if (drawFlg)return;
 
 			view.SetSize(_size);
-		}
-
-
-	public://Is Functions//
-
-		//描画可能確認関数//
-		inline ChStd::Bool IsDraw() { return drawFlg; }
-
-		inline ChStd::Bool IsRTDraw() { return rtDrawFlg; }
-
-	public://Othre Functions//
-
-		//描画対象となる画像群の登録を解除する//
-		inline void ClearRenderTargets()
-		{
-			renderTargets.clear();
 		}
 
 	public://Draw Functions//
@@ -106,33 +75,17 @@ namespace ChD3D11
 		//描画開始前に呼ぶ関数//
 		void DrawStart();
 
-		//3Dの描画開始前に呼ぶ関数//
-		void DrawStart3D();
-
-		//2Dの描画開始前に呼ぶ関数//
-		void DrawStart2D();
-
 		//すべての描画終了時に呼ぶ関数//
 		void DrawEnd();
 
-
-	protected://Set Functions//
-
-		//レンダーターゲット用フラグ//
-		inline void SetRTDraw(const ChStd::Bool _Flg) { rtDrawFlg = _Flg; }
+		//すべての描画終了時に呼ぶ関数//
+		void DrawEnd(ChD3D11::TextureBase11& _tex);
 
 	protected://Member Value//
-
-		//板ポリゴンなどテクスチャ単体描画用シェーダー//
-		RenderTarget11 out3D;
-		RenderTarget11 out2D;
 
 		Sprite11 outSprite;
 
 		ChPtr::Unique<Shader::BaseDrawSprite11> spriteShader = nullptr;
-
-		//描画対象に設定する画像群//
-		std::vector<ID3D11RenderTargetView*>renderTargets;
 
 		ID3D11Device* device = nullptr;
 		ID3D11DeviceContext* dc = nullptr;
@@ -140,16 +93,11 @@ namespace ChD3D11
 		//DepthStencilBuffer用//
 		DepthStencilTexture11 dsBuffer;
 
-		ShaderParts::DrawWindow window;
-
 		ShaderParts::ViewPort view;
 		
-		//描画可能フラグ//
-		ChStd::Bool drawFlg = false;
-		ChStd::Bool rtDrawFlg = false;
-
 		//背景色//
 		ChVec4 backColor = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
+		ShaderParts::DrawWindow window;
 
 	public:
 
