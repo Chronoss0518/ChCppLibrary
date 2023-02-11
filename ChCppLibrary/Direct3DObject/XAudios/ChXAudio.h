@@ -3,6 +3,22 @@
 
 struct IMFSourceReader;
 
+struct X3DAUDIO_EMITTER;
+
+struct IXAudio2;
+struct IXAudio2SourceVoice;
+struct IXAudio2MasteringVoice;
+struct IXAudio2SubmixVoice;
+
+struct XAUDIO2_SEND_DESCRIPTOR;
+struct XAUDIO2_VOICE_SENDS;
+
+struct X3DAUDIO_LISTENER;
+struct X3DAUDIO_DSP_SETTINGS;
+typedef unsigned char X3DAUDIO_HANDLE[20];
+typedef struct tWAVEFORMATEX WAVEFORMATEX;
+struct XAUDIO2_VOICE_DETAILS;
+
 namespace ChD3D
 {
 	class XAudio2Manager;
@@ -30,8 +46,6 @@ namespace ChD3D
 
 		void SetVolume(const float _Volume);
 
-
-
 		///////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
@@ -58,7 +72,11 @@ namespace ChD3D
 		///////////////////////////////////////////////////////////////////////////////////
 
 		friend XAudio2Manager;
-	private:
+
+
+	protected:
+
+		virtual void Init() { Release(); }
 
 		IXAudio2SourceVoice* voice = nullptr;
 		std::string fileName = "";
@@ -77,9 +95,21 @@ namespace ChD3D
 
 		friend XAudio2Manager;
 
+		void Init()override;
+
+		void Release()override;
+
+		inline void SetPosition(const ChVec3& _pos) { mat.SetPosition(_pos); }
+
+		inline void SetRotation(const ChVec3& _rot) { mat.SetRotation(_rot); }
+
+		X3DAUDIO_EMITTER* GetEmitter();
+
+
 	private:
 
-		ChVec3 pos;
+		X3DAUDIO_EMITTER* emitter = nullptr;
+		ChLMat mat;
 
 	};
 
@@ -105,17 +135,15 @@ namespace ChD3D
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		inline void SetPos(const ChVec3& _pos)
+		inline void SetPosition(const ChVec3& _pos)
 		{
-			pos = _pos;
+			mat.SetPosition(_pos);
 		}
 
-		inline void SetDir(const ChVec3& _dir)
+		inline void SetRotation(const ChVec3& _dir)
 		{
-			dir = _dir;
+			mat.SetRotation(_dir);
 		}
-
-		///////////////////////////////////////////////////////////////////////////////////
 
 	public://Load Functions//
 
@@ -123,13 +151,17 @@ namespace ChD3D
 
 		void LoadEnd();
 
-		void LoadSound(AudioObject* _object,const std::string& _str);
+		void LoadSound(AudioObject& _object,const std::string& _str);
 
 	public://Update Function//
 
 		void Update();
 
 	private:
+
+		void Update3DAudios(AudioObject* _audio);
+
+		void UpdateBGMAudios(AudioObject* _audio);
 
 		struct MFObject
 		{
@@ -151,10 +183,19 @@ namespace ChD3D
 
 		std::vector<AudioObject*>audios;
 		IXAudio2* audio = nullptr;
+		IXAudio2SubmixVoice* subMixAudio = nullptr;
 		IXAudio2MasteringVoice* audioMV = nullptr;
+		XAUDIO2_SEND_DESCRIPTOR* sender = nullptr;
+		XAUDIO2_VOICE_SENDS* sendList = nullptr;
 
-		ChVec3 pos;
-		ChVec3 dir;
+		//3DAudioŠÖ˜A//
+		X3DAUDIO_LISTENER* listener = nullptr;
+		X3DAUDIO_DSP_SETTINGS* dspSettings = nullptr;
+		X3DAUDIO_HANDLE X3DInstance;
+		XAUDIO2_VOICE_DETAILS* details;
+		std::vector<float>matrix;
+
+		ChLMat mat;
 
 	public:
 
