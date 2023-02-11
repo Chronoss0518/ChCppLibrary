@@ -73,8 +73,8 @@ void AudioObject::Stop()
 
 	voice->FlushSourceBuffers();
 
-	voice->SubmitSourceBuffer(XAudioManager().audioDatas[fileName][0].get());
-	voice->SubmitSourceBuffer(XAudioManager().audioDatas[fileName][1].get());
+	voice->SubmitSourceBuffer(XAudioManager().audioDataMap[fileName][0].get());
+	voice->SubmitSourceBuffer(XAudioManager().audioDataMap[fileName][1].get());
 
 	nowPos = 1;
 
@@ -85,6 +85,8 @@ void AudioObject::Stop()
 void AudioObject::Release()
 {
 	if (!*this)return;
+
+	voice->Stop();
 
 	voice->DestroyVoice();
 
@@ -114,12 +116,6 @@ void XAudio2Manager::Init()
 
 	SetInitFlg(true);
 
-	MFStartup(MF_VERSION);
-
-	(void)CoInitializeEx(nullptr, COINIT_MULTITHREADED);
-
-	SetInitFlg(true);
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -129,75 +125,131 @@ void XAudio2Manager::Release()
 
 	if (!*this)return;
 
-	audioDatas.clear();
+	LoadEnd();
+
+	audioDataMap.clear();
 
 	for (auto&& aObject : audios)
 	{
 		aObject->Release();
 	}
 
+	for (auto&& waveFormat : mfObjectMap)
+	{
+		CoTaskMemFree(waveFormat.second->waveFormat);
+
+		waveFormat.second->reader->Release();
+	}
+
+	mfObjectMap.clear();
+
 	audios.clear();
 
 	if (ChPtr::NotNullCheck(audioMV)) { audioMV->DestroyVoice(); audioMV = nullptr; };
 	if (ChPtr::NotNullCheck(audio)) { audio->Release(); audio = nullptr; };
 
-	MFShutdown();
-
 	SetInitFlg(false);
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+void XAudio2Manager::LoadStart()
+{
+	if (loadFlg)return;
 
-void XAudio2Manager::CreateSound(AudioObject* _Object, const std::string& _fileName)
+	MFStartup(MF_VERSION);
+
+	(void)CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+
+	loadFlg = true;
+}
+
+void XAudio2Manager::LoadEnd()
+{
+	if (!loadFlg)return;
+
+	MFShutdown();
+
+	loadFlg = false;
+}
+
+void XAudio2Manager::LoadSound(AudioObject* _object, const std::string& _fileName)
+{
+	if (ChPtr::NullCheck(_object))return;
+	if (!loadFlg)return;
+
+	if(!CreateMFObject(_fileName))return;
+	if(!CreateFileData(_fileName))return;
+
+	auto mfObject = mfObjectMap[_fileName];
+	auto fileDatas = audioDataMap[_fileName];
+
+	audio->CreateSourceVoice(&_object->voice, mfObject->waveFormat);
+
+	_object->voice->SubmitSourceBuffer(fileDatas[0].get());
+	_object->voice->SubmitSourceBuffer(fileDatas[1].get());
+
+	_object->fileName = _fileName;
+
+	_object->SetInitFlg(true);
+
+	audios.push_back(_object);
+}
+
+ChStd::Bool XAudio2Manager::CreateMFObject(const std::string& _fileName)
 {
 
-	if (ChPtr::NullCheck(_Object))return;
+	if (mfObjectMap.find(_fileName) != mfObjectMap.end())return true;
 
-	IMFSourceReader* reader;
+	auto mfObject = ChPtr::Make_S<MFObject>();
 	MFCreateSourceReaderFromURL(
 		ChStr::UTF8ToWString(_fileName).c_str(),
 		nullptr,
-		&reader);
+		&mfObject->reader);
 
-	if (ChPtr::NullCheck(reader))
+	if (ChPtr::NullCheck(mfObject->reader))
 	{
-		return;
+		return false;
 	}
 
 
-	IMFMediaType* mType;
+	IMFMediaType* mType = nullptr;
 	MFCreateMediaType(&mType);
 
 	mType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
 	mType->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_PCM);
 
-	reader->SetCurrentMediaType((MF_SOURCE_READER_FIRST_AUDIO_STREAM), 0, mType);
+	mfObject->reader->SetCurrentMediaType((MF_SOURCE_READER_FIRST_AUDIO_STREAM), 0, mType);
 
 	mType->Release();
 
-	reader->GetCurrentMediaType((MF_SOURCE_READER_FIRST_AUDIO_STREAM), &mType);
+	mfObject->reader->GetCurrentMediaType((MF_SOURCE_READER_FIRST_AUDIO_STREAM), &mType);
 
-	WAVEFORMATEX* waveFormat;
+	UINT32 size = 0;
 
-	{
+	MFCreateWaveFormatExFromMFMediaType(mType, &mfObject->waveFormat, &size);
 
-		UINT32 size = 0;
 
-		MFCreateWaveFormatExFromMFMediaType(mType, &waveFormat, &size);
+	mType->Release();
+	mfObjectMap[_fileName] = mfObject;
 
-	}
+	return true;
+}
+
+ChStd::Bool XAudio2Manager::CreateFileData(const std::string& _fileName)
+{
+	if (audioDataMap.find(_fileName) != audioDataMap.end())return true;
 
 	DWORD streamFlg = 0;
 	LONGLONG streamLen = 0;
 
+	auto mfObject = mfObjectMap[_fileName];
 	std::vector<ChPtr::Shared<XAUDIO2_BUFFER>> fileDatas;
 
 	while (true)
 	{
 		IMFSample* sample;
 
-		reader->ReadSample(MF_SOURCE_READER_FIRST_AUDIO_STREAM, 0, nullptr, &streamFlg, &streamLen, &sample);
+		mfObject->reader->ReadSample(MF_SOURCE_READER_FIRST_AUDIO_STREAM, 0, nullptr, &streamFlg, &streamLen, &sample);
 
 
 		if (ChPtr::NullCheck(sample))break;
@@ -234,30 +286,11 @@ void XAudio2Manager::CreateSound(AudioObject* _Object, const std::string& _fileN
 		mediaBuffer->Release();
 
 		sample->Release();
-
-
 	}
 
-	audio->CreateSourceVoice(&_Object->voice, waveFormat);
-
-	_Object->voice->SubmitSourceBuffer(fileDatas[0].get());
-	_Object->voice->SubmitSourceBuffer(fileDatas[1].get());
-
-	_Object->fileName = _fileName;
-	audioDatas[_Object->fileName] = fileDatas;
-	_Object->SetInitFlg(true);
-
-	audios.push_back(_Object);
-
-	CoTaskMemFree(waveFormat);
-
-	mType->Release();
-
-	reader->Release();
-
+	audioDataMap[_fileName] = fileDatas;
+	return true;
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void XAudio2Manager::Update()
 {
@@ -265,7 +298,7 @@ void XAudio2Manager::Update()
 	for (auto&& audio : audios)
 	{
 
-		audio->loopEndPos = audio->loopEndPos >= audioDatas[audio->fileName].size() ? audioDatas[audio->fileName].size() : audio->loopEndPos;
+		audio->loopEndPos = audio->loopEndPos >= audioDataMap[audio->fileName].size() ? audioDataMap[audio->fileName].size() : audio->loopEndPos;
 
 		audio->loopStartPos = audio->loopStartPos >= audio->loopEndPos ? 0 : audio->loopStartPos;
 
@@ -284,7 +317,8 @@ void XAudio2Manager::Update()
 
 		audio->nowPos = nowPos;
 
-		audio->voice->SubmitSourceBuffer(audioDatas[audio->fileName][nowPos].get());
+		audio->voice->SubmitSourceBuffer(audioDataMap[audio->fileName][nowPos].get());
 
 	}
+
 }

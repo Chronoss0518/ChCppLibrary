@@ -1,6 +1,8 @@
 #ifndef Ch_CPP_D3DOBJ_XAudio2_h
 #define Ch_CPP_D3DOBJ_XAudio2_h
 
+struct IMFSourceReader;
+
 namespace ChD3D
 {
 	class XAudio2Manager;
@@ -90,6 +92,9 @@ namespace ChD3D
 	{
 	public:
 
+		friend AudioObject;
+		friend X3DAudioObject;
+
 		///////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
@@ -112,22 +117,37 @@ namespace ChD3D
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		void CreateSound(AudioObject* _object,const std::string& _str);
+	public://Load Functions//
 
-		///////////////////////////////////////////////////////////////////////////////////
+		void LoadStart();
+
+		void LoadEnd();
+
+		void LoadSound(AudioObject* _object,const std::string& _str);
+
+	public://Update Function//
 
 		void Update();
 
-		///////////////////////////////////////////////////////////////////////////////////
-
-		friend AudioObject;
-		friend X3DAudioObject;
-
 	private:
+
+		struct MFObject
+		{
+			IMFSourceReader* reader = nullptr;
+			
+			WAVEFORMATEX* waveFormat = nullptr;
+		};
+
+		ChStd::Bool CreateMFObject(const std::string& _fileName);
+
+		ChStd::Bool CreateFileData(const std::string& _fileName);
 
 		XAudio2Manager(){}
 		
-		std::map<std::string, std::vector<ChPtr::Shared<XAUDIO2_BUFFER>>>audioDatas;
+		std::map<std::string, std::vector<ChPtr::Shared<XAUDIO2_BUFFER>>>audioDataMap;
+		std::map<std::string, ChPtr::Shared<MFObject>>mfObjectMap;
+
+		ChStd::Bool loadFlg = false;
 
 		std::vector<AudioObject*>audios;
 		IXAudio2* audio = nullptr;
