@@ -103,7 +103,7 @@ namespace ChD3D
 			beforePos = mat.GetPosition();
 		}
 
-		inline void InitPosition(const ChLMat& _mat)
+		inline void InitMatrix(const ChLMat& _mat)
 		{
 			mat = _mat;
 			beforePos = mat.GetPosition();
@@ -159,7 +159,7 @@ namespace ChD3D
 			beforePos = mat.GetPosition();
 		}
 
-		inline void InitPosition(const ChLMat& _mat)
+		inline void InitMatrix(const ChLMat& _mat)
 		{
 			mat = _mat;
 			beforePos = mat.GetPosition();
