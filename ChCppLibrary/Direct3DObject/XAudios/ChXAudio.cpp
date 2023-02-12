@@ -23,6 +23,10 @@
 
 using namespace ChD3D;
 
+#define USE_SUBMIX_VOICE_FLG 1
+
+#define BASE_LENGTH 1000.0f
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 void AudioObject::SetVolume(const float _Volume)
@@ -108,13 +112,18 @@ void X3DAudioObject::Init()
 	Release();
 
 	emitter = new X3DAUDIO_EMITTER();
+	ChStd::MZero(emitter);
+
 	emitter->ChannelCount = 1;
 	emitter->CurveDistanceScaler = emitter->DopplerScaler = 1.0f;
+	emitter->pCone = nullptr;
 }
 
 void X3DAudioObject::Release()
 {
 	if (ChPtr::NullCheck(emitter))return;
+
+	AudioObject::Release();
 
 	delete emitter;
 	emitter = nullptr;
@@ -124,10 +133,18 @@ X3DAUDIO_EMITTER* X3DAudioObject::GetEmitter()
 {
 	if (ChPtr::NullCheck(emitter))return emitter;
 
-	emitter->OrientFront = mat.GetZAxisDirection();
-	emitter->OrientTop = mat.GetYAxisDirection();
-	emitter->Position = mat.GetPosition();
+	auto zDirection = mat.GetZAxisDirection();
+	auto yDirection = mat.GetYAxisDirection();
 
+	zDirection.Normalize();
+	yDirection.Normalize();
+
+	ChVec3 pos = mat.GetPosition();
+	emitter->OrientFront = zDirection;
+	emitter->OrientTop = yDirection;
+	emitter->Position = pos;
+
+	emitter->Velocity = pos - beforePos;
 
 	return emitter;
 }
@@ -138,14 +155,13 @@ void XAudio2Manager::Init()
 
 	XAudio2Create(&audio, 0, XAUDIO2_DEFAULT_PROCESSOR);
 
-
 	if (audio == nullptr)return;
 
 	audio->CreateMasteringVoice(&audioMV);
 	DWORD dwChannelMask;
 	audioMV->GetChannelMask(&dwChannelMask);
-
-	X3DAudioInitialize(dwChannelMask, X3DAUDIO_SPEED_OF_SOUND, X3DInstance);
+	//X3DAudioInitialize(dwChannelMask, X3DAUDIO_SPEED_OF_SOUND, X3DInstance);
+	X3DAudioInitialize(dwChannelMask, X3DAUDIO_SPEED_OF_SOUND * 0.01f, X3DInstance);
 
 	details = new XAUDIO2_VOICE_DETAILS();
 
@@ -153,13 +169,9 @@ void XAudio2Manager::Init()
 
 	matrix.resize(details->InputChannels);
 
-	dspSettings = new X3DAUDIO_DSP_SETTINGS();
-
-	dspSettings->SrcChannelCount = 1;
-	dspSettings->DstChannelCount = details->InputChannels;
-	dspSettings->pMatrixCoefficients = &matrix[0];
-
 	listener = new X3DAUDIO_LISTENER();
+
+#if USE_SUBMIX_VOICE_FLG
 
 	audio->CreateSubmixVoice(&subMixAudio, 1, 44100, 0, 0, 0, 0);
 	sender = new XAUDIO2_SEND_DESCRIPTOR();
@@ -168,6 +180,8 @@ void XAudio2Manager::Init()
 	sendList = new XAUDIO2_VOICE_SENDS();
 	sendList->SendCount = 1;
 	sendList->pSends = sender;
+
+#endif
 	SetInitFlg(true);
 
 }
@@ -199,14 +213,19 @@ void XAudio2Manager::Release()
 
 	audios.clear();
 
-	if (ChPtr::NotNullCheck(audioMV)) { audioMV->DestroyVoice(); audioMV = nullptr; };
-	if (ChPtr::NotNullCheck(audio)) { audio->Release(); audio = nullptr; };
-
-	if (ChPtr::NotNullCheck(dspSettings)) { delete dspSettings; dspSettings = nullptr; }
 	if (ChPtr::NotNullCheck(listener)) { delete listener; listener = nullptr; }
 	if (ChPtr::NotNullCheck(details)) { delete details; details = nullptr; }
+
+#if USE_SUBMIX_VOICE_FLG
+
+	if (ChPtr::NotNullCheck(subMixAudio)) { subMixAudio->DestroyVoice(); subMixAudio = nullptr; }
 	if (ChPtr::NotNullCheck(sender)) { delete sender; sender = nullptr; }
 	if (ChPtr::NotNullCheck(sendList)) { delete sendList; sendList = nullptr; }
+
+#endif
+
+	if (ChPtr::NotNullCheck(audioMV)) { audioMV->DestroyVoice(); audioMV = nullptr; };
+	if (ChPtr::NotNullCheck(audio)) { audio->Release(); audio = nullptr; };
 
 	SetInitFlg(false);
 
@@ -244,7 +263,15 @@ void XAudio2Manager::LoadSound(AudioObject& _object, const std::string& _fileNam
 	auto mfObject = mfObjectMap[_fileName];
 	auto fileDatas = audioDataMap[_fileName];
 
+#if USE_SUBMIX_VOICE_FLG
+
 	audio->CreateSourceVoice(&_object.voice, mfObject->waveFormat, 0, 2.0f, 0, sendList);
+
+#else
+
+	audio->CreateSourceVoice(&_object.voice, mfObject->waveFormat);
+
+#endif
 
 	_object.voice->SubmitSourceBuffer(fileDatas[0].get());
 	_object.voice->SubmitSourceBuffer(fileDatas[1].get());
@@ -359,10 +386,19 @@ ChStd::Bool XAudio2Manager::CreateFileData(const std::string& _fileName)
 
 void XAudio2Manager::Update()
 {
+	
+	auto zDirection = mat.GetZAxisDirection();
+	auto yDirection = mat.GetYAxisDirection();
 
-	listener->OrientFront = mat.GetZAxisDirection();
-	listener->OrientTop = mat.GetYAxisDirection();
-	listener->Position = mat.GetPosition();
+	zDirection.Normalize();
+	yDirection.Normalize();
+
+	ChVec3 pos = mat.GetPosition();
+
+	listener->OrientFront = zDirection;
+	listener->OrientTop = yDirection;
+	listener->Position = pos;
+	listener->Velocity = pos - beforePos;
 
 	for (auto&& audio : audios)
 	{
@@ -377,19 +413,47 @@ void XAudio2Manager::Update3DAudios(AudioObject* _audio)
 	auto audio = ChPtr::SafeCast<X3DAudioObject>(_audio);
 	if (ChPtr::NullCheck(audio))return;
 
+	X3DAUDIO_DSP_SETTINGS dspSettings;
+
+	dspSettings.SrcChannelCount = 1;
+	dspSettings.DstChannelCount = details->InputChannels;
+	dspSettings.pMatrixCoefficients = &matrix[0];
+
 	auto&& emitter = audio->GetEmitter();
 
+	auto ePos = emitter->Position;
+	emitter->Position.x *= BASE_LENGTH;
+	emitter->Position.y *= BASE_LENGTH;
+	emitter->Position.z *= BASE_LENGTH;
+	auto lPos = listener->Position;
+	listener->Position.x *= BASE_LENGTH;
+	listener->Position.y *= BASE_LENGTH;
+	listener->Position.z *= BASE_LENGTH;
+
 	X3DAudioCalculate(X3DInstance, listener, emitter,
-		X3DAUDIO_CALCULATE_MATRIX | X3DAUDIO_CALCULATE_DOPPLER | X3DAUDIO_CALCULATE_LPF_DIRECT | X3DAUDIO_CALCULATE_REVERB,
-		dspSettings);
+		X3DAUDIO_CALCULATE_MATRIX | 
+		X3DAUDIO_CALCULATE_DOPPLER | 
+		X3DAUDIO_CALCULATE_LPF_DIRECT | 
+		X3DAUDIO_CALCULATE_REVERB | 
+		X3DAUDIO_CALCULATE_EMITTER_ANGLE |
+		X3DAUDIO_CALCULATE_DOPPLER,
+		&dspSettings);
 
-	audio->voice->SetOutputMatrix(subMixAudio, 1, details->InputChannels, dspSettings->pMatrixCoefficients);
-	audio->voice->SetFrequencyRatio(dspSettings->DopplerFactor);
+	emitter->Position = ePos;
+	listener->Position = lPos;
 
-	audio->voice->SetOutputMatrix(subMixAudio, 1, 1, &dspSettings->ReverbLevel);
+	audio->voice->SetOutputMatrix(audioMV, 1, details->InputChannels, dspSettings.pMatrixCoefficients);
+	audio->voice->SetFrequencyRatio(dspSettings.DopplerFactor);
 
-	XAUDIO2_FILTER_PARAMETERS FilterParameters = { LowPassFilter, 2.0f * sinf(X3DAUDIO_PI / 6.0f * dspSettings->LPFDirectCoefficient), 1.0f };
+#if USE_SUBMIX_VOICE_FLG
+
+	audio->voice->SetOutputMatrix(audioMV, 1, 1, &dspSettings.ReverbLevel);
+
+#endif
+
+	XAUDIO2_FILTER_PARAMETERS FilterParameters = { LowPassFilter, 2.0f * sinf(X3DAUDIO_PI / 6.0f * dspSettings.LPFDirectCoefficient), 1.0f };
 	audio->voice->SetFilterParameters(&FilterParameters);
+
 }
 
 void XAudio2Manager::UpdateBGMAudios(AudioObject* _audio)

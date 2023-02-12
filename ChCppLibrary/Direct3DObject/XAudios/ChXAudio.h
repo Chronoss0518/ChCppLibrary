@@ -14,7 +14,6 @@ struct XAUDIO2_SEND_DESCRIPTOR;
 struct XAUDIO2_VOICE_SENDS;
 
 struct X3DAUDIO_LISTENER;
-struct X3DAUDIO_DSP_SETTINGS;
 typedef unsigned char X3DAUDIO_HANDLE[20];
 typedef struct tWAVEFORMATEX WAVEFORMATEX;
 struct XAUDIO2_VOICE_DETAILS;
@@ -99,17 +98,19 @@ namespace ChD3D
 
 		void Release()override;
 
-		inline void SetPosition(const ChVec3& _pos) { mat.SetPosition(_pos); }
+		inline void SetPosition(const ChVec3& _pos) { beforePos = mat.GetPosition(); mat.SetPosition(_pos); }
 
 		inline void SetRotation(const ChVec3& _rot) { mat.SetRotation(_rot); }
 
 		X3DAUDIO_EMITTER* GetEmitter();
 
+		inline ChVec3 GetPosition() { return mat.GetPosition(); }
 
 	private:
 
 		X3DAUDIO_EMITTER* emitter = nullptr;
 		ChLMat mat;
+		ChVec3 beforePos;
 
 	};
 
@@ -135,8 +136,15 @@ namespace ChD3D
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
+		inline void SetMatrix(const ChLMat& _mat)
+		{
+			beforePos = mat.GetPosition();
+			mat = _mat;
+		}
+
 		inline void SetPosition(const ChVec3& _pos)
 		{
+			beforePos = mat.GetPosition();
 			mat.SetPosition(_pos);
 		}
 
@@ -144,6 +152,10 @@ namespace ChD3D
 		{
 			mat.SetRotation(_dir);
 		}
+
+	public://Get Function//
+
+		inline ChVec3 GetPosition() { return mat.GetPosition(); }
 
 	public://Load Functions//
 
@@ -183,19 +195,20 @@ namespace ChD3D
 
 		std::vector<AudioObject*>audios;
 		IXAudio2* audio = nullptr;
-		IXAudio2SubmixVoice* subMixAudio = nullptr;
 		IXAudio2MasteringVoice* audioMV = nullptr;
+#if 1
+		IXAudio2SubmixVoice* subMixAudio = nullptr;
 		XAUDIO2_SEND_DESCRIPTOR* sender = nullptr;
 		XAUDIO2_VOICE_SENDS* sendList = nullptr;
-
+#endif
 		//3DAudioŠÖ˜A//
 		X3DAUDIO_LISTENER* listener = nullptr;
-		X3DAUDIO_DSP_SETTINGS* dspSettings = nullptr;
 		X3DAUDIO_HANDLE X3DInstance;
-		XAUDIO2_VOICE_DETAILS* details;
+		XAUDIO2_VOICE_DETAILS* details = nullptr;
 		std::vector<float>matrix;
 
 		ChLMat mat;
+		ChVec3 beforePos;
 
 	public:
 
