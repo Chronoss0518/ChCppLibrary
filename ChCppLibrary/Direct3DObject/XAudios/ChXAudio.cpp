@@ -27,6 +27,11 @@ using namespace ChD3D;
 
 #define BASE_LENGTH 1000.0f
 
+struct ChXAUDIO2_BUFFER :public XAUDIO2_BUFFER
+{
+	std::vector<unsigned char> audioDataVector;
+};
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 void AudioObject::SetVolume(const float _Volume)

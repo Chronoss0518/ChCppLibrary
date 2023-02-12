@@ -96,11 +96,37 @@ namespace ChD3D
 
 		void Init()override;
 
+		inline void InitPosition(const ChVec3& _pos)
+		{
+			mat.Identity();
+			mat.SetPosition(_pos);
+			beforePos = mat.GetPosition();
+		}
+
+		inline void InitPosition(const ChLMat& _mat)
+		{
+			mat = _mat;
+			beforePos = mat.GetPosition();
+		}
+
 		void Release()override;
 
-		inline void SetPosition(const ChVec3& _pos) { beforePos = mat.GetPosition(); mat.SetPosition(_pos); }
+		inline void SetPosition(const ChVec3& _pos) 
+		{
+			beforePos = mat.GetPosition();
+			mat.SetPosition(_pos); 
+		}
 
-		inline void SetRotation(const ChVec3& _rot) { mat.SetRotation(_rot); }
+		inline void SetRotation(const ChVec3& _rot)
+		{
+			mat.SetRotation(_rot);
+		}
+
+		inline void SetMatrix(const ChLMat& _mat)
+		{
+			beforePos = mat.GetPosition();
+			mat = _mat;
+		}
 
 		X3DAUDIO_EMITTER* GetEmitter();
 
@@ -114,11 +140,6 @@ namespace ChD3D
 
 	};
 
-	struct ChXAUDIO2_BUFFER :public XAUDIO2_BUFFER
-	{
-		std::vector<unsigned char> audioDataVector;
-	};
-
 	class XAudio2Manager:public ChCp::Initializer,public ChCp::Releaser
 	{
 	public:
@@ -130,6 +151,19 @@ namespace ChD3D
 		//InitAndRelease//
 
 		void Init();
+
+		inline void InitPosition(const ChVec3& _pos)
+		{
+			mat.Identity();
+			mat.SetPosition(_pos);
+			beforePos = mat.GetPosition();
+		}
+
+		inline void InitPosition(const ChLMat& _mat)
+		{
+			mat = _mat;
+			beforePos = mat.GetPosition();
+		}
 
 		void Release()override;
 
