@@ -155,10 +155,12 @@ MTWStruct ModelToWorld(
 
 void FrustumCulling(float4 _pos)
 {
-	float x = abs(_pos.x / _pos.w);
-	float y = abs(_pos.y / _pos.w);
-	float z = _pos.z / _pos.w;
-
+	float x = _pos.x / _pos.w;
+	x *= x;
+	float y = _pos.y / _pos.w;
+	y *= y;
+	float z = (_pos.z / _pos.w) * 2.0f - 1.0f;
+	z *= z;
 	clip(1.0f - x);
 	clip(1.0f - y);
 	clip(1.0f - z);
