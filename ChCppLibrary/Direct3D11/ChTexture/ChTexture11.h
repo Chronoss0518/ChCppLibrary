@@ -57,6 +57,16 @@ namespace ChD3D11
 			return baseTex;
 		}
 
+		D3D11_TEXTURE2D_DESC GetTextureDesc();
+
+
+		D3D11_SAMPLER_DESC GetSamplerDesc()
+		{
+			return sDesc;
+		}
+
+		ChMath::Vector2Base<unsigned int> GetTextureSize();
+
 	public://Is Functionss//
 
 		ChStd::Bool IsTex() { return ChPtr::NotNullCheck(baseTex); }

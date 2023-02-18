@@ -23,6 +23,7 @@
 #include"Direct3D11/ChCB/ChCBPolygon/ChCBPolygon11.h"
 #include"Direct3D11/ChCB/ChCBSprite/ChCBSprite11.h"
 #include"Direct3D11/ChCB/ChCBLight/ChCBLight11.h"
+#include"Direct3D11/ChCB/ChCBBone/ChCBBone11.h"
 //サンプルシェーダー//
 #include"Direct3D11/ChSampleShader/PolygonShader/ChBaseDrawMesh11.h"
 #include"Direct3D11/ChSampleShader/PolygonShader/ChBaseDrawPolygonBoard11.h"

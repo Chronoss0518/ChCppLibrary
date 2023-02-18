@@ -1361,33 +1361,27 @@ ChVec3 ChLMatrix::GetScalling(const unsigned long _digit)const
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVec3 ChLMatrix::GetXAxisDirection(const unsigned long _digit)const
+ChVec3 ChLMatrix::GetXAxisDirection()const
 {
 	ChVec3 res = ChVec3(m[0][0], m[1][0], m[2][0]);
 
-	res.Normalize(_digit);
-
 	return res;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVec3 ChLMatrix::GetYAxisDirection(const unsigned long _digit)const
+ChVec3 ChLMatrix::GetYAxisDirection()const
 {
 	ChVec3 res = ChVec3(m[0][1], m[1][1], m[2][1]);
 
-	res.Normalize(_digit);
-
 	return res;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVec3 ChLMatrix::GetZAxisDirection(const unsigned long _digit)const
+ChVec3 ChLMatrix::GetZAxisDirection()const
 {
 	ChVec3 res = ChVec3(m[0][2], m[1][2], m[2][2]);
-
-	res.Normalize(_digit);
 
 	return res;
 }
@@ -1788,33 +1782,27 @@ ChVec3 ChRMatrix::GetScalling(const unsigned long _digit)const
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVec3 ChRMatrix::GetXAxisDirection(const unsigned long _digit)const
+ChVec3 ChRMatrix::GetXAxisDirection()const
 {
 	ChVec3 res = ChVec3(m[0][0], m[0][1], m[0][1]);
 
-	res.Normalize(_digit);
-
 	return res;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVec3 ChRMatrix::GetYAxisDirection(const unsigned long _digit)const
+ChVec3 ChRMatrix::GetYAxisDirection()const
 {
 	ChVec3 res = ChVec3(m[1][0], m[1][1], m[1][1]);
 
-	res.Normalize(_digit);
-
 	return res;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVec3 ChRMatrix::GetZAxisDirection(const unsigned long _digit)const
+ChVec3 ChRMatrix::GetZAxisDirection()const
 {
 	ChVec3 res = ChVec3(m[2][0], m[2][1], m[2][1]);
-
-	res.Normalize(_digit);
 
 	return res;
 }

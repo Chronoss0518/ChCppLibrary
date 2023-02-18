@@ -68,10 +68,10 @@ void Sprite11::SetInitPosition()
 void Sprite11::SetInitUV()
 {
 
-	vertexs[0].uv = ChVec2(0.0f, 0.0f);
-	vertexs[1].uv = ChVec2(1.0f, 0.0f);
-	vertexs[2].uv = ChVec2(1.0f, 1.0f);
-	vertexs[3].uv = ChVec2(0.0f, 1.0f);
+	vertexs[0].uv = ChVec2(0.0f, 1.0f);
+	vertexs[1].uv = ChVec2(1.0f, 1.0f);
+	vertexs[2].uv = ChVec2(1.0f, 0.0f);
+	vertexs[3].uv = ChVec2(0.0f, 0.0f);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

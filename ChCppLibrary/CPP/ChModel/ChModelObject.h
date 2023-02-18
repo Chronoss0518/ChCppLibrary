@@ -6,10 +6,11 @@
 
 namespace ChCpp
 {
-
-	struct BoneObject :public ChCpp::BaseObject
+	struct TargetBoneData
 	{
-		Ch3D::Transform transform;
+		std::string boneObjectName = "";
+		ChLMat boneOffset;
+
 	};
 
 	struct FrameComponent:public ChCpp::BaseComponent
@@ -17,17 +18,12 @@ namespace ChCpp
 		std::vector<ChPtr::Shared<Ch3D::Primitive>> primitives;
 		std::vector<ChPtr::Shared<Ch3D::MaterialData>>materialList;
 		std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>> vertexList;
+		std::vector<ChPtr::Shared<TargetBoneData>>boneDatas;
 		std::map<std::string, unsigned long>mateNames;
 		ChVec3 maxPos = ChVec3();
 		ChVec3 minPos = ChVec3();
 		ChVec3 centerPos = ChVec3();
 		ChVec3 boxSize = ChVec3();
-	};
-
-	struct BoneComponent :public ChCpp::BaseComponent
-	{
-		Ch3D::BoneData boneDatas;
-		BoneObject* boneObject = nullptr;
 	};
 
 	struct AnimationComponent:public ChCpp::BaseComponent

@@ -10,18 +10,18 @@ namespace std
 namespace ChCpp
 {
 	//void(void)の関数用マルチスレッドを実行するクラス//
-	class ChMultiThread
+	class MultiThread :public ChCp::Initializer
 	{
 	public:
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//ConstructerDestructer//
 
-		ChMultiThread() {}
+		MultiThread() {}
 
-		ChMultiThread(const std::function<void(void)> _func);
+		MultiThread(const std::function<void(void)> _func);
 
-		~ChMultiThread() { Release(); }
+		~MultiThread() { Release(); }
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//

@@ -30,6 +30,21 @@ void BaseDrawSprite11::Init(ID3D11Device* _device)
 	indexBuffer.CreateBuffer(_device, &indexs[0], indexs.size());
 
 
+	D3D11_RASTERIZER_DESC desc
+	{
+		D3D11_FILL_MODE::D3D11_FILL_SOLID,
+		D3D11_CULL_MODE::D3D11_CULL_NONE,
+		true,
+		0,
+		0.0f,
+		0.0f,
+		false,
+		false,
+		true,
+		false
+	};
+
+	CreateRasteriser(desc);
 }
 
 void BaseDrawSprite11::Release()
@@ -52,7 +67,7 @@ void BaseDrawSprite11::InitVertexShader()
 	decl[2] = { "COLOR",  0, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
 
 
-	SampleShaderBase11::InitVertexShader(decl, sizeof(decl) / sizeof(D3D11_INPUT_ELEMENT_DESC), main, sizeof(main));
+	SampleShaderBase11::CreateVertexShader(decl, sizeof(decl) / sizeof(D3D11_INPUT_ELEMENT_DESC), main, sizeof(main));
 
 }
 
@@ -61,7 +76,7 @@ void BaseDrawSprite11::InitPixelShader()
 
 #include"../SpriteShader/BaseSpritePixel.inc"
 
-	SampleShaderBase11::InitPixelShader(main, sizeof(main));
+	SampleShaderBase11::CreatePixelShader(main, sizeof(main));
 }
 
 void BaseDrawSprite11::SetSpriteMatrix(const ChLMat& _mat)
@@ -89,6 +104,11 @@ void BaseDrawSprite11::Draw(
 
 	spriteData.SetShaderTexture(_dc);
 
+	if (alphaBlendFlg)
+	{
+		SampleShaderBase11::SetShaderBlender(_dc);
+	}
+
 	unsigned int offsets = 0;
 
 	auto&& vertexs = _sprite.GetVertexs();
@@ -101,28 +121,8 @@ void BaseDrawSprite11::Draw(
 
 	_dc->DrawIndexed(6, 0, 0);
 
-
-}
-
-void BaseDrawSprite11::Update()
-{
-	if (!updateFlg)return;
-
-	D3D11_RASTERIZER_DESC desc
+	if (alphaBlendFlg)
 	{
-		D3D11_FILL_MODE::D3D11_FILL_SOLID,
-		D3D11_CULL_MODE::D3D11_CULL_NONE,
-		true,
-		0,
-		0.0f,
-		0.0f,
-		false,
-		false,
-		true,
-		false
-	};
-
-	CreateRasteriser(desc);
-
-	updateFlg = false;
+		SampleShaderBase11::SetShaderDefaultBlender(_dc);
+	}
 }

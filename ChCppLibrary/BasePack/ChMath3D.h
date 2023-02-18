@@ -869,11 +869,11 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 
 	ChVec3 GetScalling(const unsigned long _digit = 6)const;
 
-	ChVec3 GetXAxisDirection(const unsigned long _digit = 6)const;
+	ChVec3 GetXAxisDirection()const;
 
-	ChVec3 GetYAxisDirection(const unsigned long _digit = 6)const;
+	ChVec3 GetYAxisDirection()const;
 
-	ChVec3 GetZAxisDirection(const unsigned long _digit = 6)const;
+	ChVec3 GetZAxisDirection()const;
 
 	///////////////////////////////////////////////////////////////////////////////////
 
@@ -1021,11 +1021,11 @@ struct ChRMatrix : public ChMath::BaseMatrix4x4<float>
 
 	ChVec3 GetScalling(const unsigned long _digit = 6)const;
 
-	ChVec3 GetXAxisDirection(const unsigned long _digit = 6)const;
+	ChVec3 GetXAxisDirection()const;
 
-	ChVec3 GetYAxisDirection(const unsigned long _digit = 6)const;
+	ChVec3 GetYAxisDirection()const;
 
-	ChVec3 GetZAxisDirection(const unsigned long _digit = 6)const;
+	ChVec3 GetZAxisDirection()const;
 
 	///////////////////////////////////////////////////////////////////////////////////
 
