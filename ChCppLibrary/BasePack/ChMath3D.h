@@ -591,18 +591,6 @@ struct ChVector4 : public ChMath::Vector4Base<float>
 		const ChVector4& _vec2,
 		const unsigned long _digit = 6);
 
-	inline ChStd::Bool IsOverlaps(const ChVector4& _vec)
-	{
-		return ChMath::Vector4Base<float>::IsOverlaps(_vec);
-	}
-
-	inline ChVector4 OverlapsRect(const ChVector4& _vec)
-	{
-		ChVector4 out;
-		out.val.Set(ChMath::Vector4Base<float>::OverlapsRect(_vec).val);
-		return out;
-	}
-
 	static ChVector4 Lerp(
 		const ChVector4& _start,
 		const ChVector4& _end,
