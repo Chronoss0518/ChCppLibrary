@@ -22,6 +22,8 @@
 #include"CPP/ChBaseObject/ChObjectManager.h"
 #include"CPP/ChHitTestObject/ChHitTestObject.h"
 
+#include"CPP/ChMathSquare/ChMathSquare.h"
+
 #include"CPP/ChHitTestObject/Panel/ChPanelCollider.h"
 #include"CPP/ChHitTestObject/Box/ChBoxCollider.h"
 #include"CPP/ChHitTestObject/Sphere/ChSphereCollider.h"
