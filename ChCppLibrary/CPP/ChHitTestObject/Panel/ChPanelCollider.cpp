@@ -102,7 +102,7 @@ ChStd::Bool PanelCollider::IsInnerHit(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-Square PanelCollider::GetSquarePositions()
+PanelCollider::Square PanelCollider::GetSquarePositions()
 {
 	Square out;
 
