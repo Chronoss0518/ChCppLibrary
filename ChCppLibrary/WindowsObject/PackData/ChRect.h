@@ -158,7 +158,7 @@ public://Other Functions//
 	inline ChLONGRECT OverlapsRect(const ChLONGRECT& _vec)
 	{
 		ChLONGRECT out;
-		out.vec.val.Set(vec.OverlapsRect(_vec).val);
+		out.vec.val.Set(ChMath::Vector4Base<long>::OverlapsRect(vec,_vec).val);
 		return out;
 	}
 
