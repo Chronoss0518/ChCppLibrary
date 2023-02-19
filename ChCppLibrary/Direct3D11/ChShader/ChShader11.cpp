@@ -72,23 +72,11 @@ void ShaderController11::Init(
 	device = (_device);
 	dc = (_dc);
 
-	spvTex.InitChSpriteTextureVertexShader(_device);
-	bpTex.InitChBaseSpritePixelShader(_device);
-
 	spriteShader = ChPtr::Make_U<Shader::BaseDrawSprite11>();
 	spriteShader->Init(_device);
 
+
 	dsBuffer.CreateDepthBuffer(_device, _width, _height);
-
-	out3D.CreateRenderTarget(
-		_device,
-		static_cast<unsigned long>(_width),
-		static_cast<unsigned long>(_height));
-
-	out2D.CreateRenderTarget(
-		_device,
-		static_cast<unsigned long>(_width),
-		static_cast<unsigned long>(_height));
 
 	outSprite.Init(device);
 
@@ -116,99 +104,42 @@ void ShaderController11::Release()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ShaderController11::SetRenderTarget(RenderTarget11& _tex)
-{
-	if (!*this)return;
-	if (drawFlg)return;
-	if (ChPtr::NullCheck(_tex.GetRTView()))return;
-
-	renderTargets.push_back(const_cast<ID3D11RenderTargetView*>(_tex.GetRTView()));
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
 void ShaderController11::DrawStart()
 {
-
 	if (!*this)return;
-	if (drawFlg)return;
 
-	rtDrawFlg = !renderTargets.empty();
-
-	if (rtDrawFlg)
-	{
-		dc->OMSetRenderTargets(renderTargets.size(), &renderTargets[0], nullptr);
-	}
-	else
-	{
-		window.SetBackGroundColor(dc, backColor);
-
-		dsBuffer.ClearDepthBuffer(dc);
-
-		out3D.SetBackColor(dc, backColor);
-		out2D.SetBackColor(dc, ChVec4(0.0f, 0.0f, 0.0f, 0.0f));
-
-	}
-
-	drawFlg = true;
+	window.SetBackGroundColor(dc, backColor);
+	dsBuffer.ClearDepthBuffer(dc);
 
 	view.SetDrawData(dc);
 
-
-}
-
-//3Dの描画開始前に呼ぶ関数//
-void ShaderController11::DrawStart3D()
-{
-	if (!*this)return;
-	if (!drawFlg)return;
-
-	if (!rtDrawFlg)
-	{
-		ID3D11RenderTargetView* tmp = out3D.GetRTView();
-		dc->OMSetRenderTargets(1, &tmp, dsBuffer.GetDSView());
-	}
-
-}
-
-//2Dの描画開始前に呼ぶ関数//
-void ShaderController11::DrawStart2D()
-{
-	if (!*this)return;
-	if (!drawFlg)return;
-
-	if (!rtDrawFlg)
-	{
-		ID3D11RenderTargetView* tmp = out2D.GetRTView();
-		dc->OMSetRenderTargets(1, &tmp, nullptr);
-
-		//out3D.SetDrawData(dc, 12);
-	}
-
+	window.SetDrawData(dc, dsBuffer.GetDSView());
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ShaderController11::DrawEnd()
 {
-
 	if (!*this)return;
-	if (!drawFlg)return;
-
-	drawFlg = false;
-
-	if (rtDrawFlg)return;
-
 	if (ChPtr::NullCheck(device))return;
 
-	window.SetDrawData(dc, nullptr);
+	window.SetDrawData(dc, dsBuffer.GetDSView());
+
+	// バックバッファをプライマリバッファにコピー//
+	window.Draw();
+
+}
+
+void ShaderController11::DrawEnd(ChD3D11::TextureBase11& _tex)
+{
+	if (!*this)return;
+	if (ChPtr::NullCheck(device))return;
+
+	window.SetDrawData(dc, dsBuffer.GetDSView());
 
 	spriteShader->DrawStart(dc);
 
-	spriteShader->Draw(dc, out3D, outSprite);
-
-	spriteShader->Draw(dc, out2D, outSprite);
+	spriteShader->Draw(dc, _tex, outSprite);
 
 	spriteShader->DrawEnd();
 
@@ -216,3 +147,4 @@ void ShaderController11::DrawEnd()
 	window.Draw();
 
 }
+

@@ -6,15 +6,16 @@
 namespace ChCpp
 {
 
-	struct Square
-	{
-		ChVec3 pos[4];
-	};
-
 
 	//Šî–{“I‚É–Ê‚ÍãŒü‚«//
 	class PanelCollider :public Collider
 	{
+	public:
+
+		struct Square
+		{
+			ChVec3 pos[4];
+		};
 
 	public:
 

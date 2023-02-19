@@ -66,11 +66,9 @@ void XFile::CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& _f
 
 	for (auto&& tmp : templates->nest)
 	{
-
 		SetFrame(xModel->modelData, tmp, text);
 
 		SetMesh(xModel->modelData, tmp, text);
-
 	}
 
 	if (exceptionFlg)return;
@@ -724,6 +722,7 @@ void XFile::XFrameToChFrame(
 		for (unsigned long i = 0; i < xVertexList.size(); i++)
 		{
 			ChStd::Bool lookFlg = false;
+			ChPtr::Shared<Ch3D::SavePolyVertex> chVertex = nullptr;
 
 			for (unsigned long j = 0; j < chVertexList.size(); j++)
 			{
@@ -732,8 +731,9 @@ void XFile::XFrameToChFrame(
 
 				summarizeVertex[i] = j;
 
-				chVertexList[j]->normal += xVertexList[i]->normal;
+				chVertex = chVertexList[summarizeVertex[i]];
 
+				chVertex->normal += xVertexList[i]->normal;
 				lookFlg = true;
 
 				break;
@@ -744,10 +744,10 @@ void XFile::XFrameToChFrame(
 
 			summarizeVertex[i] = chVertexList.size();
 
-			auto chVertex = ChPtr::Make_S<Ch3D::SavePolyVertex>();
+			chVertex = ChPtr::Make_S<Ch3D::SavePolyVertex>();
 
 			chVertex->pos = xVertexList[i]->pos;
-			chVertex->normal += xVertexList[i]->normal;
+			chVertex->normal = xVertexList[i]->normal;
 
 			chVertexList.push_back(chVertex);
 
@@ -763,6 +763,22 @@ void XFile::XFrameToChFrame(
 		{
 			chVertex->normal.Normalize();
 		}
+
+		for (unsigned long i = 0;i < _xFrame->skinWeightDatas.size() && i < maxBoneNum;i++)
+		{
+			auto&& skinWeight = _xFrame->skinWeightDatas[i];
+			for (unsigned long j = 0; j < chVertexList.size(); j++) 
+			{
+				auto&& chVertex = *chVertexList[j];
+				auto weitPow = skinWeight->weitPow.find(j);
+
+				chVertex.blendPow.push_back(weitPow == skinWeight->weitPow.end() ? 0.0f : (*weitPow).second);
+			}
+			auto boneData = ChPtr::Make_S<ChCpp::TargetBoneData>();
+			boneData->boneObjectName = skinWeight->targetFrameName;
+			boneData->boneOffset = skinWeight->boneOffset;
+			mesh->boneDatas.push_back(boneData);
+		};
 
 		ChVec3 minToMaxVec = mesh->maxPos - mesh->minPos;
 

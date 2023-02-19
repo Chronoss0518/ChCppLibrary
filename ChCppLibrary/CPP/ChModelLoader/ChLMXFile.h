@@ -89,6 +89,10 @@ namespace ChCpp
 
 			void OutModelFile(const ChPtr::Shared<ModelObject> _model, const std::string& _filePath)override;
 
+		public:
+
+			inline void SetMaxBoneNum(const unsigned long _boneNum) { maxBoneNum = _boneNum; }
+
 		protected:
 
 			///////////////////////////////////////////////////////////////////////////////////////
@@ -141,8 +145,11 @@ namespace ChCpp
 				, const ChPtr::Shared<TemplateRange>& _targetTemplate
 				, const std::string& _text);
 
-			///////////////////////////////////////////////////////////////////////////////////////
-			//GetFunction//
+		public:
+
+			inline const unsigned long GetMaxBoneNum() const { return maxBoneNum; }
+
+		protected:
 
 			template<class T>
 			auto GetArrayValues(
@@ -521,6 +528,8 @@ namespace ChCpp
 
 			std::string loadFileName  = "";
 			std::string loadFilePath = "";
+
+			unsigned long maxBoneNum = 16;
 
 			///////////////////////////////////////////////////////////////////////////////////////
 			//XFileTemplateNames//

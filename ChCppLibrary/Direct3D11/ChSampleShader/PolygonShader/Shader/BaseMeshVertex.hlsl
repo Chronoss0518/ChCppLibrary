@@ -15,10 +15,9 @@ VS_OUT main
 	float2 _uv						: TEXCOORD0,
 	float4 _color					: COLOR0,
 	float3 _normal					: NORMAL0,
-	float3 _faceNormal				: NORMAL1
-	//row_major uint4x4 _blend		: BLENDINDEX0,
-	//row_major float4x4 _blendPow	: BLENDWEIGHT0,
-	//uint _blendNum					: BLENDINDEX4
+	float3 _faceNormal				: NORMAL1,
+	row_major float4x4 _blendPow	: BLENDWEIGHT0,
+	uint _blendNum					: BLENDINDEX0
 )
 {
 	VS_OUT res;
@@ -27,11 +26,9 @@ VS_OUT main
 
 	float4x4 tmpMat = GetInitMatrix4x4();
 
-	//tmpMat = _blendNum > 0 ? BlendMatrix(_blend, _blendPow, _blendNum) : tmpMat;
+	//tmpMat = _blendNum > 0 ? BlendMatrix(_blendPow, _blendNum) : tmpMat;
 	
-	res.worldPos = mul(res.worldPos, tmpMat);
-
-	MTWStruct tmp = ModelToWorld(res.worldPos, _uv, _normal, _faceNormal);
+	MTWStruct tmp = ModelToWorld(res.worldPos, _uv, _normal, _faceNormal, tmpMat);
 
 	res.worldPos = tmp.worldPos;
 	res.viewPos = tmp.viewPos;
@@ -44,7 +41,6 @@ VS_OUT main
 	res.color = _color;
 
 	res.temperature = 1.0f;
-	//Out.Temperature = 0.0f;
 
 	return res;
 }

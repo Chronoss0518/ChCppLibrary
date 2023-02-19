@@ -224,13 +224,15 @@ namespace ChCpp
 		template<class T>
 		void SaveData(const T* _save)
 		{
-			FrameManager().SaveData(_save);
+			if (ChPtr::NullCheck(mgr))return nullptr;
+			mgr->SaveData(_save);
 		}
 
 		template<class T>
 		T* GetData()
 		{
-			return FrameManager().GetData<T>();
+			if (ChPtr::NullCheck(mgr))return nullptr;
+			return mgr->GetData<T>();
 		}
 
 		//“o˜^‚³‚ê‚Ä‚¢‚éƒtƒŒ[ƒ€‚ÉˆÚ“®‚·‚é//

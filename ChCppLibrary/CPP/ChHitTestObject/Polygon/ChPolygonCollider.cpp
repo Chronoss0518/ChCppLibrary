@@ -24,7 +24,16 @@ ChStd::Bool PolygonCollider::IsHit(
 ChStd::Bool PolygonCollider::IsHit(
 	HitTestSphere* _target)
 {
-	return false;
+
+	auto model = GetModel();
+
+	if (ChPtr::NullCheck(model))return false;
+
+	
+
+
+
+	return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -49,7 +58,6 @@ ChStd::Bool  PolygonCollider::IsHit(
 	}
 
 	ChStd::Bool hitFlg = IsHitRayToMesh(*model,pos,ray,minLen);
-
 
 	if (hitFlg)
 	{

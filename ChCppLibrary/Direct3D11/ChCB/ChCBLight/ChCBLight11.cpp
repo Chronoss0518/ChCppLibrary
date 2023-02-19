@@ -290,4 +290,6 @@ void CBLight11::Update(ID3D11DeviceContext* _dc)
 	if (!updateFlg)return;
 
 	buf.UpdateResouce(_dc, &lightDatas);
+
+	updateFlg = false;
 }

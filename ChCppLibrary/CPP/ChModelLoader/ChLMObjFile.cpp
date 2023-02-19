@@ -298,17 +298,20 @@ void ObjFile::CreateChFrame(ChPtr::Shared<ChCpp::FrameObject> _frame)
 
 				//mesh->VertexList[NVertex]->Normal += *Obj.second->vertexNormalList[NNormal];
 				primitive->vertexList[nVertex]->normal += *obj->vertexNormalList[nNormal];
+				fVList->faceNormal += *obj->vertexNormalList[nNormal];
 
 			}
+
+			fVList->faceNormal.Normalize();
 
 			primitive->primitives.push_back(fVList);
 
 
-			for (auto&& ver : primitive->vertexList)
-			{
-				ver->normal.Normalize();
-			}
+		}
 
+		for (auto&& ver : primitive->vertexList)
+		{
+			ver->normal.Normalize();
 		}
 
 		mesh->SetMyName(obj->objectName);
