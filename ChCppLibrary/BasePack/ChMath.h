@@ -1408,7 +1408,7 @@ namespace ChMath
 			w = _w;
 		}
 
-		inline Vector4Base(const Vector4Base& _vec) { val = _vec.val; }
+		inline Vector4Base(const Vector4Base<T>& _vec) { val = _vec.val; }
 
 		//スクリーン上の座標に合わせて数値をセットする。//
 		//スクリーン座標では左上が0,0の位置になり、右下に行けば行くほど数値が増える//
@@ -1425,12 +1425,12 @@ namespace ChMath
 		inline void SetProjectionCoordinates(const Vector2Base<T>& _pos, const Vector2Base<T>& _size)
 		{
 			auto tmpSize = _size;
-			tmpSize.w /= 2;
-			tmpSize.h /= 2;
+			tmpSize.w *= 0.5f;
+			tmpSize.h *= 0.5f;
 
-			left = _pos.x;
+			left = _pos.x - tmpSize.w;
 			right = _pos.x + tmpSize.w;
-			bottom = _pos.y;
+			bottom = _pos.y - tmpSize.h;
 			top = _pos.y + tmpSize.h;
 		}
 
@@ -1453,9 +1453,8 @@ namespace ChMath
 			return res;
 		}
 
-
 		//対象のVectorlで表される四角形に引数で入れたVectorlであらわされる四角形が重なっているかの確認//
-		inline ChStd::Bool IsOverlaps(const Vector4Base& _target) const
+		inline ChStd::Bool IsOverlaps(const Vector4Base<T>& _target) const
 		{
 			if (right < _target.left ||
 				left > _target.right ||
@@ -1468,29 +1467,43 @@ namespace ChMath
 			return true;
 		}
 
+		//対象のVectorlで表される四角形に引数で入れたVectorlで表される位置が重なっているかの確認//
+		inline ChStd::Bool IsOnPoint(const Vector2Base<T>& _target) const
+		{
+			if (right < _target.x ||
+				left > _target.x ||
+				top < _target.y ||
+				bottom > _target.y)
+			{
+				return false;
+			}
+
+			return true;
+		}
+
 		//対象のVectorlで表される四角形と引数で入れたVectorlであらわされる四角形に重なっている四角形をあらわした　Vectorlを取得する//
-		inline void OverlapsRect(const Vector4Base& _vec)
+		inline void OverlapsRect(const Vector4Base<T>& _vec)
 		{
 			if (!IsOverlaps(_vec))return;
 
 			top = _vec.top >= top ? top : _vec.top;
-			left = _vec.left >= left ? left : _vec.left;
-			bottom = _vec.bottom >= bottom ? bottom : _vec.bottom;
+			left = _vec.left <= left ? left : _vec.left;
+			bottom = _vec.bottom <= bottom ? bottom : _vec.bottom;
 			right = _vec.right >= right ? right : _vec.right;
 
 			return;
 		}
 
 		//対象のVectorlで表される四角形と引数で入れたVectorlであらわされる四角形に重なっている四角形をあらわした　Vectorlを取得する//
-		inline static Vector4Base OverlapsRect(const Vector4Base& _vec1,const Vector4Base& _vec2)
+		inline static Vector4Base<T> OverlapsRect(const Vector4Base<T>& _vec1,const Vector4Base<T>& _vec2)
 		{
 			if (!_vec1.IsOverlaps(_vec2))return _vec1;
 
-			Vector4Base overlapsRect;
+			Vector4Base<T> overlapsRect;
 
 			overlapsRect.top = _vec2.top >= _vec1.top ? _vec1.top : _vec2.top;
-			overlapsRect.left = _vec2.left >= _vec1.left ? _vec1.left : _vec2.left;
-			overlapsRect.bottom = _vec2.bottom >= _vec1.bottom ? _vec1.bottom : _vec2.bottom;
+			overlapsRect.left = _vec2.left <= _vec1.left ? _vec1.left : _vec2.left;
+			overlapsRect.bottom = _vec2.bottom <= _vec1.bottom ? _vec1.bottom : _vec2.bottom;
 			overlapsRect.right = _vec2.right >= _vec1.right ? _vec1.right : _vec2.right;
 
 			return overlapsRect;
