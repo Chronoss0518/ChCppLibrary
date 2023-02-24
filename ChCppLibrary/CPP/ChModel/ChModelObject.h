@@ -6,6 +6,8 @@
 
 namespace ChCpp
 {
+	class ModelLoaderBase;
+
 	struct TargetBoneData
 	{
 		std::string boneObjectName = "";
@@ -129,6 +131,10 @@ namespace ChCpp
 	{
 	public:
 
+		friend ModelLoaderBase;
+
+	public:
+
 		inline void Init()override
 		{
 			SetInitFlg(true);
@@ -139,6 +145,8 @@ namespace ChCpp
 			SetInitFlg(false);
 		}
 
+	public:
+
 		inline void SetShaderAxisType(const Ch3D::ShaderAxisType _type)
 		{
 			axisType = _type;
@@ -146,12 +154,41 @@ namespace ChCpp
 
 		void SetModelName(const std::string& _name);
 
+	private:
+
+		inline void SetMaxPos(const ChVec3& _pos) { maxPos = _pos; }
+
+		inline void SetMinPos(const ChVec3& _pos) { minPos = _pos; }
+
+		inline void SetCenterPos(const ChVec3& _pos) { centerPos = _pos; }
+
+		inline void SetBoxSize(const ChVec3& _size) { boxSize = _size; }
+
+	public:
+
 		inline std::string GetModelName() 
 		{
 			return modelName; 
 		}
 
+		//初期化時に作成した全フレームの最大地点//
+		inline ChVec3 GetInitAllFrameMaxPos() { return maxPos; }
+
+		//初期化時に作成した全フレームの最小地点//
+		inline ChVec3 GetInitAllFrameMinPos() { return minPos; }
+
+		//初期化時に作成した全フレームの中央地点//
+		inline ChVec3 GetInitAllFrameCenterPos() { return centerPos; }
+
+		//初期化時に作成した全フレームの箱のサイズ//
+		//CenterToTopLine And CenterToRightLine//
+		inline ChVec3 GetInitAllFrameBoxSize() { return boxSize; }
+
+	public:
+
 		void AddAnimationName(const std::string& _name);
+
+	public:
 
 		virtual void Create(){}
 
@@ -159,6 +196,11 @@ namespace ChCpp
 
 		std::vector<std::string>animationNames;
 		std::string modelName = "";
+
+		ChVec3 maxPos = ChVec3();
+		ChVec3 minPos = ChVec3();
+		ChVec3 centerPos = ChVec3();
+		ChVec3 boxSize = ChVec3();
 
 		Ch3D::ShaderAxisType axisType = Ch3D::ShaderAxisType::LeftHand;
 	};
