@@ -72,12 +72,19 @@ void XFile::CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& _f
 	}
 
 	if (exceptionFlg)return;
+	
+	Init();
 
 	loadFilePath = GetRoutePath(loadFileName);
 
 	_model->SetModelName(_filePath);
 
 	XFrameToChFrame(_model, xModel->modelData);
+
+	SetMaxPos(*_model, maxPos);
+	SetMinPos(*_model, minPos);
+	SetCenterPos(*_model, CreateCenterPos(minPos,maxPos));
+	SetBoxSize(*_model, CreateBoxSize(minPos,maxPos));
 
 	_model->Create();
 }
@@ -698,13 +705,15 @@ void XFile::XFrameToChFrame(
 
 	_chFrame->SetFrameTransform(_xFrame->frameMatrix);
 
+	_chFrame->GetDrawLHandMatrix();
+
 	for (auto&& frame : _xFrame->next)
 	{
 		auto chFrame = ChPtr::Make_S<FrameObject>();
 
-		XFrameToChFrame(chFrame, frame);
-
 		_chFrame->SetChild(chFrame);
+
+		XFrameToChFrame(chFrame, frame);
 
 	}
 
@@ -751,12 +760,9 @@ void XFile::XFrameToChFrame(
 
 			chVertexList.push_back(chVertex);
 
-			mesh->maxPos.x = chVertex->pos.x > mesh->maxPos.x ? chVertex->pos.x : mesh->maxPos.x;
-			mesh->maxPos.y = chVertex->pos.y > mesh->maxPos.y ? chVertex->pos.y : mesh->maxPos.y;
-			mesh->maxPos.z = chVertex->pos.z > mesh->maxPos.z ? chVertex->pos.z : mesh->maxPos.z;
-			mesh->minPos.x = chVertex->pos.x < mesh->minPos.x ? chVertex->pos.x : mesh->minPos.x;
-			mesh->minPos.y = chVertex->pos.y < mesh->minPos.y ? chVertex->pos.y : mesh->minPos.y;
-			mesh->minPos.z = chVertex->pos.z < mesh->minPos.z ? chVertex->pos.z : mesh->minPos.z;
+			mesh->maxPos = TestMaxPos(mesh->maxPos, chVertex->pos);
+			mesh->minPos = TestMinPos(mesh->minPos, chVertex->pos);
+
 		}
 
 		for (auto&& chVertex : chVertexList)
@@ -780,10 +786,8 @@ void XFile::XFrameToChFrame(
 			mesh->boneDatas.push_back(boneData);
 		};
 
-		ChVec3 minToMaxVec = mesh->maxPos - mesh->minPos;
-
-		mesh->centerPos = (mesh->minPos + mesh->maxPos) / 2.0f;
-		mesh->boxSize = minToMaxVec / 2.0f;
+		mesh->centerPos = CreateCenterPos(mesh->minPos,mesh->maxPos);
+		mesh->boxSize = CreateBoxSize(mesh->minPos, mesh->maxPos);
 
 	}
 
@@ -873,4 +877,8 @@ void XFile::XFrameToChFrame(
 		}
 
 	}
+
+	maxPos = TestMaxPos(_chFrame->GetDrawLHandMatrix().Transform(mesh->maxPos), maxPos);
+	minPos = TestMinPos(_chFrame->GetDrawLHandMatrix().Transform(mesh->minPos), minPos);
+
 }

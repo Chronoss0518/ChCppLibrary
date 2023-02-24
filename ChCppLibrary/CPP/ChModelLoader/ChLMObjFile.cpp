@@ -75,6 +75,7 @@ void ObjFile::CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& 
 
 	if (objects.size() <= 0)return;
 
+	Init();
 
 	_model->SetModelName(_filePath);
 
@@ -83,6 +84,11 @@ void ObjFile::CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& 
 	_model->SetComponent<FrameComponent>();
 	
 	CreateChFrame(_model);
+
+	SetMaxPos(*_model, maxPos);
+	SetMinPos(*_model, minPos);
+	SetCenterPos(*_model, CreateCenterPos(minPos, maxPos));
+	SetBoxSize(*_model, CreateBoxSize(minPos, maxPos));
 
 	_model->Create();
 }
@@ -200,18 +206,12 @@ void ObjFile::CreateChFrame(ChPtr::Shared<ChCpp::FrameObject> _frame)
 
 			primitive->vertexList.push_back(ver);
 
-			primitive->maxPos.x = ver->pos.x > primitive->maxPos.x ? ver->pos.x : primitive->maxPos.x;
-			primitive->maxPos.y = ver->pos.y > primitive->maxPos.y ? ver->pos.y : primitive->maxPos.y;
-			primitive->maxPos.z = ver->pos.z > primitive->maxPos.z ? ver->pos.z : primitive->maxPos.z;
-			primitive->minPos.x = ver->pos.x < primitive->minPos.x ? ver->pos.x : primitive->minPos.x;
-			primitive->minPos.y = ver->pos.y < primitive->minPos.y ? ver->pos.y : primitive->minPos.y;
-			primitive->minPos.z = ver->pos.z < primitive->minPos.z ? ver->pos.z : primitive->minPos.z;
+			primitive->maxPos = TestMaxPos(primitive->maxPos, ver->pos);
+			primitive->minPos = TestMinPos(primitive->minPos, ver->pos);
 		}
 
-		ChVec3 minToMaxVec = primitive->maxPos - primitive->minPos;
-
-		primitive->centerPos = (primitive->maxPos + primitive->minPos) / 2.0f;
-		primitive->boxSize = minToMaxVec / 2.0f;
+		primitive->centerPos = CreateCenterPos(primitive->minPos, primitive->maxPos);
+		primitive->boxSize = CreateBoxSize(primitive->minPos, primitive->maxPos);
 
 		//for (auto&& Face : Obj.second->MeshDatas)
 		for (auto&& face : obj->meshDatas)
@@ -317,6 +317,9 @@ void ObjFile::CreateChFrame(ChPtr::Shared<ChCpp::FrameObject> _frame)
 		mesh->SetMyName(obj->objectName);
 
 		_frame->SetChild(mesh);
+
+		maxPos = TestMaxPos(primitive->maxPos, maxPos);
+		minPos = TestMinPos(primitive->minPos, minPos);
 
 	}
 
