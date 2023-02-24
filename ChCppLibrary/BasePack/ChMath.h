@@ -699,32 +699,15 @@ namespace ChMath
 			return m;
 		}
 
-		MatrixBase& operator =(const MatrixBase& _Mat)
+		MatrixBase& operator =(const MatrixBase& _mat)
 		{
-
-			for (unsigned long i = 0; i < Column; i++)
-			{
-				for (unsigned long j = 0; j < Row; j++)
-				{
-					m[i][j] = _Mat.m[i][j];
-				}
-
-			}
-
+			Set(_mat);
 			return *this;
 		}
 
-		MatrixBase& operator +=(const MatrixBase& _Mat)
+		MatrixBase& operator +=(const MatrixBase& _mat)
 		{
-
-			for (unsigned long i = 0; i < Column; i++)
-			{
-				for (unsigned long j = 0; j < Row; j++)
-				{
-					m[i][j] += _Mat.m[i][j];
-				}
-
-			}
+			Add(_mat);
 
 			return *this;
 		}
@@ -739,17 +722,9 @@ namespace ChMath
 			return out;
 		}
 
-		MatrixBase& operator -=(const MatrixBase& _Mat)
+		MatrixBase& operator -=(const MatrixBase& _mat)
 		{
-
-			for (unsigned long i = 0; i < Column; i++)
-			{
-				for (unsigned long j = 0; j < Row; j++)
-				{
-					m[i][j] -= _Mat.m[i][j];
-				}
-			}
-
+			Sub(_mat);
 			return *this;
 		}
 
@@ -763,17 +738,9 @@ namespace ChMath
 			return out;
 		}
 
-		MatrixBase& operator *=(const MatrixBase& _Mat)
+		MatrixBase& operator *=(const MatrixBase& _mat)
 		{
-
-			for (unsigned long i = 0; i < Column; i++)
-			{
-				for (unsigned long j = 0; j < Row; j++)
-				{
-					m[i][j] *= _Mat.m[i][j];
-				}
-			}
-
+			Mul(_mat);
 			return *this;
 		}
 
@@ -787,17 +754,9 @@ namespace ChMath
 			return out;
 		}
 
-		MatrixBase& operator /=(const MatrixBase& _Mat)
+		MatrixBase& operator /=(const MatrixBase& _mat)
 		{
-
-			for (unsigned long i = 0; i < Column; i++)
-			{
-				for (unsigned long j = 0; j < Row; j++)
-				{
-					m[i][j] /= _Mat.m[i][j] != 0.0f ? _Mat.m[i][j] : 1.0f;
-				}
-			}
-
+			Div(_mat);
 			return *this;
 		}
 
@@ -877,11 +836,7 @@ namespace ChMath
 		{
 			for (unsigned long i = 0; i < Column; i++)
 			{
-				float tmp[Column];
-				for (unsigned char j = 0; j < Row; j++)
-				{
-					tmp[j] = m[i][j];
-				}
+				VectorBase<T,Column> tmp = m[i];
 
 				for (unsigned char j = 0; j < Column; j++)
 				{
