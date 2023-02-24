@@ -102,8 +102,14 @@ struct ChVector2 : public ChMath::Vector2Base<float>
 		, const std::string& _endChar = ";"
 		, const unsigned int _digit = 6);
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//GetFunction//
+public://Set Function//
+
+	inline void SetLen(const float _len)
+	{
+		val.SetLen(_len);
+	}
+
+public://Get Function//
 
 	static ChVector2 GetCross(
 		const ChVector2& _vec1,
@@ -293,8 +299,14 @@ struct ChVector3 : public ChMath::Vector3Base<float>
 		, const std::string& _endChar = ";"
 		, const unsigned int _digit = 6);
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//GetFunction//
+public://Set Function//
+
+	inline void SetLen(const float _len)
+	{
+		val.SetLen(_len);
+	}
+
+public://Get Function//
 
 	static ChVector3 GetCross(
 		const ChVector3& _vec1,
@@ -505,8 +517,14 @@ struct ChVector4 : public ChMath::Vector4Base<float>
 		w = w > -1.0f ? (w < 1.0f ? w : 1.0f) : -1.0f;
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//GetFunction//
+public://Set Function//
+
+	inline void SetLen(const float _len)
+	{
+		val.SetLen(_len);
+	}
+
+public://Get Function//
 
 	static ChVector4 GetCross(
 		const ChVector4& _vec1,
