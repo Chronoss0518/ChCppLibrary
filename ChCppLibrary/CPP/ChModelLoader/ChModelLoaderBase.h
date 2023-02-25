@@ -60,8 +60,8 @@ namespace ChCpp
 
 	protected:
 
-		ChVec3 maxPos = ChVec3();
-		ChVec3 minPos = ChVec3(1e+38f);
+		ChVec3 maxPos = ChVec3((10e+37f) * -1.0f);
+		ChVec3 minPos = ChVec3(10e+37f);
 
 	};
 }

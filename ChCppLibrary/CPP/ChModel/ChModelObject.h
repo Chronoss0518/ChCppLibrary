@@ -22,7 +22,7 @@ namespace ChCpp
 		std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>> vertexList;
 		std::vector<ChPtr::Shared<TargetBoneData>>boneDatas;
 		std::map<std::string, unsigned long>mateNames;
-		ChVec3 maxPos = ChVec3();
+		ChVec3 maxPos = ChVec3((10e+37f) * -1.0f);
 		ChVec3 minPos = ChVec3(10e+37f);
 		ChVec3 centerPos = ChVec3();
 		ChVec3 boxSize = ChVec3();
