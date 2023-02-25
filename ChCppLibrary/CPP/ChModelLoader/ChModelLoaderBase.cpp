@@ -15,7 +15,7 @@ using namespace ChCpp;
 void ModelLoaderBase::Init()
 {
 	maxPos = ChVec3();
-	minPos = ChVec3(1e+38f);
+	minPos = ChVec3(10e+37f);
 }
 
 void ModelLoaderBase::SetMaxPos(ModelObject& _model, const ChVec3& _pos)
