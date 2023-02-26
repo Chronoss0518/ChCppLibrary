@@ -162,7 +162,6 @@ ChStd::Bool XFile::SetFremeTransformMatrix(
 	}
 
 	_frames->frameMatrix.Deserialize(useText, 0, ",", ";;");
-
 	return true;
 
 }
@@ -878,7 +877,12 @@ void XFile::XFrameToChFrame(
 
 	}
 
-	maxPos = TestMaxPos(_chFrame->GetDrawLHandMatrix().Transform(mesh->maxPos), maxPos);
-	minPos = TestMinPos(_chFrame->GetDrawLHandMatrix().Transform(mesh->minPos), minPos);
+	ChVec3 tmpMaxPos = _chFrame->GetDrawLHandMatrix().Transform(mesh->maxPos);
+	ChVec3 tmpMinPos = _chFrame->GetDrawLHandMatrix().Transform(mesh->minPos);
 
+	maxPos = TestMaxPos(tmpMaxPos, maxPos);
+	minPos = TestMinPos(tmpMaxPos, minPos);
+
+	maxPos = TestMaxPos(tmpMinPos, maxPos);
+	minPos = TestMinPos(tmpMinPos, minPos);
 }
