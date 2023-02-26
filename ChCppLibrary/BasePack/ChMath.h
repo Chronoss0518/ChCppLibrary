@@ -838,11 +838,11 @@ namespace ChMath
 			{
 				VectorBase<T,Column> tmp = m[i];
 
-				for (unsigned char j = 0; j < Column; j++)
+				for (unsigned long j = 0; j < Column; j++)
 				{
 					m[i][j] = tmp[0] * _mat.m[0][j];
 
-					for (unsigned char k = 1; k < Row; k++)
+					for (unsigned long k = 1; k < Row; k++)
 					{
 						m[i][j] += tmp[k] * _mat.m[k][j];
 					}
