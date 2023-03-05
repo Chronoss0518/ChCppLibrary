@@ -22,10 +22,10 @@ namespace ChMath
 
 
 	template<typename T, unsigned long Array>
-	using VectorTest = typename std::enable_if<(Array > 0) && (std::is_integral<T>::value || std::is_floating_point<T>::value), T>::type;
+	using VectorTest = typename std::enable_if<(Array > 0), T>::type;
 
 	template<typename T, unsigned long Row, unsigned long Column>
-	using MatrixTest = typename std::enable_if<(Row > 0 && Column > 0) && (std::is_integral<T>::value || std::is_floating_point<T>::value), T>::type;
+	using MatrixTest = typename std::enable_if<(Row > 0 && Column > 0), T>::type;
 
 	template<typename T, unsigned long Array>
 	class VectorBase
@@ -834,17 +834,18 @@ namespace ChMath
 
 		void Mul(const MatrixBase& _mat)
 		{
+			MatrixBase tmp;
+			tmp.Set(*this);
+
 			for (unsigned long i = 0; i < Column; i++)
 			{
-				VectorBase<T,Column> tmp = m[i];
-
 				for (unsigned long j = 0; j < Column; j++)
 				{
-					m[i][j] = tmp[0] * _mat.m[0][j];
+					m[i][j] = tmp[i][0] * _mat.m[0][j];
 
 					for (unsigned long k = 1; k < Row; k++)
 					{
-						m[i][j] += tmp[k] * _mat.m[k][j];
+						m[i][j] += tmp[i][k] * _mat.m[k][j];
 					}
 				}
 			}
@@ -869,7 +870,7 @@ namespace ChMath
 			{
 				for (unsigned long j = 0; j < maxSize; j++)
 				{
-					out[j] += _vec[i] * m[j][i];
+					out[i] += m[i][j] * _vec[j];
 				}
 			}
 
@@ -894,7 +895,7 @@ namespace ChMath
 			{
 				for (unsigned long j = 0; j < maxSize; j++)
 				{
-					out[j] += _vec[i] * m[i][j];
+					out[i] += _vec[j] * m[j][i];
 				}
 			}
 
