@@ -686,12 +686,12 @@ namespace ChMath
 
 		VectorBase<T, Row>& operator [](const unsigned long _col)
 		{
-			return m[_col % Column];
+			return m[_col % Row];
 		}
 
 		VectorBase<T, Row> operator [](const unsigned long _col)const
 		{
-			return m[_col % Column];
+			return m[_col % Row];
 		}
 
 		explicit operator const T** const ()const
@@ -857,21 +857,26 @@ namespace ChMath
 		VectorBase<T, _Arrarys> VerticalMul(const VectorBase<T, _Arrarys> _vec)const
 		{
 
+			MatrixBase<T, Row, Column> tmpMat;
+
+			tmpMat.Set(static_cast<T>(0.0f));
+
 			unsigned long maxSize = _Arrarys;
 
-			maxSize = maxSize >= Column ? Column : maxSize;
 			maxSize = maxSize >= Row ? Row : maxSize;
-
+			unsigned long i = 0;
+			for (i = 0; i < maxSize; i++)
+			{
+				tmpMat.m[i][0] = _vec[i];
+			}
+			
+			tmpMat = (*this) * tmpMat;
+			
 			VectorBase<T, _Arrarys> out;
 
-			out.Set(static_cast<T>(0.0f));
-
-			for (unsigned long i = 0; i < maxSize; i++)
+			for (i = 0; i < maxSize; i++)
 			{
-				for (unsigned long j = 0; j < maxSize; j++)
-				{
-					out[i] += m[i][j] * _vec[j];
-				}
+				out[i] = tmpMat.m[i][0];
 			}
 
 			return out;
@@ -882,21 +887,27 @@ namespace ChMath
 		template<unsigned long _Arrarys>
 		VectorBase<T, _Arrarys>HorizontalMul(const VectorBase<T, _Arrarys> _vec)const
 		{
+
+			MatrixBase<T, Row, Column> tmpMat;
+
+			tmpMat.Set(static_cast<T>(0.0f));
+
 			unsigned long maxSize = _Arrarys;
 
 			maxSize = maxSize >= Column ? Column : maxSize;
-			maxSize = maxSize >= Row ? Row : maxSize;
+			unsigned long i = 0;
+			for (i = 0; i < maxSize; i++)
+			{
+				tmpMat.m[0][i] = _vec[i];
+			}
+
+			tmpMat = tmpMat * (*this);
 
 			VectorBase<T, _Arrarys> out;
 
-			out.Set(static_cast<T>(0.0f));
-
-			for (unsigned long i = 0; i < maxSize; i++)
+			for (i = 0; i < maxSize; i++)
 			{
-				for (unsigned long j = 0; j < maxSize; j++)
-				{
-					out[i] += _vec[j] * m[j][i];
-				}
+				out[i] = tmpMat.m[0][i];
 			}
 
 			return out;
@@ -1237,7 +1248,7 @@ namespace ChMath
 
 	private:
 
-		VectorBase<MatrixTest<T, Row, Column>, Row> m[Column];
+		VectorBase<MatrixTest<T, Row, Column>, Column> m[Row];
 
 	};
 
