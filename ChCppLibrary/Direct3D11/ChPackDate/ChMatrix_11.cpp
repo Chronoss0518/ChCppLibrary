@@ -405,7 +405,17 @@ void ChMatrix_11::Scaling(
 
 void ChMatrix_11::CreateViewMat(const ChVec3& _pos, const ChVec3& _dir, const ChVec3& _up)
 {
-	CreateViewMatLookTarget(_pos, (_dir + _pos), _up);
+
+	ChVec3_11 pos;
+	pos = _pos;
+
+	ChVec3_11 up;
+	up = _up;
+
+	ChVec3_11 dir;
+	dir = _dir;
+
+	*this = DirectX::XMMatrixLookToLH(pos, dir, up);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
