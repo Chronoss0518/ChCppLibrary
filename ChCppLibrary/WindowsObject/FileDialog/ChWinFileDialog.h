@@ -64,7 +64,7 @@ namespace ChWin
 		///////////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
 
-		ChStd::Bool IsOpen() { return openFlg; }
+		bool IsOpen() { return openFlg; }
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
@@ -108,7 +108,7 @@ namespace ChWin
 
 		std::map<std::string,std::string> filters;
 
-		ChStd::Bool openFlg = true;
+		bool openFlg = true;
 
 		unsigned short pathLength = 256;
 

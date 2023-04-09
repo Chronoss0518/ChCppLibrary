@@ -50,7 +50,7 @@ void ChWin::DrawTexter::SetFontData(
 	const long& _fWidth
 	, const long& _fHeight
 	, const long& _fSize
-	, const ChStd::Bool& _ulFlg)
+	, const bool& _ulFlg)
 {
 
 	DeleteObject(fontData);

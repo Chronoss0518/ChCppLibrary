@@ -91,9 +91,9 @@ namespace ChCpp
 			return frameMat.ConvertAxis();
 		}
 
-		static ChStd::Bool GetLenIsPointToPolyBoard(ChVec3& _outVector, const ChVec3& _point,const Ch3D::Primitive& _prim,const std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>>& _vertexList, const float _maxLen = FLT_MAX, const ChLMat& _mat = ChLMat());
+		static bool GetLenIsPointToPolyBoard(ChVec3& _outVector, const ChVec3& _point,const Ch3D::Primitive& _prim,const std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>>& _vertexList, const float _maxLen = FLT_MAX, const ChLMat& _mat = ChLMat());
 
-		static ChStd::Bool GetLenIsPointToPolyBoardFunction(ChVec3& _outVector, const ChVec3& _point,const Ch3D::Primitive& _prim,const std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>>& _vertexList, const float _maxLen = FLT_MAX);
+		static bool GetLenIsPointToPolyBoardFunction(ChVec3& _outVector, const ChVec3& _point,const Ch3D::Primitive& _prim,const std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>>& _vertexList, const float _maxLen = FLT_MAX);
 
 		void GetLenIsPointToPrimitive(std::vector<ChPtr::Shared<NearPointData>>& _res, const ChVec3& _point, const float _maxLen = FLT_MAX, const ChLMat& _mat = ChLMat());
 

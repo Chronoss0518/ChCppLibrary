@@ -26,7 +26,7 @@ public:
 	///////////////////////////////////////////////////////////////////////////////////
 
 	//簡易的XFileのレイ判定//
-	ChStd::Bool MeshHitRay(
+	bool MeshHitRay(
 		DWORD& _index
 		, float& _len
 		, const ChPtr::Shared<ChMesh::BaseMesh9>& _mesh
@@ -34,14 +34,14 @@ public:
 		, const ChVec3_9& _pos
 		, const ChVec3_9& _dir);
 
-	ChStd::Bool MeshHitRay(
+	bool MeshHitRay(
 		float& _len
 		, const ChPtr::Shared<ChMesh::BaseMesh9>& _mesh
 		, const ChMat_9& _obj
 		, const ChVec3_9& _pos
 		, const ChVec3_9& _dir);
 
-	ChStd::Bool MeshHitRay(
+	bool MeshHitRay(
 		const ChPtr::Shared<ChMesh::BaseMesh9>& _mesh
 		, const ChMat_9& _obj
 		, const ChVec3_9& _pos
@@ -50,7 +50,7 @@ public:
 	///////////////////////////////////////////////////////////////////////////////////
 
 	//板ポリゴンに対しての例判定//
-	ChStd::Bool PorygonHitRay(
+	bool PorygonHitRay(
 		float& _len
 		, const ChPtr::Shared<ChTex::PolygonBoard9> _poBo
 		, const ChVec3_9& _pos
@@ -78,7 +78,7 @@ public:
 
 	// _MaskDirectionに'x','y','z'のいずれかを記入すると、//
 	//その方向にだけ当たり判定がおんなじ位置になる//
-	ChStd::Bool LengthDecision(
+	bool LengthDecision(
 		const ChMat_9 &_mat1
 		, const ChMat_9 &_mat2
 		, const float matLen
@@ -87,7 +87,7 @@ public:
 	///////////////////////////////////////////////////////////////////////////////////
 
 	//2D版の当たり判定(改良必)//
-	ChStd::Bool Hit2DDecision(
+	bool Hit2DDecision(
 		const ChMat_9& _obj1Mat
 		, const ChMat_9& _obj2Mat
 		, const ChPtr::Shared<ChTex::BaseTexture9>&_obj1Tex

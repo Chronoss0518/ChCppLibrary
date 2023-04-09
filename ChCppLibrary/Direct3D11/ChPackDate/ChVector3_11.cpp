@@ -243,7 +243,7 @@ void ChVector3_11::Set0Param()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ChVector3_11::IsNormals()const {
+bool ChVector3_11::IsNormals()const {
 
 	return (std::abs(this->x)
 		+ std::abs(this->y)
@@ -252,7 +252,7 @@ ChStd::Bool ChVector3_11::IsNormals()const {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ChVector3_11::IsAll0()const {
+bool ChVector3_11::IsAll0()const {
 
 	return (x == 0.0f && y == 0.0f && z == 0.0f);
 }

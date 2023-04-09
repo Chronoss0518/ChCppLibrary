@@ -9,7 +9,7 @@ using namespace ChCpp;
 //ChBitBoolƒƒ\ƒbƒh
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void BitBool::SetBitFlg(const unsigned char _argsNum, const ChStd::Bool _flg)
+void BitBool::SetBitFlg(const unsigned char _argsNum, const bool _flg)
 {
 	if (_argsNum >= flgs.size() * 8)return;
 
@@ -54,7 +54,7 @@ void BitBool::SetValue(const unsigned char _value, const unsigned long _byteCoun
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool BitBool::GetBitFlg(const unsigned char _argsNum)
+bool BitBool::GetBitFlg(const unsigned char _argsNum)
 {
 	if (_argsNum >= flgs.size() * 8)return false;
 

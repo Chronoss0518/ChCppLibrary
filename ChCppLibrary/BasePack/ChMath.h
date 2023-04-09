@@ -598,7 +598,7 @@ namespace ChMath
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//ベクトルの長さを1にする//
-		ChStd::Bool Normalize(
+		bool Normalize(
 			const unsigned long _digit = 6
 		)
 		{
@@ -617,7 +617,7 @@ namespace ChMath
 		}
 
 		//ベクトルの要素の合計を1にする//
-		ChStd::Bool ElementsNormalize()
+		bool ElementsNormalize()
 		{
 
 			T len = GetElementsLen();
@@ -1061,13 +1061,13 @@ namespace ChMath
 
 			if (_Row >= Row || _Col >= Column)return out;
 
-			ChStd::Bool ColFlg = false;
+			bool ColFlg = false;
 
 			for (unsigned long i = 0; i < Column - 1; i++)
 			{
 				if (i == _Col)ColFlg = true;
 
-				ChStd::Bool RowFlg = false;
+				bool RowFlg = false;
 
 				for (unsigned long j = 0; j < Row - 1; j++)
 				{
@@ -1421,7 +1421,7 @@ namespace ChMath
 		}
 
 		//対象のVectorlで表される四角形に引数で入れたVectorlであらわされる四角形が重なっているかの確認//
-		inline ChStd::Bool IsOverlaps(const Vector4Base<T>& _target) const
+		inline bool IsOverlaps(const Vector4Base<T>& _target) const
 		{
 			if (right < _target.left ||
 				left > _target.right ||
@@ -1435,7 +1435,7 @@ namespace ChMath
 		}
 
 		//対象のVectorlで表される四角形に引数で入れたVectorlで表される位置が重なっているかの確認//
-		inline ChStd::Bool IsOnPoint(const Vector2Base<T>& _target) const
+		inline bool IsOnPoint(const Vector2Base<T>& _target) const
 		{
 			if (right < _target.x ||
 				left > _target.x ||

@@ -41,7 +41,7 @@ namespace ChCpp
 
 		private:
 
-			ChStd::Bool dictionaryFirstFlg = false;
+			bool dictionaryFirstFlg = false;
 
 			struct Header
 			{

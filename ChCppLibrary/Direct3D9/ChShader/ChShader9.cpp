@@ -245,7 +245,7 @@ void ShaderController::SetDrawDatas(const D3DCOLOR&
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ShaderController::IsLight(const ChStd::Bool _flg)
+void ShaderController::IsLight(const bool _flg)
 {
 	lightUseFlg = _flg;
 

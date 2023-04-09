@@ -13,7 +13,7 @@
 
 using namespace ChCpp;
 
-ChStd::Bool PolygonCollider::IsHit(
+bool PolygonCollider::IsHit(
 	HitTestBox* _target)
 {
 	return false;
@@ -21,7 +21,7 @@ ChStd::Bool PolygonCollider::IsHit(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool PolygonCollider::IsHit(
+bool PolygonCollider::IsHit(
 	HitTestSphere* _target)
 {
 
@@ -38,7 +38,7 @@ ChStd::Bool PolygonCollider::IsHit(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  PolygonCollider::IsHit(
+bool  PolygonCollider::IsHit(
 	HitTestRay* _target)
 {
 
@@ -57,7 +57,7 @@ ChStd::Bool  PolygonCollider::IsHit(
 		ray = tmp.TransformCoord(ray);
 	}
 
-	ChStd::Bool hitFlg = IsHitRayToMesh(*model,pos,ray,minLen);
+	bool hitFlg = IsHitRayToMesh(*model,pos,ray,minLen);
 
 	if (hitFlg)
 	{
@@ -68,11 +68,11 @@ ChStd::Bool  PolygonCollider::IsHit(
 
 }
 
-ChStd::Bool PolygonCollider::IsHitRayToMesh(FrameObject& _object, const ChVec3& _rayPos, const ChVec3& _rayDir, const float _rayLen, const ChStd::Bool _nowHitFlg)
+bool PolygonCollider::IsHitRayToMesh(FrameObject& _object, const ChVec3& _rayPos, const ChVec3& _rayDir, const float _rayLen, const bool _nowHitFlg)
 {
 	_object.UpdateDrawTransform();
 
-	ChStd::Bool hitFlg = _nowHitFlg;
+	bool hitFlg = _nowHitFlg;
 
 	auto frameCom = _object.GetComponent<FrameComponent>();
 	float minLen = _rayLen;
@@ -158,7 +158,7 @@ ChStd::Bool PolygonCollider::IsHitRayToMesh(FrameObject& _object, const ChVec3& 
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  PolygonCollider::IsInnerHit(
+bool  PolygonCollider::IsInnerHit(
 	HitTestBox* _target)
 {
 	return false;
@@ -166,7 +166,7 @@ ChStd::Bool  PolygonCollider::IsInnerHit(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool PolygonCollider::IsInnerHit(
+bool PolygonCollider::IsInnerHit(
 	HitTestSphere* _target)
 {
 	return false;

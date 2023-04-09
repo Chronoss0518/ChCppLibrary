@@ -37,23 +37,23 @@ namespace ChCpp
 		//IsFunction//
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
-		ChStd::Bool IsHit(
+		bool IsHit(
 			HitTestBox* _target)override;
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
-		ChStd::Bool IsHit(
+		bool IsHit(
 			HitTestSphere* _target)override;
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
-		ChStd::Bool IsHit(
+		bool IsHit(
 			HitTestRay* _target)override;
 
 		//対象のオブジェクトがオブジェクト内から衝突しているかの判定//
-		ChStd::Bool IsInnerHit(
+		bool IsInnerHit(
 			HitTestBox* _target)override;
 
 		//対象のオブジェクトがオブジェクト内から衝突しているかの判定//
-		ChStd::Bool IsInnerHit(
+		bool IsInnerHit(
 			HitTestSphere* _target)override;
 
 

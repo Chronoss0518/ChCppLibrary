@@ -83,7 +83,7 @@ namespace ChWin
 			SetWindRect(_rec.top, _rec.left, _rec.right - _rec.left, _rec.bottom - _rec.top, _flgs);
 		}
 
-		inline void SetEnableFlg(const ChStd::Bool _flg) { EnableWindow(hWnd, _flg); }
+		inline void SetEnableFlg(const bool _flg) { EnableWindow(hWnd, _flg); }
 
 		void SetWindIDA(long _IDPtr);
 
@@ -142,11 +142,11 @@ namespace ChWin
 	public://Is Functions//
 
 		//ウィンドウの範囲内でクリックされたかを確認//
-		ChStd::Bool IsCursorPosOnWindow();
+		bool IsCursorPosOnWindow();
 
 	public://Update Functions//
 
-		inline virtual ChStd::Bool Update()
+		inline virtual bool Update()
 		{
 #ifdef UNICODE
 			return UpdateW();
@@ -155,8 +155,8 @@ namespace ChWin
 #endif
 		}
 
-		ChStd::Bool UpdateA();
-		ChStd::Bool UpdateW();
+		bool UpdateA();
+		bool UpdateW();
 
 	public://Other Functions//
 
@@ -287,9 +287,9 @@ namespace ChWin
 	public://Create Functino//
 
 		//Set Functionを先に行う//
-		ChStd::Bool Create(WindObject* _out,const std::string& _appName,const std::string& _windClassName,const int _nShowCmd = true)const;
+		bool Create(WindObject* _out,const std::string& _appName,const std::string& _windClassName,const int _nShowCmd = true)const;
 
-		ChStd::Bool Create(WindObject* _out,const std::wstring& _appName,const std::wstring& _windClassName, const int _nShowCmd = true)const;
+		bool Create(WindObject* _out,const std::wstring& _appName,const std::wstring& _windClassName, const int _nShowCmd = true)const;
 
 	private://MemberValue//
 

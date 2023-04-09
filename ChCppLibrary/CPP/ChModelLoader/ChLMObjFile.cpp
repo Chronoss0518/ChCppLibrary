@@ -394,7 +394,7 @@ void ObjFile::SetFace(const std::string& _line)
 
 	makeObject->meshDatas.push_back(data);
 
-	ChStd::Bool endFlg = false;
+	bool endFlg = false;
 
 	while (1)
 	{
@@ -627,7 +627,7 @@ void ObjFile::SetMatNormalMap(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ObjFile::IsPrefix(const std::string _str, const char* _prefix, const unsigned long _prefixSize)
+bool ObjFile::IsPrefix(const std::string _str, const char* _prefix, const unsigned long _prefixSize)
 {
 
 	if (_str.size() <= (_prefixSize + 1))return false;
@@ -648,7 +648,7 @@ ChStd::Bool ObjFile::IsPrefix(const std::string _str, const char* _prefix, const
 std::string ObjFile::LoadTextureName(const std::string& _line)
 {
 
-	ChStd::Bool loadFlg = false;
+	bool loadFlg = false;
 	std::string name = "";
 
 	size_t nowPos = 0;

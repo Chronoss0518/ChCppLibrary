@@ -127,7 +127,7 @@ void DirectX3D9::Release()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool DirectX3D9::CreateD3DXDevice(const HWND _hWnd
+bool DirectX3D9::CreateD3DXDevice(const HWND _hWnd
 	, D3DPRESENT_PARAMETERS *_d3dpp)
 {
 	// デバイスの作成 - T&L HAL
@@ -166,7 +166,7 @@ void DirectX3D9::DrawStart(const D3DCOLOR&
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void DirectX3D9::DrawEnd(const ChStd::Bool& _RTFlg)
+void DirectX3D9::DrawEnd(const bool& _RTFlg)
 {
 
 	// 描画終了

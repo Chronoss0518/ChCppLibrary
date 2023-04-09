@@ -82,7 +82,7 @@ namespace ChD3D9
 		}
 
 		//霧効果を使用するか否かのフラグ//
-		inline void SetFogFlg(ChStd::Bool _flg) { fogFlg = _flg; }
+		inline void SetFogFlg(bool _flg) { fogFlg = _flg; }
 
 		//Windサイズの設定//
 		inline void SetWindSize(const float _w, const float _h)
@@ -97,7 +97,7 @@ namespace ChD3D9
 		}
 
 		//自身の用意したライトの強さを表すテクスチャを利用するためのフラグ//
-		inline void SetLightPowTexFlg(const ChStd::Bool _Flg)
+		inline void SetLightPowTexFlg(const bool _Flg)
 		{
 			if (myLightTex == nullptr)return;
 			useMyLightTex = _Flg;
@@ -135,15 +135,15 @@ namespace ChD3D9
 		///////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
 
-		void IsLight(const ChStd::Bool _flg);
+		void IsLight(const bool _flg);
 
 		//描画可能確認関数//
-		inline ChStd::Bool IsDraw()
+		inline bool IsDraw()
 		{
 			return drawFlg;
 		}
 
-		inline ChStd::Bool IsRTDraw() { return rtDrawFlg; }
+		inline bool IsRTDraw() { return rtDrawFlg; }
 
 		///////////////////////////////////////////////////////////////////////////////////
 
@@ -204,7 +204,7 @@ namespace ChD3D9
 	protected:
 
 		//レンダーターゲット用フラグ//
-		inline void SetRTDraw(const ChStd::Bool _flg) { rtDrawFlg = _flg; }
+		inline void SetRTDraw(const bool _flg) { rtDrawFlg = _flg; }
 
 		///////////////////////////////////////////////////////////////////////////////////
 
@@ -264,7 +264,7 @@ namespace ChD3D9
 		LPD3DXCONSTANTTABLE pixelCnstant = nullptr;
 		LPD3DXCONSTANTTABLE vertexCnstant = nullptr;
 
-		ChStd::Bool allCreateFlg = false;
+		bool allCreateFlg = false;
 
 		//ベースとなる頂点情報//
 		LPDIRECT3DVERTEXDECLARATION9 baseDec = nullptr;
@@ -285,7 +285,7 @@ namespace ChD3D9
 		//ひとつ前の描画保存用//
 		ChPtr::Shared<ChTex::Texture9>beforeTex = nullptr;
 
-		ChStd::Bool lightUseFlg = false;
+		bool lightUseFlg = false;
 
 		//専用ライト//
 		LambertLight light = LambertLight();
@@ -305,14 +305,14 @@ namespace ChD3D9
 		//ライトの強さを設定する画像//
 		ChPtr::Shared<ChTex::Texture9>myLightTex = nullptr;
 
-		ChStd::Bool useMyLightTex = false;
+		bool useMyLightTex = false;
 
 		//描画可能フラグ//
-		ChStd::Bool drawFlg = false;
-		ChStd::Bool rtDrawFlg = false;
+		bool drawFlg = false;
+		bool rtDrawFlg = false;
 
 		//フォグ描画フラグ//
-		ChStd::Bool fogFlg = false;
+		bool fogFlg = false;
 
 		//ウィンドサイズ//
 		static ChVec2 windSize;

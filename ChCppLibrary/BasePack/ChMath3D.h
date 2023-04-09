@@ -181,7 +181,7 @@ public://Get Function//
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	ChStd::Bool Normalize(const unsigned long _digit = 6);
+	bool Normalize(const unsigned long _digit = 6);
 
 	void ElementsNormalize();
 
@@ -387,7 +387,7 @@ public://Get Function//
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	ChStd::Bool Normalize(
+	bool Normalize(
 		const unsigned long _digit = 6);
 
 	void ElementsNormalize();
@@ -598,7 +598,7 @@ public://Get Function//
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	ChStd::Bool Normalize(const unsigned long _digit = 6);
+	bool Normalize(const unsigned long _digit = 6);
 
 	void ElementsNormalize();
 
@@ -1225,12 +1225,12 @@ namespace ChMath
 	static inline float ToRadian(const float _degree) { return (_degree * PI / 180.0f); }
 
 	//³‚Ì•„†‚©‚Ç‚¤‚©‚ðŠm”F‚·‚é//
-	static inline ChStd::Bool IsPSign(const int _val) { return _val >= 0.0f ? true : false; }
-	static inline ChStd::Bool IsPSign(const char _val) { return _val >= 0.0f ? true : false; }
-	static inline ChStd::Bool IsPSign(const short _val) { return _val >= 0.0f ? true : false; }
-	static inline ChStd::Bool IsPSign(const long _val) { return _val >= 0.0f ? true : false; }
-	static inline ChStd::Bool IsPSign(const float _val) { return _val >= 0.0f ? true : false; }
-	static inline ChStd::Bool IsPSign(const double _val) { return _val >= 0.0f ? true : false; }
+	static inline bool IsPSign(const int _val) { return _val >= 0.0f ? true : false; }
+	static inline bool IsPSign(const char _val) { return _val >= 0.0f ? true : false; }
+	static inline bool IsPSign(const short _val) { return _val >= 0.0f ? true : false; }
+	static inline bool IsPSign(const long _val) { return _val >= 0.0f ? true : false; }
+	static inline bool IsPSign(const float _val) { return _val >= 0.0f ? true : false; }
+	static inline bool IsPSign(const double _val) { return _val >= 0.0f ? true : false; }
 
 } // namespace ChMath
 

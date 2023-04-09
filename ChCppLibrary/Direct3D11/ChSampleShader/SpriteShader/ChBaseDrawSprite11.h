@@ -28,7 +28,7 @@ namespace ChD3D11
 
 		public://Set Functions//
 
-			inline void SetAlphaBlendFlg(const ChStd::Bool _flg) { alphaBlendFlg = _flg; }
+			inline void SetAlphaBlendFlg(const bool _flg) { alphaBlendFlg = _flg; }
 
 		public://Get Functions//
 
@@ -60,7 +60,7 @@ namespace ChD3D11
 			VertexBuffer11<Ch3D::Vertex> vertexBuffer;
 			IndexBuffer11 indexBuffer;
 
-			ChStd::Bool alphaBlendFlg = false;
+			bool alphaBlendFlg = false;
 
 		};
 	}

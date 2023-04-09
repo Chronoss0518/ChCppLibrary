@@ -39,13 +39,13 @@ namespace ChWin
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		inline void SetVisibleFlg(const ChStd::Bool _flg)
+		inline void SetVisibleFlg(const bool _flg)
 		{
 			if (!*this)return;
 			visFlg = _flg; 
 		}
 
-		inline void SetCenterFixedFlg(const ChStd::Bool _flg)
+		inline void SetCenterFixedFlg(const bool _flg)
 		{
 			if (!*this)return;
 			setCenterPosFlg = _flg;
@@ -111,9 +111,9 @@ namespace ChWin
 		POINT nowPos{ 0,0 };
 		POINT beforPos{ 0,0 };
 
-		ChStd::Bool wheelMoveFlg = true;
-		ChStd::Bool visFlg = false;
-		ChStd::Bool setCenterPosFlg = false;
+		bool wheelMoveFlg = true;
+		bool visFlg = false;
+		bool setCenterPosFlg = false;
 
 		ChMath::Vector2Base<unsigned long>windSize;
 

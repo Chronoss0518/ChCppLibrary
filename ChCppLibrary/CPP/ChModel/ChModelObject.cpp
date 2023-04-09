@@ -87,7 +87,7 @@ ChRMat FrameObject::GetDrawRHandMatrix()
 	return drawMat.ConvertAxis();
 }
 
-ChStd::Bool FrameObject::GetLenIsPointToPolyBoard(ChVec3& _outVector, const ChVec3& _point, const Ch3D::Primitive& _prim, const std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>>& _vertexList, const float _maxLen, const ChLMat& _mat)
+bool FrameObject::GetLenIsPointToPolyBoard(ChVec3& _outVector, const ChVec3& _point, const Ch3D::Primitive& _prim, const std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>>& _vertexList, const float _maxLen, const ChLMat& _mat)
 {
 
 	if (_prim.vertexData.size() <= 2)return false;
@@ -105,7 +105,7 @@ ChStd::Bool FrameObject::GetLenIsPointToPolyBoard(ChVec3& _outVector, const ChVe
 	return GetLenIsPointToPolyBoardFunction(_outVector,_point,_prim, vertexList,_maxLen);
 }
 
-ChStd::Bool FrameObject::GetLenIsPointToPolyBoardFunction(ChVec3& _outVector, const ChVec3& _point, const Ch3D::Primitive& _prim, const std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>>& _vertexList, const float _maxLen)
+bool FrameObject::GetLenIsPointToPolyBoardFunction(ChVec3& _outVector, const ChVec3& _point, const Ch3D::Primitive& _prim, const std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>>& _vertexList, const float _maxLen)
 {
 
 	if (_prim.vertexData.size() <= 2)return false;
@@ -133,7 +133,7 @@ ChStd::Bool FrameObject::GetLenIsPointToPolyBoardFunction(ChVec3& _outVector, co
 
 	ChVec3 tmpPoint = _point + (faceNormal * -len);
 
-	ChStd::Bool onFaceFlg = true;
+	bool onFaceFlg = true;
 
 	ChVec3 tmpNormal = ChVec3::GetCross(
 		firstPos - tmpPoint,

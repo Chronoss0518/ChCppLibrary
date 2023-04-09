@@ -288,7 +288,7 @@ void ChAnimationSupporter9::CreateFunction()
 ///////////////////////////////////////////////////////////////////////////////////////
 
 std::vector<ChPtr::Shared<ChQua_9>>
-ChAnimationSupporter9::Create4D(const std::string& _Str, size_t& _fPos, const ChStd::Bool _rFlg)
+ChAnimationSupporter9::Create4D(const std::string& _Str, size_t& _fPos, const bool _rFlg)
 {
 
 	std::vector<ChPtr::Shared<ChQua_9>> tmpQua;
@@ -333,7 +333,7 @@ ChAnimationSupporter9::Create4D(const std::string& _Str, size_t& _fPos, const Ch
 ///////////////////////////////////////////////////////////////////////////////////////
 
 std::vector<ChPtr::Shared<ChVec3_9>>
-ChAnimationSupporter9::Create3D(const std::string& _Str, size_t& _fPos, const ChStd::Bool _rFlg)
+ChAnimationSupporter9::Create3D(const std::string& _Str, size_t& _fPos, const bool _rFlg)
 {
 	std::vector<ChPtr::Shared<ChVec3_9>> tmpVec;
 	std::string CutStart = ";3;";
