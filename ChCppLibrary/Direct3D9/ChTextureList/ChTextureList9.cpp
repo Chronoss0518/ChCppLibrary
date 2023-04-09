@@ -14,7 +14,7 @@ using namespace ChTex;
 
 void ChTexList9::SetTexture(
 	const std::string& _textureName
-	, const ChStd::DataNo _dataNum
+	, const unsigned short _dataNum
 	, const unsigned int _gameReSizeWidth
 	, const unsigned int _gameReSizeHeight
 	, const D3DCOLOR ColorKey)
@@ -69,7 +69,7 @@ void ChTexList9::SetTexture(
 
 void TextureList9::SetColorTex(
 	const unsigned long& _color
-	, const ChStd::DataNo _dataNum
+	, const unsigned short _dataNum
 	, const unsigned int _gameReSizeWidth
 	, const unsigned int _gameReSizeHeight
 	, const unsigned long _type)
@@ -98,7 +98,7 @@ void TextureList9::SetColorTex(
 
 void TextureList9::SetBlendColor(
 	const ChVec4& _color
-	, const ChStd::DataNo _dataNum)
+	, const unsigned short _dataNum)
 {
 	if (texList.find(_dataNum) == texList.end())return;
 
@@ -107,7 +107,7 @@ void TextureList9::SetBlendColor(
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void TextureList9::SetBlendAlpha(const unsigned char _a, const ChStd::DataNo _dataNum) {
+void TextureList9::SetBlendAlpha(const unsigned char _a, const unsigned short _dataNum) {
 
 	if (texList.find(_dataNum) == texList.end())return;
 

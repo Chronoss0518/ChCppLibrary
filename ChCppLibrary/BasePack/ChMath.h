@@ -22,10 +22,10 @@ namespace ChMath
 
 
 	template<typename T, unsigned long Array>
-	using VectorTest = typename std::enable_if<(Array > 0) && (std::is_integral<T>::value || std::is_floating_point<T>::value), T>::type;
+	using VectorTest = typename std::enable_if<(Array > 0), T>::type;
 
 	template<typename T, unsigned long Row, unsigned long Column>
-	using MatrixTest = typename std::enable_if<(Row > 0 && Column > 0) && (std::is_integral<T>::value || std::is_floating_point<T>::value), T>::type;
+	using MatrixTest = typename std::enable_if<(Row > 0 && Column > 0), T>::type;
 
 	template<typename T, unsigned long Array>
 	class VectorBase
@@ -598,7 +598,7 @@ namespace ChMath
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//ベクトルの長さを1にする//
-		ChStd::Bool Normalize(
+		bool Normalize(
 			const unsigned long _digit = 6
 		)
 		{
@@ -617,7 +617,7 @@ namespace ChMath
 		}
 
 		//ベクトルの要素の合計を1にする//
-		ChStd::Bool ElementsNormalize()
+		bool ElementsNormalize()
 		{
 
 			T len = GetElementsLen();
@@ -686,12 +686,12 @@ namespace ChMath
 
 		VectorBase<T, Row>& operator [](const unsigned long _col)
 		{
-			return m[_col % Column];
+			return m[_col % Row];
 		}
 
 		VectorBase<T, Row> operator [](const unsigned long _col)const
 		{
-			return m[_col % Column];
+			return m[_col % Row];
 		}
 
 		explicit operator const T** const ()const
@@ -699,32 +699,15 @@ namespace ChMath
 			return m;
 		}
 
-		MatrixBase& operator =(const MatrixBase& _Mat)
+		MatrixBase& operator =(const MatrixBase& _mat)
 		{
-
-			for (unsigned long i = 0; i < Column; i++)
-			{
-				for (unsigned long j = 0; j < Row; j++)
-				{
-					m[i][j] = _Mat.m[i][j];
-				}
-
-			}
-
+			Set(_mat);
 			return *this;
 		}
 
-		MatrixBase& operator +=(const MatrixBase& _Mat)
+		MatrixBase& operator +=(const MatrixBase& _mat)
 		{
-
-			for (unsigned long i = 0; i < Column; i++)
-			{
-				for (unsigned long j = 0; j < Row; j++)
-				{
-					m[i][j] += _Mat.m[i][j];
-				}
-
-			}
+			Add(_mat);
 
 			return *this;
 		}
@@ -739,17 +722,9 @@ namespace ChMath
 			return out;
 		}
 
-		MatrixBase& operator -=(const MatrixBase& _Mat)
+		MatrixBase& operator -=(const MatrixBase& _mat)
 		{
-
-			for (unsigned long i = 0; i < Column; i++)
-			{
-				for (unsigned long j = 0; j < Row; j++)
-				{
-					m[i][j] -= _Mat.m[i][j];
-				}
-			}
-
+			Sub(_mat);
 			return *this;
 		}
 
@@ -763,17 +738,9 @@ namespace ChMath
 			return out;
 		}
 
-		MatrixBase& operator *=(const MatrixBase& _Mat)
+		MatrixBase& operator *=(const MatrixBase& _mat)
 		{
-
-			for (unsigned long i = 0; i < Column; i++)
-			{
-				for (unsigned long j = 0; j < Row; j++)
-				{
-					m[i][j] *= _Mat.m[i][j];
-				}
-			}
-
+			Mul(_mat);
 			return *this;
 		}
 
@@ -787,17 +754,9 @@ namespace ChMath
 			return out;
 		}
 
-		MatrixBase& operator /=(const MatrixBase& _Mat)
+		MatrixBase& operator /=(const MatrixBase& _mat)
 		{
-
-			for (unsigned long i = 0; i < Column; i++)
-			{
-				for (unsigned long j = 0; j < Row; j++)
-				{
-					m[i][j] /= _Mat.m[i][j] != 0.0f ? _Mat.m[i][j] : 1.0f;
-				}
-			}
-
+			Div(_mat);
 			return *this;
 		}
 
@@ -875,21 +834,18 @@ namespace ChMath
 
 		void Mul(const MatrixBase& _mat)
 		{
+			MatrixBase tmp;
+			tmp.Set(*this);
+
 			for (unsigned long i = 0; i < Column; i++)
 			{
-				float tmp[Column];
-				for (unsigned char j = 0; j < Row; j++)
+				for (unsigned long j = 0; j < Column; j++)
 				{
-					tmp[j] = m[i][j];
-				}
+					m[i][j] = tmp[i][0] * _mat.m[0][j];
 
-				for (unsigned char j = 0; j < Column; j++)
-				{
-					m[i][j] = tmp[0] * _mat.m[0][j];
-
-					for (unsigned char k = 1; k < Row; k++)
+					for (unsigned long k = 1; k < Row; k++)
 					{
-						m[i][j] += tmp[k] * _mat.m[k][j];
+						m[i][j] += tmp[i][k] * _mat.m[k][j];
 					}
 				}
 			}
@@ -901,21 +857,26 @@ namespace ChMath
 		VectorBase<T, _Arrarys> VerticalMul(const VectorBase<T, _Arrarys> _vec)const
 		{
 
+			MatrixBase<T, Row, Column> tmpMat;
+
+			tmpMat.Set(static_cast<T>(0.0f));
+
 			unsigned long maxSize = _Arrarys;
 
-			maxSize = maxSize >= Column ? Column : maxSize;
 			maxSize = maxSize >= Row ? Row : maxSize;
-
+			unsigned long i = 0;
+			for (i = 0; i < maxSize; i++)
+			{
+				tmpMat.m[i][0] = _vec[i];
+			}
+			
+			tmpMat = (*this) * tmpMat;
+			
 			VectorBase<T, _Arrarys> out;
 
-			out.Set(static_cast<T>(0.0f));
-
-			for (unsigned long i = 0; i < maxSize; i++)
+			for (i = 0; i < maxSize; i++)
 			{
-				for (unsigned long j = 0; j < maxSize; j++)
-				{
-					out[j] += _vec[i] * m[j][i];
-				}
+				out[i] = tmpMat.m[i][0];
 			}
 
 			return out;
@@ -926,21 +887,27 @@ namespace ChMath
 		template<unsigned long _Arrarys>
 		VectorBase<T, _Arrarys>HorizontalMul(const VectorBase<T, _Arrarys> _vec)const
 		{
+
+			MatrixBase<T, Row, Column> tmpMat;
+
+			tmpMat.Set(static_cast<T>(0.0f));
+
 			unsigned long maxSize = _Arrarys;
 
 			maxSize = maxSize >= Column ? Column : maxSize;
-			maxSize = maxSize >= Row ? Row : maxSize;
+			unsigned long i = 0;
+			for (i = 0; i < maxSize; i++)
+			{
+				tmpMat.m[0][i] = _vec[i];
+			}
+
+			tmpMat = tmpMat * (*this);
 
 			VectorBase<T, _Arrarys> out;
 
-			out.Set(static_cast<T>(0.0f));
-
-			for (unsigned long i = 0; i < maxSize; i++)
+			for (i = 0; i < maxSize; i++)
 			{
-				for (unsigned long j = 0; j < maxSize; j++)
-				{
-					out[j] += _vec[i] * m[i][j];
-				}
+				out[i] = tmpMat.m[0][i];
 			}
 
 			return out;
@@ -1094,13 +1061,13 @@ namespace ChMath
 
 			if (_Row >= Row || _Col >= Column)return out;
 
-			ChStd::Bool ColFlg = false;
+			bool ColFlg = false;
 
 			for (unsigned long i = 0; i < Column - 1; i++)
 			{
 				if (i == _Col)ColFlg = true;
 
-				ChStd::Bool RowFlg = false;
+				bool RowFlg = false;
 
 				for (unsigned long j = 0; j < Row - 1; j++)
 				{
@@ -1281,7 +1248,7 @@ namespace ChMath
 
 	private:
 
-		VectorBase<MatrixTest<T, Row, Column>, Row> m[Column];
+		VectorBase<MatrixTest<T, Row, Column>, Column> m[Row];
 
 	};
 
@@ -1454,7 +1421,7 @@ namespace ChMath
 		}
 
 		//対象のVectorlで表される四角形に引数で入れたVectorlであらわされる四角形が重なっているかの確認//
-		inline ChStd::Bool IsOverlaps(const Vector4Base<T>& _target) const
+		inline bool IsOverlaps(const Vector4Base<T>& _target) const
 		{
 			if (right < _target.left ||
 				left > _target.right ||
@@ -1468,7 +1435,7 @@ namespace ChMath
 		}
 
 		//対象のVectorlで表される四角形に引数で入れたVectorlで表される位置が重なっているかの確認//
-		inline ChStd::Bool IsOnPoint(const Vector2Base<T>& _target) const
+		inline bool IsOnPoint(const Vector2Base<T>& _target) const
 		{
 			if (right < _target.x ||
 				left > _target.x ||

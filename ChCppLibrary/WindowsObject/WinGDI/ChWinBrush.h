@@ -50,7 +50,7 @@ namespace ChWin
 
 	private:
 
-		ChStd::Bool createFlg = false;;
+		bool createFlg = false;;
 		HBRUSH brush = nullptr;
 	};
 }

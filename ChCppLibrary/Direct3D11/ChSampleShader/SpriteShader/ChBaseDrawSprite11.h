@@ -28,24 +28,30 @@ namespace ChD3D11
 
 		public://Set Functions//
 
-			void SetSpriteMatrix(const ChLMat& _mat);
-
-			inline void SetAlphaBlendFlg(const ChStd::Bool _flg) { alphaBlendFlg = _flg; }
+			inline void SetAlphaBlendFlg(const bool _flg) { alphaBlendFlg = _flg; }
 
 		public://Get Functions//
 
 			inline ChLMat GetSpriteMatrix() { return spriteData.GetSpriteMatrix(); }
 
+			inline ChVec4 GetBaseColor() { return spriteData.GetBaseColor(); }
+
 		public://Other Functions//
 
-		//í èÌï`âÊ//
+			//í èÌï`âÊ//
 			void Draw(
 				ID3D11DeviceContext* _dc
 				, TextureBase11& _tex
 				, Sprite11& _sprite
 				, const ChMat_11& _mat = ChMat_11());
 
-		private:
+		//í èÌï`âÊ//
+			void Draw(
+				ID3D11DeviceContext* _dc
+				, TextureBase11& _tex
+				, Sprite11& _sprite
+				, const ChVec4& _baseColor
+				, const ChMat_11& _mat = ChMat_11());
 
 		private://Member Value//
 
@@ -54,7 +60,7 @@ namespace ChD3D11
 			VertexBuffer11<Ch3D::Vertex> vertexBuffer;
 			IndexBuffer11 indexBuffer;
 
-			ChStd::Bool alphaBlendFlg = false;
+			bool alphaBlendFlg = false;
 
 		};
 	}

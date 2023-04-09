@@ -79,15 +79,21 @@ void BaseDrawSprite11::InitPixelShader()
 	SampleShaderBase11::CreatePixelShader(main, sizeof(main));
 }
 
-void BaseDrawSprite11::SetSpriteMatrix(const ChLMat& _mat)
+
+void BaseDrawSprite11::Draw(
+	ID3D11DeviceContext* _dc
+	, TextureBase11& _tex
+	, Sprite11& _sprite
+	, const ChMat_11& _mat)
 {
-	spriteData.SetSpriteMatrix(_mat);
+	Draw(_dc, _tex, _sprite, ChVec4(1.0f), _mat);
 }
 
 void BaseDrawSprite11::Draw(
 	ID3D11DeviceContext* _dc
 	, TextureBase11& _tex
 	, Sprite11& _sprite
+	, const ChVec4& _baseColor
 	, const ChMat_11& _mat)
 {
 	if (!IsInit())return;
@@ -96,7 +102,7 @@ void BaseDrawSprite11::Draw(
 
 	spriteData.SetSpriteMatrix(_mat);
 
-	spriteData.SetBaseColor(ChVec4(1.0f));
+	spriteData.SetBaseColor(_baseColor);
 
 	spriteData.SetShaderSpriteData(_dc);
 

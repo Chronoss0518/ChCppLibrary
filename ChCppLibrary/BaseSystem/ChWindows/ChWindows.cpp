@@ -13,7 +13,7 @@
 
 using namespace ChSystem;
 
-ChStd::Bool BaseWndProcs(
+bool BaseWndProcs(
 	const HWND _hWnd
 	, const UINT _uMsg
 	, const WPARAM _wParam
@@ -294,7 +294,7 @@ void Windows::Release()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool Windows::IsPushKey(const int _Key)
+bool Windows::IsPushKey(const int _Key)
 {
 	SetKeyCode();
 
@@ -309,7 +309,7 @@ ChStd::Bool Windows::IsPushKey(const int _Key)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool Windows::IsPushKeyNoHold(const int _Key)
+bool Windows::IsPushKeyNoHold(const int _Key)
 {
 	SetKeyCode();
 
@@ -328,11 +328,11 @@ ChStd::Bool Windows::IsPushKeyNoHold(const int _Key)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool Windows::IsPause(const int _Key)
+bool Windows::IsPause(const int _Key)
 {
 	SetKeyCode();
 
-	ChStd::Bool tmpFlg;
+	bool tmpFlg;
 	tmpFlg = IsPushKey(_Key);
 
 	if (tmpFlg && nowKey)return pauseFlg;
@@ -348,7 +348,7 @@ ChStd::Bool Windows::IsPause(const int _Key)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool Windows::IsUpdate()
+bool Windows::IsUpdate()
 {
 	auto hWnd = wndObject.GethWnd();
 	if (ChPtr::NullCheck(hWnd))return false;

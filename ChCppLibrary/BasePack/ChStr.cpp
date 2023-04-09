@@ -121,7 +121,7 @@ namespace ChStr
 
 		for (unsigned long i = 0; i < _str.length(); i++)
 		{
-			ChStd::Bool ConFlg = false;
+			bool ConFlg = false;
 
 			if (_str[i] < StartNum)ConFlg = true;
 			if (_str[i] > EndNum)ConFlg = true;
@@ -148,7 +148,7 @@ namespace ChStr
 
 		for (unsigned long i = 0; i < _str.length(); i++)
 		{
-			ChStd::Bool conFlg = false;
+			bool conFlg = false;
 
 			if (_str[i] < StartNum)conFlg = true;
 			if (_str[i] > EndNum)conFlg = true;

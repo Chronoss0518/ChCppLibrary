@@ -30,7 +30,7 @@ float Collider::CreateDat(const ChVec3& _vec1, const ChVec3& _vec2, const ChVec3
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool Collider::HitTestTri(
+bool Collider::HitTestTri(
 	ChVec3& _thisHitVectol, 
 	const ChVec3& _pos,
 	const ChVec3& _dir,
@@ -95,7 +95,7 @@ ChStd::Bool Collider::HitTestTri(
 	return true;
 }
 
-ChStd::Bool Collider::IsHitSphereToPanel(ChVec3& _thisHitVectol, const ChStd::Bool _leftHandFlg, const ChVec3& _spherePos, const ChVec3& _sphereSize, const std::vector<ChVec3*> _vertexs)
+bool Collider::IsHitSphereToPanel(ChVec3& _thisHitVectol, const bool _leftHandFlg, const ChVec3& _spherePos, const ChVec3& _sphereSize, const std::vector<ChVec3*> _vertexs)
 {
 	if (_vertexs.empty())return false;
 
@@ -114,7 +114,7 @@ ChStd::Bool Collider::IsHitSphereToPanel(ChVec3& _thisHitVectol, const ChStd::Bo
 
 	ChVec3 testNormal = ChVec3();
 
-	ChStd::Bool hitTest = true;
+	bool hitTest = true;
 
 	for (unsigned long i = 0; i < _vertexs.size() - 1; i++)
 	{
@@ -166,12 +166,12 @@ ChVec3 Collider::MovePosToPanelUp(const ChVec3& _v1, const ChVec3& _v2, const Ch
 	return normal * ChVec3::GetDot(_pos - _v1, normal);
 }
 
-ChStd::Bool Collider::IsHitSphereToLine(ChVec3& _thisHitVectol, const ChVec3& _spherePos, const ChVec3& _sphereSize, const ChVec3& _v1, const ChVec3& _v2)
+bool Collider::IsHitSphereToLine(ChVec3& _thisHitVectol, const ChVec3& _spherePos, const ChVec3& _sphereSize, const ChVec3& _v1, const ChVec3& _v2)
 {
 	return false;
 }
 
-ChStd::Bool Collider::IsHitSphereToPos(ChVec3& _thisHitVectol, const ChVec3& _spherePos, const ChVec3& _sphereSize, const ChVec3& _vertex)
+bool Collider::IsHitSphereToPos(ChVec3& _thisHitVectol, const ChVec3& _spherePos, const ChVec3& _sphereSize, const ChVec3& _vertex)
 {
 	return false;
 }

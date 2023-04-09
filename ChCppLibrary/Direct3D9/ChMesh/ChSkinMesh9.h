@@ -153,7 +153,7 @@ namespace ChMesh
 			std::map<std::string, BoneAnimation> animations;
 
 			std::string nowPlayAniName = "";
-			ChStd::Bool startPlayAniCheck = false;
+			bool startPlayAniCheck = false;
 
 			std::map<std::string, ChPtr::Shared<Bone>> boneList;
 			

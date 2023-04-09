@@ -16,7 +16,7 @@ namespace ChCp
 
 		//初期化(Initialize)する際に呼ぶことを必須とする関数//
 		//Initializeしたという判定を勝手に行うことがないため必要としている//
-		inline void SetInitFlg(const ChStd::Bool _flg) { initFlg = _flg; }
+		inline void SetInitFlg(const bool _flg) { initFlg = _flg; }
 
 		///////////////////////////////////////////////////////////////////////////////////
 
@@ -28,7 +28,7 @@ namespace ChCp
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		inline ChStd::Bool IsInit()const { return initFlg; }
+		inline bool IsInit()const { return initFlg; }
 
 		///////////////////////////////////////////////////////////////////////////////////
 
@@ -42,7 +42,7 @@ namespace ChCp
 
 	private:
 
-		ChStd::Bool initFlg = false;
+		bool initFlg = false;
 
 	};
 

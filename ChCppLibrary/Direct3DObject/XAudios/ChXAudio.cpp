@@ -97,17 +97,17 @@ void AudioObject::Release()
 {
 	if (!*this)return;
 
-	voice->Stop();
-
-	voice->DestroyVoice();
-
-	voice = nullptr;
-
 	auto& audios = XAudioManager().audios;
 
 	auto thiss = std::find(audios.begin(), audios.end(), this);
 
 	audios.erase(thiss);
+
+	voice->Stop();
+
+	voice->DestroyVoice();
+
+	voice = nullptr;
 
 	SetInitFlg(false);
 }
@@ -288,7 +288,7 @@ void XAudio2Manager::LoadSound(AudioObject& _object, const std::string& _fileNam
 	audios.push_back(&_object);
 }
 
-ChStd::Bool XAudio2Manager::CreateMFObject(const std::string& _fileName)
+bool XAudio2Manager::CreateMFObject(const std::string& _fileName)
 {
 
 	if (mfObjectMap.find(_fileName) != mfObjectMap.end())return true;
@@ -330,7 +330,7 @@ ChStd::Bool XAudio2Manager::CreateMFObject(const std::string& _fileName)
 	return true;
 }
 
-ChStd::Bool XAudio2Manager::CreateFileData(const std::string& _fileName)
+bool XAudio2Manager::CreateFileData(const std::string& _fileName)
 {
 	if (audioDataMap.find(_fileName) != audioDataMap.end())return true;
 
@@ -473,7 +473,7 @@ void XAudio2Manager::UpdateBGMAudios(AudioObject* _audio)
 	audio->voice->GetState(&state);
 
 	if (state.BuffersQueued >= 2)return;
-	ChStd::Bool loopFlg = false;
+	bool loopFlg = false;
 	unsigned long nowPos = 0;
 	nowPos = audio->nowPos + 1 >= audio->loopEndPos ? audio->loopStartPos : audio->nowPos + 1;
 

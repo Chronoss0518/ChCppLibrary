@@ -240,7 +240,7 @@ void WindClassObjectA::SetMenuName(const std::string& _name)
 	cls.lpszMenuName = _name.c_str();
 }
 
-ChStd::Bool WindClassObjectA::IsSystemRegistClassName(const std::string& _className)
+bool WindClassObjectA::IsSystemRegistClassName(const std::string& _className)
 {
 	std::string systemRegistClassName[] =
 	{
@@ -470,7 +470,7 @@ void WindClassObjectW::SetMenuName(const std::wstring& _name)
 	cls.lpszMenuName = _name.c_str();
 }
 
-ChStd::Bool WindClassObjectW::IsSystemRegistClassName(const std::wstring& _className)
+bool WindClassObjectW::IsSystemRegistClassName(const std::wstring& _className)
 {
 	std::wstring systemRegistClassName[] =
 	{

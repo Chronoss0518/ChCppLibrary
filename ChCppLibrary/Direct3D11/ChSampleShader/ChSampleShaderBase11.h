@@ -96,15 +96,15 @@ namespace ChD3D11
 
 		private://Get Functions//
 
-			inline static ChStd::Bool& GetShaderNowRunFlg()
+			inline static bool& GetShaderNowRunFlg()
 			{
-				static ChStd::Bool flg;
+				static bool flg;
 				return flg;
 			}
 
 		protected://Is Functions//
 
-			ChStd::Bool IsDraw()const { return drawFlg; }
+			bool IsDraw()const { return drawFlg; }
 
 		public://Other Functions//
 
@@ -132,7 +132,7 @@ namespace ChD3D11
 
 			D3D_PRIMITIVE_TOPOLOGY primitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
-			ChStd::Bool drawFlg;
+			bool drawFlg;
 
 			ID3D11BlendState* blender = nullptr;
 

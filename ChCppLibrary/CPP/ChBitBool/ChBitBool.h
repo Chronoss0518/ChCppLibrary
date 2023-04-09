@@ -31,7 +31,7 @@ namespace ChCpp
 
 		//第一引数はアドレス内の一番小さいビットから数えた数値を入力//
 		//例)アドレス位置が1000番,選択箇所1001番の場合は1を選択//
-		void SetBitFlg(const unsigned char _argsNum, const ChStd::Bool _flg);
+		void SetBitFlg(const unsigned char _argsNum, const bool _flg);
 
 		//引数で選択された位置のビットをtrueをセットする//
 		//第一引数はアドレス内の一番小さいビットから数えた数値を入力//
@@ -69,7 +69,7 @@ namespace ChCpp
 
 		//引数で選択された数値のビットの値によって//
 		//ChStd::TrueかChStd::Falseを返す//
-		ChStd::Bool GetBitFlg(const unsigned char _argsNum);
+		bool GetBitFlg(const unsigned char _argsNum);
 
 		//使用可能サイズ//
 		inline unsigned long  GetSize()

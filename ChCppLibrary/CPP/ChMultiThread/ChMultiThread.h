@@ -35,7 +35,7 @@ namespace ChCpp
 		//IsFunction//
 
 		//マルチスレッドで動いている関数が終わったかの判定//
-		ChStd::Bool IsEndFunc() { return endFlg; }
+		bool IsEndFunc() { return endFlg; }
 
 		///////////////////////////////////////////////////////////////////////////////////
 
@@ -53,7 +53,7 @@ namespace ChCpp
 
 		std::function<void(void)> func = nullptr;
 
-		ChStd::Bool endFlg = true;
+		bool endFlg = true;
 
 	};
 

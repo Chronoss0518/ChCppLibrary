@@ -69,7 +69,7 @@ namespace ChD3D11
 
 	public://Is Functionss//
 
-		ChStd::Bool IsTex() { return ChPtr::NotNullCheck(baseTex); }
+		bool IsTex() { return ChPtr::NotNullCheck(baseTex); }
 
 	protected:
 
@@ -86,7 +86,7 @@ namespace ChD3D11
 			, const unsigned int _height);
 
 		D3D11_SAMPLER_DESC sDesc;
-		ChStd::Bool sdUpdateFlg = true;
+		bool sdUpdateFlg = true;
 		ID3D11SamplerState* sampler = nullptr;
 
 		ID3D11ShaderResourceView* texView = nullptr;

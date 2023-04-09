@@ -20,7 +20,7 @@
 
 #include"ChImGUIBaseWind.h"
 
-ChStd::Bool ChImGui::BaseWind::BaseInitFlgment = false;
+bool ChImGui::BaseWind::BaseInitFlgment = false;
 
 ///////////////////////////////////////////////////////////////////////////////////
 //BaseWindƒƒ\ƒbƒh
@@ -110,7 +110,7 @@ void ChImGui::BaseWind::ImGuiFlagBase::Draw()
 
 void ChImGui::BaseWind::SetWindSize(
 	const ImVec2& _Vec
-	, const ChStd::Bool _NotReSize)
+	, const bool _NotReSize)
 {
 	if (!IsBaseInit())return;
 
@@ -124,7 +124,7 @@ void ChImGui::BaseWind::SetWindSize(
 
 void ChImGui::BaseWind::SetWindSize(
 	const ChVec2& _Vec
-	, const ChStd::Bool _NotReSize)
+	, const bool _NotReSize)
 {
 
 	if (!IsBaseInit())return;
@@ -139,7 +139,7 @@ void ChImGui::BaseWind::SetWindSize(
 void ChImGui::BaseWind::SetWindSize(
 	const float _w
 	, const float _h
-	, const ChStd::Bool _NotReSize)
+	, const bool _NotReSize)
 {
 
 	if (!IsBaseInit())return;
@@ -151,7 +151,7 @@ void ChImGui::BaseWind::SetWindSize(
 
 void ChImGui::BaseWind::SetWindPos(
 	const ImVec2& _Vec
-	, const ChStd::Bool _NotMove)
+	, const bool _NotMove)
 {
 
 	if (!IsBaseInit())return;
@@ -166,7 +166,7 @@ void ChImGui::BaseWind::SetWindPos(
 
 void ChImGui::BaseWind::SetWindPos(
 	const ChVec2& _Vec
-	, const ChStd::Bool _NotMove)
+	, const bool _NotMove)
 {
 
 	if (!IsBaseInit())return;
@@ -181,7 +181,7 @@ void ChImGui::BaseWind::SetWindPos(
 void ChImGui::BaseWind::SetWindPos(
 	const float _w
 	, const float _h
-	, const ChStd::Bool _NotMove)
+	, const bool _NotMove)
 {
 
 	if (!IsBaseInit())return;
@@ -191,9 +191,9 @@ void ChImGui::BaseWind::SetWindPos(
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ChImGui::BaseWind::IsOpenButton(
+bool ChImGui::BaseWind::IsOpenButton(
 	const std::string& _ButtonName
-	, const ChStd::Bool _SameLineFlg
+	, const bool _SameLineFlg
 	, const std::string& _SubName)
 {
 
@@ -211,7 +211,7 @@ ChStd::Bool ChImGui::BaseWind::IsOpenButton(
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ChImGui::BaseWind::IsBaseInit()
+bool ChImGui::BaseWind::IsBaseInit()
 {
 	return BaseInitFlgment;
 }
@@ -473,7 +473,7 @@ void ChImGui::BaseWind::WindBegin(const std::string& _WindName)
 
 	ImGuiWindowFlags TmpFlg = WFlg;
 
-	ChStd::Bool TmpOnceFlg = false;
+	bool TmpOnceFlg = false;
 
 	if (WSize.x > 0 && WSize.y > 0 && !OnceFlg)
 	{

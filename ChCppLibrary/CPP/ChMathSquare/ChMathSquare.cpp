@@ -17,10 +17,8 @@ MathSquare& MathSquare::operator = (const MathSquare& _mathSquare)
 void MathSquare::SetSquare(const ChVec4& _square)
 {
 	if ((_square.right - _square.left) < 0.0f || (_square.top - _square.bottom) < 0.0f)return;
-	if(!squareList.empty())squareList.clear();
-	auto square = ChPtr::Make_S<ChVec4>();
-	*square = _square;
-	squareList.push_back(square);
+	if (!squareList.empty())squareList.clear();
+	AddSquare(_square);
 }
 
 void MathSquare::SetSquare(const std::vector<ChPtr::Shared<ChVec4>>& _square)
@@ -36,6 +34,17 @@ void MathSquare::SetSquare(const std::vector<ChPtr::Shared<ChVec4>>& _square)
 void MathSquare::SetSquare(const MathSquare& _square)
 {
 	SetSquare(_square.squareList);
+}
+
+void MathSquare::SetSquare(const ChVec2& _leftTop, const ChVec2& _rightTop, const ChVec2& _rightBottom, const ChVec2& _leftBottom, const unsigned long _cutCount)
+{
+	if (_leftTop.x - _rightTop.x <= 0.0f)return;
+	if (_rightTop.y - _rightBottom.y <= 0.0f)return;
+	if (_rightBottom.x - _leftBottom.x <= 0.0f)return;
+	if (_leftBottom.y -_leftTop.y <= 0.0f)return;
+	if (!squareList.empty())squareList.clear();
+	AddSquare(_leftTop, _rightTop, _rightBottom, _leftBottom, _cutCount);
+
 }
 
 ChVec4 MathSquare::GetFirstSquare() const
@@ -63,8 +72,70 @@ void MathSquare::AddSquare(const MathSquare& _square)
 	if (_square.GetCount() <= 0)return;
 	for (auto&& square : _square.GetSquare())
 	{
-		squareList.push_back(square);
+		AddSquare(*square);
 	}
+}
+
+void MathSquare::AddSquare(const ChVec2& _leftTop, const ChVec2& _rightTop, const ChVec2& _rightBottom, const ChVec2& _leftBottom, const unsigned long _cutCount)
+{
+	if (_leftTop.x - _rightTop.x <= 0.0f)return;
+	if (_rightTop.y - _rightBottom.y <= 0.0f)return;
+	if (_rightBottom.x - _leftBottom.x <= 0.0f)return;
+	if (_leftBottom.y - _leftTop.y <= 0.0f)return;
+
+	std::vector<ChVec3>verticalDirectionList;
+	verticalDirectionList.resize(_cutCount + 2);
+
+	std::vector<ChVec3>horizontalDirectionList;
+	horizontalDirectionList.resize(verticalDirectionList.size());
+
+
+
+	{
+		ChVec2 direction[4];
+		float length[4];
+
+		direction[ChStd::EnumCast(DirectionName::LeftTopToRightTop)] =
+			_rightTop - _leftTop;
+		length[ChStd::EnumCast(DirectionName::LeftTopToRightTop)] = direction[ChStd::EnumCast(DirectionName::LeftTopToRightTop)].Len();
+
+
+		direction[ChStd::EnumCast(DirectionName::RightTopTopRightBottom)] =
+			_rightBottom - _rightTop;
+		length[ChStd::EnumCast(DirectionName::RightTopTopRightBottom)] = direction[ChStd::EnumCast(DirectionName::RightTopTopRightBottom)].Len();
+
+
+		direction[ChStd::EnumCast(DirectionName::LeftBottomToRightBottom)] =
+			_rightBottom - _leftBottom;
+		length[ChStd::EnumCast(DirectionName::LeftBottomToRightBottom)] = direction[ChStd::EnumCast(DirectionName::LeftBottomToRightBottom)].Len();
+
+
+		direction[ChStd::EnumCast(DirectionName::LeftTopToLeftBottom)] =
+			_leftBottom - _leftTop;
+		length[ChStd::EnumCast(DirectionName::LeftTopToLeftBottom)] = direction[ChStd::EnumCast(DirectionName::LeftTopToLeftBottom)].Len();
+
+		for (unsigned long i = 0; i < 4; i++)
+		{
+			direction[i].Normalize();
+		}
+
+		for (unsigned long i = 0; i < verticalDirectionList.size(); i++)
+		{
+
+		}
+
+	}
+
+
+	for (unsigned long w = 0; w < horizontalDirectionList.size() - 1; w++)
+	{
+		for (unsigned long h = 0; h < verticalDirectionList.size() - 1; h++)
+		{
+
+		}
+
+	}
+
 }
 
 void MathSquare::And(const MathSquare& _and)

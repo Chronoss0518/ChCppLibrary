@@ -256,7 +256,7 @@ void BaseObject::UpdateFunction()
 			if ((*com)->IsDeth())
 			{
 				(*com)->Release();
-				comList.erase(com);
+				com = comList.erase(com);
 				if (comList.empty())break;
 				continue;
 			}
@@ -275,7 +275,7 @@ void BaseObject::UpdateFunction()
 			if ((*child)->dFlg)
 			{
 				(*child)->Release();
-				childList.erase(child);
+				child = childList.erase(child);
 				if (childList.empty())break;
 				continue;
 			}

@@ -274,7 +274,7 @@ float ChVec2::GetElementsLen(
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ChVec2::Normalize(const unsigned long _digit)
+bool ChVec2::Normalize(const unsigned long _digit)
 {
 	return val.Normalize(_digit);
 }
@@ -570,7 +570,7 @@ float ChVec3::GetElementsLen(
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ChVec3::Normalize(
+bool ChVec3::Normalize(
 	const unsigned long _digit)
 {
 	return val.Normalize(_digit);
@@ -909,7 +909,7 @@ float ChVec4::GetElementsLen(
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ChVec4::Normalize(const unsigned long _digit)
+bool ChVec4::Normalize(const unsigned long _digit)
 {
 	return val.Normalize(_digit);
 }

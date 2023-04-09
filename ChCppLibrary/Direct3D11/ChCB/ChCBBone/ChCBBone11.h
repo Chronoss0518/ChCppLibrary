@@ -39,7 +39,7 @@ namespace ChD3D11
 
 			ChBoneData bone;
 			ConstantBuffer11<ChBoneData> buf;
-			ChStd::Bool updateFlg = true;
+			bool updateFlg = true;
 
 
 		};

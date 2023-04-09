@@ -16,7 +16,7 @@ using namespace ChMesh;
 //ChObjectControllerÉÅÉ\ÉbÉh
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ChObjectController9::MeshHitRay(
+bool ChObjectController9::MeshHitRay(
 	DWORD& _Index
 	, float& _len
 	, const ChPtr::Shared<BaseMesh9>& _mesh
@@ -71,7 +71,7 @@ ChStd::Bool ChObjectController9::MeshHitRay(
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ChObjectController9::MeshHitRay(
+bool ChObjectController9::MeshHitRay(
 	float& _len
 	, const ChPtr::Shared<ChMesh::BaseMesh9>& _mesh
 	, const ChMat_9& _obj
@@ -87,7 +87,7 @@ ChStd::Bool ChObjectController9::MeshHitRay(
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ChObjectController9::MeshHitRay(
+bool ChObjectController9::MeshHitRay(
 	const ChPtr::Shared<ChMesh::BaseMesh9>& _mesh
 	, const ChMat_9& _obj
 	, const ChVec3_9& _pos
@@ -105,7 +105,7 @@ ChStd::Bool ChObjectController9::MeshHitRay(
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ChObjectController9::PorygonHitRay(
+bool ChObjectController9::PorygonHitRay(
 	float& _len
 	, const ChPtr::Shared<PolygonBoard9> _poBo
 	, const ChVec3_9& _pos
@@ -177,7 +177,7 @@ void ChObjectController9::MatrixBillboard(
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ChObjectController9::LengthDecision(
+bool ChObjectController9::LengthDecision(
 	const ChMat_9 &_mat1
 	, const ChMat_9 &_mat2
 	, const float _matLen
@@ -216,7 +216,7 @@ ChStd::Bool ChObjectController9::LengthDecision(
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ChObjectController9::Hit2DDecision(
+bool ChObjectController9::Hit2DDecision(
 	const ChMat_9& _obj1Mat
 	, const ChMat_9& _obj2Mat
 	, const ChPtr::Shared<Texture9>&_obj1Tex

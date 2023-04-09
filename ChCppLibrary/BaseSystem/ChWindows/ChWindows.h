@@ -183,7 +183,7 @@ namespace ChSystem
 			wndObject.SetWindProcedure(_windowMessage, _proce);
 		}
 
-		inline void SetEnableFlg(const ChStd::Bool _flg) { wndObject.SetEnableFlg(_flg); }
+		inline void SetEnableFlg(const bool _flg) { wndObject.SetEnableFlg(_flg); }
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
@@ -204,23 +204,23 @@ namespace ChSystem
 		//IsFunction//
 
 		//標準のカーソルの表示フラグ//
-		inline void IsCursollShou(const ChStd::Bool _f) { ShowCursor(_f); }
+		inline void IsCursollShou(const bool _f) { ShowCursor(_f); }
 
 		//キーを押した際のチェックを行う関数//
-		ChStd::Bool IsPushKey(const int _key)override;
+		bool IsPushKey(const int _key)override;
 
 		//キーを押した際に長押しを含んだのチェックを行う関数//
-		ChStd::Bool IsPushKeyNoHold(const int _key)override;
+		bool IsPushKeyNoHold(const int _key)override;
 
 		//ポーズ中かどうかを判断する関数。//
 		//第一引数はポーズへ移行するボタン//
 		//戻り値がTrueだった場合はポーズ中//
-		ChStd::Bool IsPause(const int _key)override;
+		bool IsPause(const int _key)override;
 
 		//WindMassageを確認する関数//
-		ChStd::Bool IsUpdate()override;
+		bool IsUpdate()override;
 
-		inline ChStd::Bool IsCursorPosOnWindow() { return wndObject.IsCursorPosOnWindow(); }
+		inline bool IsCursorPosOnWindow() { return wndObject.IsCursorPosOnWindow(); }
 
 		///////////////////////////////////////////////////////////////////////////////////
 
@@ -283,7 +283,7 @@ namespace ChSystem
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		ChStd::Bool isKeyUpdate;
+		bool isKeyUpdate;
 
 		HINSTANCE inst = nullptr;
 		ChWin::WindObject wndObject;

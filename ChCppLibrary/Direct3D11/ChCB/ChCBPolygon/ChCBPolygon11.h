@@ -107,13 +107,13 @@ namespace ChD3D11
 
 			ChP_DrawData drawData;
 			ConstantBuffer11<ChP_DrawData> drawBuf;
-			ChStd::Bool dUpdateFlg = true;
+			bool dUpdateFlg = true;
 			ChP_CharaData charaData;
 			ConstantBuffer11<ChP_CharaData> charaBuf;
-			ChStd::Bool cUpdateFlg = true;
+			bool cUpdateFlg = true;
 			ChP_Material mateData;
 			ConstantBuffer11<ChP_Material> mateBuf;
-			ChStd::Bool mUpdateFlg = true;
+			bool mUpdateFlg = true;
 
 			TextureBase11* baseTex = nullptr;
 			TextureBase11* normalTex = nullptr;

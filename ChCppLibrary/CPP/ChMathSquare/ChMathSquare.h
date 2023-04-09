@@ -25,6 +25,11 @@ namespace ChCpp
 			SetSquare(ChVec4(_left, _top, _right, _bottom));
 		}
 
+		MathSquare(const ChVec2& _leftTop, const ChVec2& _rightTop, const ChVec2& _rightBottom, const ChVec2& _leftBottom, const unsigned long _cutCount = 1)
+		{
+			SetSquare(_leftTop, _rightTop, _rightBottom, _leftBottom, _cutCount);
+		}
+
 	public://Set Functions//
 
 		void SetSquare(const ChVec4& _square);
@@ -32,6 +37,8 @@ namespace ChCpp
 		void SetSquare(const std::vector<ChPtr::Shared<ChVec4>>& _square);
 
 		void SetSquare(const MathSquare& _square);
+
+		void SetSquare(const ChVec2& _leftTop, const ChVec2& _rightTop, const ChVec2& _rightBottom, const ChVec2& _leftBottom, const unsigned long _cutCount = 1);
 
 	public://Get Functions//
 
@@ -48,6 +55,8 @@ namespace ChCpp
 		void AddSquare(const ChVec4& _square);
 
 		void AddSquare(const MathSquare& _square);
+
+		void AddSquare(const ChVec2& _leftTop, const ChVec2& _rightTop, const ChVec2& _rightBottom, const ChVec2& _leftBottom,const unsigned long _cutCount = 1);
 
 	public://Math Functions//
 
@@ -84,6 +93,14 @@ namespace ChCpp
 		static MathSquare Sub(const ChVec4& _base, const ChVec4& _sub);
 
 	private:
+
+		enum class DirectionName :unsigned char
+		{
+			LeftTopToRightTop,
+			RightTopTopRightBottom,
+			LeftBottomToRightBottom,
+			LeftTopToLeftBottom,
+		};
 
 		std::vector<ChPtr::Shared<ChVec4>> squareList;
 

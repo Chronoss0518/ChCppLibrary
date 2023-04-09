@@ -122,9 +122,9 @@ public://Set Functions//
 
 public://Is Functions//
 
-	ChStd::Bool IsAll0()const;
+	bool IsAll0()const;
 
-	inline ChStd::Bool IsOverlaps(const ChLONGRECT& _vec)
+	inline bool IsOverlaps(const ChLONGRECT& _vec)
 	{
 		return vec.IsOverlaps(_vec.vec);
 	}

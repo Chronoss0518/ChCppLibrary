@@ -37,7 +37,7 @@ namespace ChCpp
 
 			if (_addFlg == OTEAddType::AfterFirst)
 			{
-				static ChStd::Bool Flgs = false;
+				static bool Flgs = false;
 				if (Flgs)
 				{
 					outData = outFiles.FileReadText();
