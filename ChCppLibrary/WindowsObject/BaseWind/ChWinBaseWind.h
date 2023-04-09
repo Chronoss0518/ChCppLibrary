@@ -62,10 +62,10 @@ namespace ChWin
 		//SetFunction//
 
 		//移動させないためのフラグ//
-		inline void SetNoMoveFlg(const ChStd::Bool _flg) { notCMoveFlg = _flg; }
+		inline void SetNoMoveFlg(const bool _flg) { notCMoveFlg = _flg; }
 
 		//サイズ変更させないためのフラグ//
-		inline void SetNoSizeFlg(const ChStd::Bool _flg) { notCSizeFlg = _flg; }
+		inline void SetNoSizeFlg(const bool _flg) { notCSizeFlg = _flg; }
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
@@ -108,11 +108,11 @@ namespace ChWin
 
 		HWND hOwn = nullptr;
 
-		ChStd::Bool notCSizeFlg = false;
-		ChStd::Bool notCMoveFlg = false;
+		bool notCSizeFlg = false;
+		bool notCMoveFlg = false;
 
 
-		ChStd::Bool startMoveFlg = false;
+		bool startMoveFlg = false;
 
 		void RegisterObj();
 		

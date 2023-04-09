@@ -50,7 +50,7 @@ namespace ChTex
 		//Textureの登録//
 		void SetTexture(
 			const std::string& _textureName
-			, const ChStd::DataNo _dataNum
+			, const unsigned short _dataNum
 			, const unsigned int _gameReSizeWidth
 			, const unsigned int _gameReSizeHeight
 			, const D3DCOLOR _colorKey = D3DCOLOR_ARGB(0, 0, 0, 0)
@@ -59,18 +59,18 @@ namespace ChTex
 		//合成可色、基本色の設定//
 		void SetBlendColor(
 			const ChVec4& _color
-			, const ChStd::DataNo _dataNum);
+			, const unsigned short _dataNum);
 
 		//画像の透明化設定//
 		void SetBlendAlpha(
 			const unsigned char _a
-			, const ChStd::DataNo _dataNum);
+			, const unsigned short _dataNum);
 
 		//決めた色でTextureの作成//
 		//登録するための_DataNumはかぶってはならない//
 		void SetColorTex(
 			const unsigned long& _color
-			, const ChStd::DataNo _dataNum
+			, const unsigned short _dataNum
 			, const unsigned int _gameReSizeWidth
 			, const unsigned int _gameReSizeHeight
 			, const unsigned long _type = 0);
@@ -80,7 +80,7 @@ namespace ChTex
 		//GetFunction//
 
 		//外部利用するためのテクスチャを取得する//
-		inline ChPtr::Shared<Texture9> GetTex(const ChStd::DataNo dataNum)
+		inline ChPtr::Shared<Texture9> GetTex(const unsigned short dataNum)
 		{
 			if (texList.find(dataNum) == texList.end())return nullptr;
 
@@ -94,7 +94,7 @@ namespace ChTex
 
 		std::string directoryPath;
 
-		std::map<ChStd::DataNo, ChPtr::Shared<Texture9>>texList;
+		std::map<unsigned short, ChPtr::Shared<Texture9>>texList;
 
 		LPDIRECT3DDEVICE9 device;
 

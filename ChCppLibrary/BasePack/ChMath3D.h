@@ -102,8 +102,14 @@ struct ChVector2 : public ChMath::Vector2Base<float>
 		, const std::string& _endChar = ";"
 		, const unsigned int _digit = 6);
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//GetFunction//
+public://Set Function//
+
+	inline void SetLen(const float _len)
+	{
+		val.SetLen(_len);
+	}
+
+public://Get Function//
 
 	static ChVector2 GetCross(
 		const ChVector2& _vec1,
@@ -175,7 +181,7 @@ struct ChVector2 : public ChMath::Vector2Base<float>
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	ChStd::Bool Normalize(const unsigned long _digit = 6);
+	bool Normalize(const unsigned long _digit = 6);
 
 	void ElementsNormalize();
 
@@ -293,8 +299,14 @@ struct ChVector3 : public ChMath::Vector3Base<float>
 		, const std::string& _endChar = ";"
 		, const unsigned int _digit = 6);
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//GetFunction//
+public://Set Function//
+
+	inline void SetLen(const float _len)
+	{
+		val.SetLen(_len);
+	}
+
+public://Get Function//
 
 	static ChVector3 GetCross(
 		const ChVector3& _vec1,
@@ -375,7 +387,7 @@ struct ChVector3 : public ChMath::Vector3Base<float>
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	ChStd::Bool Normalize(
+	bool Normalize(
 		const unsigned long _digit = 6);
 
 	void ElementsNormalize();
@@ -505,8 +517,14 @@ struct ChVector4 : public ChMath::Vector4Base<float>
 		w = w > -1.0f ? (w < 1.0f ? w : 1.0f) : -1.0f;
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//GetFunction//
+public://Set Function//
+
+	inline void SetLen(const float _len)
+	{
+		val.SetLen(_len);
+	}
+
+public://Get Function//
 
 	static ChVector4 GetCross(
 		const ChVector4& _vec1,
@@ -580,7 +598,7 @@ struct ChVector4 : public ChMath::Vector4Base<float>
 
 	///////////////////////////////////////////////////////////////////////////////////
 
-	ChStd::Bool Normalize(const unsigned long _digit = 6);
+	bool Normalize(const unsigned long _digit = 6);
 
 	void ElementsNormalize();
 
@@ -1245,12 +1263,12 @@ namespace ChMath
 	static inline float ToRadian(const float _degree) { return (_degree * PI / 180.0f); }
 
 	//³‚Ì•„†‚©‚Ç‚¤‚©‚ðŠm”F‚·‚é//
-	static inline ChStd::Bool IsPSign(const int _val) { return _val >= 0.0f ? true : false; }
-	static inline ChStd::Bool IsPSign(const char _val) { return _val >= 0.0f ? true : false; }
-	static inline ChStd::Bool IsPSign(const short _val) { return _val >= 0.0f ? true : false; }
-	static inline ChStd::Bool IsPSign(const long _val) { return _val >= 0.0f ? true : false; }
-	static inline ChStd::Bool IsPSign(const float _val) { return _val >= 0.0f ? true : false; }
-	static inline ChStd::Bool IsPSign(const double _val) { return _val >= 0.0f ? true : false; }
+	static inline bool IsPSign(const int _val) { return _val >= 0.0f ? true : false; }
+	static inline bool IsPSign(const char _val) { return _val >= 0.0f ? true : false; }
+	static inline bool IsPSign(const short _val) { return _val >= 0.0f ? true : false; }
+	static inline bool IsPSign(const long _val) { return _val >= 0.0f ? true : false; }
+	static inline bool IsPSign(const float _val) { return _val >= 0.0f ? true : false; }
+	static inline bool IsPSign(const double _val) { return _val >= 0.0f ? true : false; }
 
 } // namespace ChMath
 

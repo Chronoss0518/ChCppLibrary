@@ -38,7 +38,7 @@ namespace ChD3D9
 		//SetFunction//
 
 		//固定機能描画をする際に利用するライトデータをセット//
-		inline void SetLight(const ChStd::DataNo _setNo, const D3DLIGHT9 *_light)
+		inline void SetLight(const unsigned short _setNo, const D3DLIGHT9 *_light)
 		{
 			device->SetLight((DWORD)_setNo, _light);
 		}
@@ -111,7 +111,7 @@ namespace ChD3D9
 		//IsFunction//
 
 		//固定機能描画可能確認//
-		inline ChStd::Bool IsDraw()
+		inline bool IsDraw()
 		{
 			return dFlg;
 		}
@@ -120,7 +120,7 @@ namespace ChD3D9
 		//UseFlgFunction//
 
 		//Zバッファ(深度を読み込むバッファ)を利用するか否かのフラグ//
-		inline void ZBufferUseFlg(const ChStd::Bool _flg)
+		inline void ZBufferUseFlg(const bool _flg)
 		{
 			_flg ? device->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE)
 				: device->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
@@ -129,14 +129,14 @@ namespace ChD3D9
 		}
 
 		//固定機能でアルファブレンド(透過合成)を利用するか否かのフラグ//
-		inline void AlphaBlendUseFlg(const ChStd::Bool _flg)
+		inline void AlphaBlendUseFlg(const bool _flg)
 		{
 			device->SetRenderState(D3DRS_ALPHABLENDENABLE, _flg);
 			device->SetRenderState(D3DRS_SEPARATEALPHABLENDENABLE, _flg);
 		}
 
 		//固定機能でそれぞれのLightを利用するか否かのフラグ
-		inline void LightUseFlg(const ChStd::DataNo _setNo, const ChStd::Bool _flg)
+		inline void LightUseFlg(const unsigned short _setNo, const bool _flg)
 		{
 			device->LightEnable((DWORD)_setNo, _flg);
 		}
@@ -145,7 +145,7 @@ namespace ChD3D9
 		//SettingFunction//
 
 		//固定機能で描画時にライト計算を行うか否かのフラグ//
-		inline void LightSetting(const ChStd::Bool _flg)
+		inline void LightSetting(const bool _flg)
 		{
 			device->SetRenderState(D3DRS_LIGHTING, _flg);
 		}
@@ -182,13 +182,13 @@ namespace ChD3D9
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//Device生成方法//
-		ChStd::Bool CreateD3DXDevice(const HWND _hWnd
+		bool CreateD3DXDevice(const HWND _hWnd
 			, D3DPRESENT_PARAMETERS *_d3dpp);
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//デバイスが存在するかしないかの確認//
-		inline ChStd::Bool CheckInstanse()
+		inline bool CheckInstanse()
 		{
 			if (ChPtr::NullCheck(d3d9))return false;
 			if (ChPtr::NullCheck(device))return false;
@@ -204,7 +204,7 @@ namespace ChD3D9
 
 		//描画終了時に呼ぶ関数//
 		//レンダーターゲット利用した際にFlgをTrueにする//
-		void DrawEnd(const ChStd::Bool& _rtFlg = false);
+		void DrawEnd(const bool& _rtFlg = false);
 
 		///////////////////////////////////////////////////////////////////////////////////
 
@@ -214,7 +214,7 @@ namespace ChD3D9
 		LPDIRECT3DDEVICE9 device = nullptr;
 		LPDIRECT3DSURFACE9 backBuffer = nullptr;
 
-		ChStd::Bool dFlg = false;
+		bool dFlg = false;
 
 		int adapter = 0;
 		D3DPRESENT_PARAMETERS param;

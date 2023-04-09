@@ -41,13 +41,13 @@ namespace ChCpp
 
 	public://Set Function//
 
-		inline void SetUsing(const ChStd::Bool _Flg) { useFlg = _Flg; }
+		inline void SetUsing(const bool _Flg) { useFlg = _Flg; }
 
 	public://Is Functions//
 
-		inline ChStd::Bool IsDeth() { return dFlg; }
+		inline bool IsDeth() { return dFlg; }
 
-		inline ChStd::Bool IsUseFlg() { return useFlg; }
+		inline bool IsUseFlg() { return useFlg; }
 
 	protected:
 
@@ -56,7 +56,7 @@ namespace ChCpp
 
 		//íºê⁄ñ{ëÃÇ…êGÇËÇΩÇ¢Ç∆Ç´Ç…åƒÇ‘ä÷êî//
 		template<class Class = BaseObject>
-		ChStd::Bool LookObj(typename std::enable_if<
+		bool LookObj(typename std::enable_if<
 			std::is_base_of<BaseObject, Class>::value,
 			Class*>::type _out)
 			
@@ -104,11 +104,11 @@ namespace ChCpp
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		ChStd::Bool useFlg = true;
+		bool useFlg = true;
 
 		BaseObject* obj = nullptr;
 
-		ChStd::Bool dFlg = false;
+		bool dFlg = false;
 
 
 	};

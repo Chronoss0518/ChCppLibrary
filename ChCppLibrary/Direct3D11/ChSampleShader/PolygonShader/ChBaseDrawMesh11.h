@@ -80,7 +80,7 @@ namespace ChD3D11
 
 			D3D11_FILL_MODE fill = D3D11_FILL_MODE::D3D11_FILL_SOLID;
 			D3D11_CULL_MODE cull = D3D11_CULL_MODE::D3D11_CULL_NONE;
-			ChStd::Bool updateFlg = true;
+			bool updateFlg = true;
 
 		};
 	}

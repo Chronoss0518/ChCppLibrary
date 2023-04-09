@@ -38,7 +38,7 @@ namespace ChWin
 			const long& _FWidth
 			, const long& _FHeight
 			, const long& _FSize
-			, const ChStd::Bool& _ULFlg);
+			, const bool& _ULFlg);
 
 		//•`‰æ‚·‚é•¶š—ñ‚ÌFİ’è//
 		inline void SetTexColor(const ChMath::Vector4Base<unsigned char>& _color)

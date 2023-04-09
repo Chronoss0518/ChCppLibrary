@@ -60,7 +60,7 @@ namespace ChPtr
 	//クラスがNULLまたはnullptrかをチェックする関数//
 	template<class C>
 	static inline auto NullCheck(const C _class)->typename
-		std::enable_if<std::is_pointer<C>::value, ChStd::Bool>::type
+		std::enable_if<std::is_pointer<C>::value, bool>::type
 	{
 		if (_class == NULL) return true;
 		if (_class == nullptr)return true;
@@ -70,7 +70,7 @@ namespace ChPtr
 	//クラスがNULLとnullptrのどちらでもないかをチェックする関数//
 	template<class C>
 	static inline auto NotNullCheck(const C _class)->typename
-		std::enable_if<std::is_pointer<C>::value, ChStd::Bool>::type
+		std::enable_if<std::is_pointer<C>::value, bool>::type
 	{
 		if (_class != NULL)
 		{

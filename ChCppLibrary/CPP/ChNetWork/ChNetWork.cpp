@@ -79,7 +79,7 @@ namespace ChCpp
 	//IP_TCPÉÅÉ\ÉbÉh//
 	///////////////////////////////////////////////////////////////////////////////
 
-	ChStd::Bool IP_TCP::Init(NetWorkBase::SockBase* _base)
+	bool IP_TCP::Init(NetWorkBase::SockBase* _base)
 	{
 
 		InternetProtocol::Init(_base);
@@ -123,7 +123,7 @@ namespace ChCpp
 
 	///////////////////////////////////////////////////////////////////////////////
 
-	ChStd::Bool IP_TCP::Send(
+	bool IP_TCP::Send(
 		const std::string& _str)
 	{
 		return true;
@@ -131,7 +131,7 @@ namespace ChCpp
 
 	///////////////////////////////////////////////////////////////////////////////
 
-	ChStd::Bool IP_TCP::Receve()
+	bool IP_TCP::Receve()
 	{
 
 		return true;
@@ -161,7 +161,7 @@ namespace ChCpp
 	///////////////////////////////////////////////////////////////////////////////
 
 
-	ChStd::Bool IP_UDP::Init(NetWorkBase::SockBase* _base)
+	bool IP_UDP::Init(NetWorkBase::SockBase* _base)
 	{
 
 		InternetProtocol::Init(_base);
@@ -174,7 +174,7 @@ namespace ChCpp
 
 	///////////////////////////////////////////////////////////////////////////////
 
-	ChStd::Bool IP_UDP::Send(const std::string& _str)
+	bool IP_UDP::Send(const std::string& _str)
 	{
 
 		return true;
@@ -182,7 +182,7 @@ namespace ChCpp
 
 	///////////////////////////////////////////////////////////////////////////////
 
-	ChStd::Bool IP_UDP::Receve()
+	bool IP_UDP::Receve()
 	{
 
 		return true;

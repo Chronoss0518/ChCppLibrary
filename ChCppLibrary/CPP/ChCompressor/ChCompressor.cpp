@@ -16,7 +16,7 @@ unsigned long Cmp::CreateAdler32(const std::vector<unsigned char>& _base)
 	unsigned short a = 1;
 	for (auto&& num : _base)
 	{
-		unsigned long tmp = a;
+		unsigned short tmp = a;
 		tmp += num;
 		tmp %= 0xffff;
 		a = tmp;
@@ -25,10 +25,10 @@ unsigned long Cmp::CreateAdler32(const std::vector<unsigned char>& _base)
 	unsigned short b = 0;
 	for (unsigned long i = 0;i<_base.size();i++)
 	{
-		unsigned long tmp = b;
+		unsigned short tmp = b;
 
 		tmp += 1;
-		for (unsigned long j = 0; j <= i; j++)
+		for (unsigned short j = 0; j <= i; j++)
 		{
 			tmp += _base[j];
 		}

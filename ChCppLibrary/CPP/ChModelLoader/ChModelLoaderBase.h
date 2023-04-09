@@ -6,14 +6,16 @@ namespace ChCpp
 {
 	class ModelObject;
 	class FrameObject;
-	class ModelObject;
 	struct ModelFrame;
 
 	class ModelLoaderBase
 	{
 
-	public:
+	protected:
+		
+		void Init();
 
+	public:
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
@@ -30,10 +32,36 @@ namespace ChCpp
 
 	protected:
 
+		void SetMaxPos(ModelObject& _model, const ChVec3& _pos);
+
+		void SetMinPos(ModelObject& _model, const ChVec3& _pos);
+
+		void SetCenterPos(ModelObject& _model, const ChVec3& _pos);
+
+		void SetBoxSize(ModelObject& _model, const ChVec3& _size);
+
+	protected:
+
 		//カレントディレクトリからのルートパス取得//
 		std::string GetRoutePath(const std::string& _filePath);
 
-	private:
+	protected:
+
+		ChVec3 TestMaxPos(const ChVec3& _pos1, const ChVec3& _pos2);
+
+		ChVec3 TestMinPos(const ChVec3& _pos1, const ChVec3& _pos2);
+
+	protected:
+
+		ChVec3 CreateCenterPos(const ChVec3& _min, const ChVec3& _max);
+
+		//CenterToTopLine And CenterToRightLine//
+		ChVec3 CreateBoxSize(const ChVec3& _min, const ChVec3& _max);
+
+	protected:
+
+		ChVec3 maxPos = ChVec3((10e+37f) * -1.0f);
+		ChVec3 minPos = ChVec3(10e+37f);
 
 	};
 }

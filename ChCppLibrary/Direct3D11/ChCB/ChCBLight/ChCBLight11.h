@@ -98,7 +98,7 @@ namespace ChD3D11
 
 			ChLightData lightDatas;
 			ConstantBuffer11<ChLightData> buf;
-			ChStd::Bool updateFlg = true;
+			bool updateFlg = true;
 
 			Texture11 lightPow;
 			ChPtr::Weak<TextureBase11>importLightPowMap;

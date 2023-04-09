@@ -60,7 +60,7 @@ public:
 	///////////////////////////////////////////////////////////////////////////////////
 	//UpdateFunction//
 
-	virtual ChStd::Bool UpDate(
+	virtual bool UpDate(
 		ChVec3_9*
 		, const ChVec3_9*)
 	{
@@ -101,7 +101,7 @@ public:
 	///////////////////////////////////////////////////////////////////////////////////
 	//UpdateFunction//
 
-	ChStd::Bool UpDate(
+	bool UpDate(
 		ChVec3_9* _pos
 		, const ChVec3_9* _moveDir)override;
 
@@ -133,7 +133,7 @@ public:
 	///////////////////////////////////////////////////////////////////////////////////
 	//UpdateFunction//
 
-	ChStd::Bool UpDate(ChVec3_9*, const ChVec3_9*)override;
+	bool UpDate(ChVec3_9*, const ChVec3_9*)override;
 
 private:
 

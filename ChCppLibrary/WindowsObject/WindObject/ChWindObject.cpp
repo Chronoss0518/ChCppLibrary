@@ -141,7 +141,7 @@ const HINSTANCE WindObject::GetInstanceW()const
 	return (HINSTANCE)GetWindowLongW(hWnd, GWL_HINSTANCE);
 }
 
-ChStd::Bool WindObject::IsCursorPosOnWindow()
+bool WindObject::IsCursorPosOnWindow()
 {
 	auto size = GetWindSize();
 
@@ -158,7 +158,7 @@ ChStd::Bool WindObject::IsCursorPosOnWindow()
 
 }
 
-ChStd::Bool WindObject::UpdateA()
+bool WindObject::UpdateA()
 {
 	UpdateWindow(hWnd);
 
@@ -173,7 +173,7 @@ ChStd::Bool WindObject::UpdateA()
 	return true;
 }
 
-ChStd::Bool WindObject::UpdateW()
+bool WindObject::UpdateW()
 {
 
 	UpdateWindow(hWnd);
@@ -237,7 +237,7 @@ void WindCreater::SetInitSize(const int _w, const int _h)
 	size.y = _h >= 0 ? _h : _h * -1;
 }
 
-ChStd::Bool WindCreater::Create(WindObject* _out, const std::string& _appName, const std::string& _windClassName, const int _nShowCmd)const
+bool WindCreater::Create(WindObject* _out, const std::string& _appName, const std::string& _windClassName, const int _nShowCmd)const
 {
 	if (ChPtr::NullCheck(_out))return false;
 
@@ -268,7 +268,7 @@ ChStd::Bool WindCreater::Create(WindObject* _out, const std::string& _appName, c
 	return true;
 }
 
-ChStd::Bool WindCreater::Create(WindObject* _out, const std::wstring& _appName, const std::wstring& _windClassName, const int _nShowCmd)const
+bool WindCreater::Create(WindObject* _out, const std::wstring& _appName, const std::wstring& _windClassName, const int _nShowCmd)const
 {
 
 	if (ChPtr::NullCheck(_out))return false;

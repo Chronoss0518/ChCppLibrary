@@ -37,15 +37,15 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
-		virtual ChStd::Bool Init(NetWorkBase::SockBase* _base)override;
+		virtual bool Init(NetWorkBase::SockBase* _base)override;
 
 		///////////////////////////////////////////////////////////////////////////////
 		//CommunityFunction//
 
-		 ChStd::Bool Send(
+		 bool Send(
 			const std::string& _str)override;
 
-		 ChStd::Bool Receve()override;
+		 bool Receve()override;
 
 		 std::string TargetSend(
 			const SOCKET& _targetSocket
@@ -62,17 +62,17 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
-		virtual ChStd::Bool Init(NetWorkBase::SockBase* _base)override;
+		virtual bool Init(NetWorkBase::SockBase* _base)override;
 
 		///////////////////////////////////////////////////////////////////////////////
 		//CommunityFunction//
 
-		ChStd::Bool Send(
+		bool Send(
 			const std::string& _str)override;
 
-		ChStd::Bool Receve()override;
+		bool Receve()override;
 
-		virtual ChStd::Bool CustomSend();
+		virtual bool CustomSend();
 
 	};
 

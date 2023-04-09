@@ -415,8 +415,7 @@ void ChMatrix_11::CreateViewMat(const ChVec3& _pos, const ChVec3& _dir, const Ch
 	ChVec3_11 dir;
 	dir = _dir;
 
-	*this = DirectX::XMMatrixLookAtLH(pos, (dir + pos), up);
-
+	*this = DirectX::XMMatrixLookToLH(pos, dir, up);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

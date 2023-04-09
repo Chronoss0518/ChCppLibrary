@@ -35,7 +35,7 @@ namespace ChD3D
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		void SetLoopFlg(const ChStd::Bool _Flg) { loopFlg = _Flg; }
+		void SetLoopFlg(const bool _Flg) { loopFlg = _Flg; }
 
 		void SetLoopStartPos(const unsigned long _pos) { loopStartPos = _pos; }
 
@@ -79,7 +79,7 @@ namespace ChD3D
 
 		IXAudio2SourceVoice* voice = nullptr;
 		std::string fileName = "";
-		ChStd::Bool loopFlg = false;
+		bool loopFlg = false;
 		unsigned long nowPos = 1;
 		unsigned long loopStartPos = 0;
 		unsigned long loopEndPos = -1;
@@ -216,16 +216,16 @@ namespace ChD3D
 			WAVEFORMATEX* waveFormat = nullptr;
 		};
 
-		ChStd::Bool CreateMFObject(const std::string& _fileName);
+		bool CreateMFObject(const std::string& _fileName);
 
-		ChStd::Bool CreateFileData(const std::string& _fileName);
+		bool CreateFileData(const std::string& _fileName);
 
 		XAudio2Manager(){}
 		
 		std::map<std::string, std::vector<ChPtr::Shared<XAUDIO2_BUFFER>>>audioDataMap;
 		std::map<std::string, ChPtr::Shared<MFObject>>mfObjectMap;
 
-		ChStd::Bool loadFlg = false;
+		bool loadFlg = false;
 
 		std::vector<AudioObject*>audios;
 		IXAudio2* audio = nullptr;

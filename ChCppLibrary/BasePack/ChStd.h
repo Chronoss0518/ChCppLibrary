@@ -4,15 +4,6 @@
 //ChLibraryのベースとなる関数、変数群のまとまり//
 namespace ChStd
 {
-
-	//Xファイルなど多くのオブジェクトを利用する際に識別子として利用する。//
-	using DataNo = unsigned short;
-
-	//通常のbool型より1～3Byte軽くしたもの//
-	//現在ではbool = 1Byte//
-	//ビット演算子も利用できるためこちらは残しておく//
-	using Bool = unsigned char;
-
 	//10進数//
 	const std::vector<char> DECIMAL_NUMBUR();
 

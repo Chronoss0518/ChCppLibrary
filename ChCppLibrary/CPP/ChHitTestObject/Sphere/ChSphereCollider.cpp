@@ -10,7 +10,7 @@ using namespace ChCpp;
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool SphereCollider::IsHit(
+bool SphereCollider::IsHit(
 	HitTestBox* _target)
 {
 	return _target->IsHit(this);
@@ -18,7 +18,7 @@ ChStd::Bool SphereCollider::IsHit(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  SphereCollider::IsHit(
+bool  SphereCollider::IsHit(
 	HitTestSphere* _target)
 {
 	//à íuèÓïÒÇæÇØÇÃìñÇΩÇËîªíË//
@@ -83,7 +83,7 @@ ChStd::Bool  SphereCollider::IsHit(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  SphereCollider::IsHit(
+bool  SphereCollider::IsHit(
 	HitTestRay* _target)
 {
 	return false;
@@ -91,7 +91,7 @@ ChStd::Bool  SphereCollider::IsHit(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  SphereCollider::IsInnerHit(
+bool  SphereCollider::IsInnerHit(
 	HitTestBox* _target)
 {
 	return false;
@@ -99,7 +99,7 @@ ChStd::Bool  SphereCollider::IsInnerHit(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  SphereCollider::IsInnerHit(
+bool  SphereCollider::IsInnerHit(
 	HitTestSphere* _target)
 {
 
