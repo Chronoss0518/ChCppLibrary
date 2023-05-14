@@ -23,6 +23,8 @@
 #include"CPP/ChHitTestObject/ChHitTestObject.h"
 
 #include"CPP/ChMathSquare/ChMathSquare.h"
+#include"CPP/ChCounter/ChCounter.h"
+#include"CPP/ChCumulative/ChCumulative.h"
 
 #include"CPP/ChHitTestObject/Panel/ChPanelCollider.h"
 #include"CPP/ChHitTestObject/Box/ChBoxCollider.h"
