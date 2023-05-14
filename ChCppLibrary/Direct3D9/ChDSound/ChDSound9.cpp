@@ -253,7 +253,7 @@ void ChDirectSound9::SetBGMSound(
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChStd::DataNo ChDirectSound9::SetSESound(
+unsigned short ChDirectSound9::SetSESound(
 	const std::string _soundFilePath
 	, const std::string _useSoundDirectory)
 {
@@ -263,7 +263,7 @@ ChStd::DataNo ChDirectSound9::SetSESound(
 
 	if (tmpString.length() <= 0)return 0;
 
-	ChStd::DataNo tmpData = 0;
+	unsigned short tmpData = 0;
 	while(1)
 	{
 		if (subSoundList.find(seNo) == subSoundList.end())break;
@@ -286,7 +286,7 @@ ChStd::DataNo ChDirectSound9::SetSESound(
 
 	se->sound->GetVolume(&se->vol);
 
-	subSoundList.insert(std::pair<ChStd::DataNo, ChPtr::Shared<ChSE9>>(tmpData, se));
+	subSoundList.insert(std::pair<unsigned short, ChPtr::Shared<ChSE9>>(tmpData, se));
 
 	return tmpData;
 }
@@ -327,7 +327,7 @@ void ChDirectSound9::SetBaseVolumeForBGM(const std::string _soundName)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChDirectSound9::SetHzForSE(const ChStd::DataNo _soundNo
+void ChDirectSound9::SetHzForSE(const unsigned short _soundNo
 	, const DWORD _hz)
 {
 	if (subSoundList.find(_soundNo) == subSoundList.end())return;
@@ -336,7 +336,7 @@ void ChDirectSound9::SetHzForSE(const ChStd::DataNo _soundNo
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChDirectSound9::SetVolumeForSE(const ChStd::DataNo _soundNo
+void ChDirectSound9::SetVolumeForSE(const unsigned short _soundNo
 	, const long _volume)
 {
 	if (subSoundList.find(_soundNo) == subSoundList.end())return;
@@ -345,7 +345,7 @@ void ChDirectSound9::SetVolumeForSE(const ChStd::DataNo _soundNo
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChDirectSound9::SetBaseHzForSE(const ChStd::DataNo _soundNo)
+void ChDirectSound9::SetBaseHzForSE(const unsigned short _soundNo)
 {
 	if (subSoundList.find(_soundNo) == subSoundList.end())return;
 	subSoundList[_soundNo]->sound->SetFrequency(subSoundList[_soundNo]->hz);
@@ -353,7 +353,7 @@ void ChDirectSound9::SetBaseHzForSE(const ChStd::DataNo _soundNo)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChDirectSound9::SetBaseVolumeForSE(const ChStd::DataNo _soundNo)
+void ChDirectSound9::SetBaseVolumeForSE(const unsigned short _soundNo)
 {
 	if (subSoundList.find(_soundNo) == subSoundList.end())return;
 	subSoundList[_soundNo]->sound->SetVolume(subSoundList[_soundNo]->vol);
@@ -370,7 +370,7 @@ void ChDirectSound9::ClearBGM()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChDirectSound9::ClearSE(const ChStd::DataNo _soundNo)
+void ChDirectSound9::ClearSE(const unsigned short _soundNo)
 {
 	if (subSoundList.empty())return;
 	if (subSoundList.find(_soundNo) == subSoundList.end())return;
@@ -401,7 +401,7 @@ void ChDirectSound9::PlayBGM(const std::string _soundName)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChDirectSound9::PlaySE(const ChStd::DataNo _soundNo)
+void ChDirectSound9::PlaySE(const unsigned short _soundNo)
 {
 	if (subSoundList.find(_soundNo) != subSoundList.end())return;
 
@@ -466,7 +466,7 @@ void ChDirectSound9::StopBGM()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChDirectSound9::StopSE(const ChStd::DataNo _soundNo)
+void ChDirectSound9::StopSE(const unsigned short _soundNo)
 {
 	auto tmpBuffer = subSoundList[_soundNo];
 

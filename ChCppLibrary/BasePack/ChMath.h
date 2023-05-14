@@ -4,84 +4,15 @@
 namespace ChMath
 {
 
-	static inline std::string ConvertNum10to64(unsigned long _num)
-	{
-		return "";
-	}
+	float Round(const float& _val, const unsigned int _digit);
 
-	static inline float Round(const float& _val, const unsigned int _digit)
-	{
-		float out = _val * std::powf(10.0f, static_cast<float>(_digit - 1));
-		out = std::round(out);
-		out = out * std::powf(0.1f, static_cast<float>(_digit - 1));
+	double Round(const double& _val, const unsigned int _digit);
 
-		return out;
-	}
+	long double SqrtEx(const long double& _base, const unsigned long _digit = 4931);
 
-	///////////////////////////////////////////////////////////////////////////////////
+	double SqrtEx(const double& _base, const unsigned long _digit = 307);
 
-	static inline double Round(const double& _val, const unsigned int _digit)
-	{
-		double out = _val * std::powl(10, static_cast<double>(_digit - 1));
-		out = std::round(out);
-		out = out * std::powl(0.1, static_cast<double>(_digit - 1));
-
-
-		return out;
-
-	}
-
-	static inline long double SqrtEx(const long double& _base, const unsigned long _digit = 4931)
-	{
-		if (_base == 0.0)return 0.0;
-
-		long double out = _base;
-
-		unsigned long maxCount = _digit > 4931 ? 4931 : _digit;
-
-		//以下を参照//
-		//https://qiita.com/rytaryu/items/e5d760a80f9ce5db860f
-		//
-
-		for (unsigned long i = 0; i < maxCount; i++)
-		{
-			out = ((out * out) + _base) / (2 * out);
-		}
-
-		return out;
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////
-
-	static inline double SqrtEx(const double& _base, const unsigned long _digit = 307)
-	{
-		if (_base == 0.0)return 0.0;
-
-		double out = _base;
-
-		unsigned long maxCount = _digit > 307 ? 307 : _digit;
-
-		out = static_cast<double>(SqrtEx(static_cast<long double>(out), maxCount));
-
-		return out;
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////
-
-	static inline float SqrtEx(const float& _base, const unsigned long _digit = 37)
-	{
-		if (_base == 0.0f)return 0.0f;
-
-		float out = _base;
-
-		unsigned long maxCount = _digit > 37 ? 37 : _digit;
-
-		out = static_cast<float>(SqrtEx(static_cast<long double>(out), maxCount));
-
-		return out;
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////
+	float SqrtEx(const float& _base, const unsigned long _digit = 37);
 
 	//2の平方根(有効桁数8桁)//
 	static const float SQUARE_ROOT = 1.41421356f;
@@ -91,10 +22,10 @@ namespace ChMath
 
 
 	template<typename T, unsigned long Array>
-	using VectorTest = typename std::enable_if<(Array > 0) && (std::is_integral<T>::value || std::is_floating_point<T>::value), T>::type;
+	using VectorTest = typename std::enable_if<(Array > 0), T>::type;
 
 	template<typename T, unsigned long Row, unsigned long Column>
-	using MatrixTest = typename std::enable_if<(Row > 0 && Column > 0) && (std::is_integral<T>::value || std::is_floating_point<T>::value), T>::type;
+	using MatrixTest = typename std::enable_if<(Row > 0 && Column > 0), T>::type;
 
 	template<typename T, unsigned long Array>
 	class VectorBase
@@ -667,7 +598,7 @@ namespace ChMath
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//ベクトルの長さを1にする//
-		ChStd::Bool Normalize(
+		bool Normalize(
 			const unsigned long _digit = 6
 		)
 		{
@@ -686,7 +617,7 @@ namespace ChMath
 		}
 
 		//ベクトルの要素の合計を1にする//
-		ChStd::Bool ElementsNormalize()
+		bool ElementsNormalize()
 		{
 
 			T len = GetElementsLen();
@@ -755,12 +686,12 @@ namespace ChMath
 
 		VectorBase<T, Row>& operator [](const unsigned long _col)
 		{
-			return m[_col % Column];
+			return m[_col % Row];
 		}
 
 		VectorBase<T, Row> operator [](const unsigned long _col)const
 		{
-			return m[_col % Column];
+			return m[_col % Row];
 		}
 
 		explicit operator const T** const ()const
@@ -768,32 +699,15 @@ namespace ChMath
 			return m;
 		}
 
-		MatrixBase& operator =(const MatrixBase& _Mat)
+		MatrixBase& operator =(const MatrixBase& _mat)
 		{
-
-			for (unsigned long i = 0; i < Column; i++)
-			{
-				for (unsigned long j = 0; j < Row; j++)
-				{
-					m[i][j] = _Mat.m[i][j];
-				}
-
-			}
-
+			Set(_mat);
 			return *this;
 		}
 
-		MatrixBase& operator +=(const MatrixBase& _Mat)
+		MatrixBase& operator +=(const MatrixBase& _mat)
 		{
-
-			for (unsigned long i = 0; i < Column; i++)
-			{
-				for (unsigned long j = 0; j < Row; j++)
-				{
-					m[i][j] += _Mat.m[i][j];
-				}
-
-			}
+			Add(_mat);
 
 			return *this;
 		}
@@ -808,17 +722,9 @@ namespace ChMath
 			return out;
 		}
 
-		MatrixBase& operator -=(const MatrixBase& _Mat)
+		MatrixBase& operator -=(const MatrixBase& _mat)
 		{
-
-			for (unsigned long i = 0; i < Column; i++)
-			{
-				for (unsigned long j = 0; j < Row; j++)
-				{
-					m[i][j] -= _Mat.m[i][j];
-				}
-			}
-
+			Sub(_mat);
 			return *this;
 		}
 
@@ -832,17 +738,9 @@ namespace ChMath
 			return out;
 		}
 
-		MatrixBase& operator *=(const MatrixBase& _Mat)
+		MatrixBase& operator *=(const MatrixBase& _mat)
 		{
-
-			for (unsigned long i = 0; i < Column; i++)
-			{
-				for (unsigned long j = 0; j < Row; j++)
-				{
-					m[i][j] *= _Mat.m[i][j];
-				}
-			}
-
+			Mul(_mat);
 			return *this;
 		}
 
@@ -856,17 +754,9 @@ namespace ChMath
 			return out;
 		}
 
-		MatrixBase& operator /=(const MatrixBase& _Mat)
+		MatrixBase& operator /=(const MatrixBase& _mat)
 		{
-
-			for (unsigned long i = 0; i < Column; i++)
-			{
-				for (unsigned long j = 0; j < Row; j++)
-				{
-					m[i][j] /= _Mat.m[i][j] != 0.0f ? _Mat.m[i][j] : 1.0f;
-				}
-			}
-
+			Div(_mat);
 			return *this;
 		}
 
@@ -944,21 +834,18 @@ namespace ChMath
 
 		void Mul(const MatrixBase& _mat)
 		{
+			MatrixBase tmp;
+			tmp.Set(*this);
+
 			for (unsigned long i = 0; i < Column; i++)
 			{
-				float tmp[Column];
-				for (unsigned char j = 0; j < Row; j++)
+				for (unsigned long j = 0; j < Column; j++)
 				{
-					tmp[j] = m[i][j];
-				}
+					m[i][j] = tmp[i][0] * _mat.m[0][j];
 
-				for (unsigned char j = 0; j < Column; j++)
-				{
-					m[i][j] = tmp[0] * _mat.m[0][j];
-
-					for (unsigned char k = 1; k < Row; k++)
+					for (unsigned long k = 1; k < Row; k++)
 					{
-						m[i][j] += tmp[k] * _mat.m[k][j];
+						m[i][j] += tmp[i][k] * _mat.m[k][j];
 					}
 				}
 			}
@@ -970,21 +857,26 @@ namespace ChMath
 		VectorBase<T, _Arrarys> VerticalMul(const VectorBase<T, _Arrarys> _vec)const
 		{
 
+			MatrixBase<T, Row, Column> tmpMat;
+
+			tmpMat.Set(static_cast<T>(0.0f));
+
 			unsigned long maxSize = _Arrarys;
 
-			maxSize = maxSize >= Column ? Column : maxSize;
 			maxSize = maxSize >= Row ? Row : maxSize;
-
+			unsigned long i = 0;
+			for (i = 0; i < maxSize; i++)
+			{
+				tmpMat.m[i][0] = _vec[i];
+			}
+			
+			tmpMat = (*this) * tmpMat;
+			
 			VectorBase<T, _Arrarys> out;
 
-			out.Set(static_cast<T>(0.0f));
-
-			for (unsigned long i = 0; i < maxSize; i++)
+			for (i = 0; i < maxSize; i++)
 			{
-				for (unsigned long j = 0; j < maxSize; j++)
-				{
-					out[j] += _vec[i] * m[j][i];
-				}
+				out[i] = tmpMat.m[i][0];
 			}
 
 			return out;
@@ -995,21 +887,27 @@ namespace ChMath
 		template<unsigned long _Arrarys>
 		VectorBase<T, _Arrarys>HorizontalMul(const VectorBase<T, _Arrarys> _vec)const
 		{
+
+			MatrixBase<T, Row, Column> tmpMat;
+
+			tmpMat.Set(static_cast<T>(0.0f));
+
 			unsigned long maxSize = _Arrarys;
 
 			maxSize = maxSize >= Column ? Column : maxSize;
-			maxSize = maxSize >= Row ? Row : maxSize;
+			unsigned long i = 0;
+			for (i = 0; i < maxSize; i++)
+			{
+				tmpMat.m[0][i] = _vec[i];
+			}
+
+			tmpMat = tmpMat * (*this);
 
 			VectorBase<T, _Arrarys> out;
 
-			out.Set(static_cast<T>(0.0f));
-
-			for (unsigned long i = 0; i < maxSize; i++)
+			for (i = 0; i < maxSize; i++)
 			{
-				for (unsigned long j = 0; j < maxSize; j++)
-				{
-					out[j] += _vec[i] * m[i][j];
-				}
+				out[i] = tmpMat.m[0][i];
 			}
 
 			return out;
@@ -1163,13 +1061,13 @@ namespace ChMath
 
 			if (_Row >= Row || _Col >= Column)return out;
 
-			ChStd::Bool ColFlg = false;
+			bool ColFlg = false;
 
 			for (unsigned long i = 0; i < Column - 1; i++)
 			{
 				if (i == _Col)ColFlg = true;
 
-				ChStd::Bool RowFlg = false;
+				bool RowFlg = false;
 
 				for (unsigned long j = 0; j < Row - 1; j++)
 				{
@@ -1350,7 +1248,7 @@ namespace ChMath
 
 	private:
 
-		VectorBase<MatrixTest<T, Row, Column>, Row> m[Column];
+		VectorBase<MatrixTest<T, Row, Column>, Column> m[Row];
 
 	};
 
@@ -1477,7 +1375,7 @@ namespace ChMath
 			w = _w;
 		}
 
-		inline Vector4Base(const Vector4Base& _vec) { val = _vec.val; }
+		inline Vector4Base(const Vector4Base<T>& _vec) { val = _vec.val; }
 
 		//スクリーン上の座標に合わせて数値をセットする。//
 		//スクリーン座標では左上が0,0の位置になり、右下に行けば行くほど数値が増える//
@@ -1494,34 +1392,86 @@ namespace ChMath
 		inline void SetProjectionCoordinates(const Vector2Base<T>& _pos, const Vector2Base<T>& _size)
 		{
 			auto tmpSize = _size;
-			tmpSize.w /= 2;
-			tmpSize.h /= 2;
+			tmpSize.w *= 0.5f;
+			tmpSize.h *= 0.5f;
 
-			left = _pos.x;
+			left = _pos.x - tmpSize.w;
 			right = _pos.x + tmpSize.w;
-			bottom = _pos.y;
+			bottom = _pos.y - tmpSize.h;
 			top = _pos.y + tmpSize.h;
 		}
 
-		inline ChStd::Bool IsOverlaps(const Vector4Base& _vec)
+		inline Vector2Base<T> GetCoordinatesSizeFromCenter()const
 		{
-			if (_vec.top < top + bottom && _vec.top > top && _vec.left < left + right && _vec.left > left)return true;
+			Vector2Base<T> res;
+			res.w = std::abs(right - left) * 0.5f;
+			res.h = std::abs(top - bottom) * 0.5f;
 
-			if (top < _vec.top + _vec.bottom && top > _vec.top && left < _vec.left + _vec.right && left > _vec.left)return true;
-
-			return false;
+			return res;
 		}
 
-		inline Vector4Base OverlapsRect(const Vector4Base& _vec)
+		inline Vector2Base<T> GetCoordinatesCenterPos()const
 		{
-			Vector4Base overlapsRect;
+			Vector2Base<T> res = GetCoordinatesSizeFromCenter();
 
-			if (!IsOverlaps(_vec))return overlapsRect;
+			res.x += left;
+			res.y += bottom;
 
-			overlapsRect.top = _vec.top >= top ? top : _vec.top;
-			overlapsRect.left = _vec.left >= left ? left : _vec.left;
-			overlapsRect.bottom = _vec.bottom >= bottom ? bottom : _vec.bottom;
-			overlapsRect.right = _vec.right >= right ? right : _vec.right;
+			return res;
+		}
+
+		//対象のVectorlで表される四角形に引数で入れたVectorlであらわされる四角形が重なっているかの確認//
+		inline bool IsOverlaps(const Vector4Base<T>& _target) const
+		{
+			if (right < _target.left ||
+				left > _target.right ||
+				top < _target.bottom ||
+				bottom > _target.top)
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		//対象のVectorlで表される四角形に引数で入れたVectorlで表される位置が重なっているかの確認//
+		inline bool IsOnPoint(const Vector2Base<T>& _target) const
+		{
+			if (right < _target.x ||
+				left > _target.x ||
+				top < _target.y ||
+				bottom > _target.y)
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		//対象のVectorlで表される四角形と引数で入れたVectorlであらわされる四角形に重なっている四角形をあらわした　Vectorlを取得する//
+		inline void OverlapsRect(const Vector4Base<T>& _vec)
+		{
+			if (!IsOverlaps(_vec))return;
+
+			top = _vec.top >= top ? top : _vec.top;
+			left = _vec.left <= left ? left : _vec.left;
+			bottom = _vec.bottom <= bottom ? bottom : _vec.bottom;
+			right = _vec.right >= right ? right : _vec.right;
+
+			return;
+		}
+
+		//対象のVectorlで表される四角形と引数で入れたVectorlであらわされる四角形に重なっている四角形をあらわした　Vectorlを取得する//
+		inline static Vector4Base<T> OverlapsRect(const Vector4Base<T>& _vec1,const Vector4Base<T>& _vec2)
+		{
+			if (!_vec1.IsOverlaps(_vec2))return _vec1;
+
+			Vector4Base<T> overlapsRect;
+
+			overlapsRect.top = _vec2.top >= _vec1.top ? _vec1.top : _vec2.top;
+			overlapsRect.left = _vec2.left <= _vec1.left ? _vec1.left : _vec2.left;
+			overlapsRect.bottom = _vec2.bottom <= _vec1.bottom ? _vec1.bottom : _vec2.bottom;
+			overlapsRect.right = _vec2.right >= _vec1.right ? _vec1.right : _vec2.right;
 
 			return overlapsRect;
 		}

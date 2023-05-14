@@ -56,7 +56,7 @@ namespace ChWin
 
 	public:
 
-		ChStd::Bool IsSystemRegistClassName(const std::string& _className);
+		bool IsSystemRegistClassName(const std::string& _className);
 
 	public://Other Fucntions//
 
@@ -120,7 +120,7 @@ namespace ChWin
 
 	public:
 
-		ChStd::Bool IsSystemRegistClassName(const std::wstring& _className);
+		bool IsSystemRegistClassName(const std::wstring& _className);
 
 	public://Other Fucntions//
 

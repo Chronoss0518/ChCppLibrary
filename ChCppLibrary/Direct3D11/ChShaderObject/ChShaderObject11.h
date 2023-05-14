@@ -26,9 +26,6 @@ namespace ChD3D11
 		//VertexShader—p//
 		void CreateVertexShader(
 			ID3D11Device* _device
-			, ID3D11InputLayout** _lInput
-			, const D3D11_INPUT_ELEMENT_DESC* _desc
-			, const unsigned long _descNum
 			, const void* _binary
 			, const unsigned long _binarySize
 		);
@@ -61,6 +58,13 @@ namespace ChD3D11
 			, const unsigned long _binarySize
 		);
 
+		//VertexShader—p//
+		void CreateHullShader(
+			ID3D11Device* _device
+			, const void* _binary
+			, const unsigned long _binarySize
+		);
+
 		///////////////////////////////////////////////////////////////////////////////////
 
 		void SetVertexShader(
@@ -77,6 +81,9 @@ namespace ChD3D11
 			ID3D11DeviceContext* _dc);
 
 		void SetDomainShader(
+			ID3D11DeviceContext* _dc);
+
+		void SetHullShader(
 			ID3D11DeviceContext* _dc);
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -101,12 +108,6 @@ namespace ChD3D11
 			, const void* _binary
 			, const unsigned long _binarySize);
 
-		void InitChBaseModelVertexShader(ID3D11Device* _device);
-
-		void InitChPolygonboardTextureVertexShader(ID3D11Device* _device);
-
-		void InitChSpriteTextureVertexShader(ID3D11Device* _device);
-
 		void Release()override;
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -120,6 +121,14 @@ namespace ChD3D11
 		///////////////////////////////////////////////////////////////////////////////////
 
 	private:
+
+		void CreateInputLayout(
+			ID3D11Device* _device
+			, ID3D11InputLayout** _lInput
+			, const D3D11_INPUT_ELEMENT_DESC* _desc
+			, const unsigned long _descNum
+			, const void* _binary
+			, const unsigned long _binarySize);
 
 		ID3D11InputLayout* lInput = nullptr;
 
@@ -140,10 +149,6 @@ namespace ChD3D11
 		{
 			CreatePixelShader(_device, _binary, _binarySize);
 		}
-
-		void InitChBasePolygonPixelShader(ID3D11Device* _device);
-
-		void InitChBaseSpritePixelShader(ID3D11Device* _device);
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction/
@@ -229,6 +234,32 @@ namespace ChD3D11
 		inline void SetShader(ID3D11DeviceContext* _dc)override
 		{
 			SetDomainShader(_dc);
+		}
+
+		///////////////////////////////////////////////////////////////////////////////////
+	};
+
+	class HullShader11 final :public ShaderObject11
+	{
+	public:
+
+		///////////////////////////////////////////////////////////////////////////////////
+		//InitAndRelease//
+
+		inline void Init(
+			ID3D11Device* _device
+			, const void* _binary
+			, const unsigned long _binarySize)
+		{
+			CreateHullShader(_device, _binary, _binarySize);
+		}
+
+		///////////////////////////////////////////////////////////////////////////////////
+		//SetFunction/
+
+		inline void SetShader(ID3D11DeviceContext* _dc)override
+		{
+			SetHullShader(_dc);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////

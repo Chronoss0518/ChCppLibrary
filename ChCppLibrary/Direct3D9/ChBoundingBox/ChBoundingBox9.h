@@ -17,7 +17,12 @@ namespace ChMesh
 		///////////////////////////////////////////////////////////////////////////////////
 		//ConstructerDestructer//
 
-		BoundingBox9() {}
+		BoundingBox9() 
+		{
+			main = ChVec3_9();
+			depth = ChVec3_9();
+			radius = 0.0f;
+		}
 
 		BoundingBox9(const BoundingBox9& _box)
 		{
@@ -48,26 +53,26 @@ namespace ChMesh
 		//IsFunction//
 
 		//ì_Ç∆î†ÇÃìñÇΩÇËîªíË//
-		ChStd::Bool IsHitToPos(
+		bool IsHitToPos(
 			const ChMat_9* _mat
 			, const ChVec3_9* _pos);
 
 		//î†Ç∆î†ÇÃìñÇΩÇËîªíË(ñ¢äÆê¨)//
-		ChStd::Bool IsHitToB_Box(
+		bool IsHitToB_Box(
 			const ChMat_9* _mat
 			, const BoundingBox9* _pos);
 
 		//ãÖÇ∆î†ÇÃìñÇΩÇËîªíË//
-		ChStd::Bool IsHitToBull(
+		bool IsHitToBull(
 			const ChMat_9* _mat
 			, const ChVec3_9* _pos
 			, const float _r);
 
 	private:
 
-		ChVec3_9 main;
-		ChVec3_9 depth;
-		float radius;
+		ChVec3_9 main = ChVec3_9();
+		ChVec3_9 depth = ChVec3_9();
+		float radius = 0.0f;
 
 	}ChB_Box9;
 

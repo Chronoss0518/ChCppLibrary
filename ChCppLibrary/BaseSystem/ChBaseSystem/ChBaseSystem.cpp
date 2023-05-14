@@ -12,18 +12,18 @@ using namespace ChSystem;
 ///////////////////////////////////////////////////////////////////////////////////////
 
 
-ChStd::Bool BaseSystem::IsPushKey(const int _Key)
+bool BaseSystem::IsPushKey(const int _Key)
 {
 	if (!system->IsUseSystemButtons())return 0;
 	return buttonList.GetBitFlg(_Key);
 }
 
-ChStd::Bool BaseSystem::IsPushKeyNoHold(const int _Key)
+bool BaseSystem::IsPushKeyNoHold(const int _Key)
 {
 	return buttonList.GetBitFlg(_Key);
 }
 
-ChStd::Bool BaseSystem::IsPause(const int _Key)
+bool BaseSystem::IsPause(const int _Key)
 {
 	return false;
 }

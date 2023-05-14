@@ -76,7 +76,7 @@ void ChModelCom9::DIvidePathToName(
 
 		size_t sPos = 0;
 		
-		ChStd::Bool tmpFlg = false;
+		bool tmpFlg = false;
 
 		size_t slashSize = 1;
 		std::string slash[2]

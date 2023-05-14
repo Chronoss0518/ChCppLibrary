@@ -11,7 +11,7 @@ using namespace ChD3D11;
 #if 0
 void DirectX3D11::Init(
 	ChWin::WindObject& _windObject,
-	const ChStd::Bool _fullScreenFlg)
+	const bool _fullScreenFlg)
 {
 	if (!_windObject.IsInit())return;
 
@@ -27,7 +27,7 @@ void DirectX3D11::Init(
 
 void DirectX3D11::Init(
 	HWND _hWnd
-	, const ChStd::Bool _fullScreenFlg
+	, const bool _fullScreenFlg
 	, const unsigned long _scrW
 	, const unsigned long _scrH)
 {

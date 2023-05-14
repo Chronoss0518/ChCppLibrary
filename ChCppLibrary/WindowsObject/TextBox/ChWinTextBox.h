@@ -242,9 +242,9 @@ namespace ChWin
 
 	public://Is Functions//
 
-		inline ChStd::Bool IsSelect() { return selectFlg; }
+		inline bool IsSelect() { return selectFlg; }
 
-		inline ChStd::Bool IsChange() { return isChangeFlg; }
+		inline bool IsChange() { return isChangeFlg; }
 
 	public://Other Functions//
 
@@ -256,8 +256,8 @@ namespace ChWin
 
 		unsigned long charLimit = 50;
 
-		ChStd::Bool selectFlg = false;
-		ChStd::Bool isChangeFlg = false;
+		bool selectFlg = false;
+		bool isChangeFlg = false;
 
 	};
 

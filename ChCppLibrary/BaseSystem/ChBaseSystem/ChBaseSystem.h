@@ -31,13 +31,13 @@ namespace ChSystem
 		///////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
 
-		virtual ChStd::Bool IsPushKey(const int _key);
+		virtual bool IsPushKey(const int _key);
 
-		virtual ChStd::Bool IsPushKeyNoHold(const int _key);
+		virtual bool IsPushKeyNoHold(const int _key);
 
-		virtual ChStd::Bool IsPause(const int _key);
+		virtual bool IsPause(const int _key);
 
-		virtual ChStd::Bool IsUpdate() { return false; };
+		virtual bool IsUpdate() { return false; };
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//UpdateFunction//
@@ -65,8 +65,8 @@ namespace ChSystem
 		ChCpp::BitBool isNowPush;
 
 		//Pause用変数//
-		ChStd::Bool nowKey = false;
-		ChStd::Bool pauseFlg = false;
+		bool nowKey = false;
+		bool pauseFlg = false;
 
 	};
 
@@ -117,7 +117,7 @@ namespace ChSystem
 
 		inline void SetNowTime(const unsigned long _time) { lastFPSPoint = _time; }
 
-		inline void SetUseSystemButtons(const ChStd::Bool _button) { useSystemButton = _button; }
+		inline void SetUseSystemButtons(const bool _button) { useSystemButton = _button; }
 
 		///////////////////////////////////////////////////////////////////////////////////s
 		//GetFunction//
@@ -140,7 +140,7 @@ namespace ChSystem
 		//IsFunction//
 
 		//BaseSystemより間接的に確認する//
-		inline ChStd::Bool IsPushKey(const int _key)
+		inline bool IsPushKey(const int _key)
 		{
 			if (!*this)return false;
 			if (baseSystems == nullptr)return false;
@@ -148,7 +148,7 @@ namespace ChSystem
 		}
 
 		//BaseSystemより間接的に確認する//
-		inline ChStd::Bool IsPushKeyNoHold(const int _key)
+		inline bool IsPushKeyNoHold(const int _key)
 		{
 			if (!*this)return false;
 			if (baseSystems == nullptr)return false;
@@ -157,7 +157,7 @@ namespace ChSystem
 		}
 
 		//BaseSystemより間接的に確認する//
-		inline ChStd::Bool IsPause(const int _key)
+		inline bool IsPause(const int _key)
 		{
 			if (!*this)return false;
 			if (baseSystems == nullptr)return false;
@@ -166,7 +166,7 @@ namespace ChSystem
 		}
 
 		//システムを継続するか//
-		ChStd::Bool IsUpdate()
+		bool IsUpdate()
 		{
 			if (baseSystems == nullptr)return false;
 
@@ -174,12 +174,12 @@ namespace ChSystem
 		}
 
 		//システムで提供されているボタンを利用するか//
-		ChStd::Bool IsUseSystemButtons() { return useSystemButton; }
+		bool IsUseSystemButtons() { return useSystemButton; }
 
 		///////////////////////////////////////////////////////////////////////////////////s
 
 		//FPS処理
-		inline ChStd::Bool FPSProcess()
+		inline bool FPSProcess()
 		{
 			if (!*this)return false;
 			if (baseSystems == nullptr)return false;
@@ -189,7 +189,7 @@ namespace ChSystem
 
 			if (tmp < 1000 / FPS)return false;
 
-			lastFPSPoint = tmp * FPS * FPS * 0.001f;
+			lastFPSPoint = 1000 / tmp;
 			lastFPSTime = nowTime;
 
 			return true;
@@ -204,7 +204,7 @@ namespace ChSystem
 		long double lastFPSPoint = 0;
 		unsigned long lastFPSTime = 0;
 
-		ChStd::Bool useSystemButton = true;
+		bool useSystemButton = true;
 
 	public:
 

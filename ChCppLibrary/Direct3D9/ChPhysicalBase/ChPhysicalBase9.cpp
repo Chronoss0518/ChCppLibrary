@@ -33,7 +33,7 @@ void ChGravity9::Init(const float _FPS)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ChGravity9::UpDate(
+bool ChGravity9::UpDate(
 	ChVec3_9* _pos
 	, const ChVec3_9* _moveDir)
 {
@@ -112,7 +112,7 @@ void ChPushBack9::Init()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ChPushBack9::UpDate(ChVec3_9* _pos, const ChVec3_9* _dir)
+bool ChPushBack9::UpDate(ChVec3_9* _pos, const ChVec3_9* _dir)
 {
 	vec = ChVec3_9(0.0f, 0.0f, 0.0f);
 	ChVec3_9 tmpVec;

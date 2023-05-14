@@ -13,7 +13,7 @@
 
 using namespace ChCpp;
 
-ChStd::Bool PolygonCollider::IsHit(
+bool PolygonCollider::IsHit(
 	HitTestBox* _target)
 {
 	return false;
@@ -21,19 +21,28 @@ ChStd::Bool PolygonCollider::IsHit(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool PolygonCollider::IsHit(
+bool PolygonCollider::IsHit(
 	HitTestSphere* _target)
 {
-	return false;
+
+	auto model = GetModel();
+
+	if (ChPtr::NullCheck(model))return false;
+
+	
+
+
+
+	return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  PolygonCollider::IsHit(
+bool  PolygonCollider::IsHit(
 	HitTestRay* _target)
 {
 
-	auto model = GetPolygonList();
+	auto model = GetModel();
 
 	if (ChPtr::NullCheck(model))return false;
 
@@ -48,8 +57,7 @@ ChStd::Bool  PolygonCollider::IsHit(
 		ray = tmp.TransformCoord(ray);
 	}
 
-	ChStd::Bool hitFlg = IsHitRayToMesh(*model,pos,ray,minLen);
-
+	bool hitFlg = IsHitRayToMesh(*model,pos,ray,minLen);
 
 	if (hitFlg)
 	{
@@ -60,11 +68,11 @@ ChStd::Bool  PolygonCollider::IsHit(
 
 }
 
-ChStd::Bool PolygonCollider::IsHitRayToMesh(FrameObject& _object, const ChVec3& _rayPos, const ChVec3& _rayDir, const float _rayLen, const ChStd::Bool _nowHitFlg)
+bool PolygonCollider::IsHitRayToMesh(FrameObject& _object, const ChVec3& _rayPos, const ChVec3& _rayDir, const float _rayLen, const bool _nowHitFlg)
 {
 	_object.UpdateDrawTransform();
 
-	ChStd::Bool hitFlg = _nowHitFlg;
+	bool hitFlg = _nowHitFlg;
 
 	auto frameCom = _object.GetComponent<FrameComponent>();
 	float minLen = _rayLen;
@@ -83,27 +91,54 @@ ChStd::Bool PolygonCollider::IsHitRayToMesh(FrameObject& _object, const ChVec3& 
 				posList.push_back(ChPtr::Make_S<ChVec3>(tmpMat.Transform(frameCom->vertexList[i]->pos)));
 			}
 
+			ChVec3 poss[3];
+			unsigned long nos[3]{ 0,1,2 };
 			for (auto&& primitive : frameCom->primitives)
 			{
+				for (unsigned char j = 0; j < 3; j++)
+				{
 
-				ChVec3 firstPos = *posList[primitive->vertexData[0]->vertexNo];
+					nos[j] = !leftHandFlg ? primitive->vertexData.size() - j - 1 : j;
+					poss[j] = *posList[primitive->vertexData[nos[j]]->vertexNo];
+				}
+
+				{
+					ChVec3 faceNormal = ChVec3::GetCross((poss[1] - poss[0]), (poss[2] - poss[0]));
+					faceNormal.Normalize();
+					ChVec3 pos0ToRay = _rayPos - poss[0];
+
+					float faceLen = ChVec3::GetDot(faceNormal, pos0ToRay);
+
+					if (faceLen > minLen)continue;
+				}
+
 				for (unsigned long i = 1; i < primitive->vertexData.size() - 1; i++)
 				{
 					ChVec3 tmpVec;
-					
+
+					for (unsigned char j = 1; j < 3; j++)
+					{
+
+						nos[j] = !leftHandFlg ? primitive->vertexData.size() - j - i : i + j - 1;
+						poss[j] = *posList[primitive->vertexData[nos[j]]->vertexNo];
+					}
+
+
+
 					if (!HitTestTri(
 						tmpVec,
 						_rayPos,
 						_rayDir, 
-						firstPos,
-						*posList[primitive->vertexData[i]->vertexNo], 
-						*posList[primitive->vertexData[i + 1]->vertexNo]))continue;
+						poss[0],
+						poss[1],
+						poss[2]))continue;
 
 					float tmpLen = tmpVec.Len();
 					if (tmpLen > _rayLen)continue;
 					hitFlg = true;
 					if (minLen < tmpLen)continue;
 					minLen = tmpLen;
+					hitMaterialName = frameCom->materialList[primitive->mateNo]->mateName;
 					SetHitVector(tmpVec);
 					break;
 				}
@@ -123,7 +158,7 @@ ChStd::Bool PolygonCollider::IsHitRayToMesh(FrameObject& _object, const ChVec3& 
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  PolygonCollider::IsInnerHit(
+bool  PolygonCollider::IsInnerHit(
 	HitTestBox* _target)
 {
 	return false;
@@ -131,18 +166,18 @@ ChStd::Bool  PolygonCollider::IsInnerHit(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool PolygonCollider::IsInnerHit(
+bool PolygonCollider::IsInnerHit(
 	HitTestSphere* _target)
 {
 	return false;
 }
 
-void PolygonCollider::SetPolygon(ModelObject& _model)
+void PolygonCollider::SetModel(FrameObject& _model)
 {
 	model = &_model;
 }
 
-ModelObject* PolygonCollider::GetPolygonList()const
+FrameObject* PolygonCollider::GetModel()const
 {
 	return model;
 }

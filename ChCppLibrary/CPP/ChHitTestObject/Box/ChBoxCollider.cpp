@@ -12,7 +12,7 @@ using namespace ChCpp;
 //HitTestBox Method//
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool BoxCollider::IsHit(
+bool BoxCollider::IsHit(
 	HitTestBox* _target)
 {
 	//à íuèÓïÒÇæÇØÇÃìñÇΩÇËîªíË//
@@ -46,7 +46,7 @@ ChStd::Bool BoxCollider::IsHit(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  BoxCollider::IsHit(
+bool  BoxCollider::IsHit(
 	HitTestSphere* _target)
 {
 	//à íuèÓïÒÇæÇØÇÃìñÇΩÇËîªíË//
@@ -130,7 +130,7 @@ ChStd::Bool  BoxCollider::IsHit(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  BoxCollider::IsHit(
+bool  BoxCollider::IsHit(
 	HitTestRay* _target)
 {
 	return false;
@@ -138,7 +138,7 @@ ChStd::Bool  BoxCollider::IsHit(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  BoxCollider::IsInnerHit(
+bool  BoxCollider::IsInnerHit(
 	HitTestBox* _target)
 {
 
@@ -174,7 +174,7 @@ ChStd::Bool  BoxCollider::IsInnerHit(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  BoxCollider::IsInnerHit(
+bool  BoxCollider::IsInnerHit(
 	HitTestSphere* _target)
 {
 	return false;

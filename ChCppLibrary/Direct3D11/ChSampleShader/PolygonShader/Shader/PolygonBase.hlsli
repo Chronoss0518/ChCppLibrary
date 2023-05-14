@@ -2,6 +2,8 @@
 #define Ch_ModelBase_h
 
 
+
+
 struct VS_OUT
 {
 	float4 pos			:SV_POSITION;

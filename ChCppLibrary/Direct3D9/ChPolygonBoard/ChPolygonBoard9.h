@@ -90,7 +90,7 @@ namespace ChTex
 
 
 
-		ChStd::Bool alphaFlg;
+		bool alphaFlg;
 
 		static const unsigned char vertexMaxCnt = 4;
 

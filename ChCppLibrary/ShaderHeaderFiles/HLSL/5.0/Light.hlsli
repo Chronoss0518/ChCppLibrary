@@ -75,13 +75,6 @@ sampler lightSmp :register(s[LIGHT_TEXTURE_REGISTERNO])
 	AddressV = Clamp;
 };
 
-
-float3 LamLightCol(float3 _dif, float _pow);
-
-float3 SpeLightCol(float3 _dir, float3 _modelPos, float3 _normal,float4 _speculer);
-
-float3 AmbLightCol();
-
 struct L_BaseColor
 {
 	float3 color;
@@ -90,39 +83,60 @@ struct L_BaseColor
 	float4 specular;
 };
 
+float3 LamLightColBase(float3 _dif, float _pow);
+
+float3 LamLightDirection(float3 _normal);
+
+float3 LamLightPoint(float3 _dif, float _pow);
+
+float3 SpeLightColBase(float _lcDot, float4 _speculer);
+
+float3 SpeLightDirection(float3 _modelPos, float3 _normal, float4 _speculer);
+
+float3 AmbLightCol();
+
 float3 GetDirectionalLightColor(L_BaseColor _bCol)
 {
 	float3 oCol = _bCol.color;
 
 	if (!light.useFlg)return oCol;
 
-	float dotSize = dot(_bCol.wfNormal, -light.dir);
+	oCol *= LamLightDirection(_bCol.wfNormal);
 
-	dotSize = (dotSize + 1) * 0.5f;
-
-	dotSize = dotSize > light.ambPow ? dotSize : light.ambPow;
-
-	float3 lamPowMapCol = lightPowMap.Sample(lightSmp, float2(dotSize, dotSize)).rgb;
-
-	float lamPow = lamPowMapCol[colorType];
-
-	oCol *= lamPow * light.dif;
-
-	float3 tmpVec = normalize(camPos.xyz - _bCol.wPos);//ピクセルからのカメラ方向
-
-	tmpVec = normalize(-light.dir + tmpVec);
-
-	float lcDot = dot(tmpVec, _bCol.wfNormal);
-
-	float power = saturate(lcDot);
-
-	oCol += _bCol.specular.rgb * pow(power, _bCol.specular.a);
+	oCol += SpeLightDirection(_bCol.wPos, _bCol.wfNormal, _bCol.specular);
 
 	return oCol;
 
 }
 
-float3 LamLightCol(float3 _dif, float _pow)
+float3 LamLightDirection(float3 _normal)
+{
+	float dotSize = dot(normalize(_normal), normalize(-light.dir));
+
+	dotSize = dotSize > light.ambPow ? dotSize : light.ambPow;
+
+	float4 lamPowMapCol = lightPowMap.Sample(lightSmp, float2(dotSize, dotSize));
+
+	float lamPow = lamPowMapCol[colorType];
+
+	return LamLightColBase(light.dif, lamPow);
+}
+
+float3 LamLightPoint(float3 _dif, float _pow);
+
+float3 SpeLightDirection( float3 _modelPos, float3 _normal, float4 _speculer)
+{
+
+	float3 tmpVec = normalize(camPos.xyz - _modelPos) + normalize(-light.dir);
+
+	tmpVec = normalize(tmpVec);
+
+	float lcDot = dot(tmpVec, _normal);
+
+	return SpeLightColBase(lcDot, _speculer);
+}
+
+float3 LamLightColBase(float3 _dif, float _pow)
 {
 
 	float3 tmpLightCol = _dif;
@@ -132,32 +146,16 @@ float3 LamLightCol(float3 _dif, float _pow)
 	return tmpLightCol;
 }
 
-float3 SpeLightCol(float3 _dir, float3 _modelPos, float3 _normal, float4 _speculer)
+float3 SpeLightColBase(float _lcDot, float4 _speculer)
 {
 
-	float3 tmpVec = normalize(camPos.xyz - _modelPos);//ピクセルからのカメラ方向
-
-	tmpVec = normalize(-_dir + tmpVec);
-
-	float lcDot = dot(tmpVec, _normal);
-
-	float power = saturate(lcDot);
+	float power = saturate(_lcDot);
 
 	float3 tmpLightCol = _speculer.rgb * pow(power, _speculer.a);
 
 	return tmpLightCol;
 }
 
-float3 AmbLightCol()
-{
-
-	float3 tmpLightCol = light.dif.rgb;
-
-	tmpLightCol *= light.ambPow;
-
-	return tmpLightCol;
-
-}
 #endif
 
 #endif

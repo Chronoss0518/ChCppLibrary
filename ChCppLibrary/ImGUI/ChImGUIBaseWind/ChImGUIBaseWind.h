@@ -85,7 +85,7 @@ namespace ChImGui
 #ifdef _WINDOWS_
 		inline void Init(
 			const HWND _hWnd
-			, const ChStd::Bool _LJapaneseFlg = false)
+			, const bool _LJapaneseFlg = false)
 		{
 			if (IsBaseInit())return;
 
@@ -113,7 +113,7 @@ namespace ChImGui
 #ifdef _D3D9_H_
 		inline void Init(const HWND _hWnd
 			, const LPDIRECT3DDEVICE9 _lpDevice
-			, const ChStd::Bool _LJapaneseFlg = false)
+			, const bool _LJapaneseFlg = false)
 		{
 			if (IsBaseInit())return;
 
@@ -144,7 +144,7 @@ namespace ChImGui
 		inline void Init(const HWND _hWnd
 			, const ID3D11Device* _lpDevice
 			, const ID3D11DeviceContext* _lpContext
-			, const ChStd::Bool _LJapaneseFlg = false)
+			, const bool _LJapaneseFlg = false)
 		{
 
 			if (IsBaseInit())return;
@@ -204,29 +204,29 @@ namespace ChImGui
 
 		void SetWindSize(
 			const ImVec2& _Vec
-			, const ChStd::Bool _NotReSize = false);
+			, const bool _NotReSize = false);
 
 		void SetWindSize(
 			const ChVec2& _Vec
-			, const ChStd::Bool _NotReSize = false);
+			, const bool _NotReSize = false);
 
 		void SetWindSize(
 			const float _w
 			, const float _h
-			, const ChStd::Bool _NotMove = false);
+			, const bool _NotMove = false);
 
 		void SetWindPos(
 			const ImVec2& _Vec
-			, const ChStd::Bool _NotMove = false);
+			, const bool _NotMove = false);
 
 		void SetWindPos(
 			const ChVec2& _Vec
-			, const ChStd::Bool _NotMove = false);
+			, const bool _NotMove = false);
 
 		void SetWindPos(
 			const float _w
 			, const float _h
-			, const ChStd::Bool _NotReSize = false);
+			, const bool _NotReSize = false);
 
 		inline void SetWindTrueFlg(const ImGuiWindowFlags _Flg)
 		{
@@ -238,7 +238,7 @@ namespace ChImGui
 
 		}
 
-		inline void SetIOpenFlg(const ChStd::Bool _Flg) { IOpenFlg = _Flg; }
+		inline void SetIOpenFlg(const bool _Flg) { IOpenFlg = _Flg; }
 
 		inline void SetCutLine()
 		{
@@ -260,14 +260,14 @@ namespace ChImGui
 
 		//Ç±ÇÃÉ{É^ÉìÇ™âüÇ≥ÇÍÇΩç€Ç…trueÇ…Ç»ÇÈ//
 		//SameLine = ìØÇ∂çsÇ∆Ç¢Ç§à”ñ°//
-		ChStd::Bool IsOpenButton(
+		bool IsOpenButton(
 			const std::string& _ButtonName
-			, const ChStd::Bool _SameLineFlg = false
+			, const bool _SameLineFlg = false
 			, const std::string& _SubName = "");
 
-		static ChStd::Bool IsBaseInit();
+		static bool IsBaseInit();
 
-		inline ChStd::Bool IsIOpen() { return IOpenFlg; }
+		inline bool IsIOpen() { return IOpenFlg; }
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//EditFunction//
@@ -641,7 +641,7 @@ namespace ChImGui
 
 #ifdef _WINDOWS_
 
-		inline static ChStd::Bool ImGuiProc(
+		inline static bool ImGuiProc(
 			HWND _hWnd
 			, UINT _uMsg
 			, WPARAM _wParam
@@ -660,7 +660,7 @@ namespace ChImGui
 
 	protected:
 
-		inline void Init(const ChStd::Bool _LJapaneseFlg = false)
+		inline void Init(const bool _LJapaneseFlg = false)
 		{
 			if (GetFlgManager())return;
 
@@ -686,12 +686,12 @@ namespace ChImGui
 			///////////////////////////////////////////////////////////////////////////////////
 			//SetFunction//
 
-			void SetWindOpen(const ChStd::Bool _Flg) { WindOpenFlg = _Flg; }
+			void SetWindOpen(const bool _Flg) { WindOpenFlg = _Flg; }
 
 			///////////////////////////////////////////////////////////////////////////////////
 			//IsFunction//
 
-			ChStd::Bool IsWindOpen() { return WindOpenFlg; }
+			bool IsWindOpen() { return WindOpenFlg; }
 
 			///////////////////////////////////////////////////////////////////////////////////
 
@@ -728,8 +728,8 @@ namespace ChImGui
 
 			///////////////////////////////////////////////////////////////////////////////////
 
-			ChStd::Bool DrawSettingFlg = false;
-			ChStd::Bool WindOpenFlg = false;
+			bool DrawSettingFlg = false;
+			bool WindOpenFlg = false;
 
 		};
 
@@ -740,21 +740,21 @@ namespace ChImGui
 			return ins;
 		}
 
-		ChStd::Bool OnceFlg = false;
+		bool OnceFlg = false;
 
 		ImGuiWindowFlags WFlg = 0;
 
 		ImVec2 WSize = ImVec2(-1.0f, -1.0f);
-		ChStd::Bool RSizeFlg = false;
+		bool RSizeFlg = false;
 
 		ImVec2 WPos = ImVec2(-1.0f, -1.0f);
-		ChStd::Bool RMoveFlg = false;
+		bool RMoveFlg = false;
 
 	private:
 
-		static ChStd::Bool BaseInitFlgment;
+		static bool BaseInitFlgment;
 
-		ChStd::Bool IOpenFlg = false;
+		bool IOpenFlg = false;
 
 	};
 

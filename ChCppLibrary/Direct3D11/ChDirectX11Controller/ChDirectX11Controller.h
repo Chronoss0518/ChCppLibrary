@@ -17,14 +17,14 @@ namespace ChD3D11
 
 		void Init(
 			HWND _hWnd, 
-			const ChStd::Bool _fullScreenFlg, 
+			const bool _fullScreenFlg, 
 			const unsigned long _scrW,
 			const unsigned long _scrH);
 
 		/*
 		void Init(
 			ChWin::WindObject& _windObject,
-			const ChStd::Bool _fullScreenFlg);
+			const bool _fullScreenFlg);
 
 		*/
 
@@ -52,7 +52,7 @@ namespace ChD3D11
 	public://Is Functions//
 
 		//デバイスが存在するかしないかの確認//
-		inline ChStd::Bool IsInstanse()
+		inline bool IsInstanse()
 		{
 			if (ChPtr::NullCheck(device))return false;
 			if (ChPtr::NullCheck(dContext))return false;

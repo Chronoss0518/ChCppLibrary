@@ -131,7 +131,7 @@ ChLONGRECT::ChLONGRECT(const ChLONGPOINT& _pos, const ChLONGPOINT& _size)
 	vec.SetScreenCoordinates(_pos.vec, _size.vec);
 }
 
-ChStd::Bool ChLONGRECT::IsAll0()const
+bool ChLONGRECT::IsAll0()const
 {
 	for (char i = 0; i < 2; i++)
 	{

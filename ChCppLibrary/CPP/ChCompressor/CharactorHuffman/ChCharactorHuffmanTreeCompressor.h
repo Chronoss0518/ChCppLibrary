@@ -16,7 +16,7 @@ namespace ChCpp
 
 			inline void SetAnnotation(const unsigned char _dictionaryAnnotation) { dictionaryAnnotation = _dictionaryAnnotation; }
 
-			inline void SetDictionaryFirstFlg(const ChStd::Bool _flg) { dictionaryFirstFlg = _flg; }
+			inline void SetDictionaryFirstFlg(const bool _flg) { dictionaryFirstFlg = _flg; }
 
 			inline void SethighToZeroFlgTrue() { highToZeroFlg = 0; }
 
@@ -81,9 +81,9 @@ namespace ChCpp
 
 			void LoadDictionary(std::map<unsigned char, FlgObject>& _dictionary,unsigned long& _startPos, unsigned long& _endPos,const std::vector<unsigned char>& _decompressBase,const FirstFlgment _fFlgs,const unsigned char _annotatino,const unsigned char _annotationCountInDictionary = 0);
 
-			ChStd::Bool highToZeroFlg = true;
+			bool highToZeroFlg = true;
 			unsigned char dictionaryAnnotation = 0;
-			ChStd::Bool dictionaryFirstFlg = false;
+			bool dictionaryFirstFlg = false;
 
 		};
 	}

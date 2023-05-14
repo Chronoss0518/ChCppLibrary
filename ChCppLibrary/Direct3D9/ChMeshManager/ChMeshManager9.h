@@ -125,14 +125,14 @@ namespace ChMesh
 
 		//“o˜^‚³‚ê‚Ä‚¢‚éƒpƒX‚ª‘¶İ‚·‚é‚©‚ÌŠm”F//
 		//Œ©‚Â‚©‚Á‚½ê‡‚Ítrue‚ğ•Ô‚·//
-		inline ChStd::Bool IsPath(const std::string& _find)
+		inline bool IsPath(const std::string& _find)
 		{
 			return pathList.find(_find) != pathList.end(); 
 		}
 
 		//“o˜^‚³‚ê‚Ä‚¢‚éMeshƒŠƒXƒgæ“¾//
 		//Œ©‚Â‚©‚Á‚½ê‡‚Ítrue‚ğ•Ô‚·//
-		inline ChStd::Bool IsMesh(const std::string& _find)
+		inline bool IsMesh(const std::string& _find)
 		{
 			return meshList.find(_find) != meshList.end();
 		}

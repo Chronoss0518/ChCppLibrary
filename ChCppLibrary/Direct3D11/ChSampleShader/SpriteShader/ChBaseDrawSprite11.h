@@ -28,39 +28,39 @@ namespace ChD3D11
 
 		public://Set Functions//
 
-			void SetSpriteMatrix(const ChLMat& _mat);
+			inline void SetAlphaBlendFlg(const bool _flg) { alphaBlendFlg = _flg; }
 
 		public://Get Functions//
 
 			inline ChLMat GetSpriteMatrix() { return spriteData.GetSpriteMatrix(); }
 
-			inline D3D11_FILL_MODE GetFillMode() { return fill; }
-
-			inline D3D11_CULL_MODE GetCullMode() { return cull; }
+			inline ChVec4 GetBaseColor() { return spriteData.GetBaseColor(); }
 
 		public://Other Functions//
 
-		//í èÌï`âÊ//
+			//í èÌï`âÊ//
 			void Draw(
 				ID3D11DeviceContext* _dc
 				, TextureBase11& _tex
 				, Sprite11& _sprite
 				, const ChMat_11& _mat = ChMat_11());
 
-		private:
-
-			void Update();
+		//í èÌï`âÊ//
+			void Draw(
+				ID3D11DeviceContext* _dc
+				, TextureBase11& _tex
+				, Sprite11& _sprite
+				, const ChVec4& _baseColor
+				, const ChMat_11& _mat = ChMat_11());
 
 		private://Member Value//
 
 			CB::CBSprite11 spriteData;
 
-			D3D11_FILL_MODE fill = D3D11_FILL_MODE::D3D11_FILL_SOLID;
-			D3D11_CULL_MODE cull = D3D11_CULL_MODE::D3D11_CULL_NONE;
-			ChStd::Bool updateFlg = true;
-
 			VertexBuffer11<Ch3D::Vertex> vertexBuffer;
 			IndexBuffer11 indexBuffer;
+
+			bool alphaBlendFlg = false;
 
 		};
 	}

@@ -11,13 +11,13 @@
 VS_OUT main(
 	float4 _pos			: POSITION0
 	, float2 _uv		: TEXCOORD0
-	, float4 _color : COLOR0
+	, float4 _color		: COLOR0
 	, float3 _normal	: NORMAL0
 ) {
 	VS_OUT res;
 
 	MTWStruct tmp;
-	tmp = ModelToWorld(_pos, _uv, _normal, _normal);
+	tmp = ModelToWorld(_pos, _uv, _normal, _normal, GetInitMatrix4x4());
 
 	res.worldPos = tmp.worldPos;
 	res.viewPos = tmp.viewPos;

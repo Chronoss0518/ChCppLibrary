@@ -132,11 +132,12 @@ MTWStruct ModelToWorld(
 	float4 _pos,
 	float2 _uv,
 	float3 _normal,
-	float3 _faceNormal)
+	float3 _faceNormal,
+	float4x4 _boneMatrix)
 {
 	MTWStruct res;
 
-	float4x4 tmpMat = mul(frameMatrix, worldMat);
+	float4x4 tmpMat = mul(_boneMatrix, mul(frameMatrix, worldMat));
 
 	res.worldPos = mul(_pos, tmpMat);
 
@@ -155,16 +156,14 @@ MTWStruct ModelToWorld(
 void FrustumCulling(float4 _pos)
 {
 	float x = _pos.x / _pos.w;
+	x *= x;
 	float y = _pos.y / _pos.w;
-	float z = _pos.z / _pos.w;
-
-	clip((x < 1.0f && x > -1.0f) && 
-		(y < 1.0f && y > -1.0f) && 
-		(z < 1.0f && z > 0.0f) 
-		? 1.0f : -1.0f);
-	//clip(x >= -1.0f && x <= 1.0f ? 1.0f : -1.0f);
-	//clip(y >= -1.0f && y <= 1.0f ? 1.0f : -1.0f);
-	//clip(z >= 0.0f && z <= 1.0f ? 1.0f : -1.0f);
+	y *= y;
+	float z = (_pos.z / _pos.w) * 2.0f - 1.0f;
+	z *= z;
+	clip(1.0f - x);
+	clip(1.0f - y);
+	clip(1.0f - z);
 }
 
 

@@ -52,12 +52,6 @@ namespace ChD3D11
 		ChVec4 baseColor = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
 	};
 
-	struct BoneDatas
-	{
-		//スキンメッシュ用行列//
-		ChMat_11 skinWeightMat[1000];
-	};
-
 	class ShaderObjectBase11 :public ChCp::Releaser, public ChCp::Initializer
 	{
 	public:
@@ -333,6 +327,39 @@ namespace ChD3D11
 
 		}
 
+		inline void SetToGeometryShader(
+			ID3D11DeviceContext* _dc,
+			const unsigned long updateCount = 1)
+		{
+			if (!*this)return;
+			if (ChPtr::NullCheck(_dc))return;
+
+			_dc->GSSetConstantBuffers(registerNo, updateCount, &buf);
+
+		}
+
+		inline void SetToHullShader(
+			ID3D11DeviceContext* _dc,
+			const unsigned long updateCount = 1)
+		{
+			if (!*this)return;
+			if (ChPtr::NullCheck(_dc))return;
+
+			_dc->HSSetConstantBuffers(registerNo, updateCount, &buf);
+
+		}
+
+		inline void SetToDomainShader(
+			ID3D11DeviceContext* _dc,
+			const unsigned long updateCount = 1)
+		{
+			if (!*this)return;
+			if (ChPtr::NullCheck(_dc))return;
+
+			_dc->DSSetConstantBuffers(registerNo, updateCount, &buf);
+
+		}
+
 		inline void SetToPixelShader(
 			ID3D11DeviceContext* _dc,
 			const unsigned long updateCount = 1)
@@ -341,6 +368,17 @@ namespace ChD3D11
 			if (ChPtr::NullCheck(_dc))return;
 
 			_dc->PSSetConstantBuffers(registerNo, updateCount, &buf);
+
+		}
+
+		inline void SetToComputeShader(
+			ID3D11DeviceContext* _dc,
+			const unsigned long updateCount = 1)
+		{
+			if (!*this)return;
+			if (ChPtr::NullCheck(_dc))return;
+
+			_dc->CSSetConstantBuffers(registerNo, updateCount, &buf);
 
 		}
 

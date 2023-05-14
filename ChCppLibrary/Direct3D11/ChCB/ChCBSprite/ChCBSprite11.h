@@ -58,7 +58,7 @@ namespace ChD3D11
 
 			ChS_SpriteData spData;
 			ConstantBuffer11<ChS_SpriteData> spBuf;
-			ChStd::Bool sUpdateFlg = true;
+			bool sUpdateFlg = true;
 
 			TextureBase11* baseTex = nullptr;
 			TextureBase11* defaultBase = nullptr;

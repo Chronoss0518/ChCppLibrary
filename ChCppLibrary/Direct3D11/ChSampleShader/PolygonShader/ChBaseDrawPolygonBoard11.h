@@ -37,6 +37,8 @@ namespace ChD3D11
 
 			void SetCullMode(const D3D11_CULL_MODE _cull);
 
+			inline void SetAlphaBlendFlg(const bool _flg) { alphaBlendFlg = _flg; }
+
 			void SetShaderDrawData(ID3D11DeviceContext* _dc);
 
 			void SetShaderCharaData(ID3D11DeviceContext* _dc);
@@ -63,7 +65,7 @@ namespace ChD3D11
 
 		private:
 
-			void Update()override;
+			void Update(ID3D11DeviceContext* _dc)override;
 
 		private://Member Value//
 
@@ -76,8 +78,9 @@ namespace ChD3D11
 
 			D3D11_FILL_MODE fill = D3D11_FILL_MODE::D3D11_FILL_SOLID;
 			D3D11_CULL_MODE cull = D3D11_CULL_MODE::D3D11_CULL_NONE;
-			ChStd::Bool updateFlg = true;
+			bool updateFlg = true;
 
+			bool alphaBlendFlg = false;
 
 		};
 	}

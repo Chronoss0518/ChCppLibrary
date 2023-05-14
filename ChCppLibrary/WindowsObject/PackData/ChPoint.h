@@ -74,7 +74,7 @@ public://Set Functions//
 
 public://Is Functions//
 
-	ChStd::Bool IsAll0()const;
+	bool IsAll0()const;
 
 public://Serialize Deserialize//
 
@@ -219,7 +219,7 @@ public://Set Functions//
 
 public://Is Functions//
 
-	ChStd::Bool IsAll0()const;
+	bool IsAll0()const;
 
 public://Serialize Deserialize//
 

@@ -137,7 +137,7 @@ namespace ChCpp
 			///////////////////////////////////////////////////////////////////////////////////////
 			//IsFunction//
 			
-			ChStd::Bool IsPrefix(const std::string _str, const char* _prefix,const unsigned long _prefixSize);
+			bool IsPrefix(const std::string _str, const char* _prefix,const unsigned long _prefixSize);
 
 			///////////////////////////////////////////////////////////////////////////////////////
 			//LoadFunction//

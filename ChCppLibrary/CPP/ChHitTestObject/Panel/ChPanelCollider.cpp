@@ -14,7 +14,7 @@ using namespace ChCpp;
 //HitTestRay Method//
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool PanelCollider::IsHit(
+bool PanelCollider::IsHit(
 	HitTestBox* _target)
 {
 	return false;
@@ -22,7 +22,7 @@ ChStd::Bool PanelCollider::IsHit(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  PanelCollider::IsHit(
+bool  PanelCollider::IsHit(
 	HitTestSphere* _target)
 {
 	return false;
@@ -30,7 +30,7 @@ ChStd::Bool  PanelCollider::IsHit(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  PanelCollider::IsHit(
+bool  PanelCollider::IsHit(
 	HitTestRay* _target)
 {
 	auto square = GetSquarePositions();
@@ -57,11 +57,21 @@ ChStd::Bool  PanelCollider::IsHit(
 		}
 	}
 
-	ChStd::Bool hitFlg = HitTestTri(tmpVec, pos ,ray, square.pos[0], square.pos[1], square.pos[2]);
+	unsigned long numbers[4]{ 0,1,2,3 };
+
+	if (!leftHandFlg)
+	{
+		numbers[0] = 3;
+		numbers[1] = 2;
+		numbers[2] = 1;
+		numbers[3] = 0;
+	}
+
+	bool hitFlg = HitTestTri(tmpVec, pos ,ray, square.pos[numbers[0]], square.pos[numbers[1]], square.pos[numbers[2]]);
 
 	if (tmpVec.Len() > maxLen)hitFlg = false;
 
-	if (!hitFlg)hitFlg = HitTestTri(tmpVec, pos, ray, square.pos[0], square.pos[2], square.pos[3]);
+	if (!hitFlg)hitFlg = HitTestTri(tmpVec, pos, ray, square.pos[numbers[0]], square.pos[numbers[2]], square.pos[numbers[3]]);
 
 	if (tmpVec.Len() > maxLen)hitFlg = false;
 
@@ -76,7 +86,7 @@ ChStd::Bool  PanelCollider::IsHit(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool  PanelCollider::IsInnerHit(
+bool  PanelCollider::IsInnerHit(
 	HitTestBox* _target)
 {
 	return false;
@@ -84,7 +94,7 @@ ChStd::Bool  PanelCollider::IsInnerHit(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool PanelCollider::IsInnerHit(
+bool PanelCollider::IsInnerHit(
 	HitTestSphere* _target)
 {
 	return false;
@@ -92,7 +102,7 @@ ChStd::Bool PanelCollider::IsInnerHit(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-Square PanelCollider::GetSquarePositions()
+PanelCollider::Square PanelCollider::GetSquarePositions()
 {
 	Square out;
 

@@ -38,7 +38,7 @@ namespace ChStr
 
 		return out;
 	}
-
+	
 	std::string RemoveToWhiteSpaceChars(const std::string& _str)
 	{
 
@@ -121,7 +121,7 @@ namespace ChStr
 
 		for (unsigned long i = 0; i < _str.length(); i++)
 		{
-			ChStd::Bool ConFlg = false;
+			bool ConFlg = false;
 
 			if (_str[i] < StartNum)ConFlg = true;
 			if (_str[i] > EndNum)ConFlg = true;
@@ -148,7 +148,7 @@ namespace ChStr
 
 		for (unsigned long i = 0; i < _str.length(); i++)
 		{
-			ChStd::Bool conFlg = false;
+			bool conFlg = false;
 
 			if (_str[i] < StartNum)conFlg = true;
 			if (_str[i] > EndNum)conFlg = true;
@@ -160,6 +160,57 @@ namespace ChStr
 			out = out + _str[i];
 
 		}
+		return out;
+	}
+
+	std::vector<std::string> Split(const std::string& _str, const std::string& _split)
+	{
+		std::vector<std::string> out;
+
+		unsigned long nowPos = 0;
+		unsigned long testPos = _str.find(_split, nowPos);
+		
+		if (testPos == std::string::npos)
+		{
+			out.push_back(_str);
+			return out;
+		}
+
+		while (testPos != std::string::npos)
+		{
+			unsigned long tmp = testPos - nowPos;
+			out.push_back(tmp != 0 ? _str.substr(nowPos, testPos - nowPos) : "\0");
+			nowPos = testPos + _split.size();
+			testPos = _str.find(_split, nowPos);
+		}
+
+		out.push_back(_str.substr(nowPos));
+
+		return out;
+	}
+
+	std::vector<std::wstring> Split(const std::wstring& _str, const std::wstring& _split)
+	{
+		std::vector<std::wstring> out;
+
+		unsigned long nowPos = 0;
+		unsigned long testPos = _str.find(_split, nowPos);
+
+		if (testPos == std::wstring::npos)
+		{
+			out.push_back(_str);
+			return out;
+		}
+
+		while (testPos != std::wstring::npos)
+		{
+			out.push_back(_str.substr(nowPos, testPos - nowPos));
+			nowPos = testPos + _split.size();
+			testPos = _str.find(_split, nowPos);
+		}
+
+		out.push_back(_str.substr(nowPos));
+
 		return out;
 	}
 
