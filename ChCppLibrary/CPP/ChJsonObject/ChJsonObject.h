@@ -7,46 +7,43 @@ namespace ChCpp
 {
 	class JsonObject:protected BaseObject
 	{
+	public:
+
+		std::string GetText();
 
 	private:
-
-		std::map<std::string, ChPtr::Shared<JsonObject>>value;
-
+		std::string text;
 	};
 
 	class JsonArray :public JsonObject
 	{
-	private:
+	public:
 
-		std::vector<ChPtr::Shared<JsonObject>>value;
+		std::string GetText();
 
+		std::vector<ChPtr::Shared<JsonObject>>GetArray();
 	};
 
 	class JsonNumber :public JsonObject
 	{
 
+		double GetValue();
+
 	private:
-
-		double value = 0.0;
-
 	};
 
 	class JsonString :public JsonObject
 	{
 
 	private:
-
 		std::string value = "";
-
 	};
 
 	class JsonBoolean :public JsonObject
 	{
 
 	private:
-
-		bool value = false;;
-
+		bool value = false;
 	};
 }
 
