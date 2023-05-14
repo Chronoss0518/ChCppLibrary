@@ -51,6 +51,28 @@ namespace ChCp
 
 	public:
 
+		TextType Serialize()
+		{
+			return
+
+#ifdef _UNICODE
+				SerializeFromWCharText();
+#else
+				SerializeFromCharText();
+#endif
+
+		};
+
+		void Deserialize(const TextType& _str)
+		{
+
+#ifdef _UNICODE
+			DeserializeFromWCharText(_str);
+#else
+			DeserializeFromCharText(_str);
+#endif
+		};
+
 		std::string SerializeFromCharText();
 		std::wstring SerializeFromWCharText();
 
