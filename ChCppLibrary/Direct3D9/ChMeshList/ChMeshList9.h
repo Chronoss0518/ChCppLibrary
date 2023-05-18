@@ -80,31 +80,31 @@ namespace ChMesh
 		//Meshの登録(DataNameを使って3Dモデルを選択する)//
 		void SetMesh(
 			const std::string& _meshName
-			, const ChStd::DataNo _dataNum);
+			, const unsigned short _dataNum);
 
 		//※登録できるSkinMeshがまだ完成していない//
 		//SkinMeshの登録(DataNameを使って3Dモデルを選択する)//
 		void SetSkinMesh(
 			const std::string& _meshName
-			, const ChStd::DataNo _dataNum);
+			, const unsigned short _dataNum);
 
 		//登録されているMeshの画像を一部変更//
 		void SetTexture(
-			const ChStd::DataNo _dataNum
+			const unsigned short _dataNum
 			, const unsigned long _texNum
 			, const ChPtr::Shared<ChTex::Texture9> _tex);
 
 		//SkinMesh専用//
 		//XFileよりアニメーションを取得//
 		void SetAnimation(
-			const ChStd::DataNo _dataNum
+			const unsigned short _dataNum
 			, const std::string& _aniamtionName
 			, const std::string& _xFileName);
 
 		//SkinMesh専用//
 		//外部で作成したアニメーションをセット//
 		void SetAnimation(
-			const ChStd::DataNo _dataNum
+			const unsigned short _dataNum
 			, const std::string& _aniamtionName
 			, const std::map<std::string, ChPtr::Shared<ChAnimationObject9>>& _animes);
 
@@ -113,21 +113,21 @@ namespace ChMesh
 
 		//選択したMeshの選択した面のベースとなる法線//
 		MeshFace9 GetEasyFace(
-			const ChStd::DataNo _dataNum
+			const unsigned short _dataNum
 			, const unsigned long _faseNum);
 
 		//登録されているMeshの数//
-		inline const ChStd::DataNo GetMeshSize()
+		inline const unsigned short GetMeshSize()
 		{
-			return (ChStd::DataNo)meshList.size();
+			return (unsigned short)meshList.size();
 		}
 
 		//登録されているMeshのマテリアルを取得//
 		std::vector<ChPtr::Shared<ChMaterial_9>>& GetMeshMaterials(
-			const ChStd::DataNo _dataNum);
+			const unsigned short _dataNum);
 
 		//描画時などに利用されるMeshを出力//
-		inline ChPtr::Shared<BaseMesh9> GetMesh(const ChStd::DataNo _dataNum)
+		inline ChPtr::Shared<BaseMesh9> GetMesh(const unsigned short _dataNum)
 		{
 			if (meshList.size() <= _dataNum)return nullptr;
 
@@ -138,7 +138,7 @@ namespace ChMesh
 
 		//この関数を呼ぶと各面に横滑りを行うための法線が生成される。
 		void CreateEasyFace(
-			const ChStd::DataNo _dataNum
+			const unsigned short _dataNum
 			, const unsigned short _baseMatNum);
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -146,7 +146,7 @@ namespace ChMesh
 		//登録されているXFileをSubSetごとに描画する//
 		void DrawMesh(
 			const ChMat_9 &_mat
-			, const ChStd::DataNo _dataNum
+			, const unsigned short _dataNum
 			, const long _subNum = -1);
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -162,7 +162,7 @@ namespace ChMesh
 
 		static std::vector<ChPtr::Shared<ChMaterial_9>> nMaterial;
 
-		std::map<ChStd::DataNo, ChPtr::Shared<BaseMesh9>>meshList;
+		std::map<unsigned short, ChPtr::Shared<BaseMesh9>>meshList;
 
 	}ChMeshList9;
 

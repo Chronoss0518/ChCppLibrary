@@ -59,7 +59,7 @@ void BaseDrawPolygonBoard11::InitVertexShader()
 	decl[3] = { "NORMAL",  0, DXGI_FORMAT_R32G32B32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
 
 
-	SampleShaderBase11::InitVertexShader(decl, sizeof(decl) / sizeof(D3D11_INPUT_ELEMENT_DESC), main, sizeof(main));
+	SampleShaderBase11::CreateVertexShader(decl, sizeof(decl) / sizeof(D3D11_INPUT_ELEMENT_DESC), main, sizeof(main));
 
 }
 
@@ -67,7 +67,7 @@ void BaseDrawPolygonBoard11::InitPixelShader()
 {
 #include"../PolygonShader/BasePolygonPixcel.inc"
 
-	SampleShaderBase11::InitPixelShader(main, sizeof(main));
+	SampleShaderBase11::CreatePixelShader(main, sizeof(main));
 }
 
 void BaseDrawPolygonBoard11::SetProjectionMatrix(const ChLMat& _mat)
@@ -155,6 +155,11 @@ void BaseDrawPolygonBoard11::Draw(
 
 	drawVertexs[0] = *vertexs[0];
 
+	if (alphaBlendFlg)
+	{
+		SampleShaderBase11::SetShaderBlender(_dc);
+	}
+
 	for (unsigned long i = 1; i < vertexs.size() - 1; i++)
 	{
 		drawVertexs[1] = *vertexs[i];
@@ -169,9 +174,14 @@ void BaseDrawPolygonBoard11::Draw(
 		_dc->DrawIndexed(3, 0, 0);
 
 	}
+
+	if (alphaBlendFlg)
+	{
+		SampleShaderBase11::SetShaderDefaultBlender(_dc);
+	}
 }
 
-void BaseDrawPolygonBoard11::Update()
+void BaseDrawPolygonBoard11::Update(ID3D11DeviceContext* _dc)
 {
 	if (!updateFlg)return;
 
@@ -186,8 +196,8 @@ void BaseDrawPolygonBoard11::Update()
 		0.0f,
 		false,
 		false,
-		true,
-		false
+		false,
+		true
 	};
 
 

@@ -84,21 +84,21 @@ namespace ChWin
 
 	public://Create Functions//
 
-		ChStd::Bool CreateTexture(HWND _hWnd, const std::string& _fileName);
+		bool CreateTexture(HWND _hWnd, const std::string& _fileName);
 
-		ChStd::Bool CreateTexture(HWND _hWnd, const std::wstring& _fileName);
+		bool CreateTexture(HWND _hWnd, const std::wstring& _fileName);
 
-		ChStd::Bool CreateTexture(HINSTANCE _instance, const std::string& _fileName);
+		bool CreateTexture(HINSTANCE _instance, const std::string& _fileName);
 
-		ChStd::Bool CreateTexture(HINSTANCE _instance, const std::wstring& _fileName);
+		bool CreateTexture(HINSTANCE _instance, const std::wstring& _fileName);
 
-		ChStd::Bool CreateTexture(const ChINTPOINT& _size, const unsigned char* _bit);
+		bool CreateTexture(const ChINTPOINT& _size, const unsigned char* _bit);
 
-		ChStd::Bool CreateTexture(const int _width, const int _height, const unsigned char* _bit);
+		bool CreateTexture(const int _width, const int _height, const unsigned char* _bit);
 
-		ChStd::Bool CreateTexture(const ChINTPOINT& _size, const unsigned char* _bit, const unsigned int _nPlanes, const unsigned int _bitCount);
+		bool CreateTexture(const ChINTPOINT& _size, const unsigned char* _bit, const unsigned int _nPlanes, const unsigned int _bitCount);
 
-		ChStd::Bool CreateTexture(const int _width, const int _height, const unsigned char* _bit, const unsigned int _nPlanes, const unsigned int _bitCount);
+		bool CreateTexture(const int _width, const int _height, const unsigned char* _bit, const unsigned int _nPlanes, const unsigned int _bitCount);
 
 		HBRUSH CreateBrush()const;
 
@@ -224,7 +224,7 @@ namespace ChWin
 
 		void DrawPlg(RenderTarget& _drawTarget, const int _x, const int _y, const int _w, const int _h, const int _baseX, const int _baseY, const int _baseW, const int _baseH, const HBITMAP _maskTex, const int _rot);
 
-		//ChStd::Bool FillTexture(const FillType _type = FillType::Whiteness);
+		//bool FillTexture(const FillType _type = FillType::Whiteness);
 
 	protected://Other Functions//
 
@@ -262,11 +262,11 @@ namespace ChWin
 
 	public://Create Functions//
 
-		ChStd::Bool CreateRenderTarget(HWND _hWnd, const ChINTPOINT& _size);
-		ChStd::Bool CreateRenderTarget(HWND _hWnd, const int _width, const int _height);
+		bool CreateRenderTarget(HWND _hWnd, const ChINTPOINT& _size);
+		bool CreateRenderTarget(HWND _hWnd, const int _width, const int _height);
 
-		ChStd::Bool CreateRenderTarget(HDC _dc, const ChINTPOINT& _size);
-		ChStd::Bool CreateRenderTarget(HDC _dc, const int _width, const int _height);
+		bool CreateRenderTarget(HDC _dc, const ChINTPOINT& _size);
+		bool CreateRenderTarget(HDC _dc, const int _width, const int _height);
 
 		inline HBRUSH CreateBrush()const { return Texture::CreateBrush(); }
 
@@ -310,7 +310,7 @@ namespace ChWin
 
 	public://Is Function//
 
-		ChStd::Bool IsInit()const { return static_cast<bool>(*this); }
+		bool IsInit()const { return static_cast<bool>(*this); }
 
 	public://Other Functions//
 
@@ -382,7 +382,7 @@ namespace ChWin
 
 		void FillRT(ChWin::Brush& _brush, const long _x, const long _y, const long _w, const long _h);
 
-		//ChStd::Bool UpdateDC(HDC _dc);
+		//bool UpdateDC(HDC _dc);
 
 	protected://Member Value//
 
@@ -402,21 +402,21 @@ namespace ChWin
 
 	public://Create Functions//
 
-		ChStd::Bool CreateMaskTexture(HWND _hWnd, const std::string& _fileName);
+		bool CreateMaskTexture(HWND _hWnd, const std::string& _fileName);
 
-		ChStd::Bool CreateMaskTexture(HWND _hWnd, const std::wstring& _fileName);
+		bool CreateMaskTexture(HWND _hWnd, const std::wstring& _fileName);
 
-		ChStd::Bool CreateMaskTexture(HINSTANCE _instance, const std::string& _fileName);
+		bool CreateMaskTexture(HINSTANCE _instance, const std::string& _fileName);
 
-		ChStd::Bool CreateMaskTexture(HINSTANCE _instance, const std::wstring& _fileName);
+		bool CreateMaskTexture(HINSTANCE _instance, const std::wstring& _fileName);
 
-		ChStd::Bool CreateMaskTexture(const ChINTPOINT& _size, const unsigned char* _bit);
+		bool CreateMaskTexture(const ChINTPOINT& _size, const unsigned char* _bit);
 
-		ChStd::Bool CreateMaskTexture(const int _width, const int _height, const unsigned char* _bit);
+		bool CreateMaskTexture(const int _width, const int _height, const unsigned char* _bit);
 
-		ChStd::Bool CreateMaskTexture(const ChINTPOINT& _size);
+		bool CreateMaskTexture(const ChINTPOINT& _size);
 
-		ChStd::Bool CreateMaskTexture(const int _width, const int _height);
+		bool CreateMaskTexture(const int _width, const int _height);
 
 	public://Set Functions//
 
@@ -457,7 +457,7 @@ namespace ChWin
 
 	public://Is Function//
 
-		ChStd::Bool IsInit()const { return RenderTarget::IsInit(); }
+		bool IsInit()const { return RenderTarget::IsInit(); }
 
 	};
 

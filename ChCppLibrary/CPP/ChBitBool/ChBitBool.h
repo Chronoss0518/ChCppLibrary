@@ -8,48 +8,6 @@ namespace ChCpp
 	{
 	public:
 
-		struct BitFlgObject
-		{
-			union
-			{
-				unsigned char value = 0;
-				struct
-				{
-					unsigned char flg0 : 1;
-					unsigned char flg1 : 1;
-					unsigned char flg2 : 1;
-					unsigned char flg3 : 1;
-					unsigned char flg4 : 1;
-					unsigned char flg5 : 1;
-					unsigned char flg6 : 1;
-					unsigned char flg7 : 1;
-				};
-			};
-
-			BitFlgObject(){}
-			BitFlgObject(const unsigned char _val) { value = _val; }
-			~BitFlgObject(){}
-
-			BitFlgObject& operator = (const unsigned char& _val) { value = _val; return *this; }
-
-			operator unsigned char&() { return value; }
-			operator unsigned char () const { return value; }
-
-
-			void SetFlg(const unsigned long _num, const bool _flg);
-
-			bool GetFlg(const unsigned long _num);
-
-		};
-
-	private:
-
-		static void(*setBitFlgFunc[])(BitFlgObject&, const bool);
-
-		static unsigned char (*getBitFlgFunc[])(BitFlgObject&);
-
-	public:
-
 		///////////////////////////////////////////////////////////////////////////////////
 		//ConstructerDestructer//
 
@@ -73,7 +31,7 @@ namespace ChCpp
 
 		//第一引数はアドレス内の一番小さいビットから数えた数値を入力//
 		//例)アドレス位置が1000番,選択箇所1001番の場合は1を選択//
-		void SetBitFlg(const unsigned char _argsNum, const ChStd::Bool _flg);
+		void SetBitFlg(const unsigned char _argsNum, const bool _flg);
 
 		//引数で選択された位置のビットをtrueをセットする//
 		//第一引数はアドレス内の一番小さいビットから数えた数値を入力//
@@ -111,7 +69,7 @@ namespace ChCpp
 
 		//引数で選択された数値のビットの値によって//
 		//ChStd::TrueかChStd::Falseを返す//
-		ChStd::Bool GetBitFlg(const unsigned char _argsNum);
+		bool GetBitFlg(const unsigned char _argsNum);
 
 		//使用可能サイズ//
 		inline unsigned long  GetSize()
@@ -147,7 +105,9 @@ namespace ChCpp
 
 	protected:
 
-		std::vector<BitFlgObject> flgs = { 0 };
+		unsigned char GetMask(const unsigned char _argsNum);
+
+		std::vector<unsigned char> flgs = { 0 };
 
 	};
 }

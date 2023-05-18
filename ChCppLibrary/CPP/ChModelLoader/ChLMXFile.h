@@ -89,6 +89,10 @@ namespace ChCpp
 
 			void OutModelFile(const ChPtr::Shared<ModelObject> _model, const std::string& _filePath)override;
 
+		public:
+
+			inline void SetMaxBoneNum(const unsigned long _boneNum) { maxBoneNum = _boneNum; }
+
 		protected:
 
 			///////////////////////////////////////////////////////////////////////////////////////
@@ -101,48 +105,51 @@ namespace ChCpp
 			///////////////////////////////////////////////////////////////////////////////////////
 			//SetFunction//
 
-			ChStd::Bool SetFrame(
+			bool SetFrame(
 				ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 				, const ChPtr::Shared<TemplateRange>& _targetTemplate
 				, const std::string& _text);
 
-			ChStd::Bool SetFremeTransformMatrix(
+			bool SetFremeTransformMatrix(
 				ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 				, const ChPtr::Shared<TemplateRange>& _targetTemplate
 				, const std::string& _text);
 
-			ChStd::Bool SetMesh(
+			bool SetMesh(
 				ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 				, const ChPtr::Shared<TemplateRange>& _targetTemplate
 				, const std::string& _text);
 
-			ChStd::Bool SetMeshNormal(
+			bool SetMeshNormal(
 				ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 				, const ChPtr::Shared<TemplateRange>& _targetTemplate
 				, const std::string& _text);
 
-			ChStd::Bool SetMeshTextureCoords(
+			bool SetMeshTextureCoords(
 				ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 				, const ChPtr::Shared<TemplateRange>& _targetTemplate
 				, const std::string& _text);
 
-			ChStd::Bool SetMeshMaterialList(
+			bool SetMeshMaterialList(
 				ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 				, const ChPtr::Shared<TemplateRange>& _targetTemplate
 				, const std::string& _text);
 
-			ChStd::Bool SetMaterial(
+			bool SetMaterial(
 				ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 				, const ChPtr::Shared<TemplateRange>& _targetTemplate
 				, const std::string& _text);
 
-			ChStd::Bool SetSkinWeights(
+			bool SetSkinWeights(
 				ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 				, const ChPtr::Shared<TemplateRange>& _targetTemplate
 				, const std::string& _text);
 
-			///////////////////////////////////////////////////////////////////////////////////////
-			//GetFunction//
+		public:
+
+			inline const unsigned long GetMaxBoneNum() const { return maxBoneNum; }
+
+		protected:
 
 			template<class T>
 			auto GetArrayValues(
@@ -276,13 +283,13 @@ namespace ChCpp
 			///////////////////////////////////////////////////////////////////////////////////////
 			//IsFunction//
 
-			ChStd::Bool IsTags(
+			bool IsTags(
 				size_t& _outTagPos
 				, const std::string& _tagName
 				, const ChPtr::Shared<TemplateRange> _lookTemplate
 				, const std::string& _text);
 
-			inline ChStd::Bool IsTags(
+			inline bool IsTags(
 				const std::string& _tagName
 				, const ChPtr::Shared<TemplateRange> _lookTemplate
 				, const std::string& _text)
@@ -517,10 +524,12 @@ namespace ChCpp
 
 			///////////////////////////////////////////////////////////////////////////////////////
 
-			ChStd::Bool exceptionFlg = false;
+			bool exceptionFlg = false;
 
 			std::string loadFileName  = "";
 			std::string loadFilePath = "";
+
+			unsigned long maxBoneNum = 16;
 
 			///////////////////////////////////////////////////////////////////////////////////////
 			//XFileTemplateNames//

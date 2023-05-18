@@ -54,7 +54,7 @@ public:
 		, const std::string _useSoundDirectory);
 
 	//先に登録してあるDirectoryを利用してSEをセット//
-	ChStd::DataNo SetSESound(
+	unsigned short SetSESound(
 		const std::string _soundFilePath
 		, const std::string _useSoundDirectory);
 
@@ -73,18 +73,18 @@ public:
 	inline void SetBaseVolumeForBGM(const std::string _soundName);
 
 	//セットされたSEのHzを変更//
-	inline void SetHzForSE(const ChStd::DataNo _soundNo
+	inline void SetHzForSE(const unsigned short _soundNo
 		, const DWORD _hz);
 
 	//セットされたSEのVolumeを変更//
-	inline void SetVolumeForSE(const ChStd::DataNo _soundNo
+	inline void SetVolumeForSE(const unsigned short _soundNo
 		, const long _volume);
 
 	//セットされたSEのHzを読み込んだ際のサイズに戻す//
-	inline void SetBaseHzForSE(const ChStd::DataNo _soundNo);
+	inline void SetBaseHzForSE(const unsigned short _soundNo);
 
 	//セットされたSEのVolumeを読み込んだ際のサイズに戻す//
-	inline void SetBaseVolumeForSE(const ChStd::DataNo _soundNo);
+	inline void SetBaseVolumeForSE(const unsigned short _soundNo);
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//UpdateFunction//
@@ -100,7 +100,7 @@ public:
 	///////////////////////////////////////////////////////////////////////////////////
 
 	//登録時に保持した数値でSEデータを解放する//
-	void ClearSE(const ChStd::DataNo _soundNo);
+	void ClearSE(const unsigned short _soundNo);
 
 	///////////////////////////////////////////////////////////////////////////////////
 
@@ -115,7 +115,7 @@ public:
 	///////////////////////////////////////////////////////////////////////////////////
 
 	//登録時に保持した数値でSEを再生する//
-	void PlaySE(const ChStd::DataNo _soundNo);
+	void PlaySE(const unsigned short _soundNo);
 
 	//直接SEを再生する(Updateメソッドを設置する必要がある)//
 	void PlaySE(
@@ -131,7 +131,7 @@ public:
 	///////////////////////////////////////////////////////////////////////////////////
 
 	//登録時に保持した数値でSEを止める//
-	void StopSE(const ChStd::DataNo _soundNo);
+	void StopSE(const unsigned short _soundNo);
 
 	///////////////////////////////////////////////////////////////////////////////////
 
@@ -146,12 +146,12 @@ protected:
 	ChVec3_9* listenerPos;
 	const float listenerBaseLen = 0.3f;
 
-	const ChStd::DataNo maxSE = 10000;
+	const unsigned short maxSE = 10000;
 
-	ChStd::DataNo seNo = 1;
+	unsigned short seNo = 1;
 	
 	std::map<std::string, ChPtr::Shared<ChMainSound9>>mainSoundList;
-	std::map<ChStd::DataNo, ChPtr::Shared<ChSubSound9>>subSoundList;
+	std::map<unsigned short, ChPtr::Shared<ChSubSound9>>subSoundList;
 
 	std::vector<ChPtr::Shared<ChSubSound9>>playSubSoundList;
 

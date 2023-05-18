@@ -294,13 +294,13 @@ namespace ChCpp
 		inline void SetMyName(const std::string& _newName) { myName = _newName; }
 
 		//使用フラグ//
-		inline void SetUseFlg(const ChStd::Bool& _flg) { useFlg = _flg; }
+		inline void SetUseFlg(const bool& _flg) { useFlg = _flg; }
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
 
 		//使用可否の確認//
-		inline ChStd::Bool IsUseFlg() { return useFlg; }
+		inline bool IsUseFlg() { return useFlg; }
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
@@ -368,9 +368,9 @@ namespace ChCpp
 
 		ObjectList* objMaList = nullptr;
 		std::string myName;
-		ChStd::Bool dFlg = false;
+		bool dFlg = false;
 
-		ChStd::Bool useFlg = true;
+		bool useFlg = true;
 
 	};
 

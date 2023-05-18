@@ -7,7 +7,6 @@ namespace ChCpp
 {
 
 	class FrameObject;
-	class ModelObject;
 
 	class PolygonCollider :public Collider
 	{
@@ -15,40 +14,52 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		void SetPolygon(ModelObject& _model);
+		void SetModel(FrameObject& _model);
 
-		ModelObject* GetPolygonList()const;
+		inline void SetRightHandFlg() { leftHandFlg = false; }
+
+		inline void SetLeftHandFlg() { leftHandFlg = true; }
+
+		///////////////////////////////////////////////////////////////////////////////////////
+		//GetFunction//
+
+		FrameObject* GetModel()const;
+
+		inline std::string GetHitMaterialName() { return hitMaterialName; }
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
-		ChStd::Bool IsHit(
+		bool IsHit(
 			HitTestBox* _target)override;
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
-		ChStd::Bool IsHit(
+		bool IsHit(
 			HitTestSphere* _target)override;
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
-		ChStd::Bool IsHit(
+		bool IsHit(
 			HitTestRay* _target)override;
 
 		//対象のオブジェクトがオブジェクト内から衝突しているかの判定//
-		ChStd::Bool IsInnerHit(
+		bool IsInnerHit(
 			HitTestBox* _target)override;
 
 		//対象のオブジェクトがオブジェクト内から衝突しているかの判定//
-		ChStd::Bool IsInnerHit(
+		bool IsInnerHit(
 			HitTestSphere* _target)override;
 
 	private:
 
-		ChStd::Bool IsHitRayToMesh(FrameObject& _object, const ChVec3& _rayPos,const ChVec3& _rayDir,const float rayLen,const ChStd::Bool _nowHitFlg = false);
+		bool IsHitRayToMesh(FrameObject& _object, const ChVec3& _rayPos,const ChVec3& _rayDir,const float rayLen,const bool _nowHitFlg = false);
 
-		ChStd::Bool cullHitFlg = true;
-		ChStd::Bool lHandWorldFlg = true;
-		ModelObject* model = nullptr;;
+		bool leftHandFlg = true;
+		std::string hitMaterialName = "";
+
+		bool cullHitFlg = true;
+		bool lHandWorldFlg = true;
+		FrameObject* model = nullptr;;
 		float minLen = 0.0f;
 	};
 

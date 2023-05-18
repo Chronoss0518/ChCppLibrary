@@ -15,7 +15,7 @@ using namespace ChD3D11;
 //ChMesh11 Method
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void FrameComponent11::CreateAll(ID3D11Device* _device)
+void FrameComponent11::CreateAll(ID3D11Device* _device, Mesh11& _rootObject)
 {
 	if (ChPtr::NullCheck(_device))return;
 
@@ -64,12 +64,17 @@ void FrameComponent11::CreateAll(ID3D11Device* _device)
 
 				auto&& tmpVertex = *frameBase->vertexList[vertexNo];
 
-				Ch3D::MeshVertex mVertex;
+				Ch3D::SkinMeshVertex<16> mVertex;
 				Ch3D::SetPosition(&mVertex, tmpVertex.pos);
 				Ch3D::SetUV(&mVertex, vertex->uv);
 				Ch3D::SetColor(&mVertex, tmpVertex.color);
 				Ch3D::SetNormal(&mVertex, tmpVertex.normal);
 				Ch3D::SetFaceNormal(&mVertex, primitive->faceNormal);
+				mVertex.boneNum = tmpVertex.blendPow.size();
+				for (unsigned long i = 0; i < mVertex.boneNum; i++)
+				{
+					mVertex.blendPows[i] = tmpVertex.blendPow[i];
+				}
 
 				primitive11->vertexArray.push_back(mVertex);
 
@@ -107,6 +112,15 @@ void FrameComponent11::CreateAll(ID3D11Device* _device)
 				prim->vertexArray.size());
 		}
 
+		for (auto boneData : frameBase->boneDatas)
+		{
+			auto bone = ChPtr::Make_S<TargetBoneData11>();
+			bone->boneData = boneData;
+			auto&& objectList = _rootObject.GetAllChildlenConstainsName<FrameObject>(boneData->boneObjectName);
+			bone->targetObject = objectList.empty() ? nullptr : objectList[0].lock();
+			boneList.push_back(bone);
+		}
+
 	}
 
 	for (auto&& cbildObj : LookObj()->GetChildlen())
@@ -117,9 +131,23 @@ void FrameComponent11::CreateAll(ID3D11Device* _device)
 
 		auto&& com = child->SetComponent<FrameComponent11>();
 
-		com->CreateAll(_device);
+		com->CreateAll(_device, _rootObject);
 	}
 
+}
+
+void FrameComponent11::SetBoneData(CB::CBBone11& _bone)
+{
+	if (boneList.empty())return;
+
+	boneList[boneList.size() - 1]->targetObject->UpdateAllDrawTransform();
+	for (unsigned long i = 0; i < boneList.size(); i++)
+	{
+		unsigned long useNum = boneList.size() - 1 - i;
+		
+		_bone.SetBoneObjectDrawMatrix(boneList[useNum]->targetObject->GetDrawLHandMatrix(),i);
+		_bone.SetBoneOffsetMatrix(boneList[useNum]->boneData->boneOffset,i);
+	}
 }
 
 void Mesh11::Init(ID3D11Device* _device)
@@ -172,7 +200,7 @@ void Mesh11::CreateFrames()
 
 	auto frame = SetComponent<FrameComponent11>();
 
-	frame->CreateAll(device);
+	frame->CreateAll(device,*this);
 
 }
 

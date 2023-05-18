@@ -5,12 +5,19 @@
 #include"../ChShaderStructures11.h"
 
 #include"../../CPP/ChBaseObject/ChBaseObject.h"
+#include"../ChCB/ChCBBone/ChCBBone11.h"
 
 namespace ChD3D11
 {
 
 	class Texture11;
 	class Mesh11;
+
+	struct TargetBoneData11
+	{
+		ChPtr::Shared<ChCpp::TargetBoneData> boneData;
+		ChPtr::Shared<ChCpp::FrameObject>targetObject;
+	};
 
 	struct  DrawPrimitiveData11
 	{
@@ -21,9 +28,9 @@ namespace ChD3D11
 		}
 
 		IndexBuffer11 indexBuffer;
-		VertexBuffer11<Ch3D::MeshVertex> vertexBuffer;
+		VertexBuffer11<Ch3D::SkinMeshVertex<BONE_MAX_NUM>> vertexBuffer;
 
-		std::vector<Ch3D::MeshVertex> vertexArray;
+		std::vector<Ch3D::SkinMeshVertex<BONE_MAX_NUM>> vertexArray;
 		std::vector<unsigned long> indexArray;
 
 		ChPtr::Shared<Ch3D::MaterialData> mate;
@@ -38,12 +45,14 @@ namespace ChD3D11
 	public:
 
 		//子オブジェクトすべてを作成する。//
-		void CreateAll(ID3D11Device* _device);
+		void CreateAll(ID3D11Device* _device, Mesh11& _rootObject);
 
 		void SetPrimitives(ChPtr::Shared<DrawPrimitiveData11> _primitive)
 		{
 			primitives.push_back(_primitive);
 		}
+
+		void SetBoneData(CB::CBBone11& _bone);
 
 		std::vector<ChPtr::Shared<DrawPrimitiveData11>>& GetPrimitives()
 		{
@@ -56,6 +65,8 @@ namespace ChD3D11
 		std::vector<ChPtr::Shared<Ch3D::MaterialData>> mateList;
 		ChCpp::FrameComponent* frameCom = nullptr;
 		std::vector<ChPtr::Shared<DrawPrimitiveData11>>primitives;
+		ChLMat boneLMats[16];
+		std::vector<ChPtr::Shared<TargetBoneData11>>boneList;
 
 	};
 

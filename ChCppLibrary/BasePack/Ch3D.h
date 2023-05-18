@@ -72,8 +72,21 @@ namespace Ch3D
 	template<unsigned long Num>
 	struct Bone
 	{
-		float brendPows[Num];
-		unsigned long boneNo[Num];
+		Bone() {
+			for (unsigned long i = 0; i < Num; i++)
+			{
+				blendPows[i] = 0.0f;
+			}
+		}
+
+		float blendPows[Num];
+
+		unsigned long boneNum = 0;
+	};
+
+	struct BoneData
+	{
+		std::vector<float> blendPow;
 	};
 
 	struct Vertex:
@@ -96,20 +109,14 @@ namespace Ch3D
 	struct SkinMeshVertex :
 		public MeshVertex,
 		public Bone<Num>
-	{
-		unsigned long boneNum = Num;
-	};
+	{};
 
 	struct SavePolyVertex :
 		public Position,
 		public Color,
-		public Normal
+		public Normal,
+		public BoneData
 	{};
-
-	struct BoneData
-	{
-		std::map<unsigned long,std::vector<float>> vertexData;
-	};
 
 	struct Material
 	{

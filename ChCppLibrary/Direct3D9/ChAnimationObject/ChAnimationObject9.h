@@ -152,11 +152,11 @@ private:
 
 	ChMat_9 lastPlayMat;
 
-	ChStd::Bool funcFlg = false;
+	bool funcFlg = false;
 	//1ÉtÉåÅ[ÉÄä‘ÇÃêiÇﬁéûä‘//
 	float oneFrameTime = 1.0f / 60.0f;
 
-	ChStd::Bool aniPlayFlg = true;
+	bool aniPlayFlg = true;
 
 	float nowTime = 0.0f;
 	size_t nowFrame = 0;
@@ -199,15 +199,15 @@ private:
 	void CreateFunction();
 
 	std::vector<ChPtr::Shared<ChQua_9>>Create4D
-	(const std::string& _str, size_t& _fPos ,const ChStd::Bool _rFlg);
+	(const std::string& _str, size_t& _fPos ,const bool _rFlg);
 
 	std::vector<ChPtr::Shared<ChVec3_9>> Create3D
-	(const std::string& _str, size_t& _fPos, const ChStd::Bool _rFlg);
+	(const std::string& _str, size_t& _fPos, const bool _rFlg);
 
 
 	std::map<std::string, std::function
 		<std::map<std::string, ChPtr::Shared<ChAnimationObject9>>(const std::string&)>>creaters;
-	ChStd::Bool cFlg = false;
+	bool cFlg = false;
 
 	ChAnimationSupporter9() {}
 

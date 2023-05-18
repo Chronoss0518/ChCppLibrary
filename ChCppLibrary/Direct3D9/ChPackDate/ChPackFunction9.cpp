@@ -85,7 +85,7 @@ void ChVector3_9::Set0Param()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ChVector3_9::CheckNormals() {
+bool ChVector3_9::CheckNormals() {
 
 	if (fabsf(x) + fabsf(y) + fabsf(z) == 1.0f)return true;
 	return false;
@@ -93,7 +93,7 @@ ChStd::Bool ChVector3_9::CheckNormals() {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ChVector3_9::CheckAll0() 
+bool ChVector3_9::CheckAll0() 
 {
 
 	if (fabsf(x) == 0.0f

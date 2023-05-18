@@ -58,7 +58,7 @@ void RenderTargetList9::Release()
 ///////////////////////////////////////////////////////////////////////////////////
 
 void RenderTargetList9::CreateRT(
-	const ChStd::DataNo _dataNum
+	const unsigned short _dataNum
 	, const UINT _rtWidth
 	, const UINT _rtHeight
 	, const _D3DFORMAT _format)
@@ -94,7 +94,7 @@ void RenderTargetList9::CreateRT(
 ///////////////////////////////////////////////////////////////////////////////////
 
 void RenderTargetList9::SetRT(
-	const ChStd::DataNo _dataNum
+	const unsigned short _dataNum
 	,const D3DCOLOR _backCol
 )
 {

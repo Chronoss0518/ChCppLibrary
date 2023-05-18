@@ -66,20 +66,25 @@ void XFile::CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& _f
 
 	for (auto&& tmp : templates->nest)
 	{
-
 		SetFrame(xModel->modelData, tmp, text);
 
 		SetMesh(xModel->modelData, tmp, text);
-
 	}
 
 	if (exceptionFlg)return;
+	
+	Init();
 
 	loadFilePath = GetRoutePath(loadFileName);
 
 	_model->SetModelName(_filePath);
 
 	XFrameToChFrame(_model, xModel->modelData);
+
+	SetMaxPos(*_model, maxPos);
+	SetMinPos(*_model, minPos);
+	SetCenterPos(*_model, CreateCenterPos(minPos,maxPos));
+	SetBoxSize(*_model, CreateBoxSize(minPos,maxPos));
 
 	_model->Create();
 }
@@ -93,7 +98,7 @@ void XFile::OutModelFile(const ChPtr::Shared<ModelObject> _model, const std::str
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool XFile::SetFrame(
+bool XFile::SetFrame(
 	ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 	, const ChPtr::Shared<TemplateRange>& _targetTemplate
 	, const std::string& _text)
@@ -138,7 +143,7 @@ ChStd::Bool XFile::SetFrame(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool XFile::SetFremeTransformMatrix(
+bool XFile::SetFremeTransformMatrix(
 	ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 	, const ChPtr::Shared<TemplateRange>& _targetTemplate
 	, const std::string& _text)
@@ -157,14 +162,13 @@ ChStd::Bool XFile::SetFremeTransformMatrix(
 	}
 
 	_frames->frameMatrix.Deserialize(useText, 0, ",", ";;");
-
 	return true;
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool XFile::SetMesh(
+bool XFile::SetMesh(
 	ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 	, const ChPtr::Shared<TemplateRange>& _targetTemplate
 	, const std::string& _text)
@@ -240,7 +244,7 @@ ChStd::Bool XFile::SetMesh(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool XFile::SetMeshNormal(
+bool XFile::SetMeshNormal(
 	ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 	, const ChPtr::Shared<TemplateRange>& _targetTemplate
 	, const std::string& _text)
@@ -284,7 +288,7 @@ ChStd::Bool XFile::SetMeshNormal(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool XFile::SetMeshTextureCoords(
+bool XFile::SetMeshTextureCoords(
 	ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 	, const ChPtr::Shared<TemplateRange>& _targetTemplate
 	, const std::string& _text)
@@ -314,7 +318,7 @@ ChStd::Bool XFile::SetMeshTextureCoords(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool XFile::SetMeshMaterialList(
+bool XFile::SetMeshMaterialList(
 	ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 	, const ChPtr::Shared<TemplateRange>& _targetTemplate
 	, const std::string& _text)
@@ -350,7 +354,7 @@ ChStd::Bool XFile::SetMeshMaterialList(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool XFile::SetMaterial(
+bool XFile::SetMaterial(
 	ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 	, const ChPtr::Shared<TemplateRange>& _targetTemplate
 	, const std::string& _text)
@@ -467,7 +471,7 @@ ChStd::Bool XFile::SetMaterial(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool XFile::SetSkinWeights(
+bool XFile::SetSkinWeights(
 	ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 	, const ChPtr::Shared<TemplateRange>& _targetTemplate
 	, const std::string& _text)
@@ -539,7 +543,7 @@ ChStd::Bool XFile::SetSkinWeights(
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool XFile::IsTags(
+bool XFile::IsTags(
 	size_t& _outTagPos
 	, const std::string& _TagName
 	, const ChPtr::Shared<TemplateRange> _LookTemplate
@@ -700,13 +704,15 @@ void XFile::XFrameToChFrame(
 
 	_chFrame->SetFrameTransform(_xFrame->frameMatrix);
 
+	_chFrame->GetDrawLHandMatrix();
+
 	for (auto&& frame : _xFrame->next)
 	{
 		auto chFrame = ChPtr::Make_S<FrameObject>();
 
-		XFrameToChFrame(chFrame, frame);
-
 		_chFrame->SetChild(chFrame);
+
+		XFrameToChFrame(chFrame, frame);
 
 	}
 
@@ -723,7 +729,8 @@ void XFile::XFrameToChFrame(
 
 		for (unsigned long i = 0; i < xVertexList.size(); i++)
 		{
-			ChStd::Bool lookFlg = false;
+			bool lookFlg = false;
+			ChPtr::Shared<Ch3D::SavePolyVertex> chVertex = nullptr;
 
 			for (unsigned long j = 0; j < chVertexList.size(); j++)
 			{
@@ -732,8 +739,9 @@ void XFile::XFrameToChFrame(
 
 				summarizeVertex[i] = j;
 
-				chVertexList[j]->normal += xVertexList[i]->normal;
+				chVertex = chVertexList[summarizeVertex[i]];
 
+				chVertex->normal += xVertexList[i]->normal;
 				lookFlg = true;
 
 				break;
@@ -744,19 +752,16 @@ void XFile::XFrameToChFrame(
 
 			summarizeVertex[i] = chVertexList.size();
 
-			auto chVertex = ChPtr::Make_S<Ch3D::SavePolyVertex>();
+			chVertex = ChPtr::Make_S<Ch3D::SavePolyVertex>();
 
 			chVertex->pos = xVertexList[i]->pos;
-			chVertex->normal += xVertexList[i]->normal;
+			chVertex->normal = xVertexList[i]->normal;
 
 			chVertexList.push_back(chVertex);
 
-			mesh->maxPos.x = chVertex->pos.x > mesh->maxPos.x ? chVertex->pos.x : mesh->maxPos.x;
-			mesh->maxPos.y = chVertex->pos.y > mesh->maxPos.y ? chVertex->pos.y : mesh->maxPos.y;
-			mesh->maxPos.z = chVertex->pos.z > mesh->maxPos.z ? chVertex->pos.z : mesh->maxPos.z;
-			mesh->minPos.x = chVertex->pos.x < mesh->minPos.x ? chVertex->pos.x : mesh->minPos.x;
-			mesh->minPos.y = chVertex->pos.y < mesh->minPos.y ? chVertex->pos.y : mesh->minPos.y;
-			mesh->minPos.z = chVertex->pos.z < mesh->minPos.z ? chVertex->pos.z : mesh->minPos.z;
+			mesh->maxPos = TestMaxPos(mesh->maxPos, chVertex->pos);
+			mesh->minPos = TestMinPos(mesh->minPos, chVertex->pos);
+
 		}
 
 		for (auto&& chVertex : chVertexList)
@@ -764,10 +769,24 @@ void XFile::XFrameToChFrame(
 			chVertex->normal.Normalize();
 		}
 
-		ChVec3 minToMaxVec = mesh->maxPos - mesh->minPos;
+		for (unsigned long i = 0;i < _xFrame->skinWeightDatas.size() && i < maxBoneNum;i++)
+		{
+			auto&& skinWeight = _xFrame->skinWeightDatas[i];
+			for (unsigned long j = 0; j < chVertexList.size(); j++) 
+			{
+				auto&& chVertex = *chVertexList[j];
+				auto weitPow = skinWeight->weitPow.find(j);
 
-		mesh->centerPos = (mesh->minPos + mesh->maxPos) / 2.0f;
-		mesh->boxSize = minToMaxVec / 2.0f;
+				chVertex.blendPow.push_back(weitPow == skinWeight->weitPow.end() ? 0.0f : (*weitPow).second);
+			}
+			auto boneData = ChPtr::Make_S<ChCpp::TargetBoneData>();
+			boneData->boneObjectName = skinWeight->targetFrameName;
+			boneData->boneOffset = skinWeight->boneOffset;
+			mesh->boneDatas.push_back(boneData);
+		};
+
+		mesh->centerPos = CreateCenterPos(mesh->minPos,mesh->maxPos);
+		mesh->boxSize = CreateBoxSize(mesh->minPos, mesh->maxPos);
 
 	}
 
@@ -857,4 +876,13 @@ void XFile::XFrameToChFrame(
 		}
 
 	}
+
+	ChVec3 tmpMaxPos = _chFrame->GetDrawLHandMatrix().Transform(mesh->maxPos);
+	ChVec3 tmpMinPos = _chFrame->GetDrawLHandMatrix().Transform(mesh->minPos);
+
+	maxPos = TestMaxPos(tmpMaxPos, maxPos);
+	minPos = TestMinPos(tmpMaxPos, minPos);
+
+	maxPos = TestMaxPos(tmpMinPos, maxPos);
+	minPos = TestMinPos(tmpMinPos, minPos);
 }

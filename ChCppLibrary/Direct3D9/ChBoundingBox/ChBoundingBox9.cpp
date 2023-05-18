@@ -87,7 +87,8 @@ std::vector<ChPtr::Shared<ChVec3_9>> BoundingBox9::GetPosition()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool BoundingBox9::IsHitToPos(
+
+bool BoundingBox9::IsHitToPos(
 	const ChMat_9* _mat
 	, const ChVec3_9* _pos)
 {
@@ -114,7 +115,7 @@ ChStd::Bool BoundingBox9::IsHitToPos(
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool BoundingBox9::IsHitToB_Box(
+bool BoundingBox9::IsHitToB_Box(
 	const ChMat_9* _mat
 	, const ChB_Box9* _pos)
 {
@@ -153,7 +154,7 @@ ChStd::Bool BoundingBox9::IsHitToB_Box(
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool BoundingBox9::IsHitToBull(
+bool BoundingBox9::IsHitToBull(
 	const ChMat_9* _mat
 	, const ChVec3_9* _pos
 	, const float _r)
