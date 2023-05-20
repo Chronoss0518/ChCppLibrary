@@ -3,131 +3,130 @@
 
 namespace ChCpp
 {
-
-	//スクリプト全体を管理するクラス//
-	//これを各地に配置して利用する//
-	typedef class ScriptController:public ChCp::Releaser
+	//Scriptを作成・操作するクラス
+	typedef class Script:public ChCp::Releaser
 	{
+	private:
 
-	public:
+		struct BaseValueData
+		{
+			std::string valueName = "";
+			
+		};
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//InitAndRelease//
+
+	public://Initialize And Release//
+
 
 		void Release()override
 		{
 			scriptList.clear();
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
+	public://Set Function//
 
-		//登録しているScriptをセットする。//
-		void SetScript(
-			const std::function<void()> _update
-			, const std::function<void()> _draw = []() {}
-			, const std::function<void()> _enter = []() {}
-		, const std::function<void()> _exit = []() {});
+		//一時的に利用する値の保持//
+		void SetTmpValue(void* _value);
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//GetFunction//
+	public://Get Function//
 
-		unsigned long GetNowScriptNum()
+		//一時的に利用する値の取得//
+		void* GetTmpValue();
+
+		std::function<bool(std::string)> GetDefaultValueSetFunction();
+
+		std::function<bool(std::string)> GetDefaultValueSumFunction();
+
+		std::function<bool(std::string)> GetDefaultValueSetSumFunction();
+
+		std::function<bool(std::string)> GetDefaultValueSubFunction();
+
+		std::function<bool(std::string)> GetDefaultValueSubSumFunction();
+
+		std::function<bool(std::string)> GetDefaultValueMulFunction();
+
+		std::function<bool(std::string)> GetDefaultValueMulSumFunction();
+
+		std::function<bool(std::string)> GetDefaultValueDivFunction();
+
+		std::function<bool(std::string)> GetDefaultValueDivSumFunction();
+
+		std::function<bool(std::string)> GetDefaultValueEqualFunction();
+
+		std::function<bool(std::string)> GetDefaultValueUnEqualFunction();
+
+	public://Update Function//
+
+		void Update();
+
+	public://Other Function//
+
+		void Compile(const std::string _str);
+
+	private:
+
+		std::vector<unsigned char> scriptList;
+
+		std::map<std::string, ChPtr::Shared<BaseValueData>>valueMaps;
+		std::map<std::string, std::string>structMaps;
+		std::vector<std::string>functionStack;
+		std::map<std::string, std::function<bool(std::string)>>functionMethod;
+
+		Cumulative<std::string> blockCumulative = Cumulative<std::string>("{", "}");
+		Cumulative<std::string> argumentCumulative = Cumulative<std::string>("(", ")");
+		Cumulative<std::string> priorityCumulative = Cumulative<std::string>("(", ")");
+		Cumulative<std::string> arrayCumulative = Cumulative<std::string>("[", "]");
+		Cumulative<std::string> typeCumulative = Cumulative<std::string>("<", ">");
+		Cumulative<std::string> commentCumulative = Cumulative<std::string>("/*", "*/");
+		
+		std::vector<std::string>stringTestCharactors;
+
+		//一時的に作成した値//
+		void* tmpValue = nullptr;
+
+		enum class OpeCode : unsigned char
 		{
-
-			if (nowScript.lock() == nullptr)return ULONG_MAX;
-
-			return nowScript.lock()->myNum;
-
-		}
-
-		///////////////////////////////////////////////////////////////////////////////////
-
-		void ChangeScript(const unsigned long _scriptNo = ULONG_MAX)
-		{
-
-			unsigned long tmp = 0;
-			if (nowScript.lock() != nullptr)
-			{
-				tmp = nowScript.lock()->myNum + 1;
-			}
-
-			if (scriptList.size() > _scriptNo)tmp = _scriptNo;
-			if (scriptList.size() <= tmp)tmp = nowScript.lock()->myNum;
-
-			nowScript = scriptList[tmp];
-
-		}
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//UpdateFunction//
-
-		void Update()
-		{
-			if (nowScript.lock() == nullptr)return;
-			nowScript.lock()->update();
-			Chenge();
-		}
-
-		///////////////////////////////////////////////////////////////////////////////////
-
-		void Draw()
-		{
-
-			if (nowScript.lock() == nullptr)return;
-			nowScript.lock()->draw();
-			Chenge();
-		}
-
-		///////////////////////////////////////////////////////////////////////////////////
-
-		void ClearScript()
-		{
-			scriptList.clear();
-		}
-
-	protected:
-
-		void Chenge()
-		{
-			if (nextScript == nullptr)return;
-
-			if (nowScript.lock() != nullptr)
-			{
-				nowScript.lock()->exit();
-			}
-
-			nowScript = nextScript;
-
-			nowScript.lock()->enter();
-
-			nextScript = nullptr;
-		}
-
-		struct ChScript
-		{
-
-			///////////////////////////////////////////////////////////////////////////////////
-			//ConstructerDestructer//
-
-
-			std::function<void()>enter = []() {};
-
-			std::function<void()>update = []() {};
-
-			std::function<void()>draw = []() {};
-
-			std::function<void()>exit = []() {};
-
-			unsigned long myNum = 0;
-
+			Set,			//value = target//
+			Sum,			//value + target//
+			Sub,			//value - target//
+			Mul,			//value * target//
+			Div,			//value / target//
+			Sur,			//value % target//
+			Equal,			//value == target//
+			UnEqual,		//value != target//
+			Greater,		//value > target//
+			More,			//value >= target//
+			Less,			//value <= target//
+			Smaller,		//value < target//
+			Create,			//type value//
+			New,			//new type//
+			Release,		//delete value//
+			Constructor,	//value.Constructor//
+			Destructor,		//value.Destructor//
+			StartBlock,		//{//
+			EndBlock,		//}//
+			StartArg,		//(//
+			EndArg,			//)//
+			StartArray,		//[//
+			EndArray,		//]//
+			StartType,		//<//
+			EndType,		//>//
+			StartComment,	///*//
+			EndComment,		//*///
+			StartString,	//"//
+			EndString,		//"//
+			StartChar,		//'//
+			EndChar,		//'//
 		};
 
-		std::vector<ChPtr::Shared<ChScript>> scriptList;
+		bool inBlockFlg = true;
 
-		ChPtr::Shared<ChScript> nextScript = nullptr;
+		Cumulative<OpeCode> blockOpeCodeCumulative = Cumulative<OpeCode>(OpeCode::StartBlock, OpeCode::EndBlock);
+		Cumulative<OpeCode> argumentOpeCodeCumulative = Cumulative<OpeCode>(OpeCode::StartArg, OpeCode::EndArg);
+		Cumulative<OpeCode> arrayOpeCodeCumulative = Cumulative<OpeCode>(OpeCode::StartArray, OpeCode::EndArray);
+		Cumulative<OpeCode> typeOpeCodeCumulative = Cumulative<OpeCode>(OpeCode::StartType, OpeCode::EndType);
+		Cumulative<OpeCode> commentOpeCodeCumulative = Cumulative<OpeCode>(OpeCode::StartComment, OpeCode::EndComment);
 
-		ChPtr::Weak<ChScript>nowScript;
 
 	}ChScCon;
 

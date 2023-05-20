@@ -29,6 +29,9 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
+		//•ªŠ„‚·‚é•¶š‚ğw’è‚·‚é//
+		void SetCutChar(char _cutChar);
+
 		//Text‘S‘Ì‚ğ‘‚«‚Ş//
 		void SetText(const std::string _str);
 
@@ -126,6 +129,7 @@ namespace ChCpp
 
 	private:
 
+		char cutChar = '\n';
 		std::vector<std::string> textLines;
 
 	};
