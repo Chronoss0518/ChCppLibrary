@@ -14,7 +14,6 @@ namespace ChCp
 
 #endif
 
-
 	enum class JsonType
 	{
 		Object,
@@ -32,7 +31,16 @@ namespace ChCp
 	protected://Add Functions//
 
 		template<typename BaseType>
-		void AddValue(BaseType* _value, const std::string& _parameterName);
+		auto AddValue(BaseType* _value, const std::string& _parameterName)->
+		typename std::enable_if<std::is_integral<BaseType>::value || std::is_floating_point<BaseType>::value,void>::type{
+
+			if (ChPtr::NullCheck(_value))return;
+			auto&& findObject = jsonValues.find(_parameterName);
+			if (findObject != jsonValues.end())return;
+			auto value = ChPtr::Make_S<JsonNumber<BaseType>>();
+			value->value = _value;
+			findObject->second = value;
+		};
 
 		void AddValue(bool* _value, const std::string& _parameterName);
 
@@ -41,26 +49,35 @@ namespace ChCp
 		void AddValue(JsonObjectIfication* _value, const std::string& _parameterName);
 
 		template<typename BaseType>
-		void AddValue(std::vector<BaseType>* _value, const std::string& _parameterName);
+		auto AddValue(std::vector<BaseType>* _value, const std::string& _parameterName)->
+			typename std::enable_if<std::is_integral<BaseType>::value || std::is_floating_point<BaseType>::value, void>::type
+		{
+
+		}
+
+		template<typename BaseType>
+		auto AddValue(std::vector<BaseType>* _value, const std::string& _parameterName)->
+			typename std::enable_if<!std::is_integral<BaseType>::value && !std::is_floating_point<BaseType>::value, void>::type
+		{
+
+		}
 
 		void AddValue(std::vector<bool>* _value, const std::string& _parameterName);
 
 		void AddValue(std::vector<std::wstring>* _value, const std::string& _parameterName);
 
-		void AddValue(std::vector<ChPtr::Shared<JsonObjectIfication>>* _value, const std::string& _parameterName);
+		void AddValue(std::vector<JsonObjectIfication*>* _value, const std::string& _parameterName);
 
 	public:
 
 		TextType Serialize()
 		{
 			return
-
 #ifdef _UNICODE
 				SerializeFromWCharText();
 #else
 				SerializeFromCharText();
 #endif
-
 		};
 
 		void Deserialize(const TextType& _str)
@@ -114,7 +131,6 @@ namespace ChCp
 				DeserializeFromCharText(_str);
 #endif
 			};
-
 
 			virtual std::string SerializeFromCharText() = 0;
 
