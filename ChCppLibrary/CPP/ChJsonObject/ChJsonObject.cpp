@@ -28,7 +28,7 @@ bool JsonObjectBase::IsObject(const std::string& _json)
 
 	}
 
-	if (cumulativeObjectChecker.GetCount() > 0)return false;
+	if (_json[_json.length() - 1] != '}' || cumulativeObjectChecker.GetCount() > 0)return false;
 	if (cumulativeArrayChecker.GetCount() > 0)return false;
 	if (stringDQuotation % 2 > 0)return false;
 	if (stringSQuotation % 2 > 0)return false;
@@ -38,12 +38,44 @@ bool JsonObjectBase::IsObject(const std::string& _json)
 
 bool JsonObjectBase::IsArray(const std::string& _json)
 {
+	Cumulative<char> cumulativeObjectChecker = Cumulative<char>('{', '}');
+	Cumulative<char> cumulativeArrayChecker = Cumulative<char>('[', ']');
+	unsigned long stringDQuotation = 0;
+	unsigned long stringSQuotation = 0;
 
+	cumulativeArrayChecker.Update(_json[0]);
+
+	if (cumulativeArrayChecker.GetCount() <= 0)return false;
+
+	for (unsigned long i = 1; i < _json.length() - 1; i++)
+	{
+		cumulativeObjectChecker.Update(_json[i]);
+		cumulativeArrayChecker.Update(_json[i]);
+
+		if (_json[i] == '\'' && stringDQuotation % 2 <= 0)stringSQuotation += 1;
+		if (_json[i] == '\"' && stringSQuotation % 2 <= 0)stringDQuotation += 1;
+
+	}
+
+	if (_json[_json.length() - 1] != '}' || cumulativeArrayChecker.GetCount() > 0)return false;
+	if (cumulativeObjectChecker.GetCount() > 0)return false;
+	if (stringDQuotation % 2 > 0)return false;
+	if (stringSQuotation % 2 > 0)return false;
+
+	return true;
 }
 
 bool JsonObjectBase::IsString(const std::string& _json)
 {
+	char firstChara = _json[0];
 
+	for (unsigned long i = 1; i < _json.length() - 1; i++)
+	{
+		if (_json[i] == firstChara && _json[i - 1] == '\\')continue;
+		return false;
+	}
+
+	return _json[_json.length() - 1] == firstChara && _json[_json.length() - 1] != firstChara;
 }
 
 bool JsonObjectBase::IsNumber(const std::string& _json)
