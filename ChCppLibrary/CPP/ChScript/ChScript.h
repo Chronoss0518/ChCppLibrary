@@ -121,11 +121,11 @@ namespace ChCpp
 
 		bool inBlockFlg = true;
 
-		Cumulative<OpeCode> blockCumulative = Cumulative<OpeCode>(OpeCode::StartBlock, OpeCode::EndBlock);
-		Cumulative<OpeCode> argumentCumulative = Cumulative<OpeCode>(OpeCode::StartArg, OpeCode::EndArg);
-		Cumulative<OpeCode> arrayCumulative = Cumulative<OpeCode>(OpeCode::StartArray, OpeCode::EndArray);
-		Cumulative<OpeCode> typeCumulative = Cumulative<OpeCode>(OpeCode::StartType, OpeCode::EndType);
-		Cumulative<OpeCode> commentCumulative = Cumulative<OpeCode>(OpeCode::StartComment, OpeCode::EndComment);
+		Cumulative<OpeCode> blockOpeCodeCumulative = Cumulative<OpeCode>(OpeCode::StartBlock, OpeCode::EndBlock);
+		Cumulative<OpeCode> argumentOpeCodeCumulative = Cumulative<OpeCode>(OpeCode::StartArg, OpeCode::EndArg);
+		Cumulative<OpeCode> arrayOpeCodeCumulative = Cumulative<OpeCode>(OpeCode::StartArray, OpeCode::EndArray);
+		Cumulative<OpeCode> typeOpeCodeCumulative = Cumulative<OpeCode>(OpeCode::StartType, OpeCode::EndType);
+		Cumulative<OpeCode> commentOpeCodeCumulative = Cumulative<OpeCode>(OpeCode::StartComment, OpeCode::EndComment);
 
 
 	}ChScCon;
