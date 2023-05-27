@@ -150,7 +150,7 @@ namespace Ch3D
 	struct Transform
 	{
 		ChVec3 pos;
-		ChVec3 rot;
+		ChQua rot;
 		ChVec3 scl = 1.0f;
 
 		inline ChLMat& GetLeftHandMatrix()

@@ -117,7 +117,7 @@ namespace ChD3D
 			mat.SetPosition(_pos); 
 		}
 
-		inline void SetRotation(const ChVec3& _rot)
+		inline void SetRotation(const ChQua& _rot)
 		{
 			mat.SetRotation(_rot);
 		}
@@ -182,7 +182,7 @@ namespace ChD3D
 			mat.SetPosition(_pos);
 		}
 
-		inline void SetRotation(const ChVec3& _dir)
+		inline void SetRotation(const ChQua& _dir)
 		{
 			mat.SetRotation(_dir);
 		}

@@ -1,9 +1,6 @@
 #ifndef Ch_CPP_Math3D_h
 #define Ch_CPP_Math3D_h
 
-#include <float.h>
-#include <cmath>
-
 #include"ChMath.h"
 
 struct D3DXVECTOR4;

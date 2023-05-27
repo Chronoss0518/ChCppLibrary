@@ -1,5 +1,8 @@
 #include"../BaseIncluder/ChBase.h"
 
+#include <float.h>
+#include <cmath>
+
 ///////////////////////////////////////////////////////////////////////////////////
 //ChVector2 Method//
 ///////////////////////////////////////////////////////////////////////////////////
@@ -1165,7 +1168,7 @@ void ChLMatrix::SetPosition(const float _x, const float _y, const float _z)
 //à»â∫ÇÃURLÇéQè∆//
 //https://qiita.com/aa_debdeb/items/3d02e28fb9ebfa357eaf#%E3%82%AF%E3%82%A9%E3%83%BC%E3%82%BF%E3%83%8B%E3%82%AA%E3%83%B3%E3%81%8B%E3%82%89%E5%9B%9E%E8%BB%A2%E8%A1%8C%E5%88%97
 //
-void ChLMatrix::SetRotation(const ChQua& _qua, const unsigned long _digit = 6)
+void ChLMatrix::SetRotation(const ChQua& _qua, const unsigned long _digit)
 {
 	float xy2 = _qua.x * _qua.y * 2;
 	float xz2 = _qua.x * _qua.z * 2;
