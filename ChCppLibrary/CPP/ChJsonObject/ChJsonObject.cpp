@@ -1,105 +1,65 @@
 #include"../../BaseIncluder/ChBase.h"
 #include<cmath>
 
+#include"../ChTextObject/ChTextObject.h"
 #include"ChJsonObject.h"
+#include"ObjectType/ChJsonArray.h"
+#include"ObjectType/ChJsonString.h"
+#include"ObjectType/ChJsonNumber.h"
 #include"../ChCumulative/ChCumulative.h"
 
 using namespace ChCpp;
 
-bool JsonObjectBase::IsObject(const std::string& _json)
-{
-
-	Cumulative<char> cumulativeObjectChecker = Cumulative<char>('{', '}');
-	Cumulative<char> cumulativeArrayChecker = Cumulative<char>('[', ']');
-	unsigned long stringDQuotation = 0;
-	unsigned long stringSQuotation = 0;
-
-	cumulativeObjectChecker.Update(_json[0]);
-
-	if (cumulativeObjectChecker.GetCount() <= 0)return false;
-
-	for (unsigned long i = 1; i < _json.length(); i++)
-	{
-		cumulativeObjectChecker.Update(_json[i]);
-		cumulativeArrayChecker.Update(_json[i]);
-
-		if (_json[i] == '\'' && stringDQuotation % 2 <= 0)stringSQuotation += 1;
-		if (_json[i] == '\"' && stringSQuotation % 2 <= 0)stringDQuotation += 1;
-
-	}
-
-	if (_json[_json.length() - 1] != '}' || cumulativeObjectChecker.GetCount() > 0)return false;
-	if (cumulativeArrayChecker.GetCount() > 0)return false;
-	if (stringDQuotation % 2 > 0)return false;
-	if (stringSQuotation % 2 > 0)return false;
-
-	return true;
-}
-
-bool JsonObjectBase::IsArray(const std::string& _json)
-{
-	Cumulative<char> cumulativeObjectChecker = Cumulative<char>('{', '}');
-	Cumulative<char> cumulativeArrayChecker = Cumulative<char>('[', ']');
-	unsigned long stringDQuotation = 0;
-	unsigned long stringSQuotation = 0;
-
-	cumulativeArrayChecker.Update(_json[0]);
-
-	if (cumulativeArrayChecker.GetCount() <= 0)return false;
-
-	for (unsigned long i = 1; i < _json.length() - 1; i++)
-	{
-		cumulativeObjectChecker.Update(_json[i]);
-		cumulativeArrayChecker.Update(_json[i]);
-
-		if (_json[i] == '\'' && stringDQuotation % 2 <= 0)stringSQuotation += 1;
-		if (_json[i] == '\"' && stringSQuotation % 2 <= 0)stringDQuotation += 1;
-
-	}
-
-	if (_json[_json.length() - 1] != '}' || cumulativeArrayChecker.GetCount() > 0)return false;
-	if (cumulativeObjectChecker.GetCount() > 0)return false;
-	if (stringDQuotation % 2 > 0)return false;
-	if (stringSQuotation % 2 > 0)return false;
-
-	return true;
-}
-
-bool JsonObjectBase::IsString(const std::string& _json)
-{
-	char firstChara = _json[0];
-
-	for (unsigned long i = 1; i < _json.length() - 1; i++)
-	{
-		if (_json[i] == firstChara && _json[i - 1] == '\\')continue;
-		return false;
-	}
-
-	return _json[_json.length() - 1] == firstChara && _json[_json.length() - 1] != firstChara;
-}
-
-bool JsonObjectBase::IsNumber(const std::string& _json)
-{
-
-}
-
-bool JsonObjectBase::IsBoolean(const std::string& _json)
-{
-
-}
 
 bool JsonObject::SetRawData(const std::string& _jsonText)
 {
+	if (_jsonText.size() < 2)return false;
+	if (_jsonText[0] != '{' || _jsonText[_jsonText.size() - 1] != '{')return false;
+
+	std::string parameter = _jsonText.substr(1, _jsonText.length() - 2);
+
 	Cumulative<char> cumulativeObjectChecker = Cumulative<char>('{', '}');
 
 	cumulativeObjectChecker.Update(_jsonText[0]);
 
-	if (cumulativeObjectChecker.GetCount() <= 0)return false;
+	TextObject parameterObject;
 
+	parameterObject.SetCutChar(',');
 
+	parameterObject.SetText(parameter);
 
+	for (unsigned long i = 0; i < parameterObject.Count() - 1; i++)
+	{
+		auto nameAndValue = ChStr::Split(parameterObject.GetTextLine(i), ":");
+		if (nameAndValue.size() < 2)continue;
+	}
 
 	return true;
+
+}
+
+void JsonObject::SetArray(const std::string& _parameterName, const JsonArray& _value)
+{
+
+}
+
+void JsonObject::SetNumber(const std::string& _parameterName, const JsonNumber& _value)
+{
+
+}
+
+void JsonObject::SetString(const std::string& _parameterName, const JsonString& _value)
+{
+
+}
+
+void JsonObject::SetBoolean(const std::string& _parameterName, const JsonBoolean& _value)
+{
+
+}
+
+void JsonObject::SetObject(const std::string& _parameterName, const JsonObject& _value)
+{
 
 }
 
@@ -119,4 +79,29 @@ std::string JsonObject::GetRawData()const
 	res += "}";
 
 	return res;
+}
+
+JsonArray JsonObject::GetArray(const std::string& _parameterName)const
+{
+
+}
+
+JsonNumber JsonObject::GetNumber(const std::string& _parameterName)const
+{
+
+}
+
+JsonString JsonObject::GetString(const std::string& _parameterName)const
+{
+
+}
+
+JsonBoolean JsonObject::GetBoolean(const std::string& _parameterName)const
+{
+
+}
+
+JsonObject JsonObject::GetObject(const std::string& _parameterName)const
+{
+
 }
