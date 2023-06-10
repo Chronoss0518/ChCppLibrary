@@ -11,11 +11,13 @@ using namespace ChCpp;
 
 std::string TextObject::GetText()const
 {
+	if (textLines.empty())return "";
+
 	std::string out = "";
 
 	for (auto text : textLines)
 	{
-		out += text + '\n';
+		out += text + cutChar;
 	}
 
 	out.pop_back();
@@ -23,8 +25,6 @@ std::string TextObject::GetText()const
 	return out;
 
 }
-
-///////////////////////////////////////////////////////////////////////////////////////
 
 std::string TextObject::GetTextLine(const size_t _index)const
 {
@@ -34,12 +34,18 @@ std::string TextObject::GetTextLine(const size_t _index)const
 	return textLines[tmp];
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
+void TextObject::SetCutChar(char _cutChar)
+{
+	if (cutChar == _cutChar)return;
+	std::string val = GetText();
+	cutChar = _cutChar;
+	SetText(val);
+}
 
 void TextObject::SetText(const std::string _str)
 {
 	textLines.clear();
-	if (_str.find("\n") == _str.npos)
+	if (_str.find(cutChar) == _str.npos)
 	{
 		textLines.push_back(_str);
 		return;
@@ -50,20 +56,16 @@ void TextObject::SetText(const std::string _str)
 
 	while (true)
 	{
-		testPos = _str.find("\n", tmpPos);
+		testPos = _str.find(cutChar, tmpPos);
 
 		if (testPos == _str.npos)break;
 
 		textLines.push_back(_str.substr(tmpPos, testPos - tmpPos));
 		tmpPos = testPos + 1;
-
-
 	}
 
 	textLines.push_back(_str.substr(tmpPos));
 }
-
-///////////////////////////////////////////////////////////////////////////////////////
 
 void TextObject::SetTextLine(
 	const std::string _str
@@ -89,8 +91,6 @@ void TextObject::SetTextLine(
 	}
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
 unsigned long TextObject::FindLine(
 	const std::string& _findStr
 	, const size_t _startPos)const
@@ -105,7 +105,7 @@ unsigned long TextObject::FindLine(
 	unsigned long count = 1;
 	while (1)
 	{
-		tmp = str.find("\n", tmp);
+		tmp = str.find(cutChar, tmp);
 
 		if (tmp >= base)return count;
 
@@ -116,5 +116,3 @@ unsigned long TextObject::FindLine(
 	}
 
 }
-
-///////////////////////////////////////////////////////////////////////////////////////
