@@ -222,7 +222,7 @@ namespace ChD3D
 
 		XAudio2Manager(){}
 		
-		std::map<std::string, std::vector<ChPtr::Shared<XAUDIO2_BUFFER>>>audioDataMap;
+		std::map<std::string, std::vector<XAUDIO2_BUFFER*>>audioDataMap;
 		std::map<std::string, ChPtr::Shared<MFObject>>mfObjectMap;
 
 		bool loadFlg = false;
