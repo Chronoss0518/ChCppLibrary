@@ -2,9 +2,38 @@
 #include"../../BaseIncluder/ChBase.h"
 #include"ChJsonObjectIfication.h"
 
+namespace ChCp
+{
+	struct JsonClassBase :protected ChCp::Initializer
+	{
+	public:
+
+		void Init(JsonType _type)
+		{
+			if (*this)return;
+			type = type;
+			SetInitFlg(true);
+		}
+		virtual std::string SerializeFromCharText() = 0;
+
+		virtual std::wstring SerializeFromWCharText() = 0;
+
+		virtual void DeserializeFromCharText(const std::string& _text) = 0;
+
+		virtual void DeserializeFromWCharText(const std::wstring& _text) = 0;
+
+	private:
+
+		JsonType type;
+
+	};
+
+}
+
 using namespace ChCp;
 
-struct JsonObject : public JsonObjectIfication::JsonClassBase
+
+struct JsonObject : public JsonClassBase
 {
 	JsonObject()
 	{
@@ -13,25 +42,25 @@ struct JsonObject : public JsonObjectIfication::JsonClassBase
 
 	JsonObjectIfication* value = nullptr;
 
-	std::string SerializeFromCharText()
+	std::string SerializeFromCharText()override
 	{
 		if (ChPtr::NullCheck(value))return "";
 		return value->SerializeFromCharText();
 	}
 
-	std::wstring SerializeFromWCharText()
+	std::wstring SerializeFromWCharText()override
 	{
 		if (ChPtr::NullCheck(value))return L"";
 		return value->SerializeFromWCharText();
 	}
 
-	void DeserializeFromCharText(const std::string& _text)
+	void DeserializeFromCharText(const std::string& _text)override
 	{
 		if (ChPtr::NullCheck(value));
 		value->DeserializeFromCharText(_text);
 	}
 
-	void DeserializeFromWCharText(const std::wstring& _text)
+	void DeserializeFromWCharText(const std::wstring& _text)override
 	{
 		if (ChPtr::NullCheck(value));
 		value->DeserializeFromWCharText(_text);
@@ -40,7 +69,7 @@ struct JsonObject : public JsonObjectIfication::JsonClassBase
 };
 
 template<typename BaseType>
-struct JsonNumber : public JsonObjectIfication::JsonClassBase
+struct JsonNumber : public JsonClassBase
 {
 	JsonNumber()
 	{
@@ -75,7 +104,7 @@ struct JsonNumber : public JsonObjectIfication::JsonClassBase
 
 };
 
-struct JsonString : public JsonObjectIfication::JsonClassBase
+struct JsonString : public JsonClassBase
 {
 	JsonString()
 	{
@@ -112,7 +141,7 @@ struct JsonString : public JsonObjectIfication::JsonClassBase
 
 };
 
-struct JsonBoolean : public JsonObjectIfication::JsonClassBase
+struct JsonBoolean : public JsonClassBase
 {
 	JsonBoolean()
 	{
@@ -203,36 +232,6 @@ void JsonObjectIfication::AddValue(std::vector<BaseType>* _value, const std::str
 	auto&& findObject = jsonValues.find(_parameterName);
 	if (findObject != jsonValues.end())return;
 	auto value = ChPtr::Make_S<JsonArray<std::vector<BaseType>>>();
-	value->value = _value;
-	findObject->second = value;
-}
-
-void JsonObjectIfication::AddValue(std::vector<bool>* _value, const std::string& _parameterName)
-{
-	if (ChPtr::NullCheck(_value))return;
-	auto&& findObject = jsonValues.find(_parameterName);
-	if (findObject != jsonValues.end())return;
-	auto value = ChPtr::Make_S<JsonArray<bool>>();
-	value->value = _value;
-	findObject->second = value;
-}
-
-void JsonObjectIfication::AddValue(std::vector<std::wstring>* _value, const std::string& _parameterName)
-{
-	if (ChPtr::NullCheck(_value))return;
-	auto&& findObject = jsonValues.find(_parameterName);
-	if (findObject != jsonValues.end())return;
-	auto value = ChPtr::Make_S<JsonArray<std::wstring>>();
-	value->value = _value;
-	findObject->second = value;
-}
-
-void JsonObjectIfication::AddValue(std::vector<ChPtr::Shared<JsonObjectIfication>>* _value, const std::string& _parameterName)
-{
-	if (ChPtr::NullCheck(_value))return;
-	auto&& findObject = jsonValues.find(_parameterName);
-	if (findObject != jsonValues.end())return;
-	auto value = ChPtr::Make_S<JsonArray<ChPtr::Shared<JsonObjectIfication>>>();
 	value->value = _value;
 	findObject->second = value;
 }

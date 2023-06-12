@@ -22,6 +22,7 @@ namespace ChCp
 		String,
 		Boolean
 	};
+	struct JsonClassBase;
 
 	//継承して利用する//
 	//AddValueでJsonパラメータとして利用する値を登録する//
@@ -49,15 +50,7 @@ namespace ChCp
 		void AddValue(JsonObjectIfication* _value, const std::string& _parameterName);
 
 		template<typename BaseType>
-		auto AddValue(std::vector<BaseType>* _value, const std::string& _parameterName)->
-			typename std::enable_if<std::is_integral<BaseType>::value || std::is_floating_point<BaseType>::value, void>::type
-		{
-
-		}
-
-		template<typename BaseType>
-		auto AddValue(std::vector<BaseType>* _value, const std::string& _parameterName)->
-			typename std::enable_if<!std::is_integral<BaseType>::value && !std::is_floating_point<BaseType>::value, void>::type
+		void AddValue(std::vector<BaseType>* _value, const std::string& _parameterName)
 		{
 
 		}
@@ -95,56 +88,6 @@ namespace ChCp
 
 		void DeserializeFromCharText(const std::string& _text);
 		void DeserializeFromWCharText(const std::wstring& _text);
-
-	public:
-
-
-		struct JsonClassBase :private ChCp::Initializer
-		{
-		protected:
-
-			void Init(JsonType _type)
-			{
-				if (*this)return;
-				type = type;
-				SetInitFlg(true);
-			}
-
-			TextType Serialize()
-			{
-				return
-
-#ifdef _UNICODE
-					SerializeFromWCharText();
-#else
-					SerializeFromCharText();
-#endif
-
-			};
-
-			void Deserialize(const TextType& _str)
-			{
-
-#ifdef _UNICODE
-				DeserializeFromWCharText(_str);
-#else
-				DeserializeFromCharText(_str);
-#endif
-			};
-
-			virtual std::string SerializeFromCharText() = 0;
-
-			virtual std::wstring SerializeFromWCharText() = 0;
-
-			virtual void DeserializeFromCharText(const std::string& _text) = 0;
-
-			virtual void DeserializeFromWCharText(const std::wstring& _text) = 0;
-
-		private:
-
-			JsonType type;
-
-		};
 
 
 	private:
