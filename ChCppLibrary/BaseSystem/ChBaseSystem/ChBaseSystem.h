@@ -8,6 +8,16 @@ namespace ChSystem
 
 	class BaseSystem : public ChCp::Initializer
 	{
+	public:
+
+		virtual ~BaseSystem()
+		{
+			void Release();
+		}
+
+	public:
+
+		virtual void Release() {};
 
 	public:
 

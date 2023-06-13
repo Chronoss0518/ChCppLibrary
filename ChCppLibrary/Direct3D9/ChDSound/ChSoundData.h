@@ -115,11 +115,6 @@ public:
 typedef struct ChSubSound9
 {
 
-	virtual ~ChSubSound9()
-	{
-		Release();
-	}
-
 	LPDIRECTSOUNDBUFFER8 sound;
 	LPDIRECTSOUND3DBUFFER8 dSound;
 	DWORD hz;

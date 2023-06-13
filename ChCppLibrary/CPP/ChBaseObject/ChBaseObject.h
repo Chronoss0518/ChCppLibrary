@@ -32,7 +32,7 @@ namespace ChCpp
 		virtual void Init() {}
 
 		//©g‚ğÌ‚Ä‚é‚É©“®“I‚É‘–‚éŠÖ”//
-		void Release() {}
+		virtual void Release() {}
 
 	public://Destroy Function//
 

@@ -67,7 +67,7 @@ namespace ChMesh
 			SetInitFlg(true);
 		}
 
-		inline void Release()override
+		inline virtual void Release()
 		{
 			if (meshList.empty())return;
 			meshList.clear();

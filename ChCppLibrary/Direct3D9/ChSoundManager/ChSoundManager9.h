@@ -24,7 +24,7 @@ namespace ChSound
 
 		void Init(const HWND _hWin);
 
-		inline void Release()override
+		inline virtual void Release()
 		{
 			if (ChPtr::NotNullCheck(soundDevice))
 			{
