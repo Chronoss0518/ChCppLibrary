@@ -48,7 +48,7 @@ public:
 
 	CWaveSoundRead9();
 
-	~CWaveSoundRead9();
+	virtual ~CWaveSoundRead9();
 
 	///////////////////////////////////////////////////////////////////////////////////
 
@@ -69,8 +69,9 @@ public:
 };
 
 //BGMクラス//
-typedef struct ChMainSound9 : public ChCp::Releaser
+typedef struct ChMainSound9
 {
+
 	LPDIRECTSOUNDBUFFER8 sound;
 	LPDIRECTSOUND3DBUFFER8 dSound;
 	DWORD hz;
@@ -83,10 +84,17 @@ typedef struct ChMainSound9 : public ChCp::Releaser
 		return *this;
 	}
 
+public:
+
+	virtual ~ChMainSound9()
+	{
+		Release();
+	}
+
 	///////////////////////////////////////////////////////////////////////////////////
 	//InitAndRelease//
 
-	inline void Release()override
+	inline virtual void Release()
 	{
 
 		DWORD flg;
@@ -104,8 +112,13 @@ typedef struct ChMainSound9 : public ChCp::Releaser
 ///////////////////////////////////////////////////////////////////////////////////
 
 //SEクラス//
-typedef struct ChSubSound9:public ChCp::Releaser
+typedef struct ChSubSound9
 {
+
+	virtual ~ChSubSound9()
+	{
+		Release();
+	}
 
 	LPDIRECTSOUNDBUFFER8 sound;
 	LPDIRECTSOUND3DBUFFER8 dSound;
@@ -119,10 +132,17 @@ typedef struct ChSubSound9:public ChCp::Releaser
 		return *this;
 	}
 
+public:
+
+	virtual ~ChSubSound9()
+	{
+		Release();
+	}
+
 	///////////////////////////////////////////////////////////////////////////////////
 	//InitAndRelease//
 
-	inline void Release()override
+	inline virtual void Release()
 	{
 
 		DWORD flg;

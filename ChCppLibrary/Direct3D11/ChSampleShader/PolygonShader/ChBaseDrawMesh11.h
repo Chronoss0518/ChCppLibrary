@@ -19,11 +19,18 @@ namespace ChD3D11
 
 		class BaseDrawMesh11 final :public SampleShaderBase11
 		{
+		public:
+
+			virtual ~BaseDrawMesh11()
+			{
+				Release();
+			}
+
 		public://Init And Release//
 
 			void Init(ID3D11Device* _device);
 
-			void Release();
+			void Release()override;
 
 		protected://Init And Release//
 

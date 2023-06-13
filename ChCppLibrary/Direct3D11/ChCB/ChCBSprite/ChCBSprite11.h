@@ -12,6 +12,13 @@ namespace ChD3D11
 		{
 		public:
 
+			virtual ~CBSprite11()
+			{
+				Release();
+			}
+
+		public:
+
 			///////////////////////////////////////////////////////////////////////////////////
 			//InitAndRelease//
 

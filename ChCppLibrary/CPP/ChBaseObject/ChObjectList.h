@@ -11,7 +11,7 @@ namespace ChCpp
 
 
 
-	class ObjectList :public ChCp::Releaser
+	class ObjectList
 	{
 	public:
 
@@ -21,7 +21,12 @@ namespace ChCpp
 		//CostructerDestructer//
 
 		ObjectList() {}
-		~ObjectList() {}
+
+		virtual ~ObjectList()
+		{
+			Release();
+		}
+
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//

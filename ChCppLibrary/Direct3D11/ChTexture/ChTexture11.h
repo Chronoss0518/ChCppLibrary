@@ -29,11 +29,19 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace ChD3D11
 {
 
-	class TextureBase11 :public ChCp::Releaser
+	class TextureBase11
 	{
+	public:
+
+		virtual ~TextureBase11()
+		{
+			Release();
+		}
+
+
 	public://Init And Release//
 
-		void Release()override;
+		virtual void Release();
 
 	public://Set Functions//
 

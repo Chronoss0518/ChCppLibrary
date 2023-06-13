@@ -11,8 +11,15 @@ namespace ChCpp
 	class ObjectList;
 
 	//オブジェクトを生成する場合、このクラスを継承して作成する。//
-	class BaseObject :public std::enable_shared_from_this<BaseObject>, public ChCp::Releaser
+	class BaseObject :public std::enable_shared_from_this<BaseObject>
 	{
+	public:
+
+		virtual ~BaseObject()
+		{
+			Release();
+		}
+
 	public:
 
 		friend BaseComponent;
