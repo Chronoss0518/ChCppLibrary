@@ -4,7 +4,7 @@
 namespace ChD3D
 {
 
-	class XInputController:public ChCp::Initializer,public ChCp::Releaser
+	class XInputController:public ChCp::Initializer
 	{
 	public:
 
@@ -13,12 +13,17 @@ namespace ChD3D
 
 		XInputController();
 
+		virtual ~XInputController()
+		{
+			Release();
+		}
+
 		///////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
 		void Init();
 
-		void Release()override;
+		virtual void Release();
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//

@@ -58,8 +58,15 @@ namespace ChCpp
 		
 		class InternetProtocol;
 
-		class SockBase :public ChCp::Initializer,public ChCp::Releaser
+		class SockBase :public ChCp::Initializer
 		{
+		public:
+
+			virtual ~SockBase()
+			{
+				Release();
+			}
+
 		public:
 
 			friend InternetProtocol;
@@ -70,7 +77,7 @@ namespace ChCpp
 
 			virtual void Init(const unsigned short _portNo = 49152) = 0;
 
-			virtual void Release()override
+			virtual void Release()
 			{
 				if (!(*this))return;
 				closesocket(baseSock);

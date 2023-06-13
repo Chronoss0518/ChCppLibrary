@@ -44,17 +44,16 @@ namespace ChD3D9
 
 	}CamObj;
 
-	class CameraController:public ChCp::Initializer,public ChCp::Releaser
+	class CameraController:public ChCp::Initializer
 	{
 	public:
-
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
 		inline void Init(const LPDIRECT3DDEVICE9 _dev) { device = _dev; SetInitFlg(true); }
 
-		inline void Release()override { SetInitFlg(false); };
+		inline virtual void Release() { SetInitFlg(false); };
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
@@ -171,7 +170,7 @@ namespace ChD3D9
 
 		CameraController(){}
 
-		~CameraController(){}
+		virtual ~CameraController() { Release(); }
 
 		public:
 
