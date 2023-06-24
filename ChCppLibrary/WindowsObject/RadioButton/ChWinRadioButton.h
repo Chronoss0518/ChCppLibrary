@@ -15,6 +15,13 @@ namespace ChWin
 
 	class RadioButton :public WindBaseObject
 	{
+	public:
+
+		virtual ~RadioButton()
+		{
+			Release();
+		}
+
 
 	public:
 

@@ -11,8 +11,15 @@ namespace ChCpp
 	class ObjectList;
 
 	//オブジェクトを生成する場合、このクラスを継承して作成する。//
-	class BaseObject :public std::enable_shared_from_this<BaseObject>, public ChCp::Releaser
+	class BaseObject :public std::enable_shared_from_this<BaseObject>
 	{
+	public:
+
+		virtual ~BaseObject()
+		{
+			Release();
+		}
+
 	public:
 
 		friend BaseComponent;
@@ -25,7 +32,7 @@ namespace ChCpp
 		virtual void Init() {}
 
 		//自身を捨てる時に自動的に走る関数//
-		void Release() {}
+		virtual void Release() {}
 
 	public://Destroy Function//
 
