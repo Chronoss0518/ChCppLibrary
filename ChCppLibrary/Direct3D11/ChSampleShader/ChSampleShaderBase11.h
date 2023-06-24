@@ -10,13 +10,17 @@ namespace ChD3D11
 	namespace Shader
 	{
 
-		class SampleShaderBase11:public ChCp::Releaser, public ChCp::Initializer
+		class SampleShaderBase11:public ChCp::Initializer
 		{
+		public:
+
+			virtual ~SampleShaderBase11() { Release(); }
+
 		public://Init And Release//
 
 			void Init(ID3D11Device* _device);
 
-			void Release()override;
+			virtual void Release();
 
 		protected://Init And Release//
 

@@ -21,7 +21,7 @@ struct ChSubSound9;
 
 //(改良必)//
 //大元のサウンドの名前とは別にストップ用のNoを持っておく//
-class ChDirectSound9 :public ChCp::Initializer,public ChCp::Releaser
+class ChDirectSound9 :public ChCp::Initializer
 {
 public:
 
@@ -31,7 +31,7 @@ public:
 	void Init(
 		HWND _hWnd);
 
-	void Release()override;
+	virtual void Release();
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//SetFunction//
@@ -174,7 +174,7 @@ protected:
 
 	ChDirectSound9() {};
 
-	~ChDirectSound9() { Release(); };
+	virtual ~ChDirectSound9() { Release(); };
 
 	public:
 

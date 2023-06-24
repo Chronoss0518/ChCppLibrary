@@ -84,8 +84,8 @@ void AudioObject::Stop()
 
 	voice->FlushSourceBuffers();
 
-	voice->SubmitSourceBuffer(XAudioManager().audioDataMap[fileName][0].get());
-	voice->SubmitSourceBuffer(XAudioManager().audioDataMap[fileName][1].get());
+	voice->SubmitSourceBuffer(XAudioManager().audioDataMap[fileName][0]);
+	voice->SubmitSourceBuffer(XAudioManager().audioDataMap[fileName][1]);
 
 	nowPos = 1;
 
@@ -97,9 +97,9 @@ void AudioObject::Release()
 {
 	if (!*this)return;
 
-	auto& audios = XAudioManager().audios;
+	auto&& audios = XAudioManager().audios;
 
-	auto thiss = std::find(audios.begin(), audios.end(), this);
+	auto&& thiss = std::find(audios.begin(), audios.end(), this);
 
 	audios.erase(thiss);
 
@@ -200,8 +200,6 @@ void XAudio2Manager::Release()
 
 	LoadEnd();
 
-	audioDataMap.clear();
-
 	for (auto&& aObject : audios)
 	{
 		aObject->Release();
@@ -213,6 +211,16 @@ void XAudio2Manager::Release()
 
 		waveFormat.second->reader->Release();
 	}
+
+	for (auto&& audioDatas : audioDataMap)
+	{
+		for (auto&& audioData : audioDatas.second)
+		{
+			delete audioData;
+		}
+	}
+
+	audioDataMap.clear();
 
 	mfObjectMap.clear();
 
@@ -278,8 +286,8 @@ void XAudio2Manager::LoadSound(AudioObject& _object, const std::string& _fileNam
 
 #endif
 
-	_object.voice->SubmitSourceBuffer(fileDatas[0].get());
-	_object.voice->SubmitSourceBuffer(fileDatas[1].get());
+	_object.voice->SubmitSourceBuffer(fileDatas[0]);
+	_object.voice->SubmitSourceBuffer(fileDatas[1]);
 
 	_object.fileName = _fileName;
 
@@ -340,7 +348,7 @@ bool XAudio2Manager::CreateFileData(const std::string& _fileName)
 	LONGLONG streamLen = 0;
 
 	auto mfObject = mfObjectMap[_fileName];
-	std::vector<ChPtr::Shared<XAUDIO2_BUFFER>> fileDatas;
+	std::vector<XAUDIO2_BUFFER*> fileDatas;
 
 	while (true)
 	{
@@ -365,7 +373,7 @@ bool XAudio2Manager::CreateFileData(const std::string& _fileName)
 
 		mediaBuffer->Lock(&Data, &maxStreamLen, &currentLen);
 
-		auto fileData = ChPtr::Make_S<ChXAUDIO2_BUFFER>();
+		auto fileData = new ChXAUDIO2_BUFFER();
 
 		for (DWORD i = 0; i < maxStreamLen; i++)
 		{
@@ -405,10 +413,17 @@ void XAudio2Manager::Update()
 	listener->Position = pos;
 	listener->Velocity = pos - beforePos;
 
-	for (auto&& audio : audios)
+	for (auto&& audio = audios.begin() ; audio != audios.end();audio)
 	{
-		Update3DAudios(audio);
-		UpdateBGMAudios(audio);
+
+		if (ChPtr::NullCheck(*audio))
+		{
+			audio = audios.erase(audio);
+			continue;
+		}
+		Update3DAudios(*audio);
+		UpdateBGMAudios(*audio);
+		audio++;
 	}
 
 }
@@ -483,6 +498,6 @@ void XAudio2Manager::UpdateBGMAudios(AudioObject* _audio)
 
 	audio->nowPos = nowPos;
 
-	audio->voice->SubmitSourceBuffer(audioDataMap[audio->fileName][nowPos].get());
+	audio->voice->SubmitSourceBuffer(audioDataMap[audio->fileName][nowPos]);
 
 }

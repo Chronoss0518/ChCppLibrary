@@ -5,7 +5,7 @@ namespace ChD3D9
 {
 
 	//標準機能で描画されるフォントクラス//
-	class DrawFont:public ChCp::Initializer,public ChCp::Releaser
+	class DrawFont:public ChCp::Initializer
 	{
 	public:
 
@@ -14,7 +14,7 @@ namespace ChD3D9
 
 		void Init(const LPDIRECT3DDEVICE9 _dv);
 
-		void Release()override;
+		virtual void Release();
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
@@ -45,6 +45,11 @@ namespace ChD3D9
 		//ConstructerDestructer//
 
 		DrawFont() {}
+
+		virtual ~DrawFont()
+		{
+			Release();
+		}
 
 
 		LPD3DXFONT lpFont;

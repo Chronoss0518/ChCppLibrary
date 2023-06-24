@@ -37,7 +37,7 @@ namespace ChMesh
 
 	//全体で利用されるシングルトン生成されたメッシュマネージャー//
 	//全体管理を行っているため、適度にClearしなければならない//
-	class MeshManager9:public ChCp::Initializer,public ChCp::Releaser
+	class MeshManager9:public ChCp::Initializer
 	{
 	public:
 
@@ -46,7 +46,7 @@ namespace ChMesh
 
 		virtual void Init(const LPDIRECT3DDEVICE9 _de);
 
-		virtual void Release()override;
+		virtual void Release();
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
@@ -174,6 +174,8 @@ namespace ChMesh
 		//ConstructerDestructer//
 
 		MeshManager9() {}
+
+		virtual ~MeshManager9() { Release(); }
 
 	public:
 

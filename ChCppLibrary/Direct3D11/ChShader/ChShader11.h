@@ -18,7 +18,7 @@ namespace ChD3D11
 
 	//※LightはShader内のBaseLightとPointLightを利用してください//
 	//独自で構築しているShaderクラス//
-	class ShaderController11 final :public ChCp::Initializer,public ChCp::Releaser
+	class ShaderController11 final :public ChCp::Initializer
 	{
 	public://Init And Release//
 
@@ -42,7 +42,7 @@ namespace ChD3D11
 			, const float& _windWitdh
 			, const float& _windHeight);
 
-		void Release()override;
+		virtual void Release();
 
 	public://SetFunction//
 
@@ -110,6 +110,8 @@ namespace ChD3D11
 	private:
 
 		ShaderController11() {}
+
+		virtual ~ShaderController11() { Release(); }
 
 	};
 

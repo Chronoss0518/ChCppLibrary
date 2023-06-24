@@ -8,7 +8,7 @@ namespace ChTex
 
 	//(シングルトンに対して改良中)
 	//スプライト描画を行うクラス//
-	class Sprite9 :public ChCp::Initializer,public ChCp::Releaser
+	class Sprite9 :public ChCp::Initializer
 	{
 	public:
 
@@ -17,7 +17,7 @@ namespace ChTex
 
 		void Init(const LPDIRECT3DDEVICE9 _d);
 
-		void Release()override;
+		virtual void Release();
 
 		///////////////////////////////////////////////////////////////////////////////////
 
@@ -40,6 +40,8 @@ namespace ChTex
 		//ConstructerDestructer//
 
 		Sprite9() {};
+
+		virtual ~Sprite9() { Release(); };
 
 	public:
 
