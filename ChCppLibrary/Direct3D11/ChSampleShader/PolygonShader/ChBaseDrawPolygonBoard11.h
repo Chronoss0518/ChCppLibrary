@@ -15,11 +15,18 @@ namespace ChD3D11
 
 		class BaseDrawPolygonBoard11 final :public SampleShaderBase11
 		{
+		public:
+
+			virtual ~BaseDrawPolygonBoard11()
+			{
+				Release();
+			}
+
 		public://Init And Release//
 
 			void Init(ID3D11Device* _device);
 
-			void Release();
+			void Release()override;
 
 		protected://Init And Release//
 

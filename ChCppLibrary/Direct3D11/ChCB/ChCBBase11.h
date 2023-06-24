@@ -5,13 +5,13 @@ namespace ChD3D11
 {
 	namespace CB
 	{
-		class CBBase11 :public ChCp::Initializer, public ChCp::Releaser
+		class CBBase11 :public ChCp::Initializer
 		{
 		public://Init And Release//
 
 			void Init(ID3D11Device* _device);
 
-			void Release()override {}
+			virtual void Release() {}
 
 		protected:
 

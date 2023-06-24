@@ -203,13 +203,13 @@ namespace ChCpp
 	//ゲームシーンを簡易的生成を行うためのクラス//
 	//必要に応じて以下の関数をオーバーライドする//
 	//void Init(),void Release(),void Update()//
-	class BaseFrame :public ChCp::Releaser
+	class BaseFrame
 	{
 
 	public://InitAndRelease//
 		virtual inline void Init() {};
 
-		virtual inline void Release()override {};
+		virtual inline void Release(){};
 
 	public://Update Function//
 

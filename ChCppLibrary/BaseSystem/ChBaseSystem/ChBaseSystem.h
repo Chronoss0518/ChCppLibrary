@@ -8,6 +8,16 @@ namespace ChSystem
 
 	class BaseSystem : public ChCp::Initializer
 	{
+	public:
+
+		virtual ~BaseSystem()
+		{
+			void Release();
+		}
+
+	public:
+
+		virtual void Release() {};
 
 	public:
 
@@ -70,7 +80,7 @@ namespace ChSystem
 
 	};
 
-	class SystemManager :public ChCp::Initializer,public ChCp::Releaser
+	class SystemManager :public ChCp::Initializer
 	{
 	public:
 
@@ -99,7 +109,7 @@ namespace ChSystem
 			return ChPtr::SafeCast<C>(baseSystems);
 		}
 
-		inline void Release()override
+		inline virtual void Release()
 		{
 			if (!*this)return;
 
@@ -200,6 +210,12 @@ namespace ChSystem
 		BaseSystem* baseSystems = nullptr;
 
 		SystemManager() {}
+
+		virtual ~SystemManager()
+		{
+			Release();
+		}
+
 		unsigned long FPS = 60;
 		long double lastFPSPoint = 0;
 		unsigned long lastFPSTime = 0;

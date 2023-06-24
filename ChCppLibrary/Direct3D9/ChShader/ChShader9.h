@@ -23,7 +23,7 @@ namespace ChD3D9
 
 	//※LightはShader内のBaseLightとPointLightを利用してください//
 	//独自で構築しているShaderクラス//
-	class ShaderController:public ChCp::Initializer,public ChCp::Releaser
+	class ShaderController:public ChCp::Initializer
 	{
 
 	protected:
@@ -69,7 +69,7 @@ namespace ChD3D9
 
 	public:
 
-		void Release()override;
+		virtual void Release();
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
@@ -333,6 +333,11 @@ namespace ChD3D9
 	protected:
 
 		ShaderController() {}
+
+		virtual ~ShaderController()
+		{
+			Release();
+		}
 
 	};
 

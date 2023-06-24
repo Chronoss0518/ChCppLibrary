@@ -23,14 +23,21 @@ namespace ChD3D
 	class XAudio2Manager;
 
 
-	class AudioObject :public ChCp::Initializer,public ChCp::Releaser
+	class AudioObject :public ChCp::Initializer
 	{
+	public:
+
+		virtual ~AudioObject()
+		{
+			Release();
+		}
+
 	public:
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
-		void Release()override;
+		virtual void Release();
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
@@ -90,6 +97,13 @@ namespace ChD3D
 	class X3DAudioObject :public AudioObject
 	{
 
+	public:
+
+		virtual ~X3DAudioObject()
+		{
+			Release();
+		}
+
 	public :
 
 		friend XAudio2Manager;
@@ -140,7 +154,7 @@ namespace ChD3D
 
 	};
 
-	class XAudio2Manager:public ChCp::Initializer,public ChCp::Releaser
+	class XAudio2Manager:public ChCp::Initializer
 	{
 	public:
 
@@ -165,7 +179,7 @@ namespace ChD3D
 			beforePos = mat.GetPosition();
 		}
 
-		void Release()override;
+		virtual void Release();
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
@@ -221,8 +235,10 @@ namespace ChD3D
 		bool CreateFileData(const std::string& _fileName);
 
 		XAudio2Manager(){}
+
+		virtual ~XAudio2Manager() { Release(); }
 		
-		std::map<std::string, std::vector<ChPtr::Shared<XAUDIO2_BUFFER>>>audioDataMap;
+		std::map<std::string, std::vector<XAUDIO2_BUFFER*>>audioDataMap;
 		std::map<std::string, ChPtr::Shared<MFObject>>mfObjectMap;
 
 		bool loadFlg = false;

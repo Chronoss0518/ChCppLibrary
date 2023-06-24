@@ -12,7 +12,7 @@ namespace ChTex
 	typedef class BaseTexture9 Texture9;
 
 	//レンダーターゲットを設定するクラス//
-	typedef class RenderTargetList9 :public ChCp::Initializer,public ChCp::Releaser
+	typedef class RenderTargetList9 :public ChCp::Initializer
 	{
 	public:
 
@@ -20,6 +20,11 @@ namespace ChTex
 		//ConstructerDestructer//
 
 		RenderTargetList9() {};
+
+		virtual ~RenderTargetList9()
+		{
+			Release();
+		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
@@ -30,7 +35,7 @@ namespace ChTex
 			, const unsigned short _windHeight
 			, const ChD3D9::ShaderController* _shader = nullptr);
 
-		void Release()override;
+		virtual void Release();
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//

@@ -13,6 +13,13 @@ namespace ChD3D11
 		{
 		public:
 
+			virtual ~CBBone11()
+			{
+				Release();
+			}
+
+		public:
+
 			void Init(ID3D11Device* _device);
 
 			void Release()override;

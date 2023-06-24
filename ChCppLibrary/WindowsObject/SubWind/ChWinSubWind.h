@@ -18,6 +18,13 @@ namespace ChWin
 
 	public:
 
+		virtual ~SubWind()
+		{
+			Release();
+		}
+
+	public:
+
 		///////////////////////////////////////////////////////////////////////////////////////
 
 		void Create(

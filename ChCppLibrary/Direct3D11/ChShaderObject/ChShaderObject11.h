@@ -3,14 +3,21 @@
 
 namespace ChD3D11
 {
-	class ShaderObject11:public ChCp::Initializer,public ChCp::Releaser
+	class ShaderObject11:public ChCp::Initializer
 	{
+	public:
+
+		virtual ~ShaderObject11()
+		{
+			Release();
+		}
+
 	public:
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
-		virtual void Release()override;
+		virtual void Release();
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction/
@@ -98,6 +105,13 @@ namespace ChD3D11
 	{
 	public:
 
+		virtual ~VertexShader11()
+		{
+			Release();
+		}
+
+	public:
+
 		///////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
@@ -137,6 +151,14 @@ namespace ChD3D11
 
 	class PixelShader11 final :public ShaderObject11
 	{
+
+	public:
+
+		virtual ~PixelShader11()
+		{
+			Release();
+		}
+
 	public:
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -165,6 +187,13 @@ namespace ChD3D11
 	{
 	public:
 
+		virtual ~GeometryShader11()
+		{
+			Release();
+		}
+
+	public:
+
 		///////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
@@ -189,6 +218,13 @@ namespace ChD3D11
 
 	class ComputeShader11 final :public ShaderObject11
 	{
+	public:
+
+		virtual ~ComputeShader11()
+		{
+			Release();
+		}
+
 	public:
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -217,6 +253,13 @@ namespace ChD3D11
 	{
 	public:
 
+		virtual ~DomainShader11()
+		{
+			Release();
+		}
+
+	public:
+
 		///////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
@@ -241,6 +284,13 @@ namespace ChD3D11
 
 	class HullShader11 final :public ShaderObject11
 	{
+	public:
+
+		virtual ~HullShader11()
+		{
+			Release();
+		}
+
 	public:
 
 		///////////////////////////////////////////////////////////////////////////////////

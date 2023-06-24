@@ -4,14 +4,21 @@
 namespace ChTex
 {
 
-	typedef class BaseTexture9:public ChCp::Releaser
+	typedef class BaseTexture9
 	{
+	public:
+
+		virtual ~BaseTexture9()
+		{
+			Release();
+		}
+
 	public:
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
-		void Release()override;
+		virtual void Release();
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//

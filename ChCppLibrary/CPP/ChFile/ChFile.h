@@ -4,7 +4,7 @@
 namespace ChCpp
 {
 	template<typename chara_set = char>
-	class File :public ChCp::Releaser
+	class File
 	{
 
 	public:
@@ -56,6 +56,8 @@ namespace ChCpp
 		///////////////////////////////////////////////////////////////////////////////////
 		//ConstructorDestructor//
 
+	public:
+
 		inline File() {}
 
 		inline File(
@@ -64,10 +66,15 @@ namespace ChCpp
 			FileOpen(_fileName);
 		}
 
+		virtual ~File()
+		{
+			Release();
+		}
+
 		///////////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
-		inline void Release()override
+		inline virtual void Release()
 		{
 			FileClose();
 		}

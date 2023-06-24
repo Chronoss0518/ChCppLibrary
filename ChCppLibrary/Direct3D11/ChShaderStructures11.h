@@ -52,8 +52,15 @@ namespace ChD3D11
 		ChVec4 baseColor = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
 	};
 
-	class ShaderObjectBase11 :public ChCp::Releaser, public ChCp::Initializer
+	class ShaderObjectBase11 :public ChCp::Initializer
 	{
+	public:
+
+		virtual ~ShaderObjectBase11()
+		{
+			Release();
+		}
+
 	public:
 
 		///////////////////////////////////////////////////////////////////////////////////////
@@ -61,7 +68,7 @@ namespace ChD3D11
 
 		inline void Init() { SetInitFlg(true); }
 
-		inline void Release()override
+		inline virtual void Release()
 		{
 			SetInitFlg(false);
 			if (ChPtr::NullCheck(buf))return;
@@ -170,6 +177,13 @@ namespace ChD3D11
 	class IndexBuffer11 : public ShaderObjectBase11
 	{
 	public:
+
+		virtual ~IndexBuffer11()
+		{
+			Release();
+		}
+
+	public:
 		///////////////////////////////////////////////////////////////////////////////////////
 		//CreateFunction//
 
@@ -240,6 +254,13 @@ namespace ChD3D11
 	{
 	public:
 
+		virtual ~VertexBuffer11()
+		{
+			Release();
+		}
+
+	public:
+
 		///////////////////////////////////////////////////////////////////////////////////////
 		//CreateFunction//
 
@@ -286,6 +307,13 @@ namespace ChD3D11
 	template<class content>
 	class ConstantBuffer11 :public ShaderObjectBase11
 	{
+	public:
+
+		virtual ~ConstantBuffer11()
+		{
+			Release();
+		}
+
 	public://Create Functions//
 
 		//Createを呼ぶ前に必要な場合はフラグ関係を操作するメソッドを呼びます//

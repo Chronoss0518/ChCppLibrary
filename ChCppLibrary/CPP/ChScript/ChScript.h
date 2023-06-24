@@ -4,7 +4,7 @@
 namespace ChCpp
 {
 	//Script‚ğì¬E‘€ì‚·‚éƒNƒ‰ƒX
-	typedef class Script:public ChCp::Releaser
+	typedef class Script
 	{
 	private:
 
@@ -15,10 +15,17 @@ namespace ChCpp
 		};
 
 
+	public:
+
+		virtual ~Script()
+		{
+			Release();
+		}
+
 	public://Initialize And Release//
 
 
-		void Release()override
+		virtual void Release()
 		{
 			scriptList.clear();
 		}

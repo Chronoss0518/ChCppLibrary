@@ -4,14 +4,21 @@
 
 class ChAnimationSupporter9;
 
-typedef class ChAnimationObject9:public ChCp::Releaser
+typedef class ChAnimationObject9
 {
+public:
+
+	virtual ~ChAnimationObject9()
+	{
+		Release();
+	}
+
 public:
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	//InitAndRelease//
 
-	inline void Release()override
+	inline virtual void Release()
 	{
 		aniList.clear();
 	}

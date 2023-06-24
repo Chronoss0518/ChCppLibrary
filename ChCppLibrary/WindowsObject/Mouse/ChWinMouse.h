@@ -11,7 +11,7 @@ namespace ChSystem
 namespace ChWin
 {
 
-	class MouseController :public ChCp::Initializer,public ChCp::Releaser
+	class MouseController :public ChCp::Initializer
 	{
 	public:
 
@@ -25,7 +25,7 @@ namespace ChWin
 
 		void Init(const ChSystem::Windows& _win);
 
-		void Release()override;
+		virtual void Release();
 
 		inline void SetWindSize(
 			const unsigned long _windWidth
@@ -120,6 +120,11 @@ namespace ChWin
 		HWND hWnd = nullptr;
 
 		MouseController(){}
+
+		virtual ~MouseController()
+		{
+			Release();
+		}
 
 	public:
 
