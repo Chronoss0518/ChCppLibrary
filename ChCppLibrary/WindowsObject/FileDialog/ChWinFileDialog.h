@@ -13,7 +13,7 @@ namespace ChSystem
 namespace ChWin
 {
 
-	typedef class FileDialog:public ChCp::Initializer,public ChCp::Releaser
+	typedef class FileDialog:public ChCp::Initializer
 	{
 	public:
 
@@ -23,13 +23,20 @@ namespace ChWin
 			std::string type = "";
 		};
 
+	public:
+
+		virtual ~FileDialog()
+		{
+			Release();
+		}
+
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
 		void Init(const HWND& _hWnd);
 
-		void Release()override;
+		virtual void Release();
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//

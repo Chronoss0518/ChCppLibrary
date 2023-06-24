@@ -21,6 +21,13 @@ namespace ChD3D11
 		{
 		public:
 
+			virtual ~CBLight11()
+			{
+				Release();
+			}
+
+		public:
+
 			///////////////////////////////////////////////////////////////////////////////////
 			//InitAndRelease//
 

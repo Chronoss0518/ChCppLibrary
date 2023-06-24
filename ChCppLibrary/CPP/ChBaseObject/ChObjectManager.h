@@ -9,11 +9,11 @@ namespace ChCpp
 
 	
 
-	class ObjectManager:public ChCp::Releaser
+	class ObjectManager
 	{
 	public:
 
-		void Release()override;
+		virtual void Release();
 
 		//オブジェクトを登録する//
 		//BaseObjectを継承したオブジェクトのみ登録可能//
@@ -209,7 +209,7 @@ namespace ChCpp
 		//CostructerDestructer//
 
 		ObjectManager() {}
-		~ObjectManager() {}
+		virtual ~ObjectManager() { Release(); }
 
 	public:
 

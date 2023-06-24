@@ -51,6 +51,13 @@ namespace ChCpp
 
 	class FrameObject : public ChCpp::BaseObject
 	{
+	public:
+
+		virtual ~FrameObject()
+		{
+			void Release();
+		}
+
 	public://Set Functions//
 
 		void SetOutSizdTransform(const Ch3D::Transform& _trans);
@@ -135,12 +142,19 @@ namespace ChCpp
 
 	public:
 
+		virtual ~ModelObject()
+		{
+			void Release();
+		}
+
+	public:
+
 		inline void Init()override
 		{
 			SetInitFlg(true);
 		}
 
-		inline void Release()override
+		inline virtual void Release()override
 		{
 			SetInitFlg(false);
 		}

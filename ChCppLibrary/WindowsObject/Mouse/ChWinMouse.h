@@ -11,7 +11,7 @@ namespace ChSystem
 namespace ChWin
 {
 
-	class MouseController :public ChCp::Initializer,public ChCp::Releaser
+	class MouseController :public ChCp::Initializer
 	{
 	public:
 
@@ -19,11 +19,22 @@ namespace ChWin
 		//InitAndRelease//
 
 		void Init(
-			const HWND& _hWnd);
+			const HWND& _hWnd
+			, const unsigned long _windWidth
+			, const unsigned long _windHeight);
 
 		void Init(const ChSystem::Windows& _win);
 
-		void Release()override;
+		virtual void Release();
+
+		inline void SetWindSize(
+			const unsigned long _windWidth
+			, const unsigned long _windHeight)
+		{
+			if (!*this)return;
+			windSize.w = _windWidth;
+			windSize.h = _windHeight;
+		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
@@ -95,14 +106,10 @@ namespace ChWin
 
 	private:
 		
-		void UpdateCenterPos();
-
-		MouseController() {}
-
 		POINTS wheelMoveVal{ 0,0 };
-		ChPOINT centerPos{ 0,0 };
-		ChPOINT nowPos{ 0,0 };
-		ChPOINT beforPos{ 0,0 };
+		POINT centerPos{ 0,0 };
+		POINT nowPos{ 0,0 };
+		POINT beforPos{ 0,0 };
 
 		bool wheelMoveFlg = true;
 		bool visFlg = false;
@@ -111,6 +118,13 @@ namespace ChWin
 		ChMath::Vector2Base<unsigned long>windSize;
 
 		HWND hWnd = nullptr;
+
+		MouseController(){}
+
+		virtual ~MouseController()
+		{
+			Release();
+		}
 
 	public:
 
@@ -122,7 +136,7 @@ namespace ChWin
 
 	};
 
-	static MouseController& Mouse() { return MouseController::GetIns(); }
+	static const std::function<MouseController&()>Mouse = MouseController::GetIns;
 
 }
 

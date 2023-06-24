@@ -10,7 +10,7 @@ namespace ChSystem
 
 namespace ChWin
 {
-	class DrawTexter:public ChCp::Initializer,public ChCp::Releaser
+	class DrawTexter:public ChCp::Initializer
 	{
 	public:
 
@@ -19,7 +19,7 @@ namespace ChWin
 
 		void Init(const HWND& _baseWindHandl);
 
-		void Release()override;
+		virtual void Release();
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
@@ -72,6 +72,11 @@ namespace ChWin
 		//ConstructerDestructer//
 
 		inline DrawTexter(){}
+
+		virtual ~DrawTexter()
+		{
+			Release();
+		}
 
 
 		HWND hOwn = nullptr;

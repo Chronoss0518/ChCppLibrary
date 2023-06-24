@@ -18,13 +18,13 @@ namespace ChSound
 	typedef class BackGroundMusic8 BGM8;
 	typedef class SoundEffect8 SE8;
 
-	class SoundManager8:public ChCp::Initializer,public ChCp::Releaser
+	class SoundManager8:public ChCp::Initializer
 	{
 	public:
 
 		void Init(const HWND _hWin);
 
-		inline void Release()override
+		inline virtual void Release()
 		{
 			if (ChPtr::NotNullCheck(soundDevice))
 			{
@@ -39,6 +39,11 @@ namespace ChSound
 		WAVEFORMATEX SetWaveFormat();
 
 		SoundManager8(){}
+
+		virtual ~SoundManager8()
+		{
+			Release();
+		}
 
 
 		LPDIRECTSOUND8 soundDevice = nullptr;

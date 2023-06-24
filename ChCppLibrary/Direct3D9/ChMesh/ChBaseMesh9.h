@@ -37,14 +37,21 @@ namespace ChMesh
 #endif
 
 	//D3DXMesh‚ð‘€‚éŠî’êƒNƒ‰ƒX//
-	typedef class BaseMesh9:public ChCp::Releaser
+	typedef class BaseMesh9
 	{
+	public:
+
+		virtual ~BaseMesh9()
+		{
+			Release();
+		}
+
 	public:
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
-		void Release()override;
+		virtual void Release();
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//

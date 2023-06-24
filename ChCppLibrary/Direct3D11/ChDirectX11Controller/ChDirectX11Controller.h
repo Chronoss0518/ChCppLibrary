@@ -11,8 +11,15 @@ namespace ChD3D11
 {
 
 	//Direct3D11‚ğ—˜—p‚·‚é‚½‚ß‚Éì‚ç‚ê‚½ƒNƒ‰ƒX//
-	class DirectX3D11:public ChCp::Initializer,public ChCp::Releaser
+	class DirectX3D11:public ChCp::Initializer
 	{
+	public:
+
+		virtual ~DirectX3D11()
+		{
+			Release();
+		}
+
 	public://Init and Release//
 
 		void Init(
@@ -28,7 +35,7 @@ namespace ChD3D11
 
 		*/
 
-		void Release()override;
+		virtual void Release();
 
 	public://Get Functions//
 

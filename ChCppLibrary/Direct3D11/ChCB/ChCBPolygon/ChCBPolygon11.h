@@ -15,6 +15,13 @@ namespace ChD3D11
 		{
 		public:
 
+			virtual ~CBPolygon11()
+			{
+				Release();
+			}
+
+		public:
+
 			///////////////////////////////////////////////////////////////////////////////////
 			//InitAndRelease//
 
