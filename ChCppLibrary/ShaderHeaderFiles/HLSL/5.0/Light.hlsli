@@ -38,11 +38,7 @@ struct ChPointLight
 
 
 #ifdef __SHADER__
-#ifdef _SM5_0_
-cbuffer LightData :register(CHANGE_CBUFFER_5(LIGHT_DATA_REGISTERNO))
-#else
-cbuffer LightData : register(b[LIGHT_DATA_REGISTERNO])
-#endif
+cbuffer LightData :register(CHANGE_CBUFFER(LIGHT_DATA_REGISTERNO))
 #else
 struct ChLightData
 #endif
@@ -58,17 +54,10 @@ struct ChLightData
 
 #ifdef __SHADER__
 
-#ifdef _SM5_0_
-texture2D lightPowMap :register(CHANGE_TBUFFER_5(LIGHT_TEXTURE_REGISTERNO));
+texture2D lightPowMap :register(CHANGE_TBUFFER(LIGHT_TEXTURE_REGISTERNO));
 
 //画像から1ピクセルの色を取得するための物//
-sampler lightSmp :register(CHANGE_SBUFFER_5(LIGHT_TEXTURE_REGISTERNO))
-#else
-texture2D lightPowMap : register(t[LIGHT_TEXTURE_REGISTERNO]);
-
-//画像から1ピクセルの色を取得するための物//
-sampler lightSmp :register(s[LIGHT_TEXTURE_REGISTERNO])
-#endif
+sampler lightSmp :register(CHANGE_SBUFFER(LIGHT_TEXTURE_REGISTERNO))
 = sampler_state {
 	Filter = MIN_MAG_MIP_LINEAR;
 	AddressU = Clamp;
