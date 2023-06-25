@@ -27,7 +27,7 @@ void CBPolygon11::Init(
 
 	CBBase11::Init(_device);
 	drawBuf.CreateBuffer(GetDevice(), DRAW_DATA_REGISTERNO);
-	charaBuf.CreateBuffer(GetDevice(), CHARACTOR_POSITION_REGISTERNO);
+	charaBuf.CreateBuffer(GetDevice(), CHARACTOR_DATA_REGISTERNO);
 	mateBuf.CreateBuffer(GetDevice(), MATERIAL_DATA_REGISTERNO);
 
 	defaultBase = _defaultBase;
