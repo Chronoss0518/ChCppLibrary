@@ -6,6 +6,7 @@
 namespace ChCpp
 {
 	class BaseObject;
+	struct FrameComponent;
 }
 
 
@@ -19,6 +20,13 @@ namespace ChD3D11
 
 		class BaseDrawMesh11 final :public SampleShaderBase11
 		{
+			struct DrawData
+			{
+				ChLMat worldMatrix;
+				ChLMat frameMatrix;
+				FrameComponent11* drawFrame = nullptr;
+			};
+
 		public:
 
 			virtual ~BaseDrawMesh11()
@@ -67,6 +75,8 @@ namespace ChD3D11
 				Mesh11& _mesh,
 				const ChMat_11& _mat = ChMat_11());
 
+			void DrawEnd()override;
+
 		private:
 
 			void DrawUpdate(
@@ -84,10 +94,14 @@ namespace ChD3D11
 			CB::CBPolygon11 polyData;
 			CB::CBBone11 boneData;
 
+			ChLMat worldMat;
 
 			D3D11_FILL_MODE fill = D3D11_FILL_MODE::D3D11_FILL_SOLID;
 			D3D11_CULL_MODE cull = D3D11_CULL_MODE::D3D11_CULL_NONE;
 			bool updateFlg = true;
+
+			std::map<ChCpp::FrameComponent*,std::vector<ChPtr::Shared<DrawData>>>drawDatas;
+			ID3D11DeviceContext* dc = nullptr;
 
 		};
 	}

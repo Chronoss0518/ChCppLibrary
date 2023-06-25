@@ -14,11 +14,7 @@
 #endif
 
 #ifdef __SHADER__
-#ifdef _SM5_0_
-cbuffer SpriteData : register(CHANGE_CBUFFER_5(SPRITE_DATA_REGISTERNO))
-#else
-cbuffer SpriteData : register(b[SPRITE_DATA_REGISTERNO])
-#endif
+cbuffer SpriteData : register(CHANGE_CBUFFER(SPRITE_DATA_REGISTERNO))
 #else
 struct ChS_SpriteData
 #endif
@@ -29,15 +25,9 @@ struct ChS_SpriteData
 
 
 #ifdef __SHADER__
-#ifdef _SM5_0_
-texture2D baseTex : register(CHANGE_TBUFFER_5(BASE_TEXTURE_REGISTER));
+texture2D baseTex : register(CHANGE_TBUFFER(BASE_TEXTURE_REGISTER));
 
-sampler baseSmp :register(CHANGE_SBUFFER_5(BASE_TEXTURE_REGISTER));
-#else
-texture2D baseTex : register(t[BASE_TEXTURE_REGISTER]);
-
-sampler baseSmp :register(s[BASE_TEXTURE_REGISTER]);
-#endif
+sampler baseSmp :register(CHANGE_SBUFFER(BASE_TEXTURE_REGISTER));
 #endif
 
 #endif

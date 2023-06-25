@@ -2,6 +2,8 @@
 #include"../../../BaseIncluder/ChBase.h"
 #include"../../../BaseIncluder/ChD3D11I.h"
 
+#include"../../../CPP/ChModel/ChModelObject.h"
+
 #include"../../ChTexture/ChTexture11.h"
 #include"../../ChMesh/ChMesh11.h"
 
@@ -110,7 +112,9 @@ void BaseDrawMesh11::Draw(
 	if (!IsDraw())return;
 	if (ChPtr::NullCheck(_dc))return;
 
-	polyData.SetWorldMatrix(_mat);
+	dc = _dc;
+
+	worldMat = _mat;
 
 	DrawUpdate(_dc, _mesh);
 
@@ -173,53 +177,80 @@ void BaseDrawMesh11::DrawMain(
 
 	if (materialList.empty())return;
 
+	auto&& frame = _object.GetComponent<FrameComponent>();
+
+	auto drawData = ChPtr::Make_S<DrawData>();
+
+	drawData->worldMatrix = worldMat;
+	drawData->frameMatrix = drawMatrix;
+	drawData->drawFrame = frameCom.get();
+
+	drawDatas[frame.get()].push_back(drawData);
+
+}
+
+void BaseDrawMesh11::DrawEnd()
+{
 	unsigned int offsets = 0;
 
-
-	polyData.SetFrameMatrix(drawMatrix);
-
-	polyData.SetVSCharaData(_dc);
-
-	frameCom->SetBoneData(boneData);
-
-	boneData.SetVSDrawData(_dc);
-
-	for (auto&& prim : primitives)
+	for (auto&& drawData : drawDatas)
 	{
-		if (prim == nullptr)continue;
+		if (drawData.second.empty())continue;
+		auto&& primitiveData = drawData.second[0]->drawFrame->GetPrimitives();
 
-		auto&& mate11 = *prim->mate;
-
-		if (mate11.mate.diffuse.a < ALPHA_VALUE)
+		for (auto&& prim : primitiveData)
 		{
-			SampleShaderBase11::SetShaderBlender(_dc);
+			if (prim == nullptr)continue;
+
+			auto&& mate11 = *prim->mate;
+
+			if (mate11.mate.diffuse.a < ALPHA_VALUE)
+			{
+				SampleShaderBase11::SetShaderBlender(dc);
+			}
+			else
+			{
+				SampleShaderBase11::SetShaderDefaultBlender(dc);
+			}
+
+			polyData.SetMateDiffuse(mate11.mate.diffuse);
+			polyData.SetMateSpecularColor(mate11.mate.specularColor);
+			polyData.SetMateSpecularPower(mate11.mate.specularPower);
+			polyData.SetMateAmbientColor(mate11.mate.ambient);
+
+			polyData.SetShaderMaterialData(dc);
+
+			prim->vertexBuffer.SetVertexBuffer(dc, offsets);
+			prim->indexBuffer.SetIndexBuffer(dc);
+
+			for (auto&& drawFrame : drawData.second)
+			{
+
+				polyData.SetWorldMatrix(drawFrame->worldMatrix);
+
+				polyData.SetFrameMatrix(drawFrame->frameMatrix);
+
+				polyData.SetVSCharaData(dc);
+
+				drawFrame->drawFrame->SetBoneData(boneData);
+
+				boneData.SetVSDrawData(dc);
+
+				polyData.SetBaseTexture(prim->textures[Ch3D::TextureType::Diffuse].get());
+				polyData.SetNormalTexture(prim->textures[Ch3D::TextureType::Normal].get());
+
+				polyData.SetShaderTexture(dc);
+
+				dc->DrawIndexed(prim->indexArray.size(), 0, 0);
+			}
 		}
-		else
-		{
-			SampleShaderBase11::SetShaderDefaultBlender(_dc);
-		}
 
-		polyData.SetMateDiffuse(mate11.mate.diffuse);
-		polyData.SetMateSpecularColor(mate11.mate.specularColor);
-		polyData.SetMateSpecularPower(mate11.mate.specularPower);
-		polyData.SetMateAmbientColor(mate11.mate.ambient);
-
-		polyData.SetShaderMaterialData(_dc);
-
-		polyData.SetBaseTexture(prim->textures[Ch3D::TextureType::Diffuse].get());
-		polyData.SetNormalTexture(prim->textures[Ch3D::TextureType::Normal].get());
-
-		polyData.SetShaderTexture(_dc);
-
-		prim->vertexBuffer.SetVertexBuffer(_dc, offsets);
-		prim->indexBuffer.SetIndexBuffer(_dc);
-
-		_dc->DrawIndexed(prim->indexArray.size(), 0, 0);
+		SampleShaderBase11::SetShaderDefaultBlender(dc);
 
 	}
+	if(!drawDatas.empty())drawDatas.clear();
 
-	SampleShaderBase11::SetShaderDefaultBlender(_dc);
-
+	SampleShaderBase11::DrawEnd();
 }
 
 void BaseDrawMesh11::Update(ID3D11DeviceContext* _dc)
