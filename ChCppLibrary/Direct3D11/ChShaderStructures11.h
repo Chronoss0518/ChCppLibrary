@@ -302,6 +302,20 @@ namespace ChD3D11
 			_dc->IASetVertexBuffers(0, 1, &buf, &strides, &_offset);
 		}
 
+		inline void SetVertexBuffer(
+			ID3D11DeviceContext* _dc,
+			const unsigned int _startSlot,
+			const unsigned int _bufferCount,
+			const unsigned int _offset)
+		{
+
+			if (!*this)return;
+			if (ChPtr::NullCheck(_dc))return;
+			unsigned int strides = sizeof(vertex);
+
+			_dc->IASetVertexBuffers(_startSlot, _bufferCount, &buf, &strides, &_offset);
+		}
+
 	};
 
 	template<class content>
