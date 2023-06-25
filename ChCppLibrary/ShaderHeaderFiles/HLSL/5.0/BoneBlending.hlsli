@@ -14,11 +14,7 @@
 #endif
 
 #ifdef __SHADER__
-#ifdef _SM5_0_
-cbuffer BoneData :register(CHANGE_CBUFFER_5(BONE_DATA_REGISTERNO))
-#else
-cbuffer BoneData : register(b[BONE_DATA_REGISTERNO])
-#endif
+cbuffer BoneData :register(CHANGE_CBUFFER(BONE_DATA_REGISTERNO))
 #else
 struct ChBoneData
 #endif

@@ -21,7 +21,7 @@ namespace ChD3D11
 
 	struct  DrawPrimitiveData11
 	{
-		~DrawPrimitiveData11()
+		virtual ~DrawPrimitiveData11()
 		{
 			vertexBuffer.Release();
 			indexBuffer.Release();
@@ -67,7 +67,6 @@ namespace ChD3D11
 		std::vector<ChPtr::Shared<DrawPrimitiveData11>>primitives;
 		ChLMat boneLMats[16];
 		std::vector<ChPtr::Shared<TargetBoneData11>>boneList;
-
 	};
 
 	class Mesh11:public ChCpp::ModelObject
