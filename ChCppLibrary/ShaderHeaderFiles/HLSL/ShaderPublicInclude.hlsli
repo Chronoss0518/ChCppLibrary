@@ -1,17 +1,34 @@
 #ifndef _HLSL_Shader_Public_
 #define _HLSL_Shader_Public_
 
-#ifndef CHANGE_CBUFFER_5
-#define CHANGE_CBUFFER_5(_no) b##_no
+
+#ifdef __SHADER__
+#ifndef CHANGE_CBUFFER
+#ifdef _SM5_0_
+#define CHANGE_CBUFFER(_no) b##_no
+#else
+#define CHANGE_CBUFFER(_no) b[NORMAL_TEXTURE_REGISTER];
 #endif
-#ifndef CHANGE_TBUFFER_5
-#define CHANGE_TBUFFER_5(_no) t##_no
-#endif
-#ifndef CHANGE_SBUFFER_5
-#define CHANGE_SBUFFER_5(_no) s##_no
 #endif
 
-#ifndef __SHADER__
+#ifndef CHANGE_TBUFFER
+#ifdef _SM5_0_
+#define CHANGE_TBUFFER(_no) t##_no
+#else
+#define CHANGE_TBUFFER(_no) t[NORMAL_TEXTURE_REGISTER];
+#endif
+#endif
+
+#ifndef CHANGE_SBUFFER
+#ifdef _SM5_0_
+#define CHANGE_SBUFFER(_no) s##_no
+#else
+#define CHANGE_SBUFFER(_no) s[NORMAL_TEXTURE_REGISTER];
+#endif
+
+#endif
+
+#else
 #ifndef SHADER_TO_CPP
 #define SHADER_TO_CPP
 
