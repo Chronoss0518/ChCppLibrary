@@ -36,7 +36,7 @@ namespace ChD3D11
 		ChPtr::Shared<Ch3D::MaterialData> mate;
 
 		ChLMat drawMat;
-
+		std::string materialName = "";
 		std::map<Ch3D::TextureType, ChPtr::Shared<Texture11>>textures;
 	};
 
@@ -60,9 +60,7 @@ namespace ChD3D11
 		}
 
 		ChCpp::FrameComponent* GetFrameCom() { return frameCom; }
-		std::vector<ChPtr::Shared<Ch3D::MaterialData>>& GetMaterialList() { return mateList; }
 	private:
-		std::vector<ChPtr::Shared<Ch3D::MaterialData>> mateList;
 		ChCpp::FrameComponent* frameCom = nullptr;
 		std::vector<ChPtr::Shared<DrawPrimitiveData11>>primitives;
 		ChLMat boneLMats[16];

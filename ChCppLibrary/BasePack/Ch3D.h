@@ -78,10 +78,10 @@ namespace Ch3D
 				blendPows[i] = 0.0f;
 			}
 		}
+		unsigned long boneNum = 0;
 
 		float blendPows[Num];
 
-		unsigned long boneNum = 0;
 	};
 
 	struct BoneData
