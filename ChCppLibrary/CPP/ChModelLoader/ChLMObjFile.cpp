@@ -5,16 +5,32 @@
 #include"../ChTextObject/ChTextObject.h"
 #include"../ChModel/ChModelObject.h"
 
-#include"ChModelLoader.h"
+#include"ChModelLoaderBase.h"
 #include"ChLMObjFile.h"
 
+
+using namespace ChCpp;
+using namespace ModelLoader;
 
 ///////////////////////////////////////////////////////////////////////////////////////
 //ChCMObjeFile Method//
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::ModelLoader::ObjFile::CreateModel(const std::string& _filePath)
+void ObjFile::Release()
 {
+	objects.clear();
+	materialMaps.clear();
+	makeObject = nullptr;
+	targetMaterial = nullptr;
+	folderPath = "";
+	blockMaterial = "";
+}
+
+void ObjFile::CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& _filePath)
+{
+
+	if (!_model->IsInit())return;
+
 	if (_filePath.size() <= 0)return;
 
 	ChCpp::TextObject text;
@@ -36,10 +52,11 @@ void ChCpp::ModelLoader::ObjFile::CreateModel(const std::string& _filePath)
 		}
 
 		text.SetText(tmp);
-
 	}
 
 	folderPath = GetRoutePath(_filePath);
+
+	Release();
 
 	for (auto line : text)
 	{
@@ -58,22 +75,27 @@ void ChCpp::ModelLoader::ObjFile::CreateModel(const std::string& _filePath)
 
 	if (objects.size() <= 0)return;
 
-	auto outModels = ChPtr::Make_S<ModelFrame>();
+	Init();
 
-	outModels->modelName = _filePath;
+	_model->SetModelName(_filePath);
 
-	outModels->modelData = ChPtr::Make_S<ModelFrame::Frame>();
+	_model->SetMyName("Root");
 
-	outModels->modelData->myName = "Root";
+	_model->SetComponent<FrameComponent>();
+	
+	CreateChFrame(_model);
 
-	CreateChFrame(outModels->modelData);
+	SetMaxPos(*_model, maxPos);
+	SetMinPos(*_model, minPos);
+	SetCenterPos(*_model, CreateCenterPos(minPos, maxPos));
+	SetBoxSize(*_model, CreateBoxSize(minPos, maxPos));
 
-	SetModel(outModels);
+	_model->Create();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::ModelLoader::ObjFile::CreateObject(const std::string& _objectName)
+void ObjFile::CreateObject(const std::string& _objectName)
 {
 
 	if (!IsPrefix(_objectName, &objectBlockTags, sizeof(objectBlockTags)))return;
@@ -96,7 +118,7 @@ void ChCpp::ModelLoader::ObjFile::CreateObject(const std::string& _objectName)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::ModelLoader::ObjFile::CreateMaterials(const std::string& _fileName)
+void ObjFile::CreateMaterials(const std::string& _fileName)
 {
 
 	if (!IsPrefix(_fileName, useMaterialFileNameTags, sizeof(useMaterialFileNameTags)))return;
@@ -149,7 +171,7 @@ void ChCpp::ModelLoader::ObjFile::CreateMaterials(const std::string& _fileName)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::ModelLoader::ObjFile::CreateMaterial(const std::string& _matName)
+void ObjFile::CreateMaterial(const std::string& _matName)
 {
 
 	if (!IsPrefix(_matName, matMaterialBlockTags, sizeof(matMaterialBlockTags)))return;
@@ -163,83 +185,98 @@ void ChCpp::ModelLoader::ObjFile::CreateMaterial(const std::string& _matName)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::ModelLoader::ObjFile::CreateChFrame(ChPtr::Shared<ChCpp::ModelFrame::Frame>& _frame)
+void ObjFile::CreateChFrame(ChPtr::Shared<ChCpp::FrameObject> _frame)
 {
-
 
 	//for (auto&& Obj : ObjectMaps)
 	for (auto&& obj : objects)
 	{
 		unsigned long materialNo = 0;
 
-		auto mesh = ChPtr::Make_S<ChCpp::ModelFrame::Mesh>();
+		auto&& mesh = ChPtr::Make_S<ChCpp::FrameObject>();
+
+		auto&& primitive = mesh->SetComponent<ChCpp::FrameComponent>();
 
 		//for (auto&& Vertexs : Obj.second->vertexPosList)
 		for (auto&& vertexs : obj->vertexPosList)
 		{
-			auto ver = ChPtr::Make_S<ChCpp::ModelFrame::VertexData>();
+			auto ver = ChPtr::Make_S<Ch3D::SavePolyVertex>();
 
 			ver->pos = *vertexs;
 
-			mesh->vertexList.push_back(ver);
+			primitive->vertexList.push_back(ver);
 
+			primitive->maxPos = TestMaxPos(primitive->maxPos, ver->pos);
+			primitive->minPos = TestMinPos(primitive->minPos, ver->pos);
 		}
+
+		primitive->centerPos = CreateCenterPos(primitive->minPos, primitive->maxPos);
+		primitive->boxSize = CreateBoxSize(primitive->minPos, primitive->maxPos);
 
 		//for (auto&& Face : Obj.second->MeshDatas)
 		for (auto&& face : obj->meshDatas)
 		{
+			if (materialMaps.empty())
+			{
+				primitive->mateNames[""] = materialNo;
 
-			if (mesh->materialNo.find(face->targetMaterialName) == mesh->materialNo.end())
+				auto mate = ChPtr::Make_S<Ch3D::MaterialData>();
+
+				mate->mateName = face->targetMaterialName;
+
+				mate->mate.diffuse =ChVec4(1.0f);
+
+				mate->mate.specularColor = ChVec3(1.0f);
+
+				mate->mate.specularPower = 0.0f;
+
+				mate->mate.ambient = 0.3f;
+
+				primitive->materialList.push_back(mate);
+				materialNo++;
+
+				mate = nullptr;
+			}
+			else if (primitive->mateNames.find(face->targetMaterialName) == primitive->mateNames.end())
 			{
 
-				mesh->materialNo[face->targetMaterialName] = materialNo;
+				primitive->mateNames[face->targetMaterialName] = materialNo;
 
-				ChPtr::Shared<ChCpp::ModelFrame::Material> mate = ChPtr::Make_S<ChCpp::ModelFrame::Material>();
+				auto mate = ChPtr::Make_S<Ch3D::MaterialData>();
 
+				mate->mateName = face->targetMaterialName;
+				auto& tmpMate = materialMaps[mate->mateName];
 
-				auto& tmpMate = materialMaps[face->targetMaterialName];
+				mate->mate.diffuse = tmpMate->diffuse;
+				mate->mate.diffuse.a = tmpMate->alpha;
 
-				mate->materialName = face->targetMaterialName;
+				mate->mate.specularColor = tmpMate->specular;
 
-				mate->diffuse = tmpMate->diffuse;
-				mate->diffuse.a = tmpMate->alpha;
+				mate->mate.specularPower = tmpMate->spePow;
 
-				mate->specular = tmpMate->specular;
+				mate->mate.ambient = tmpMate->ambient.r + tmpMate->ambient.g + tmpMate->ambient.b;
 
-				mate->specular = tmpMate->spePow;
+				mate->mate.ambient /= 3;
 
-				mate->ambient = tmpMate->ambient.r + tmpMate->ambient.g + tmpMate->ambient.b;
-
-				mate->ambient /= 3;
-
-				mate->textureNames.push_back(tmpMate->diffuseMap);
-				mate->textureNames.push_back(tmpMate->ambientMap);
-				mate->textureNames.push_back(tmpMate->specularMap);
-				mate->textureNames.push_back(tmpMate->specularHighLightMap);
-				mate->textureNames.push_back(tmpMate->bumpMap);
-				mate->textureNames.push_back(tmpMate->alphaMap);
-				mate->textureNames.push_back(tmpMate->normalMap);
-				mate->textureNames.push_back(tmpMate->metallicMap);
+				mate->textures[Ch3D::TextureType::Diffuse] = (tmpMate->diffuseMap);
+				mate->textures[Ch3D::TextureType::Ambient] = (tmpMate->ambientMap);
+				mate->textures[Ch3D::TextureType::Specular] = (tmpMate->specularMap);
+				mate->textures[Ch3D::TextureType::SpecularHighLight] = (tmpMate->specularHighLightMap);
+				mate->textures[Ch3D::TextureType::Bump] = (tmpMate->bumpMap);
+				mate->textures[Ch3D::TextureType::Alpha] = (tmpMate->alphaMap);
+				mate->textures[Ch3D::TextureType::Normal] = (tmpMate->normalMap);
+				mate->textures[Ch3D::TextureType::Metallic] = (tmpMate->metallicMap);
 
 
-				//mate->diffuseMap = tmpMate->diffuseMap;
-				//mate->ambientMap = tmpMate->ambientMap;
-				//mate->specularMap = tmpMate->specularMap;
-				//mate->specularHighLightMap = tmpMate->specularHighLightMap;
-				//mate->bumpMap = tmpMate->bumpMap;
-				//mate->alphaMap = tmpMate->alphaMap;
-				//mate->normalMap = tmpMate->normalMap;
-				//mate->metallicMap = tmpMate->metallicMap;
-
-
-				mesh->materialList.push_back(mate);
-
+				primitive->materialList.push_back(mate);
 				materialNo++;
 
 				mate = nullptr;
 			}
 
-			std::vector<ChPtr::Shared<ChCpp::ModelFrame::SurFace::SurFaceVertex>>fVList;
+			auto fVList = ChPtr::Make_S<Ch3D::Primitive>();
+
+			fVList->mateNo = primitive->mateNames[face->targetMaterialName];
 
 			for (auto&& values : face->values)
 			{
@@ -247,92 +284,50 @@ void ChCpp::ModelLoader::ObjFile::CreateChFrame(ChPtr::Shared<ChCpp::ModelFrame:
 				//unsigned long NVertex = Values->VertexNum - Obj.second->SVertex - 1;
 				//unsigned long NUV = Values->UVNum - Obj.second->SUV - 1;
 				//unsigned long NNormal = Values->NormalNum - Obj.second->SNormal - 1;
-				unsigned long nVertex = values->vertexNum - obj->sVertex - 1;
-				unsigned long nUV = values->uvNum - obj->sUV - 1;
-				unsigned long nNormal = values->normalNum - obj->sNormal - 1;
+				unsigned long nVertex = values->vertexNum - 1 - obj->sVertex;
+				unsigned long nUV = values->uvNum - 1 - obj->sUV;
+				unsigned long nNormal = values->normalNum - 1 - obj->sNormal;
 
-				auto faceVertex = ChPtr::Make_S<ChCpp::ModelFrame::SurFace::SurFaceVertex>();
+				auto faceVertex = ChPtr::Make_S<Ch3D::SavePolyData>();
 
 				faceVertex->vertexNo = nVertex;
 				//if(Obj.second->UVDatas.size() > NUV)faceVertex->UVPos = *Obj.second->UVDatas[NUV];
-				if (obj->vertexUvPosList.size() > nUV)faceVertex->uvPos = *obj->vertexUvPosList[nUV];
+				if (obj->vertexUvPosList.size() > nUV)faceVertex->uv = *obj->vertexUvPosList[nUV];
 
-				fVList.push_back(faceVertex);
+				fVList->vertexData.push_back(faceVertex);
 
 				//mesh->VertexList[NVertex]->Normal += *Obj.second->vertexNormalList[NNormal];
-				mesh->vertexList[nVertex]->normal += *obj->vertexNormalList[nNormal];
-			}
-
-			if (fVList.size() >= 3)
-			{
-
-				unsigned long counters[3];
-				counters[0] = 0;
-				counters[1] = 1;
-				counters[2] = fVList.size() - 1;
-
-				ChStd::Bool upperFlg = true;
-
-
-				for (unsigned long i = 0; i < fVList.size() - 2; i++)
-				{
-
-					auto face = ChPtr::Make_S<ChCpp::ModelFrame::SurFace>();
-
-					face->vertexData[0] = *fVList[counters[2]];
-					face->vertexData[1] = *fVList[counters[1]];
-					face->vertexData[2] = *fVList[counters[0]];
-
-					//face->VertexData[0] = *FVList[i];
-					//face->VertexData[1] = *FVList[i + 1];
-					//face->VertexData[2] = *FVList[i + 2];
-
-					face->materialNo = materialNo - 1;
-
-					if (upperFlg)
-					{
-						counters[0] = counters[1];
-						counters[1] = counters[2] - 1;
-					}
-					else
-					{
-						counters[2] = counters[1];
-						counters[1] = counters[0] + 1;
-					}
-
-					upperFlg = !upperFlg;
-
-					mesh->faceList.push_back(face);
-				}
+				primitive->vertexList[nVertex]->normal += *obj->vertexNormalList[nNormal];
+				fVList->faceNormal += *obj->vertexNormalList[nNormal];
 
 			}
 
+			fVList->faceNormal.Normalize();
 
-			for (auto&& ver : mesh->vertexList)
-			{
-				ver->normal.Normalize();
-			}
+			primitive->primitives.push_back(fVList);
+
 
 		}
 
-		auto frame = ChPtr::Make_S< ChCpp::ModelFrame::Frame>();
+		for (auto&& ver : primitive->vertexList)
+		{
+			ver->normal.Normalize();
+		}
 
-		//Frame->MyName = Obj.first;
-		frame->myName = obj->objectName;
-		frame->parent = _frame;
-		frame->mesh = mesh;
+		mesh->SetMyName(obj->objectName);
 
+		_frame->SetChild(mesh);
 
-		_frame->childFrames.push_back(frame);
+		maxPos = TestMaxPos(primitive->maxPos, maxPos);
+		minPos = TestMinPos(primitive->minPos, minPos);
 
 	}
-
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::ModelLoader::ObjFile::OutModelFile(const std::string& _filePath)
+void ObjFile::OutModelFile(const ChPtr::Shared<ModelObject> _model, const std::string& _filePath)
 {
 	if (_filePath.size() <= 0)return;
 	if (_filePath.rfind(".") == std::string::npos)return;
@@ -341,7 +336,7 @@ void ChCpp::ModelLoader::ObjFile::OutModelFile(const std::string& _filePath)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::ModelLoader::ObjFile::SetVertex(const std::string& _line)
+void ObjFile::SetVertex(const std::string& _line)
 {
 
 	if (!IsPrefix(_line, &vertexTags, sizeof(vertexTags)))return;
@@ -355,7 +350,7 @@ void ChCpp::ModelLoader::ObjFile::SetVertex(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::ModelLoader::ObjFile::SetUV(const std::string& _line)
+void ObjFile::SetUV(const std::string& _line)
 {
 
 	if (!IsPrefix(_line, uvTags, sizeof(uvTags)))return;
@@ -369,7 +364,7 @@ void ChCpp::ModelLoader::ObjFile::SetUV(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::ModelLoader::ObjFile::SetNormal(const std::string& _line)
+void ObjFile::SetNormal(const std::string& _line)
 {
 
 	if (!IsPrefix(_line, normalTags, sizeof(normalTags)))return;
@@ -383,7 +378,7 @@ void ChCpp::ModelLoader::ObjFile::SetNormal(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::ModelLoader::ObjFile::SetFace(const std::string& _line)
+void ObjFile::SetFace(const std::string& _line)
 {
 	if (!IsPrefix(_line, &meshTags, sizeof(meshTags)))return;
 
@@ -393,13 +388,13 @@ void ChCpp::ModelLoader::ObjFile::SetFace(const std::string& _line)
 
 	unsigned long end = 0;
 
-	auto data = ChPtr::Make_S<ChCpp::ModelLoader::ObjFile::ObjFileModelData::MeshData>();
+	auto data = ChPtr::Make_S<ObjFile::ObjFileModelData::MeshData>();
 
 	data->targetMaterialName = blockMaterial;
 
 	makeObject->meshDatas.push_back(data);
 
-	ChStd::Bool endFlg = false;
+	bool endFlg = false;
 
 	while (1)
 	{
@@ -412,7 +407,7 @@ void ChCpp::ModelLoader::ObjFile::SetFace(const std::string& _line)
 			tmpPos = _line.size();
 		}
 
-		auto mdata = ChPtr::Make_S<ChCpp::ModelLoader::ObjFile::ObjFileModelData::MeshData::Data>();
+		auto mdata = ChPtr::Make_S<ObjFile::ObjFileModelData::MeshData::Data>();
 
 
 		std::string tmp = _line.substr(pos, tmpPos - pos);
@@ -459,7 +454,7 @@ void ChCpp::ModelLoader::ObjFile::SetFace(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::ModelLoader::ObjFile::SetMateBlock(const std::string& _line)
+void ObjFile::SetMateBlock(const std::string& _line)
 {
 
 	if (!IsPrefix(_line, materialBlockTags, sizeof(materialBlockTags)))return;
@@ -470,7 +465,7 @@ void ChCpp::ModelLoader::ObjFile::SetMateBlock(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::ModelLoader::ObjFile::SetMatAmbient(const std::string& _line)
+void ObjFile::SetMatAmbient(const std::string& _line)
 {
 
 	if (!IsPrefix(_line, matAmbientTags, sizeof(matAmbientTags)))return;
@@ -480,7 +475,7 @@ void ChCpp::ModelLoader::ObjFile::SetMatAmbient(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::ModelLoader::ObjFile::SetMatDiffuse(const std::string& _line)
+void ObjFile::SetMatDiffuse(const std::string& _line)
 {
 
 	if (!IsPrefix(_line, matDiffuseTags, sizeof(matDiffuseTags)))return;
@@ -491,7 +486,7 @@ void ChCpp::ModelLoader::ObjFile::SetMatDiffuse(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::ModelLoader::ObjFile::SetMatSpecular(const std::string& _line)
+void ObjFile::SetMatSpecular(const std::string& _line)
 {
 
 	if (!IsPrefix(_line, matSpecularTags, sizeof(matSpecularTags)))return;
@@ -502,7 +497,7 @@ void ChCpp::ModelLoader::ObjFile::SetMatSpecular(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::ModelLoader::ObjFile::SetMatSpecularHighLight(const std::string& _line)
+void ObjFile::SetMatSpecularHighLight(const std::string& _line)
 {
 
 	if (!IsPrefix(_line, matSpecularHighLightTags, sizeof(matSpecularHighLightTags)))return;
@@ -513,7 +508,7 @@ void ChCpp::ModelLoader::ObjFile::SetMatSpecularHighLight(const std::string& _li
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::ModelLoader::ObjFile::SetMatDissolve(const std::string& _line)
+void ObjFile::SetMatDissolve(const std::string& _line)
 {;
 
 	if (!IsPrefix(_line, &matDissolveTags, sizeof(matDissolveTags)))return;
@@ -524,7 +519,7 @@ void ChCpp::ModelLoader::ObjFile::SetMatDissolve(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::ModelLoader::ObjFile::SetMatODensity(const std::string& _line)
+void ObjFile::SetMatODensity(const std::string& _line)
 {
 
 	if (!IsPrefix(_line, matODensityTags, sizeof(matODensityTags)))return;
@@ -535,7 +530,7 @@ void ChCpp::ModelLoader::ObjFile::SetMatODensity(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::ModelLoader::ObjFile::SetMatAmbientMap(const std::string& _line)
+void ObjFile::SetMatAmbientMap(const std::string& _line)
 {
 
 	if (!IsPrefix(_line, matAmbientMapTags, sizeof(matAmbientMapTags)))return;
@@ -546,7 +541,7 @@ void ChCpp::ModelLoader::ObjFile::SetMatAmbientMap(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::ModelLoader::ObjFile::SetMatDiffuseMap(const std::string& _line)
+void ObjFile::SetMatDiffuseMap(const std::string& _line)
 {
 
 	if (!IsPrefix(_line, matDiffuseMapTags, sizeof(matDiffuseMapTags)))return;
@@ -557,7 +552,7 @@ void ChCpp::ModelLoader::ObjFile::SetMatDiffuseMap(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::ModelLoader::ObjFile::SetMatSpecularMap(const std::string& _line)
+void ObjFile::SetMatSpecularMap(const std::string& _line)
 {
 
 	if (!IsPrefix(_line, matSpecularMapTags, sizeof(matSpecularMapTags)))return;
@@ -568,7 +563,7 @@ void ChCpp::ModelLoader::ObjFile::SetMatSpecularMap(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::ModelLoader::ObjFile::SetMatSpecularHighLightMap(const std::string& _line)
+void ObjFile::SetMatSpecularHighLightMap(const std::string& _line)
 {
 
 	if (!IsPrefix(_line, matSpecularHighLightMapTags, sizeof(matSpecularHighLightMapTags)))return;
@@ -579,7 +574,7 @@ void ChCpp::ModelLoader::ObjFile::SetMatSpecularHighLightMap(const std::string& 
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::ModelLoader::ObjFile::SetMatBumpMap(const std::string& _line)
+void ObjFile::SetMatBumpMap(const std::string& _line)
 {
 
 	if (!IsPrefix(_line, matBumpMapTags, sizeof(matBumpMapTags)))return;
@@ -590,7 +585,7 @@ void ChCpp::ModelLoader::ObjFile::SetMatBumpMap(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::ModelLoader::ObjFile::SetMatBumpMap2(const std::string& _line)
+void ObjFile::SetMatBumpMap2(const std::string& _line)
 {
 	if (!IsPrefix(_line, matBumpMapTags2, sizeof(matBumpMapTags2)))return;
 
@@ -600,7 +595,7 @@ void ChCpp::ModelLoader::ObjFile::SetMatBumpMap2(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::ModelLoader::ObjFile::SetMatMetallicMap(const std::string& _line)
+void ObjFile::SetMatMetallicMap(const std::string& _line)
 {
 
 	if (!IsPrefix(_line, matMetallicMapTags, sizeof(matMetallicMapTags)))return;
@@ -611,7 +606,7 @@ void ChCpp::ModelLoader::ObjFile::SetMatMetallicMap(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::ModelLoader::ObjFile::SetMatMetallicMap2(const std::string& _line)
+void ObjFile::SetMatMetallicMap2(const std::string& _line)
 {
 	if (!IsPrefix(_line, matMetallicMapTags2, sizeof(matMetallicMapTags2)))return;
 
@@ -621,7 +616,7 @@ void ChCpp::ModelLoader::ObjFile::SetMatMetallicMap2(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChCpp::ModelLoader::ObjFile::SetMatNormalMap(const std::string& _line)
+void ObjFile::SetMatNormalMap(const std::string& _line)
 {
 
 	if (!IsPrefix(_line, matNormalMapTags, sizeof(matNormalMapTags)))return;
@@ -632,7 +627,7 @@ void ChCpp::ModelLoader::ObjFile::SetMatNormalMap(const std::string& _line)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ChCpp::ModelLoader::ObjFile::IsPrefix(const std::string _str, const char* _prefix, const unsigned long _prefixSize)
+bool ObjFile::IsPrefix(const std::string _str, const char* _prefix, const unsigned long _prefixSize)
 {
 
 	if (_str.size() <= (_prefixSize + 1))return false;
@@ -650,10 +645,10 @@ ChStd::Bool ChCpp::ModelLoader::ObjFile::IsPrefix(const std::string _str, const 
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-std::string ChCpp::ModelLoader::ObjFile::LoadTextureName(const std::string& _line)
+std::string ObjFile::LoadTextureName(const std::string& _line)
 {
 
-	ChStd::Bool loadFlg = false;
+	bool loadFlg = false;
 	std::string name = "";
 
 	size_t nowPos = 0;

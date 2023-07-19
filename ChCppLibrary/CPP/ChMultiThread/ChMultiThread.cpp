@@ -10,32 +10,53 @@ using namespace ChCpp;
 //ChMUltThreadÉÅÉ\ÉbÉh//
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChMultiThread::ChMultiThread(const std::function<void(void)> _func)
+MultiThread::MultiThread(const std::function<void(void)> _func)
 {
 	Init(_func);
 }
 
-void ChMultiThread::Init(const std::function<void(void)> _func)
+void MultiThread::Init(const std::function<void(void)> _func)
 {
+	if (!endFlg)return;
+
 	if (thread.joinable())
 	{
 		thread.detach();
 	}
 	func = _func;
 
-	endFlg = false;
+	ReRun();
 
-	thread = std::thread([this] {Function(); });
-	
+	SetInitFlg(true);
 }
 
-void ChMultiThread::Join()
+void MultiThread::ReRun()
 {
-	if (endFlg)return;
+	if (!endFlg)return;
+
+	endFlg = false;
+
+	thread = std::thread([&] {Function(); });
+
+}
+
+void MultiThread::Release()
+{
+	if (!IsInit())return;
+
+	if (!thread.joinable())return;
+
+	thread.join();
+
+	SetInitFlg(false);
+}
+
+void MultiThread::Join()
+{
 	thread.join();
 }
 
-void ChMultiThread::Function()
+void MultiThread::Function()
 {
 	func();
 

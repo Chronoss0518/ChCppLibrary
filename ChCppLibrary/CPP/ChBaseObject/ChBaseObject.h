@@ -11,8 +11,15 @@ namespace ChCpp
 	class ObjectList;
 
 	//オブジェクトを生成する場合、このクラスを継承して作成する。//
-	class BaseObject :public std::enable_shared_from_this<BaseObject>, public ChCp::Releaser
+	class BaseObject :public std::enable_shared_from_this<BaseObject>
 	{
+	public:
+
+		virtual ~BaseObject()
+		{
+			Release();
+		}
+
 	public:
 
 		friend BaseComponent;
@@ -25,7 +32,7 @@ namespace ChCpp
 		virtual void Init() {}
 
 		//自身を捨てる時に自動的に走る関数//
-		void Release() {}
+		virtual void Release() {}
 
 	public://Destroy Function//
 
@@ -66,16 +73,20 @@ namespace ChCpp
 
 		//コンポーネントの取得//
 		template<class T = BaseComponent>
-		inline auto GetComponent()->typename std::enable_if
-			<std::is_base_of<BaseComponent, T>::value, ChPtr::Shared<T>>::type
+		inline auto GetComponent()->typename std::enable_if<
+			std::is_base_of<BaseComponent, T>::value,
+			ChPtr::Shared<T>>::type
 		{
 			for (auto&& com : comList)
 			{
-				if (ChPtr::SharedSafeCast<T, BaseComponent>(com) != nullptr)
+				if (com->dFlg)continue;
+				if (!com->useFlg)continue;
+
+				auto testCom = ChPtr::SharedSafeCast<T>(com);
+
+				if (testCom != nullptr)
 				{
-					if (com->dFlg)continue;
-					if (!com->useFlg)continue;
-					return ChPtr::SharedSafeCast<T, BaseComponent>(com);
+					return testCom;
 				}
 			}
 			return nullptr;
@@ -83,31 +94,37 @@ namespace ChCpp
 
 		//コンポーネントリストの取得//
 		template<typename T = BaseComponent>
-		inline auto GetComponents()->typename std::enable_if
-			<std::is_base_of<BaseComponent, T>::value, std::vector<ChPtr::Shared<T>>&>::type
+		inline auto GetComponents()->typename std::enable_if<
+			std::is_base_of<BaseComponent, T>::value,
+			std::vector<ChPtr::Shared<T>>>::type
 		{
 			std::vector<ChPtr::Shared<T>>tmpComList;
 			for (auto&& com : comList)
 			{
-				if (ChPtr::SharedSafeCast<T>(com) == nullptr)continue;
-				if (com->DFlg)continue;
-				if (!com->UseFlg)continue;
-				tmpComList.push_back(com);
+				if (com->dFlg)continue;
+				if (!com->useFlg)continue;
+
+				auto test = ChPtr::SharedSafeCast<T>(com);
+				if (test == nullptr)continue;
+				tmpComList.push_back(test);
 			}
 			return tmpComList;
 		}
 
+		std::vector<ChPtr::Shared<BaseObject>>& GetChildlen();
+
 		//子オブジェクト群の取得//
 		template<class T = BaseObject>
-		inline std::vector<ChPtr::Weak<
-			typename std::enable_if<std::is_base_of<BaseObject, T>::value, T>::type>>
+		inline typename std::enable_if<
+			std::is_base_of<BaseObject, T>::value, 
+			std::vector<ChPtr::Weak<T>>>::type
 			GetChildlen()
 		{
 			std::vector<ChPtr::Weak<T>>tmpObjList;
 
 			for (auto&& obj : childList)
 			{
-				auto&& test = ChPtr::SharedSafeCast<T>(obj);
+				auto test = ChPtr::SharedSafeCast<T>(obj);
 				if (test == nullptr)continue;
 				tmpObjList.push_back(test);
 			}
@@ -117,21 +134,133 @@ namespace ChCpp
 
 		//子オブジェクト群の取得//
 		template<class T = BaseObject>
-		inline std::vector<ChPtr::Weak<
-			typename std::enable_if<std::is_base_of<BaseObject, T>::value, T>::type>>
+		inline typename std::enable_if<
+			std::is_base_of<BaseObject, T>::value,
+			std::vector<ChPtr::Weak<T>>>::type
 			GetChildlenForName(const std::string& _name)
 		{
-			std::vector<ChPtr::Weak<BaseObject>>tmpObjList;
+			std::vector<ChPtr::Weak<T>>tmpObjList;
 
 			for (auto&& obj : childList)
 			{
-				auto&& test = ChPtr::SharedSafeCast<T>(obj);
+				if (obj->GetMyName() != _name)continue;
+
+				auto test = ChPtr::SharedSafeCast<T>(obj);
 				if (test == nullptr)continue;
-				if (test->GetMyName() != _name)continue;
 				tmpObjList.push_back(test);
 			}
 
 			return tmpObjList;
+		}
+
+		//子オブジェクト群の取得//
+		template<class T = BaseObject>
+		inline typename std::enable_if<
+			std::is_base_of<BaseObject, T>::value,
+			std::vector<ChPtr::Weak<T>>>::type
+			GetChildlenConstainsName(const std::string& _name)
+		{
+			std::vector<ChPtr::Weak<T>>tmpObjList;
+
+			for (auto&& obj : childList)
+			{
+				if (obj->GetMyName().find(_name) == std::string::npos)continue;
+
+				auto test = ChPtr::SharedSafeCast<T>(obj);
+				if (test == nullptr)continue;
+				tmpObjList.push_back(test);
+			}
+
+			return tmpObjList;
+		}
+
+		std::vector<ChPtr::Shared<BaseObject>> GetAllChildlen();
+
+		//子オブジェクト群の取得//
+		template<class T = BaseObject>
+		inline typename std::enable_if<
+			std::is_base_of<BaseObject, T>::value,
+			std::vector<ChPtr::Weak<T>>>::type
+			GetAllChildlen()
+		{
+			std::vector<ChPtr::Weak<T>>res;
+
+			for (auto&& obj : childList)
+			{
+				auto test = ChPtr::SharedSafeCast<T>(obj);
+				if (test != nullptr)
+				{
+					res.push_back(test);
+				}
+
+				for (auto&& childObj : obj->GetAllChildlen<T>())
+				{
+					res.push_back(childObj);
+				}
+
+			}
+
+			return res;
+		}
+
+		//子オブジェクト群の取得//
+		template<class T = BaseObject>
+		inline typename std::enable_if<
+			std::is_base_of<BaseObject, T>::value,
+			std::vector<ChPtr::Weak<T>>>::type
+			GetAllChildlenForName(const std::string& _name)
+		{
+			std::vector<ChPtr::Weak<T>>res;
+
+			for (auto&& obj : childList)
+			{
+				if (obj->GetMyName() == _name)
+				{
+					auto test = ChPtr::SharedSafeCast<T>(obj);
+					if (test != nullptr)
+					{
+						res.push_back(test);
+					}
+				}
+
+				for (auto&& childObj : obj->GetAllChildlenForName<T>(_name))
+				{
+					res.push_back(childObj);
+				}
+
+			}
+
+			return res;
+		}
+
+		//子オブジェクト群の取得//
+		template<class T = BaseObject>
+		inline typename std::enable_if<
+			std::is_base_of<BaseObject, T>::value,
+			std::vector<ChPtr::Weak<T>>>::type
+			GetAllChildlenConstainsName(const std::string& _name)
+		{
+			std::vector<ChPtr::Weak<T>>res;
+
+			for (auto&& obj : childList)
+			{
+				if (obj->GetMyName().find(_name) != std::string::npos)
+				{
+					auto test = ChPtr::SharedSafeCast<T>(obj);
+					if (test != nullptr)
+					{
+						res.push_back(test);
+					}
+				}
+
+				for (auto&& childObj : obj->GetAllChildlenConstainsName<T>(_name))
+				{
+					res.push_back(childObj);
+				}
+
+			}
+
+			return res;
 		}
 
 		//親の取得//
@@ -155,7 +284,7 @@ namespace ChCpp
 
 			comList.push_back(tmpCom);
 
-			tmpCom->BaseInit(shared_from_this());
+			tmpCom->BaseInit(this);
 
 			return ChPtr::SharedSafeCast<T>(tmpCom);
 
@@ -172,13 +301,13 @@ namespace ChCpp
 		inline void SetMyName(const std::string& _newName) { myName = _newName; }
 
 		//使用フラグ//
-		inline void SetUseFlg(const ChStd::Bool& _flg) { useFlg = _flg; }
+		inline void SetUseFlg(const bool& _flg) { useFlg = _flg; }
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
 
 		//使用可否の確認//
-		inline ChStd::Bool IsUseFlg() { return useFlg; }
+		inline bool IsUseFlg() { return useFlg; }
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
@@ -246,9 +375,9 @@ namespace ChCpp
 
 		ObjectList* objMaList = nullptr;
 		std::string myName;
-		ChStd::Bool dFlg = false;
+		bool dFlg = false;
 
-		ChStd::Bool useFlg = true;
+		bool useFlg = true;
 
 	};
 

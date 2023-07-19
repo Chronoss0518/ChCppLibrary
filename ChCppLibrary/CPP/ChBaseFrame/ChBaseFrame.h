@@ -7,50 +7,48 @@ namespace ChCpp
 {
 	class BaseFrame;
 
-	//BaseFrame管理用クラス//
-	class BaseFrameManager:public ChCp::Initializer
+	class FrameList
 	{
-	public://Set Function//
+	public:
 
 		//自作フレームをセット//
 		//BaseFrameを継承しているもののみセットできる//
 		template<class T>
-		void SetFrame(typename std::enable_if
-			<std::is_base_of<BaseFrame, T>::value, const std::string&>::type _useFrameName)
+		auto SetFrame()->
+			typename std::enable_if
+			<std::is_base_of<BaseFrame, T>::value, const void>::type
 		{
-			if (frameList.find(_useFrameName) != frameList.end())
-			{
-				//ChSystem::ErrerMessage("このフレームはすでに登録されています", "警告");
+			frameList.push_back(
+				[]()-> ChPtr::Shared<BaseFrame>
+				{
+					return ChPtr::Make_S<T>();
+				});
 
-				return;
-			}
+			if (frameList.size() > 1)return;
 
-			frameList[_useFrameName]
-				= []()-> ChPtr::Shared<BaseFrame>
-			{
-				return ChPtr::Make_S<T>(); 
-			};
+			ChangeFrame(0);
 
-			if (nowFrame != nullptr)return;
-
-			ChengeFrame(_useFrameName);
-
-			Chenges();
+			Changes();
 		}
 
 		template<class T>
-		auto GetNowFrame()->
+		static auto GetNowFrame()->
 			typename std::enable_if
-			<std::is_base_of<BaseFrame,T>::value,ChPtr::Weak<T>>::type
+			<std::is_base_of<BaseFrame, T>::value, ChPtr::Weak<T>>::type
 		{
-			return ChPtr::SharedSafeCast<T>(nowFrame);
+			return ChPtr::SharedSafeCast<T>(GetNowFrame());
 		}
+
+
+		inline unsigned long GetNowFrameNo() { return nowFrameNo; }
+
+		inline unsigned long GetRegisterFrameCount() { return frameList.size(); }
 
 	public://UpdateFunction//
 
 		void Update();
 
-	private://Release Funciton//
+	public://Release Funciton//
 
 		void Release()
 		{
@@ -60,14 +58,10 @@ namespace ChCpp
 				saveData = nullptr;
 			}
 
-			SetInitFlg(false);
+			nextFrame = nullptr;
+			GetNowFrame() = nullptr;
 
 		}
-
-	public://Get Function//
-
-		inline std::string GetNowFrameName() { return nowFrameName; }
-
 	public://Other Function
 
 		template<class T>
@@ -95,54 +89,127 @@ namespace ChCpp
 			return tmp;
 		}
 
-	private://Other Function
+	protected://Other Function
 
-		void ChengeFrame(const std::string& _frameName);
+		void ChangeFrame(const unsigned long _frameNo);
 
-		void Chenges();
+		void Changes();
 
-	private:// Member Value//
+	protected:// Member Value//
 
 		friend BaseFrame;
 
 		void* saveData = nullptr;
 
-		std::string nextFrameName = "";
-		std::string nowFrameName = "";
-
-		std::map<std::string, std::function<ChPtr::Shared<BaseFrame>()>>frameList;
+		unsigned long nextFrameNo = -1;
+		unsigned long nowFrameNo = -1;
 
 		ChPtr::Shared<BaseFrame>nextFrame = nullptr;
+		
+		static ChPtr::Shared<BaseFrame>& GetNowFrame() 
+		{
+			static ChPtr::Shared<BaseFrame> ins = nullptr;
+			return ins;
+		}
 
-		ChPtr::Shared<BaseFrame>nowFrame;
+		std::vector<std::function<ChPtr::Shared<BaseFrame>()>>frameList;
+	};
+
+
+	//BaseFrame管理用クラス//
+	class FrameManager :protected FrameList
+	{
+	public://Set Function//
+
+		//自作フレームをセット//
+		//BaseFrameを継承しているもののみセットできる//
+		template<class T>
+		void SetFrame(typename std::enable_if
+			<std::is_base_of<BaseFrame, T>::value, const std::string&>::type _useFrameName)
+		{
+			if (frameNames.find(_useFrameName) != frameNames.end())
+			{
+				//ChSystem::ErrerMessage("このフレームはすでに登録されています", "警告");
+
+				return;
+			}
+
+			unsigned long no = frameList.size();
+
+			frameNames[_useFrameName] = no;
+
+			FrameList::SetFrame<T>();
+
+		}
+
+	public://Get Function//
+
+		template<class T>
+		auto GetNowFrame()->
+			typename std::enable_if
+			<std::is_base_of<BaseFrame, T>::value, ChPtr::Weak<T>>::type
+		{
+			return FrameList::GetNowFrame<T>();
+		}
+
+		std::string GetNowFrameName();
+
+		inline unsigned long GetRegisterFrameCount() { return FrameList::GetRegisterFrameCount(); }
+
+	public://Update Function//
+
+		inline void Update() { FrameList::Update(); }
+
+	public://Other Functions//
+
+		template<class T>
+		void SaveData(const T* _save)
+		{
+			FrameList::SaveData<T>(_save);
+		}
+
+		template<class T>
+		T* GetData()
+		{
+			return FrameList::GetData<T>();
+		}
+
+		void ChangeFrame(const std::string& _frameName);
+
+	private:// Member Value//
+
+		friend BaseFrame;
+
+		std::map<std::string, unsigned long>frameNames;
 
 	private://ConstructerDestructer//
 
-		BaseFrameManager() { SetInitFlg(true); }
+		FrameManager() {}
 
-		~BaseFrameManager() { Release(); }
+		~FrameManager() { FrameList::Release(); }
 
 	public://Get Instance//
 
-		static BaseFrameManager& GetIns()
+		static FrameManager& GetIns()
 		{
-			static BaseFrameManager ins;
+			static FrameManager ins;
 			return ins;
 		}
 
 	};
 
-	static const std::function<BaseFrameManager&()>FrameManager = BaseFrameManager::GetIns;
+	inline FrameManager& FrameMgr() { return FrameManager::GetIns(); }
 
 	//ゲームシーンを簡易的生成を行うためのクラス//
 	//必要に応じて以下の関数をオーバーライドする//
 	//void Init(),void Release(),void Update()//
-	class BaseFrame:public ChCp::Releaser
+	class BaseFrame
 	{
+
 	public://InitAndRelease//
 		virtual inline void Init() {};
 
-		virtual inline void Release()override {};
+		virtual inline void Release(){};
 
 	public://Update Function//
 
@@ -150,33 +217,44 @@ namespace ChCpp
 
 	public:
 
-		friend BaseFrameManager;
+		friend FrameList;
 
-	protected://ConstructerDestructer//
+	protected://Other Functions//
 
 		template<class T>
 		void SaveData(const T* _save)
 		{
-			FrameManager().SaveData(_save);
+			if (ChPtr::NullCheck(mgr))return nullptr;
+			mgr->SaveData(_save);
 		}
 
 		template<class T>
 		T* GetData()
 		{
-			return FrameManager().GetData<T>();
+			if (ChPtr::NullCheck(mgr))return nullptr;
+			return mgr->GetData<T>();
 		}
+
+		//登録されているフレームに移動する//
+		void ChangeFrame(const unsigned long _frameNo)
+		{
+			mgr->ChangeFrame(_frameNo);
+		}
+
+	private://Other Functions//
+
+		void SetManager(FrameList* _mgr) { mgr = _mgr; }
+
+	protected://ConstructerDestructer//
 
 		BaseFrame() {};
 
 		virtual ~BaseFrame() { Release(); };
 
-		//登録されているフレームに移動する//
-		void ChangeFrame(const std::string& _frameName)
-		{
-			FrameManager().ChengeFrame(_frameName);
-		}
 
 	private:
+
+		FrameList* mgr;
 
 	};
 }

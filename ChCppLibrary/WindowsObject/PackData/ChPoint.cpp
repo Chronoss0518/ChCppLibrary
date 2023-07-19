@@ -248,7 +248,7 @@ ChPOINT ChPOINT::operator/(const long& _cm)const
 	return out;
 }
 
-ChStd::Bool ChPOINT::IsAll0()const
+bool ChPOINT::IsAll0()const
 {
 	for (char i = 0; i < 2; i++)
 	{

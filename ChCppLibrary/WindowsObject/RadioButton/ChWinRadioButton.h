@@ -15,6 +15,13 @@ namespace ChWin
 
 	class RadioButton :public WindBaseObject
 	{
+	public:
+
+		virtual ~RadioButton()
+		{
+			Release();
+		}
+
 
 	public:
 
@@ -27,12 +34,12 @@ namespace ChWin
 			, const int _w
 			, const int _h
 			, const HWND _parentHandl = nullptr
-			, const ChStd::Bool _glpFlg = false);
+			, const bool _glpFlg = false);
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
 
-		ChStd::Bool isSelection()
+		bool isSelection()
 		{
 			return (SendMessage(hIns, BM_GETCHECK, 0, 0) == BST_CHECKED);
 		}

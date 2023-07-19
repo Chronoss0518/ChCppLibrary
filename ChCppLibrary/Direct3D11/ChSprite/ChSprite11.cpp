@@ -23,17 +23,12 @@ void Sprite11::Init(ID3D11Device* _device)
 	SetInitPosition();
 	SetInitUV();
 
-	vertexBuffer.CreateBuffer(_device, vertexs, vertexSize);
-
-	indexBuffer.CreateBuffer(_device, indexs, indexSize);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void Sprite11::Release()
 {
-	vertexBuffer.Release();
-	indexBuffer.Release();
 
 }
 
@@ -73,10 +68,10 @@ void Sprite11::SetInitPosition()
 void Sprite11::SetInitUV()
 {
 
-	vertexs[0].uv = ChVec2(0.0f, 0.0f);
-	vertexs[1].uv = ChVec2(1.0f, 0.0f);
-	vertexs[2].uv = ChVec2(1.0f, 1.0f);
-	vertexs[3].uv = ChVec2(0.0f, 1.0f);
+	vertexs[0].uv = ChVec2(0.0f, 1.0f);
+	vertexs[1].uv = ChVec2(1.0f, 1.0f);
+	vertexs[2].uv = ChVec2(1.0f, 0.0f);
+	vertexs[3].uv = ChVec2(0.0f, 0.0f);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -90,23 +85,3 @@ void Sprite11::Move(const float _x, const float _y)
 	}
 
 }
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void Sprite11::SetDrawData(ID3D11DeviceContext* _dc)
-{
-	unsigned int offsets = 0;
-
-	vertexBuffer.UpdateResouce(_dc, vertexs);
-
-	vertexBuffer.SetVertexBuffer(_dc, offsets);
-
-	indexBuffer.SetIndexBuffer(_dc);
-
-	_dc->DrawIndexed(6, 0, 0);
-
-	_dc->Flush();
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-

@@ -77,50 +77,50 @@ void ShaderController::InitShader()
 {
 
 	{
-#include"ModelBVS.inc"
+#include"MVShader.inc"
 
 
-		device->CreateVertexShader((DWORD*)ModelBVS, &bVModel);
+		device->CreateVertexShader((DWORD*)main, &bVModel);
 	}
 
 	{
-#include"ModelBPS.inc"
+#include"MPShader.inc"
 
 
-		device->CreatePixelShader((DWORD*)ModelBPS, &bPModel);
+		device->CreatePixelShader((DWORD*)main, &bPModel);
 	}
 
 	{
-#include"ModelOLVS.inc"
+#include"MVOLShader.inc"
 
 
-		device->CreateVertexShader((DWORD*)ModelOLVS, &cVModel);
+		device->CreateVertexShader((DWORD*)main, &cVModel);
 	}
 
 	{
-#include"ModelCPS.inc"
+#include"MPColShader.inc"
 
 
-		device->CreatePixelShader((DWORD*)ModelCPS, &cPModel);
+		device->CreatePixelShader((DWORD*)main, &cPModel);
 	}
 
 	{
-#include"SpTexVS.inc"
+#include"STVShader.inc"
 
 
-		device->CreateVertexShader((DWORD*)SpTexVS, &spVTex);
+		device->CreateVertexShader((DWORD*)main, &spVTex);
 	}
 
 	{
-#include"PoTexVS.inc"
+#include"PTVShader.inc"
 
-		device->CreateVertexShader((DWORD*)PoTexVS, &poVTex);
+		device->CreateVertexShader((DWORD*)main, &poVTex);
 	}
 
 	{
-#include"TexPS.inc"
+#include"TPShader.inc"
 
-		device->CreatePixelShader((DWORD*)TexPS, &bPTex);
+		device->CreatePixelShader((DWORD*)main, &bPTex);
 	}
 
 }
@@ -245,7 +245,7 @@ void ShaderController::SetDrawDatas(const D3DCOLOR&
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ShaderController::IsLight(const ChStd::Bool _flg)
+void ShaderController::IsLight(const bool _flg)
 {
 	lightUseFlg = _flg;
 

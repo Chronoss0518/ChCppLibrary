@@ -4,15 +4,6 @@
 //ChLibraryのベースとなる関数、変数群のまとまり//
 namespace ChStd
 {
-
-	//Xファイルなど多くのオブジェクトを利用する際に識別子として利用する。//
-	using DataNo = unsigned short;
-
-	//通常のbool型より1～3Byte軽くしたもの//
-	//現在ではbool = 1Byte//
-	//ビット演算子も利用できるためこちらは残しておく//
-	using Bool = unsigned char;
-
 	//10進数//
 	const std::vector<char> DECIMAL_NUMBUR();
 
@@ -31,12 +22,12 @@ namespace ChStd
 #ifdef _WIN32
 	
 	//Windowsで使用される相対パス・絶対パスの最大文字数//
-	static const unsigned short W_MAX_PATH_LEN = 258;
+	static constexpr unsigned short W_MAX_PATH_LEN = 258;
 
 #elif _WIN64
 
 	//Windowsで使用される相対パス・絶対パスの最大文字数//
-	static const unsigned short W_MAX_PATH_LEN = 258;
+	static constexpr unsigned short W_MAX_PATH_LEN = 258;
 
 #endif
 
@@ -44,20 +35,20 @@ namespace ChStd
 	//StanderdFunction
 	///////////////////////////////////////////////////////////////////////////////////////
 
-	const static unsigned char MAX_CHAR_BIT = 0x80;
-	const static unsigned short MAX_SHORT_BIT = 0x8000;
-	const static unsigned long MAX_LONG_BIT = 0x80000000;
-	const static unsigned long long MAX_LLONG_BIT = 0x8000000000000000;
+	constexpr static unsigned char MAX_CHAR_BIT = 0x80;
+	constexpr static unsigned short MAX_SHORT_BIT = 0x8000;
+	constexpr static unsigned long MAX_LONG_BIT = 0x80000000;
+	constexpr static unsigned long long MAX_LLONG_BIT = 0x8000000000000000;
 
 #ifdef _WIN64
-	const static unsigned int W_MAX_INT_BIT = MAX_LONG_BIT;
+	constexpr static unsigned int W_MAX_INT_BIT = MAX_LONG_BIT;
 #else
-	const static unsigned int W_MAX_INT_BIT = MAX_SHORT_BIT;
+	constexpr static unsigned int W_MAX_INT_BIT = MAX_SHORT_BIT;
 #endif
 
 	//EnumClassを基底型へキャストするためのクラス//
 	template<typename Enum>
-	static inline auto EnumCast(Enum _enum)->typename std::enable_if
+	constexpr static inline auto EnumCast(const Enum _enum)->typename std::enable_if
 		<std::is_enum<Enum>::value, typename std::underlying_type< Enum >::type>::type
 	{
 		return static_cast<typename std::underlying_type<Enum>::type>(_enum);
@@ -117,6 +108,9 @@ namespace ChStd
 
 	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
 	std::vector<char> ToBaseNumber(const std::vector<char>& _baseNum, const std::vector<char>& _beforeBaseNumber = DECIMAL_NUMBUR(), const std::vector<char>& _afterBaseNumber = HEXA_DECIMAL());
+
+	//指定した新数の配列を入れるとその配列によって数値を置換できるかのテストを行う//
+	bool IsBaseNumbers(const std::vector<char>& _baseNum, const std::vector<char>& _beforeBaseNumber = DECIMAL_NUMBUR());
 
 	template<typename Type>
 	static inline Type BinaryToNumWithBigEndian(const std::vector<char>& _binary, unsigned long _filePos = 0)

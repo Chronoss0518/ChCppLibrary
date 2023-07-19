@@ -18,6 +18,13 @@ namespace ChWin
 
 	public:
 
+		virtual ~SubWind()
+		{
+			Release();
+		}
+
+	public:
+
 		///////////////////////////////////////////////////////////////////////////////////////
 
 		void Create(
@@ -35,7 +42,7 @@ namespace ChWin
 		///////////////////////////////////////////////////////////////////////////////////////
 	private:
 
-		ChStd::Bool drawUpdateFlg = true;
+		bool drawUpdateFlg = true;
 
 	};
 

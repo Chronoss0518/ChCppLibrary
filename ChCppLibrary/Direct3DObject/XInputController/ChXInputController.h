@@ -4,7 +4,7 @@
 namespace ChD3D
 {
 
-	class XInputController:public ChCp::Initializer,public ChCp::Releaser
+	class XInputController:public ChCp::Initializer
 	{
 	public:
 
@@ -13,12 +13,17 @@ namespace ChD3D
 
 		XInputController();
 
+		virtual ~XInputController()
+		{
+			Release();
+		}
+
 		///////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
 		void Init();
 
-		void Release()override;
+		virtual void Release();
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
@@ -46,57 +51,57 @@ namespace ChD3D
 			return state.dwPacketNumber;
 		}
 
-		inline ChStd::Bool GetUpFlg() 
+		inline bool GetUpFlg() 
 		{
 			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP) > 0;
 		}
 
-		inline ChStd::Bool GetDownFlg() 
+		inline bool GetDownFlg() 
 		{
 			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN) > 0;
 		}
 
-		inline ChStd::Bool GetLeftFlg() 
+		inline bool GetLeftFlg() 
 		{ 
 			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT) > 0;
 		}
 
-		inline ChStd::Bool GetRightFlg()
+		inline bool GetRightFlg()
 		{
 			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT) > 0;
 		}
 
-		inline ChStd::Bool GetStartFlg() 
+		inline bool GetStartFlg() 
 		{
 			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_START) > 0;
 		}
 
-		inline ChStd::Bool GetBackFlg() 
+		inline bool GetBackFlg() 
 		{
 			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_BACK) > 0;
 		}
 
-		inline ChStd::Bool GetAFlg()
+		inline bool GetAFlg()
 		{
 			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_A) > 0;
 		}
 
-		inline ChStd::Bool GetBFlg() 
+		inline bool GetBFlg() 
 		{
 			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_B) > 0;
 		}
 
-		inline ChStd::Bool GetXFlg() 
+		inline bool GetXFlg() 
 		{
 			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_X) > 0;
 		}
 
-		inline ChStd::Bool GetYFlg() 
+		inline bool GetYFlg() 
 		{
 			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_Y) > 0;
 		}
 
-		inline ChStd::Bool GetL1Flg() 
+		inline bool GetL1Flg() 
 		{
 			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) > 0;
 		}
@@ -106,12 +111,12 @@ namespace ChD3D
 			return RL2DeadZoneTest(state.Gamepad.bLeftTrigger);
 		}
 
-		inline ChStd::Bool GetL3Flg()
+		inline bool GetL3Flg()
 		{
 			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB) > 0;
 		}
 
-		inline ChStd::Bool GetR1Flg()
+		inline bool GetR1Flg()
 		{
 			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) > 0;
 		}
@@ -121,7 +126,7 @@ namespace ChD3D
 			return RL2DeadZoneTest(state.Gamepad.bRightTrigger);
 		}
 
-		inline ChStd::Bool GetR3Flg()
+		inline bool GetR3Flg()
 		{
 			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB) > 0;
 		}

@@ -274,7 +274,7 @@ float ChVec2::GetElementsLen(
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ChVec2::Normalize(const unsigned long _digit)
+bool ChVec2::Normalize(const unsigned long _digit)
 {
 	return val.Normalize(_digit);
 }
@@ -570,7 +570,7 @@ float ChVec3::GetElementsLen(
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ChVec3::Normalize(
+bool ChVec3::Normalize(
 	const unsigned long _digit)
 {
 	return val.Normalize(_digit);
@@ -909,7 +909,7 @@ float ChVec4::GetElementsLen(
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChStd::Bool ChVec4::Normalize(const unsigned long _digit)
+bool ChVec4::Normalize(const unsigned long _digit)
 {
 	return val.Normalize(_digit);
 }
@@ -1085,6 +1085,16 @@ ChLMatrix const ChLMatrix::operator / (const ChLMatrix& _mat)const
 	return out;
 }
 
+bool ChLMatrix::operator == (const ChLMatrix& _mat)const
+{
+	return m.IsValue(_mat.m);
+}
+
+bool ChLMatrix::operator != (const ChLMatrix& _mat)const
+{
+	return !m.IsValue(_mat.m);
+}
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChLMatrix::SetPosition(const ChVec3& _vec)
@@ -1249,11 +1259,38 @@ ChVec3 ChLMatrix::GetScalling(const unsigned long _digit)const
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVec4 ChLMatrix::Transform(const ChVec4& _Base)const
+ChVec3 ChLMatrix::GetXAxisDirection()const
+{
+	ChVec3 res = ChVec3(m[0][0], m[1][0], m[2][0]);
+
+	return res;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVec3 ChLMatrix::GetYAxisDirection()const
+{
+	ChVec3 res = ChVec3(m[0][1], m[1][1], m[2][1]);
+
+	return res;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVec3 ChLMatrix::GetZAxisDirection()const
+{
+	ChVec3 res = ChVec3(m[0][2], m[1][2], m[2][2]);
+
+	return res;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVec4 ChLMatrix::Transform(const ChVec4& _base)const
 {
 	ChVec4 out;
 
-	out = _Base;
+	out = _base;
 
 	out.w = 1.0f;
 
@@ -1264,7 +1301,7 @@ ChVec4 ChLMatrix::Transform(const ChVec4& _Base)const
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVec4 ChLMatrix::TransformCoord(const ChVec4& _Base)const
+ChVec4 ChLMatrix::TransformCoord(const ChVec4& _base)const
 {
 	ChLMatrix tmp = *this;
 
@@ -1272,7 +1309,7 @@ ChVec4 ChLMatrix::TransformCoord(const ChVec4& _Base)const
 	tmp.l_42 = 0.0f;
 	tmp.l_43 = 0.0f;
 
-	return tmp.Transform(_Base);
+	return tmp.Transform(_base);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -1369,6 +1406,16 @@ ChRMatrix const ChRMatrix::operator / (const ChRMatrix& _mat)const
 	ChRMatrix out = *this;
 	out /= _mat;
 	return out;
+}
+
+bool ChRMatrix::operator == (const ChRMatrix& _mat)const
+{
+	return m.IsValue(_mat.m);
+}
+
+bool ChRMatrix::operator != (const ChRMatrix& _mat)const
+{
+	return !m.IsValue(_mat.m);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -1561,6 +1608,33 @@ ChVec3 ChRMatrix::GetScalling(const unsigned long _digit)const
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+ChVec3 ChRMatrix::GetXAxisDirection()const
+{
+	ChVec3 res = ChVec3(m[0][0], m[0][1], m[0][1]);
+
+	return res;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVec3 ChRMatrix::GetYAxisDirection()const
+{
+	ChVec3 res = ChVec3(m[1][0], m[1][1], m[1][1]);
+
+	return res;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ChVec3 ChRMatrix::GetZAxisDirection()const
+{
+	ChVec3 res = ChVec3(m[2][0], m[2][1], m[2][1]);
+
+	return res;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 ChVec4 ChRMatrix::Transform(const ChVec4 _Base)const
 {
 	ChVec4 out;
@@ -1589,7 +1663,7 @@ ChVec4 ChRMatrix::TransformCoord(const ChVec4 _Base)const
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChLMatrix ChRMatrix::ConvertAxis()
+ChLMatrix ChRMatrix::ConvertAxis()const
 {
 	ChLMatrix tmp;
 

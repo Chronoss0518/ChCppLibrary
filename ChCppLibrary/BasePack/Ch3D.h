@@ -8,42 +8,86 @@
 
 namespace Ch3D
 {
+	enum class ShaderAxisType:unsigned char
+	{
+		LeftHand,
+		RightHand
+	};
+
 	struct Position
 	{
 		ChVec3 pos;
 	};
+
+	inline void SetPosition(Position* _pos, const ChVec3& _val)
+	{
+		if (ChPtr::NullCheck(_pos))return;
+		_pos->pos = _val;
+	}
 
 	struct UV
 	{
 		ChVec2 uv;
 	};
 
+	inline void SetUV(UV* _uv, const ChVec2& _val)
+	{
+		if (ChPtr::NullCheck(_uv))return;
+		_uv->uv = _val;
+	}
+
 	struct Color
 	{
 		ChVec4 color = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
 	};
+
+	inline void SetColor(Color* _color, const ChVec4& _val)
+	{
+		if (ChPtr::NullCheck(_color))return;
+		_color->color = _val;
+	}
 
 	struct Normal
 	{
 		ChVec3 normal = ChVec3(0.0f,1.0f,0.0f);
 	};
 
+	inline void SetNormal(Normal* _normal, const ChVec3& _val)
+	{
+		if (ChPtr::NullCheck(_normal))return;
+		_normal->normal = _val;
+	}
+
 	struct FaceNormal
 	{
 		ChVec3 faceNormal = ChVec3(0.0f, 1.0f, 0.0f);
 	};
 
+	inline void SetFaceNormal(FaceNormal* _faceNormal, const ChVec3& _val)
+	{
+		if (ChPtr::NullCheck(_faceNormal))return;
+		_faceNormal->faceNormal = _val;
+	}
+
 	template<unsigned long Num>
 	struct Bone
 	{
-		float brendPows[Num];
-		unsigned long boneNo[Num];
+		Bone() {
+			for (unsigned long i = 0; i < Num; i++)
+			{
+				blendPows[i] = 0.0f;
+			}
+		}
+
+		float blendPows[Num];
+
+		unsigned long boneNum = 0;
 	};
 
-	struct HaveVertex:
-		public Position,
-		public Color
-	{};
+	struct BoneData
+	{
+		std::vector<float> blendPow;
+	};
 
 	struct Vertex:
 		public Position,
@@ -61,20 +105,28 @@ namespace Ch3D
 		public FaceNormal
 	{};
 
-	//ëŒè€ÇÃí∏ì_Çä«óùÇ∑ÇÈ//
-	struct Polygon
-	{
-		 std::vector<unsigned long> vertexNo;
-	};
+	template<unsigned long Num>
+	struct SkinMeshVertex :
+		public MeshVertex,
+		public Bone<Num>
+	{};
+
+	struct SavePolyVertex :
+		public Position,
+		public Color,
+		public Normal,
+		public BoneData
+	{};
 
 	struct Material
 	{
 		ChVec4 diffuse = 1.0f;
-		ChVec4 specular = 0.0f;
+		ChVec3 specularColor = 0.0f;
+		float specularPower = 1.0f;
 		ChVec4 ambient = 0.3f;
 	};
 
-	enum class TextureType
+	enum class TextureType:unsigned char
 	{
 		Diffuse,
 		Ambient,
@@ -83,58 +135,58 @@ namespace Ch3D
 		Bump,
 		Alpha,
 		Normal,
-		Metallic
+		Metallic,
+		Other,
+		None
+	};
+
+	struct MaterialData
+	{
+		Material mate;
+		std::string mateName;
+		std::map<TextureType, std::string>textures;
 	};
 
 	struct Transform
 	{
 		ChVec3 pos;
 		ChVec3 rot;
-		ChVec3 scl;
+		ChVec3 scl = 1.0f;
 
-		inline ChLMat GetLeftHandMatrix()
+		inline ChLMat& GetLeftHandMatrix()
 		{
-			ChLMat out;
+			static ChLMat out;
 			out.SetPosition(pos);
 			out.SetRotation(rot);
 			out.SetScalling(scl);
 			return out;
 		}
 
-		inline ChRMat GetRightHandMatrix()
+		inline ChRMat& GetRightHandMatrix()
 		{
-			ChRMat out;
+			static ChRMat out;
 			out.SetPosition(pos);
 			out.SetRotation(rot);
 			out.SetScalling(scl);
 			return out;
 		}
+
+	};
+
+	struct SavePolyData :public UV
+	{
+		unsigned long vertexNo;
 	};
 
 	//MaterialÇ…ëŒâûÇ∑ÇÈñ Çä«óùÇ∑ÇÈ//
-	template<class vertex = Vertex>
-	class Primitive
+	struct Primitive:public FaceNormal
 	{
-		std::vector<ChPtr::Shared<Polygon>> polygons = nullptr;
-		Vertex* vertexList = nullptr;
-
-		Material mate;
-	};
-
-	template<class vertex = Vertex,class primitive = Primitive<vertex>>
-	class Frame
-	{
-	public:
-
-		std::vector<ChPtr::Shared<primitive>> primitives = nullptr;
-		std::map<std::string, unsigned long>mateNames;
-		Transform transform;
-
-		std::vector<ChPtr::Shared<Frame<Vertex>>> parent;
-
+		std::vector<ChPtr::Shared<SavePolyData>> vertexData;
+		unsigned long mateNo;
 	};
 
 
+	
 
 }
 

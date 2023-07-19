@@ -25,14 +25,14 @@ void Texture::Release()
 	SetInitFlg(false);
 }
 
-ChStd::Bool Texture::CreateTexture(HWND _hWnd, const std::string& _fileName)
+bool Texture::CreateTexture(HWND _hWnd, const std::string& _fileName)
 {
 	HINSTANCE ins = reinterpret_cast<HINSTANCE>(GetWindowLongA(_hWnd, GWL_HINSTANCE));
 
 	return CreateTexture(ins, _fileName);
 }
 
-ChStd::Bool Texture::CreateTexture(HINSTANCE _instance, const std::string& _fileName)
+bool Texture::CreateTexture(HINSTANCE _instance, const std::string& _fileName)
 {
 	Release();
 	mainTexture = static_cast<HBITMAP>(LoadImageA(_instance, _fileName.c_str(),IMAGE_BITMAP,0,0, LR_LOADFROMFILE));
@@ -44,7 +44,7 @@ ChStd::Bool Texture::CreateTexture(HINSTANCE _instance, const std::string& _file
 	return true;
 }
 
-ChStd::Bool Texture::CreateTexture(HWND _hWnd, const std::wstring& _fileName)
+bool Texture::CreateTexture(HWND _hWnd, const std::wstring& _fileName)
 {
 
 	HINSTANCE ins = reinterpret_cast<HINSTANCE>(GetWindowLongW(_hWnd, GWL_HINSTANCE));
@@ -52,7 +52,7 @@ ChStd::Bool Texture::CreateTexture(HWND _hWnd, const std::wstring& _fileName)
 	return CreateTexture(ins, _fileName);
 }
 
-ChStd::Bool Texture::CreateTexture(HINSTANCE _instance, const std::wstring& _fileName)
+bool Texture::CreateTexture(HINSTANCE _instance, const std::wstring& _fileName)
 {
 	Release();
 	mainTexture = static_cast<HBITMAP>(LoadImageW(_instance, _fileName.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE));
@@ -64,17 +64,17 @@ ChStd::Bool Texture::CreateTexture(HINSTANCE _instance, const std::wstring& _fil
 	return true;
 }
 
-ChStd::Bool Texture::CreateTexture(const ChINTPOINT& _size, const unsigned char* _bit)
+bool Texture::CreateTexture(const ChINTPOINT& _size, const unsigned char* _bit)
 {
 	return CreateTexture(_size, _bit, 1, 1);
 }
 
-ChStd::Bool Texture::CreateTexture(const int _width, const int _height, const unsigned char* _bit)
+bool Texture::CreateTexture(const int _width, const int _height, const unsigned char* _bit)
 {
 	return CreateTexture(ChINTPOINT(_width, _height), _bit, 1, 1);
 }
 
-ChStd::Bool Texture::CreateTexture(const ChINTPOINT& _size, const unsigned char* _bit, const unsigned int _nPlanes, const unsigned int _bitCount)
+bool Texture::CreateTexture(const ChINTPOINT& _size, const unsigned char* _bit, const unsigned int _nPlanes, const unsigned int _bitCount)
 {
 
 	Release();
@@ -91,7 +91,7 @@ ChStd::Bool Texture::CreateTexture(const ChINTPOINT& _size, const unsigned char*
 	return true;
 }
 
-ChStd::Bool Texture::CreateTexture(const int _width, const int _height, const unsigned char* _bit, const unsigned int _nPlanes, const unsigned int _bitCount)
+bool Texture::CreateTexture(const int _width, const int _height, const unsigned char* _bit, const unsigned int _nPlanes, const unsigned int _bitCount)
 {
 	return CreateTexture(ChINTPOINT(_width, _height), _bit, _nPlanes, _bitCount);
 }
@@ -134,16 +134,152 @@ ChINTPOINT Texture::GetTextureSizeA()
 
 std::vector<RGBData> Texture::GetTextureByteW()
 {
-	std::vector<RGBData> out;
+	BITMAP tmp = GetTextureDataW();
 
-
-	return out;
+	return tmp.bmBitsPixel >= 8 ? GetByteColor(tmp) : GetMonoColor(tmp);
 }
 
 std::vector<RGBData> Texture::GetTextureByteA()
 {
+	BITMAP tmp = GetTextureDataA();
+
+	return tmp.bmBitsPixel > 8 ? GetByteColor(tmp): GetMonoColor(tmp);
+}
+
+std::vector<RGBData> Texture::GetMonoColor(BITMAP& _ddb)
+{
+
 	std::vector<RGBData> out;
 
+#if 0
+
+	if (_ddb.bmWidth <= 0 ||
+		_ddb.bmHeight <= 0 || 
+		_ddb.bmBitsPixel <= 0)return out;
+
+	if (_ddb.bmBitsPixel != 1)return out;
+
+	BITMAPINFO info;
+
+	ChStd::MZero(&info);
+
+	info.bmiHeader.biSize = sizeof(BITMAPINFO);
+	info.bmiHeader.biWidth = _ddb.bmWidth;
+	info.bmiHeader.biHeight = _ddb.bmHeight;
+	info.bmiHeader.biPlanes = 1;
+	info.bmiHeader.biBitCount = _ddb.bmBitsPixel;
+	info.bmiHeader.biCompression = BI_RGB;
+
+	const unsigned long createByteNum = (((_ddb.bmWidth * _ddb.bmHeight) / 8) + 1) * 4;
+
+	unsigned char* byte = new unsigned char[createByteNum];
+
+	auto dc = CreateCompatibleDC(nullptr);
+
+	SetTextureToHDC(dc);
+
+	if (GetDIBits(dc, mainTexture, 0, _ddb.bmHeight, byte, &info, DIB_RGB_COLORS) != 0)
+	{
+		ChCpp::BitBool flgs;
+		unsigned char moveCount = 0;
+		unsigned long byteCount = 0;
+
+		flgs.SetValue(byte[byteCount]);
+
+		while (out.size() < _ddb.bmWidth * _ddb.bmHeight)
+		{
+
+			RGBData col;
+			for (unsigned char i = 0; i < 3; i++)
+			{
+				col.byte[3 - i] = flgs.GetBitFlg(moveCount) ? 1 : 0;
+				col.byte[3 - i] *= 255;
+			}
+
+			if (col.r == 255)
+			{
+				int t = 0;
+				t = 1;
+			}
+
+			out.push_back(col);
+
+			moveCount++;
+			if (moveCount < 8)continue;
+			if (byteCount > createByteNum)
+			{
+				int t = 0;
+				t = 1;
+				break;
+			}
+			if (byteCount > 10000)
+			{
+				int t = 0;
+				t = 1;
+				break;
+			}
+			moveCount = 0;
+			flgs.SetValue(byte[byteCount]);
+			byteCount++;
+		}
+
+	}
+
+	delete[] byte;
+
+#endif
+
+	return out;
+}
+
+std::vector<RGBData> Texture::GetByteColor(BITMAP& _ddb)
+{
+
+	std::vector<RGBData> out;
+
+	if (_ddb.bmWidth <= 0 ||
+		_ddb.bmHeight <= 0 ||
+		_ddb.bmBitsPixel <= 0)return out;
+
+	BITMAPINFO info;
+
+	ChStd::MZero(&info);
+
+	info.bmiHeader.biSize = sizeof(BITMAPINFO);
+	info.bmiHeader.biWidth = _ddb.bmWidth;
+	info.bmiHeader.biHeight = _ddb.bmHeight;
+	info.bmiHeader.biPlanes = 1;
+	info.bmiHeader.biBitCount = _ddb.bmBitsPixel;
+	info.bmiHeader.biCompression = BI_RGB;
+
+
+	const unsigned char colorTypeCount = (_ddb.bmBitsPixel / 8);
+
+	unsigned long* byte = new unsigned long[_ddb.bmWidth * _ddb.bmHeight];
+
+	auto dc = CreateCompatibleDC(nullptr);
+
+	SetTextureToHDC(dc);
+
+	if (GetDIBits(dc, mainTexture, 0, _ddb.bmHeight, byte, &info, DIB_RGB_COLORS) != 0)
+	{
+		unsigned long count = 0;
+
+		for (long h = 0; h < _ddb.bmHeight; h++)
+		{
+			for (long w = 0; w < _ddb.bmWidth; w++)
+			{
+				RGBData col;
+
+				col.num = byte[w + (h * _ddb.bmWidth)];
+
+				out.push_back(col);
+			}
+			count += 1;
+		}
+	}
+
+	delete[] byte;
 
 	return out;
 }
@@ -564,7 +700,7 @@ void Texture::DrawMaskMain(HDC _textureHDC, HDC _drawTarget, const ChINTPOINT& _
 
 			opeCode = oCode;
 
-			//auto test = maskRT.GetTextureByte();
+			auto test = maskRT.GetTextureByte();
 		}
 
 		SetBkColor(_textureHDC, oldBkColor);
@@ -689,7 +825,7 @@ void RenderTarget::Release()
 	Texture::Release(); 
 }
 
-ChStd::Bool RenderTarget::CreateRenderTarget(HWND _hWnd, const ChINTPOINT& _size)
+bool RenderTarget::CreateRenderTarget(HWND _hWnd, const ChINTPOINT& _size)
 {
 	HDC tmp = GetDC(_hWnd);
 
@@ -700,12 +836,12 @@ ChStd::Bool RenderTarget::CreateRenderTarget(HWND _hWnd, const ChINTPOINT& _size
 	return success;
 }
 
-ChStd::Bool RenderTarget::CreateRenderTarget(HWND _hWnd, const int _width, const int _height)
+bool RenderTarget::CreateRenderTarget(HWND _hWnd, const int _width, const int _height)
 {
 	return CreateRenderTarget(_hWnd,ChINTPOINT(_width,_height));
 }
 
-ChStd::Bool RenderTarget::CreateRenderTarget(HDC _dc, const ChINTPOINT& _size)
+bool RenderTarget::CreateRenderTarget(HDC _dc, const ChINTPOINT& _size)
 {
 	if (ChPtr::NullCheck(_dc))return false;
 
@@ -751,7 +887,7 @@ ChStd::Bool RenderTarget::CreateRenderTarget(HDC _dc, const ChINTPOINT& _size)
 
 }
 
-ChStd::Bool RenderTarget::CreateRenderTarget(HDC _dc, const int _width, const int _height)
+bool RenderTarget::CreateRenderTarget(HDC _dc, const int _width, const int _height)
 {
 	return CreateRenderTarget(_dc, ChINTPOINT(_width, _height));
 }
@@ -1029,7 +1165,7 @@ void RenderTarget::FillRT(ChWin::Brush& _brush, const long _x, const long _y, co
 	_brush.FillRect(dc, tmp);
 }
 
-ChStd::Bool MaskTexture::CreateMaskTexture(HWND _hWnd, const std::string& _fileName)
+bool MaskTexture::CreateMaskTexture(HWND _hWnd, const std::string& _fileName)
 {
 
 	HINSTANCE ins = reinterpret_cast<HINSTANCE>(GetWindowLongA(_hWnd, GWL_HINSTANCE));
@@ -1038,7 +1174,7 @@ ChStd::Bool MaskTexture::CreateMaskTexture(HWND _hWnd, const std::string& _fileN
 
 }
 
-ChStd::Bool MaskTexture::CreateMaskTexture(HWND _hWnd, const std::wstring& _fileName)
+bool MaskTexture::CreateMaskTexture(HWND _hWnd, const std::wstring& _fileName)
 {
 
 	HINSTANCE ins = reinterpret_cast<HINSTANCE>(GetWindowLongW(_hWnd, GWL_HINSTANCE));
@@ -1046,7 +1182,7 @@ ChStd::Bool MaskTexture::CreateMaskTexture(HWND _hWnd, const std::wstring& _file
 	return CreateTexture(ins, _fileName);
 }
 
-ChStd::Bool MaskTexture::CreateMaskTexture(HINSTANCE _instance, const std::string& _fileName)
+bool MaskTexture::CreateMaskTexture(HINSTANCE _instance, const std::string& _fileName)
 {
 	Release();
 
@@ -1069,7 +1205,7 @@ ChStd::Bool MaskTexture::CreateMaskTexture(HINSTANCE _instance, const std::strin
 	return true;
 }
 
-ChStd::Bool MaskTexture::CreateMaskTexture(HINSTANCE _instance, const std::wstring& _fileName)
+bool MaskTexture::CreateMaskTexture(HINSTANCE _instance, const std::wstring& _fileName)
 {
 
 	Release();
@@ -1093,7 +1229,7 @@ ChStd::Bool MaskTexture::CreateMaskTexture(HINSTANCE _instance, const std::wstri
 	return true;
 }
 
-ChStd::Bool MaskTexture::CreateMaskTexture(const ChINTPOINT& _size, const unsigned char* _bit)
+bool MaskTexture::CreateMaskTexture(const ChINTPOINT& _size, const unsigned char* _bit)
 {
 	if (!Texture::CreateTexture(_size, _bit,1,1))return false;
 
@@ -1110,17 +1246,17 @@ ChStd::Bool MaskTexture::CreateMaskTexture(const ChINTPOINT& _size, const unsign
 	return true;
 }
 
-ChStd::Bool MaskTexture::CreateMaskTexture(const int _width, const int _height, const unsigned char* _bit)
+bool MaskTexture::CreateMaskTexture(const int _width, const int _height, const unsigned char* _bit)
 {
 	return CreateMaskTexture(ChINTPOINT(_width, _height), _bit);
 }
 
-ChStd::Bool MaskTexture::CreateMaskTexture(const ChINTPOINT& _size)
+bool MaskTexture::CreateMaskTexture(const ChINTPOINT& _size)
 {
 	return CreateMaskTexture(_size, nullptr);
 }
 
-ChStd::Bool MaskTexture::CreateMaskTexture(const int _width, const int _height)
+bool MaskTexture::CreateMaskTexture(const int _width, const int _height)
 {
 	return CreateMaskTexture(ChINTPOINT(_width, _height), nullptr);
 }

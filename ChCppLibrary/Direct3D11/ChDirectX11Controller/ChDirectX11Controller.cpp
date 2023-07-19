@@ -3,23 +3,38 @@
 
 #include"../../BaseIncluder/ChD3D11I.h"
 
+#include"../../WindowsObject/WindObject/ChWindObject.h"
 #include"ChDirectX11Controller.h"
 
 using namespace ChD3D11;
 
+#if 0
+void DirectX3D11::Init(
+	ChWin::WindObject& _windObject,
+	const bool _fullScreenFlg)
+{
+	if (!_windObject.IsInit())return;
+
+	auto windSize = _windObject.GetWindSize();
+
+	Init(_windObject.GethWnd(),
+		_fullScreenFlg,
+		static_cast<unsigned long>(windSize.w),
+		static_cast<unsigned long>(windSize.h));
+
+}
+#endif
+
 void DirectX3D11::Init(
 	HWND _hWnd
-	, const ChStd::Bool _fullScreenFlg
-	, const unsigned short _scrW
-	, const unsigned short _scrH
-	, const unsigned short _scrX
-	, const unsigned short _scrY)
+	, const bool _fullScreenFlg
+	, const unsigned long _scrW
+	, const unsigned long _scrH)
 {
 	if (ChPtr::NullCheck(_hWnd))return;
 
 	
 	CreateDevice(_hWnd, _scrW, _scrH);
-
 
 	if (!IsInstanse())
 	{
@@ -27,7 +42,7 @@ void DirectX3D11::Init(
 		return;
 	}
 
-	window->SetFullscreenState(_fullScreenFlg, NULL);
+	window->SetFullscreenState(_fullScreenFlg, nullptr);
 
 	SetInitFlg(true);
 
@@ -53,8 +68,8 @@ void DirectX3D11::Release()
 
 void DirectX3D11::CreateDevice(
 	HWND _hWnd
-	, const unsigned short _scrW
-	, const unsigned short _scrH)
+	, const unsigned long _scrW
+	, const unsigned long _scrH)
 {
 
 	DXGI_SWAP_CHAIN_DESC scd;
@@ -62,8 +77,8 @@ void DirectX3D11::CreateDevice(
 	ZeroMemory(&scd, sizeof(DXGI_SWAP_CHAIN_DESC));
 
 	scd.BufferCount = 1;
-	scd.BufferDesc.Width = _scrW;
-	scd.BufferDesc.Height = _scrH;
+	scd.BufferDesc.Width = static_cast<unsigned int>(_scrW);
+	scd.BufferDesc.Height = static_cast<unsigned int>(_scrH);
 	scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 
 	//“h‚è‘Ö‚¦‚éŽžŠÔ//
@@ -93,7 +108,7 @@ void DirectX3D11::CreateDevice(
 		NULL
 		, D3D_DRIVER_TYPE_HARDWARE
 		, NULL
-		, D3D11_CREATE_DEVICE_DEBUG
+		, NULL
 		//,0
 		, lv
 		, 1

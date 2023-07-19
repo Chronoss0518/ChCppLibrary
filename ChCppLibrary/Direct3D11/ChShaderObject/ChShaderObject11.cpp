@@ -30,9 +30,6 @@ void ShaderObject11::Release()
 
 void ShaderObject11::CreateVertexShader(
 	ID3D11Device* _device
-	, ID3D11InputLayout** _lInput
-	, const D3D11_INPUT_ELEMENT_DESC* _desc
-	, const unsigned long _descNum
 	, const void* _binary
 	, const unsigned long _binarySize
 )
@@ -42,13 +39,11 @@ void ShaderObject11::CreateVertexShader(
 
 	Release();
 
-	ID3D11VertexShader* tmp;
+	ID3D11VertexShader* tmp = nullptr;
 
-	_device->CreateVertexShader(_binary, _binarySize, nullptr, &tmp);
+	_device->CreateVertexShader(_binary, _binarySize, NULL, &tmp);
 
 	shader = tmp;
-
-	_device->CreateInputLayout(_desc, _descNum, _binary, _binarySize, _lInput);
 
 	SetInitFlg(true);
 }
@@ -66,9 +61,9 @@ void ShaderObject11::CreatePixelShader(
 
 	Release();
 
-	ID3D11PixelShader* tmp;
+	ID3D11PixelShader* tmp = nullptr;
 
-	_device->CreatePixelShader(_binary, _binarySize, nullptr, &tmp);
+	_device->CreatePixelShader(_binary, _binarySize, NULL, &tmp);
 
 	shader = tmp;
 
@@ -88,9 +83,9 @@ void ShaderObject11::CreateGeometryShader(
 
 	Release();
 
-	ID3D11GeometryShader* tmp;
+	ID3D11GeometryShader* tmp = nullptr;
 
-	_device->CreateGeometryShader(_binary, _binarySize, nullptr, &tmp);
+	_device->CreateGeometryShader(_binary, _binarySize, NULL, &tmp);
 
 	shader = tmp;
 
@@ -110,9 +105,9 @@ void ShaderObject11::CreateComputeShader(
 
 	Release();
 
-	ID3D11ComputeShader* tmp;
+	ID3D11ComputeShader* tmp = nullptr;
 
-	_device->CreateComputeShader(_binary, _binarySize, nullptr, &tmp);
+	_device->CreateComputeShader(_binary, _binarySize, NULL, &tmp);
 
 	shader = tmp;
 
@@ -133,9 +128,31 @@ void ShaderObject11::CreateDomainShader(
 
 	Release();
 
-	ID3D11DomainShader* tmp;
+	ID3D11DomainShader* tmp = nullptr;
 
-	_device->CreateDomainShader(_binary, _binarySize, nullptr, &tmp);
+	_device->CreateDomainShader(_binary, _binarySize, NULL, &tmp);
+
+	shader = tmp;
+
+	SetInitFlg(true);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void ShaderObject11::CreateHullShader(
+	ID3D11Device* _device
+	, const void* _binary
+	, const unsigned long _binarySize
+)
+{
+	if (ChPtr::NullCheck(_device))return;
+	if (ChPtr::NullCheck(_binary))return;
+
+	Release();
+
+	ID3D11HullShader* tmp = nullptr;
+
+	_device->CreateHullShader(_binary, _binarySize, NULL, &tmp);
 
 	shader = tmp;
 
@@ -148,8 +165,6 @@ void ShaderObject11::SetVertexShader(
 	ID3D11DeviceContext* _DC
 	, ID3D11InputLayout* _lInput)
 {
-	if (!*this)return;
-
 	auto tmp = static_cast<ID3D11VertexShader*>(shader);
 
 	_DC->VSSetShader(tmp, nullptr, 0);
@@ -175,7 +190,11 @@ void ShaderObject11::SetPixelShader(
 void ShaderObject11::SetGeometryShader(
 	ID3D11DeviceContext* _DC)
 {
-	if (!*this)return;
+	if (!*this)
+	{
+		_DC->GSSetShader(nullptr, nullptr, 0);
+		return;
+	}
 
 	auto tmp = static_cast<ID3D11GeometryShader*>(shader);
 
@@ -187,7 +206,11 @@ void ShaderObject11::SetGeometryShader(
 void ShaderObject11::SetComputeShader(
 	ID3D11DeviceContext* _DC)
 {
-	if (!*this)return;
+	if (!*this)
+	{
+		_DC->CSSetShader(nullptr, nullptr, 0);
+		return;
+	}
 
 	auto tmp = static_cast<ID3D11ComputeShader*>(shader);
 
@@ -199,11 +222,31 @@ void ShaderObject11::SetComputeShader(
 void ShaderObject11::SetDomainShader(
 	ID3D11DeviceContext* _DC)
 {
-	if (!*this)return;
+	if (!*this)
+	{
+		_DC->DSSetShader(nullptr, nullptr, 0);
+		return;
+	}
 
 	auto tmp = static_cast<ID3D11DomainShader*>(shader);
 
 	_DC->DSSetShader(tmp, nullptr, 0);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void ShaderObject11::SetHullShader(
+	ID3D11DeviceContext* _DC)
+{
+	if (!*this)
+	{
+		_DC->HSSetShader(nullptr, nullptr, 0);
+		return;
+	}
+
+	auto tmp = static_cast<ID3D11HullShader*>(shader);
+
+	_DC->HSSetShader(tmp, nullptr, 0);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -217,11 +260,25 @@ void VertexShader11::Init(
 	, const void* _binary
 	, const unsigned long _binarySize)
 {
+	CreateVertexShader(_device, _binary, _binarySize);
 
-	CreateVertexShader(_device, &lInput, _desc, _descNum, _binary, _binarySize);
+	CreateInputLayout(_device,&lInput,_desc,_descNum,_binary,_binarySize);
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+void VertexShader11::CreateInputLayout(
+	ID3D11Device* _device
+	, ID3D11InputLayout** _lInput
+	, const D3D11_INPUT_ELEMENT_DESC* _desc
+	, const unsigned long _descNum
+	, const void* _binary
+	, const unsigned long _binarySize)
+{
+	if (ChPtr::NullCheck(_device))return;
+	if (ChPtr::NullCheck(_binary))return;
+	if (ChPtr::NullCheck(_desc))return;
+
+	_device->CreateInputLayout(_desc, _descNum, _binary, _binarySize, _lInput);
+}
 
 void VertexShader11::Release()
 {

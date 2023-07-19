@@ -1,7 +1,7 @@
-#ifndef Ch_CPP_HTR_h
-#define Ch_CPP_HTR_h
+#ifndef Ch_CPP_RCollider_h
+#define Ch_CPP_RCollider_h
 
-#include"ChHitTestObject.h"
+#include"ChCollider.h"
 
 namespace ChCpp
 {
@@ -34,47 +34,16 @@ namespace ChCpp
 		//Rayの基本方向をY軸の-方向//
 		inline void SetRayMY() { rayDir = ChVec3(0.0f, -1.0f, 0.0f); }
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//IsFunction//
+		inline ChVec3 GetRayDir() { return rayDir; }
 
-		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
-		ChStd::Bool IsHit(
-			HitTestPanel* _target)override;
-
-		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
-		ChStd::Bool IsHit(
-			HitTestBox* _target)override;
-
-		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
-		ChStd::Bool IsHit(
-			HitTestSphere* _target)override;
-
-		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
-		ChStd::Bool IsHit(
-			HitTestPolygon* _target)override;
-
-		//対象のオブジェクトがオブジェクト内から衝突しているかの判定//
-		ChStd::Bool IsInnerHit(
-			HitTestBox* _target)override;
-
-		//対象のオブジェクトがオブジェクト内から衝突しているかの判定//
-		ChStd::Bool IsInnerHit(
-			HitTestSphere* _target)override;
+		inline float GetMaxLen() { return maxLen; }
 
 	private:
-
-		float CreateDat(const ChVec3& _vec1, const ChVec3& _vec2, const ChVec3& _vec3);
-
-		ChStd::Bool HitTestTri(const ChVec3& _vec1, const ChVec3& _vec2, const ChVec3& _vec3);
-
 
 		ChVec3 rayDir = ChVec3(0.0f, 0.0f, 1.0f);
 		float maxLen = FLT_MAX;
 
 	};
-
-
-
 
 }
 

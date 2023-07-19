@@ -5,6 +5,7 @@
 #include"../ChShaderStructures11.h"
 
 #include"../../CPP/ChBaseObject/ChBaseObject.h"
+#include"../ChCB/ChCBBone/ChCBBone11.h"
 
 namespace ChD3D11
 {
@@ -12,51 +13,63 @@ namespace ChD3D11
 	class Texture11;
 	class Mesh11;
 
-	template<class vertex = Ch3D::Vertex>
-	struct PrimitiveData11 :public ChCpp::BaseComponent
+	struct TargetBoneData11
 	{
-		IndexBuffer11 indexBuffer;
-		VertexBuffer11<vertex> vertexBuffer;
+		ChPtr::Shared<ChCpp::TargetBoneData> boneData;
+		ChPtr::Shared<ChCpp::FrameObject>targetObject;
+	};
 
-		typename std::enable_if<std::is_base_of<Ch3D::Vertex, vertex>::value, std::vector<vertex>>::type vertexArray;
+	struct  DrawPrimitiveData11
+	{
+		virtual ~DrawPrimitiveData11()
+		{
+			vertexBuffer.Release();
+			indexBuffer.Release();
+		}
+
+		IndexBuffer11 indexBuffer;
+		VertexBuffer11<Ch3D::SkinMeshVertex<BONE_MAX_NUM>> vertexBuffer;
+
+		std::vector<Ch3D::SkinMeshVertex<BONE_MAX_NUM>> vertexArray;
 		std::vector<unsigned long> indexArray;
 
-		ChPtr::Shared<Material11> mate = nullptr;
+		ChPtr::Shared<Ch3D::MaterialData> mate;
 
+		ChLMat drawMat;
+
+		std::map<Ch3D::TextureType, ChPtr::Shared<Texture11>>textures;
 	};
 
-	struct BoneData11
+	class FrameComponent11 :public ChCpp::BaseComponent
 	{
-		unsigned long skinWeightCount = 0;
-		ChMath::Vector3Base<unsigned long> tmpBuffer;
-		ChMat_11 animationMat[96];
+	public:
 
-	};
+		//子オブジェクトすべてを作成する。//
+		void CreateAll(ID3D11Device* _device, Mesh11& _rootObject);
 
-	struct FrameData11
-	{
-		friend Mesh11;
+		void SetPrimitives(ChPtr::Shared<DrawPrimitiveData11> _primitive)
+		{
+			primitives.push_back(_primitive);
+		}
 
-		std::map<std::string,ChPtr::Shared<PrimitiveData11<SkinMeshVertex11>>>primitiveDatas;
+		void SetBoneData(CB::CBBone11& _bone);
 
-		std::string frameName;
+		std::vector<ChPtr::Shared<DrawPrimitiveData11>>& GetPrimitives()
+		{
+			return primitives;
+		}
 
-		ChMat_11 baseMat;
-		ChMat_11 animationMat;
-
-		ChPtr::Weak<FrameData11> parentFrame;
-
-		std::vector<ChPtr::Shared<FrameData11>>childFrame;
-
-		inline ChMat_11 GetDrawMatrix() { return drawMat; }
-
+		ChCpp::FrameComponent* GetFrameCom() { return frameCom; }
+		std::vector<ChPtr::Shared<Ch3D::MaterialData>>& GetMaterialList() { return mateList; }
 	private:
-
-		ChMat_11 drawMat;
-
+		std::vector<ChPtr::Shared<Ch3D::MaterialData>> mateList;
+		ChCpp::FrameComponent* frameCom = nullptr;
+		std::vector<ChPtr::Shared<DrawPrimitiveData11>>primitives;
+		ChLMat boneLMats[16];
+		std::vector<ChPtr::Shared<TargetBoneData11>>boneList;
 	};
 
-	class Mesh11:public ChCp::Initializer
+	class Mesh11:public ChCpp::ModelObject
 	{
 	public:
 
@@ -65,69 +78,23 @@ namespace ChD3D11
 
 		void Init(ID3D11Device* _device);
 
-		void Init();
+		void Init()override;
 
-		void Release();
-
-		///////////////////////////////////////////////////////////////////////////////////////
-		//IsFunction//
-
-		inline ChStd::Bool IsMesh() const { return modelData != nullptr; }
+		void Release()override;
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//Creater//
 
-		virtual void Create(const ChCpp::ModelObject& _baseModels);
-
-		///////////////////////////////////////////////////////////////////////////////////////
-
-		void SetDrawData(ID3D11DeviceContext* _dc);
-
-		void SetDrawData(ID3D11DeviceContext* _dc,const std::string& _frameName);
+		void Create()override;
 
 		///////////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
-		inline ChPtr::Shared<FrameData11> GetRootFrame() { return modelData; }
-
-		inline ChPtr::Shared<FrameData11> GetFrame(const std::string& _frameName)
-		{
-			return (frameNames.find(_frameName) != frameNames.end()) ? frameNames[_frameName].lock() : nullptr;
-		}
-
-		inline std::vector<std::string> GetFrameNames()
-		{
-			std::vector<std::string> out;
-
-			for (auto&& frame : frameNames)
-			{
-				out.push_back(frame.first);
-			}
-
-			return out;
-		}
-
 		inline ID3D11Device* GetDevice() { return device; }
-
-		ChMat_11 GetParentAnimationMatrixs(FrameData11& _frame);
 
 	protected:
 
-		void CreateFrames(
-			ChPtr::Shared<FrameData11>& _frames
-			, const ChCpp::ModelFrame::Frame& _baseModels);
-
-		void CreatePrimitiveData(
-			ChPtr::Shared<FrameData11>& _frames
-			, const ChCpp::ModelFrame::Frame& _baseModels);
-
-		std::vector<std::vector<ChPtr::Shared<ChCpp::ModelFrame::SurFace>>>
-			CreateSurfaceList(
-			const ChCpp::ModelFrame::Frame& _baseModels);
-
-		///////////////////////////////////////////////////////////////////////////////////////
-
-		void UpdateFrameDrawMatrix();
+		void CreateFrames();
 
 		///////////////////////////////////////////////////////////////////////////////////////
 
@@ -135,20 +102,7 @@ namespace ChD3D11
 		using MaterialNo = unsigned long;
 		using MaterialName = std::string;
 
-		std::map<std::string,ChPtr::Weak<FrameData11>>frameNames;
-
-		std::vector<ChPtr::Weak<FrameData11>>drawFrames;
-
-		ChPtr::Shared<FrameData11> modelData = nullptr;
-
-		ChMat_11* boneList = nullptr;
-
-		ConstantBuffer11<ShaderUseMaterial11> materialBuffer;
-
 	private:
-
-		ChPtr::Shared<Texture11>whiteTex = nullptr;
-		ChPtr::Shared<Texture11>normalTex = nullptr;
 
 		ID3D11Device* device = nullptr;
 	};

@@ -62,6 +62,7 @@ namespace ChD3D11
 		///////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
+		inline const std::array<Ch3D::Vertex, 4>& GetVertexs() { return vertexs; }
 
 		inline ChVec2 GetPos(const SpritePositionName _posNames)
 		{
@@ -99,10 +100,6 @@ namespace ChD3D11
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		void SetDrawData(ID3D11DeviceContext* _dc);
-
-		///////////////////////////////////////////////////////////////////////////////////
-
 		///////////////////////////////////////////////////////////////////////////////////
 
 	protected:
@@ -110,14 +107,7 @@ namespace ChD3D11
 		///////////////////////////////////////////////////////////////////////////////////
 
 		static constexpr unsigned char vertexSize = 4;
-		static constexpr unsigned char indexSize = 6;
-
-		Ch3D::Vertex vertexs[vertexSize];
-		unsigned long indexs[indexSize] = { 0,1,2,0,2,3 };
-
-		VertexBuffer11<Ch3D::Vertex> vertexBuffer;
-		IndexBuffer11 indexBuffer;
-
+		std::array<Ch3D::Vertex, vertexSize> vertexs;
 
 	};
 

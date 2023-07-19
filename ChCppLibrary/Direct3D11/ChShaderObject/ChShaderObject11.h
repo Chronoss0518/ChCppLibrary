@@ -3,14 +3,21 @@
 
 namespace ChD3D11
 {
-	class ShaderObject11:public ChCp::Initializer,public ChCp::Releaser
+	class ShaderObject11:public ChCp::Initializer
 	{
+	public:
+
+		virtual ~ShaderObject11()
+		{
+			Release();
+		}
+
 	public:
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
-		virtual void Release()override;
+		virtual void Release();
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction/
@@ -26,9 +33,6 @@ namespace ChD3D11
 		//VertexShader—p//
 		void CreateVertexShader(
 			ID3D11Device* _device
-			, ID3D11InputLayout** _lInput
-			, const D3D11_INPUT_ELEMENT_DESC* _desc
-			, const unsigned long _descNum
 			, const void* _binary
 			, const unsigned long _binarySize
 		);
@@ -61,6 +65,13 @@ namespace ChD3D11
 			, const unsigned long _binarySize
 		);
 
+		//VertexShader—p//
+		void CreateHullShader(
+			ID3D11Device* _device
+			, const void* _binary
+			, const unsigned long _binarySize
+		);
+
 		///////////////////////////////////////////////////////////////////////////////////
 
 		void SetVertexShader(
@@ -79,6 +90,9 @@ namespace ChD3D11
 		void SetDomainShader(
 			ID3D11DeviceContext* _dc);
 
+		void SetHullShader(
+			ID3D11DeviceContext* _dc);
+
 		///////////////////////////////////////////////////////////////////////////////////
 
 	private:
@@ -89,6 +103,13 @@ namespace ChD3D11
 
 	class VertexShader11 final :public ShaderObject11
 	{
+	public:
+
+		virtual ~VertexShader11()
+		{
+			Release();
+		}
+
 	public:
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -115,6 +136,14 @@ namespace ChD3D11
 
 	private:
 
+		void CreateInputLayout(
+			ID3D11Device* _device
+			, ID3D11InputLayout** _lInput
+			, const D3D11_INPUT_ELEMENT_DESC* _desc
+			, const unsigned long _descNum
+			, const void* _binary
+			, const unsigned long _binarySize);
+
 		ID3D11InputLayout* lInput = nullptr;
 
 
@@ -122,6 +151,14 @@ namespace ChD3D11
 
 	class PixelShader11 final :public ShaderObject11
 	{
+
+	public:
+
+		virtual ~PixelShader11()
+		{
+			Release();
+		}
+
 	public:
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -150,6 +187,13 @@ namespace ChD3D11
 	{
 	public:
 
+		virtual ~GeometryShader11()
+		{
+			Release();
+		}
+
+	public:
+
 		///////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
@@ -174,6 +218,13 @@ namespace ChD3D11
 
 	class ComputeShader11 final :public ShaderObject11
 	{
+	public:
+
+		virtual ~ComputeShader11()
+		{
+			Release();
+		}
+
 	public:
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -202,6 +253,13 @@ namespace ChD3D11
 	{
 	public:
 
+		virtual ~DomainShader11()
+		{
+			Release();
+		}
+
+	public:
+
 		///////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
@@ -219,6 +277,39 @@ namespace ChD3D11
 		inline void SetShader(ID3D11DeviceContext* _dc)override
 		{
 			SetDomainShader(_dc);
+		}
+
+		///////////////////////////////////////////////////////////////////////////////////
+	};
+
+	class HullShader11 final :public ShaderObject11
+	{
+	public:
+
+		virtual ~HullShader11()
+		{
+			Release();
+		}
+
+	public:
+
+		///////////////////////////////////////////////////////////////////////////////////
+		//InitAndRelease//
+
+		inline void Init(
+			ID3D11Device* _device
+			, const void* _binary
+			, const unsigned long _binarySize)
+		{
+			CreateHullShader(_device, _binary, _binarySize);
+		}
+
+		///////////////////////////////////////////////////////////////////////////////////
+		//SetFunction/
+
+		inline void SetShader(ID3D11DeviceContext* _dc)override
+		{
+			SetHullShader(_dc);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////

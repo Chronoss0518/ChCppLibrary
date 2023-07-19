@@ -1,10 +1,7 @@
 #ifndef Ch_CPP_XMesh_h
 #define Ch_CPP_XMesh_h
 
-#ifndef Ch_CPP_MLoader_h
-#include"ChModelLoader.h"
-#endif
-
+#include"ChModelLoaderBase.h"
 
 namespace ChCpp
 {
@@ -18,24 +15,14 @@ namespace ChCpp
 
 			struct XFileModelFrame
 			{
-				struct XVertex
-				{
-					ChVec3 pos;
-					ChVec2 uvPos;
-					ChVec3 normal;
-				};
+				struct XVertex :public Ch3D::PolyVertex
+				{};
 
-				struct XMaterial
+				struct XMaterial :public Ch3D::Material
 				{
 					std::string materialName;
 
-					ChVec4 diffuse;
-					float specularPower = 0.0f;
-					ChVec3 specular;
-					ChVec3 ambient;
-
 					std::vector<std::string>textureNameList;
-
 				};
 
 				struct XFace
@@ -53,6 +40,7 @@ namespace ChCpp
 					ChLMat boneOffset;
 
 				};
+
 				struct XMesh
 				{
 					std::vector<ChPtr::Shared<XVertex>>vertexList;
@@ -92,65 +80,76 @@ namespace ChCpp
 				std::vector<ChPtr::Shared<TemplateRange>> nest;
 			};
 
+		public:
+
 			//モデルデータの読み込み口//
-			void CreateModel(const std::string& _filePath)override;
+			void CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& _filePath)override;
+
+			///////////////////////////////////////////////////////////////////////////////////////
+
+			void OutModelFile(const ChPtr::Shared<ModelObject> _model, const std::string& _filePath)override;
+
+		public:
+
+			inline void SetMaxBoneNum(const unsigned long _boneNum) { maxBoneNum = _boneNum; }
+
+		protected:
 
 			///////////////////////////////////////////////////////////////////////////////////////
 
 			//ChModelへ変換//
 			void XFrameToChFrame(
-				ChPtr::Shared<ModelFrame::Frame>& _chFrame
+				ChPtr::Shared<FrameObject> _chFrame
 				, const ChPtr::Shared<XFileModelFrame::XFrame>& _xFrame);
-
-			///////////////////////////////////////////////////////////////////////////////////////
-
-			void OutModelFile(const std::string& _filePath)override;
 
 			///////////////////////////////////////////////////////////////////////////////////////
 			//SetFunction//
 
-			ChStd::Bool SetFrame(
+			bool SetFrame(
 				ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 				, const ChPtr::Shared<TemplateRange>& _targetTemplate
 				, const std::string& _text);
 
-			ChStd::Bool SetFremeTransformMatrix(
+			bool SetFremeTransformMatrix(
 				ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 				, const ChPtr::Shared<TemplateRange>& _targetTemplate
 				, const std::string& _text);
 
-			ChStd::Bool SetMesh(
+			bool SetMesh(
 				ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 				, const ChPtr::Shared<TemplateRange>& _targetTemplate
 				, const std::string& _text);
 
-			ChStd::Bool SetMeshNormal(
+			bool SetMeshNormal(
 				ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 				, const ChPtr::Shared<TemplateRange>& _targetTemplate
 				, const std::string& _text);
 
-			ChStd::Bool SetMeshTextureCoords(
+			bool SetMeshTextureCoords(
 				ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 				, const ChPtr::Shared<TemplateRange>& _targetTemplate
 				, const std::string& _text);
 
-			ChStd::Bool SetMeshMaterialList(
+			bool SetMeshMaterialList(
 				ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 				, const ChPtr::Shared<TemplateRange>& _targetTemplate
 				, const std::string& _text);
 
-			ChStd::Bool SetMaterial(
+			bool SetMaterial(
 				ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 				, const ChPtr::Shared<TemplateRange>& _targetTemplate
 				, const std::string& _text);
 
-			ChStd::Bool SetSkinWeights(
+			bool SetSkinWeights(
 				ChPtr::Shared<XFileModelFrame::XFrame>& _frames
 				, const ChPtr::Shared<TemplateRange>& _targetTemplate
 				, const std::string& _text);
 
-			///////////////////////////////////////////////////////////////////////////////////////
-			//GetFunction//
+		public:
+
+			inline const unsigned long GetMaxBoneNum() const { return maxBoneNum; }
+
+		protected:
 
 			template<class T>
 			auto GetArrayValues(
@@ -168,7 +167,8 @@ namespace ChCpp
 				std::string useText = "";
 
 				{
-					size_t tmpEnd = _text.find(_endChar, _startPos);
+					size_t tmpEnd = _text.find(";", _startPos);
+					tmpEnd = _text.find(_endChar, tmpEnd + 1);
 					tmpEnd += _endChar.length();
 
 					useText = _text.substr(_startPos, tmpEnd - _startPos);
@@ -178,7 +178,7 @@ namespace ChCpp
 				size_t tmpPos = 0;
 				tmpPos = useText.find(";");
 
-				if (tmpPos >= useText.size())return out;
+				if (tmpPos > useText.size())tmpPos = useText.size();
 
 				unsigned long arrayCount = 0;
 
@@ -283,13 +283,13 @@ namespace ChCpp
 			///////////////////////////////////////////////////////////////////////////////////////
 			//IsFunction//
 
-			ChStd::Bool IsTags(
+			bool IsTags(
 				size_t& _outTagPos
 				, const std::string& _tagName
 				, const ChPtr::Shared<TemplateRange> _lookTemplate
 				, const std::string& _text);
 
-			inline ChStd::Bool IsTags(
+			inline bool IsTags(
 				const std::string& _tagName
 				, const ChPtr::Shared<TemplateRange> _lookTemplate
 				, const std::string& _text)
@@ -524,10 +524,16 @@ namespace ChCpp
 
 			///////////////////////////////////////////////////////////////////////////////////////
 
-			ChStd::Bool exceptionFlg = false;
+			bool exceptionFlg = false;
+
+			std::string loadFileName  = "";
+			std::string loadFilePath = "";
+
+			unsigned long maxBoneNum = 16;
 
 			///////////////////////////////////////////////////////////////////////////////////////
 			//XFileTemplateNames//
+
 
 			const std::string frameTags = "Frame ";
 

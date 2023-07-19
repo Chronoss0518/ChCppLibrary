@@ -10,16 +10,18 @@ namespace std
 namespace ChCpp
 {
 	//void(void)の関数用マルチスレッドを実行するクラス//
-	class ChMultiThread
+	class MultiThread :public ChCp::Initializer
 	{
 	public:
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//ConstructerDestructer//
 
-		ChMultiThread() {}
+		MultiThread() {}
 
-		ChMultiThread(const std::function<void(void)> _func);
+		MultiThread(const std::function<void(void)> _func);
+
+		~MultiThread() { Release(); }
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
@@ -27,16 +29,21 @@ namespace ChCpp
 		//マルチスレッドで動かしたい関数をセットする//
 		void Init(const std::function<void(void)> _func);
 
+		void Release();
+
 		///////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
 
 		//マルチスレッドで動いている関数が終わったかの判定//
-		ChStd::Bool IsEndFunc() { return endFlg; }
+		bool IsEndFunc() { return endFlg; }
 
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//マルチスレッドで動いている関数が終わるまで待つ//
 		void Join();
+
+		//同じ関数を再度走らせる//
+		void ReRun();
 
 	protected:
 
@@ -46,7 +53,7 @@ namespace ChCpp
 
 		std::function<void(void)> func = nullptr;
 
-		ChStd::Bool endFlg = false;
+		bool endFlg = true;
 
 	};
 

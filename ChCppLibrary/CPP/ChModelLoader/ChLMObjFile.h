@@ -1,9 +1,7 @@
 #ifndef Ch_CPP_ObjMesh_h
 #define Ch_CPP_ObjMesh_h
 
-#ifndef Ch_CPP_MLoader_h
-#include"ChModelLoader.h"
-#endif
+#include"ChModelLoaderBase.h"
 
 namespace ChCpp
 {
@@ -69,8 +67,18 @@ namespace ChCpp
 
 			///////////////////////////////////////////////////////////////////////////////////////
 
+		public:
+
 			//モデルデータの読み込み口//
-			void CreateModel(const std::string& _filePath)override;
+			void CreateModel(ChPtr::Shared<ModelObject> _model,const std::string& _filePath)override;
+
+			void OutModelFile(const ChPtr::Shared<ModelObject> _model, const std::string& _filePath)override;
+
+			///////////////////////////////////////////////////////////////////////////////////////
+
+		protected:
+
+			void Release();
 
 			void CreateObject(const std::string& _objectName);
 
@@ -78,11 +86,7 @@ namespace ChCpp
 
 			void CreateMaterial(const std::string& _aatName);
 
-			void CreateChFrame(ChPtr::Shared<ChCpp::ModelFrame::Frame>& _frame);
-
-			///////////////////////////////////////////////////////////////////////////////////////
-
-			void OutModelFile(const std::string& _filePath)override;
+			void CreateChFrame(ChPtr::Shared<ChCpp::FrameObject> _frame);
 
 			///////////////////////////////////////////////////////////////////////////////////////
 			//SetFunction//
@@ -133,7 +137,7 @@ namespace ChCpp
 			///////////////////////////////////////////////////////////////////////////////////////
 			//IsFunction//
 			
-			ChStd::Bool IsPrefix(const std::string _str, const char* _prefix,const unsigned long _prefixSize);
+			bool IsPrefix(const std::string _str, const char* _prefix,const unsigned long _prefixSize);
 
 			///////////////////////////////////////////////////////////////////////////////////////
 			//LoadFunction//

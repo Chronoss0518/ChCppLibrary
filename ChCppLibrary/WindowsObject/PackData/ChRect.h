@@ -122,9 +122,9 @@ public://Set Functions//
 
 public://Is Functions//
 
-	ChStd::Bool IsAll0()const;
+	bool IsAll0()const;
 
-	inline ChStd::Bool IsOverlaps(const ChLONGRECT& _vec)
+	inline bool IsOverlaps(const ChLONGRECT& _vec)
 	{
 		return vec.IsOverlaps(_vec.vec);
 	}
@@ -158,7 +158,7 @@ public://Other Functions//
 	inline ChLONGRECT OverlapsRect(const ChLONGRECT& _vec)
 	{
 		ChLONGRECT out;
-		out.vec.val.Set(vec.OverlapsRect(_vec).val);
+		out.vec.val.Set(ChMath::Vector4Base<long>::OverlapsRect(vec,_vec).val);
 		return out;
 	}
 

@@ -30,10 +30,9 @@ namespace ChD3D11
 
 			void SetUV(const unsigned char _posNo, const ChVec2& _posData);
 
-			void SetDrawData(ID3D11DeviceContext* _CD);
-
 			inline void SetInitTri()
 			{
+				SetInitSquare();
 				vertexs.pop_back();
 			}
 
@@ -41,6 +40,21 @@ namespace ChD3D11
 
 			///////////////////////////////////////////////////////////////////////////////////
 			//GetFunction//
+
+			inline const std::vector<ChPtr::Shared<Ch3D::PolyVertex>>& GetVertexs()
+			{
+				return vertexs;
+			}
+
+			inline unsigned long GetVertexSize()const
+			{
+				return vertexs.size();
+			}
+
+			inline Ch3D::Material GetMaterial()const
+			{
+				return material;
+			}
 
 			inline ChVec3 GetPos(const unsigned char _num)
 			{
@@ -75,11 +89,8 @@ namespace ChD3D11
 			
 			std::vector<ChPtr::Shared<Ch3D::PolyVertex>> vertexs;
 
-			Ch3D::PolyVertex drawVertexs[3];
-			VertexBuffer11<Ch3D::PolyVertex> vertexBuffer;
-			IndexBuffer11 indexBuffer;
-			ShaderUseMaterial11 material;
-			ConstantBuffer11<ShaderUseMaterial11> materialBuffer;
+			Ch3D::Material material;
+
 	};
 }
 

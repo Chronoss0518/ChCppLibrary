@@ -14,7 +14,7 @@ void ChWin::RadioButton::Create(const std::string& _buttonText
 	, const int _w
 	, const int _h
 	, const HWND _parentHandl
-	, const ChStd::Bool _glpFlg)
+	, const bool _glpFlg)
 {
 	if (!IsInit())return;
 

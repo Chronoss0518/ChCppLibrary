@@ -31,7 +31,7 @@ MeshList9::~MeshList9()
 
 void MeshList9::SetMesh(
 	const std::string& _meshName
-	, const ChStd::DataNo _dataNum)
+	, const unsigned short _dataNum)
 {
 	if (meshList.find(_dataNum) != meshList.end())return;
 
@@ -65,7 +65,7 @@ void MeshList9::SetMesh(
 
 void MeshList9::SetSkinMesh(
 	const std::string& _meshName
-	, const ChStd::DataNo _dataNum)
+	, const unsigned short _dataNum)
 {
 
 	if (meshList.find(_dataNum) != meshList.end())return;
@@ -109,7 +109,7 @@ void MeshList9::SetSkinMesh(
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChMeshList9::SetTexture(
-	const ChStd::DataNo _dataNum
+	const unsigned short _dataNum
 	, const unsigned long _texNum
 	, const ChPtr::Shared<ChTex::Texture9> _tex)
 {
@@ -127,7 +127,7 @@ void ChMeshList9::SetTexture(
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChMeshList9::SetAnimation(
-	const ChStd::DataNo _dataNum
+	const unsigned short _dataNum
 	, const std::string& _aniamtionName
 	, const std::string& _xFileName)
 {
@@ -154,7 +154,7 @@ void ChMeshList9::SetAnimation(
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChMeshList9::SetAnimation(
-	const ChStd::DataNo _dataNum
+	const unsigned short _dataNum
 	, const std::string& _aniamtionName
 	, const std::map<std::string, ChPtr::Shared<ChAnimationObject9>>& _animes)
 {
@@ -183,7 +183,7 @@ void ChMeshList9::SetAnimation(
 
 void ChMeshList9::DrawMesh(
 	const ChMat_9&_Mat
-	, const ChStd::DataNo _dataNum
+	, const unsigned short _dataNum
 	, const long _subNum)
 {
 
@@ -197,7 +197,7 @@ void ChMeshList9::DrawMesh(
 ///////////////////////////////////////////////////////////////////////////////////
 
 std::vector<ChPtr::Shared<ChMaterial_9>>& ChMeshList9::GetMeshMaterials(
-	const ChStd::DataNo _dataNum)
+	const unsigned short _dataNum)
 {
 	static std::vector<ChPtr::Shared<ChMaterial_9>> tmpMateList;
 
@@ -209,7 +209,7 @@ std::vector<ChPtr::Shared<ChMaterial_9>>& ChMeshList9::GetMeshMaterials(
 ///////////////////////////////////////////////////////////////////////////////////
 
 MeshFace9 ChMeshList9::GetEasyFace(
-	const ChStd::DataNo _dataNum
+	const unsigned short _dataNum
 	, const unsigned long _faceNum)
 {
 	MeshFace9 face;
@@ -227,7 +227,7 @@ MeshFace9 ChMeshList9::GetEasyFace(
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChMeshList9::CreateEasyFace(
-	const ChStd::DataNo _dataNum
+	const unsigned short _dataNum
 	, const unsigned short _BaseMatNum)
 {
 

@@ -5,7 +5,7 @@
 
 namespace ChD3D11
 {
-	class Texture11;
+	class TextureBase11;
 
 	struct ShaderUseMaterial11 :public Ch3D::Material
 	{
@@ -18,7 +18,7 @@ namespace ChD3D11
 
 		std::string materialName;
 
-		std::map<Ch3D::TextureType, ChPtr::Shared<Texture11>>textures;
+		std::map<Ch3D::TextureType, ChPtr::Shared<TextureBase11>>textures;
 	};
 
 	struct SkinMeshVertex11 : public Ch3D::MeshVertex
@@ -26,8 +26,41 @@ namespace ChD3D11
 		float blendPow[96];
 	};
 
-	class ShaderObjectBase11 :public ChCp::Releaser, public ChCp::Initializer
+	struct BaseDatas
 	{
+		//ビュー変換行列//
+		ChMat_11 viewMat;
+		//射影変換行列//
+		ChMat_11 projMat;
+		//画面サイズ//
+		ChVec4 windSize;
+	};
+
+	struct CharaDatas
+	{
+		//モデル行列//
+		ChMat_11 modelMat;
+
+		ChMat_11 frameMatrix;
+	};
+
+	struct PolygonDatas
+	{
+		//モデル行列//
+		ChMat_11 modelMat;
+		//スプライトベース色//
+		ChVec4 baseColor = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
+	};
+
+	class ShaderObjectBase11 :public ChCp::Initializer
+	{
+	public:
+
+		virtual ~ShaderObjectBase11()
+		{
+			Release();
+		}
+
 	public:
 
 		///////////////////////////////////////////////////////////////////////////////////////
@@ -35,7 +68,7 @@ namespace ChD3D11
 
 		inline void Init() { SetInitFlg(true); }
 
-		inline void Release()override
+		inline virtual void Release()
 		{
 			SetInitFlg(false);
 			if (ChPtr::NullCheck(buf))return;
@@ -139,12 +172,17 @@ namespace ChD3D11
 		unsigned int cpuAccessFlg = 0;
 		D3D11_USAGE usage = D3D11_USAGE::D3D11_USAGE_DEFAULT;
 		D3D11_BIND_FLAG bindFlg = D3D11_BIND_FLAG::D3D11_BIND_VERTEX_BUFFER;
-
-
 	};
 
 	class IndexBuffer11 : public ShaderObjectBase11
 	{
+	public:
+
+		virtual ~IndexBuffer11()
+		{
+			Release();
+		}
+
 	public:
 		///////////////////////////////////////////////////////////////////////////////////////
 		//CreateFunction//
@@ -165,6 +203,31 @@ namespace ChD3D11
 
 			D3D11_SUBRESOURCE_DATA data = CreateSubresourceData(_indexBuffer);
 
+			format = DXGI_FORMAT_R32_UINT;
+
+			_device->CreateBuffer(&desc, &data, &buf);
+
+			Init();
+		}
+
+		//Createを呼ぶ前に必要な場合はフラグ関係を操作するメソッドを呼びます//
+		inline void CreateBuffer(
+			ID3D11Device* _device,
+			unsigned char* _indexBuffer,
+			const unsigned char _indexNum)
+		{
+			if (ChPtr::NullCheck(_device))return;
+
+			Release();
+
+			bindFlg = D3D11_BIND_INDEX_BUFFER;
+
+			D3D11_BUFFER_DESC desc = CreateBufferDesc<unsigned char>(_indexNum);
+
+			D3D11_SUBRESOURCE_DATA data = CreateSubresourceData(_indexBuffer);
+
+			format = DXGI_FORMAT_R8_UINT;
+
 			_device->CreateBuffer(&desc, &data, &buf);
 
 			Init();
@@ -178,14 +241,24 @@ namespace ChD3D11
 			if (!*this)return;
 			if (ChPtr::NullCheck(_dc))return;
 
-			_dc->IASetIndexBuffer(buf, DXGI_FORMAT_R32_UINT, 0);
+			_dc->IASetIndexBuffer(buf, format, 0);
 		}
+
+	private:
+		DXGI_FORMAT format = DXGI_FORMAT_R32_UINT;
 
 	};
 
 	template<class vertex = Ch3D::Vertex>
 	class VertexBuffer11 : public ShaderObjectBase11
 	{
+	public:
+
+		virtual ~VertexBuffer11()
+		{
+			Release();
+		}
+
 	public:
 
 		///////////////////////////////////////////////////////////////////////////////////////
@@ -229,14 +302,33 @@ namespace ChD3D11
 			_dc->IASetVertexBuffers(0, 1, &buf, &strides, &_offset);
 		}
 
+		inline void SetVertexBuffer(
+			ID3D11DeviceContext* _dc,
+			const unsigned int _startSlot,
+			const unsigned int _bufferCount,
+			const unsigned int _offset)
+		{
+
+			if (!*this)return;
+			if (ChPtr::NullCheck(_dc))return;
+			unsigned int strides = sizeof(vertex);
+
+			_dc->IASetVertexBuffers(_startSlot, _bufferCount, &buf, &strides, &_offset);
+		}
+
 	};
 
 	template<class content>
 	class ConstantBuffer11 :public ShaderObjectBase11
 	{
 	public:
-		///////////////////////////////////////////////////////////////////////////////////////
-		//CreateFunction//
+
+		virtual ~ConstantBuffer11()
+		{
+			Release();
+		}
+
+	public://Create Functions//
 
 		//Createを呼ぶ前に必要な場合はフラグ関係を操作するメソッドを呼びます//
 		inline void CreateBuffer(
@@ -262,8 +354,9 @@ namespace ChD3D11
 			Init();
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
+	public://Set Functions//
+
+		inline void SetRegisterNo(const unsigned long _registerNo) { registerNo = _registerNo; }
 
 		inline void SetToVertexShader(
 			ID3D11DeviceContext* _dc,
@@ -276,8 +369,38 @@ namespace ChD3D11
 
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
+		inline void SetToGeometryShader(
+			ID3D11DeviceContext* _dc,
+			const unsigned long updateCount = 1)
+		{
+			if (!*this)return;
+			if (ChPtr::NullCheck(_dc))return;
+
+			_dc->GSSetConstantBuffers(registerNo, updateCount, &buf);
+
+		}
+
+		inline void SetToHullShader(
+			ID3D11DeviceContext* _dc,
+			const unsigned long updateCount = 1)
+		{
+			if (!*this)return;
+			if (ChPtr::NullCheck(_dc))return;
+
+			_dc->HSSetConstantBuffers(registerNo, updateCount, &buf);
+
+		}
+
+		inline void SetToDomainShader(
+			ID3D11DeviceContext* _dc,
+			const unsigned long updateCount = 1)
+		{
+			if (!*this)return;
+			if (ChPtr::NullCheck(_dc))return;
+
+			_dc->DSSetConstantBuffers(registerNo, updateCount, &buf);
+
+		}
 
 		inline void SetToPixelShader(
 			ID3D11DeviceContext* _dc,
@@ -289,6 +412,21 @@ namespace ChD3D11
 			_dc->PSSetConstantBuffers(registerNo, updateCount, &buf);
 
 		}
+
+		inline void SetToComputeShader(
+			ID3D11DeviceContext* _dc,
+			const unsigned long updateCount = 1)
+		{
+			if (!*this)return;
+			if (ChPtr::NullCheck(_dc))return;
+
+			_dc->CSSetConstantBuffers(registerNo, updateCount, &buf);
+
+		}
+
+	public://Get Functions//
+
+		inline unsigned long GetRegisterNo() { return registerNo; }
 
 	protected:
 

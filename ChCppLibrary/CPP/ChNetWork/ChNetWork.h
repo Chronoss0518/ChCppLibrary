@@ -58,8 +58,15 @@ namespace ChCpp
 		
 		class InternetProtocol;
 
-		class SockBase :public ChCp::Initializer,public ChCp::Releaser
+		class SockBase :public ChCp::Initializer
 		{
+		public:
+
+			virtual ~SockBase()
+			{
+				Release();
+			}
+
 		public:
 
 			friend InternetProtocol;
@@ -70,14 +77,14 @@ namespace ChCpp
 
 			virtual void Init(const unsigned short _portNo = 49152) = 0;
 
-			virtual void Release()override
+			virtual void Release()
 			{
 				if (!(*this))return;
 				closesocket(baseSock);
 				SetInitFlg(false);
 			}
 
-			virtual ChStd::Bool InitPropaty(const int _maxLinkCount) = 0;
+			virtual bool InitPropaty(const int _maxLinkCount) = 0;
 
 			///////////////////////////////////////////////////////////////////////////////
 			//SetFunction//
@@ -118,7 +125,7 @@ namespace ChCpp
 			///////////////////////////////////////////////////////////////////////////////
 			//InitAndRelease//
 
-			inline virtual ChStd::Bool Init(SockBase* _base)
+			inline virtual bool Init(SockBase* _base)
 			{
 				if (ChPtr::NullCheck(_base))return false;
 				targetSocket = _base;
@@ -128,10 +135,10 @@ namespace ChCpp
 			///////////////////////////////////////////////////////////////////////////////
 			//CommunityFunction//
 
-			virtual ChStd::Bool Send(
+			virtual bool Send(
 				const std::string& _str) = 0;
 
-			virtual ChStd::Bool Receve() = 0;
+			virtual bool Receve() = 0;
 
 			inline virtual void Release()
 			{
@@ -263,7 +270,7 @@ namespace ChCpp
 
 	protected:
 
-		inline ChStd::Bool WinInit()
+		inline bool WinInit()
 		{
 
 #ifdef _WINDOWS_

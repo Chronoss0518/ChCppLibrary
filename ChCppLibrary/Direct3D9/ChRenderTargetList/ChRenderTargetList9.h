@@ -12,7 +12,7 @@ namespace ChTex
 	typedef class BaseTexture9 Texture9;
 
 	//レンダーターゲットを設定するクラス//
-	typedef class RenderTargetList9 :public ChCp::Initializer,public ChCp::Releaser
+	typedef class RenderTargetList9 :public ChCp::Initializer
 	{
 	public:
 
@@ -20,6 +20,11 @@ namespace ChTex
 		//ConstructerDestructer//
 
 		RenderTargetList9() {};
+
+		virtual ~RenderTargetList9()
+		{
+			Release();
+		}
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
@@ -30,7 +35,7 @@ namespace ChTex
 			, const unsigned short _windHeight
 			, const ChD3D9::ShaderController* _shader = nullptr);
 
-		void Release()override;
+		virtual void Release();
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
@@ -39,14 +44,14 @@ namespace ChTex
 		//第二引数で画面をクリアする色指定//
 		//ChD3D9::Shader::DrawStartと併用できません//
 		void SetRT(
-			const ChStd::DataNo _dataNum
+			const unsigned short _dataNum
 			, const D3DCOLOR _backCol = D3DCOLOR_ARGB(0,0,0,0));
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
 		//作成したテクスチャを取得//
-		inline ChPtr::Shared<Texture9> GetRTTexture(const ChStd::DataNo _dataNum)
+		inline ChPtr::Shared<Texture9> GetRTTexture(const unsigned short _dataNum)
 		{
 			if (rtList.find(_dataNum) == rtList.end())return nullptr;
 			return rtList[_dataNum];
@@ -55,7 +60,7 @@ namespace ChTex
 		///////////////////////////////////////////////////////////////////////////////////
 
 		//登録されてるテクスチャを選択して消去//
-		inline void DeleteRTTexture(const ChStd::DataNo _dataNum)
+		inline void DeleteRTTexture(const unsigned short _dataNum)
 		{
 			if (rtList.empty())return;
 			if (rtList.find(_dataNum) == rtList.end())return;
@@ -77,7 +82,7 @@ namespace ChTex
 
 		//レンダーターゲットとなるテクスチャを作成:登録//
 		void CreateRT(
-			const ChStd::DataNo _dataNum
+			const unsigned short _dataNum
 			, const UINT _rtWidth = 1280
 			, const UINT _rtHeight = 720
 			, const _D3DFORMAT _FMT = D3DFMT_A8R8G8B8);
@@ -93,7 +98,7 @@ namespace ChTex
 
 		LPDIRECT3DDEVICE9 device;
 
-		std::map<ChStd::DataNo, ChPtr::Shared<BaseTexture9>>rtList;
+		std::map<unsigned short, ChPtr::Shared<BaseTexture9>>rtList;
 
 		ChPtr::Shared<BaseTexture9>dbData = nullptr;
 

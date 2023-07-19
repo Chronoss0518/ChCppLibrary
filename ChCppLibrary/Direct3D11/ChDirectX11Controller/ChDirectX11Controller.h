@@ -2,34 +2,42 @@
 #ifndef Ch_D3D11_DXCo_h
 #define Ch_D3D11_DXCo_h
 
+namespace ChWin
+{
+	class WindObject;
+};
+
 namespace ChD3D11
 {
 
 	//Direct3D11を利用するために作られたクラス//
-	class DirectX3D11:public ChCp::Initializer,public ChCp::Releaser
+	class DirectX3D11:public ChCp::Initializer
 	{
 	public:
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//InitAndReleas//
+		virtual ~DirectX3D11()
+		{
+			Release();
+		}
+
+	public://Init and Release//
 
 		void Init(
-			HWND _hWnd
-			, const ChStd::Bool _fullScreenFlg
-			, const unsigned short _scrW
-			, const unsigned short _scrH
-			, const unsigned short _scrX = 5
-			, const unsigned short _scrY = 5);
+			HWND _hWnd, 
+			const bool _fullScreenFlg, 
+			const unsigned long _scrW,
+			const unsigned long _scrH);
 
-		void Release()override;
+		/*
+		void Init(
+			ChWin::WindObject& _windObject,
+			const bool _fullScreenFlg);
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
+		*/
 
+		virtual void Release();
 
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//GetFunction//
+	public://Get Functions//
 
 		//Direct3D11をつかさどるデバイスの取得//
 		inline ID3D11Device* const GetDevice()
@@ -48,31 +56,25 @@ namespace ChD3D11
 			return window;
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//IsFunction//
+	public://Is Functions//
 
 		//デバイスが存在するかしないかの確認//
-		inline ChStd::Bool IsInstanse()
+		inline bool IsInstanse()
 		{
 			if (ChPtr::NullCheck(device))return false;
 			if (ChPtr::NullCheck(dContext))return false;
 			if (ChPtr::NullCheck(window))return false;
 			return true;
-
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////
-
-	protected:
-
-		///////////////////////////////////////////////////////////////////////////////////
+	protected://Create Fucntions// 
 
 		void CreateDevice(
 			HWND _hWnd
-			, const unsigned short _scrW
-			, const unsigned short _scrH);
+			, const unsigned long _scrW
+			, const unsigned long _scrH);
 
-		///////////////////////////////////////////////////////////////////////////////////
+	protected://Member Value//
 
 		//基本オブジェクトをつかさどるデバイス//
 		ID3D11Device* device = nullptr;
@@ -83,39 +85,23 @@ namespace ChD3D11
 		//保持するWindowデータ//
 		IDXGISwapChain* window = nullptr;
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//SetSingleton
-		///////////////////////////////////////////////////////////////////////////////////
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//ConstructerDestructer//
-
-		inline DirectX3D11() {}
-
-	public:
-
-		static DirectX3D11& GetInstans()
-		{
-			static DirectX3D11 ins;
-			return ins;
-		}
-
-
 	};
 
-	const static std::function<DirectX3D11&()> D3D11API = DirectX3D11::GetInstans;
-
-	const static std::function<ID3D11Device*()> D3D11Device
-		= []()->ID3D11Device* 
+	inline DirectX3D11& D3D11API()
 	{
-		return DirectX3D11::GetInstans().GetDevice();
+		static DirectX3D11 ins;
+		return ins;
+	}
+
+	inline ID3D11Device* D3D11Device()
+	{
+		return D3D11API().GetDevice();
 	};
 
 
-	const static std::function<ID3D11DeviceContext*()> D3D11DC
-		= []()->ID3D11DeviceContext*
+	inline ID3D11DeviceContext* D3D11DC()
 	{
-		return DirectX3D11::GetInstans().GetDC();
+		return D3D11API().GetDC();
 	};
 }
 

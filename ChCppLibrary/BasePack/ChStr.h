@@ -76,6 +76,14 @@ namespace ChStr
 
 	///////////////////////////////////////////////////////////////////////////////////
 
+	//対象の文字で区切り配列にする//
+	std::vector<std::string> Split(const std::string& _str,const std::string& _splitChar);
+
+	//対象の文字で区切り配列にする//
+	std::vector<std::wstring> Split(const std::wstring& _str, const std::wstring& _splitChar);
+
+	///////////////////////////////////////////////////////////////////////////////////
+
 	//指定されたコード値の範囲の文字のみを返す//
 	std::string GetCharsToRangeCode(
 		const std::string& _str
@@ -150,7 +158,7 @@ namespace ChStr
 	inline auto GetIntegialFromText(
 		const std::wstring& _text
 		, const size_t& _startPos = 0
-		, const size_t& _endPos = std::string::npos)
+		, const size_t& _endPos = std::wstring::npos)
 		->typename std::enable_if<
 		std::is_integral<BaseType>::value
 		&& !std::is_same<bool, BaseType>::value, BaseType>::type
@@ -202,6 +210,7 @@ namespace ChStr
 
 	}
 
+
 	using ConvertUTF8 = std::codecvt_utf8<wchar_t>;
 	using ConvertUTF16 = std::codecvt_utf16<wchar_t>;
 
@@ -216,7 +225,7 @@ namespace ChStr
 
 	//ワイド文字列から文字列へ変換する//
 	std::string UTF16ToString(const std::wstring& _str);
-
+	
 }
 
 

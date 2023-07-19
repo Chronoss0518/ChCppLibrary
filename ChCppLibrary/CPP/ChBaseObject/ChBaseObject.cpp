@@ -133,12 +133,32 @@ void BaseObject::DestroyComponentTest()
 	}
 }
 
+std::vector<ChPtr::Shared<BaseObject>>& BaseObject::GetChildlen()
+{
+	return childList;
+}
+
+std::vector<ChPtr::Shared<BaseObject>> BaseObject::GetAllChildlen()
+{
+	std::vector<ChPtr::Shared<BaseObject>>res = childList;
+
+	for (auto&& childObj : childList)
+	{
+		for (auto&& childChild : childObj->GetAllChildlen())
+		{
+			res.push_back(childChild);
+		}
+	}
+
+	return res;
+}
+
 void BaseObject::SetComponent(ChPtr::Shared<BaseComponent> _component)
 {
 	if (_component == nullptr)return;
-	if (!_component->obj.expired())return;
+	if (ChPtr::NotNullCheck(_component->obj))return;
 
-	_component->BaseInit(shared_from_this());
+	_component->BaseInit(this);
 
 	comList.push_back(_component);
 }
@@ -236,7 +256,7 @@ void BaseObject::UpdateFunction()
 			if ((*com)->IsDeth())
 			{
 				(*com)->Release();
-				comList.erase(com);
+				com = comList.erase(com);
 				if (comList.empty())break;
 				continue;
 			}
@@ -255,7 +275,7 @@ void BaseObject::UpdateFunction()
 			if ((*child)->dFlg)
 			{
 				(*child)->Release();
-				childList.erase(child);
+				child = childList.erase(child);
 				if (childList.empty())break;
 				continue;
 			}

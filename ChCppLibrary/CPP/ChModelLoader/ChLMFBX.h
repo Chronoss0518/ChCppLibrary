@@ -2,7 +2,7 @@
 #define Ch_CPP_FBXMesh_h
 
 #ifndef Ch_CPP_MLoader_h
-#include"ChModelLoader.h"
+#include"ChModelLoaderBase.h"
 #endif
 
 
@@ -14,21 +14,23 @@ namespace ChCpp
 
 		class FBX :public ModelLoaderBase
 		{
-		protected:
+		public:
 
 			///////////////////////////////////////////////////////////////////////////////////////
 
 			//モデルデータの読み込み口//
-			void CreateModel(const std::string& _filePath)override;
+			void CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& _filePath)override;
 
 			///////////////////////////////////////////////////////////////////////////////////////
 
-			void OutModelFile(const std::string& _filePath)override;
+			void OutModelFile(const ChPtr::Shared<ModelObject> _model, const std::string& _filePath)override;
 
 			///////////////////////////////////////////////////////////////////////////////////////
+
+		protected:
 
 			unsigned long filePos = 0;
-			ChStd::Bool errorFlg = false;
+			bool errorFlg = false;
 
 			struct BaseType
 			{
@@ -205,7 +207,7 @@ namespace ChCpp
 
 			}
 
-			ChStd::Bool IsNullRecode(const std::vector<char>& _binarys, unsigned long& _filePos)
+			bool IsNullRecode(const std::vector<char>& _binarys, unsigned long& _filePos)
 			{
 				for (unsigned char i = 0; i < 13; i++)
 				{
@@ -218,7 +220,7 @@ namespace ChCpp
 
 			const char prefix[21] = { (char)0x4b,(char)0x61,(char)0x79,(char)0x64,(char)0x61,(char)0x72,(char)0x61,(char)0x20,(char)0x46,(char)0x42,(char)0x58,(char)0x20,(char)0x42,(char)0x69,(char)0x6e,(char)0x61,(char)0x72,(char)0x79,(char)0x20,(char)0x20,(char)0x00 };
 
-			ChStd::Bool binaryFlg = false;
+			bool binaryFlg = false;
 
 		};
 

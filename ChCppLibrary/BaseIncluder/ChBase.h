@@ -22,6 +22,7 @@
 #include<sstream>
 #include<chrono>
 #include<codecvt>
+#include<array>
 
 #ifdef __d3d11_h__
 #include<windows.h>
@@ -41,7 +42,6 @@
 
 #include"../ClassParts/ChCPInitializer.h"
 #include"../ClassParts/ChCPClassNameGetter.h"
-#include"../ClassParts/ChCPReleaser.h"
 #include"../ClassParts/ChCpForEx.h"
 
 #include"../CPP/ChBitBool/ChBitBool.h"

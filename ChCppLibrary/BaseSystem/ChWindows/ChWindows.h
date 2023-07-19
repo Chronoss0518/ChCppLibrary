@@ -18,11 +18,17 @@ namespace ChSystem
 
 	//Windowsで作成されたWindとWindowsに関する入出力などを管理した、//
 	//WIndows全体の管理クラス//
-	class Windows :public BaseSystem,public ChCp::Releaser
+	class Windows :public BaseSystem
 	{
 	public:
 
 		Windows() {};
+
+		virtual ~Windows()
+		{
+			Release();
+		}
+
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
@@ -183,7 +189,7 @@ namespace ChSystem
 			wndObject.SetWindProcedure(_windowMessage, _proce);
 		}
 
-		inline void SetEnableFlg(const ChStd::Bool _flg) { wndObject.SetEnableFlg(_flg); }
+		inline void SetEnableFlg(const bool _flg) { wndObject.SetEnableFlg(_flg); }
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
@@ -204,23 +210,23 @@ namespace ChSystem
 		//IsFunction//
 
 		//標準のカーソルの表示フラグ//
-		inline void IsCursollShou(const ChStd::Bool _f) { ShowCursor(_f); }
+		inline void IsCursollShou(const bool _f) { ShowCursor(_f); }
 
 		//キーを押した際のチェックを行う関数//
-		ChStd::Bool IsPushKey(const int _key)override;
+		bool IsPushKey(const int _key)override;
 
 		//キーを押した際に長押しを含んだのチェックを行う関数//
-		ChStd::Bool IsPushKeyNoHold(const int _key)override;
+		bool IsPushKeyNoHold(const int _key)override;
 
 		//ポーズ中かどうかを判断する関数。//
 		//第一引数はポーズへ移行するボタン//
 		//戻り値がTrueだった場合はポーズ中//
-		ChStd::Bool IsPause(const int _key)override;
+		bool IsPause(const int _key)override;
 
 		//WindMassageを確認する関数//
-		ChStd::Bool IsUpdate()override;
+		bool IsUpdate()override;
 
-		inline ChStd::Bool IsCursorPosOnWindow() { return wndObject.IsCursorPosOnWindow(); }
+		inline bool IsCursorPosOnWindow() { return wndObject.IsCursorPosOnWindow(); }
 
 		///////////////////////////////////////////////////////////////////////////////////
 
@@ -283,7 +289,7 @@ namespace ChSystem
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		ChStd::Bool isKeyUpdate;
+		bool isKeyUpdate;
 
 		HINSTANCE inst = nullptr;
 		ChWin::WindObject wndObject;
@@ -292,73 +298,16 @@ namespace ChSystem
 
 	};
 
-	static inline void ToRelativePath(std::string&_path)
+}
+
+namespace ChWin
+{
+
+	std::string ToRelativePath(const std::string& _path);
+
+	inline ChINTPOINT GetScreenSize()
 	{
-
-		if (_path.find(":\\") == _path.npos && _path.find(":/") == _path.npos)return;
-
-		std::string tmp;
-
-
-		{
-
-			char* tmp2 = nullptr;
-			tmp2 = new char[256];
-
-			GetCurrentDirectory(256, tmp2);
-			tmp = tmp2;
-
-			delete[] tmp2;
-
-		}
-
-		std::string SetCutChar = "/";
-		{
-
-			std::string OutCutChar = "\\";
-
-			while (1)
-			{
-				size_t tmpLen = tmp.find(OutCutChar, 0);
-				if (tmpLen == tmp.npos)break;
-				tmp.replace(tmpLen, OutCutChar.size(), SetCutChar);
-
-			}
-			while (1)
-			{
-				size_t tmpLen = _path.find(OutCutChar, 0);
-				if (tmpLen == _path.npos)break;
-				_path.replace(tmpLen, OutCutChar.size(), SetCutChar);
-
-			}
-
-			std::string tmpBackChar = "";
-
-
-			while (1)
-			{
-				size_t tmpLen = _path.find(tmp);
-
-				if (tmpLen != _path.npos)break;
-
-				tmpLen = tmp.rfind(SetCutChar, tmp.length());
-
-				tmp.replace(tmpLen, tmp.length() - tmpLen, "");
-
-				tmpBackChar += "../";
-
-			}
-
-
-
-			_path.replace(0, tmp.length() + 1, "");
-
-			_path = tmpBackChar + _path;
-
-
-
-		}
-
+		return ChINTPOINT(GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
 	}
 }
 
