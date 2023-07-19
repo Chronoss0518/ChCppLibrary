@@ -21,16 +21,22 @@
 #include"CPP/ChBaseObject/ChObjectList.h"
 #include"CPP/ChBaseObject/ChObjectManager.h"
 #include"CPP/ChHitTestObject/ChHitTestObject.h"
+#include"CPP/ChHitTestObject/ChCollider.h"
 
 #include"CPP/ChMathSquare/ChMathSquare.h"
 #include"CPP/ChCounter/ChCounter.h"
 #include"CPP/ChCumulative/ChCumulative.h"
 
+#include"CPP/ChJsonObject/ChJsonObject.h"
+#include"CPP/ChJsonObject/ChJsonArray.h"
+#include"CPP/ChJsonObject/ChJsonNumber.h"
+#include"CPP/ChJsonObject/ChJsonString.h"
+#include"CPP/ChJsonObject/ChJsonBoolean.h"
+
 #include"CPP/ChHitTestObject/Panel/ChPanelCollider.h"
 #include"CPP/ChHitTestObject/Box/ChBoxCollider.h"
 #include"CPP/ChHitTestObject/Sphere/ChSphereCollider.h"
 #include"CPP/ChHitTestObject/Polygon/ChPolygonCollider.h"
-#include"CPP/ChHitTestObject/ChCollider.h"
 #include"CPP/ChHitTestObject/ChHitTestRay.h"
 
 #include"CPP/ChFile/ChFile.h"
