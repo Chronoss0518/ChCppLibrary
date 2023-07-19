@@ -104,7 +104,7 @@ std::string JsonBaseType::GetRawText(unsigned long& _textPosition, const std::st
 		do
 		{
 			_textPosition++;
-			if (_parameterObject.LineCount() <= _textPosition)return "";
+			if (_parameterObject.LineCount() < _textPosition)return "";
 			res += "," + _parameterObject.GetTextLine(_textPosition);
 		} while (_parameterObject.GetTextLine(_textPosition)[_parameterObject.GetTextLine(_textPosition).size() - 1] != ']');
 	}
@@ -123,7 +123,7 @@ std::string JsonBaseType::GetRawText(unsigned long& _textPosition, const std::st
 		do
 		{
 			_textPosition++;
-			if (_parameterObject.LineCount() <= _textPosition)return "";
+			if (_parameterObject.LineCount() < _textPosition)return "";
 			res += _parameterObject.GetTextLine(_textPosition) + ",";
 		} while (_parameterObject.GetTextLine(_textPosition)[_parameterObject.GetTextLine(_textPosition).size() - 1] != '}');
 		res.pop_back();
