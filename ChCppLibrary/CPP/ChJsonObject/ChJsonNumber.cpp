@@ -1,18 +1,19 @@
-#include"../../../BaseIncluder/ChBase.h"
+#include"../../BaseIncluder/ChBase.h"
 #include<cmath>
 
-#include"../../ChTextObject/ChTextObject.h"
+#include"../ChTextObject/ChTextObject.h"
 #include"ChJsonString.h"
 #include"ChJsonNumber.h"
-#include"../../ChCumulative/ChCumulative.h"
+#include"../ChCumulative/ChCumulative.h"
 
 using namespace ChCpp;
 
 
 JsonNumber& JsonNumber::operator = (const JsonNumber& _val)
 {
-	if (this == &_val)return;
+	if (this == &_val)return *this;
 	value = _val.value;
+	return *this;
 }
 
 JsonNumber& JsonNumber::operator += (const JsonNumber& _val)
@@ -60,7 +61,7 @@ JsonNumber& JsonNumber::operator /= (const JsonNumber& _val)
 	return *this;
 }
 
-JsonNumber JsonNumber::operator *(const JsonNumber& _val)const
+JsonNumber JsonNumber::operator /(const JsonNumber& _val)const
 {
 	JsonNumber res = *this;
 	res /= _val;
@@ -87,9 +88,10 @@ JsonNumber::operator BaseType()const
 }
 
 template<typename BaseType>
-JsonNumber JsonNumber::operator = (const BaseType& _base)
+JsonNumber& JsonNumber::operator = (const BaseType& _base)
 {
 	value = static_cast<const long double>(_base);
+	return *this;
 }
 
 JsonNumber::operator JsonString()const
@@ -100,7 +102,7 @@ JsonNumber::operator JsonString()const
 
 JsonNumber::operator std::string()const
 {
-	return std::to_string(value);
+	return ToString();
 }
 
 JsonNumber::JsonNumber()
@@ -117,4 +119,42 @@ template<typename BaseType>
 JsonNumber::JsonNumber(const BaseType& _val)
 {
 	*this = _val;
+}
+
+bool JsonNumber::SetRawData(const std::string& _jsonText)
+{
+	std::vector<char> text;
+	for (char value : _jsonText)
+	{
+		text.push_back(value);
+	}
+
+	if (!ChStd::IsBaseNumbers(text, ChStd::DECIMAL_NUMBUR()))return false;
+
+	value = ChStr::GetFloatingFromText<long double>(_jsonText);
+
+	return true;
+}
+
+std::string JsonNumber::GetRawData()const
+{
+	return ToString();
+}
+
+std::string JsonNumber::ToString()const
+{
+	std::string tmpStr = std::to_string(value);
+	unsigned long endPoint = tmpStr.find('.');
+	for (unsigned long i = endPoint + 1; i < tmpStr.size(); i++)
+	{
+		if (tmpStr[i] == '0')continue;
+		endPoint = i + 1;
+	}
+
+	if (endPoint >= tmpStr.size())
+	{
+		return tmpStr;
+	}
+
+	return tmpStr.substr(0,endPoint);
 }

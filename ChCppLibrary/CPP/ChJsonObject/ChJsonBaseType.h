@@ -8,6 +8,7 @@ namespace ChCpp
 	class JsonNumber;
 	class JsonString;
 	class JsonBoolean;
+	class JsonNull;
 	class JsonObject;
 
 	class JsonBaseType
@@ -35,6 +36,24 @@ namespace ChCpp
 	public://Get Function//
 
 		virtual std::string GetRawData()const = 0;
+
+	protected:
+
+		std::string GetRawText(unsigned long& _textPosition, const std::string& _parameterObjectText, const TextObject& _parameterObject, bool _jsonObjectFlg);
+
+	};
+
+	class JsonNull : public JsonBaseType
+	{
+	public:
+
+	public://Set Function//
+
+		bool SetRawData(const std::string& _jsonText)override { return true; };
+
+	public://Get Function//
+
+		std::string GetRawData()const override;
 
 	};
 

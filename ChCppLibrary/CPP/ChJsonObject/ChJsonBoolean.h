@@ -38,6 +38,10 @@ namespace ChCpp
 
 		std::string GetRawData()const override;
 
+		static constexpr char* const GetTrueText();
+
+		static constexpr char* const GetFalseText();
+
 	private:
 
 		bool value;

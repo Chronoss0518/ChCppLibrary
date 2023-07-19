@@ -3,9 +3,10 @@
 
 #include"../ChTextObject/ChTextObject.h"
 #include"ChJsonObject.h"
-#include"ObjectType/ChJsonArray.h"
-#include"ObjectType/ChJsonString.h"
-#include"ObjectType/ChJsonNumber.h"
+#include"ChJsonArray.h"
+#include"ChJsonString.h"
+#include"ChJsonNumber.h"
+#include"ChJsonBoolean.h"
 #include"../ChCumulative/ChCumulative.h"
 
 using namespace ChCpp;
@@ -14,13 +15,10 @@ using namespace ChCpp;
 bool JsonObject::SetRawData(const std::string& _jsonText)
 {
 	if (_jsonText.size() < 2)return false;
-	if (_jsonText[0] != '{' || _jsonText[_jsonText.size() - 1] != '{')return false;
+	if (_jsonText[0] != '{' || _jsonText[_jsonText.size() - 1] != '}')return false;
 
 	std::string parameter = _jsonText.substr(1, _jsonText.length() - 2);
-
-	Cumulative<char> cumulativeObjectChecker = Cumulative<char>('{', '}');
-
-	cumulativeObjectChecker.Update(_jsonText[0]);
+	parameter = ChStr::RemoveToWhiteSpaceChars(parameter);
 
 	TextObject parameterObject;
 
@@ -28,39 +26,50 @@ bool JsonObject::SetRawData(const std::string& _jsonText)
 
 	parameterObject.SetText(parameter);
 
-	for (unsigned long i = 0; i < parameterObject.Count() - 1; i++)
+	for (unsigned long i = 0; i < parameterObject.LineCount(); i++)
 	{
+
 		auto nameAndValue = ChStr::Split(parameterObject.GetTextLine(i), ":");
 		if (nameAndValue.size() < 2)continue;
+#if false
+		if (nameAndValue[1][0] == '[')
+		{
+			do
+			{
+				i++;
+				nameAndValue[1] += "," + parameterObject.GetTextLine(i);
+			} while (parameterObject.GetTextLine(i)[parameterObject.GetTextLine(i).size() - 1] != ']');
+		}
+		if (nameAndValue[1][0] == '{')
+		{
+			nameAndValue[1] += ":" + nameAndValue[2] + ",";
+			do
+			{
+				i++;
+				nameAndValue[1] += parameterObject.GetTextLine(i) + ",";
+			} while (parameterObject.GetTextLine(i)[parameterObject.GetTextLine(i).size() - 1] != '}');
+			nameAndValue[1].pop_back();
+		}
+#endif
+		nameAndValue[1] = GetRawText(i, nameAndValue[1], parameterObject, true);
+		auto obj = JsonBaseType::GetParameter(nameAndValue[1]);
+		if (obj == nullptr)continue;
+		values[nameAndValue[0]] = obj;
 	}
 
 	return true;
 
 }
 
-void JsonObject::SetArray(const std::string& _parameterName, const JsonArray& _value)
+void JsonObject::SetObject(const std::string& _parameterName, const ChPtr::Shared<JsonBaseType> _value)
 {
+	if (_value == nullptr)
+	{
+		values[_parameterName] = ChPtr::Make_S<JsonNull>();
+		return;
+	}
 
-}
-
-void JsonObject::SetNumber(const std::string& _parameterName, const JsonNumber& _value)
-{
-
-}
-
-void JsonObject::SetString(const std::string& _parameterName, const JsonString& _value)
-{
-
-}
-
-void JsonObject::SetBoolean(const std::string& _parameterName, const JsonBoolean& _value)
-{
-
-}
-
-void JsonObject::SetObject(const std::string& _parameterName, const JsonObject& _value)
-{
-
+	values[_parameterName] = _value;
 }
 
 std::string JsonObject::GetRawData()const
@@ -69,9 +78,9 @@ std::string JsonObject::GetRawData()const
 
 	bool initFlg = false;
 
-	for (auto&& val : value)
+	for (auto&& val : values)
 	{
-		if (initFlg)res += ",";
+		if (initFlg)res += ",\n";
 		res += val.first + ":" + val.second->GetRawData();
 		initFlg = true;
 	}
@@ -81,27 +90,72 @@ std::string JsonObject::GetRawData()const
 	return res;
 }
 
-JsonArray JsonObject::GetArray(const std::string& _parameterName)const
+ChPtr::Shared<JsonObject> JsonObject::GetObject(const std::string& _parameterName)
 {
-
+	auto findObject = values.find(_parameterName);
+	if (findObject == values.end())return nullptr;
+	return ChPtr::SharedSafeCast<JsonObject>(findObject->second);
 }
 
-JsonNumber JsonObject::GetNumber(const std::string& _parameterName)const
+ChPtr::Shared<JsonArray> JsonObject::GetArray(const std::string& _parameterName)
 {
-
+	auto findObject = values.find(_parameterName);
+	if (findObject == values.end())return nullptr;
+	return ChPtr::SharedSafeCast<JsonArray>(findObject->second);
 }
 
-JsonString JsonObject::GetString(const std::string& _parameterName)const
+ChPtr::Shared<JsonNumber> JsonObject::GetNumber(const std::string& _parameterName)
 {
-
+	auto findObject = values.find(_parameterName);
+	if (findObject == values.end())return nullptr;
+	return ChPtr::SharedSafeCast<JsonNumber>(findObject->second);
 }
 
-JsonBoolean JsonObject::GetBoolean(const std::string& _parameterName)const
+ChPtr::Shared<JsonString> JsonObject::GetString(const std::string& _parameterName)
 {
-
+	auto findObject = values.find(_parameterName);
+	if (findObject == values.end())return nullptr;
+	return ChPtr::SharedSafeCast<JsonString>(findObject->second);
 }
 
-JsonObject JsonObject::GetObject(const std::string& _parameterName)const
+ChPtr::Shared<JsonBoolean> JsonObject::GetBoolean(const std::string& _parameterName)
 {
+	auto findObject = values.find(_parameterName);
+	if (findObject == values.end())return nullptr;
+	return ChPtr::SharedSafeCast<JsonBoolean>(findObject->second);
+}
 
+const JsonObject* const JsonObject::GetObject(const std::string& _parameterName)const
+{
+	auto findObject = values.find(_parameterName);
+	if (findObject == values.end())return nullptr;
+	return ChPtr::SafeCast<JsonObject>(findObject->second.get());
+}
+
+const JsonArray* const JsonObject::GetArray(const std::string& _parameterName)const
+{
+	auto findObject = values.find(_parameterName);
+	if (findObject == values.end())return nullptr;
+	return ChPtr::SafeCast<JsonArray>(findObject->second.get());
+}
+
+const JsonString* const JsonObject::GetString(const std::string& _parameterName)const
+{
+	auto findObject = values.find(_parameterName);
+	if (findObject == values.end())return nullptr;
+	return ChPtr::SafeCast<JsonString>(findObject->second.get());
+}
+
+const JsonBoolean* const JsonObject::GetBoolean(const std::string& _parameterName)const
+{
+	auto findObject = values.find(_parameterName);
+	if (findObject == values.end())return nullptr;
+	return ChPtr::SafeCast<JsonBoolean>(findObject->second.get());
+}
+
+const JsonNumber* const JsonObject::GetNumber(const std::string& _parameterName)const
+{
+	auto findObject = values.find(_parameterName);
+	if (findObject == values.end())return nullptr;
+	return ChPtr::SafeCast<JsonNumber>(findObject->second.get());
 }

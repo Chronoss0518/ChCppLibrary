@@ -11,8 +11,6 @@ namespace ChCpp
 	public://Operator Functions//
 
 
-		JsonNumber& operator= (const JsonNumber& _val);
-
 		JsonNumber& operator = (const JsonNumber& _val);
 		JsonNumber& operator += (const JsonNumber& _val);
 		JsonNumber operator + (const JsonNumber& _val)const;
@@ -31,7 +29,7 @@ namespace ChCpp
 		operator BaseType()const;
 
 		template<typename BaseType>
-		JsonNumber operator = (const BaseType& _base);
+		JsonNumber& operator = (const BaseType& _base);
 
 
 	public://To String Operator Functions//
@@ -56,6 +54,10 @@ namespace ChCpp
 
 		std::string GetRawData()const override;
 
+	public:
+
+		std::string ToString()const;
+
 	private:
 
 		long double value;
@@ -77,19 +79,19 @@ namespace ChCpp
 	template JsonNumber::operator double()const;
 	template JsonNumber::operator long double()const;
 
-	template JsonNumber JsonNumber::operator = (const char& _base);
-	template JsonNumber JsonNumber::operator = (const short& _base);
-	template JsonNumber JsonNumber::operator = (const int& _base);
-	template JsonNumber JsonNumber::operator = (const long& _base);
-	template JsonNumber JsonNumber::operator = (const long long& _base);
-	template JsonNumber JsonNumber::operator = (const unsigned char& _base);
-	template JsonNumber JsonNumber::operator = (const unsigned short& _base);
-	template JsonNumber JsonNumber::operator = (const unsigned int& _base);
-	template JsonNumber JsonNumber::operator = (const unsigned long& _base);
-	template JsonNumber JsonNumber::operator = (const unsigned long long& _base);
-	template JsonNumber JsonNumber::operator = (const float& _base);
-	template JsonNumber JsonNumber::operator = (const double& _base);
-	template JsonNumber JsonNumber::operator = (const long double& _base);
+	template JsonNumber& JsonNumber::operator = (const char& _base);
+	template JsonNumber& JsonNumber::operator = (const short& _base);
+	template JsonNumber& JsonNumber::operator = (const int& _base);
+	template JsonNumber& JsonNumber::operator = (const long& _base);
+	template JsonNumber& JsonNumber::operator = (const long long& _base);
+	template JsonNumber& JsonNumber::operator = (const unsigned char& _base);
+	template JsonNumber& JsonNumber::operator = (const unsigned short& _base);
+	template JsonNumber& JsonNumber::operator = (const unsigned int& _base);
+	template JsonNumber& JsonNumber::operator = (const unsigned long& _base);
+	template JsonNumber& JsonNumber::operator = (const unsigned long long& _base);
+	template JsonNumber& JsonNumber::operator = (const float& _base);
+	template JsonNumber& JsonNumber::operator = (const double& _base);
+	template JsonNumber& JsonNumber::operator = (const long double& _base);
 
 	template JsonNumber::JsonNumber(const char& _base);
 	template JsonNumber::JsonNumber(const short& _base);

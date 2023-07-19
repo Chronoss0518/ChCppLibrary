@@ -1,7 +1,7 @@
 #ifndef Ch_CPP_JsonObject_h
 #define Ch_CPP_JsonObject_h
 
-#include"ObjectType/ChJsonBaseType.h"
+#include"ChJsonBaseType.h"
 
 namespace ChCpp
 {
@@ -11,33 +11,35 @@ namespace ChCpp
 
 		bool SetRawData(const std::string& _jsonText)override;
 
-		void SetObject(const std::string& _parameterName, const JsonObject& _value);
-
-		void SetArray(const std::string& _parameterName,const JsonArray& _value);
-
-		void SetString(const std::string& _parameterName,const JsonString& _value);
-
-		void SetBoolean(const std::string& _parameterName, const JsonBoolean& _value);
-
-		void SetNumber(const std::string& _parameterName, const JsonNumber& _value);
+		void SetObject(const std::string& _parameterName,const ChPtr::Shared<JsonBaseType> _value);
 
 	public: //Get Function//
 
 		std::string GetRawData()const override;
 
-		JsonObject GetObject(const std::string& _parameterName)const;
+		ChPtr::Shared<JsonObject> GetObject(const std::string& _parameterName);
 
-		JsonArray GetArray(const std::string& _parameterName)const;
+		ChPtr::Shared<JsonArray> GetArray(const std::string& _parameterName);
 
-		JsonString GetString(const std::string& _parameterName)const;
+		ChPtr::Shared<JsonString> GetString(const std::string& _parameterName);
 
-		JsonBoolean GetBoolean(const std::string& _parameterName)const;
+		ChPtr::Shared<JsonBoolean> GetBoolean(const std::string& _parameterName);
 
-		JsonNumber GetNumber(const std::string& _parameterName)const;
+		ChPtr::Shared<JsonNumber> GetNumber(const std::string& _parameterName);
+
+		const JsonObject* const GetObject(const std::string& _parameterName)const;
+		
+		const JsonArray* const GetArray(const std::string& _parameterName)const;
+		
+		const JsonString* const GetString(const std::string& _parameterName)const;
+		
+		const JsonBoolean* const GetBoolean(const std::string& _parameterName)const;
+		
+		const JsonNumber* const GetNumber(const std::string& _parameterName)const;
 
 	private:
 
-		std::map<std::string, ChPtr::Shared<JsonBaseType>> value;
+		std::map<std::string, ChPtr::Shared<JsonBaseType>> values;
 
 	};
 

@@ -1,21 +1,22 @@
-#include"../../../BaseIncluder/ChBase.h"
+#include"../../BaseIncluder/ChBase.h"
 
-#include"../../ChTextObject/ChTextObject.h"
+#include"../ChTextObject/ChTextObject.h"
 #include"ChJsonString.h"
 #include"ChJsonBoolean.h"
-#include"../../ChCumulative/ChCumulative.h"
+#include"../ChCumulative/ChCumulative.h"
 
 using namespace ChCpp;
-
 
 JsonBoolean& JsonBoolean::operator = (const JsonBoolean& _val)
 {
 	value = _val.value;
+	return *this;
 }
 
 JsonBoolean& JsonBoolean::operator = (const bool& _flg)
 {
 	value = _flg;
+	return *this;
 }
 
 JsonBoolean::operator bool()const
@@ -56,13 +57,13 @@ bool JsonBoolean::SetRawData(const std::string& _jsonText)
 		testValue[i] = testValue[i] >= 0x60 ? testValue[i] - 0x20 : testValue[i];
 	}
 
-	if (testValue == "TRUE")
+	if (testValue == GetTrueText())
 	{
 		value = true;
 		return true;
 	}
 
-	if (testValue == "FALSE")
+	if (testValue == GetFalseText())
 	{
 		value = false;
 		return true;
@@ -73,5 +74,15 @@ bool JsonBoolean::SetRawData(const std::string& _jsonText)
 
 std::string JsonBoolean::GetRawData()const
 {
-	return value ? "TRUE" : "FALSE";
+	return value ? GetTrueText() : GetFalseText();
+}
+
+constexpr char* const JsonBoolean::GetTrueText()
+{
+	return const_cast<char*>("TRUE");
+}
+
+constexpr char* const JsonBoolean::GetFalseText()
+{
+	return const_cast<char*>("FALSE");;
 }
