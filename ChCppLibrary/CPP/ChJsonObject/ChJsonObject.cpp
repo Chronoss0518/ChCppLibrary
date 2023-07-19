@@ -31,27 +31,8 @@ bool JsonObject::SetRawData(const std::string& _jsonText)
 
 		auto nameAndValue = ChStr::Split(parameterObject.GetTextLine(i), ":");
 		if (nameAndValue.size() < 2)continue;
-#if false
-		if (nameAndValue[1][0] == '[')
-		{
-			do
-			{
-				i++;
-				nameAndValue[1] += "," + parameterObject.GetTextLine(i);
-			} while (parameterObject.GetTextLine(i)[parameterObject.GetTextLine(i).size() - 1] != ']');
-		}
-		if (nameAndValue[1][0] == '{')
-		{
-			nameAndValue[1] += ":" + nameAndValue[2] + ",";
-			do
-			{
-				i++;
-				nameAndValue[1] += parameterObject.GetTextLine(i) + ",";
-			} while (parameterObject.GetTextLine(i)[parameterObject.GetTextLine(i).size() - 1] != '}');
-			nameAndValue[1].pop_back();
-		}
-#endif
-		nameAndValue[1] = GetRawText(i, nameAndValue[1], parameterObject, true);
+		nameAndValue[1] = GetRawText(i, nameAndValue[1], parameterObject, true); 
+		if (nameAndValue[1].empty())return false;
 		auto obj = JsonBaseType::GetParameter(nameAndValue[1]);
 		if (obj == nullptr)continue;
 		values[nameAndValue[0]] = obj;

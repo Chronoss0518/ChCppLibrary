@@ -32,6 +32,7 @@ bool JsonArray::SetRawData(const std::string& _jsonText)
 	{
 		std::string value = parameterObject.GetTextLine(i);
 		value = GetRawText(i, value, parameterObject, false);
+		if (value.empty())return false;
 		auto&& obj = JsonBaseType::GetParameter(value);
 		if (obj == nullptr)continue;
 		values.push_back(obj);
