@@ -158,7 +158,7 @@ namespace ChStr
 	inline auto GetIntegialFromText(
 		const std::wstring& _text
 		, const size_t& _startPos = 0
-		, const size_t& _endPos = std::string::npos)
+		, const size_t& _endPos = std::wstring::npos)
 		->typename std::enable_if<
 		std::is_integral<BaseType>::value
 		&& !std::is_same<bool, BaseType>::value, BaseType>::type
@@ -210,6 +210,7 @@ namespace ChStr
 
 	}
 
+
 	using ConvertUTF8 = std::codecvt_utf8<wchar_t>;
 	using ConvertUTF16 = std::codecvt_utf16<wchar_t>;
 
@@ -224,7 +225,7 @@ namespace ChStr
 
 	//ƒƒCƒh•¶š—ñ‚©‚ç•¶š—ñ‚Ö•ÏŠ·‚·‚é//
 	std::string UTF16ToString(const std::wstring& _str);
-
+	
 }
 
 
