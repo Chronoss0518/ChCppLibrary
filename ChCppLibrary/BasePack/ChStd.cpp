@@ -63,24 +63,23 @@ std::vector<char> ChStd::DecimalNumberToBaseNumber(const long _decimal, const st
 	unsigned long size = _baseNumber.size();
 	unsigned long base = decimal / size;
 
-	std::vector<char> out;
+	std::vector<char> testRes;
 
 	if (mFlg)
 	{
-		out.push_back('-');
+		testRes.push_back('-');
 	}
 
-	out.push_back(_baseNumber[decimal % size]);
+	testRes.push_back(_baseNumber[decimal % size]);
 
 	if (base == 0)
 	{
-		return out;
+		return testRes;
 	}
 
-	for (auto tmp : DecimalNumberToBaseNumber(base, _baseNumber))
-	{
-		out.push_back(tmp);
-	}
+	std::vector<char> out = DecimalNumberToBaseNumber(base, _baseNumber);
+
+	out.push_back(testRes[0]);
 
 	return out;
 
@@ -101,17 +100,11 @@ long ChStd::BaseNumberToDecimalNumber(const std::vector<char>& _decimal, const s
 		numMap[_baseNumber[i]] = i;
 	}
 
-	bool mFlg = false;
+	bool mFlg = numMap[_decimal[0]] == size;
 
-	for (long i = 0; static_cast<unsigned long>(i) < _decimal.size(); i++)
+	for (long i = 0; static_cast<unsigned long>(i) < (mFlg ? _decimal.size() - 1 : _decimal.size()); i++)
 	{
-		long sum = numMap[_decimal[i]];
-
-		if (sum == size)
-		{
-			mFlg = true;
-			continue;
-		}
+		long sum = numMap[_decimal[_decimal.size() - i - 1]];
 
 		for (long j = 0; j < (!mFlg ? i : i - 1); j++)
 		{
@@ -135,3 +128,51 @@ std::vector<char> ChStd::ToBaseNumber(const std::vector<char>& _baseNum, const s
 	return DecimalNumberToBaseNumber(base, _afterBaseNumber);
 
 }
+
+bool ChStd::IsBaseNumbers(const std::vector<char>& _baseNum, const std::vector<char>& _beforeBaseNumber)
+{
+
+	bool isSuccessFlg = false;
+	bool indexFlg = false;
+	bool indexSuccessFlg = false;
+	bool pointFlg = false;
+
+	for (unsigned char i = 0; i < _baseNum.size(); i++)
+	{
+		isSuccessFlg = false;
+
+		for (auto&& numChar : _beforeBaseNumber)
+		{
+			if (_baseNum[i] != numChar)continue;
+			if (indexFlg)indexSuccessFlg = true;
+			isSuccessFlg = true;
+		}
+		if (isSuccessFlg)continue;
+		if (_baseNum[i] == '.')
+		{
+			if (!pointFlg)
+			{
+				pointFlg = true;
+				continue;
+			}
+		}
+		if (_baseNum[i] == 'E' || _baseNum[i] == 'e')
+		{
+			if (!indexFlg)
+			{
+				indexFlg = true;
+				i++;
+				if (_baseNum[i] == '+' || _baseNum[i] == '-')continue;
+				i--;
+				continue;
+			}
+		}
+		return false;
+
+	}
+
+	if (!indexSuccessFlg && indexFlg)return false;
+
+	return true;
+}
+

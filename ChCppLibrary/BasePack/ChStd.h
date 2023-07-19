@@ -109,6 +109,9 @@ namespace ChStd
 	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
 	std::vector<char> ToBaseNumber(const std::vector<char>& _baseNum, const std::vector<char>& _beforeBaseNumber = DECIMAL_NUMBUR(), const std::vector<char>& _afterBaseNumber = HEXA_DECIMAL());
 
+	//指定した新数の配列を入れるとその配列によって数値を置換できるかのテストを行う//
+	bool IsBaseNumbers(const std::vector<char>& _baseNum, const std::vector<char>& _beforeBaseNumber = DECIMAL_NUMBUR());
+
 	template<typename Type>
 	static inline Type BinaryToNumWithBigEndian(const std::vector<char>& _binary, unsigned long _filePos = 0)
 	{
