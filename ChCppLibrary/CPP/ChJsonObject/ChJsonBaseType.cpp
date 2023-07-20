@@ -48,6 +48,31 @@ ChPtr::Shared<JsonBaseType> JsonBaseType::GetParameter(const std::string& _json)
 	return  ChPtr::Make_S<JsonNull>();
 }
 
+static ChPtr::Shared<JsonBaseType> GetJsonClassObject(const std::string& _text)
+{
+	auto&& res = ChPtr::Make_S<JsonString>();
+	*res = _text;
+
+	return res;
+}
+
+static ChPtr::Shared<JsonBaseType> GetJsonClassObject(const bool _flg)
+{
+	auto&& res = ChPtr::Make_S<JsonBoolean>();
+	*res = _flg;
+
+	return res;
+}
+
+template<typename BaseType>
+static ChPtr::Shared<JsonBaseType> GetJsonClassObject(const BaseType& _value)
+{
+	auto&& res = ChPtr::Make_S<JsonNumber>();
+	*res = _value;
+
+	return res;
+}
+
 ChPtr::Shared<JsonObject> JsonBaseType::GetParameterToObject(const std::string& _json)
 {
 	auto&& res = ChPtr::Make_S<JsonObject>();
