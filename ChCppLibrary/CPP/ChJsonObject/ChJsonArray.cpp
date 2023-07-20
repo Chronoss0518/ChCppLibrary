@@ -12,6 +12,37 @@
 
 using namespace ChCpp;
 
+template<typename BaseType>
+ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<BaseType>& _array)
+{
+	auto&& res = ChPtr::Make_S<JsonArray>();
+	for (auto&& val : _array)
+	{
+		res->AddObject(JsonNumber::CreateObject(val));
+	}
+	return res;
+}
+
+ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<bool>& _array)
+{
+	auto&& res = ChPtr::Make_S<JsonArray>();
+	for (auto&& val : _array)
+	{
+		res->AddObject(JsonBoolean::CreateObject(val));
+	}
+	return res;
+}
+
+ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<std::string>& _array)
+{
+	auto&& res = ChPtr::Make_S<JsonArray>();
+	for (auto&& val : _array)
+	{
+		res->AddObject(JsonString::CreateObject(val));
+	}
+	return res;
+}
+
 
 bool JsonArray::SetRawData(const std::string& _jsonText)
 {

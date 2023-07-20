@@ -7,6 +7,13 @@
 
 using namespace ChCpp;
 
+ChPtr::Shared<JsonBoolean> JsonBoolean::CreateObject(const bool& _flg)
+{
+	auto&& res = ChPtr::Make_S<JsonBoolean>();
+	*res = _flg;
+	return res;
+}
+
 JsonBoolean& JsonBoolean::operator = (const JsonBoolean& _val)
 {
 	value = _val.value;

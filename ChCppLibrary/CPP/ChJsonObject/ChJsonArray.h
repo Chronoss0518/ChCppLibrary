@@ -8,6 +8,18 @@ namespace ChCpp
 
 	class JsonArray :public JsonBaseType
 	{
+	public://static Create Function//
+
+		template<typename BaseType>
+		static ChPtr::Shared<JsonArray> CreateObject(const std::vector<BaseType>& _array);
+
+		static ChPtr::Shared<JsonArray> CreateObject(const std::vector<bool>& _array);
+
+		static ChPtr::Shared<JsonArray> CreateObject(const std::vector<std::string>& _array);
+
+		template<typename BaseType>
+		static ChPtr::Shared<JsonArray> CreateObject(const std::vector<std::vector<BaseType>>& _array);
+
 	public:
 
 		bool SetRawData(const std::string& _jsonText)override;
@@ -41,6 +53,33 @@ namespace ChCpp
 		std::vector<ChPtr::Shared<JsonBaseType>>values;
 
 	};
+
+
+	template ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<char>& _array);
+	template ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<short>& _array);
+	template ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<int>& _array);
+	template ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<long>& _array);
+	template ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<long long>& _array);
+	template ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<unsigned char>& _array);
+	template ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<unsigned short>& _array);
+	template ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<unsigned int>& _array);
+	template ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<unsigned long>& _array);
+	template ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<unsigned long long>& _array);
+	template ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<float>& _array);
+	template ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<double>& _array);
+	template ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<long double>& _array);
+
+	template<typename BaseType>
+	ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<std::vector<BaseType>>& _array)
+	{
+		auto&& res = ChPtr::Make_S<JsonArray>();
+		for (auto&& val : _array)
+		{
+			res->AddObject(JsonArray::CreateObject(val));
+		}
+		return res;
+	}
+
 
 }
 

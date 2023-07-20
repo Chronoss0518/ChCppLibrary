@@ -8,6 +8,10 @@ namespace ChCpp
 
 	class JsonBoolean :public JsonBaseType
 	{
+	public://static Create Function//
+
+		static ChPtr::Shared<JsonBoolean> CreateObject(const bool& _flg);
+
 	public://Operator Functions//
 
 		JsonBoolean& operator = (const JsonBoolean& _val);
