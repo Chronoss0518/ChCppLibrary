@@ -99,42 +99,73 @@ ChPtr::Shared<JsonNumber> JsonBaseType::GetParameterToNumber(const std::string& 
 std::string JsonBaseType::GetRawText(unsigned long& _textPosition, const std::string& _parameterObjectText, const TextObject& _parameterObject,bool _jsonObjectFlg)
 {
 	std::string res = _parameterObjectText;
+	ChPtr::Shared<ChCpp::Cumulative<char>> testNum = nullptr;
+
+	if (_jsonObjectFlg)
+	{
+		auto nameAndValue = ChStr::Split(_parameterObject.GetTextLine(_textPosition), ":");
+
+		for (unsigned long i = 2; i < nameAndValue.size(); i++)
+		{
+			res += ":" + nameAndValue[i];
+		}
+
+	}
+	else
+	{
+		res += ",";
+	}
+
 	if (res[0] == '[')
 	{
+
+		testNum = ChPtr::Make_S<ChCpp::Cumulative<char>>('[', ']');
+		
+		for (unsigned long i = 0; i < res.size(); i++)
+		{
+			testNum->Update(res[i]);
+		}
+
+
 		do
 		{
 			_textPosition++;
 			if (_parameterObject.LineCount() <= _textPosition)return "";
-			res += "," + _parameterObject.GetTextLine(_textPosition);
-		} while (_parameterObject.GetTextLine(_textPosition)[_parameterObject.GetTextLine(_textPosition).size() - 1] != ']');
-	}
-	if (res[0] == '{')
-	{
-		if (_jsonObjectFlg)
-		{
-			auto nameAndValue = ChStr::Split(_parameterObject.GetTextLine(_textPosition), ":");
-			res += ":" + nameAndValue[2];
+			std::string testText = _parameterObject.GetTextLine(_textPosition);
+			res += "," + testText;
 
-			for (unsigned long i = 3; i < nameAndValue.size(); i++)
+			for (unsigned long i = 0; i < testText.size(); i++)
 			{
-				res += ":" + nameAndValue[i];
+				testNum->Update(testText[i]);
 			}
 
-			res += ",";
+		} while (testNum->GetCount() > 0);
+	}
+	else if (res[0] == '{')
+	{
 
-		}
-		else
+		testNum = ChPtr::Make_S<ChCpp::Cumulative<char>>('{', '}');
+
+		for (unsigned long i = 0; i < res.size(); i++)
 		{
-			res += ",";
+			testNum->Update(res[i]);
 		}
 
 		do
 		{
-			if (_parameterObject.LineCount() <= _textPosition)return "";
-			res += _parameterObject.GetTextLine(_textPosition) + ",";
 			_textPosition++;
-		} while (_parameterObject.GetTextLine(_textPosition)[_parameterObject.GetTextLine(_textPosition).size() - 1] != '}');
-		res.pop_back();
+			if (_parameterObject.LineCount() <= _textPosition)return "";
+
+			std::string testText = _parameterObject.GetTextLine(_textPosition);
+			res += "," + testText;
+
+			for (unsigned long i = 0; i < testText.size(); i++)
+			{
+				testNum->Update(testText[i]);
+			}
+
+
+		} while (testNum->GetCount() > 0);
 	}
 
 	return res;
