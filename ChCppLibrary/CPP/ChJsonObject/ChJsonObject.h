@@ -39,6 +39,10 @@ namespace ChCpp
 
 	private:
 
+		bool IsCutCharInParameterName(const std::string& _parameterName);
+
+	private:
+
 		std::map<std::string, ChPtr::Shared<JsonBaseType>> values;
 
 	};

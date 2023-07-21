@@ -12,7 +12,7 @@
 
 using namespace ChCpp;
 
-constexpr char nullText[] = "NULL";
+constexpr char nullText[] = "null";
 
 std::string JsonNull::GetRawData()const
 {
