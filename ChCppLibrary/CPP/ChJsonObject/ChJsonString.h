@@ -8,6 +8,10 @@ namespace ChCpp
 
 	class JsonString :public JsonBaseType
 	{
+	public://static Create Function//
+
+		static ChPtr::Shared<JsonString> CreateObject(const std::string& _text);
+
 	public://Operator Functions//
 
 		JsonString& operator =(const JsonString& _value);

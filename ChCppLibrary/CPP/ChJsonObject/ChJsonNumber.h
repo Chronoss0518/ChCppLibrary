@@ -8,8 +8,12 @@ namespace ChCpp
 
 	class JsonNumber :public JsonBaseType
 	{
-	public://Operator Functions//
+	public://static Create Function//
 
+		template<typename BaseType>
+		static ChPtr::Shared<JsonNumber> CreateObject(const BaseType& _value);
+
+	public://Operator Functions//
 
 		JsonNumber& operator = (const JsonNumber& _val);
 		JsonNumber& operator += (const JsonNumber& _val);
@@ -106,6 +110,20 @@ namespace ChCpp
 	template JsonNumber::JsonNumber(const float& _base);
 	template JsonNumber::JsonNumber(const double& _base);
 	template JsonNumber::JsonNumber(const long double& _base);
+
+	template ChPtr::Shared<JsonNumber> JsonNumber::CreateObject(const char& _base);
+	template ChPtr::Shared<JsonNumber> JsonNumber::CreateObject(const short& _base);
+	template ChPtr::Shared<JsonNumber> JsonNumber::CreateObject(const int& _base);
+	template ChPtr::Shared<JsonNumber> JsonNumber::CreateObject(const long& _base);
+	template ChPtr::Shared<JsonNumber> JsonNumber::CreateObject(const long long& _base);
+	template ChPtr::Shared<JsonNumber> JsonNumber::CreateObject(const unsigned char& _base);
+	template ChPtr::Shared<JsonNumber> JsonNumber::CreateObject(const unsigned short& _base);
+	template ChPtr::Shared<JsonNumber> JsonNumber::CreateObject(const unsigned int& _base);
+	template ChPtr::Shared<JsonNumber> JsonNumber::CreateObject(const unsigned long& _base);
+	template ChPtr::Shared<JsonNumber> JsonNumber::CreateObject(const unsigned long long& _base);
+	template ChPtr::Shared<JsonNumber> JsonNumber::CreateObject(const float& _base);
+	template ChPtr::Shared<JsonNumber> JsonNumber::CreateObject(const double& _base);
+	template ChPtr::Shared<JsonNumber> JsonNumber::CreateObject(const long double& _base);
 }
 
 #endif
