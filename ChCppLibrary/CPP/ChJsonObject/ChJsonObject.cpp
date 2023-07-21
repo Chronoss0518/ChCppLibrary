@@ -31,6 +31,13 @@ bool JsonObject::SetRawData(const std::string& _jsonText)
 
 		auto nameAndValue = ChStr::Split(parameterObject.GetTextLine(i), ":");
 		if (nameAndValue.size() < 2)continue;
+
+		if (nameAndValue[0][0] != '\"' || nameAndValue[0][nameAndValue[0].size() - 1] != '\"')return false;
+		
+		nameAndValue[0] = nameAndValue[0].substr(1, nameAndValue[0].size() - 2);
+		
+		if (IsCutCharInParameterName(nameAndValue[0]))return false;
+
 		nameAndValue[1] = GetRawText(i, nameAndValue[1], parameterObject, true); 
 		if (nameAndValue[1].empty())return false;
 		auto obj = JsonBaseType::GetParameter(nameAndValue[1]);
@@ -44,6 +51,8 @@ bool JsonObject::SetRawData(const std::string& _jsonText)
 
 void JsonObject::SetObject(const std::string& _parameterName, const ChPtr::Shared<JsonBaseType> _value)
 {
+	if (IsCutCharInParameterName(_parameterName))return;
+
 	if (_value == nullptr)
 	{
 		values[_parameterName] = ChPtr::Make_S<JsonNull>();
@@ -62,7 +71,7 @@ std::string JsonObject::GetRawData()const
 	for (auto&& val : values)
 	{
 		if (initFlg)res += ",\n";
-		res += val.first + ":" + val.second->GetRawData();
+		res += "\"" + val.first + "\"" + ":" + val.second->GetRawData();
 		initFlg = true;
 	}
 
@@ -139,4 +148,16 @@ const JsonNumber* const JsonObject::GetJsonNumber(const std::string& _parameterN
 	auto findObject = values.find(_parameterName);
 	if (findObject == values.end())return nullptr;
 	return ChPtr::SafeCast<JsonNumber>(findObject->second.get());
+}
+
+bool JsonObject::IsCutCharInParameterName(const std::string& _parameterName)
+{
+
+	for (unsigned long i = 0; i < _parameterName.size(); i++)
+	{
+		if (_parameterName[i] == '\"')return true;
+	}
+
+	return false;
+
 }
