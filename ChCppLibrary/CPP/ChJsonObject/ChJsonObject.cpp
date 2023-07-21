@@ -71,70 +71,70 @@ std::string JsonObject::GetRawData()const
 	return res;
 }
 
-ChPtr::Shared<JsonObject> JsonObject::GetObject(const std::string& _parameterName)
+ChPtr::Shared<JsonObject> JsonObject::GetJsonObject(const std::string& _parameterName)
 {
 	auto findObject = values.find(_parameterName);
 	if (findObject == values.end())return nullptr;
 	return ChPtr::SharedSafeCast<JsonObject>(findObject->second);
 }
 
-ChPtr::Shared<JsonArray> JsonObject::GetArray(const std::string& _parameterName)
+ChPtr::Shared<JsonArray> JsonObject::GetJsonArray(const std::string& _parameterName)
 {
 	auto findObject = values.find(_parameterName);
 	if (findObject == values.end())return nullptr;
 	return ChPtr::SharedSafeCast<JsonArray>(findObject->second);
 }
 
-ChPtr::Shared<JsonNumber> JsonObject::GetNumber(const std::string& _parameterName)
+ChPtr::Shared<JsonNumber> JsonObject::GetJsonNumber(const std::string& _parameterName)
 {
 	auto findObject = values.find(_parameterName);
 	if (findObject == values.end())return nullptr;
 	return ChPtr::SharedSafeCast<JsonNumber>(findObject->second);
 }
 
-ChPtr::Shared<JsonString> JsonObject::GetString(const std::string& _parameterName)
+ChPtr::Shared<JsonString> JsonObject::GetJsonString(const std::string& _parameterName)
 {
 	auto findObject = values.find(_parameterName);
 	if (findObject == values.end())return nullptr;
 	return ChPtr::SharedSafeCast<JsonString>(findObject->second);
 }
 
-ChPtr::Shared<JsonBoolean> JsonObject::GetBoolean(const std::string& _parameterName)
+ChPtr::Shared<JsonBoolean> JsonObject::GetJsonBoolean(const std::string& _parameterName)
 {
 	auto findObject = values.find(_parameterName);
 	if (findObject == values.end())return nullptr;
 	return ChPtr::SharedSafeCast<JsonBoolean>(findObject->second);
 }
 
-const JsonObject* const JsonObject::GetObject(const std::string& _parameterName)const
+const JsonObject* const JsonObject::GetJsonObject(const std::string& _parameterName)const
 {
 	auto findObject = values.find(_parameterName);
 	if (findObject == values.end())return nullptr;
 	return ChPtr::SafeCast<JsonObject>(findObject->second.get());
 }
 
-const JsonArray* const JsonObject::GetArray(const std::string& _parameterName)const
+const JsonArray* const JsonObject::GetJsonArray(const std::string& _parameterName)const
 {
 	auto findObject = values.find(_parameterName);
 	if (findObject == values.end())return nullptr;
 	return ChPtr::SafeCast<JsonArray>(findObject->second.get());
 }
 
-const JsonString* const JsonObject::GetString(const std::string& _parameterName)const
+const JsonString* const JsonObject::GetJsonString(const std::string& _parameterName)const
 {
 	auto findObject = values.find(_parameterName);
 	if (findObject == values.end())return nullptr;
 	return ChPtr::SafeCast<JsonString>(findObject->second.get());
 }
 
-const JsonBoolean* const JsonObject::GetBoolean(const std::string& _parameterName)const
+const JsonBoolean* const JsonObject::GetJsonBoolean(const std::string& _parameterName)const
 {
 	auto findObject = values.find(_parameterName);
 	if (findObject == values.end())return nullptr;
 	return ChPtr::SafeCast<JsonBoolean>(findObject->second.get());
 }
 
-const JsonNumber* const JsonObject::GetNumber(const std::string& _parameterName)const
+const JsonNumber* const JsonObject::GetJsonNumber(const std::string& _parameterName)const
 {
 	auto findObject = values.find(_parameterName);
 	if (findObject == values.end())return nullptr;

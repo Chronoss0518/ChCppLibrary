@@ -33,6 +33,12 @@ static constexpr unsigned char escapeSequenceTextCharaList[8] =
 	't'
 };
 
+ChPtr::Shared<JsonString> JsonString::CreateObject(const std::string& _text)
+{
+	auto&& res = ChPtr::Make_S<JsonString>();
+	*res = _text;
+	return res;
+}
 
 JsonString& JsonString::operator =(const JsonString& _value)
 {
