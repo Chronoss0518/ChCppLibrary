@@ -59,11 +59,6 @@ bool JsonBoolean::SetRawData(const std::string& _jsonText)
 	if (testValue.size() < 4)return false;
 	if (testValue.size() > 5)return false;
 
-	for (unsigned char i = 0; i < testValue.size(); i++)
-	{
-		testValue[i] = testValue[i] <= 'Z' ? testValue[i] + 0x20 : testValue[i];
-	}
-
 	if (testValue == GetTrueText())
 	{
 		value = true;
