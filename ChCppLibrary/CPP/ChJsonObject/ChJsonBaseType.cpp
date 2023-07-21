@@ -113,7 +113,15 @@ std::string JsonBaseType::GetRawText(unsigned long& _textPosition, const std::st
 		if (_jsonObjectFlg)
 		{
 			auto nameAndValue = ChStr::Split(_parameterObject.GetTextLine(_textPosition), ":");
-			res += ":" + nameAndValue[2] + ",";
+			res += ":" + nameAndValue[2];
+
+			for (unsigned long i = 3; i < nameAndValue.size(); i++)
+			{
+				res += ":" + nameAndValue[i];
+			}
+
+			res += ",";
+
 		}
 		else
 		{
@@ -122,9 +130,9 @@ std::string JsonBaseType::GetRawText(unsigned long& _textPosition, const std::st
 
 		do
 		{
-			_textPosition++;
 			if (_parameterObject.LineCount() <= _textPosition)return "";
 			res += _parameterObject.GetTextLine(_textPosition) + ",";
+			_textPosition++;
 		} while (_parameterObject.GetTextLine(_textPosition)[_parameterObject.GetTextLine(_textPosition).size() - 1] != '}');
 		res.pop_back();
 	}
