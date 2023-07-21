@@ -100,6 +100,11 @@ std::string JsonArray::GetRawData()const
 	return res;
 }
 
+unsigned long JsonArray::GetCount()const
+{
+	return values.size();
+}
+
 ChPtr::Shared<JsonBaseType> JsonArray::GetJsonValue(unsigned long _num)const
 {
 	if (_num >= values.size())return  nullptr;
