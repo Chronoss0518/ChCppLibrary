@@ -32,17 +32,17 @@ namespace ChCpp
 
 		unsigned long GetCount()const;
 
-		ChPtr::Shared<JsonBaseType> GetValue(unsigned long _num)const;
+		ChPtr::Shared<JsonBaseType> GetJsonValue(unsigned long _num)const;
 
-		ChPtr::Shared<JsonObject> GetObject(unsigned long _num)const;
+		ChPtr::Shared<JsonObject> GetJsonObject(unsigned long _num)const;
 
-		ChPtr::Shared<JsonArray> GetArray(unsigned long _num)const;
+		ChPtr::Shared<JsonArray> GetJsonArray(unsigned long _num)const;
 
-		ChPtr::Shared<JsonString> GetString(unsigned long _num)const;
+		ChPtr::Shared<JsonString> GetJsonString(unsigned long _num)const;
 
-		ChPtr::Shared<JsonBoolean> GetBoolean(unsigned long _num)const;
+		ChPtr::Shared<JsonBoolean> GetJsonBoolean(unsigned long _num)const;
 
-		ChPtr::Shared<JsonNumber> GetNumber(unsigned long _num)const;
+		ChPtr::Shared<JsonNumber> GetJsonNumber(unsigned long _num)const;
 
 	public:
 

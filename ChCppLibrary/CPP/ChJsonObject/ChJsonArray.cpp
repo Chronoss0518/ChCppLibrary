@@ -100,37 +100,37 @@ std::string JsonArray::GetRawData()const
 	return res;
 }
 
-ChPtr::Shared<JsonBaseType> JsonArray::GetValue(unsigned long _num)const
+ChPtr::Shared<JsonBaseType> JsonArray::GetJsonValue(unsigned long _num)const
 {
 	if (_num >= values.size())return  nullptr;
 	return values[_num];
 }
 
-ChPtr::Shared<JsonArray> JsonArray::GetArray(unsigned long _num)const
+ChPtr::Shared<JsonArray> JsonArray::GetJsonArray(unsigned long _num)const
 {
 	if (_num >= values.size())return  nullptr;
 	return ChPtr::SharedSafeCast<JsonArray>(values[_num]);
 }
 
-ChPtr::Shared<JsonNumber> JsonArray::GetNumber(unsigned long _num)const
+ChPtr::Shared<JsonNumber> JsonArray::GetJsonNumber(unsigned long _num)const
 {
 	if (_num >= values.size())return  nullptr;
 	return ChPtr::SharedSafeCast<JsonNumber>(values[_num]);
 }
 
-ChPtr::Shared<JsonString> JsonArray::GetString(unsigned long _num)const
+ChPtr::Shared<JsonString> JsonArray::GetJsonString(unsigned long _num)const
 {
 	if (_num >= values.size())return  nullptr;
 	return ChPtr::SharedSafeCast<JsonString>(values[_num]);
 }
 
-ChPtr::Shared<JsonBoolean> JsonArray::GetBoolean(unsigned long _num)const
+ChPtr::Shared<JsonBoolean> JsonArray::GetJsonBoolean(unsigned long _num)const
 {
 	if (_num >= values.size())return  nullptr;
 	return ChPtr::SharedSafeCast<JsonBoolean>(values[_num]);
 }
 
-ChPtr::Shared<JsonObject> JsonArray::GetObject(unsigned long _num)const
+ChPtr::Shared<JsonObject> JsonArray::GetJsonObject(unsigned long _num)const
 {
 	if (_num >= values.size())return  nullptr;
 	return ChPtr::SharedSafeCast<JsonObject>(values[_num]);
