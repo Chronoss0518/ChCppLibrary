@@ -61,7 +61,7 @@ bool JsonBoolean::SetRawData(const std::string& _jsonText)
 
 	for (unsigned char i = 0; i < testValue.size(); i++)
 	{
-		testValue[i] = testValue[i] >= 0x60 ? testValue[i] - 0x20 : testValue[i];
+		testValue[i] = testValue[i] <= 'Z' ? testValue[i] + 0x20 : testValue[i];
 	}
 
 	if (testValue == GetTrueText())
@@ -86,10 +86,10 @@ std::string JsonBoolean::GetRawData()const
 
 constexpr char* const JsonBoolean::GetTrueText()
 {
-	return const_cast<char*>("TRUE");
+	return const_cast<char*>("true");
 }
 
 constexpr char* const JsonBoolean::GetFalseText()
 {
-	return const_cast<char*>("FALSE");;
+	return const_cast<char*>("false");
 }
