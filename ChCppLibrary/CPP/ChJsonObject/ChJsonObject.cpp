@@ -80,6 +80,18 @@ std::string JsonObject::GetRawData()const
 	return res;
 }
 
+std::vector<std::string> JsonObject::GetParameterNames()const
+{
+	std::vector<std::string> res;
+
+	for (auto&& value : values)
+	{
+		res.push_back(value.first);
+	}
+
+	return res;
+}
+
 ChPtr::Shared<JsonObject> JsonObject::GetJsonObject(const std::string& _parameterName)
 {
 	auto findObject = values.find(_parameterName);
