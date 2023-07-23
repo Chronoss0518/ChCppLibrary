@@ -18,7 +18,7 @@ bool JsonObject::SetRawData(const std::string& _jsonText)
 	if (_jsonText[0] != '{' || _jsonText[_jsonText.size() - 1] != '}')return false;
 
 	std::string parameter = _jsonText.substr(1, _jsonText.length() - 2);
-	parameter = ChStr::RemoveToWhiteSpaceChars(parameter);
+	parameter = GetExtractString(parameter);
 
 	TextObject parameterObject;
 
