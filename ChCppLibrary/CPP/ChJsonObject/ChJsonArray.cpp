@@ -51,7 +51,7 @@ bool JsonArray::SetRawData(const std::string& _jsonText)
 
 	std::string parameter = _jsonText.substr(1, _jsonText.length() - 2);
 
-	parameter = ChStr::RemoveToWhiteSpaceChars(parameter);
+	parameter = GetExtractString(parameter);
 
 	TextObject parameterObject;
 
