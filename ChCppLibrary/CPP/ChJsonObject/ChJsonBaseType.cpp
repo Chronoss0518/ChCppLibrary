@@ -95,38 +95,128 @@ ChPtr::Shared<JsonNumber> JsonBaseType::GetParameterToNumber(const std::string& 
 	return res;
 }
 
+std::string JsonBaseType::GetExtractString(const std::string& _value)
+{
+	bool inString = false;
+
+	ChCpp::Cumulative<char>objectCumulative = ChCpp::Cumulative<char>('{', '}');
+	ChCpp::Cumulative<char>arrayCumulative = ChCpp::Cumulative<char>('[', ']');
+
+	std::string res = "";
+
+	const char whiteSpaceInterfaceChar = 32;
+	const char delCharNum = 127;
+
+	bool isInObjectOrArray = false;
+
+	for (unsigned long i = 0; i < _value.length(); i++)
+	{
+		if (!inString && !isInObjectOrArray)
+		{
+			if (_value[i] <= whiteSpaceInterfaceChar)continue;
+			if (_value[i] == delCharNum)continue;
+		}
+
+		res = res + _value[i];
+
+		objectCumulative.Update(_value[i]);
+		arrayCumulative.Update(_value[i]);
+
+		isInObjectOrArray = objectCumulative.GetCount() > 0 || arrayCumulative.GetCount() > 0;
+
+		if (isInObjectOrArray)continue;
+		if (_value[i] != '\"')continue;
+
+		inString = !inString;
+
+	}
+
+	return res;
+
+
+}
+
 
 std::string JsonBaseType::GetRawText(unsigned long& _textPosition, const std::string& _parameterObjectText, const TextObject& _parameterObject,bool _jsonObjectFlg)
 {
 	std::string res = _parameterObjectText;
+	ChPtr::Shared<ChCpp::Cumulative<char>> testNum = nullptr;
+
+
 	if (res[0] == '[')
-	{
-		do
-		{
-			_textPosition++;
-			if (_parameterObject.LineCount() <= _textPosition)return "";
-			res += "," + _parameterObject.GetTextLine(_textPosition);
-		} while (_parameterObject.GetTextLine(_textPosition)[_parameterObject.GetTextLine(_textPosition).size() - 1] != ']');
-	}
-	if (res[0] == '{')
 	{
 		if (_jsonObjectFlg)
 		{
 			auto nameAndValue = ChStr::Split(_parameterObject.GetTextLine(_textPosition), ":");
-			res += ":" + nameAndValue[2] + ",";
+
+			for (unsigned long i = 2; i < nameAndValue.size(); i++)
+			{
+				res += ":" + nameAndValue[i];
+			}
+
+		}
+
+		testNum = ChPtr::Make_S<ChCpp::Cumulative<char>>('[', ']');
+		
+		for (unsigned long i = 0; i < res.size(); i++)
+		{
+			testNum->Update(res[i]);
+		}
+
+
+		do
+		{
+			_textPosition++;
+			if (_parameterObject.LineCount() <= _textPosition)return "";
+			std::string testText = _parameterObject.GetTextLine(_textPosition);
+			res += "," + testText;
+
+			for (unsigned long i = 0; i < testText.size(); i++)
+			{
+				testNum->Update(testText[i]);
+			}
+
+		} while (testNum->GetCount() > 0);
+	}
+	else if (res[0] == '{')
+	{
+		if (_jsonObjectFlg)
+		{
+			auto nameAndValue = ChStr::Split(_parameterObject.GetTextLine(_textPosition), ":");
+
+			for (unsigned long i = 2; i < nameAndValue.size(); i++)
+			{
+				res += ":" + nameAndValue[i];
+			}
+
 		}
 		else
 		{
 			res += ",";
 		}
 
+		testNum = ChPtr::Make_S<ChCpp::Cumulative<char>>('{', '}');
+
+		for (unsigned long i = 0; i < res.size(); i++)
+		{
+			testNum->Update(res[i]);
+		}
+
 		do
 		{
 			_textPosition++;
 			if (_parameterObject.LineCount() <= _textPosition)return "";
-			res += _parameterObject.GetTextLine(_textPosition) + ",";
-		} while (_parameterObject.GetTextLine(_textPosition)[_parameterObject.GetTextLine(_textPosition).size() - 1] != '}');
-		res.pop_back();
+
+			std::string testText = _parameterObject.GetTextLine(_textPosition);
+			res += "," + testText;
+
+			for (unsigned long i = 0; i < testText.size(); i++)
+			{
+				testNum->Update(testText[i]);
+			}
+
+
+		} while (testNum->GetCount() > 0);
 	}
 
 	return res;

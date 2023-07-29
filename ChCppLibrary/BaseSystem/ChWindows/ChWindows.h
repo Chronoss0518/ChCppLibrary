@@ -35,9 +35,9 @@ namespace ChSystem
 
 		//WindÇÃê∂ê¨(stringVer)//
 		void Init(
+			const ChWin::WindCreater& _creater,
 			const std::string& _appName,
 			const std::string& _windClassName,
-			const ChINTPOINT& _windSize,
 			const HINSTANCE _hInst,
 			const int _nCmdShow);
 
@@ -62,7 +62,6 @@ namespace ChSystem
 			HMENU _hMenu = nullptr,
 			LPVOID _param = nullptr);
 
-		//WindÇÃê∂ê¨(stringVer)//
 		void Init(
 			const std::string& _appName,
 			const std::string& _windClassName,
@@ -78,13 +77,6 @@ namespace ChSystem
 			const int _windHeight,
 			const int _initWindPosX,
 			const int _initWindPosY,
-			const HINSTANCE _hInst,
-			const int _nCmdShow);
-
-		void Init(
-			const ChWin::WindCreater& _creater,
-			const std::string& _appName,
-			const std::string& _windClassName,
 			const HINSTANCE _hInst,
 			const int _nCmdShow);
 
@@ -105,9 +97,9 @@ namespace ChSystem
 
 		//WindÇÃê∂ê¨(wstringVer)//
 		void Init(
+			const ChWin::WindCreater& _creater,
 			const std::wstring& _appName,
 			const std::wstring& _windClassName,
-			const ChINTPOINT& _windSize,
 			const HINSTANCE _hInst,
 			const int _nCmdShow);
 
@@ -132,7 +124,6 @@ namespace ChSystem
 			HMENU _hMenu = nullptr,
 			LPVOID _param = nullptr);
 
-		//WindÇÃê∂ê¨(wstringVer)//
 		void Init(
 			const std::wstring& _appName,
 			const std::wstring& _windClassName,
@@ -148,13 +139,6 @@ namespace ChSystem
 			const int _windHeight,
 			const int _initWindPosX,
 			const int _initWindPosY,
-			const HINSTANCE _hInst,
-			const int _nCmdShow);
-
-		void Init(
-			const ChWin::WindCreater& _creater,
-			const std::wstring& _appName,
-			const std::wstring& _windClassName,
 			const HINSTANCE _hInst,
 			const int _nCmdShow);
 
@@ -308,6 +292,16 @@ namespace ChWin
 	inline ChINTPOINT GetScreenSize()
 	{
 		return ChINTPOINT(GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
+	}
+
+	inline HINSTANCE GetInstanceHandle()
+	{
+
+#ifdef UNICODE
+		return GetModuleHandleW(nullptr);
+#else
+		return GetModuleHandleA(nullptr);
+#endif
 	}
 }
 
