@@ -309,6 +309,16 @@ namespace ChWin
 	{
 		return ChINTPOINT(GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
 	}
+
+	inline HINSTANCE GetInstanceHandle()
+	{
+
+#ifdef UNICODE
+		return GetModuleHandleW(nullptr);
+#else
+		return GetModuleHandleA(nullptr);
+#endif
+	}
 }
 
 #endif

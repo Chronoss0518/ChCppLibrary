@@ -183,6 +183,7 @@ public:
 
 	///////////////////////////////////////////////////////////////////////////////////
 
+	//“§‹“Š‰eË‰es—ñ‚ğì¬//
 	inline void CreateProjectionMat(
 		const float _lookAngleRadian
 		, const float _windWidth
@@ -193,6 +194,20 @@ public:
 		*this = DirectX::XMMatrixPerspectiveFovLH(
 			_lookAngleRadian
 			, _windWidth/ _windHeight
+			, _nearZ
+			, _farZ);
+	}
+
+	//’¼ŒğË‰es—ñ‚ğì¬//
+	inline void CreateProjectionMat(
+		const float _windWidth
+		, const float _windHeight
+		, const float _nearZ
+		, const float _farZ)
+	{
+		*this = DirectX::XMMatrixOrthographicLH(
+			_windWidth
+			,_windHeight
 			, _nearZ
 			, _farZ);
 	}

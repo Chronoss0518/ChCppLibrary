@@ -9,6 +9,14 @@
 using namespace ChCpp;
 
 
+template<typename BaseType>
+ChPtr::Shared<JsonNumber> JsonNumber::CreateObject(const BaseType& _value)
+{
+	auto&& res = ChPtr::Make_S<JsonNumber>();
+	*res = _value;
+	return res;
+}
+
 JsonNumber& JsonNumber::operator = (const JsonNumber& _val)
 {
 	if (this == &_val)return *this;

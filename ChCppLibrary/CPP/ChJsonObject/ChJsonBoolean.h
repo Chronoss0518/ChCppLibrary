@@ -8,6 +8,10 @@ namespace ChCpp
 
 	class JsonBoolean :public JsonBaseType
 	{
+	public://static Create Function//
+
+		static ChPtr::Shared<JsonBoolean> CreateObject(const bool& _flg);
+
 	public://Operator Functions//
 
 		JsonBoolean& operator = (const JsonBoolean& _val);
@@ -34,6 +38,8 @@ namespace ChCpp
 
 		bool SetRawData(const std::string& _jsonText)override;
 
+		inline void SetFlg(bool _flg) { value = _flg; }
+
 	public:
 
 		std::string GetRawData()const override;
@@ -41,6 +47,10 @@ namespace ChCpp
 		static constexpr char* const GetTrueText();
 
 		static constexpr char* const GetFalseText();
+
+	public:
+
+		inline bool IsFlg() { return value; }
 
 	private:
 

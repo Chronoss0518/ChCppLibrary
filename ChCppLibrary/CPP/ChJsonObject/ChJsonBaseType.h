@@ -41,6 +41,8 @@ namespace ChCpp
 
 		std::string GetRawText(unsigned long& _textPosition, const std::string& _parameterObjectText, const TextObject& _parameterObject, bool _jsonObjectFlg);
 
+		std::string GetExtractString(const std::string& _value);
+
 	};
 
 	class JsonNull : public JsonBaseType

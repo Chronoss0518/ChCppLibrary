@@ -11,53 +11,70 @@ using namespace ChWin;
 
 ChWin::WindObject* create = nullptr;
 
-
 void WindCreater::SetRecentCreateWindowObject(ChWin::WindObject* _create)
 {
 	create = _create;
 }
 
-LRESULT CALLBACK ChWin::WndProcA(
-	HWND _hWnd
-	, UINT _uMsg
-	, WPARAM _wParam
-	, LPARAM _lParam)
+LRESULT CALLBACK ChWin::BaseWndProc(
+	HWND _hWnd,
+	UINT _uMsg,
+	WPARAM _wParam,
+	LPARAM _lParam,
+	LONG(WINAPI* GetWindowLongPtrFunction)(_In_ HWND, _In_ int),
+	LRESULT(WINAPI* DefWindowProcFunction)(_In_ HWND, _In_ UINT, _In_ WPARAM, _In_ LPARAM))
 {
-
-	auto base = ((ChWin::WindObject*)GetWindowLongPtrA(_hWnd, GWLP_USERDATA));
+	ChWin::WindObject* base = ((ChWin::WindObject*)GetWindowLongPtrFunction(_hWnd, GWLP_USERDATA));
 
 	base = (ChPtr::NotNullCheck(base) ? base : create);
 
-	if (base)
+
+	if (ChPtr::NotNullCheck(base))
 	{
-		if (!base->wndProc.empty())
+		auto it = base->wndProc.find(_uMsg);
+		LRESULT res;
+		if (it != (base->wndProc).end())
 		{
-			auto it = base->wndProc.find(_uMsg);
+			res = (it)->second(_hWnd, _uMsg, _wParam, _lParam);
+			if (_uMsg != WM_COMMAND && _uMsg != WM_SYSCOMMAND)return res;
+		}
+
+		if (_uMsg != WM_COMMAND && _uMsg != WM_SYSCOMMAND)return base->defaultWindProc(_hWnd, _uMsg, _wParam, _lParam);
+
+		if (_lParam <= 0)
+		{
+			auto param = LOWORD(_wParam);
+
+			auto it = base->wndProc.find(param);
 			if (it != (base->wndProc).end())
 			{
-				return (it)->second(_hWnd, _uMsg, _wParam, _lParam);
-			}
-			else if (_uMsg == WM_COMMAND)
-			{
-
-				auto child = ((ChWin::WindObject*)GetWindowLongPtrA((HWND)LOWORD(_wParam), GWLP_USERDATA));
-
-				if (child)
-				{
-					if (child->IsInit() && !child->childWindProc.empty())
-					{
-						auto cit = child->childWindProc.find(HIWORD(_wParam));
-						if (cit != (child->childWindProc).end())
-						{
-							(cit)->second((HWND)LOWORD(_wParam), HIWORD(_wParam));
-						}
-					}
-				}
-
+				res = (it)->second(_hWnd, _uMsg, _wParam, _lParam);
 				return 0;
 			}
-			return base->defaultWindProc(_hWnd, _uMsg, _wParam, _lParam);
+
 		}
+		else
+		{
+
+			auto child = ((ChWin::WindObject*)GetWindowLongPtrA((HWND)LOWORD(_wParam), GWLP_USERDATA));
+
+			if (ChPtr::NotNullCheck(child))
+			{
+
+				if (child->IsInit() && !child->childWindProc.empty())
+				{
+					auto cit = child->childWindProc.find(HIWORD(_wParam));
+					if (cit != (child->childWindProc).end())
+					{
+						(cit)->second((HWND)LOWORD(_wParam), HIWORD(_wParam));
+					}
+				}
+				child->defaultWindProc(_hWnd, _uMsg, _wParam, _lParam);
+				return 0;
+			}
+		}
+
+		return base->defaultWindProc(_hWnd, _uMsg, _wParam, _lParam);
 	}
 
 	if (ChPtr::NullCheck(base))
@@ -74,8 +91,26 @@ LRESULT CALLBACK ChWin::WndProcA(
 		}
 	}
 
-	return DefWindowProcA(_hWnd, _uMsg, _wParam, _lParam);
+	return DefWindowProcFunction(_hWnd, _uMsg, _wParam, _lParam);
 
+
+}
+
+
+LRESULT CALLBACK ChWin::WndProcA(
+	HWND _hWnd
+	, UINT _uMsg
+	, WPARAM _wParam
+	, LPARAM _lParam)
+{
+	return ChWin::BaseWndProc(
+		_hWnd,
+		_uMsg,
+		_wParam,
+		_lParam,
+		GetWindowLongPtrA,
+		DefWindowProcA
+	);
 }
 
 LRESULT CALLBACK ChWin::WndProcW(
@@ -84,60 +119,14 @@ LRESULT CALLBACK ChWin::WndProcW(
 	, WPARAM _wParam
 	, LPARAM _lParam)
 {
-
-	auto base = ((ChWin::WindObject*)GetWindowLongPtrW(_hWnd, GWLP_USERDATA));
-
-	base = (ChPtr::NotNullCheck(base) ? base : create);
-
-	if (base)
-	{
-		if (!base->wndProc.empty())
-		{
-			auto it = base->wndProc.find(_uMsg);
-			if (it != (base->wndProc).end())
-			{
-				return (it)->second(_hWnd, _uMsg, _wParam, _lParam);
-			}
-			else if (_uMsg == WM_COMMAND)
-			{
-
-				auto child = ((ChWin::WindObject*)GetWindowLongPtrW((HWND)LOWORD(_wParam), GWLP_USERDATA));
-
-				if (child)
-				{
-					if (child->IsInit() && !child->childWindProc.empty())
-					{
-						auto cit = child->childWindProc.find(HIWORD(_wParam));
-						if (cit != (child->childWindProc).end())
-						{
-							(cit)->second((HWND)LOWORD(_wParam), HIWORD(_wParam));
-						}
-					}
-				}
-				child->defaultWindProc(_hWnd, _uMsg, _wParam, _lParam);
-
-				return 0;
-			}
-			return base->defaultWindProc(_hWnd, _uMsg, _wParam, _lParam);
-		}
-	}
-
-	if (ChPtr::NullCheck(base))
-	{
-		switch (_uMsg)
-		{
-		case WM_DESTROY:
-
-			PostQuitMessage(0);
-			return 0;
-
-		default:
-			break;
-		}
-	}
-
-	return DefWindowProcW(_hWnd, _uMsg, _wParam, _lParam);
-
+	return ChWin::BaseWndProc(
+		_hWnd,
+		_uMsg,
+		_wParam,
+		_lParam,
+		GetWindowLongPtrW,
+		DefWindowProcW
+	);
 }
 
 //WindClassObjectA Method//

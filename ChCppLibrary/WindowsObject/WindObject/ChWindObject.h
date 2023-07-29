@@ -5,6 +5,14 @@
 
 namespace ChWin
 {
+	LRESULT CALLBACK BaseWndProc(
+		HWND _hWnd,
+		UINT _uMsg,
+		WPARAM _wParam,
+		LPARAM _lParam,
+		LONG(WINAPI* GetWindowLongPtrFunction)(_In_ HWND, _In_ int),
+		LRESULT(WINAPI* DefWindowProcFunction)(_In_ HWND, _In_ UINT, _In_ WPARAM, _In_ LPARAM));
+
 	LRESULT CALLBACK WndProcA(
 		HWND _hWnd
 		, UINT _uMsg
@@ -184,19 +192,15 @@ namespace ChWin
 			UpdateWindow(hWnd);
 		}
 
-		//WndProcedureを動的にするために外部にあるWndProcから見えるようにする//
-		friend LRESULT CALLBACK ChWin::WndProcA(
-			HWND _hWnd
-			, UINT _uMsg
-			, WPARAM _wParam
-			, LPARAM _lParam);
+		//WndProcedureを動的にするために外部にあるBaseWndProcから見えるようにする//
+		friend LRESULT CALLBACK ChWin::BaseWndProc(
+			HWND _hWnd,
+			UINT _uMsg,
+			WPARAM _wParam,
+			LPARAM _lParam,
+			LONG(WINAPI* GetWindowLongPtrFunction)(_In_ HWND, _In_ int),
+			LRESULT(WINAPI*DefWindowProcFunction)(_In_ HWND, _In_ UINT, _In_ WPARAM, _In_ LPARAM));
 
-		//WndProcedureを動的にするために外部にあるWndProcから見えるようにする//
-		friend LRESULT CALLBACK ChWin::WndProcW(
-			HWND _hWnd
-			, UINT _uMsg
-			, WPARAM _wParam
-			, LPARAM _lParam);
 
 		//WIndCreaterにWindObjectのPrivate部分も見えるようにする//
 		friend WindCreater;

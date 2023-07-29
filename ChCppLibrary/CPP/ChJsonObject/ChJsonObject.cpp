@@ -18,7 +18,7 @@ bool JsonObject::SetRawData(const std::string& _jsonText)
 	if (_jsonText[0] != '{' || _jsonText[_jsonText.size() - 1] != '}')return false;
 
 	std::string parameter = _jsonText.substr(1, _jsonText.length() - 2);
-	parameter = ChStr::RemoveToWhiteSpaceChars(parameter);
+	parameter = GetExtractString(parameter);
 
 	TextObject parameterObject;
 
@@ -31,6 +31,13 @@ bool JsonObject::SetRawData(const std::string& _jsonText)
 
 		auto nameAndValue = ChStr::Split(parameterObject.GetTextLine(i), ":");
 		if (nameAndValue.size() < 2)continue;
+
+		if (nameAndValue[0][0] != '\"' || nameAndValue[0][nameAndValue[0].size() - 1] != '\"')return false;
+		
+		nameAndValue[0] = nameAndValue[0].substr(1, nameAndValue[0].size() - 2);
+		
+		if (IsCutCharInParameterName(nameAndValue[0]))return false;
+
 		nameAndValue[1] = GetRawText(i, nameAndValue[1], parameterObject, true); 
 		if (nameAndValue[1].empty())return false;
 		auto obj = JsonBaseType::GetParameter(nameAndValue[1]);
@@ -44,6 +51,8 @@ bool JsonObject::SetRawData(const std::string& _jsonText)
 
 void JsonObject::SetObject(const std::string& _parameterName, const ChPtr::Shared<JsonBaseType> _value)
 {
+	if (IsCutCharInParameterName(_parameterName))return;
+
 	if (_value == nullptr)
 	{
 		values[_parameterName] = ChPtr::Make_S<JsonNull>();
@@ -62,7 +71,7 @@ std::string JsonObject::GetRawData()const
 	for (auto&& val : values)
 	{
 		if (initFlg)res += ",\n";
-		res += val.first + ":" + val.second->GetRawData();
+		res += "\"" + val.first + "\"" + ":" + val.second->GetRawData();
 		initFlg = true;
 	}
 
@@ -71,72 +80,96 @@ std::string JsonObject::GetRawData()const
 	return res;
 }
 
-ChPtr::Shared<JsonObject> JsonObject::GetObject(const std::string& _parameterName)
+std::vector<std::string> JsonObject::GetParameterNames()const
+{
+	std::vector<std::string> res;
+
+	for (auto&& value : values)
+	{
+		res.push_back(value.first);
+	}
+
+	return res;
+}
+
+ChPtr::Shared<JsonObject> JsonObject::GetJsonObject(const std::string& _parameterName)
 {
 	auto findObject = values.find(_parameterName);
 	if (findObject == values.end())return nullptr;
 	return ChPtr::SharedSafeCast<JsonObject>(findObject->second);
 }
 
-ChPtr::Shared<JsonArray> JsonObject::GetArray(const std::string& _parameterName)
+ChPtr::Shared<JsonArray> JsonObject::GetJsonArray(const std::string& _parameterName)
 {
 	auto findObject = values.find(_parameterName);
 	if (findObject == values.end())return nullptr;
 	return ChPtr::SharedSafeCast<JsonArray>(findObject->second);
 }
 
-ChPtr::Shared<JsonNumber> JsonObject::GetNumber(const std::string& _parameterName)
+ChPtr::Shared<JsonNumber> JsonObject::GetJsonNumber(const std::string& _parameterName)
 {
 	auto findObject = values.find(_parameterName);
 	if (findObject == values.end())return nullptr;
 	return ChPtr::SharedSafeCast<JsonNumber>(findObject->second);
 }
 
-ChPtr::Shared<JsonString> JsonObject::GetString(const std::string& _parameterName)
+ChPtr::Shared<JsonString> JsonObject::GetJsonString(const std::string& _parameterName)
 {
 	auto findObject = values.find(_parameterName);
 	if (findObject == values.end())return nullptr;
 	return ChPtr::SharedSafeCast<JsonString>(findObject->second);
 }
 
-ChPtr::Shared<JsonBoolean> JsonObject::GetBoolean(const std::string& _parameterName)
+ChPtr::Shared<JsonBoolean> JsonObject::GetJsonBoolean(const std::string& _parameterName)
 {
 	auto findObject = values.find(_parameterName);
 	if (findObject == values.end())return nullptr;
 	return ChPtr::SharedSafeCast<JsonBoolean>(findObject->second);
 }
 
-const JsonObject* const JsonObject::GetObject(const std::string& _parameterName)const
+const JsonObject* const JsonObject::GetJsonObject(const std::string& _parameterName)const
 {
 	auto findObject = values.find(_parameterName);
 	if (findObject == values.end())return nullptr;
 	return ChPtr::SafeCast<JsonObject>(findObject->second.get());
 }
 
-const JsonArray* const JsonObject::GetArray(const std::string& _parameterName)const
+const JsonArray* const JsonObject::GetJsonArray(const std::string& _parameterName)const
 {
 	auto findObject = values.find(_parameterName);
 	if (findObject == values.end())return nullptr;
 	return ChPtr::SafeCast<JsonArray>(findObject->second.get());
 }
 
-const JsonString* const JsonObject::GetString(const std::string& _parameterName)const
+const JsonString* const JsonObject::GetJsonString(const std::string& _parameterName)const
 {
 	auto findObject = values.find(_parameterName);
 	if (findObject == values.end())return nullptr;
 	return ChPtr::SafeCast<JsonString>(findObject->second.get());
 }
 
-const JsonBoolean* const JsonObject::GetBoolean(const std::string& _parameterName)const
+const JsonBoolean* const JsonObject::GetJsonBoolean(const std::string& _parameterName)const
 {
 	auto findObject = values.find(_parameterName);
 	if (findObject == values.end())return nullptr;
 	return ChPtr::SafeCast<JsonBoolean>(findObject->second.get());
 }
 
-const JsonNumber* const JsonObject::GetNumber(const std::string& _parameterName)const
+const JsonNumber* const JsonObject::GetJsonNumber(const std::string& _parameterName)const
 {
 	auto findObject = values.find(_parameterName);
 	if (findObject == values.end())return nullptr;
 	return ChPtr::SafeCast<JsonNumber>(findObject->second.get());
+}
+
+bool JsonObject::IsCutCharInParameterName(const std::string& _parameterName)
+{
+
+	for (unsigned long i = 0; i < _parameterName.size(); i++)
+	{
+		if (_parameterName[i] == '\"')return true;
+	}
+
+	return false;
+
 }
