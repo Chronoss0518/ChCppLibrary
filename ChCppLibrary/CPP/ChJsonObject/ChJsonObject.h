@@ -17,6 +17,9 @@ namespace ChCpp
 
 		std::string GetRawData()const override;
 
+		//パラメーター名を取得する機能を追加//
+		std::vector<std::string> GetParameterNames()const;
+
 		ChPtr::Shared<JsonObject> GetJsonObject(const std::string& _parameterName);
 
 		ChPtr::Shared<JsonArray> GetJsonArray(const std::string& _parameterName);
