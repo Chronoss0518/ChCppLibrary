@@ -24,7 +24,7 @@ namespace ChSystem
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		inline void SetUseSystemButtons(const bool _button) { useSystemButton = _button; }
+		inline void SetUseSystemButtons(const bool _button) { useSystemButtonFlg = _button; }
 
 		//全体で利用するFPSを管理//
 		inline void SetFPS(const unsigned long _FPS) { FPS = _FPS; }
@@ -57,7 +57,7 @@ namespace ChSystem
 		virtual bool IsUpdate() { return false; };
 
 		//システムで提供されているボタンを利用するか//
-		bool IsUseSystemButtons() { return useSystemButton; }
+		bool IsUseSystemButtons() { return useSystemButtonFlg; }
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//UpdateFunction//
@@ -98,7 +98,7 @@ namespace ChSystem
 		ChCpp::BitBool buttonList;
 		ChCpp::BitBool isNowPush;
 
-		bool useSystemButton = true;
+		bool useSystemButtonFlg = true;
 
 		//Pause用変数//
 		bool nowKey = false;
@@ -132,8 +132,6 @@ namespace ChSystem
 			baseSystems = nullptr;
 
 			baseSystems = new C();
-			baseSystems->SetSystemManager(this);
-
 			SetInitFlg(true);
 
 			return ChPtr::SafeCast<C>(baseSystems);
