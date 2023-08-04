@@ -426,7 +426,7 @@ bool Windows::IsUpdate()
 
 void Windows::SetKeyCode()
 {
-	if (!system->IsUseSystemButtons())return;
+	if (!useSystemButton)return;
 	if (isKeyUpdate)return;
 	unsigned char keyCode[256];
 	int tmp = GetKeyboardState(keyCode);
