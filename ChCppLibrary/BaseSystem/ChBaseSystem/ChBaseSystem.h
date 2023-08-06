@@ -181,7 +181,7 @@ namespace ChSystem
 		inline bool IsPushKey(const int _key)
 		{
 			if (!*this)return false;
-			if (ChPtr::NotNullCheck(baseSystems))return false;
+			if (ChPtr::NullCheck(baseSystems))return false;
 			return baseSystems->IsPushKey(_key);
 		}
 
@@ -189,7 +189,7 @@ namespace ChSystem
 		inline bool IsPushKeyNoHold(const int _key)
 		{
 			if (!*this)return false;
-			if (ChPtr::NotNullCheck(baseSystems))return false;
+			if (ChPtr::NullCheck(baseSystems))return false;
 			return baseSystems->IsPushKeyNoHold(_key);
 
 		}
@@ -198,7 +198,7 @@ namespace ChSystem
 		inline bool IsPause(const int _key)
 		{
 			if (!*this)return false;
-			if (ChPtr::NotNullCheck(baseSystems))return false;
+			if (ChPtr::NullCheck(baseSystems))return false;
 			return baseSystems->IsPause(_key);
 
 		}
@@ -206,7 +206,7 @@ namespace ChSystem
 		//ƒVƒXƒeƒ€‚ðŒp‘±‚·‚é‚©//
 		bool IsUpdate()
 		{
-			if (ChPtr::NotNullCheck(baseSystems))return false;
+			if (ChPtr::NullCheck(baseSystems))return false;
 
 			return baseSystems->IsUpdate();
 		}
@@ -220,7 +220,7 @@ namespace ChSystem
 		inline bool FPSProcess()
 		{
 			if (!*this)return false;
-			if (ChPtr::NotNullCheck(baseSystems))return false;
+			if (ChPtr::NullCheck(baseSystems))return false;
 
 			return baseSystems->FPSProcess();
 		}
