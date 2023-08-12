@@ -18,7 +18,7 @@ namespace ChD3D11
 
 		public://Init And Release//
 
-			void Init(ID3D11Device* _device);
+			virtual void Init(ID3D11Device* _device);
 
 			virtual void Release();
 

@@ -24,12 +24,11 @@ void FrameComponent11::CreateAll(ID3D11Device* _device, Mesh11& _rootObject)
 	if (frameBase != nullptr)
 	{
 		frameCom = frameBase.get();
-		mateList = frameBase->materialList;
 
 		for (auto&& material : frameBase->materialList)
 		{
 			auto&& primitive11 = ChPtr::Make_S<DrawPrimitiveData11>();
-
+			primitive11->materialName = material->mateName;
 			primitive11->mate = material;
 
 			for (unsigned char i = 0; i < ChStd::EnumCast(Ch3D::TextureType::None); i++)
@@ -83,14 +82,9 @@ void FrameComponent11::CreateAll(ID3D11Device* _device, Mesh11& _rootObject)
 
 			for (unsigned long i = 1; i < indexCount - 1; i++)
 			{
-
-				unsigned long tmpIndexs[] = { firstIndex,firstIndex + i,firstIndex + i + 1 };
-
-				for (unsigned long j = 0; j < 3; j++)
-				{
-					primitive11->indexArray.push_back(tmpIndexs[j]);
-				}
-
+				primitive11->indexArray.push_back(firstIndex);
+				primitive11->indexArray.push_back(firstIndex + i);
+				primitive11->indexArray.push_back(firstIndex + i + 1);
 			}
 
 		}

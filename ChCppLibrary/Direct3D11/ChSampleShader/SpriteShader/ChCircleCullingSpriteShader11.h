@@ -1,5 +1,5 @@
-#ifndef Ch_D3D11_SS_BaseSprite_h
-#define Ch_D3D11_SS_BaseSprite_h
+#ifndef Ch_D3D11_SS_CircleCullingSprite_h
+#define Ch_D3D11_SS_CircleCullingSprite_h
 
 #include"../ChSampleShaderBase11.h"
 
@@ -12,11 +12,11 @@ namespace ChD3D11
 	namespace Shader
 	{
 
-		class BaseDrawSprite11 final :public SampleShaderBase11
+		class CircleCullingSprite11 final :public SampleShaderBase11
 		{
 		public:
 
-			virtual ~BaseDrawSprite11()
+			virtual ~CircleCullingSprite11()
 			{
 				Release();
 			}
@@ -37,7 +37,15 @@ namespace ChD3D11
 
 			inline void SetAlphaBlendFlg(const bool _flg) { alphaBlendFlg = _flg; }
 
+			void SetStartDrawDir(const ChVec2& _dir);
+
+			void SetCenterPos(const ChVec2& _pos);
+			
+			void SetDrawValue(const float& _dir);
+
 		public://Get Functions//
+
+			inline float GetDrawValue() { return circleCullingData.GetDrawValue(); }
 
 			inline ChLMat GetSpriteMatrix() { return spriteData.GetSpriteMatrix(); }
 
@@ -52,7 +60,7 @@ namespace ChD3D11
 				, Sprite11& _sprite
 				, const ChMat_11& _mat = ChMat_11());
 
-		//í èÌï`âÊ//
+			//í èÌï`âÊ//
 			void Draw(
 				ID3D11DeviceContext* _dc
 				, TextureBase11& _tex
@@ -63,6 +71,7 @@ namespace ChD3D11
 		private://Member Value//
 
 			CB::CBSprite11 spriteData;
+			CB::CBCircleCulling11 circleCullingData;
 
 			VertexBuffer11<Ch3D::Vertex> vertexBuffer;
 			IndexBuffer11 indexBuffer;

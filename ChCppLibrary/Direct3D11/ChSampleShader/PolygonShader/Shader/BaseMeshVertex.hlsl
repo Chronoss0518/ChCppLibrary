@@ -16,8 +16,8 @@ VS_OUT main
 	float4 _color					: COLOR0,
 	float3 _normal					: NORMAL0,
 	float3 _faceNormal				: NORMAL1,
-	row_major float4x4 _blendPow	: BLENDWEIGHT0,
-	uint _blendNum					: BLENDINDEX0
+	uint _blendNum					: BLENDINDEX0,
+	row_major float4x4 _blendPow	: BLENDWEIGHT0
 )
 {
 	VS_OUT res;
