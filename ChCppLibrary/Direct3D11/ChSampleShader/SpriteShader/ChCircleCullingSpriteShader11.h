@@ -39,7 +39,7 @@ namespace ChD3D11
 
 			void SetStartDrawDir(const ChVec2& _dir);
 
-			void SetDirStartPos(const ChVec2& _pos);
+			void SetCenterPos(const ChVec2& _pos);
 			
 			void SetDrawValue(const float& _dir);
 

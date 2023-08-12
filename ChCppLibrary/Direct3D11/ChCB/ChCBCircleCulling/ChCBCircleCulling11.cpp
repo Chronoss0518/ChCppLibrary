@@ -43,11 +43,11 @@ void CBCircleCulling11::SetDrawStartDir(const ChVec2& _drawStartDir)
 	updateFlg = true;
 }
 
-void CBCircleCulling11::SetDirStartPos(const ChVec2& _dirStartPos)
+void CBCircleCulling11::SetCenterPos(const ChVec2& _dirStartPos)
 {
 	if (!IsInit())return;
 
-	data.dirStartPos = _dirStartPos;
+	data.centerPos = _dirStartPos;
 
 	updateFlg = true;
 }

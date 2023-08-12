@@ -16,7 +16,7 @@ struct ChCircleCullingData
 #endif
 {
 	float2 drawStartDir = float2(0.0f, 1.0f);
-	float2 dirStartPos = float2(0.0f, 0.0f);
+	float2 centerPos = float2(0.0f, 0.0f);
 	float drawValue = 1.0f;//-1～1のサイズの数値(負の値だった場合は反時計回りになる)//
 	float3 nonData;//バイト合わせ//
 };
@@ -31,7 +31,7 @@ void CircleCullingTest(float2 _uv)
 	float3 useDrawStartDir = float3(drawStartDir.x, 0.0f, drawStartDir.y);
 	useDrawStartDir = normalize(useDrawStartDir);
 
-	float3 useUVPos = float3(_uv.x - dirStartPos.x, 0.0f, _uv.y - dirStartPos.y);
+	float3 useUVPos = float3(_uv.x - centerPos.x, 0.0f, _uv.y - centerPos.y);
 
 	useUVPos.xz = useUVPos.xz * 2.0f - 1.0f;
 

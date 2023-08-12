@@ -89,11 +89,11 @@ void CircleCullingSprite11::SetStartDrawDir(const ChVec2& _dir)
 	circleCullingData.SetDrawStartDir(_dir);
 }
 
-void CircleCullingSprite11::SetDirStartPos(const ChVec2& _pos)
+void CircleCullingSprite11::SetCenterPos(const ChVec2& _pos)
 {
 	if (!IsInit())return;
 
-	circleCullingData.SetDirStartPos(_pos);
+	circleCullingData.SetCenterPos(_pos);
 }
 
 void CircleCullingSprite11::SetDrawValue(const float& _dir)
