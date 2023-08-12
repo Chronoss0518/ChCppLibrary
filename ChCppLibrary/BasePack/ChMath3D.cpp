@@ -938,6 +938,23 @@ void ChVec4::Cross(
 //ChQuaternion Method//
 ///////////////////////////////////////////////////////////////////////////////////
 
+ChQuaternion& ChQuaternion::operator=(const ChQuaternion& _qua)
+{
+	val.Set(_qua.val);
+	return *this;
+}
+
+ChQuaternion& ChQuaternion::operator*=(const ChQuaternion& _num)
+{
+	Mul(_num);
+	return *this;
+}
+
+ChQuaternion ChQuaternion::operator*(const ChQuaternion& _num)const
+{
+	return  GetMul(*this, _num);
+}
+
 std::string ChQua::Serialize(
 	const std::string& _cutChar
 	, const std::string& _endChar)
@@ -955,11 +972,6 @@ void ChQua::Deserialize(
 	, const unsigned int _digit)
 {
 	val.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
-}
-
-void ChQua::SetEulerRotation(const EulerMulOrder _order, const ChVec3& _euler)
-{
-
 }
 
 //à»â∫ÇÃURLÇéQè∆//
@@ -1039,11 +1051,6 @@ void ChQua::SetRotationRMatrix(const ChRMatrix& _mat)
 	return;
 }
 
-ChVec3 ChQua::GetEulerAngle(const EulerMulOrder _order, const unsigned long _digit)const
-{
-
-}
-
 ChLMatrix ChQua::GetRotationLMatrix(const unsigned long _digit)const
 {
 	ChLMat mat;
@@ -1056,6 +1063,72 @@ ChRMatrix ChQua::GetRotationRMatrix(const unsigned long _digit)const
 	ChRMat mat;
 	mat.SetRotation(*this, _digit);
 	return mat;
+}
+
+
+
+void ChQua::SetRotationXAxis(const float _x)
+{
+	x = std::sinf(_x * 0.5f);
+	y = 0.0f;
+	z = 0.0f;
+
+	w = std::cosf(_x * 0.5f);
+}
+
+void ChQua::SetRotationYAxis(const float _y)
+{
+	x = 0.0f;
+	y = std::sinf(_y * 0.5f);
+	z = 0.0f;
+
+	w = std::cosf(_y * 0.5f);
+}
+
+void ChQua::SetRotationZAxis(const float _z)
+{
+	x = 0.0f;
+	y = 0.0f;
+	z = std::sinf(_z * 0.5f);
+
+	w = std::cosf(_z * 0.5f);
+}
+
+void ChQua::SetRotation(const ChVec3& _axis, const float _angle)
+{
+	ChVec3 tmp = _axis;
+
+	tmp.Normalize();
+	
+	w = std::cosf(_angle * 0.5f);
+
+	x = std::sinf(tmp.x * 0.5f);
+	y = std::sinf(tmp.y * 0.5f);
+	z = std::sinf(tmp.z * 0.5f);
+}
+
+void ChQua::Mul(const ChQua& _value)
+{
+	val.Set(GetMul(*this, _value).val);
+}
+
+//q1* q2 = 
+//(a1 * a2 - b1 * b2 - c1 * c2 - d1 * d2)
+//+ (a1 * b2 + b1 * a2 + c1 * d2 - d1 * c2)i 
+//+ (a1 * c2 - b1 * d2 + c1 * a2 + d1 * b2)j
+//+ (a1 * d2 + b1 * c2 - c1 * b2 + d1 * a2)k
+ChQua ChQua::GetMul(const ChQua& _qua1, const ChQua& _qua2)
+{
+	ChQua res;
+
+	res.w = (_qua1.w * _qua2.w) - (_qua1.x * _qua2.x) - (_qua1.y * _qua2.y) - (_qua1.z * _qua2.z);
+
+	res.x = (_qua1.w * _qua2.x) + (_qua1.x * _qua2.w) + (_qua1.y * _qua2.z) - (_qua1.z * _qua2.y);
+	res.y = (_qua1.w * _qua2.y) - (_qua1.x * _qua2.z) + (_qua1.y * _qua2.w) + (_qua1.z * _qua2.x);
+	res.z = (_qua1.w * _qua2.z) + (_qua1.x * _qua2.y) - (_qua1.y * _qua2.x) + (_qua1.z * _qua2.w);
+
+
+	return res;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -1198,60 +1271,6 @@ void ChLMatrix::SetRotation(const ChQua& _qua, const unsigned long _digit)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-//à»â∫ÇÃURLÇéQè∆//
-//https://qiita.com/aa_debdeb/items/3d02e28fb9ebfa357eaf#%E3%82%AF%E3%82%A9%E3%83%BC%E3%82%BF%E3%83%8B%E3%82%AA%E3%83%B3%E3%81%8B%E3%82%89%E5%9B%9E%E8%BB%A2%E8%A1%8C%E5%88%97
-//
-void ChLMatrix::SetEulerRotation(
-	const EulerMulOrder _order,
-	const ChVec3& _vec,
-	const unsigned long _digit)
-{
-	static std::function<ChLMat(const float)>rotationFunction[3] =
-	{
-		[&](const float _val)->ChLMat {
-			ChLMat res;
-			res.SetRotationXAxis(_val);
-			return res;
-		},
-		[&](const float _val)->ChLMat {
-			ChLMat res;
-			res.SetRotationYAxis(_val);
-			return res;
-		},
-		[&](const float _val)->ChLMat {
-			ChLMat res;
-			res.SetRotationZAxis(_val);
-			return res;
-		},
-	};
-
-	ChLMat res;
-
-	for (unsigned char i = 0; i < 3; i++)
-	{
-		res = res * rotationFunction[GetMulOrder(_order, 2 - i)](_vec.val[i]);
-	}
-
-	res.SetPosition(GetPosition());
-	res.SetScalling(GetScalling(_digit), _digit);
-
-	m.Set(res.m);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChLMatrix::SetEulerRotation(
-	const EulerMulOrder _order,
-	const float _1,
-	const float _2,
-	const float _3,
-	const unsigned long _digit)
-{
-	SetEulerRotation(_order, ChVec3(_1,_2,_3), _digit);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
 void ChLMatrix::SetRotationXAxis(const float _x)
 {
 	float x = -std::fmod(_x, ChMath::PI * 2.0f);
@@ -1335,28 +1354,6 @@ ChQua ChLMatrix::GetRotation(const unsigned long _digit)const
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-//à»â∫ÇÃURLÇéQè∆//
-//https://qiita.com/aa_debdeb/items/3d02e28fb9ebfa357eaf#%E3%82%AF%E3%82%A9%E3%83%BC%E3%82%BF%E3%83%8B%E3%82%AA%E3%83%B3%E3%81%8B%E3%82%89%E5%9B%9E%E8%BB%A2%E8%A1%8C%E5%88%97
-//
-ChVec3 ChLMatrix::GetEulerAngle(const EulerMulOrder _order)const
-{
-	ChVec3 res;
-
-	ChLMat tmp = *this;
-
-	tmp.SetScalling(1.0f);
-
-	auto axis = GetMulOrder(_order, 1);
-
-
-
-
-	return res;
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
 ChVec3 ChLMatrix::GetScalling(const unsigned long _digit)const
 {
 	return ChVec3(m[0].GetLen(_digit), m[1].GetLen(_digit), m[2].GetLen(_digit));
@@ -1433,44 +1430,6 @@ ChRMatrix ChLMatrix::ConvertAxis()
 	}
 
 	return tmp;
-}
-
-unsigned char ChLMatrix::GetMulOrder(const EulerMulOrder _order, unsigned char _orderNum)
-{
-
-	if (_orderNum >= 3)return 0;
-	if (_order == EulerMulOrder::None)return 0;
-
-	static unsigned char mulOrder[ChStd::EnumCast(EulerMulOrder::None)][3] =
-	{
-		{0,1,0},
-		{0,2,0},
-		{0,1,2},
-		{0,2,1},
-		{1,0,1},
-		{1,2,1},
-		{1,0,2},
-		{1,2,0},
-		{2,0,2},
-		{2,1,2},
-		{2,0,1},
-		{2,1,0},
-	};
-
-	return mulOrder[ChStd::EnumCast(_order)][_orderNum];
-}
-
-ChMath::Vector2Base<char> ChLMatrix::GetEulerRotateOrder(const EulerMulOrder _order)
-{
-
-	if (_order == EulerMulOrder::None)return 0;
-
-	static ChMath::Vector2Base<char> eulerRotateOrder[ChStd::EnumCast(EulerMulOrder::None)] =
-	{
-
-	};
-
-	return eulerRotateOrder[ChStd::EnumCast(_order)];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -1587,57 +1546,6 @@ void ChRMatrix::SetRotation(const ChQua& _qua, const unsigned long _digit)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChRMatrix::SetEulerRotation(
-	const EulerMulOrder _order,
-	const ChVec3& _vec,
-	const unsigned long _digit)
-{
-	static std::function<ChRMat(const float)>rotationFunction[3] =
-	{
-		[&](const float _val)->ChRMat {
-			ChRMat res;
-			res.SetRotationXAxis(_val);
-			return res;
-		},
-		[&](const float _val)->ChRMat {
-			ChRMat res;
-			res.SetRotationYAxis(_val);
-			return res;
-		},
-		[&](const float _val)->ChRMat {
-			ChRMat res;
-			res.SetRotationZAxis(_val);
-			return res;
-		},
-	};
-
-	ChRMat res;
-
-	for (unsigned char i = 0; i < 3; i++)
-	{
-		res = rotationFunction[GetMulOrder(_order, i)](_vec.val[i]) * res;
-	}
-
-	res.SetPosition(GetPosition());
-	res.SetScalling(GetScalling(_digit), _digit);
-
-	m.Set(res.m);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChRMatrix::SetEulerRotation(
-	const EulerMulOrder _order,
-	const float _1, 
-	const float _2, 
-	const float _3,
-	const unsigned long _digit)
-{
-	SetEulerRotation(_order, ChVec3(_1,_2,_3), _digit);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
 void ChRMatrix::SetRotationXAxis(const float _x)
 {
 	float x = -std::fmod(_x, ChMath::PI * 2.0f);
@@ -1731,43 +1639,6 @@ ChVec3 ChRMatrix::GetPosition()const
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChQua ChRMatrix::GetRotation(const EulerMulOrder _order, const unsigned long _digit)const
-{
-
-	ChQua res;
-	res.SetRotationRMatrix(*this);
-	return res;
-
-}
-
-ChVec3 ChRMatrix::GetEulerAngle(const EulerMulOrder _order, const unsigned long _digit)
-{
-
-	ChVec3 tmpScl = GetScalling(_digit);
-
-	float outM[4][4];
-
-	for (unsigned char i = 0; i < 3; i++)
-	{
-		for (unsigned char j = 0; j < 3; j++)
-		{
-			outM[i][j] = m[j][i];
-			outM[i][j] /= tmpScl.val[j] != 0.0f ? tmpScl.val[j] : 1.0f;
-		}
-	}
-
-	ChVec3 out = ChVec3(
-		(std::atan2f(outM[2][1], outM[2][2])),
-		(std::asinf(-outM[2][0])),
-		(std::atan2f(outM[1][0], outM[0][0])));
-
-
-	return out;
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
 ChVec3 ChRMatrix::GetScalling(const unsigned long _digit)const
 {
 	ChVector4 vec[3];
@@ -1855,31 +1726,6 @@ ChLMatrix ChRMatrix::ConvertAxis()const
 	return tmp;
 }
 
-unsigned char ChRMatrix::GetMulOrder(const EulerMulOrder _order, unsigned char _orderNum)
-{
-
-	if (_orderNum >= 3)return 0;
-	if (_order == EulerMulOrder::None)return 0;
-
-	static unsigned char mulOrder[ChStd::EnumCast(EulerMulOrder::None)][3] =
-	{
-		{0,1,0},
-		{0,2,0},
-		{0,1,2},
-		{0,2,1},
-		{1,0,1},
-		{1,2,1},
-		{1,0,2},
-		{1,2,0},
-		{2,0,2},
-		{2,1,2},
-		{2,0,1},
-		{2,1,0},
-	};
-
-	return mulOrder[ChStd::EnumCast(_order)][_orderNum];
-}
-
 ///////////////////////////////////////////////////////////////////////////////////
 //ChUIMatrix Method//
 ///////////////////////////////////////////////////////////////////////////////////
@@ -1925,321 +1771,6 @@ void ChUIMatrix::Deserialize(
 //Math Function//
 ///////////////////////////////////////////////////////////////////////////////////
 
-///////////////////////////////////////////////////////////////////////////////////
-//Degree Method//
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Degree& ChMath::Degree::operator=(const float _num)
-{
-	val = _num;
-	Math();
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Degree& ChMath::Degree::operator+=(const float _num)
-{
-
-	val += _num;
-	Math();
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Degree ChMath::Degree::operator+(const float _num)const
-{
-	Degree tmp = *this;
-	tmp += _num;
-	return tmp;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Degree& ChMath::Degree::operator-=(const float _num)
-{
-	val -= _num;
-	Math();
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Degree ChMath::Degree::operator-(const float _num)const
-{
-
-	Degree tmp = *this;
-	tmp -= _num;
-	return tmp;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Degree& ChMath::Degree::operator*=(const float _num)
-{
-	val *= _num;
-	Math();
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Degree ChMath::Degree::operator*(const float _num)const
-{
-
-	Degree tmp = *this;
-	tmp *= _num;
-	return tmp;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Degree& ChMath::Degree::operator/=(const float _num)
-{
-	val /= _num;
-	Math();
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Degree ChMath::Degree::operator/(const float _num)const
-{
-
-	Degree tmp = *this;
-	tmp /= _num;
-	return tmp;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Degree::operator float()const
-{
-	float tmp;
-	tmp = val;
-	return tmp;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Degree& ChMath::Degree::operator=(const ChMath::Radian _num)
-{
-	*this = ToDegree(_num);
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Degree::Degree()
-{
-	val = 0.0f;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Degree::Degree(const float _val)
-{
-	*this = _val;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Degree::Degree(const Degree& _val)
-{
-	val = _val;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Degree::Degree(const Radian& _val)
-{
-	*this = _val;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChMath::Degree::Math()
-{
-	if (val < 0.0f)
-	{
-		unsigned int tmp;
-		tmp = static_cast<unsigned int>(std::floor((val / -360.0f)));
-		val += (tmp + 1) * 360.0f;
-		return;
-	}
-
-	if (val >= 360.0f)
-	{
-		unsigned int tmp;
-		tmp = static_cast<unsigned int>(std::floor((val / 360.0f)));
-		val -= (tmp) * 360.0f;
-		return;
-	}
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-//Radian Method//
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Radian& ChMath::Radian::operator=(const float _num)
-{
-	val = _num;
-	Math();
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Radian& ChMath::Radian::operator+=(const float _num)
-{
-
-	val += _num;
-	Math();
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Radian ChMath::Radian::operator+(const float _num)const
-{
-	Radian tmp = *this;
-	tmp += _num;
-	return tmp;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Radian& ChMath::Radian::operator-=(const float _num)
-{
-	val -= _num;
-	Math();
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Radian ChMath::Radian::operator-(const float _num)const
-{
-
-	Radian tmp = *this;
-	tmp -= _num;
-	return tmp;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Radian& ChMath::Radian::operator*=(const float _num)
-{
-	val *= _num;
-	Math();
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Radian ChMath::Radian::operator*(const float _num)const
-{
-
-	Radian tmp = *this;
-	tmp *= _num;
-	return tmp;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Radian& ChMath::Radian::operator/=(const float _num)
-{
-	val /= _num;
-	Math();
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Radian ChMath::Radian::operator/(const float _num)const
-{
-
-	Radian tmp = *this;
-	tmp /= _num;
-	return tmp;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Radian::operator float()const
-{
-	float tmp;
-	tmp = val;
-	return tmp;
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Radian& ChMath::Radian::operator=(const Degree _num)
-{
-	*this = ToRadian(_num);
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Radian::Radian()
-{
-	val = 0.0f;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Radian::Radian(const float _val)
-{
-	*this = _val;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Radian::Radian(const Radian& _val)
-{
-	val = _val;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Radian::Radian(const Degree& _val)
-{
-	*this = _val;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChMath::Radian::Math()
-{
-	float tmpVal;
-	tmpVal = (val / PI);
-	if (tmpVal < 0.0f)
-	{
-		unsigned int tmp;
-		tmp = static_cast<unsigned int>(std::floor((tmpVal / -2.0f)));
-		val += (tmp + 1) * 2.0f * PI;
-		return;
-	}
-
-	if (tmpVal >= 360.0f)
-	{
-		unsigned int tmp;
-		tmp = static_cast<unsigned int>(std::floor((tmpVal / 2.0f)));
-		val -= (tmp) * 2.0f * PI;
-		return;
-	}
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-//Math Function//
-///////////////////////////////////////////////////////////////////////////////////
-
 ChVector3 ChMath::GetFaceNormal(
 	const ChVec3& _Pos1
 	, const ChVec3& _Pos2
@@ -2257,13 +1788,4 @@ ChVector3 ChMath::GetFaceNormal(
 	tmpVec.Normalize(_digit);
 
 	return tmpVec;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector3 ChMath::GetFaceNormal(
-	const TriVertex& _PlEq,
-	const unsigned long _digit)
-{
-	return GetFaceNormal(_PlEq.Ver1, _PlEq.Ver2, _PlEq.Ver3,_digit);
 }
