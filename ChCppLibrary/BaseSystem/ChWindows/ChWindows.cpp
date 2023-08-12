@@ -24,6 +24,79 @@ bool BaseWndProcs(
 ///////////////////////////////////////////////////////////////////////////////////////
 
 void Windows::Init(
+	const ChWin::WindCreater& _creater,
+	const std::string& _appName,
+	const std::string& _windClassName,
+	const HINSTANCE _hInst,
+	const int _nCmdShow)
+{
+	_creater.Create(&wndObject, _appName, _windClassName, _nCmdShow);
+
+	inst = _hInst;
+
+	buttonList.SetSize((256 / 8) + 1);
+	isNowPush.SetSize((256 / 8) + 1);
+
+	SetInitFlg(true);
+
+}
+
+void Windows::Init(
+	const std::string& _appName,
+	const std::string& _windClassName,
+	const ChINTPOINT& _windSize,
+	const ChINTPOINT& _windPos,
+	const HINSTANCE _hInst,
+	const int _nCmdShow)
+{
+	ChINTPOINT pos = _windPos;
+	ChINTPOINT size = _windSize;
+
+	pos.val.Abs();
+	size.val.Abs();
+
+	ChWin::WindCreater creater(_hInst);
+
+	creater.SetInitPosition(pos.x, pos.y);
+	creater.SetInitSize(size.w, size.h);
+	creater.SetWindStyle(WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_GROUP);
+
+	Init(creater, _appName, _windClassName, _hInst, _nCmdShow);
+}
+
+void Windows::Init(
+	const std::string& _appName,
+	const std::string& _className,
+	const unsigned long _dwStyle,
+	const ChINTPOINT& _windSize,
+	const ChINTPOINT& _windPos,
+	HINSTANCE _hInst,
+	const int _nCmdShow,
+	const unsigned long _exStyle,
+	HWND _parent,
+	HMENU _hMenu,
+	LPVOID _param)
+{
+	ChINTPOINT pos = _windPos;
+	ChINTPOINT size = _windSize;
+
+	pos.val.Abs();
+	size.val.Abs();
+
+	ChWin::WindCreater creater(_hInst);
+
+	creater.SetInitPosition(pos.x, pos.y);
+	creater.SetInitSize(size.w, size.h);
+	creater.SetWindStyle(_dwStyle);
+	creater.SetEXStyle(_exStyle);
+	creater.SetParentWind(_parent);
+	creater.SetMenu(_hMenu);
+	creater.SetParam(_param);
+
+	Init(creater, _appName, _className, _hInst, _nCmdShow);
+}
+
+void Windows::Init(
 	const std::string& _appName
 	, const std::string& _windClassName
 	, const int _windWidth
@@ -42,14 +115,8 @@ void Windows::Init(
 	creater.SetInitSize(size.w, size.h);
 	creater.SetWindStyle(WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_GROUP);
 
-	creater.Create(&wndObject, _appName, _windClassName, _nCmdShow);
+	Init(creater, _appName, _windClassName, _hInst, _nCmdShow);
 
-	inst = _hInst;
-
-	buttonList.SetSize((256 / 8) + 1);
-	isNowPush.SetSize((256 / 8) + 1);
-
-	SetInitFlg(true);
 }
 
 void Windows::Init(
@@ -75,33 +142,8 @@ void Windows::Init(
 	creater.SetInitSize(size.w, size.h);
 	creater.SetWindStyle(WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_GROUP);
 
-	creater.Create(&wndObject, _appName, _windClassName, _nCmdShow);
+	Init(creater, _appName, _windClassName, _hInst, _nCmdShow);
 
-	inst = _hInst;
-
-	buttonList.SetSize((256 / 8) + 1);
-	isNowPush.SetSize((256 / 8) + 1);
-
-	SetInitFlg(true);
-
-}
-
-void Windows::Init(
-	const ChWin::WindCreater& _creater,
-	const std::string& _appName,
-	const std::string& _windClassName,
-	const HINSTANCE _hInst,
-	const int _nCmdShow)
-{
-
-	_creater.Create(&wndObject, _appName, _windClassName, _nCmdShow);
-
-	inst = _hInst;
-
-	buttonList.SetSize((256 / 8) + 1);
-	isNowPush.SetSize((256 / 8) + 1);
-
-	SetInitFlg(true);
 }
 
 void Windows::Init(
@@ -128,29 +170,89 @@ void Windows::Init(
 	ChWin::WindCreater creater(_hInst);
 
 
-	HWND hWnd = CreateWindowExA(
-		_exStyle,
-		_className.c_str(),
-		_appName.c_str(),
-		_dwStyle,
-		pos.x,
-		pos.y, 
-		size.w,
-		size.h,
-		_parent,
-		_hMenu ,
-		_hInst,
-		_param);
+	creater.SetInitPosition(pos.x, pos.y);
+	creater.SetInitSize(size.w, size.h);
+	creater.SetWindStyle(_dwStyle);
+	creater.SetEXStyle(_exStyle);
+	creater.SetParentWind(_parent);
+	creater.SetMenu(_hMenu);
+	creater.SetParam(_param);
 
-	wndObject.Init(hWnd,_nCmdShow);
+	Init(creater, _appName, _className, _hInst, _nCmdShow);
+
+}
+
+void Windows::Init(
+	const ChWin::WindCreater& _creater,
+	const std::wstring& _appName,
+	const std::wstring& _windClassName,
+	const HINSTANCE _hInst,
+	const int _nCmdShow)
+{
+	_creater.Create(&wndObject, _appName, _windClassName, _nCmdShow);
+
+	inst = _hInst;
 
 	buttonList.SetSize((256 / 8) + 1);
 	isNowPush.SetSize((256 / 8) + 1);
 
 	SetInitFlg(true);
+}
 
-	SetWindowLongPtrA(hWnd, GWLP_USERDATA, reinterpret_cast<long>(&wndObject));
+void Windows::Init(
+	const std::wstring& _appName,
+	const std::wstring& _windClassName,
+	const ChINTPOINT& _windSize,
+	const ChINTPOINT& _windPos,
+	const HINSTANCE _hInst,
+	const int _nCmdShow)
+{
+	ChINTPOINT pos = _windPos;
+	ChINTPOINT size = _windSize;
 
+	pos.val.Abs();
+	size.val.Abs();
+
+	ChWin::WindCreater creater(_hInst);
+
+	creater.SetInitPosition(pos.x, pos.y);
+	creater.SetInitSize(size.w, size.h);
+	creater.SetWindStyle(WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_GROUP);
+
+	Init(creater, _appName, _windClassName, _hInst, _nCmdShow);
+}
+
+void Windows::Init(
+	const std::wstring& _appName,
+	const std::wstring& _className,
+	const unsigned long _dwStyle,
+	const ChINTPOINT& _windSize,
+	const ChINTPOINT& _windPos,
+	HINSTANCE _hInst,
+	const int _nCmdShow,
+	const unsigned long _exStyle,
+	HWND _parent,
+	HMENU _hMenu,
+	LPVOID _param)
+{
+	ChINTPOINT pos = _windPos;
+	ChINTPOINT size =_windSize;
+
+	pos.val.Abs();
+	size.val.Abs();
+
+	ChWin::WindCreater creater(_hInst);
+
+
+	creater.SetInitPosition(pos.x, pos.y);
+	creater.SetInitSize(size.w, size.h);
+	creater.SetWindStyle(_dwStyle);
+	creater.SetEXStyle(_exStyle);
+	creater.SetParentWind(_parent);
+	creater.SetMenu(_hMenu);
+	creater.SetParam(_param);
+
+	Init(creater, _appName, _className, _hInst, _nCmdShow);
 }
 
 void Windows::Init(
@@ -161,7 +263,6 @@ void Windows::Init(
 	, const HINSTANCE _hInst
 	, const int _nCmdShow)
 {
-
 	auto size = ChMath::Vector2Base<int>(_windWidth, _windHeight);
 
 	size.val.Abs();
@@ -172,15 +273,7 @@ void Windows::Init(
 	creater.SetInitSize(size.w, size.h);
 	creater.SetWindStyle(WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_GROUP);
 
-	creater.Create(&wndObject, _appName, _windClassName, _nCmdShow);
-
-	inst = _hInst;
-
-	buttonList.SetSize((256 / 8) + 1);
-	isNowPush.SetSize((256 / 8) + 1);
-
-	SetInitFlg(true);
-
+	Init(creater, _appName, _windClassName, _hInst, _nCmdShow);
 }
 
 void Windows::Init(
@@ -206,33 +299,8 @@ void Windows::Init(
 	creater.SetInitSize(size.w, size.h);
 	creater.SetWindStyle(WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_GROUP);
 
-	creater.Create(&wndObject, _appName, _windClassName, _nCmdShow);
+	Init(creater, _appName, _windClassName, _hInst, _nCmdShow);
 
-	inst = _hInst;
-
-	buttonList.SetSize((256 / 8) + 1);
-	isNowPush.SetSize((256 / 8) + 1);
-
-	SetInitFlg(true);
-
-}
-
-void Windows::Init(
-	const ChWin::WindCreater& _creater,
-	const std::wstring& _appName,
-	const std::wstring& _windClassName,
-	const HINSTANCE _hInst,
-	const int _nCmdShow)
-{
-
-	_creater.Create(&wndObject, _appName, _windClassName, _nCmdShow);
-
-	inst = _hInst;
-
-	buttonList.SetSize((256 / 8) + 1);
-	isNowPush.SetSize((256 / 8) + 1);
-
-	SetInitFlg(true);
 }
 
 void Windows::Init(
@@ -259,29 +327,15 @@ void Windows::Init(
 	ChWin::WindCreater creater(_hInst);
 
 
-	HWND hWnd = CreateWindowExW(
-		_exStyle,
-		_className.c_str(),
-		_appName.c_str(),
-		_dwStyle,
-		pos.x,
-		pos.y,
-		size.w,
-		size.h,
-		_parent,
-		_hMenu,
-		_hInst,
-		_param);
+	creater.SetInitPosition(pos.x, pos.y);
+	creater.SetInitSize(size.w, size.h);
+	creater.SetWindStyle(_dwStyle);
+	creater.SetEXStyle(_exStyle);
+	creater.SetParentWind(_parent);
+	creater.SetMenu(_hMenu);
+	creater.SetParam(_param);
 
-	wndObject.Init(hWnd, _nCmdShow);
-
-	buttonList.SetSize((256 / 8) + 1);
-	isNowPush.SetSize((256 / 8) + 1);
-
-	SetInitFlg(true);
-
-	SetWindowLongPtrW(hWnd, GWLP_USERDATA, reinterpret_cast<long>(&wndObject));
-
+	Init(creater, _appName, _className, _hInst, _nCmdShow);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -372,7 +426,7 @@ bool Windows::IsUpdate()
 
 void Windows::SetKeyCode()
 {
-	if (!system->IsUseSystemButtons())return;
+	if (!useSystemButtonFlg)return;
 	if (isKeyUpdate)return;
 	unsigned char keyCode[256];
 	int tmp = GetKeyboardState(keyCode);

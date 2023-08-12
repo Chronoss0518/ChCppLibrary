@@ -23,7 +23,7 @@ namespace ChD3D11
 
 		public://Init And Release//
 
-			void Init(ID3D11Device* _device);
+			void Init(ID3D11Device* _device)override;
 
 			void Release()override;
 
