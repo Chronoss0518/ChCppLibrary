@@ -139,7 +139,7 @@ void ShaderController11::DrawEnd(ChD3D11::TextureBase11& _tex)
 
 	spriteShader->DrawStart(dc);
 
-	spriteShader->Draw(dc, _tex, outSprite);
+	spriteShader->Draw(_tex, outSprite);
 
 	spriteShader->DrawEnd();
 

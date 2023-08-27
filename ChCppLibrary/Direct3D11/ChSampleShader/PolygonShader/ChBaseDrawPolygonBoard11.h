@@ -65,7 +65,6 @@ namespace ChD3D11
 			void DrawStart(ID3D11DeviceContext* _dc)override;
 
 			void Draw(
-				ID3D11DeviceContext* _dc,
 				TextureBase11& _tex,
 				PolygonBoard11& _polygon,
 				const ChMat_11& _mat = ChMat_11());

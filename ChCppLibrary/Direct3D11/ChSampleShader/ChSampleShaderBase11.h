@@ -98,6 +98,8 @@ namespace ChD3D11
 
 			ID3D11Device* GetDevice() { return device; }
 
+			ID3D11DeviceContext* GetDC() { return dc; }
+
 		private://Get Functions//
 
 			inline static bool& GetShaderNowRunFlg()
@@ -123,6 +125,7 @@ namespace ChD3D11
 			ID3D11RasterizerState* rasteriser = nullptr;
 			ID3D11DepthStencilState* depthStencilTester = nullptr;
 			ID3D11Device* device = nullptr;
+			ID3D11DeviceContext* dc = nullptr;
 
 			VertexShader11 vs;
 			GeometryShader11 gs;

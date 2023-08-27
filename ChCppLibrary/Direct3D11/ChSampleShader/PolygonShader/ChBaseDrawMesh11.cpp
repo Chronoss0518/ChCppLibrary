@@ -105,25 +105,20 @@ void BaseDrawMesh11::DrawStart(ID3D11DeviceContext* _dc)
 }
 
 void BaseDrawMesh11::Draw(
-	ID3D11DeviceContext* _dc,
 	Mesh11& _mesh,
 	const ChMat_11& _mat)
 {
 	if (!IsInit())return;
 	if (!IsDraw())return;
-	if (ChPtr::NullCheck(_dc))return;
-
-	dc = _dc;
+	if (ChPtr::NullCheck(GetDC()))return;
 
 	worldMat = _mat;
 
-	DrawUpdate(_dc, _mesh);
+	DrawUpdate(_mesh);
 
 }
 
-void BaseDrawMesh11::DrawUpdate(
-	ID3D11DeviceContext* _dc,
-	FrameObject& _object)
+void BaseDrawMesh11::DrawUpdate(FrameObject& _object)
 {
 
 #if DEBUG
@@ -138,7 +133,7 @@ void BaseDrawMesh11::DrawUpdate(
 	start = timeGetTime();
 #endif
 
-	DrawMain(_dc, _object);
+	DrawMain(_object);
 
 #if DEBUG
 	end = timeGetTime();
@@ -154,14 +149,12 @@ void BaseDrawMesh11::DrawUpdate(
 	{
 		auto childObj = ChPtr::SharedSafeCast<FrameObject>(child);
 		if (childObj == nullptr)continue;
-		DrawUpdate(_dc,*childObj);
+		DrawUpdate(*childObj);
 	}
 
 }
 
-void BaseDrawMesh11::DrawMain(
-	ID3D11DeviceContext* _dc,
-	ChCpp::FrameObject& _object)
+void BaseDrawMesh11::DrawMain(ChCpp::FrameObject& _object)
 {
 
 	ChLMat drawMatrix = _object.GetDrawLHandMatrix();
@@ -203,11 +196,11 @@ void BaseDrawMesh11::DrawEnd()
 
 			if (mate11.mate.diffuse.a < ALPHA_VALUE)
 			{
-				SampleShaderBase11::SetShaderBlender(dc);
+				SampleShaderBase11::SetShaderBlender(GetDC());
 			}
 			else
 			{
-				SampleShaderBase11::SetShaderDefaultBlender(dc);
+				SampleShaderBase11::SetShaderDefaultBlender(GetDC());
 			}
 
 			polyData.SetMateDiffuse(mate11.mate.diffuse);
@@ -215,10 +208,10 @@ void BaseDrawMesh11::DrawEnd()
 			polyData.SetMateSpecularPower(mate11.mate.specularPower);
 			polyData.SetMateAmbientColor(mate11.mate.ambient);
 
-			polyData.SetShaderMaterialData(dc);
+			polyData.SetShaderMaterialData(GetDC());
 
-			prim->vertexBuffer.SetVertexBuffer(dc, offsets);
-			prim->indexBuffer.SetIndexBuffer(dc);
+			prim->vertexBuffer.SetVertexBuffer(GetDC(), offsets);
+			prim->indexBuffer.SetIndexBuffer(GetDC());
 
 			for (auto&& drawFrame : drawData.second)
 			{
@@ -227,22 +220,22 @@ void BaseDrawMesh11::DrawEnd()
 
 				polyData.SetFrameMatrix(drawFrame->frameMatrix);
 
-				polyData.SetVSCharaData(dc);
+				polyData.SetVSCharaData(GetDC());
 
 				drawFrame->drawFrame->SetBoneData(boneData);
 
-				boneData.SetVSDrawData(dc);
+				boneData.SetVSDrawData(GetDC());
 
 				polyData.SetBaseTexture(prim->textures[Ch3D::TextureType::Diffuse].get());
 				polyData.SetNormalTexture(prim->textures[Ch3D::TextureType::Normal].get());
 
-				polyData.SetShaderTexture(dc);
+				polyData.SetShaderTexture(GetDC());
 
-				dc->DrawIndexed(prim->indexArray.size(), 0, 0);
+				GetDC()->DrawIndexed(prim->indexArray.size(), 0, 0);
 			}
 		}
 
-		SampleShaderBase11::SetShaderDefaultBlender(dc);
+		SampleShaderBase11::SetShaderDefaultBlender(GetDC());
 
 	}
 	if(!drawDatas.empty())drawDatas.clear();

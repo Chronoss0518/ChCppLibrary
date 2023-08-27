@@ -249,6 +249,7 @@ void SampleShaderBase11::DrawStart(ID3D11DeviceContext* _dc)
 
 	SetShaderRasteriser(_dc);
 
+	dc = _dc;
 
 	drawFlg = true; 
 
@@ -260,6 +261,7 @@ void SampleShaderBase11::DrawEnd()
 {
 	if (!drawFlg)return;
 	drawFlg = false;
+	dc = nullptr;
 	GetShaderNowRunFlg() = false;
 
 }

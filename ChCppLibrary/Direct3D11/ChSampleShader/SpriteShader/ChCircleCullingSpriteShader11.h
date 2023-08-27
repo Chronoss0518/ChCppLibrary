@@ -55,15 +55,13 @@ namespace ChD3D11
 
 			//í èÌï`âÊ//
 			void Draw(
-				ID3D11DeviceContext* _dc
-				, TextureBase11& _tex
+				TextureBase11& _tex
 				, Sprite11& _sprite
 				, const ChMat_11& _mat = ChMat_11());
 
 			//í èÌï`âÊ//
 			void Draw(
-				ID3D11DeviceContext* _dc
-				, TextureBase11& _tex
+				TextureBase11& _tex
 				, Sprite11& _sprite
 				, const ChVec4& _baseColor
 				, const ChMat_11& _mat = ChMat_11());

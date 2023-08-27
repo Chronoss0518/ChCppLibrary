@@ -120,7 +120,6 @@ void BaseDrawPolygonBoard11::DrawStart(ID3D11DeviceContext* _dc)
 }
 
 void BaseDrawPolygonBoard11::Draw(
-	ID3D11DeviceContext* _dc,
 	TextureBase11& _tex,
 	PolygonBoard11& _polygon,
 	const ChMat_11& _mat)
@@ -133,7 +132,7 @@ void BaseDrawPolygonBoard11::Draw(
 	polyData.SetWorldMatrix(_mat);
 	polyData.SetFrameMatrix(ChLMat());
 
-	polyData.SetShaderCharaData(_dc);
+	polyData.SetShaderCharaData(GetDC());
 
 	auto mate = _polygon.GetMaterial();
 
@@ -142,12 +141,12 @@ void BaseDrawPolygonBoard11::Draw(
 	polyData.SetMateSpecularPower(mate.specularPower);
 	polyData.SetMateAmbientColor(mate.ambient);
 
-	polyData.SetShaderMaterialData(_dc);
+	polyData.SetShaderMaterialData(GetDC());
 
 	polyData.SetBaseTexture(&_tex);
 	polyData.SetNormalTexture(nullptr);
 
-	polyData.SetShaderTexture(_dc);
+	polyData.SetShaderTexture(GetDC());
 
 	unsigned int offsets = 0;
 
@@ -157,7 +156,7 @@ void BaseDrawPolygonBoard11::Draw(
 
 	if (alphaBlendFlg)
 	{
-		SampleShaderBase11::SetShaderBlender(_dc);
+		SampleShaderBase11::SetShaderBlender(GetDC());
 	}
 
 	for (unsigned long i = 1; i < vertexs.size() - 1; i++)
@@ -165,19 +164,19 @@ void BaseDrawPolygonBoard11::Draw(
 		drawVertexs[1] = *vertexs[i];
 		drawVertexs[2] = *vertexs[i + 1];
 
-		vertexBuffer.UpdateResouce(_dc, &drawVertexs[0]);
+		vertexBuffer.UpdateResouce(GetDC(), &drawVertexs[0]);
 
-		vertexBuffer.SetVertexBuffer(_dc, offsets);
+		vertexBuffer.SetVertexBuffer(GetDC(), offsets);
 
-		indexBuffer.SetIndexBuffer(_dc);
+		indexBuffer.SetIndexBuffer(GetDC());
 
-		_dc->DrawIndexed(3, 0, 0);
+		GetDC()->DrawIndexed(3, 0, 0);
 
 	}
 
 	if (alphaBlendFlg)
 	{
-		SampleShaderBase11::SetShaderDefaultBlender(_dc);
+		SampleShaderBase11::SetShaderDefaultBlender(GetDC());
 	}
 }
 

@@ -71,7 +71,6 @@ namespace ChD3D11
 			void DrawStart(ID3D11DeviceContext* _dc)override;
 
 			void Draw(
-				ID3D11DeviceContext* _dc,
 				Mesh11& _mesh,
 				const ChMat_11& _mat = ChMat_11());
 
@@ -79,13 +78,9 @@ namespace ChD3D11
 
 		private:
 
-			void DrawUpdate(
-				ID3D11DeviceContext* _dc,
-				ChCpp::FrameObject& _object);
+			void DrawUpdate(ChCpp::FrameObject& _object);
 
-			void DrawMain(
-				ID3D11DeviceContext* _dc,
-				ChCpp::FrameObject& _object);
+			void DrawMain(ChCpp::FrameObject& _object);
 
 			void Update(ID3D11DeviceContext* _dc)override;
 
@@ -101,7 +96,6 @@ namespace ChD3D11
 			bool updateFlg = true;
 
 			std::map<ChCpp::FrameComponent*,std::vector<ChPtr::Shared<DrawData>>>drawDatas;
-			ID3D11DeviceContext* dc = nullptr;
 
 		};
 	}

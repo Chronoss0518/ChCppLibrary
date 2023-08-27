@@ -105,17 +105,15 @@ void CircleCullingSprite11::SetDrawValue(const float& _dir)
 
 
 void CircleCullingSprite11::Draw(
-	ID3D11DeviceContext* _dc
-	, TextureBase11& _tex
+	TextureBase11& _tex
 	, Sprite11& _sprite
 	, const ChMat_11& _mat)
 {
-	Draw(_dc, _tex, _sprite, ChVec4(1.0f), _mat);
+	Draw(_tex, _sprite, ChVec4(1.0f), _mat);
 }
 
 void CircleCullingSprite11::Draw(
-	ID3D11DeviceContext* _dc
-	, TextureBase11& _tex
+	TextureBase11& _tex
 	, Sprite11& _sprite
 	, const ChVec4& _baseColor
 	, const ChMat_11& _mat)
@@ -123,38 +121,39 @@ void CircleCullingSprite11::Draw(
 	if (!IsInit())return;
 	if (!IsDraw())return;
 	if (!_tex.IsTex())return;
+	if(ChPtr::NullCheck(GetDC()))return;
 
 	spriteData.SetSpriteMatrix(_mat);
 
 	spriteData.SetBaseColor(_baseColor);
 
-	spriteData.SetShaderSpriteData(_dc);
+	spriteData.SetShaderSpriteData(GetDC());
 
 	spriteData.SetBaseTexture(&_tex);
 
-	spriteData.SetShaderTexture(_dc);
+	spriteData.SetShaderTexture(GetDC());
 
 	if (alphaBlendFlg)
 	{
-		SampleShaderBase11::SetShaderBlender(_dc);
+		SampleShaderBase11::SetShaderBlender(GetDC());
 	}
 
-	circleCullingData.SetDrawData(_dc);
+	circleCullingData.SetDrawData(GetDC());
 
 	unsigned int offsets = 0;
 
 	auto&& vertexs = _sprite.GetVertexs();
 
-	vertexBuffer.UpdateResouce(_dc, &vertexs[0]);
+	vertexBuffer.UpdateResouce(GetDC(), &vertexs[0]);
 
-	vertexBuffer.SetVertexBuffer(_dc, offsets);
+	vertexBuffer.SetVertexBuffer(GetDC(), offsets);
 
-	indexBuffer.SetIndexBuffer(_dc);
+	indexBuffer.SetIndexBuffer(GetDC());
 
-	_dc->DrawIndexed(6, 0, 0);
+	GetDC()->DrawIndexed(6, 0, 0);
 
 	if (alphaBlendFlg)
 	{
-		SampleShaderBase11::SetShaderDefaultBlender(_dc);
+		SampleShaderBase11::SetShaderDefaultBlender(GetDC());
 	}
 }
