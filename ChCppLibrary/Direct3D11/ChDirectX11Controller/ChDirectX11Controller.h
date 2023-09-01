@@ -56,6 +56,11 @@ namespace ChD3D11
 			return window;
 		}
 
+		inline IDXGISurface* const GetSurface()
+		{
+			return surface;
+		}
+
 	public://Is Functions//
 
 		//デバイスが存在するかしないかの確認//
@@ -84,6 +89,9 @@ namespace ChD3D11
 
 		//保持するWindowデータ//
 		IDXGISwapChain* window = nullptr;
+
+		//Direct2Dとの互換性を持たせるためのデータ//
+		IDXGISurface* surface = nullptr;
 
 	};
 

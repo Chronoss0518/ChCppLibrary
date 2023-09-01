@@ -120,5 +120,6 @@ void DirectX3D11::CreateDevice(
 		, &dContext
 	);
 
+	window->GetBuffer(0, IID_PPV_ARGS(&surface));
 
 }
