@@ -5,17 +5,20 @@
 
 #include<XInput.h>
 #include<xaudio2.h>
-
+#include<d2d1.h>
+#include<dwrite.h>
 
 #include"../Direct3DObject/XInputController/ChXInputController.h"
 #include"../Direct3DObject/XAudios/ChXAudio.h"
+#include"../Direct3DObject/DirectFont/ChDirectFont.h"
 
 
 #elif _WIN64
 
 #include<XInput.h>
 #include<xaudio2.h>
-
+#include<d2d1.h>
+#include<dwrite.h>
 
 #include"../Direct3DObject/XInputController/ChXInputController.h"
 #include"../Direct3DObject/XAudios/ChXAudio.h"

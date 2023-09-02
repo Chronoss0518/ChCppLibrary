@@ -61,6 +61,8 @@ void DirectX3D11::Release()
 
 	if (ChPtr::NotNullCheck(window)) { window->Release(); window = nullptr; }
 
+	if (ChPtr::NotNullCheck(surface)) { surface->Release(); surface = nullptr; }
+
 	SetInitFlg(false);
 }
 
@@ -108,7 +110,7 @@ void DirectX3D11::CreateDevice(
 		NULL
 		, D3D_DRIVER_TYPE_HARDWARE
 		, NULL
-		, NULL
+		, D3D11_CREATE_DEVICE_FLAG::D3D11_CREATE_DEVICE_BGRA_SUPPORT
 		//,0
 		, lv
 		, 1
@@ -120,6 +122,9 @@ void DirectX3D11::CreateDevice(
 		, &dContext
 	);
 
-	window->GetBuffer(0, IID_PPV_ARGS(&surface));
+	if (FAILED(window->GetBuffer(0, IID_PPV_ARGS(&surface))))
+	{
+		Release();
+	}
 
 }
