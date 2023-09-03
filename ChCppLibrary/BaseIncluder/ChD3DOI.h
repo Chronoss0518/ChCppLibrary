@@ -1,7 +1,7 @@
 #ifndef Ch_D3DOI_h
 #define Ch_D3DOI_h
 
-#ifdef _WINDOWS_
+#ifdef _WINDOWS
 
 #ifdef WIN32
 
