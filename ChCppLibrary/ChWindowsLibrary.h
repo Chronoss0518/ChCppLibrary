@@ -1,4 +1,4 @@
-#ifdef _WINDOWS
+#ifdef _WINDOWS_
 #ifdef WIN32
 
 #ifndef Ch_Win_Inc_h

@@ -2,7 +2,7 @@
 #ifndef Ch_CPP_IP_h
 #define Ch_CPP_IP_h
 
-#ifdef _WINDOWS
+#ifdef _WINDOWS_
 
 #include<Windows.h>
 #include<winsock.h>

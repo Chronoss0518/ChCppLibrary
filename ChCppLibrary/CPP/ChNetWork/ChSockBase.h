@@ -2,7 +2,7 @@
 #ifndef Ch_CPP_Sock_h
 #define Ch_CPP_Sock_h
 
-#ifdef _WINDOWS
+#ifdef _WINDOWS_
 
 #include<Windows.h>
 #include<winsock.h>

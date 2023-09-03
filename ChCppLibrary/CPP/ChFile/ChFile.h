@@ -200,7 +200,7 @@ namespace ChCpp
 			}
 
 			std::basic_string<chara_set> tmpStr = _writeStr;
-#ifdef _WINDOWS
+#ifdef _WINDOWS_
 #ifdef WIN32
 			::sscanf_s(&tmpStr[0], &tmpStr[0], _args...);
 #else

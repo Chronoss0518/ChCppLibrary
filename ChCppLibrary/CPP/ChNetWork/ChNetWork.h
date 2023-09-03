@@ -2,7 +2,7 @@
 #ifndef Ch_CPP_NWork_h
 #define Ch_CPP_NWork_h
 
-#ifdef _WINDOWS
+#ifdef _WINDOWS_
 #ifdef WIN32
 
 #include<Windows.h>
