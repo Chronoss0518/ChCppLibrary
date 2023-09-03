@@ -207,7 +207,7 @@ namespace ChCpp
 			::sscanf_s(&tmpStr[0], &tmpStr[0], _args...);
 #endif
 #else
-			std::sscanf(tmpStr.c_str(), tmpStr.c_str(), _Args...);
+			std::sscanf(&tmpStr[0], &tmpStr[0], _Args...);
 #endif
 			
 			return Writer(tmpStr);
