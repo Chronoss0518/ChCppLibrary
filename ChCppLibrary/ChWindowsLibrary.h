@@ -1,4 +1,5 @@
-#ifdef _WIN32
+#ifdef _WINDOWS
+#ifdef WIN32
 
 #ifndef Ch_Win_Inc_h
 #define Ch_Win_Inc_h
@@ -61,4 +62,5 @@
 
 #endif
 
+#endif
 #endif
