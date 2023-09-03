@@ -68,8 +68,6 @@ namespace ChD3D
 			LocaleNameId _localeNameId = LocaleNameId::English);
 
 		void Init(
-			unsigned long _w,
-			unsigned long _h,
 			IDXGISurface* _surface,
 			LocaleNameId _localeNameId = LocaleNameId::English);
 
@@ -103,6 +101,12 @@ namespace ChD3D
 		void SetClearDisplayFlg(bool _flg) { clearDisplayFlg = _flg; }
 
 		void SetClearDisplayColor(const ChVec4& _color) { clearDisplayColor = _color; }
+
+	private:
+
+		std::wstring GetLocaleName(LocaleNameId _localeName);
+
+		static bool& GetDrawFlg() { static bool flg; return flg; }
 
 	public:
 
@@ -141,12 +145,6 @@ namespace ChD3D
 
 	private:
 
-		std::wstring GetLocaleName(LocaleNameId _localeName);
-
-		static bool& GetDrawFlg() { static bool flg; return flg; }
-
-	private:
-
 		IDWriteFactory* dwFactory = nullptr;
 		ID2D1Factory* d2dFactory = nullptr;
 		ID2D1RenderTarget* renderTarget = nullptr;
@@ -159,6 +157,7 @@ namespace ChD3D
 
 		bool clearDisplayFlg = false;
 		ChVec4 clearDisplayColor = ChVec4(0.0f, 0.0f, 0.0f, 0.0f);
+
 	};
 
 }

@@ -7,6 +7,7 @@
 #pragma comment(lib,"dwrite.lib")
 
 #include"../../BaseIncluder/ChBase.h"
+
 #include"ChDirectFont.h"
 
 #pragma warning(disable : 4996)
@@ -66,18 +67,12 @@ void DirectFont::Init(
 }
 
 void DirectFont::Init(
-	unsigned long _w,
-	unsigned long _h,
 	IDXGISurface* _surface,
 	LocaleNameId _localeNameId)
 {
 	if (thisDrawerFlg)return;
 
 	if (!InitBase())return;
-
-	D2D1_SIZE_U size;
-	size.width = _w;
-	size.height = _h;
 
 	FLOAT dpiX = 0.0f;
 	FLOAT dpiY = 0.0f;
@@ -106,6 +101,7 @@ void DirectFont::Init(
 	thisDrawerFlg = false;
 
 	localeNameId = _localeNameId;
+
 
 }
 
