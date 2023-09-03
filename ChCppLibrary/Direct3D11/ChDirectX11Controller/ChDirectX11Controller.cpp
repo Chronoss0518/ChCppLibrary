@@ -79,8 +79,8 @@ void DirectX3D11::CreateDevice(
 	ZeroMemory(&scd, sizeof(DXGI_SWAP_CHAIN_DESC));
 
 	scd.BufferCount = 1;
-	scd.BufferDesc.Width = static_cast<unsigned int>(_scrW);
-	scd.BufferDesc.Height = static_cast<unsigned int>(_scrH);
+	scd.BufferDesc.Width = static_cast<unsigned int>(createDeviceWitdh = _scrW);
+	scd.BufferDesc.Height = static_cast<unsigned int>(createDeviceHeight = _scrH);
 	scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 
 	//“h‚è‘Ö‚¦‚éŽžŠÔ//
@@ -105,7 +105,7 @@ void DirectX3D11::CreateDevice(
 	D3D_FEATURE_LEVEL lv[] = { D3D_FEATURE_LEVEL_11_0 };
 	D3D_FEATURE_LEVEL rLv;
 
-	D3D11CreateDeviceAndSwapChain
+	if (FAILED(D3D11CreateDeviceAndSwapChain
 	(
 		NULL
 		, D3D_DRIVER_TYPE_HARDWARE
@@ -120,11 +120,16 @@ void DirectX3D11::CreateDevice(
 		, &device
 		, &rLv
 		, &dContext
-	);
+	)))
+	{
+		Release();
+		return;
+	};
 
 	if (FAILED(window->GetBuffer(0, IID_PPV_ARGS(&surface))))
 	{
 		Release();
+		return;
 	}
 
 }

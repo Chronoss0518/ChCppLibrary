@@ -61,6 +61,24 @@ namespace ChD3D11
 			return surface;
 		}
 
+		inline unsigned long GetCreateDeviceWitdh()
+		{
+			return createDeviceWitdh;
+		}
+
+		inline unsigned long GetCreateDeviceHeight()
+		{
+			return createDeviceHeight;
+		}
+
+		inline ChMath::Vector2Base<unsigned long>GetCreateDeviceSizeToChVector2()
+		{
+			ChMath::Vector2Base<unsigned long> res;
+			res.w = createDeviceWitdh;
+			res.h = createDeviceHeight;
+			return res;
+		}
+
 	public://Is Functions//
 
 		//デバイスが存在するかしないかの確認//
@@ -92,6 +110,9 @@ namespace ChD3D11
 
 		//Direct2Dとの互換性を持たせるためのデータ//
 		IDXGISurface* surface = nullptr;
+
+		unsigned long createDeviceWitdh = 0;
+		unsigned long createDeviceHeight = 0;
 
 	};
 
