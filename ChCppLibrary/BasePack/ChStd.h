@@ -38,7 +38,7 @@ namespace ChStd
 	constexpr static unsigned char MAX_CHAR_BIT = 1 << 7;
 	constexpr static unsigned short MAX_SHORT_BIT = 1 << 15;
 	constexpr static unsigned long MAX_LONG_BIT = 1 << 31;
-	constexpr static unsigned long long MAX_LLONG_BIT = 1 << 63;
+	constexpr static unsigned long long MAX_LLONG_BIT = 1ull << 63;
 
 #ifdef WIN32
 	constexpr static unsigned int W_MAX_INT_BIT = MAX_SHORT_BIT;
