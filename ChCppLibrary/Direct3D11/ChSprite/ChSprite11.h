@@ -48,12 +48,16 @@ namespace ChD3D11
 
 		void SetPos(const unsigned char _posNames, const  ChVec2& _posData);
 
+		void SetPosRect(const  ChVec4& _rect);
+
 		inline void SetUVPos(const SpritePositionName _posNames, const ChVec2& _posData)
 		{
 			SetUVPos(ChStd::EnumCast(_posNames), _posData);
 		}
 
 		void SetUVPos(const unsigned char _posNames, const  ChVec2& _posData);
+
+		void SetUVPosRect(const  ChVec4& _rect);
 
 		void SetInitPosition();
 
@@ -102,7 +106,12 @@ namespace ChD3D11
 
 		///////////////////////////////////////////////////////////////////////////////////
 
+	private:
+
+		ChVec2 ToUseUV(const ChVec2& _uv);
+
 	protected:
+
 
 		///////////////////////////////////////////////////////////////////////////////////
 
