@@ -68,24 +68,24 @@ namespace ChD3D11
 
 		inline const std::array<Ch3D::Vertex, 4>& GetVertexs() { return vertexs; }
 
-		inline ChVec2 GetPos(const SpritePositionName _posNames)
+		inline ChVec2 GetPos(const SpritePositionName _posNames)const
 		{
 			return GetPos(ChStd::EnumCast(_posNames));
 		}
 
-		inline ChVec2 GetPos(const unsigned char _num)
+		inline ChVec2 GetPos(const unsigned char _num)const
 		{
 			if (_num >= 4)return ChVec2();
 
 			return vertexs[_num].pos;
 		}
 
-		inline ChVec2 GetUV(const SpritePositionName _posNames)
+		inline ChVec2 GetUV(const SpritePositionName _posNames)const
 		{
 			return GetUV(ChStd::EnumCast(_posNames));
 		}
 
-		ChVec2 GetUV(const unsigned char _num)
+		ChVec2 GetUV(const unsigned char _num)const
 		{
 			if (_num >= 4)return ChVec2();
 
