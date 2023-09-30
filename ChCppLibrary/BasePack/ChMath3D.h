@@ -29,6 +29,10 @@ struct ChUIMatrix;
 
 struct ChVector2 : public ChMath::Vector2Base<float>
 {
+	static ChVector2 FromPosition(const float& _x, const float& _y);
+	static ChVector2 FromSize(const float& _w, const float& _h);
+	static ChVector2 FromTime(const float& _start, const float& _end);
+	static ChVector2 FromHighLow(const float& _high, const float& _low);
 
 	ChVector2& operator*=(const float& _num);
 	ChVector2 operator*(const float& _num) const;
@@ -208,6 +212,8 @@ using ChVec2 = ChVector2;
 
 struct ChVector3 : public ChMath::Vector3Base<float>
 {
+	static ChVector3 FromPosition(const float& _x, const float& _y, const float _z);
+	static ChVector3 FromColor(const float& _r, const float& _g, const float& _b);
 
 	ChVector3& operator*=(const float& _num);
 	ChVector3 operator*(const float& _num) const;
@@ -422,6 +428,10 @@ struct ChVector4 : public ChMath::Vector4Base<float>
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//StaticFunction//
+
+	static ChVector4 FromPosition(const float& _x, const float& _y, const float _z,const float& _w);
+	static ChVector4 FromColor(const float& _r, const float& _g, const float& _b,const float& _a);
+	static ChVector4 FromRect(const float& _left, const float& _top, const float& _right, const float& _bottom);
 
 
 	///////////////////////////////////////////////////////////////////////////////////
