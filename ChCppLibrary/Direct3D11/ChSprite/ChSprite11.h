@@ -8,7 +8,7 @@ namespace ChD3D11
 
 	enum class SpritePositionName : unsigned char
 	{
-		LeftTop,RightTop,RightDown, LeftDown
+		LeftTop,RightTop,RightBottom, LeftBottom
 	};
 
 	class Sprite11
