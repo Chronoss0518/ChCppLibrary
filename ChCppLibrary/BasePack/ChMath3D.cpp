@@ -647,7 +647,7 @@ void ChVec3::Cross(
 //ChVector4 Method//
 ///////////////////////////////////////////////////////////////////////////////////
 
-static ChVector4 FromPosition(const float& _x, const float& _y, const float _z, const float& _w)
+ChVector4 ChVector4::FromPosition(const float& _x, const float& _y, const float _z, const float& _w)
 {
 	ChVector4 res;
 	res.x = _x;
@@ -657,7 +657,7 @@ static ChVector4 FromPosition(const float& _x, const float& _y, const float _z, 
 	return res;
 }
 
-static ChVector4 FromColor(const float& _r, const float& _g, const float& _b, const float& _a)
+ChVector4 ChVector4::FromColor(const float& _r, const float& _g, const float& _b, const float& _a)
 {
 	ChVector4 res;
 	res.r = _r;
@@ -667,7 +667,7 @@ static ChVector4 FromColor(const float& _r, const float& _g, const float& _b, co
 	return res;
 }
 
-static ChVector4 FromRect(const float& _left, const float& _top, const float& _right, const float& _bottom)
+ChVector4 ChVector4::FromRect(const float& _left, const float& _top, const float& _right, const float& _bottom)
 {
 	ChVector4 res;
 	res.left = _left;
