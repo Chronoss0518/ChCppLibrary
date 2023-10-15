@@ -341,10 +341,10 @@ namespace ChMath
 		}
 
 		std::wstring Serialize(
-			const std::wstring& _cutChar = ","
-			, const std::wstring& _endChar = ";")
+			const std::wstring& _cutChar = L","
+			, const std::wstring& _endChar = L";")
 		{
-			std::wstring tmp = "";
+			std::wstring tmp = L"";
 			for (unsigned char i = 0; i < Array; i++)
 			{
 				tmp += std::to_wstring(val[i]);
@@ -407,8 +407,8 @@ namespace ChMath
 		void Deserialize(
 			const std::wstring& _str
 			, const size_t _fPos = 0
-			, const std::wstring& _cutChar = ","
-			, const std::wstring& _endChar = ";"
+			, const std::wstring& _cutChar = L","
+			, const std::wstring& _endChar = L";"
 			, const unsigned int _digit = 6)
 		{
 
@@ -1014,10 +1014,10 @@ namespace ChMath
 		}
 
 		std::wstring Serialize(
-			const std::wstring& _cutChar = ","
-			, const std::wstring& _endChar = ";")
+			const std::wstring& _cutChar = L","
+			, const std::wstring& _endChar = L";")
 		{
-			std::wstring tmp = "";
+			std::wstring tmp = L"";
 			for (unsigned char i = 0; i < Column; i++)
 			{
 				for (unsigned char j = 0; j < Row; j++)
@@ -1060,11 +1060,11 @@ namespace ChMath
 		}
 
 		std::wstring SerializeUpper(
-			const std::wstring& _cutChar = ","
-			, const std::wstring& _endChar = ";"
-			, const std::wstring& _cutTo4Char = "\n")
+			const std::wstring& _cutChar = L","
+			, const std::wstring& _endChar = L";"
+			, const std::wstring& _cutTo4Char = L"\n")
 		{
-			std::wstring tmp = "";
+			std::wstring tmp = L"";
 			for (unsigned char i = 0; i < Column; i++)
 			{
 				for (unsigned char j = 0; j < Row; j++)
@@ -1137,8 +1137,8 @@ namespace ChMath
 		void Deserialize(
 			const std::wstring& _str
 			, const size_t _fPos = 0
-			, const std::wstring& _cutChar = ","
-			, const std::wstring& _endChar = ";"
+			, const std::wstring& _cutChar = L","
+			, const std::wstring& _endChar = L";"
 			, const unsigned int _digit = 6)
 		{
 
