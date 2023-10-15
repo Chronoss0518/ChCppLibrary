@@ -137,11 +137,14 @@ void ChAnimationSupporter9::CreateFunction()
 	{
 
 		std::string Datas;
+
+
 		{
-			ChCpp::File<> File;
-			File.FileOpen(_FileName);
-			Datas = File.FileReadText();
-			File.FileClose();
+
+			ChCpp::CharFile file;
+			file.FileOpen(_FileName);
+			Datas = file.FileReadText();
+			file.FileClose();
 		}
 
 		std::map<std::string, ChPtr::Shared<ChAnimationObject9>>animations;

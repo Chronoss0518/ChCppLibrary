@@ -38,7 +38,7 @@ void ObjFile::CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& 
 	{
 		std::string tmp;
 
-		ChCpp::File<> files;
+		ChCpp::CharFile files;
 
 		files.FileOpen(_filePath);
 
@@ -130,7 +130,7 @@ void ObjFile::CreateMaterials(const std::string& _fileName)
 	{
 		std::string tmp;
 
-		ChCpp::File<> files;
+		ChCpp::CharFile files;
 
 		files.FileOpen(folderPath + fileName);
 
