@@ -3,7 +3,7 @@
 
 namespace ChCpp
 {
-	template<typename chara_set = char>
+	template<typename chara_set>
 	class File
 	{
 
@@ -262,7 +262,9 @@ namespace ChCpp
 
 
 	};
-	template class File<char>;
+	
+	using CharFile =  File<char>;
+	using WCharFile = File<wchar_t>;
 
 }
 
