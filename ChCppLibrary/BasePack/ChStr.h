@@ -119,7 +119,7 @@ namespace ChStr
 
 		useText = RemoveToUnNums(useText);
 
-		long long tmp = std::atoll(useText.c_str());
+		long long tmp = std::stoll(useText.c_str());
 
 		return static_cast<BaseType>(tmp);
 
@@ -147,7 +147,7 @@ namespace ChStr
 
 		useText = RemoveToUnNums(useText);
 
-		double tmp = std::atof(useText.c_str());
+		double tmp = std::stof(useText.c_str());
 
 		return static_cast<BaseType>(tmp);
 	}
@@ -177,7 +177,7 @@ namespace ChStr
 
 		useText = RemoveToUnNums(useText);
 
-		long long tmp = std::atoll(useText.c_str());
+		long long tmp = std::stoll(useText.c_str());
 
 		return static_cast<BaseType>(tmp);
 	}
@@ -204,7 +204,7 @@ namespace ChStr
 
 		useText = RemoveToUnNums(useText);
 
-		double tmp = std::atof(useText.c_str());
+		double tmp = std::stof(useText.c_str());
 
 		return static_cast<BaseType>(tmp);
 
