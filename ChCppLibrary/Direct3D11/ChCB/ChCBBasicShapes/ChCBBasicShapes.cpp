@@ -11,7 +11,6 @@ void CBBasicShapes11::Init(
 	ID3D11Device* _device)
 {
 	if (IsInit())return;
-	if (!_defaultBase->IsTex())return;
 
 	CBBase11::Init(_device);
 
@@ -90,10 +89,9 @@ void CBBasicShapesPosition11::Init(
 	ID3D11Device* _device)
 {
 	if (IsInit())return;
-	if (!_defaultBase->IsTex())return;
 
 	CBBase11::Init(_device);
-
+	positionData.positions.usePositionCount = 0;
 	positionBuf.CreateBuffer(GetDevice(), BASIC_SHAPES_POSITION_DATA_REGISTERNO);
 
 	SetInitFlg(true);
@@ -105,30 +103,19 @@ void CBBasicShapesPosition11::Release()
 
 	positionBuf.Release();
 
+	positionData.positions.usePositionCount = 0;
+
 	SetInitFlg(false);
 
 	updateFlg = true;
 }
 
-void CBBasicShapesPosition11::SetPositions(const ChBasicShapesPositions& _positions)
-{
-	positionData.positions = _positions;
-
-	updateFlg = true;
-}
 
 void CBBasicShapesPosition11::SetPosition(const ChVec2& _position, int _no)
 {
-	if (_no >= MAX_POSITION_DATA)return;
+	if (_no >= positionData.positions.usePositionCount)return;
 
 	positionData.positions.positions[_no] = _position;
-
-	updateFlg = true;
-}
-
-void CBBasicShapesPosition11::SetUsePositionCount(int _positionCount)
-{
-	positionData.usePositionCount = _positionCount;
 
 	updateFlg = true;
 }
@@ -159,6 +146,31 @@ void CBBasicShapesPosition11::SetShaderBasicShapesPositionData(ID3D11DeviceConte
 	SetVSBasicShapesPositionData(_dc);
 }
 
+void CBBasicShapesPosition11::AddPosition(const ChVec2& _position)
+{
+	if (positionData.positions.usePositionCount >= MAX_POSITION_DATA)return;
+	positionData.positions.positions[positionData.positions.usePositionCount] = _position;
+	positionData.positions.usePositionCount++;
+
+	updateFlg = true;
+}
+
+void CBBasicShapesPosition11::PopPosition()
+{
+	if (positionData.positions.usePositionCount <= 0)return;
+	positionData.positions.usePositionCount--;
+
+	updateFlg = true;
+}
+
+void CBBasicShapesPosition11::ClearPosition()
+{
+	if (positionData.positions.usePositionCount <= 0)return;
+	positionData.positions.usePositionCount = 0;
+
+	updateFlg = true;
+}
+
 void CBBasicShapesPosition11::UpdateSD(ID3D11DeviceContext* _dc)
 {
 	if (!IsInit())return;
@@ -171,11 +183,9 @@ void CBBasicShapesCircle11::Init(
 	ID3D11Device* _device)
 {
 	if (IsInit())return;
-	if (ChPtr::NullCheck(_defaultBase))return;
-	if (!_defaultBase->IsTex())return;
 
 	CBBase11::Init(_device);
-
+	circleData.circleDatas.usePositionCount = 0;
 	circleBuf.CreateBuffer(GetDevice(), BASIC_SHAPES_CIRCLE_DATA_REGISTERNO);
 
 	SetInitFlg(true);
@@ -187,21 +197,25 @@ void CBBasicShapesCircle11::Release()
 
 	circleBuf.Release();
 
+	circleData.circleDatas.usePositionCount = 0;
+
 	SetInitFlg(false);
 
 	updateFlg = true;
 }
 
-void CBBasicShapesCircle11::SetCenterPosition(const ChVec2& _centerPos)
+void CBBasicShapesCircle11::SetCenterPosition(const ChVec2& _centerPos,int _no)
 {
-	circleData.circleData.centerPosition = _centerPos;
+	if (circleData.circleDatas.usePositionCount <= _no)return;
+	circleData.circleDatas.datas[_no].centerPosition = _centerPos;
 
 	updateFlg = true;
 }
 
-void CBBasicShapesCircle11::SetSize(float _size)
+void CBBasicShapesCircle11::SetSize(float _size, int _no)
 {
-	circleData.circleData.size = _size;
+	if (circleData.circleDatas.usePositionCount <= _no)return;
+	circleData.circleDatas.datas[_no].size = _size;
 
 	updateFlg = true;
 }
@@ -232,6 +246,32 @@ void CBBasicShapesCircle11::SetShaderBasicShapesCircleData(ID3D11DeviceContext* 
 	SetVSBasicShapesCircleData(_dc);
 }
 
+void CBBasicShapesCircle11::AddCircleData(const ChVec2& _centerPos, float _size)
+{
+	if (circleData.circleDatas.usePositionCount >= MAX_CIRCLE_DATA)return;
+	circleData.circleDatas.datas[circleData.circleDatas.usePositionCount].centerPosition = _centerPos;
+	circleData.circleDatas.datas[circleData.circleDatas.usePositionCount].size = _size;
+	circleData.circleDatas.usePositionCount++;
+
+	updateFlg = true;
+}
+
+void CBBasicShapesCircle11::PopCircleData()
+{
+	if (circleData.circleDatas.usePositionCount <= 0)return;
+	circleData.circleDatas.usePositionCount--;
+
+	updateFlg = true;
+}
+
+void CBBasicShapesCircle11::ClearCircleData()
+{
+	if (circleData.circleDatas.usePositionCount <= 0)return;
+	circleData.circleDatas.usePositionCount = 0;
+
+	updateFlg = true;
+}
+
 void CBBasicShapesCircle11::UpdateSD(ID3D11DeviceContext* _dc)
 {
 	if (!IsInit())return;
@@ -239,3 +279,4 @@ void CBBasicShapesCircle11::UpdateSD(ID3D11DeviceContext* _dc)
 	circleBuf.UpdateResouce(_dc, &circleData);
 	updateFlg = false;
 }
+

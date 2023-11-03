@@ -75,33 +75,22 @@ namespace ChD3D11
 
 		public:
 
-			///////////////////////////////////////////////////////////////////////////////////
-			//InitAndRelease//
-
 			void Init(
 				ID3D11Device* _device);
 
 			void Release()override;
 
-			///////////////////////////////////////////////////////////////////////////////////
-			//SetFunction//
-
-			void SetPositions(const ChBasicShapesPositions& _positions);
+		public:
 
 			void SetPosition(const ChVec2& _position,int _no);
-
-			void SetUsePositionCount(int _positionCount);
-
-			void SetBasicShapesPositionData(const BasicShapesPositionData& _data);
 
 			void SetPSBasicShapesPositionData(ID3D11DeviceContext* _dc);
 
 			void SetVSBasicShapesPositionData(ID3D11DeviceContext* _dc);
 
 			void SetShaderBasicShapesPositionData(ID3D11DeviceContext* _dc);
-
-			///////////////////////////////////////////////////////////////////////////////////
-			//GetFunction//
+		
+		public:
 
 			inline BasicShapesPositionData GetBasicShapesPositionData() { return positionData; }
 
@@ -112,16 +101,27 @@ namespace ChD3D11
 
 			inline int GetUsePositionCount()
 			{
-				return positionData.usePositionCount;
+				return positionData.positions.usePositionCount;
 			}
 
+		public:
+
+			void AddPosition(const ChVec2& _position);
+
+		public:
+
+			void PopPosition();
+
+		public:
+
+			void ClearPosition();
 
 		private:
 
 			void UpdateSD(ID3D11DeviceContext* _dc);
 
 			BasicShapesPositionData positionData;
-			ConstantBuffer11<BasicShapesCircleData> positionBuf;
+			ConstantBuffer11<BasicShapesPositionData> positionBuf;
 			bool updateFlg = true;
 
 		};
@@ -137,22 +137,16 @@ namespace ChD3D11
 
 		public:
 
-			///////////////////////////////////////////////////////////////////////////////////
-			//InitAndRelease//
-
 			void Init(
 				ID3D11Device* _device);
 
 			void Release()override;
 
-			///////////////////////////////////////////////////////////////////////////////////
-			//SetFunction//
+		public:
 
-			void SetCenterPosition(const ChVec2& _centerPos);
+			void SetCenterPosition(const ChVec2& _centerPos, int _no);
 
-			void SetSize(float _size);
-
-			void SetBasicShapesCircleData(const BasicShapesCircleData& _data);
+			void SetSize(float _size,int _no);
 
 			void SetPSBasicShapesCircleData(ID3D11DeviceContext* _dc);
 
@@ -160,20 +154,23 @@ namespace ChD3D11
 
 			void SetShaderBasicShapesCircleData(ID3D11DeviceContext* _dc);
 
-			///////////////////////////////////////////////////////////////////////////////////
-			//GetFunction//
+		public:
 
 			inline BasicShapesCircleData GetSpriteData() { return circleData; }
 
-			inline ChVec2 GetCenterPosition()
-			{
-				return  circleData.circleData.centerPosition;
-			}
+			inline int GetUseCircleCount() { return circleData.circleDatas.usePositionCount; }
 
-			inline float GetSize()
-			{
-				return circleData.circleData.size;
-			}
+		public:
+
+			void AddCircleData(const ChVec2& _centerPos, float _size);
+
+		public:
+
+			void PopCircleData();
+
+		public:
+
+			void ClearCircleData();
 
 		private:
 
