@@ -13,8 +13,7 @@ cbuffer BasicShapesCircleData : register(CHANGE_CBUFFER(BASIC_SHAPES_CIRCLE_DATA
 struct BasicShapesCircleData
 #endif
 {
-	ChBasicShapesCirclePosition circleData;
-	float tmpCircle;
+	ChBasicShapesCircleDatas circleDatas;
 };
 
 #endif

@@ -17,6 +17,7 @@ struct BasicShapesData
 	float4 color = float4(1.0f, 1.0f, 1.0f, 1.0f);
 };
 
+
 #ifdef __SHADER__
 struct VS_OUT {
 	float4 pos	: SV_POSITION;

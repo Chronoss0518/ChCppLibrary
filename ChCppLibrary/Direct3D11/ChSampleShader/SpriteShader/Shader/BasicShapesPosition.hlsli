@@ -14,8 +14,6 @@ struct BasicShapesPositionData
 #endif
 {
 	ChBasicShapesPositions positions;
-	int usePositionCount = MAX_POSITION_DATA;
-	float tmpPosition;
 };
 
 #endif

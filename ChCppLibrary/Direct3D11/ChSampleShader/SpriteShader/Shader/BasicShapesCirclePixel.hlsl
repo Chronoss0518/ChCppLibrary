@@ -5,11 +5,8 @@
 
 #include"BasicShapesCircle.hlsli"
 
-#include"../../../../ShaderHeaderFiles/HLSL/5.0/BasicShapes.hlsli"
-
-
 float4 main(VS_OUT _vs) : SV_TARGET
 {
-	clip(IsInCirclePosition(circleData,_vs.uv));
+	clip(IsInCirclePosition(circleDatas,_vs.uv));
 	return color;
 }
