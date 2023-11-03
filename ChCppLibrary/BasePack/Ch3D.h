@@ -25,6 +25,7 @@ namespace Ch3D
 		_pos->pos = _val;
 	}
 
+	//¶ã‚ª0.0,0.0‚ÌÀ•WŒn//
 	struct UV
 	{
 		ChVec2 uv;
