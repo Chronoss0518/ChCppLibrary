@@ -147,6 +147,8 @@ namespace ChStr
 
 		useText = RemoveToUnNums(useText);
 
+		if (useText.empty())return 0;
+
 		double tmp = std::stof(useText.c_str());
 
 		return static_cast<BaseType>(tmp);
