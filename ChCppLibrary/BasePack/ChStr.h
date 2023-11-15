@@ -119,6 +119,8 @@ namespace ChStr
 
 		useText = RemoveToUnNums(useText);
 
+		if (useText.empty())return static_cast<BaseType>(0);
+
 		long long tmp = std::stoll(useText.c_str());
 
 		return static_cast<BaseType>(tmp);
@@ -147,7 +149,7 @@ namespace ChStr
 
 		useText = RemoveToUnNums(useText);
 
-		if (useText.empty())return 0;
+		if (useText.empty())return static_cast<BaseType>(0.0);
 
 		double tmp = std::stof(useText.c_str());
 
@@ -179,6 +181,8 @@ namespace ChStr
 
 		useText = RemoveToUnNums(useText);
 
+		if (useText.empty())return static_cast<BaseType>(0);
+
 		long long tmp = std::stoll(useText.c_str());
 
 		return static_cast<BaseType>(tmp);
@@ -205,6 +209,8 @@ namespace ChStr
 		std::wstring useText = _text.substr(_startPos, endPos - _startPos);
 
 		useText = RemoveToUnNums(useText);
+
+		if (useText.empty())return static_cast<BaseType>(0.0);
 
 		double tmp = std::stof(useText.c_str());
 
