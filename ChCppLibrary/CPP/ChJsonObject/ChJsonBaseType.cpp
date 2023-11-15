@@ -164,7 +164,7 @@ std::string JsonBaseType::GetRawText(unsigned long& _textPosition, const std::st
 		}
 
 
-		do
+		while (testNum->GetCount() > 0)
 		{
 			_textPosition++;
 			if (_parameterObject.LineCount() <= _textPosition)return "";
@@ -176,7 +176,7 @@ std::string JsonBaseType::GetRawText(unsigned long& _textPosition, const std::st
 				testNum->Update(testText[i]);
 			}
 
-		} while (testNum->GetCount() > 0);
+		}
 	}
 	else if (res[0] == '{')
 	{
