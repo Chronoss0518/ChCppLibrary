@@ -2,6 +2,7 @@
 
 #include<d2d1.h>
 #include<dwrite.h>
+#include<wincodec.h>
 
 #pragma comment(lib,"d2d1.lib")
 #pragma comment(lib,"dwrite.lib")
@@ -43,109 +44,109 @@ void BrushObject::SetColor(const D2D_COLOR_F& _color)
 void BrushObject::SetColor(const ChVec4& _color)
 {
 	if (ChPtr::NullCheck(brush))return;
-	brush->SetColor(DirectFont::ToD2DCOLORF(_color));
+	brush->SetColor(DirectFontBase::ToD2DCOLORF(_color));
 }
 
 void LayoutObject::SetFontSize(float _size, const DWRITE_TEXT_RANGE& _range)
 {
-	if (ChPtr::NullCheck(layout))return;
+	if (ChPtr::NullCheck(data->layout))return;
 	if (_range.startPosition >= textLength)return;
 
 	DWRITE_TEXT_RANGE useRange = GetUseRange(_range);
 
-	layout->SetFontSize(_size, useRange);
+	data->layout->SetFontSize(_size, useRange);
 }
 
 void LayoutObject::SetFontStrikethrough(bool _useFlg, const DWRITE_TEXT_RANGE& _range)
 {
-	if (ChPtr::NullCheck(layout))return;
+	if (ChPtr::NullCheck(data->layout))return;
 	if (_range.startPosition >= textLength)return;
 
 	DWRITE_TEXT_RANGE useRange = GetUseRange(_range);
 
-	layout->SetStrikethrough(_useFlg, useRange);
+	data->layout->SetStrikethrough(_useFlg, useRange);
 
 }
 
 void LayoutObject::SetFontUnderline(bool _useFlg, const DWRITE_TEXT_RANGE& _range)
 {
-	if (ChPtr::NullCheck(layout))return;
+	if (ChPtr::NullCheck(data->layout))return;
 	if (_range.startPosition >= textLength)return;
 
 	DWRITE_TEXT_RANGE useRange = GetUseRange(_range);
 
-	layout->SetUnderline(_useFlg, useRange);
+	data->layout->SetUnderline(_useFlg, useRange);
 }
 
 void LayoutObject::SetLayoutBoxWidth(float _width)
 {
-	D3DOBJECT_NULLCHECK(layout,SetMaxWidth(_width));
+	D3DOBJECT_NULLCHECK(data->layout,SetMaxWidth(_width));
 }
 
 void LayoutObject::SetLayoutBoxHeight(float _height)
 {
-	D3DOBJECT_NULLCHECK(layout, SetMaxHeight(_height));
+	D3DOBJECT_NULLCHECK(data->layout, SetMaxHeight(_height));
 }
 
 void LayoutObject::SetFamilyName(const std::wstring& _familyName, const DWRITE_TEXT_RANGE& _range)
 {
-	if (ChPtr::NullCheck(layout))return;
+	if (ChPtr::NullCheck(data->layout))return;
 	if (_range.startPosition >= textLength)return;
 
 	DWRITE_TEXT_RANGE useRange = GetUseRange(_range);
 
-	layout->SetFontFamilyName(_familyName.c_str(), useRange);
+	data->layout->SetFontFamilyName(_familyName.c_str(), useRange);
 }
 
 void LayoutObject::SetFontCollection(IDWriteFontCollection* _collection, const DWRITE_TEXT_RANGE& _range)
 {
-	if (ChPtr::NullCheck(layout))return;
+	if (ChPtr::NullCheck(data->layout))return;
 	if (_range.startPosition >= textLength)return;
 
 	DWRITE_TEXT_RANGE useRange = GetUseRange(_range);
 
-	layout->SetFontCollection(_collection, useRange);
+	data->layout->SetFontCollection(_collection, useRange);
 	
 }
 
 void LayoutObject::SetFontWeight(DWRITE_FONT_WEIGHT _weight, const DWRITE_TEXT_RANGE& _range)
 {
-	if (ChPtr::NullCheck(layout))return;
+	if (ChPtr::NullCheck(data->layout))return;
 	if (_range.startPosition >= textLength)return;
 
 	DWRITE_TEXT_RANGE useRange = GetUseRange(_range);
 
-	layout->SetFontWeight(_weight, useRange);
+	data->layout->SetFontWeight(_weight, useRange);
 }
 
 void LayoutObject::SetFontStyle(DWRITE_FONT_STYLE _style, const DWRITE_TEXT_RANGE& _range)
 {
-	if (ChPtr::NullCheck(layout))return;
+	if (ChPtr::NullCheck(data->layout))return;
 	if (_range.startPosition >= textLength)return;
 
 	DWRITE_TEXT_RANGE useRange = GetUseRange(_range);
 
-	layout->SetFontStyle(_style, useRange);
+	data->layout->SetFontStyle(_style, useRange);
 }
 
 void LayoutObject::SetFontStretch(DWRITE_FONT_STRETCH _stretch, const DWRITE_TEXT_RANGE& _range)
 {
-	if (ChPtr::NullCheck(layout))return;
+	if (ChPtr::NullCheck(data->layout))return;
 	if (_range.startPosition >= textLength)return;
 
 	DWRITE_TEXT_RANGE useRange = GetUseRange(_range);
 
-	layout->SetFontStretch(_stretch, useRange);
+	data->layout->SetFontStretch(_stretch, useRange);
 }
 
 void LayoutObject::SetLocaleName(const std::wstring& _localeName, const DWRITE_TEXT_RANGE& _range)
 {
-	if (ChPtr::NullCheck(layout))return;
+	if (ChPtr::NullCheck(data->layout))return;
 	if (_range.startPosition >= textLength)return;
 
 	DWRITE_TEXT_RANGE useRange = GetUseRange(_range);
 
-	layout->SetLocaleName(_localeName.c_str(), useRange);
+	data->layout->SetLocaleName(_localeName.c_str(), useRange);
 }
 
 DWRITE_TEXT_RANGE LayoutObject::GetUseRange(const DWRITE_TEXT_RANGE& _range)
@@ -160,111 +161,7 @@ DWRITE_TEXT_RANGE LayoutObject::GetUseRange(const DWRITE_TEXT_RANGE& _range)
 	return res;
 }
 
-void DirectFont::Init(
-	unsigned long _w,
-	unsigned long _h,
-	HWND _hwnd,
-	LocaleNameId _localeNameId)
-{
-	if (thisDrawerFlg)return;
-
-	if (!InitBase())return;
-
-	D2D1_SIZE_U size;
-	size.width = _w;
-	size.height = _h;
-
-	Init(size, _hwnd, _localeNameId);
-}
-
-void DirectFont::Init(
-	ChMath::Vector2Base<unsigned long>& _size,
-	HWND _hwnd,
-	LocaleNameId _localeNameId)
-{
-	if (thisDrawerFlg)return;
-
-	if (!InitBase())return;
-
-	D2D1_SIZE_U size;
-	size.width = _size.w;
-	size.height = _size.h;
-
-	Init(size, _hwnd, _localeNameId);
-}
-
-void DirectFont::Init(
-	D2D1_SIZE_U& _size,
-	HWND _hwnd,
-	LocaleNameId _localeNameId)
-{
-
-	if (thisDrawerFlg)return;
-
-	if (!InitBase())return;
-
-	ID2D1HwndRenderTarget* tmpRenderTarget = nullptr;
-
-	if (FAILED(d2dFactory->CreateHwndRenderTarget(
-		D2D1::RenderTargetProperties(),
-		D2D1::HwndRenderTargetProperties(
-			_hwnd,
-			_size
-		),
-		&tmpRenderTarget
-	))) {
-		Release();
-		return;
-	};
-
-	renderTarget = tmpRenderTarget;
-
-	thisDrawerFlg = false;
-
-	localeNameId = _localeNameId;
-
-}
-
-void DirectFont::Init(
-	IDXGISurface* _surface,
-	LocaleNameId _localeNameId)
-{
-	if (thisDrawerFlg)return;
-
-	if (!InitBase())return;
-
-	FLOAT dpiX = 0.0f;
-	FLOAT dpiY = 0.0f;
-
-	d2dFactory->GetDesktopDpi(&dpiX, &dpiY);
-
-	D2D1_RENDER_TARGET_PROPERTIES property;
-	
-	ChStd::MZero(&property);
-
-	property = D2D1::RenderTargetProperties(
-		D2D1_RENDER_TARGET_TYPE_DEFAULT, 
-		D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED),
-		dpiX, 
-		dpiY);
-
-	if (FAILED(d2dFactory->CreateDxgiSurfaceRenderTarget(
-		_surface,
-		&property,
-		&renderTarget
-	))) {
-		Release();
-		return;
-	};
-
-	thisDrawerFlg = false;
-
-	localeNameId = _localeNameId;
-
-
-}
-
-void DirectFont::Release()
+void DirectFontBase::Release()
 {
 	if (thisDrawerFlg)return;
 
@@ -277,7 +174,7 @@ void DirectFont::Release()
 	D3DOBJECT_RELEASE(renderTarget);
 }
 
-void DirectFont::ReleaseTextFormat()
+void DirectFontBase::ReleaseTextFormat()
 {
 	if (thisDrawerFlg)return;
 
@@ -285,13 +182,12 @@ void DirectFont::ReleaseTextFormat()
 
 	for (auto&& textFormat : textFormatList)
 	{
-		if (ChPtr::NullCheck((textFormat)))continue;
-		(textFormat)->Release();
+		D3DOBJECT_RELEASE(textFormat);
 	}
 	textFormatList.clear();
 }
 
-void DirectFont::ReleaseBrush()
+void DirectFontBase::ReleaseBrush()
 {
 	if (thisDrawerFlg)return;
 
@@ -299,14 +195,13 @@ void DirectFont::ReleaseBrush()
 
 	for (auto&& brush : brushList)
 	{
-		if (ChPtr::NullCheck((brush)))continue;
-		(brush)->Release();
+		D3DOBJECT_RELEASE(brush);
 	}
 	brushList.clear();
 
 }
 
-void DirectFont::ReleaseLayout()
+void DirectFontBase::ReleaseLayout()
 {
 	if (thisDrawerFlg)return;
 
@@ -314,14 +209,14 @@ void DirectFont::ReleaseLayout()
 
 	for (auto&& layout : layoutList)
 	{
-		if (ChPtr::NullCheck((layout)))continue;
-		(layout)->Release();
+		D3DOBJECT_RELEASE(layout->layout);
+		delete layout;
 	}
 	layoutList.clear();
 
 }
 
-bool DirectFont::InitBase()
+bool DirectFontBase::InitBase()
 {
 
 	Release();
@@ -354,12 +249,20 @@ bool DirectFont::InitBase()
 		return false;
 	}
 #endif
-
 	return true;
 
 }
 
-TextFormatObject DirectFont::CreateTextFormat(
+void DirectFontBase::EndInit(LocaleNameId _localeNameId)
+{
+	displaySize = renderTarget->GetSize();
+
+	thisDrawerFlg = false;
+	localeNameId = _localeNameId;
+
+}
+
+TextFormatObject DirectFontBase::CreateTextFormat(
 	const std::wstring& _familyName,
 	IDWriteFontCollection* _collection,
 	DWRITE_FONT_WEIGHT _weight,
@@ -380,7 +283,7 @@ TextFormatObject DirectFont::CreateTextFormat(
 	return CreateTextFormat(_familyName, _collection, _weight, _style, _stretch, _fontSize, localeName);
 }
 
-TextFormatObject DirectFont::CreateTextFormat(
+TextFormatObject DirectFontBase::CreateTextFormat(
 	const std::wstring& _familyName,
 	IDWriteFontCollection* _collection,
 	DWRITE_FONT_WEIGHT _weight,
@@ -415,12 +318,12 @@ TextFormatObject DirectFont::CreateTextFormat(
 	return res;
 }
 
-BrushObject DirectFont::CreateBrush(const ChVec4& _color)
+BrushObject DirectFontBase::CreateBrush(const ChVec4& _color)
 {
 	return CreateBrush(ToD2DCOLORF(_color));
 }
 
-BrushObject DirectFont::CreateBrush(const D2D_COLOR_F& _color)
+BrushObject DirectFontBase::CreateBrush(const D2D_COLOR_F& _color)
 {
 	BrushObject res;
 
@@ -440,7 +343,7 @@ BrushObject DirectFont::CreateBrush(const D2D_COLOR_F& _color)
 	return res;
 }
 
-LayoutObject DirectFont::CreateLayout(
+LayoutObject DirectFontBase::CreateLayout(
 	const std::wstring& _drawText,
 	float _layoutBoxWidth,
 	float _layoutBoxHeight,
@@ -451,6 +354,7 @@ LayoutObject DirectFont::CreateLayout(
 	if (_drawText.length() <= 0)return res;
 	if (ChPtr::NullCheck(_textFormat))return res;
 	if (ChPtr::NullCheck(dwFactory))return res;
+	if (ChPtr::NullCheck(renderTarget))return res;
 
 	IDWriteTextLayout* layout;
 
@@ -465,14 +369,86 @@ LayoutObject DirectFont::CreateLayout(
 		return res;
 	}
 
-	res.layout = layout;
+	res.data = new LayoutObject::LayoutStruct();
+	res.data->layout = layout;
 	res.textLength = _drawText.length();
-	layoutList.push_back(layout);
+	layoutList.push_back(res.data);
 
 	return res;
 }
 
-LayoutObject DirectFont::CreateLayout(
+LayoutObject DirectFontBase::CreateLayoutToProjection(
+	const std::wstring& _drawText,
+	float _layoutBoxWidth,
+	float _layoutBoxHeight,
+	IDWriteTextFormat* _textFormat)
+{
+	float width = (_layoutBoxWidth * 0.5f + 0.5f) * displaySize.width;
+	float height = (_layoutBoxHeight * 0.5f + 0.5f) * displaySize.height;
+
+	auto&& layout = CreateLayout(_drawText, width, height, _textFormat);
+
+	layout.data->toProjectionFlg = true;
+	
+	return layout;
+}
+
+LayoutObject DirectFontBase::CreateLayoutToProjection(
+	const std::wstring& _drawText,
+	const ChVec2& _layoutSize,
+	IDWriteTextFormat* _textFormat)
+{
+	float width = (_layoutSize.w * 0.5f + 0.5f) * displaySize.width;
+	float height = (_layoutSize.h * 0.5f + 0.5f) * displaySize.height;
+
+	auto&& layout = CreateLayout(_drawText, width, height, _textFormat);
+
+	layout.data->toProjectionFlg = true;
+
+	return layout;
+}
+
+LayoutObject DirectFontBase::CreateLayoutToProjection(
+	const std::wstring& _drawText,
+	float _layoutBoxWidth,
+	float _layoutBoxHeight,
+	const TextFormatObject& _textFormat)
+{
+	float width = (_layoutBoxWidth * 0.5f + 0.5f) * displaySize.width;
+	float height = (_layoutBoxHeight * 0.5f + 0.5f) * displaySize.height;
+
+	auto&& layout = CreateLayout(_drawText, width, height, _textFormat.textFormat);
+
+	layout.data->toProjectionFlg = true;
+
+	return layout;
+}
+
+LayoutObject DirectFontBase::CreateLayoutToProjection(
+	const std::wstring& _drawText,
+	const ChVec2& _layoutSize,
+	const TextFormatObject& _textFormat)
+{
+	float width = (_layoutSize.w * 0.5f + 0.5f) * displaySize.width;
+	float height = (_layoutSize.h * 0.5f + 0.5f) * displaySize.height;
+
+	auto&& layout = CreateLayout(_drawText, width, height, _textFormat.textFormat);
+
+	layout.data->toProjectionFlg = true;
+
+	return layout;
+}
+
+LayoutObject DirectFontBase::CreateLayoutToScreen(
+	const std::wstring& _drawText,
+	float _layoutBoxWidth,
+	float _layoutBoxHeight,
+	IDWriteTextFormat* _textFormat)
+{
+	return CreateLayout(_drawText, _layoutBoxWidth, _layoutBoxHeight, _textFormat);
+}
+
+LayoutObject DirectFontBase::CreateLayoutToScreen(
 	const std::wstring& _drawText,
 	const ChVec2& _layoutSize,
 	IDWriteTextFormat* _textFormat)
@@ -480,7 +456,7 @@ LayoutObject DirectFont::CreateLayout(
 	return CreateLayout(_drawText, _layoutSize.w, _layoutSize.h, _textFormat);
 }
 
-LayoutObject DirectFont::CreateLayout(
+LayoutObject DirectFontBase::CreateLayoutToScreen(
 	const std::wstring& _drawText,
 	float _layoutBoxWidth,
 	float _layoutBoxHeight,
@@ -489,7 +465,7 @@ LayoutObject DirectFont::CreateLayout(
 	return CreateLayout(_drawText, _layoutBoxWidth, _layoutBoxHeight, _textFormat.textFormat);
 }
 
-LayoutObject DirectFont::CreateLayout(
+LayoutObject DirectFontBase::CreateLayoutToScreen(
 	const std::wstring& _drawText,
 	const ChVec2& _layoutSize,
 	const TextFormatObject& _textFormat)
@@ -497,7 +473,7 @@ LayoutObject DirectFont::CreateLayout(
 	return CreateLayout(_drawText, _layoutSize.w, _layoutSize.h, _textFormat.textFormat);
 }
 
-std::wstring DirectFont::GetLocaleName(LocaleNameId _localeName)
+std::wstring DirectFontBase::GetLocaleName(LocaleNameId _localeName)
 {
 	unsigned long localeNameNo = ChStd::EnumCast(_localeName);
 	static std::wstring localeName[] = { L"en-us",L"ja-JP" };
@@ -507,12 +483,35 @@ std::wstring DirectFont::GetLocaleName(LocaleNameId _localeName)
 	return localeName[localeNameNo];
 }
 
-void DirectFont::DrawStart()
+void DirectFontBase::DrawStart()
 {
 
 	if (GetDrawFlg())return;
 
 	if (ChPtr::NullCheck(renderTarget))return;
+
+	auto&& nowDisplaySize = renderTarget->GetSize();
+	if (std::abs(nowDisplaySize.height - displaySize.height) >= 0.1f ||
+		std::abs(nowDisplaySize.width - displaySize.width) >= 0.1f)
+	{
+		float width = 0.0f;
+		float height = 0.0f;
+		for (auto&& layout : layoutList)
+		{
+			if (!layout->toProjectionFlg)continue;
+
+			width = layout->layout->GetMaxWidth();
+			height = layout->layout->GetMaxHeight();
+
+			width = width / displaySize.width * nowDisplaySize.width;
+			height = height / displaySize.height * nowDisplaySize.height;
+
+			layout->layout->SetMaxWidth(width);
+			layout->layout->SetMaxHeight(height);
+		}
+		displaySize = nowDisplaySize;
+	}
+
 
 	renderTarget->BeginDraw();
 
@@ -523,23 +522,10 @@ void DirectFont::DrawStart()
 
 	thisDrawerFlg = true;
 	GetDrawFlg() = true;
-
-	if (!toProjectionCoodinateSystemFlg)return;
-
-	auto&& displaySize = renderTarget->GetSize();
-
-	displaySize.height *= 0.5f;
-	displaySize.width *= 0.5f;
-
-	toProjectionMat = D2D1::Matrix3x2F::Scale(displaySize);
-	toProjectionMat.dx = displaySize.width;
-	toProjectionMat.dy = displaySize.height;
-
-	//renderTarget->SetTransform(toProjectionMat);
 }
 
 //左上から0,0のディスプレイ座標系で計算する//
-void DirectFont::Draw(
+void DirectFontBase::DrawToProjection(
 	const std::wstring& _text,
 	IDWriteTextFormat* _textFormat,
 	ID2D1SolidColorBrush* _brushObject,
@@ -555,7 +541,7 @@ void DirectFont::Draw(
 }
 
 //左上から0,0のディスプレイ座標系で計算する//
-void DirectFont::Draw(
+void DirectFontBase::DrawToProjection(
 	const std::wstring& _text,
 	IDWriteTextFormat* _textFormat,
 	ID2D1SolidColorBrush* _brushObject,
@@ -568,10 +554,115 @@ void DirectFont::Draw(
 
 	D2D1_RECT_F layoutRect = ToD2DRECTF(_drawRect);
 
-	DrawTextMethod(_text, _textFormat, _brushObject, ToProjectionCoodinateSystem(layoutRect));
+	DrawToProjection(_text, _textFormat, _brushObject, layoutRect);
 }
 
-void DirectFont::DrawEnd()
+void DirectFontBase::DrawToScreen(
+	const std::wstring& _text,
+	IDWriteTextFormat* _textFormat,
+	ID2D1SolidColorBrush* _brushObject,
+	const D2D1_RECT_F& _drawRect)
+{
+
+	if (!thisDrawerFlg)return;
+	if (_text.length() <= 0)return;
+	if (ChPtr::NullCheck(_textFormat))return;
+	if (ChPtr::NullCheck(_brushObject))return;
+
+	DrawTextMethod(_text, _textFormat, _brushObject, _drawRect);
+}
+
+void DirectFontBase::DrawToScreen(
+	const std::wstring& _text,
+	IDWriteTextFormat* _textFormat,
+	ID2D1SolidColorBrush* _brushObject,
+	const ChVec4& _drawRect)
+{
+	if (!thisDrawerFlg)return;
+	if (_text.length() <= 0)return;
+	if (ChPtr::NullCheck(_textFormat))return;
+	if (ChPtr::NullCheck(_brushObject))return;
+
+	D2D1_RECT_F layoutRect = ToD2DRECTF(_drawRect);
+
+	DrawToScreen(_text, _textFormat, _brushObject, layoutRect);
+
+}
+
+void DirectFontBase::DrawLayout(
+	const ChVec2& _drawPosition,
+	LayoutObject& _layout,
+	BrushObject& _brush,
+	D2D1_DRAW_TEXT_OPTIONS _options)
+{
+
+	if (!thisDrawerFlg)return;
+	if (ChPtr::NullCheck(_layout.data))return;
+	if (ChPtr::NullCheck(_layout.data->layout))return;
+	if (ChPtr::NullCheck(_brush.brush))return;
+
+
+	D2D1_POINT_2F drawPosition = ToD2DPOINT2F(_drawPosition);
+
+	renderTarget->DrawTextLayout(drawPosition, _layout.data->layout, _brush.brush, _options);
+}
+
+void DirectFontBase::DrawLayout(
+	const D2D1_POINT_2F& _drawPosition,
+	LayoutObject& _layout,
+	BrushObject& _brush,
+	D2D1_DRAW_TEXT_OPTIONS _options)
+{
+
+	if (!thisDrawerFlg)return;
+	if (ChPtr::NullCheck(_layout.data))return;
+	if (ChPtr::NullCheck(_layout.data->layout))return;
+	if (ChPtr::NullCheck(_brush.brush))return;
+
+	D2D1_POINT_2F drawPosition = _drawPosition;
+
+	if (_layout.data->toProjectionFlg)
+	{
+		drawPosition.x = (drawPosition.x * 0.5f + 0.5f) * displaySize.width;
+
+		drawPosition.y = (drawPosition.y * -0.5f + 0.5f) * displaySize.height;
+	}
+
+	renderTarget->DrawTextLayout(drawPosition, _layout.data->layout, _brush.brush, _options);
+
+}
+
+void DirectFontBase::DrawLayout(
+	const ChVec2& _drawPosition,
+	IDWriteTextLayout* _layout,
+	ID2D1SolidColorBrush* _brush,
+	D2D1_DRAW_TEXT_OPTIONS _options)
+{
+	if (!thisDrawerFlg)return;
+	if (ChPtr::NullCheck(_layout))return;
+	if (ChPtr::NullCheck(_brush))return;
+
+	D2D1_POINT_2F drawPosition = ToD2DPOINT2F(_drawPosition);
+
+	renderTarget->DrawTextLayout(drawPosition, _layout, _brush, _options);
+}
+
+void DirectFontBase::DrawLayout(
+	const D2D1_POINT_2F& _drawPosition,
+	IDWriteTextLayout* _layout,
+	ID2D1SolidColorBrush* _brush,
+	D2D1_DRAW_TEXT_OPTIONS _options)
+{
+
+	if (!thisDrawerFlg)return;
+	if (ChPtr::NullCheck(_layout))return;
+	if (ChPtr::NullCheck(_brush))return;
+
+	renderTarget->DrawTextLayout(_drawPosition, _layout, _brush, _options);
+
+}
+
+void DirectFontBase::DrawEnd()
 {
 	if (!thisDrawerFlg)return;
 	
@@ -581,28 +672,255 @@ void DirectFont::DrawEnd()
 	GetDrawFlg() = false;
 }
 
-D2D1_RECT_F DirectFont::ToProjectionCoodinateSystem(const D2D1_RECT_F& _targetRect)
+D2D1_RECT_F DirectFontBase::ToProjectionCoodinateSystem(const D2D1_RECT_F& _targetRect)
 {
-	//return _targetRect;
-
-	if (!toProjectionCoodinateSystemFlg)return _targetRect;
-
 	D2D1_RECT_F res = _targetRect;
 
-	D2D1_POINT_2F tmpSize;
-	tmpSize = D2D1::Point2F(res.left, res.top);
-	tmpSize = toProjectionMat.TransformPoint(tmpSize);
+	res.top = (res.top * -0.5f + 0.5f) * displaySize.height;
+	res.bottom = (res.bottom * -0.5f + 0.5f) * displaySize.height;
 
-	res.left = tmpSize.x;
-	res.top = tmpSize.y;
-
-	tmpSize = D2D1::Point2F(res.right, res.bottom);
-	tmpSize = toProjectionMat.TransformPoint(tmpSize);
-	res.right = tmpSize.x;
-
-	res.bottom = tmpSize.y;
-
-	OutputDebugStringA(("DrawRect left:[" + std::to_string(res.left) + "] top [ " + std::to_string(res.top) + "] right [ " + std::to_string(res.right) + "] bottom [ " + std::to_string(res.bottom) + "]\n").c_str());
-
+	res.left = (res.left * 0.5f + 0.5f) * displaySize.width;
+	res.right = (res.right * 0.5f + 0.5f) * displaySize.width;
 	return res;
+}
+
+
+void DirectFontFromHWND::Init(
+	unsigned long _w,
+	unsigned long _h,
+	HWND _hwnd,
+	LocaleNameId _localeNameId)
+{
+	if (IsThisDrawerFlg())return;
+
+	if (!InitBase())return;
+
+	D2D1_SIZE_U size;
+	size.width = _w;
+	size.height = _h;
+
+	Init(size, _hwnd, _localeNameId);
+}
+
+void DirectFontFromHWND::Init(
+	ChMath::Vector2Base<unsigned long>& _size,
+	HWND _hwnd,
+	LocaleNameId _localeNameId)
+{
+	if (IsThisDrawerFlg())return;
+
+	if (!InitBase())return;
+
+	D2D1_SIZE_U size;
+	size.width = _size.w;
+	size.height = _size.h;
+
+	Init(size, _hwnd, _localeNameId);
+}
+
+void DirectFontFromHWND::Init(
+	D2D1_SIZE_U& _size,
+	HWND _hwnd,
+	LocaleNameId _localeNameId)
+{
+
+	if (IsThisDrawerFlg())return;
+
+	if (!InitBase())return;
+
+	ID2D1HwndRenderTarget* tmpRenderTarget = nullptr;
+
+	if (FAILED(d2dFactory->CreateHwndRenderTarget(
+		D2D1::RenderTargetProperties(),
+		D2D1::HwndRenderTargetProperties(
+			_hwnd,
+			_size
+		),
+		&tmpRenderTarget
+	))) {
+		Release();
+		return;
+	};
+
+	renderTarget = tmpRenderTarget;
+
+	EndInit(_localeNameId);
+}
+
+void DirectFontFromHDC::Init(
+	unsigned long _w,
+	unsigned long _h,
+	LocaleNameId _localeNameId)
+{
+	if (IsThisDrawerFlg())return;
+
+	if (!InitBase())return;
+
+	D2D1_SIZE_U size;
+	size.width = _w;
+	size.height = _h;
+
+	Init(size, _localeNameId);
+}
+
+void DirectFontFromHDC::Init(
+	ChMath::Vector2Base<unsigned long>& _size,
+	LocaleNameId _localeNameId)
+{
+	if (IsThisDrawerFlg())return;
+
+	if (!InitBase())return;
+
+	D2D1_SIZE_U size;
+	size.width = _size.w;
+	size.height = _size.h;
+
+	Init(size, _localeNameId);
+}
+
+void DirectFontFromHDC::Init(
+	D2D1_SIZE_U& _size,
+	LocaleNameId _localeNameId)
+{
+	if (IsThisDrawerFlg())return;
+
+	if (!InitBase())return;
+
+	ID2D1DCRenderTarget* tmpRenderTarget = nullptr;
+
+	D2D1_RENDER_TARGET_PROPERTIES property;
+
+	ChStd::MZero(&property);
+
+	property = D2D1::RenderTargetProperties(
+		D2D1_RENDER_TARGET_TYPE_DEFAULT,
+		D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED),
+		_size.width,
+		_size.height);
+
+	if (FAILED(d2dFactory->CreateDCRenderTarget(
+		&property,
+		&tmpRenderTarget
+	))) {
+		Release();
+		return;
+	};
+
+	renderTarget = tmpRenderTarget;
+
+	EndInit(_localeNameId);
+
+}
+
+void DirectFontFromHDC::SetHDC(HDC _dc, const ChVec4& _subRect)
+{
+	RECT rect;
+	rect.top = _subRect.top;
+	rect.right = _subRect.right;
+	rect.bottom = _subRect.bottom;
+	rect.left = _subRect.left;
+
+	SetHDC(_dc, rect);
+}
+
+void DirectFontFromHDC::SetHDC(HDC _dc,RECT _subRect)
+{
+	if (IsThisDrawerFlg())return;
+
+	if (ChPtr::NullCheck(_dc))return;
+	if (ChPtr::NullCheck(renderTarget))return;
+
+	auto rt = static_cast<ID2D1DCRenderTarget*>(renderTarget);
+
+	D3DOBJECT_NULLCHECK(rt, BindDC(_dc,&_subRect));
+}
+
+void DirectFontFromWICBitmap::Init(
+	unsigned long _w,
+	unsigned long _h,
+	IWICBitmap* _bitmap,
+	LocaleNameId _localeNameId)
+{
+	if (IsThisDrawerFlg())return;
+
+	if (!InitBase())return;
+
+	D2D1_SIZE_U size;
+	size.width = _w;
+	size.height = _h;
+
+	Init(size, _bitmap, _localeNameId);
+}
+
+void DirectFontFromWICBitmap::Init(
+	ChMath::Vector2Base<unsigned long>& _size,
+	IWICBitmap* _bitmap,
+	LocaleNameId _localeNameId)
+{
+	if (IsThisDrawerFlg())return;
+
+	if (!InitBase())return;
+
+	D2D1_SIZE_U size;
+	size.width = _size.w;
+	size.height = _size.h;
+
+	Init(size, _bitmap, _localeNameId);
+}
+
+void DirectFontFromWICBitmap::Init(
+	D2D1_SIZE_U& _size,
+	IWICBitmap* _bitmap,
+	LocaleNameId _localeNameId)
+{
+	if (IsThisDrawerFlg())return;
+
+	if (!InitBase())return;
+
+	if (FAILED(d2dFactory->CreateWicBitmapRenderTarget(
+		_bitmap,
+		D2D1::RenderTargetProperties(),
+		&renderTarget
+	))) {
+		Release();
+		return;
+	};
+
+	EndInit(_localeNameId);
+}
+
+void DirectFontFromDXGISurface::Init(
+	IDXGISurface* _surface,
+	LocaleNameId _localeNameId)
+{
+	if (IsThisDrawerFlg())return;
+
+	if (!InitBase())return;
+
+	FLOAT dpiX = 0.0f;
+	FLOAT dpiY = 0.0f;
+
+	d2dFactory->GetDesktopDpi(&dpiX, &dpiY);
+
+	D2D1_RENDER_TARGET_PROPERTIES property;
+
+	ChStd::MZero(&property);
+
+	property = D2D1::RenderTargetProperties(
+		D2D1_RENDER_TARGET_TYPE_DEFAULT,
+		D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED),
+		dpiX,
+		dpiY);
+
+	if (FAILED(d2dFactory->CreateDxgiSurfaceRenderTarget(
+		_surface,
+		&property,
+		&renderTarget
+	))) {
+		Release();
+		return;
+	};
+
+	EndInit(_localeNameId);
+
 }
