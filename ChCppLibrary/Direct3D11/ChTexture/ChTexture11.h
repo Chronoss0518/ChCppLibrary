@@ -26,6 +26,8 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef Ch_D3D11_Tex_h
 #define Ch_D3D11_Tex_h
 
+struct IWICBitmap;
+
 namespace ChD3D11
 {
 
@@ -156,6 +158,15 @@ namespace ChD3D11
 			, const unsigned long _width
 			, const unsigned long _height
 			, const unsigned int _CPUFlg = 0);
+
+		void CreateColorTexture(
+			ID3D11Device* _device,
+			IWICBitmap* _bitmap,
+			const unsigned int _CPUFlg = 0);
+
+		void CreateColorTexture(
+			IWICBitmap* _bitmap,
+			const unsigned int _CPUFlg = 0);
 
 	protected:
 
