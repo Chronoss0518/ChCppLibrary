@@ -9,6 +9,7 @@
 
 #include"../../BaseIncluder/ChBase.h"
 
+#include"../WICBitmapCreator/ChWICBitmapCreator.h"
 #include"ChDirectFont.h"
 
 #pragma warning(disable : 4996)
@@ -848,6 +849,8 @@ void DirectFontFromWICBitmap::Init(
 	IWICBitmap* _bitmap,
 	LocaleNameId _localeNameId)
 {
+	if (ChPtr::NullCheck(_bitmap))return;
+
 	if (IsThisDrawerFlg())return;
 
 	if (!InitBase())return;
@@ -864,6 +867,8 @@ void DirectFontFromWICBitmap::Init(
 	IWICBitmap* _bitmap,
 	LocaleNameId _localeNameId)
 {
+	if (ChPtr::NullCheck(_bitmap))return;
+
 	if (IsThisDrawerFlg())return;
 
 	if (!InitBase())return;
@@ -880,6 +885,8 @@ void DirectFontFromWICBitmap::Init(
 	IWICBitmap* _bitmap,
 	LocaleNameId _localeNameId)
 {
+	if (ChPtr::NullCheck(_bitmap))return;
+
 	if (IsThisDrawerFlg())return;
 
 	if (!InitBase())return;
@@ -894,6 +901,31 @@ void DirectFontFromWICBitmap::Init(
 	};
 
 	EndInit(_localeNameId);
+}
+
+void DirectFontFromWICBitmap::Init(
+	unsigned long _w,
+	unsigned long _h,
+	WICBitmapObject& _bitmap,
+	LocaleNameId _localeNameId)
+{
+	Init(_w, _h, _bitmap.GetBitmap(), _localeNameId);
+}
+
+void DirectFontFromWICBitmap::Init(
+	ChMath::Vector2Base<unsigned long>& _size,
+	WICBitmapObject& _bitmap,
+	LocaleNameId _localeNameId)
+{
+	Init(_size, _bitmap.GetBitmap(), _localeNameId);
+}
+
+void DirectFontFromWICBitmap::Init(
+	D2D1_SIZE_U& _size,
+	WICBitmapObject& _bitmap,
+	LocaleNameId _localeNameId)
+{
+	Init(_size, _bitmap.GetBitmap(), _localeNameId);
 }
 
 void DirectFontFromDXGISurface::Init(

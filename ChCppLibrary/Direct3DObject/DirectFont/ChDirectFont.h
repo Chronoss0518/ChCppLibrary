@@ -15,6 +15,7 @@ enum DWRITE_FONT_STRETCH;
 namespace ChD3D
 {
 	class DirectFontBase;
+	class WICBitmapObject;
 
 	enum class CreateFontType
 	{
@@ -554,6 +555,22 @@ namespace ChD3D
 		void Init(
 			D2D1_SIZE_U& _size,
 			IWICBitmap* _bitmap,
+			LocaleNameId _localeNameId = LocaleNameId::English);
+
+		void Init(
+			unsigned long _w,
+			unsigned long _h,
+			WICBitmapObject& _bitmap,
+			LocaleNameId _localeNameId = LocaleNameId::English);
+
+		void Init(
+			ChMath::Vector2Base<unsigned long>& _size,
+			WICBitmapObject& _bitmap,
+			LocaleNameId _localeNameId = LocaleNameId::English);
+
+		void Init(
+			D2D1_SIZE_U& _size,
+			WICBitmapObject& _bitmap,
 			LocaleNameId _localeNameId = LocaleNameId::English);
 
 	};
