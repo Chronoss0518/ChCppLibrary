@@ -1,5 +1,5 @@
-#ifndef Ch_CPP_D3DOBJ_XICon_h
-#define Ch_CPP_D3DOBJ_XICon_h
+#ifndef Ch_D3DOBJ_XICon_h
+#define Ch_D3DOBJ_XICon_h
 
 namespace ChD3D
 {

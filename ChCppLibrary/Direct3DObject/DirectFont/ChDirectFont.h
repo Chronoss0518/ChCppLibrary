@@ -1,5 +1,5 @@
-#ifndef Ch_CPP_D3DOBJ_DFont_h
-#define Ch_CPP_D3DOBJ_DFont_h
+#ifndef Ch_D3DOBJ_DFont_h
+#define Ch_D3DOBJ_DFont_h
 
 interface IDWriteFactory;
 interface IDWriteTextFormat;
