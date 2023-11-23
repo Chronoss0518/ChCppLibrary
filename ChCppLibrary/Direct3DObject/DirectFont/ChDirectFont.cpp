@@ -604,6 +604,13 @@ void DirectFontBase::DrawLayout(
 
 	D2D1_POINT_2F drawPosition = ToD2DPOINT2F(_drawPosition);
 
+	if (_layout.data->toProjectionFlg)
+	{
+		drawPosition.x = (drawPosition.x * 0.5f + 0.5f) * displaySize.width;
+
+		drawPosition.y = (drawPosition.y * -0.5f + 0.5f) * displaySize.height;
+	}
+
 	renderTarget->DrawTextLayout(drawPosition, _layout.data->layout, _brush.brush, _options);
 }
 
