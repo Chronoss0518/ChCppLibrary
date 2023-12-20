@@ -44,7 +44,8 @@ void FrameList::Changes()
 	nowFrameNo = nextFrameNo;
 	nowframe = nextFrame;
 
-	nowframe->Init();
+	nowframe->Init(sendData);
+	sendData = nullptr;
 
 	nextFrame = nullptr;
 	nextFrameNo = -1;
