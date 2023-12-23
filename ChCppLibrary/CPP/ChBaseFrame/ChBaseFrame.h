@@ -9,10 +9,10 @@ namespace ChCpp
 	class BaseFrame;
 
 	struct SendDataClass{
-		SendDataClass(){}
+		virtual ~SendDataClass(){}
 	};
 	struct SaveDataClass{
-		SaveDataClass() {}
+		virtual ~SaveDataClass() {}
 	};
 
 	class FrameList
