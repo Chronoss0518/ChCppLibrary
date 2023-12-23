@@ -156,16 +156,14 @@ namespace ChCpp
 
 	public://Other Functions//
 
-		template<class T>
-		void SaveData(const T* _save)
+		void SaveData(ChPtr::Shared<SaveDataClass> _save)
 		{
-			FrameList::SaveData<T>(_save);
+			FrameList::SaveData(_save);
 		}
 
-		template<class T>
-		T* GetData()
+		ChPtr::Shared<SaveDataClass> GetData()
 		{
-			return FrameList::GetData<T>();
+			return FrameList::GetData();
 		}
 
 		void ChangeFrame(const std::string& _frameName);
@@ -215,18 +213,16 @@ namespace ChCpp
 
 	protected://Other Functions//
 
-		template<class T>
-		void SaveData(const T* _save)
+		void SaveData(ChPtr::Shared<SaveDataClass> _save)
 		{
-			if (ChPtr::NullCheck(mgr))return nullptr;
+			if (ChPtr::NullCheck(mgr))return;
 			mgr->SaveData(_save);
 		}
 
-		template<class T>
-		T* GetData()
+		ChPtr::Shared<SaveDataClass> GetData()
 		{
 			if (ChPtr::NullCheck(mgr))return nullptr;
-			return mgr->GetData<T>();
+			return mgr->GetData();
 		}
 
 		//“o˜^‚³‚ê‚Ä‚¢‚éƒtƒŒ[ƒ€‚ÉˆÚ“®‚·‚é//
