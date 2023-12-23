@@ -8,8 +8,12 @@ namespace ChCpp
 
 	class BaseFrame;
 
-	class SendDataClass{};
-	class SaveDataClass{};
+	struct SendDataClass{
+		SendDataClass(){}
+	};
+	struct SaveDataClass{
+		SaveDataClass() {}
+	};
 
 	class FrameList
 	{
