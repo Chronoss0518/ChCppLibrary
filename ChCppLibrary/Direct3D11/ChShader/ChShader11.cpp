@@ -78,7 +78,7 @@ void ShaderController11::Init(
 
 	dsBuffer.CreateDepthBuffer(_device, _width, _height);
 
-	outSprite.Init(device);
+	outSprite.Init();
 
 	window.Init(_device, _SC);
 
