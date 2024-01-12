@@ -34,10 +34,6 @@ namespace ChD3D11
 
 		void Init();
 
-		void Init(ID3D11Device* _device);
-
-		void Release();
-
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
@@ -108,6 +104,7 @@ namespace ChD3D11
 
 	private:
 
+		//UVマップはスクリーン座標//
 		ChVec2 ToUseUV(const ChVec2& _uv);
 
 	protected:
