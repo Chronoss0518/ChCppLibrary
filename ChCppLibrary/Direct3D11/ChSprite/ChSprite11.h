@@ -18,7 +18,7 @@ namespace ChD3D11
 
 		Sprite11& operator=(const Sprite11& _sp)
 		{
-			for (unsigned char i = 0; i < 4; i++)
+			for (unsigned char i = 0; i < vertexs.size(); i++)
 			{
 				vertexs[i].pos = _sp.vertexs[i].pos;
 				vertexs[i].color = _sp.vertexs[i].color;
@@ -51,8 +51,10 @@ namespace ChD3D11
 			SetUVPos(ChStd::EnumCast(_posNames), _posData);
 		}
 
+		//UVPosはスクリーン座標系で計算されます//
 		void SetUVPos(const unsigned char _posNames, const  ChVec2& _posData);
 
+		//UVPosはスクリーン座標系で計算されます//
 		void SetUVPosRect(const  ChVec4& _rect);
 
 		void SetInitPosition();
@@ -71,9 +73,19 @@ namespace ChD3D11
 
 		inline ChVec2 GetPos(const unsigned char _num)const
 		{
-			if (_num >= 4)return ChVec2();
+			if (_num >= vertexs.size())return ChVec2();
 
 			return vertexs[_num].pos;
+		}
+
+		inline ChVec4 GetPosRect()const
+		{
+			ChVec4 res;
+			res.left = vertexs[ChStd::EnumCast(SpritePositionName::LeftTop)].pos.x;
+			res.top = vertexs[ChStd::EnumCast(SpritePositionName::LeftTop)].pos.y;
+			res.right = vertexs[ChStd::EnumCast(SpritePositionName::RightBottom)].pos.x;
+			res.bottom = vertexs[ChStd::EnumCast(SpritePositionName::RightBottom)].pos.y;
+			return res;
 		}
 
 		inline ChVec2 GetUV(const SpritePositionName _posNames)const
@@ -83,9 +95,19 @@ namespace ChD3D11
 
 		ChVec2 GetUV(const unsigned char _num)const
 		{
-			if (_num >= 4)return ChVec2();
+			if (_num >= vertexs.size())return ChVec2();
 
 			return vertexs[_num].uv;
+		}
+
+		inline ChVec4 GetUVRect()const
+		{
+			ChVec4 res;
+			res.left = vertexs[ChStd::EnumCast(SpritePositionName::LeftTop)].uv.x;
+			res.top = vertexs[ChStd::EnumCast(SpritePositionName::LeftTop)].uv.y;
+			res.right = vertexs[ChStd::EnumCast(SpritePositionName::RightBottom)].uv.x;
+			res.bottom = vertexs[ChStd::EnumCast(SpritePositionName::RightBottom)].uv.y;
+			return res;
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -102,18 +124,12 @@ namespace ChD3D11
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-	private:
-
-		//UVマップはスクリーン座標//
-		ChVec2 ToUseUV(const ChVec2& _uv);
-
 	protected:
 
 
 		///////////////////////////////////////////////////////////////////////////////////
 
-		static constexpr unsigned char vertexSize = 4;
-		std::array<Ch3D::Vertex, vertexSize> vertexs;
+		std::array<Ch3D::Vertex, 4> vertexs;
 
 	};
 
