@@ -229,6 +229,12 @@ namespace ChCpp
 			return mgr->GetData();
 		}
 
+		void SendData(ChPtr::Shared<SendDataClass> _send)
+		{
+			if (ChPtr::NullCheck(mgr))return;
+			mgr->SetSendData(_send);
+		}
+
 		//“o˜^‚³‚ê‚Ä‚¢‚éƒtƒŒ[ƒ€‚ÉˆÚ“®‚·‚é//
 		void ChangeFrame(const unsigned long _frameNo)
 		{
