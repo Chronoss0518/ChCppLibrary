@@ -158,6 +158,10 @@ JsonString& JsonString::operator =(const long double& _value)
 	return *this;
 }
 
+JsonString::operator std::string()const
+{
+	return GetString();
+}
 
 JsonString::JsonString()
 {
