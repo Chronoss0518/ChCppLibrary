@@ -118,7 +118,7 @@ namespace ChD3D
 
 		inline bool GetR1Flg()
 		{
-			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) > 0;
+			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) > 0;
 		}
 
 		inline float GetR2Trigger() 
