@@ -111,6 +111,9 @@ namespace ChD3D11
 		//Direct2Dとの互換性を持たせるためのデータ//
 		IDXGISurface* surface = nullptr;
 
+		//実際に描画するためのダブルバッファ//
+		ID3D11RenderTargetView* renderTarget = nullptr;
+
 		unsigned long createDeviceWitdh = 0;
 		unsigned long createDeviceHeight = 0;
 

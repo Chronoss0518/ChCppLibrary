@@ -54,6 +54,7 @@ void DirectX3D11::Release()
 {
 
 	if (ChPtr::NotNullCheck(device)) { device->Release(); device = nullptr; }
+
 	if (ChPtr::NotNullCheck(dContext))
 	{
 		dContext->ClearState();  dContext->Release(); dContext = nullptr;
@@ -62,6 +63,8 @@ void DirectX3D11::Release()
 	if (ChPtr::NotNullCheck(window)) { window->Release(); window = nullptr; }
 
 	if (ChPtr::NotNullCheck(surface)) { surface->Release(); surface = nullptr; }
+
+	if (ChPtr::NotNullCheck(renderTarget)) { renderTarget->Release(); renderTarget = nullptr; }
 
 	SetInitFlg(false);
 }
@@ -131,5 +134,14 @@ void DirectX3D11::CreateDevice(
 		Release();
 		return;
 	}
+
+	ID3D11Texture2D* pBackBuffer = nullptr;
+
+	window->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
+
+	device->CreateRenderTargetView(pBackBuffer, nullptr, &renderTarget);
+
+	pBackBuffer->Release();
+
 
 }
