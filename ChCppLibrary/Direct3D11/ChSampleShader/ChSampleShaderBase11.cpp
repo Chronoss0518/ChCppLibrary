@@ -60,6 +60,7 @@ void SampleShaderBase11::Init(ID3D11Device* _device)
 		CreateDepthStencilTester(desc);
 
 	}
+
 	SetInitFlg(true);
 }
 

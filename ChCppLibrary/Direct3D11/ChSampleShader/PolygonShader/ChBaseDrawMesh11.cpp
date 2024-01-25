@@ -24,7 +24,7 @@ void BaseDrawMesh11::Init(ID3D11Device* _device)
 {
 	if (IsInit())return;
 
-	SampleShaderBase11::Init(_device);
+	SamplePolygonShaderBase11::Init(_device);
 	
 	polyData.Init(_device,&GetWhiteTexture(), &GetNormalTexture());
 
@@ -33,7 +33,7 @@ void BaseDrawMesh11::Init(ID3D11Device* _device)
 
 void BaseDrawMesh11::Release()
 {
-	SampleShaderBase11::Release();
+	SamplePolygonShaderBase11::Release();
 
 	polyData.Release();
 }
@@ -57,7 +57,7 @@ void BaseDrawMesh11::InitVertexShader()
 	decl[9] = { "BLENDWEIGHT",  3, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
 	
 
-	SampleShaderBase11::CreateVertexShader(decl, sizeof(decl)/sizeof(D3D11_INPUT_ELEMENT_DESC), main, sizeof(main));
+	SamplePolygonShaderBase11::CreateVertexShader(decl, sizeof(decl)/sizeof(D3D11_INPUT_ELEMENT_DESC), main, sizeof(main));
 }
 
 void BaseDrawMesh11::InitPixelShader()
@@ -65,32 +65,8 @@ void BaseDrawMesh11::InitPixelShader()
 
 #include"../PolygonShader/BasePolygonPixcel.inc"
 
-	SampleShaderBase11::CreatePixelShader(main, sizeof(main));
+	SamplePolygonShaderBase11::CreatePixelShader(main, sizeof(main));
 
-}
-
-void BaseDrawMesh11::SetProjectionMatrix(const ChLMat& _mat)
-{
-	polyData.SetProjectionMatrix(_mat);
-}
-
-void BaseDrawMesh11::SetViewMatrix(const ChLMat& _mat)
-{
-	polyData.SetViewMatrix(_mat);
-}
-
-void BaseDrawMesh11::SetFillMode(const D3D11_FILL_MODE _fill)
-{
-	fill = _fill;
-
-	updateFlg = true;
-}
-
-void BaseDrawMesh11::SetCullMode(const D3D11_CULL_MODE _cull)
-{
-	cull = _cull;
-
-	updateFlg = true;
 }
 
 void BaseDrawMesh11::DrawStart(ID3D11DeviceContext* _dc)
@@ -98,9 +74,7 @@ void BaseDrawMesh11::DrawStart(ID3D11DeviceContext* _dc)
 	if (!IsInit())return;
 	if (IsDraw())return;
 
-	SampleShaderBase11::DrawStart(_dc);
-
-	polyData.SetVSDrawData(_dc);
+	SamplePolygonShaderBase11::DrawStart(_dc);
 
 }
 
@@ -196,11 +170,11 @@ void BaseDrawMesh11::DrawEnd()
 
 			if (mate11.mate.diffuse.a < ALPHA_VALUE)
 			{
-				SampleShaderBase11::SetShaderBlender(GetDC());
+				SamplePolygonShaderBase11::SetShaderBlender(GetDC());
 			}
 			else
 			{
-				SampleShaderBase11::SetShaderDefaultBlender(GetDC());
+				SamplePolygonShaderBase11::SetShaderDefaultBlender(GetDC());
 			}
 
 			polyData.SetMateDiffuse(mate11.mate.diffuse);
@@ -235,35 +209,19 @@ void BaseDrawMesh11::DrawEnd()
 			}
 		}
 
-		SampleShaderBase11::SetShaderDefaultBlender(GetDC());
+		SamplePolygonShaderBase11::SetShaderDefaultBlender(GetDC());
 
 	}
 	if(!drawDatas.empty())drawDatas.clear();
 
-	SampleShaderBase11::DrawEnd();
+	SamplePolygonShaderBase11::DrawEnd();
 }
 
 void BaseDrawMesh11::Update(ID3D11DeviceContext* _dc)
 {
 	if (!updateFlg)return;
 
-	//•`‰æ•û–@//
-	D3D11_RASTERIZER_DESC desc
-	{
-		fill,
-		cull,
-		false,
-		0,
-		0.0f,
-		0.0f,
-		true,
-		false,
-		true,
-		false
-	};
-
-
-	SampleShaderBase11::CreateRasteriser(desc);
+	SamplePolygonShaderBase11::Update(_dc);
 
 	updateFlg = false;
 }

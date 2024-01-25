@@ -18,60 +18,18 @@ void CircleCullingSprite11::Init(ID3D11Device* _device)
 {
 	if (IsInit())return;
 
-	SampleShaderBase11::Init(_device);
+	SampleSpriteShaderBase11::Init(_device);
 
-	spriteData.Init(_device, &GetWhiteTexture());
 	circleCullingData.Init(_device);
-
-	std::array<Ch3D::Vertex, 4> vertexs;
-
-	vertexBuffer.CreateBuffer(_device, &vertexs[0], vertexs.size());
-
-	std::array<unsigned long, 6> indexs = { 0,1,2,0,2,3 };
-
-	indexBuffer.CreateBuffer(_device, &indexs[0], indexs.size());
-
-
-	D3D11_RASTERIZER_DESC desc
-	{
-		D3D11_FILL_MODE::D3D11_FILL_SOLID,
-		D3D11_CULL_MODE::D3D11_CULL_NONE,
-		true,
-		0,
-		0.0f,
-		0.0f,
-		false,
-		false,
-		true,
-		false
-	};
-
-	CreateRasteriser(desc);
 }
 
 void CircleCullingSprite11::Release()
 {
 	if (!IsInit())return;
 
-	SampleShaderBase11::Release();
+	SampleSpriteShaderBase11::Release();
 
-	spriteData.Release();
 	circleCullingData.Release();
-}
-
-void CircleCullingSprite11::InitVertexShader()
-{
-#include"../SpriteShader/BaseSpriteVertex.inc"
-
-	D3D11_INPUT_ELEMENT_DESC decl[3];
-
-	decl[0] = { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA };
-	decl[1] = { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-	decl[2] = { "COLOR",  0, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-
-
-	SampleShaderBase11::CreateVertexShader(decl, sizeof(decl) / sizeof(D3D11_INPUT_ELEMENT_DESC), main, sizeof(main));
-
 }
 
 void CircleCullingSprite11::InitPixelShader()
@@ -79,7 +37,7 @@ void CircleCullingSprite11::InitPixelShader()
 
 #include"../SpriteShader/CircleCullingSpritePixel.inc"
 
-	SampleShaderBase11::CreatePixelShader(main, sizeof(main));
+	SampleSpriteShaderBase11::CreatePixelShader(main, sizeof(main));
 }
 
 void CircleCullingSprite11::SetStartDrawDir(const ChVec2& _dir)
@@ -135,7 +93,7 @@ void CircleCullingSprite11::Draw(
 
 	if (alphaBlendFlg)
 	{
-		SampleShaderBase11::SetShaderBlender(GetDC());
+		SampleSpriteShaderBase11::SetShaderBlender(GetDC());
 	}
 
 	circleCullingData.SetDrawData(GetDC());
@@ -154,6 +112,6 @@ void CircleCullingSprite11::Draw(
 
 	if (alphaBlendFlg)
 	{
-		SampleShaderBase11::SetShaderDefaultBlender(GetDC());
+		SampleSpriteShaderBase11::SetShaderDefaultBlender(GetDC());
 	}
 }

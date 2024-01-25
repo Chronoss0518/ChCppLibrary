@@ -6,6 +6,8 @@
 namespace ChD3D11
 {
 	class Texture11;
+	class TextureBase11;
+	class RenderTarget11;
 
 	namespace Shader
 	{
@@ -112,13 +114,15 @@ namespace ChD3D11
 
 			bool IsDraw()const { return drawFlg; }
 
+		public://Update Function//
+
+			virtual void Update(ID3D11DeviceContext* _dc) {};
+
 		public://Other Functions//
 
 			virtual void DrawStart(ID3D11DeviceContext* _dc);
 
 			virtual void DrawEnd();
-
-			virtual void Update(ID3D11DeviceContext* _dc) {};
 
 		private://Member Value//
 
@@ -142,7 +146,6 @@ namespace ChD3D11
 			bool drawFlg;
 
 			ID3D11BlendState* blender = nullptr;
-
 		};
 	}
 }

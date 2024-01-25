@@ -1,7 +1,7 @@
 #ifndef Ch_D3D11_SS_BaseSprite_h
 #define Ch_D3D11_SS_BaseSprite_h
 
-#include"../ChSampleShaderBase11.h"
+#include"ChSampleSpriteShaderBase11.h"
 
 
 namespace ChD3D11
@@ -12,7 +12,7 @@ namespace ChD3D11
 	namespace Shader
 	{
 
-		class BaseDrawSprite11 final :public SampleShaderBase11
+		class BaseDrawSprite11 final :public SampleSpriteShaderBase11
 		{
 		public:
 
@@ -29,19 +29,7 @@ namespace ChD3D11
 
 		protected://Init And Release//
 
-			void InitVertexShader()override;
-
 			void InitPixelShader()override;
-
-		public://Set Functions//
-
-			inline void SetAlphaBlendFlg(const bool _flg) { alphaBlendFlg = _flg; }
-
-		public://Get Functions//
-
-			inline ChLMat GetSpriteMatrix() { return spriteData.GetSpriteMatrix(); }
-
-			inline ChVec4 GetBaseColor() { return spriteData.GetBaseColor(); }
 
 		public://Other Functions//
 
@@ -60,12 +48,6 @@ namespace ChD3D11
 
 		private://Member Value//
 
-			CB::CBSprite11 spriteData;
-
-			VertexBuffer11<Ch3D::Vertex> vertexBuffer;
-			IndexBuffer11 indexBuffer;
-
-			bool alphaBlendFlg = false;
 
 		};
 	}
