@@ -41,7 +41,7 @@ MTWStruct ModelToWorld(
 	res.pos = mul(res.pos, spriteMat);
 
 	//テクスチャマップ上の位置情報//
-	res.uv = _uv;
+	res.uv = _uv + moveUV;
 
 	return res;
 }
