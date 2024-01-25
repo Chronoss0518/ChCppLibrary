@@ -143,7 +143,7 @@ namespace ChD3D11
 
 			D3D_PRIMITIVE_TOPOLOGY primitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
-			bool drawFlg;
+			bool drawFlg = false;
 
 			ID3D11BlendState* blender = nullptr;
 		};
