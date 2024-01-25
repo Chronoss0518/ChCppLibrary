@@ -5,6 +5,7 @@
 #include"SpriteBase.hlsli"
 #include"../../../../ShaderHeaderFiles/HLSL/5.0/CircleCulling.hlsli"
 #include"../../../../ShaderHeaderFiles/HLSL/5.0/DrawSprite.hlsli"
+#include"../../../../ShaderHeaderFiles/HLSL/5.0/Texture/BaseTexture.hlsli"
 
 //ピクセルシェダ(PixelShader)//
 //共用//
@@ -13,7 +14,7 @@ float4 main(VS_OUT _in) : SV_Target0
 	CircleCullingTest(_in.uv);
 
 	float4 res = _in.color;
-	res *= baseTex.Sample(baseSmp, _in.uv);
+    res *= GetBaseTextureColor(_in.uv);
 
 	//Out = BaseColor;
 

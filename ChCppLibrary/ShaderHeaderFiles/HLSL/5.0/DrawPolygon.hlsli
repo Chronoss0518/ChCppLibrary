@@ -21,10 +21,6 @@
 #define MATERIAL_DATA_REGISTERNO 2
 #endif
 
-#ifndef BASE_TEXTURE_REGISTER
-#define	BASE_TEXTURE_REGISTER 0
-#endif
-
 #ifndef NORMAL_TEXTURE_REGISTER
 #define	NORMAL_TEXTURE_REGISTER 1
 #endif
@@ -41,6 +37,10 @@ struct ChP_CharaData
 	row_major float4x4 worldMat;
 
 	row_major float4x4 frameMatrix;
+	
+    float2 moveUV;
+	
+    float2 charaDataTmp;
 };
 
 struct ChP_Material
@@ -70,10 +70,6 @@ cbuffer Material:register(CHANGE_CBUFFER(MATERIAL_DATA_REGISTERNO))
 {
 	uniform ChP_Material mate;
 };
-
-texture2D baseTex :register(CHANGE_TBUFFER(BASE_TEXTURE_REGISTER));
-//画像から1ピクセルの色を取得するための物//
-sampler baseSmp :register(CHANGE_SBUFFER(BASE_TEXTURE_REGISTER));
 
 texture2D normalTex :register(CHANGE_TBUFFER(NORMAL_TEXTURE_REGISTER));
 //画像から1ピクセルの色を取得するための物//
@@ -123,7 +119,7 @@ MTWStruct ModelToWorld(
 
 	res.proPos = mul(res.viewPos, drawData.proMat);
 
-	res.uv = _uv;
+	res.uv = _uv + charaDatas.moveUV;
 
 	res.vertexNormal = normalize(mul(_normal, (float3x3)tmpMat));
 	res.faceNormal = normalize(mul(_faceNormal, (float3x3)tmpMat));
