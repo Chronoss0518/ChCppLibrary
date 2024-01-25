@@ -81,6 +81,7 @@ void SamplePolygonShaderBase11::SetShaderCharaData(ID3D11DeviceContext* _dc)
 
 void SamplePolygonShaderBase11::DrawStart(ID3D11DeviceContext* _dc)
 {
+	if (ChPtr::NullCheck(_dc))return;
 	if (!IsInit())return;
 	if (IsDraw())return;
 

@@ -75,4 +75,5 @@ void SampleSpriteShaderBase11::DrawStart(ID3D11DeviceContext* _dc)
 	if (IsDraw())return;
 
 	SampleShaderBase11::DrawStart(_dc);
+
 }
