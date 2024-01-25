@@ -4,6 +4,7 @@
 
 #include"../../ChTexture/ChTexture11.h"
 #include"ChCBPolygon11.h"
+#include"../../../ShaderHeaderFiles/HLSL/5.0/Texture/BaseTexture.hlsli"
 
 using namespace ChD3D11;
 using namespace CB;
@@ -61,6 +62,13 @@ void CBPolygon11::SetFrameMatrix(const ChLMat& _mat)
 void CBPolygon11::SetWorldMatrix(const ChLMat& _mat)
 {
 	charaData.worldMat = _mat;
+
+	cUpdateFlg = true;
+}
+
+void CBPolygon11::SetMoveUV(const ChVec2& _move)
+{
+	charaData.moveUV = _move;
 
 	cUpdateFlg = true;
 }
