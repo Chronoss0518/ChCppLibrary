@@ -75,14 +75,14 @@ OutColor main(VS_OUT _in)
 	
     AlphaTest(outColor.color.a);
 	
-	outColor.highLight.r = max(outColor.highLight.r - 1.0f, 0.0f);
-	outColor.highLight.g = max(outColor.highLight.g - 1.0f, 0.0f);
-    outColor.highLight.b = max(outColor.highLight.b - 1.0f, 0.0f);
+    float val = outColor.highLight.r + outColor.highLight.g + outColor.highLight.b;
+	
+    outColor.highLight.r /= val;
+    outColor.highLight.g /= val;
+    outColor.highLight.b /= val;
 	
     outColor.highLight.a = 
-		outColor.highLight.r +
-		outColor.highLight.g +
-		outColor.highLight.b > 0.0f ?
+		val > 0.0f ?
 		outColor.highLight.a : 0.0f;
 	
     outColor.color.rgb = 
