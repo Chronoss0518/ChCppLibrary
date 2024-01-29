@@ -35,13 +35,17 @@ namespace ChD3D11
 
 			inline void SetBlurPower(const int& _blurPower) { blurData.SetBlurPower(_blurPower); }
 
-			void SetGameWindowSize(const ChVec2& _size) { blurData.SetGameWindowSize(_size); }
+			inline void SetGameWindowSize(const ChVec2& _size) { blurData.SetGameWindowSize(_size); }
+
+			inline void SetLiteBlurFlg(const bool _flg) { blurData.SetLiteBlurFlg(_flg); }
 
 		public://Get Functions//
 
 			inline int GetBlurPower() { return blurData.GetBlurPower(); }
 
 			inline ChVec2 GetGameWindowSize() { return blurData.GetGameWindowSize(); }
+
+			inline bool GetLiteBlurFlg() { return blurData.GetLiteBlurFlg(); }
 
 		public://Other Functions//
 

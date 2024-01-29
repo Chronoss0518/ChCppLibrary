@@ -34,6 +34,8 @@ namespace ChD3D11
 
 			void SetBlurPower(const int& _power);
 
+			void SetLiteBlurFlg(const bool _flg);
+
 			void SetBlurData(const ChS_Blur& _data);
 
 			void SetPSSpriteData(ID3D11DeviceContext* _dc);
@@ -41,8 +43,6 @@ namespace ChD3D11
 			void SetVSSpriteData(ID3D11DeviceContext* _dc);
 
 			void SetShaderSpriteData(ID3D11DeviceContext* _dc);
-
-			void SetShaderTexture(ID3D11DeviceContext* _dc);
 
 			///////////////////////////////////////////////////////////////////////////////////
 			//GetFunction//
@@ -52,6 +52,8 @@ namespace ChD3D11
 			inline ChVec2 GetGameWindowSize() { return blurData.windowSize; }
 
 			inline int GetBlurPower() { return blurData.blurPower; }
+
+			inline bool GetLiteBlurFlg() { return blurData.liteBlurFlg == 1; }
 
 		private:
 

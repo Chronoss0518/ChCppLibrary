@@ -36,7 +36,7 @@ void BasicBlurShader11::Release()
 void BasicBlurShader11::InitPixelShader()
 {
 
-#include"../SpriteShader/BasicBlur.inc"
+#include"../SpriteShader/BasicBlurPixel.inc"
 
 	SampleSpriteShaderBase11::CreatePixelShader(main, sizeof(main));
 }

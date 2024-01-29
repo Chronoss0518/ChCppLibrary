@@ -50,6 +50,15 @@ void CBBlur11::SetBlurPower(const int& _blurPower)
 	updateFlg = true;
 }
 
+void CBBlur11::SetLiteBlurFlg(const bool _flg)
+{
+	if ((blurData.liteBlurFlg == 1) == _flg)return;
+
+	blurData.liteBlurFlg = _flg ? 1 : 0;
+
+	updateFlg = true;
+}
+
 void CBBlur11::SetBlurData(const ChS_Blur& _data)
 {
 	blurData = _data;
