@@ -14,9 +14,8 @@ float4 main(VS_OUT _in) : SV_Target0
 	res *= GetBaseTextureColor(_in.uv);
     res *= baseColor;
 	//Out = BaseColor;
-
-	clip(res.a < 0.01f ? -1 : 1);
-
+    AlphaTest(res.a);
+	
 	//float4 BackCol = BackBuffers.Sample(BackBufferSmp, In.Pos.xy);
 
 	//Out = Out.a == 1.0f ? Out : float4(float3(Out.rgb * Out.a).rgb + float3(BackCol.rgb * (1.0f - Out.a)).rgb, 1);
