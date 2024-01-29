@@ -40,7 +40,9 @@ struct ChP_CharaData
 	
     float2 moveUV;
 	
-    float2 charaDataTmp;
+    float alphaTestValue;
+	
+    float charaDataTmp;
 };
 
 struct ChP_Material
@@ -138,6 +140,11 @@ void FrustumCulling(float4 _pos)
 	clip(1.0f - x);
 	clip(1.0f - y);
 	clip(1.0f - z);
+}
+
+void AlphaTest(float _alpha)
+{
+	clip(_alpha - charaDatas.alphaTestValue);
 }
 
 

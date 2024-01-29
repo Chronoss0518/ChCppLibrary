@@ -18,7 +18,8 @@ struct ChS_SpriteData
     row_major float4x4 spriteMat;
     float4 baseColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
     float2 moveUV = float2(0.0f, 0.0f);
-    float2 spriteDataTmp; //パッキング規則のためのバッファ//
+    float alphaTestValue = 0.01f;
+    float spriteDataTmp; //パッキング規則のためのバッファ//
 };
 
 #ifdef __SHADER__
@@ -28,7 +29,6 @@ struct MTWStruct
 	float4 pos;
 	float2 uv;
 };
-
 
 MTWStruct ModelToWorld(
 	float4 _pos,
@@ -44,6 +44,11 @@ MTWStruct ModelToWorld(
 	res.uv = _uv + moveUV;
 
 	return res;
+}
+
+void AlphaTest(float _alpha)
+{
+	clip(_alpha - alphaTestValue);
 }
 
 #endif
