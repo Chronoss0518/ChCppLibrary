@@ -31,7 +31,7 @@ void CBPolygon11::Init(
 	charaBuf.CreateBuffer(GetDevice(), CHARACTOR_DATA_REGISTERNO);
 	mateBuf.CreateBuffer(GetDevice(), MATERIAL_DATA_REGISTERNO);
 
-	charaData.alphaTestValue = 0.01f;
+	charaData.alphaTestValue = 0.1f;
 	defaultBase = _defaultBase;
 	defaultNormal = _defaultNormal;
 
