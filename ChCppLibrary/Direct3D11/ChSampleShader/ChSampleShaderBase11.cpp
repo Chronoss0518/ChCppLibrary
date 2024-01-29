@@ -30,8 +30,8 @@ void SampleShaderBase11::Init(ID3D11Device* _device)
 
 	{
 		D3D11_BLEND_DESC desc;
-		desc.AlphaToCoverageEnable = false;
-		desc.IndependentBlendEnable = false;
+		desc.AlphaToCoverageEnable = true;
+		desc.IndependentBlendEnable = true;
 		desc.RenderTarget[0].BlendEnable = true;
 		desc.RenderTarget[0].SrcBlend = D3D11_BLEND::D3D11_BLEND_SRC_ALPHA;
 		desc.RenderTarget[0].DestBlend = D3D11_BLEND::D3D11_BLEND_INV_SRC_ALPHA;
