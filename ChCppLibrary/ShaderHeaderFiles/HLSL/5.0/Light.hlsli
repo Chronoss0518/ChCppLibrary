@@ -90,12 +90,11 @@ float3 GetDirectionalLightColor(L_BaseColor _bCol)
 
 	if (!light.useFlg)return oCol;
 
-	oCol *= LamLightDirection(_bCol.wfNormal);
+	oCol += LamLightDirection(_bCol.wfNormal);
 
 	oCol += SpeLightDirection(_bCol.wPos, _bCol.wfNormal, _bCol.specular);
 
 	return oCol;
-
 }
 
 float3 LamLightDirection(float3 _normal)
