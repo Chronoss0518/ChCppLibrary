@@ -42,7 +42,8 @@ namespace ChWin
 		inline void SetVisibleFlg(const bool _flg)
 		{
 			if (!*this)return;
-			visFlg = _flg; 
+			visFlg = _flg;
+			ShowCursor(visFlg);
 		}
 
 		inline void SetCenterFixedFlg(const bool _flg)
