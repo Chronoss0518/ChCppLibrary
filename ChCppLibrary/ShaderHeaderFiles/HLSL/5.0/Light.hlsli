@@ -43,13 +43,13 @@ cbuffer LightData :register(CHANGE_CBUFFER(LIGHT_DATA_REGISTERNO))
 struct ChLightData
 #endif
 {
-	float3 camPos = float3(0.0f, 0.0f, 0.0f);
+    float3 camPos = float3(0.0f, 0.0f, 0.0f);
 
-	int colorType = 0;
+    int colorType = 0;
 
-	ChDirectionalLight light;
+    ChDirectionalLight light;
 
-	ChPointLight pLight[LIGHT_PLIGHTCOUNT];
+    ChPointLight pLight[LIGHT_PLIGHTCOUNT];
 };
 
 #ifdef __SHADER__
@@ -101,16 +101,23 @@ float3 LamLightDirection(float3 _normal)
 {
 	float dotSize = dot(normalize(_normal), normalize(-light.dir));
 
-	dotSize = dotSize > light.ambPow ? dotSize : light.ambPow;
-
 	float4 lamPowMapCol = lightPowMap.Sample(lightSmp, float2(dotSize, dotSize));
 
 	float lamPow = lamPowMapCol[colorType];
 
-	return LamLightColBase(light.dif, lamPow);
+	if(dotSize > light.ambPow)return light.dif *  light.ambPow;
+
+	//dotSize = dotSize > light.ambPow ? dotSize : light.ambPow;
+
+	float3 resultCol =  LamLightColBase(light.dif, lamPow);
+
+	return resultCol;
 }
 
-float3 LamLightPoint(float3 _dif, float _pow);
+float3 LamLightPoint(float3 _dif, float _pow)
+{
+	
+}
 
 float3 SpeLightDirection( float3 _modelPos, float3 _normal, float4 _speculer)
 {
