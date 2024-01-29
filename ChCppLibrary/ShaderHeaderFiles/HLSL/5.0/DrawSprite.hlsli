@@ -18,7 +18,7 @@ struct ChS_SpriteData
     row_major float4x4 spriteMat;
     float4 baseColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
     float2 moveUV = float2(0.0f, 0.0f);
-    float alphaTestValue = 0.01f;
+    float alphaTestValue = 0.1f;
     float spriteDataTmp; //パッキング規則のためのバッファ//
 };
 

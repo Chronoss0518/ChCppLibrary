@@ -48,12 +48,12 @@ struct ChP_CharaData
 struct ChP_Material
 {
 	//diffuse//
-	float4 dif;
+    float4 dif;
 	//specular//
-	float3 speCol;
-	float spePow;
+    float3 speCol;
+    float spePow;
 	//ambient//
-	float4 ambient;
+    float4 ambient;
 };
 
 #ifdef __SHADER__

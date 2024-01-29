@@ -70,21 +70,21 @@ OutColor main(VS_OUT _in)
 	outColor.color = _in.color;
 
 	float4 baseTexCol = GetBaseTextureColor(_in.uv);
-
-	AlphaTest(baseTexCol.a);
 	
     outColor.highLight = outColor.color = mate.dif * baseTexCol * outColor.color;
-
+	
+    AlphaTest(outColor.color.a);
+	
 	outColor.highLight.r = max(outColor.highLight.r - 1.0f, 0.0f);
 	outColor.highLight.g = max(outColor.highLight.g - 1.0f, 0.0f);
     outColor.highLight.b = max(outColor.highLight.b - 1.0f, 0.0f);
 	
     outColor.highLight.a = 
-		outColor.highLight.r > 0.0f ||
-		outColor.highLight.g > 0.0f ||
+		outColor.highLight.r +
+		outColor.highLight.g +
 		outColor.highLight.b > 0.0f ?
 		outColor.highLight.a : 0.0f;
-
+	
     outColor.color.rgb = 
 		outColor.highLight.a > 0.0f ?
 		outColor.color.rgb : GetLightColor(outColor.color, _in, mate);

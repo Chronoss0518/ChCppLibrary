@@ -18,7 +18,7 @@ float4 main(VS_OUT _in) : SV_Target0
 
 	//Out = BaseColor;
 
-	clip(res.a < 0.01f ? -1 : 1);
+	AlphaTest(res.a);
 
 	//float4 BackCol = BackBuffers.Sample(BackBufferSmp, In.Pos.xy);
 
