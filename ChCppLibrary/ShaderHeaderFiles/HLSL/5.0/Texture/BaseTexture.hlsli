@@ -16,7 +16,9 @@ sampler baseSmp : register(CHANGE_SBUFFER(BASE_TEXTURE_REGISTER));
 
 float4 GetBaseTextureColor(float2 _uv)
 {
-    return baseTex.Sample(baseSmp, _uv);
+    float4 res = baseTex.Sample(baseSmp, _uv);
+    res.a = min(res.a,1.0f);
+    return res;
 }
 
 #endif
