@@ -46,6 +46,38 @@ void ChWin::MouseController::Release()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+void ChWin::MouseController::SetCursolFromClient(unsigned long _x, unsigned long _y)
+{
+	if (ChPtr::NullCheck(hWnd))return;
+	POINT tmp = {_x,_y};
+
+	ClientToScreen(hWnd, &tmp);
+
+	SetCursolFromScreen(tmp);
+}
+
+void ChWin::MouseController::SetCursolFromClient(const POINT& _point)
+{
+	if (ChPtr::NullCheck(hWnd))return;
+	POINT tmp = _point;
+
+	ClientToScreen(hWnd, &tmp);
+
+	SetCursolFromScreen(tmp);
+}
+
+void ChWin::MouseController::SetCursolFromScreen(unsigned long _x, unsigned long _y)
+{
+	SetCursorPos(_x, _y);
+}
+
+void ChWin::MouseController::SetCursolFromScreen(const POINT& _point)
+{
+	SetCursorPos(_point.x, _point.y);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 ChVec2 ChWin::MouseController::GetNowPosToChVec2()
 {
 	if (!*this)return { 0.0f,0.0f };

@@ -39,6 +39,14 @@ namespace ChWin
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
+		void SetCursolFromClient(unsigned long _x, unsigned long _y);
+		
+		void SetCursolFromClient(const POINT& _point);
+		
+		void SetCursolFromScreen(unsigned long _x, unsigned long _y);
+
+		void SetCursolFromScreen(const POINT& _point);
+
 		inline void SetVisibleFlg(const bool _flg)
 		{
 			if (!*this)return;
