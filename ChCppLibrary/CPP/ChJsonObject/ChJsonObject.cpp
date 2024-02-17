@@ -26,6 +26,8 @@ bool JsonObject::SetRawData(const std::string& _jsonText)
 
 	parameterObject.SetText(parameter);
 
+
+
 	for (unsigned long i = 0; i < parameterObject.LineCount(); i++)
 	{
 
