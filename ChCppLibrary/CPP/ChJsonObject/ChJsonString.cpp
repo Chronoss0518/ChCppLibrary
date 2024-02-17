@@ -15,7 +15,6 @@ static constexpr unsigned char escapeSequenceBaseCharaList[ESCAPE_SEQUENCE_COUNT
 {
 	'\"',
 	'\\',
-	'\/',
 	'\b',
 	'\f',
 	'\n',
@@ -27,7 +26,6 @@ static constexpr unsigned char escapeSequenceTextCharaList[ESCAPE_SEQUENCE_COUNT
 {
 	'\"',
 	'\\',
-	'/',
 	'b',
 	'f',
 	'n',
