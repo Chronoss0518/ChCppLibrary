@@ -307,7 +307,7 @@ std::string JsonString::GetRawData()const
 
 		for (unsigned char j = 0; j < ESCAPE_SEQUENCE_COUNT; j++)
 		{
-			if (escapeSequenceBaseCharaList[j] != outText[i])continue;
+			if (escapeSequenceBaseCharaList[j] != value[i])continue;
 			outText += "\\";
 			outText += escapeSequenceTextCharaList[j];
 			isEscapeSequence = true;
