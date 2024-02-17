@@ -9,7 +9,7 @@
 using namespace ChCpp;
 
 
-#define ESCAPE_SEQUENCE_COUNT 8
+#define ESCAPE_SEQUENCE_COUNT 7
 
 static constexpr unsigned char escapeSequenceBaseCharaList[ESCAPE_SEQUENCE_COUNT] =
 {
