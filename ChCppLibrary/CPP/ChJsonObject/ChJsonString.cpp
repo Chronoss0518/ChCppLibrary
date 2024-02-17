@@ -276,13 +276,12 @@ bool JsonString::SetRawData(const std::string& _jsonText)
 				if (testText[i + 1] != escapeSequenceTextCharaList[j])continue;
 				i++;
 				setTestText += escapeSequenceBaseCharaList[j];
-				break;
 				isEscapeSequence = true;
+				break;
 			}
+
 			if (!isEscapeSequence)
-			{
 				return false;
-			}
 
 			continue;
 		}
