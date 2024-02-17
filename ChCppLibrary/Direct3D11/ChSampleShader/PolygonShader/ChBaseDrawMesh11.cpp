@@ -157,6 +157,11 @@ void BaseDrawMesh11::DrawEnd()
 {
 	unsigned int offsets = 0;
 
+	if (alphaBlendFlg)
+	{
+		SamplePolygonShaderBase11::SetShaderBlender(GetDC());
+	}
+
 	for (auto&& drawData : drawDatas)
 	{
 		if (drawData.second.empty())continue;
@@ -167,15 +172,6 @@ void BaseDrawMesh11::DrawEnd()
 			if (prim == nullptr)continue;
 
 			auto&& mate11 = *prim->mate;
-
-			if (mate11.mate.diffuse.a < ALPHA_VALUE)
-			{
-				SamplePolygonShaderBase11::SetShaderBlender(GetDC());
-			}
-			else
-			{
-				SamplePolygonShaderBase11::SetShaderDefaultBlender(GetDC());
-			}
 
 			polyData.SetMateDiffuse(mate11.mate.diffuse);
 			polyData.SetMateSpecularColor(mate11.mate.specularColor);
@@ -209,10 +205,11 @@ void BaseDrawMesh11::DrawEnd()
 			}
 		}
 
-		SamplePolygonShaderBase11::SetShaderDefaultBlender(GetDC());
-
 	}
+
 	if(!drawDatas.empty())drawDatas.clear();
+
+	SamplePolygonShaderBase11::SetShaderDefaultBlender(GetDC());
 
 	SamplePolygonShaderBase11::DrawEnd();
 }
