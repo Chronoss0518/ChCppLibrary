@@ -237,7 +237,7 @@ namespace ChStr
 
 	void SetLocale(LocaleName _name, LocaleType _type = LocaleType::All);
 
-	void BeforSetLocale();
+	void SetBeforeLocale();
 
 	std::wstring ToWString(const std::string& _str);
 

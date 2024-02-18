@@ -278,7 +278,7 @@ namespace ChStr
 		}
 	}
 
-	void BeforSetLocale()
+	void SetBeforeLocale()
 	{
 		for (unsigned long i = 0; i < LOCALE_TYPE_COUNT; i++)
 		{
