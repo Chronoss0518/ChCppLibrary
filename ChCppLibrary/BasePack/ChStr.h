@@ -218,6 +218,28 @@ namespace ChStr
 
 	}
 
+	enum class LocaleType
+	{
+		All = LC_ALL,
+		Collate = LC_COLLATE,
+		CType = LC_CTYPE,
+		Monetary = LC_MONETARY,
+		Numeric = LC_NUMERIC,
+		Time = LC_TIME
+	};
+
+	enum class LocaleName
+	{
+		En,
+		De,
+		Jp
+	};
+
+	void SetLocale(LocaleName _name, LocaleType _type = LocaleType::All);
+
+	std::wstring ToWString(const std::string& _str);
+
+	std::string ToString(const std::wstring& _str);
 
 	using ConvertUTF8 = std::codecvt_utf8<wchar_t>;
 	using ConvertUTF16 = std::codecvt_utf16<wchar_t>;

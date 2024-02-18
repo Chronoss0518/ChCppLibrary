@@ -1,4 +1,8 @@
 
+#ifndef _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS 4996
+#endif
+
 #include<cstdlib>
 #include<cstring>
 #include<wchar.h>
@@ -251,6 +255,36 @@ namespace ChStr
 		return out;
 	}
 
+	const char* GetLocaleName(LocaleName _name)
+	{
+		static const char* localeName[] = { "en_US.UTF-8","de_DE.UTF-8","ja_JP.UTF-8" };
+		return localeName[ChStd::EnumCast(_name)];
+	}
+
+	void SetLocale(LocaleName _name, LocaleType _type)
+	{
+		std::setlocale(ChStd::EnumCast(_type), GetLocaleName(_name));
+	}
+
+	std::wstring ToWString(const std::string& _str)
+	{
+		wchar_t* test = new wchar_t[_str.length()];
+		std::mbstowcs(test, _str.c_str(), _str.length());
+		std::wstring res = test;
+		delete[] test;
+		return res;
+	}
+
+	std::string ToString(const std::wstring& _str)
+	{
+		char* test = new char[_str.length()];
+		std::wcstombs(test, _str.c_str(), _str.length());
+		std::string res = test;
+		delete[] test;
+		return res;
+	}
+
+
 	std::wstring_convert<ConvertUTF8, wchar_t>& GetU8Converter()
 	{
 
@@ -266,7 +300,6 @@ namespace ChStr
 
 		return strconverter;
 	}
-
 
 
 	//ï∂éöóÒÇ©ÇÁUTF8ÇÃÉèÉCÉhï∂éöóÒÇ÷ïœä∑Ç∑ÇÈ//
