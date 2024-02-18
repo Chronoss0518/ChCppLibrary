@@ -113,14 +113,14 @@ namespace ChCpp
 			if (_openMode & std::ios::in)
 			{
 
-				std::basic_ofstream<chara_set> tmp;
-				tmp.open(_fileName, std::ios::app);
-				tmp.close();
+				stream.open(_fileName, std::ios::app);
+				stream.close();
 			}
 
 			flg = _openMode;
 			openFileName = _fileName;
 			stream.open(_fileName, flg);
+			
 		}
 
 
@@ -138,13 +138,14 @@ namespace ChCpp
 		//FileÇ©ÇÁì«Ç›èoÇ∑//
 		inline std::basic_string<chara_set> FileReadText()
 		{
-			std::basic_string<chara_set> out = "";
+
+			std::basic_string<chara_set> out = std::basic_string<chara_set>();
 
 			if (!stream.is_open())return out;
 
 			if ((flg & std::ios::binary))return out;
 
-			std::stringstream tmpSS;
+			std::basic_ostringstream<chara_set> tmpSS;
 
 			tmpSS << stream.rdbuf();
 
@@ -186,9 +187,9 @@ namespace ChCpp
 			, _Types&&... _args)
 		{
 
-			if (!stream.is_open())return "";
+			if (!stream.is_open())return std::basic_string<chara_set>();
 
-			if (flg & std::ios::binary)return "";
+			if (flg & std::ios::binary)return std::basic_string<chara_set>();
 
 			if (!(flg & std::ios::app))
 			{
@@ -219,9 +220,9 @@ namespace ChCpp
 			const std::basic_string<chara_set>& _writeStr)
 		{
 
-			if (!stream.is_open())return "";
+			if (!stream.is_open())return std::basic_string<chara_set>();
 
-			if (flg & std::ios::binary)return "";
+			if (flg & std::ios::binary)return std::basic_string<chara_set>();
 
 			if (!(flg & std::ios::app))
 			{
@@ -257,7 +258,7 @@ namespace ChCpp
 	protected:
 
 		std::ios_base::openmode flg{ 0 };
-		std::basic_string<chara_set> openFileName{ "" };
+		std::basic_string<chara_set> openFileName;
 		std::basic_fstream<chara_set> stream;
 
 
