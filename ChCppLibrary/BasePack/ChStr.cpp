@@ -257,56 +257,6 @@ namespace ChStr
 		return out;
 	}
 
-	std::string& GetBeforLocale(unsigned long _num)
-	{
-		static std::string ins[] = { "","","","","","" };
-		return ins[_num];
-	}
-
-	const char* GetLocaleName(LocaleName _name)
-	{
-		static const char* localeName[] = { "en_US.UTF-8","de_DE.UTF-8","ja_JP.UTF-8" };
-		return localeName[ChStd::EnumCast(_name)];
-	}
-
-	void SetLocale(LocaleName _name, LocaleType _type)
-	{
-		std::string test = std::setlocale(ChStd::EnumCast(_type), GetLocaleName(_name));
-		if (GetBeforLocale(ChStd::EnumCast(_type)).empty())
-		{
-			GetBeforLocale(ChStd::EnumCast(_type)) = test;
-		}
-	}
-
-	void SetBeforeLocale()
-	{
-		for (unsigned long i = 0; i < LOCALE_TYPE_COUNT; i++)
-		{
-			unsigned long num = LOCALE_TYPE_COUNT - i - 1;
-			if (GetBeforLocale(num).empty())continue;
-			std::setlocale(num, GetBeforLocale(num).c_str());
-		}
-	}
-
-	std::wstring ToWString(const std::string& _str)
-	{
-		wchar_t* test = new wchar_t[_str.length()];
-		std::mbstowcs(test, _str.c_str(), _str.length());
-		std::wstring res = test;
-		delete[] test;
-		return res;
-	}
-
-	std::string ToString(const std::wstring& _str)
-	{
-		char* test = new char[_str.length()];
-		std::wcstombs(test, _str.c_str(), _str.length());
-		std::string res = test;
-		delete[] test;
-		return res;
-	}
-
-
 	std::wstring_convert<ConvertUTF8, wchar_t>& GetU8Converter()
 	{
 
