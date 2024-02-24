@@ -72,7 +72,7 @@ std::string JsonObject::GetRawData()const
 
 	for (auto&& val : values)
 	{
-		if (initFlg)res += ",\n";
+		if (initFlg)res += ",";
 		res += "\"" + val.first + "\"" + ":" + val.second->GetRawData();
 		initFlg = true;
 	}
