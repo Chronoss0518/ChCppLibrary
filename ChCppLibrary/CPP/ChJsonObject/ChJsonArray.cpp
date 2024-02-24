@@ -18,7 +18,7 @@ ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<BaseType>& _a
 	auto&& res = ChPtr::Make_S<JsonArray>();
 	for (auto&& val : _array)
 	{
-		res->AddObject(JsonNumber::CreateObject(val));
+		res->Add(JsonNumber::CreateObject(val));
 	}
 	return res;
 }
@@ -28,7 +28,7 @@ ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<bool>& _array
 	auto&& res = ChPtr::Make_S<JsonArray>();
 	for (auto&& val : _array)
 	{
-		res->AddObject(JsonBoolean::CreateObject(val));
+		res->Add(JsonBoolean::CreateObject(val));
 	}
 	return res;
 }
@@ -38,11 +38,10 @@ ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<std::string>&
 	auto&& res = ChPtr::Make_S<JsonArray>();
 	for (auto&& val : _array)
 	{
-		res->AddObject(JsonString::CreateObject(val));
+		res->Add(JsonString::CreateObject(val));
 	}
 	return res;
 }
-
 
 bool JsonArray::SetRawData(const std::string& _jsonText)
 {
@@ -73,14 +72,17 @@ bool JsonArray::SetRawData(const std::string& _jsonText)
 
 }
 
-void JsonArray::SetValue(unsigned long _num, const ChPtr::Shared<JsonBaseType> _value)
+void JsonArray::Set(unsigned long _num, const ChPtr::Shared<JsonBaseType> _value)
 {
-	if (_value == nullptr)return;
+	if (_value == nullptr)
+	{
+		Remove(_num);
+		return;
+	}
 	if (_num >= values.size())return;
 	values[_num] = nullptr;
 	values[_num] = _value;
 }
-
 
 std::string JsonArray::GetRawData()const
 {
@@ -141,8 +143,22 @@ ChPtr::Shared<JsonObject> JsonArray::GetJsonObject(unsigned long _num)const
 	return ChPtr::SharedSafeCast<JsonObject>(values[_num]);
 }
 
-void JsonArray::AddObject(ChPtr::Shared<JsonBaseType> _value)
+void JsonArray::Add(ChPtr::Shared<JsonBaseType> _value)
 {
 	if (_value == nullptr)return;
 	values.push_back(_value);
+}
+
+void JsonArray::Remove(unsigned long _num)
+{
+	if (values.empty())return;
+	if (values.size() <= _num)return;
+	
+	values.erase(values.begin() + _num);
+}
+
+void JsonArray::Clear()
+{
+	if (values.empty())return;
+	values.clear();
 }

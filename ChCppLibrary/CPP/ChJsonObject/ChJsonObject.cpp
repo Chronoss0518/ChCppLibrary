@@ -51,7 +51,7 @@ bool JsonObject::SetRawData(const std::string& _jsonText)
 
 }
 
-void JsonObject::SetObject(const std::string& _parameterName, const ChPtr::Shared<JsonBaseType> _value)
+void JsonObject::Set(const std::string& _parameterName, const ChPtr::Shared<JsonBaseType> _value)
 {
 	if (IsCutCharInParameterName(_parameterName))return;
 
@@ -162,6 +162,69 @@ const JsonNumber* const JsonObject::GetJsonNumber(const std::string& _parameterN
 	auto findObject = values.find(_parameterName);
 	if (findObject == values.end())return nullptr;
 	return ChPtr::SafeCast<JsonNumber>(findObject->second.get());
+}
+
+std::vector<std::string> JsonObject::GetKeys()const
+{
+	std::vector<std::string> res;
+	for (auto&& obj : values)
+	{
+		res.push_back(obj.first);
+	}
+	return res;
+}
+
+ChPtr::Shared<JsonArray> JsonObject::GetKeysToArray()const
+{
+	auto&& res = ChPtr::Make_S<JsonArray>();
+	for (auto&& obj : values)
+	{
+		auto&& str = ChPtr::Make_S<JsonString>();
+		str->SetString(obj.first);
+		res->Add(str);
+	}
+	return res;
+}
+
+std::vector<ChPtr::Shared<JsonBaseType>> JsonObject::GetValues()const
+{
+	std::vector<ChPtr::Shared<JsonBaseType>> res;
+	for (auto&& obj : values)
+	{
+		res.push_back(obj.second);
+	}
+	return res;
+}
+
+ChPtr::Shared<JsonArray> JsonObject::GetValuesToArray()const
+{
+	auto&& res = ChPtr::Make_S<JsonArray>();
+	for (auto&& obj : values)
+	{
+		res->Add(obj.second);
+	}
+	return res;
+}
+
+void JsonObject::Remove(const std::string& _parameterName)
+{
+	auto&& obj = values.find(_parameterName);
+	if (obj == values.end())return;
+	
+	(*obj).second = ChPtr::Make_S<JsonNull>();
+}
+
+void JsonObject::RemoveHard(const std::string& _parameterName)
+{
+	auto&& obj = values.find(_parameterName);
+	if (obj == values.end())return;
+	values.erase(obj);
+}
+
+void JsonObject::Clear()
+{
+	if (values.empty())return;
+	values.clear();
 }
 
 bool JsonObject::IsCutCharInParameterName(const std::string& _parameterName)
