@@ -89,6 +89,9 @@ OutColor main(VS_OUT _in)
 		outColor.highLight.a > 0.0f ?
 		outColor.color.rgb : GetLightColor(outColor.color, _in, mate);
 	
+    outColor.highLight.rgb = outColor.highLight.a > 0.0f ? outColor.highLight.rgb : 0.0f;
+    outColor.highLight.a = 1.0f;
+	
 #endif
 
 	return outColor;
