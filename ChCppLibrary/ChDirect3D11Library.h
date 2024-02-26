@@ -27,6 +27,7 @@
 #include"Direct3D11/ChCB/ChCBCircleCulling/ChCBCircleCulling11.h"
 #include"Direct3D11/ChCB/ChCBBasicShapes/ChCBBasicShapes11.h"
 #include"Direct3D11/ChCB/ChCBBlur/ChCBBlur11.h"
+#include"Direct3D11/ChCB/ChCBHighlightMap/ChCBHighlightMap11.h"
 //サンプルシェーダー//
 #include"Direct3D11/ChSampleShader/PolygonShader/ChBaseDrawMesh11.h"
 #include"Direct3D11/ChSampleShader/PolygonShader/ChBaseDrawPolygonBoard11.h"
