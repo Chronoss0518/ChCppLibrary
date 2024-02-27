@@ -6,15 +6,15 @@
 #include"../../ChSprite/ChSprite11.h"
 
 #include"../../ChCB/ChCBSprite/ChCBSprite11.h"
-#include"../../ChCB/ChCBHighlightMap/ChCBHighlightMap11.h"
+#include"../../ChCB/ChCBHighlight/ChCBHighlight11.h"
 
-#include"ChBasicHighlightMapShader11.h"
+#include"ChBasicHighlightShader11.h"
 
 using namespace ChD3D11;
 using namespace Shader;
 
 
-void BasicHighlightMapShader11::Init(ID3D11Device* _device)
+void BasicHighlightShader11::Init(ID3D11Device* _device)
 {
 	if (IsInit())return;
 
@@ -24,7 +24,7 @@ void BasicHighlightMapShader11::Init(ID3D11Device* _device)
 
 }
 
-void BasicHighlightMapShader11::Release()
+void BasicHighlightShader11::Release()
 {
 	if (!IsInit())return;
 
@@ -33,16 +33,16 @@ void BasicHighlightMapShader11::Release()
 	highlightMapData.Release();
 }
 
-void BasicHighlightMapShader11::InitPixelShader()
+void BasicHighlightShader11::InitPixelShader()
 {
 
-#include"../SpriteShader/BasicHighlightMapPixel.inc"
+#include"../SpriteShader/BasicHighlightPixel.inc"
 
 	SampleSpriteShaderBase11::CreatePixelShader(main, sizeof(main));
 }
 
 
-void BasicHighlightMapShader11::Draw(
+void BasicHighlightShader11::Draw(
 	TextureBase11& _tex
 	, Sprite11& _sprite
 	, const ChMat_11& _mat)
@@ -50,7 +50,7 @@ void BasicHighlightMapShader11::Draw(
 	Draw(_tex, _sprite, ChVec4(1.0f), _mat);
 }
 
-void BasicHighlightMapShader11::Draw(
+void BasicHighlightShader11::Draw(
 	TextureBase11& _tex
 	, Sprite11& _sprite
 	, const ChVec4& _baseColor

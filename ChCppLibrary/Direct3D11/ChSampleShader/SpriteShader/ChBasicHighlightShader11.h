@@ -1,5 +1,5 @@
-#ifndef Ch_D3D11_SS_BasicHghlightMap_h
-#define Ch_D3D11_SS_BasicHghlightMap_h
+#ifndef Ch_D3D11_SS_BasicHghlight_h
+#define Ch_D3D11_SS_BasicHghlight_h
 
 #include"ChSampleSpriteShaderBase11.h"
 
@@ -12,11 +12,11 @@ namespace ChD3D11
 	namespace Shader
 	{
 
-		class BasicHighlightMapShader11 final :public SampleSpriteShaderBase11
+		class BasicHighlightShader11 final :public SampleSpriteShaderBase11
 		{
 		public:
 
-			virtual ~BasicHighlightMapShader11()
+			virtual ~BasicHighlightShader11()
 			{
 				Release();
 			}
@@ -64,7 +64,7 @@ namespace ChD3D11
 
 		private://Member Value//
 
-			CB::CBHighlightMap11 highlightMapData;
+			CB::CBHighlight11 highlightMapData;
 
 		};
 	}

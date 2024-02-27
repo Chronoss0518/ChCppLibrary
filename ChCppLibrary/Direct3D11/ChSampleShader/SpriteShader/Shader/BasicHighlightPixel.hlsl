@@ -4,7 +4,7 @@
 
 #include"SpriteBase.hlsli"
 #include"../../../../ShaderHeaderFiles/HLSL/5.0/DrawSprite.hlsli"
-#include"../../../../ShaderHeaderFiles/HLSL/5.0/HighlightMap.hlsli"
+#include"../../../../ShaderHeaderFiles/HLSL/5.0/Highlight.hlsli"
 
 //ピクセルシェダ(PixelShader)//
 //共用//

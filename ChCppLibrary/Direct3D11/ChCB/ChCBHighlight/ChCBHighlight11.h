@@ -1,18 +1,18 @@
-#ifndef Ch_D3D11_CB_Blur_h
-#define Ch_D3D11_CB_Blur_h
+#ifndef Ch_D3D11_CB_Highlight_h
+#define Ch_D3D11_CB_Highlight_h
 
 #include"../ChCBBase11.h"
-#include"../../../ShaderHeaderFiles/HLSL/5.0/HighlightMap.hlsli"
+#include"../../../ShaderHeaderFiles/HLSL/5.0/Highlight.hlsli"
 
 namespace ChD3D11
 {
 	namespace CB
 	{
-		class CBHighlightMap11 final :public CBBase11
+		class CBHighlight11 final :public CBBase11
 		{
 		public:
 
-			virtual ~CBHighlightMap11()
+			virtual ~CBHighlight11()
 			{
 				Release();
 			}

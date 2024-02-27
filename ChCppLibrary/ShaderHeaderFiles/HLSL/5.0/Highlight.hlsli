@@ -1,5 +1,5 @@
-#ifndef ChShader_PublicHeader_BLUR
-#define ChShader_PublicHeader_BLUR
+#ifndef ChShader_PublicHeader_Highlight
+#define ChShader_PublicHeader_Highlight
 
 //#define __SHADER__‚ðhlsl‘¤‚Å’è‹`‚·‚é//
 
@@ -7,12 +7,12 @@
 
 #include"Texture/BaseTexture.hlsli"
 
-#ifndef BLUR_DATA_REGISTERNO
-#define BLUR_DATA_REGISTERNO 1
+#ifndef HIGHLIGHT_DATA_REGISTERNO
+#define HIGHLIGHT_DATA_REGISTERNO 1
 #endif
 
 #ifdef __SHADER__
-cbuffer BlurData : register(CHANGE_CBUFFER(BLUR_DATA_REGISTERNO))
+cbuffer BlurData : register(CHANGE_CBUFFER(HIGHLIGHT_DATA_REGISTERNO))
 #else
 struct ChS_HighLight
 #endif
@@ -43,7 +43,7 @@ float4 HighLightColor(float2 _uv)
     }
     resultColor /= float((blurPower * mulCount) + 1);
     
-    resultColor.a = resultColor.r + resultColor.g +resultColor.b;
+    resultColor.a = resultColor.r + resultColor.g + resultColor.b;
     resultColor.a /= 3.0f;
 
     return resultColor;

@@ -3,24 +3,24 @@
 #include"../../../BaseIncluder/ChD3D11I.h"
 
 #include"../../ChTexture/ChTexture11.h"
-#include"ChCBHighlightMap11.h"
+#include"ChCBHighlight11.h"
 
 using namespace ChD3D11;
 using namespace CB;
 
-void CBHighlightMap11::Init(
+void CBHighlight11::Init(
 	ID3D11Device* _device)
 {
 	if (IsInit())return;
 
 	CBBase11::Init(_device);
 
-	blurBuf.CreateBuffer(GetDevice(), BLUR_DATA_REGISTERNO);
+	blurBuf.CreateBuffer(GetDevice(), HIGHLIGHT_DATA_REGISTERNO);
 
 	SetInitFlg(true);
 }
 
-void CBHighlightMap11::Release()
+void CBHighlight11::Release()
 {
 	if (!IsInit())return;
 
@@ -31,7 +31,7 @@ void CBHighlightMap11::Release()
 	updateFlg = true;
 }
 
-void CBHighlightMap11::SetGameWindowSize(const ChVec2& _size)
+void CBHighlight11::SetGameWindowSize(const ChVec2& _size)
 {
 	if (_size.w <= 0.0f || _size.h <= 0.0f)return;
 
@@ -40,7 +40,7 @@ void CBHighlightMap11::SetGameWindowSize(const ChVec2& _size)
 	updateFlg = true;
 }
 
-void CBHighlightMap11::SetBlurPower(const int& _blurPower)
+void CBHighlight11::SetBlurPower(const int& _blurPower)
 {
 	if (_blurPower < 0)return;
 	if (blurData.blurPower == _blurPower)return;
@@ -50,7 +50,7 @@ void CBHighlightMap11::SetBlurPower(const int& _blurPower)
 	updateFlg = true;
 }
 
-void CBHighlightMap11::SetLiteBlurFlg(const bool _flg)
+void CBHighlight11::SetLiteBlurFlg(const bool _flg)
 {
 	if ((blurData.liteBlurFlg == 1) == _flg)return;
 
@@ -59,14 +59,14 @@ void CBHighlightMap11::SetLiteBlurFlg(const bool _flg)
 	updateFlg = true;
 }
 
-void CBHighlightMap11::SetBlurData(const ChS_HighLight& _data)
+void CBHighlight11::SetBlurData(const ChS_HighLight& _data)
 {
 	blurData = _data;
 
 	updateFlg = true;
 }
 
-void CBHighlightMap11::SetPSSpriteData(ID3D11DeviceContext* _dc)
+void CBHighlight11::SetPSSpriteData(ID3D11DeviceContext* _dc)
 {
 	if (!*this)return;
 
@@ -75,7 +75,7 @@ void CBHighlightMap11::SetPSSpriteData(ID3D11DeviceContext* _dc)
 	blurBuf.SetToPixelShader(_dc);
 }
 
-void CBHighlightMap11::SetVSSpriteData(ID3D11DeviceContext* _dc)
+void CBHighlight11::SetVSSpriteData(ID3D11DeviceContext* _dc)
 {
 	if (!*this)return;
 
@@ -84,7 +84,7 @@ void CBHighlightMap11::SetVSSpriteData(ID3D11DeviceContext* _dc)
 	blurBuf.SetToVertexShader(_dc);
 }
 
-void CBHighlightMap11::SetShaderSpriteData(ID3D11DeviceContext* _dc)
+void CBHighlight11::SetShaderSpriteData(ID3D11DeviceContext* _dc)
 {
 	if (!*this)return;
 
@@ -93,7 +93,7 @@ void CBHighlightMap11::SetShaderSpriteData(ID3D11DeviceContext* _dc)
 }
 
 
-void CBHighlightMap11::UpdateSD(ID3D11DeviceContext* _dc)
+void CBHighlight11::UpdateSD(ID3D11DeviceContext* _dc)
 {
 	if (!IsInit())return;
 	if (!updateFlg)return;
