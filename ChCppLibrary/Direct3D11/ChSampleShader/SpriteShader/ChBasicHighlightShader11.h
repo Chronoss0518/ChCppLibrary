@@ -39,6 +39,10 @@ namespace ChD3D11
 
 			inline void SetLiteBlurFlg(const bool _flg) { highlightMapData.SetLiteBlurFlg(_flg); }
 
+		private:
+
+			inline void SetAlphaBlendFlg(const bool _flg) { alphaBlendFlg = true; }
+
 		public://Get Functions//
 
 			inline int GetBlurPower() { return highlightMapData.GetBlurPower(); }
