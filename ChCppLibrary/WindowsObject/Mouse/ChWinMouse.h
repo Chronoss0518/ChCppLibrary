@@ -10,6 +10,11 @@ namespace ChSystem
 
 namespace ChWin
 {
+	class WindObject;
+}
+
+namespace ChWin
+{
 
 	class MouseController :public ChCp::Initializer
 	{
@@ -19,11 +24,11 @@ namespace ChWin
 		//InitAndRelease//
 
 		void Init(
-			const HWND& _hWnd
+			WindObject& _windObject
 			, const unsigned long _windWidth
 			, const unsigned long _windHeight);
 
-		void Init(const ChSystem::Windows& _win);
+		void Init(ChSystem::Windows& _win);
 
 		virtual void Release();
 
@@ -63,10 +68,10 @@ namespace ChWin
 		///////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
 
-		inline POINTS GetWeelMove()
+		inline POINT GetWheelMove()
 		{
-			if (!*this)return { 0,0 };
-			return wheelMoveVal; 
+			if (!*this)return POINT();
+			return wheelMoveVal;
 		}
 
 		inline POINT GetNowPos() 
@@ -88,25 +93,6 @@ namespace ChWin
 
 		void Update();
 
-		void WheelUpdate(const POINTS _UpdateData)
-		{
-			if (!wheelMoveFlg)return;
-			wheelMoveVal = _UpdateData; 
-			if(wheelMoveVal.x > 0 || wheelMoveVal.x < 0)wheelMoveVal.x /= WHEEL_DELTA;
-			if(wheelMoveVal.y > 0 || wheelMoveVal.y < 0)wheelMoveVal.y /= WHEEL_DELTA;
-
-			wheelMoveFlg = false;
-		}
-		  
-		///////////////////////////////////////////////////////////////////////////////////
-
-		void ReSetWheel()
-		{
-			wheelMoveVal.x = 0;
-			wheelMoveVal.y = 0;
-			wheelMoveFlg = true;
-		}
-
 		friend ChSystem::Windows;
 
 	protected:
@@ -115,12 +101,13 @@ namespace ChWin
 
 	private:
 		
-		POINTS wheelMoveVal{ 0,0 };
+		POINT wheelMoveVal{ 0,0 };
 		POINT centerPos{ 0,0 };
 		POINT nowPos{ 0,0 };
 		POINT beforPos{ 0,0 };
 
-		bool wheelMoveFlg = true;
+		bool wheelHMoveFlg = false;
+		bool wheelVMoveFlg = false;
 		bool visFlg = false;
 		bool setCenterPosFlg = false;
 

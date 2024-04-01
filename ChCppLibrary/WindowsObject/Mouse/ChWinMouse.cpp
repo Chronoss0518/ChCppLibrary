@@ -1,5 +1,6 @@
 
 #include<Windows.h>
+#include<windowsx.h>
 #include"../../BaseIncluder/ChBase.h"
 #include"../../CPP/ChBitBool/ChBitBool.h"
 #include"../PackData/ChPoint.h"
@@ -11,13 +12,39 @@
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChWin::MouseController::Init(
-	const HWND& _hWnd
+	WindObject& _windObject
 	, const unsigned long _windWidth
 	, const unsigned long _windHeight)
 {
-	if (ChPtr::NullCheck(_hWnd))return;
+	hWnd = _windObject.GethWnd();
 
-	hWnd = _hWnd;
+	if (ChPtr::NullCheck(hWnd))return;
+
+	_windObject.SetWindProcedure(
+		WM_MOUSEWHEEL,
+		[&](
+			HWND _hWnd,
+			UINT _uMsg,
+			WPARAM _wParam,
+			LPARAM _lParam)->LRESULT
+		{
+			wheelMoveVal.y = GET_WHEEL_DELTA_WPARAM(_wParam);
+			wheelVMoveFlg = true;
+			return 0;
+		});
+
+	_windObject.SetWindProcedure(
+		WM_MOUSEHWHEEL,
+		[&](
+			HWND _hWnd,
+			UINT _uMsg,
+			WPARAM _wParam,
+			LPARAM _lParam)->LRESULT
+		{
+			wheelMoveVal.x = GET_WHEEL_DELTA_WPARAM(_wParam);
+			wheelHMoveFlg = true;
+			return 0;
+		});
 
 	windSize.w = _windWidth;
 	windSize.h = _windHeight;
@@ -25,16 +52,16 @@ void ChWin::MouseController::Init(
 	centerPos.x = windSize.w / 2;
 	centerPos.y = windSize.h / 2;
 
-	ScreenToClient(_hWnd, &centerPos);
+	ScreenToClient(hWnd, &centerPos);
 
 	SetInitFlg(true);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChWin::MouseController::Init(const ChSystem::Windows& _win)
+void ChWin::MouseController::Init(ChSystem::Windows& _win)
 {
-	Init(_win.GethWnd(), _win.GetWindWidth(), _win.GetWindHeight());
+	Init(_win.GetWindObject(), _win.GetWindWidth(), _win.GetWindHeight());
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -143,6 +170,19 @@ ChVec2 ChWin::MouseController::GetMoveValueToChVec2()
 void ChWin::MouseController::Update()
 {
 	if (!*this)return;
+
+	if (!wheelVMoveFlg)
+	{
+		wheelMoveVal.y = 0;
+	}
+
+	if (!wheelHMoveFlg)
+	{
+		wheelMoveVal.x = 0;
+	}
+
+	wheelVMoveFlg = false;
+	wheelHMoveFlg = false;
 
 	beforPos = nowPos;
 
