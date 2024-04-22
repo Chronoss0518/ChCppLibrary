@@ -23,10 +23,7 @@ namespace ChWin
 		///////////////////////////////////////////////////////////////////////////////////
 		//InitAndRelease//
 
-		void Init(
-			WindObject& _windObject
-			, const unsigned long _windWidth
-			, const unsigned long _windHeight);
+		void Init(WindObject& _windObject);
 
 		void Init(ChSystem::Windows& _win);
 
@@ -111,7 +108,7 @@ namespace ChWin
 		bool visFlg = false;
 		bool setCenterPosFlg = false;
 
-		ChMath::Vector2Base<unsigned long>windSize;
+		ChPOINT windSize;
 
 		HWND hWnd = nullptr;
 

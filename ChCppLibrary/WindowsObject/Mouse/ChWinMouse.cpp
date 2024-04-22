@@ -11,10 +11,7 @@
 //MouseControllerÉÅÉ\ÉbÉh//
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChWin::MouseController::Init(
-	WindObject& _windObject
-	, const unsigned long _windWidth
-	, const unsigned long _windHeight)
+void ChWin::MouseController::Init(WindObject& _windObject)
 {
 	hWnd = _windObject.GethWnd();
 
@@ -46,8 +43,7 @@ void ChWin::MouseController::Init(
 			return 0;
 		});
 
-	windSize.w = _windWidth;
-	windSize.h = _windHeight;
+	windSize = _windObject.GetWindSize();
 
 	centerPos.x = windSize.w / 2;
 	centerPos.y = windSize.h / 2;
@@ -61,7 +57,7 @@ void ChWin::MouseController::Init(
 
 void ChWin::MouseController::Init(ChSystem::Windows& _win)
 {
-	Init(_win.GetWindObject(), _win.GetWindWidth(), _win.GetWindHeight());
+	Init(_win.GetWindObject());
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -123,7 +119,7 @@ ChVec2 ChWin::MouseController::GetNowProPosToChVec2()
 
 	ChVec2 tmpWSize;
 
-	tmpWSize.val = windSize.val;
+	tmpWSize.val = windSize.vec.val;
 
 	ChVec2 tmpVec;
 	tmpVec.x = static_cast<float>(nowPos.x);
