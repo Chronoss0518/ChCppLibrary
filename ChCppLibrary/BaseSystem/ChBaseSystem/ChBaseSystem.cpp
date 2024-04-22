@@ -14,7 +14,7 @@ using namespace ChSystem;
 
 bool BaseSystem::IsPushKey(const int _Key)
 {
-	if (!system->IsUseSystemButtons())return 0;
+	if (!useSystemButtonFlg)return 0;
 	return buttonList.GetBitFlg(_Key);
 }
 

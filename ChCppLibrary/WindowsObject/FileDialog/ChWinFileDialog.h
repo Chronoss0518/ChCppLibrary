@@ -3,8 +3,6 @@
 #ifndef Ch_Win_FiDl_h
 #define Ch_Win_FiDl_h
 
-#include"../BaseWind/ChWinBaseWind.h"
-
 namespace ChSystem
 {
 	class Windows;

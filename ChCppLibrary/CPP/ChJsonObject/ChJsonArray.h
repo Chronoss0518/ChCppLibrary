@@ -24,7 +24,7 @@ namespace ChCpp
 
 		bool SetRawData(const std::string& _jsonText)override;
 
-		void SetValue(unsigned long _num, const ChPtr::Shared<JsonBaseType> _value);
+		void Set(unsigned long _num, const ChPtr::Shared<JsonBaseType> _value);
 
 	public:
 
@@ -46,7 +46,17 @@ namespace ChCpp
 
 	public:
 
-		void AddObject(ChPtr::Shared<JsonBaseType> _value);
+		void Add(ChPtr::Shared<JsonBaseType> _value);
+
+		void Remove(unsigned long _num);
+
+		void Clear();
+
+	public:
+
+		inline std::vector<ChPtr::Shared<JsonBaseType>>::iterator begin() { return values.begin(); }
+
+		inline std::vector<ChPtr::Shared<JsonBaseType>>::iterator end() { return values.end(); }
 
 	private:
 
@@ -75,7 +85,7 @@ namespace ChCpp
 		auto&& res = ChPtr::Make_S<JsonArray>();
 		for (auto&& val : _array)
 		{
-			res->AddObject(JsonArray::CreateObject(val));
+			res->Add(JsonArray::CreateObject(val));
 		}
 		return res;
 	}

@@ -2,7 +2,8 @@
 #ifndef Ch_CPP_NWork_h
 #define Ch_CPP_NWork_h
 
-#ifdef _WIN32
+#ifdef _WINDOWS
+#ifdef WIN32
 
 #include<Windows.h>
 #include<winsock.h>
@@ -10,15 +11,14 @@
 
 using socklen_t = int;
 
-#elif _WIN64
-
+#else
 
 #include<Windows.h>
 #include<winsock.h>
-#pragma comment(lib,"wsock32.lib")
+#pragma comment(lib,"wsock64.lib")
 
 using socklen_t = int;
-
+#endif
 #else
 
 #include<unistd.h>

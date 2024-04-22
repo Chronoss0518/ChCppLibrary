@@ -24,7 +24,7 @@ void BaseDrawMesh11::Init(ID3D11Device* _device)
 {
 	if (IsInit())return;
 
-	SampleShaderBase11::Init(_device);
+	SamplePolygonShaderBase11::Init(_device);
 	
 	polyData.Init(_device,&GetWhiteTexture(), &GetNormalTexture());
 
@@ -33,7 +33,7 @@ void BaseDrawMesh11::Init(ID3D11Device* _device)
 
 void BaseDrawMesh11::Release()
 {
-	SampleShaderBase11::Release();
+	SamplePolygonShaderBase11::Release();
 
 	polyData.Release();
 }
@@ -50,13 +50,14 @@ void BaseDrawMesh11::InitVertexShader()
 	decl[2] = { "COLOR",  0, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
 	decl[3] = { "NORMAL",  0, DXGI_FORMAT_R32G32B32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
 	decl[4] = { "NORMAL",  1, DXGI_FORMAT_R32G32B32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-	decl[5] = { "BLENDWEIGHT",  0, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-	decl[6] = { "BLENDWEIGHT",  1, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-	decl[7] = { "BLENDWEIGHT",  2, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-	decl[8] = { "BLENDWEIGHT",  3, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
-	decl[9] = { "BLENDINDEX",  0, DXGI_FORMAT_R32_UINT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
+	decl[5] = { "BLENDINDEX",  0, DXGI_FORMAT_R32_UINT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
+	decl[6] = { "BLENDWEIGHT",  0, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
+	decl[7] = { "BLENDWEIGHT",  1, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
+	decl[8] = { "BLENDWEIGHT",  2, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
+	decl[9] = { "BLENDWEIGHT",  3, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA };
+	
 
-	SampleShaderBase11::CreateVertexShader(decl, sizeof(decl)/sizeof(D3D11_INPUT_ELEMENT_DESC), main, sizeof(main));
+	SamplePolygonShaderBase11::CreateVertexShader(decl, sizeof(decl)/sizeof(D3D11_INPUT_ELEMENT_DESC), main, sizeof(main));
 }
 
 void BaseDrawMesh11::InitPixelShader()
@@ -64,32 +65,8 @@ void BaseDrawMesh11::InitPixelShader()
 
 #include"../PolygonShader/BasePolygonPixcel.inc"
 
-	SampleShaderBase11::CreatePixelShader(main, sizeof(main));
+	SamplePolygonShaderBase11::CreatePixelShader(main, sizeof(main));
 
-}
-
-void BaseDrawMesh11::SetProjectionMatrix(const ChLMat& _mat)
-{
-	polyData.SetProjectionMatrix(_mat);
-}
-
-void BaseDrawMesh11::SetViewMatrix(const ChLMat& _mat)
-{
-	polyData.SetViewMatrix(_mat);
-}
-
-void BaseDrawMesh11::SetFillMode(const D3D11_FILL_MODE _fill)
-{
-	fill = _fill;
-
-	updateFlg = true;
-}
-
-void BaseDrawMesh11::SetCullMode(const D3D11_CULL_MODE _cull)
-{
-	cull = _cull;
-
-	updateFlg = true;
 }
 
 void BaseDrawMesh11::DrawStart(ID3D11DeviceContext* _dc)
@@ -97,32 +74,25 @@ void BaseDrawMesh11::DrawStart(ID3D11DeviceContext* _dc)
 	if (!IsInit())return;
 	if (IsDraw())return;
 
-	SampleShaderBase11::DrawStart(_dc);
-
-	polyData.SetVSDrawData(_dc);
+	SamplePolygonShaderBase11::DrawStart(_dc);
 
 }
 
 void BaseDrawMesh11::Draw(
-	ID3D11DeviceContext* _dc,
 	Mesh11& _mesh,
 	const ChMat_11& _mat)
 {
 	if (!IsInit())return;
 	if (!IsDraw())return;
-	if (ChPtr::NullCheck(_dc))return;
-
-	dc = _dc;
+	if (ChPtr::NullCheck(GetDC()))return;
 
 	worldMat = _mat;
 
-	DrawUpdate(_dc, _mesh);
+	DrawUpdate(_mesh);
 
 }
 
-void BaseDrawMesh11::DrawUpdate(
-	ID3D11DeviceContext* _dc,
-	FrameObject& _object)
+void BaseDrawMesh11::DrawUpdate(FrameObject& _object)
 {
 
 #if DEBUG
@@ -137,7 +107,7 @@ void BaseDrawMesh11::DrawUpdate(
 	start = timeGetTime();
 #endif
 
-	DrawMain(_dc, _object);
+	DrawMain(_object);
 
 #if DEBUG
 	end = timeGetTime();
@@ -153,14 +123,12 @@ void BaseDrawMesh11::DrawUpdate(
 	{
 		auto childObj = ChPtr::SharedSafeCast<FrameObject>(child);
 		if (childObj == nullptr)continue;
-		DrawUpdate(_dc,*childObj);
+		DrawUpdate(*childObj);
 	}
 
 }
 
-void BaseDrawMesh11::DrawMain(
-	ID3D11DeviceContext* _dc,
-	ChCpp::FrameObject& _object)
+void BaseDrawMesh11::DrawMain(ChCpp::FrameObject& _object)
 {
 
 	ChLMat drawMatrix = _object.GetDrawLHandMatrix();
@@ -172,10 +140,6 @@ void BaseDrawMesh11::DrawMain(
 	auto&& primitives = frameCom->GetPrimitives();
 
 	if (primitives.empty())return;
-
-	auto&& materialList = frameCom->GetMaterialList();
-
-	if (materialList.empty())return;
 
 	auto&& frame = _object.GetComponent<FrameComponent>();
 
@@ -193,6 +157,11 @@ void BaseDrawMesh11::DrawEnd()
 {
 	unsigned int offsets = 0;
 
+	if (alphaBlendFlg)
+	{
+		SamplePolygonShaderBase11::SetShaderBlender(GetDC());
+	}
+
 	for (auto&& drawData : drawDatas)
 	{
 		if (drawData.second.empty())continue;
@@ -204,24 +173,15 @@ void BaseDrawMesh11::DrawEnd()
 
 			auto&& mate11 = *prim->mate;
 
-			if (mate11.mate.diffuse.a < ALPHA_VALUE)
-			{
-				SampleShaderBase11::SetShaderBlender(dc);
-			}
-			else
-			{
-				SampleShaderBase11::SetShaderDefaultBlender(dc);
-			}
-
 			polyData.SetMateDiffuse(mate11.mate.diffuse);
 			polyData.SetMateSpecularColor(mate11.mate.specularColor);
 			polyData.SetMateSpecularPower(mate11.mate.specularPower);
 			polyData.SetMateAmbientColor(mate11.mate.ambient);
 
-			polyData.SetShaderMaterialData(dc);
+			polyData.SetShaderMaterialData(GetDC());
 
-			prim->vertexBuffer.SetVertexBuffer(dc, offsets);
-			prim->indexBuffer.SetIndexBuffer(dc);
+			prim->vertexBuffer.SetVertexBuffer(GetDC(), offsets);
+			prim->indexBuffer.SetIndexBuffer(GetDC());
 
 			for (auto&& drawFrame : drawData.second)
 			{
@@ -230,50 +190,35 @@ void BaseDrawMesh11::DrawEnd()
 
 				polyData.SetFrameMatrix(drawFrame->frameMatrix);
 
-				polyData.SetVSCharaData(dc);
+				polyData.SetVSCharaData(GetDC());
 
 				drawFrame->drawFrame->SetBoneData(boneData);
 
-				boneData.SetVSDrawData(dc);
+				boneData.SetVSDrawData(GetDC());
 
 				polyData.SetBaseTexture(prim->textures[Ch3D::TextureType::Diffuse].get());
 				polyData.SetNormalTexture(prim->textures[Ch3D::TextureType::Normal].get());
 
-				polyData.SetShaderTexture(dc);
+				polyData.SetShaderTexture(GetDC());
 
-				dc->DrawIndexed(prim->indexArray.size(), 0, 0);
+				GetDC()->DrawIndexed(prim->indexArray.size(), 0, 0);
 			}
 		}
 
-		SampleShaderBase11::SetShaderDefaultBlender(dc);
-
 	}
+
 	if(!drawDatas.empty())drawDatas.clear();
 
-	SampleShaderBase11::DrawEnd();
+	SamplePolygonShaderBase11::SetShaderDefaultBlender(GetDC());
+
+	SamplePolygonShaderBase11::DrawEnd();
 }
 
 void BaseDrawMesh11::Update(ID3D11DeviceContext* _dc)
 {
 	if (!updateFlg)return;
 
-	//•`‰æ•û–@//
-	D3D11_RASTERIZER_DESC desc
-	{
-		fill,
-		cull,
-		false,
-		0,
-		0.0f,
-		0.0f,
-		true,
-		false,
-		true,
-		false
-	};
-
-
-	SampleShaderBase11::CreateRasteriser(desc);
+	SamplePolygonShaderBase11::Update(_dc);
 
 	updateFlg = false;
 }

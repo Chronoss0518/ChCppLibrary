@@ -10,6 +10,8 @@
 #include"ChJsonBoolean.h"
 #include"../ChCumulative/ChCumulative.h"
 
+#define USE_COLON_FLG 0
+
 using namespace ChCpp;
 
 constexpr char nullText[] = "null";
@@ -46,6 +48,68 @@ ChPtr::Shared<JsonBaseType> JsonBaseType::GetParameter(const std::string& _json)
 	if (res != nullptr)return res;
 
 	return  ChPtr::Make_S<JsonNull>();
+}
+
+std::string JsonBaseType::FormatDocument(const std::string& _str)
+{
+	std::vector<char>testCharList = { '[','{' ,',', '}',']'};
+
+	ChCpp::Cumulative<char> objectCount = ChCpp::Cumulative<char>('{' , '}');
+	ChCpp::Cumulative<char> arrayCount = ChCpp::Cumulative<char>('[', ']');
+	bool beforeCrFlg = false;
+	bool afterCrFlg = false;
+#if USE_COLON_FLG
+	bool colonCrFlg = false;
+#endif
+	std::string res = "";
+
+	for (unsigned long i = 0; i < _str.length(); i++)
+	{
+		beforeCrFlg = false;
+		afterCrFlg = false;
+#if USE_COLON_FLG
+		colonCrFlg = false;
+#endif
+		for (unsigned char j = 0; j <testCharList.size(); j++)
+		{
+			if (_str[i] != testCharList[j])continue;
+			beforeCrFlg = j > 2;
+
+#if USE_COLON_FLG
+			afterCrFlg = j < 2;
+			//colonCrFlg = j == 2;
+#else
+			afterCrFlg = j <= 2;
+#endif 
+			break;
+		}
+
+		objectCount.Update(_str[i]);
+		arrayCount.Update(_str[i]);
+
+		if ((beforeCrFlg) && i > 0)
+		{
+			res += '\n' + GetTabText(objectCount.GetCount() + arrayCount.GetCount());
+		}
+
+		res += _str[i];
+
+#if USE_COLON_FLG
+		if (afterCrFlg || colonCrFlg)
+		{
+			res += '\n' + GetTabText(objectCount.GetCount() + arrayCount.GetCount());
+		}
+#else
+
+		if (afterCrFlg)
+		{
+			res += '\n' + GetTabText(objectCount.GetCount() + arrayCount.GetCount());
+		}
+#endif
+
+	}
+
+	return res;
 }
 
 ChPtr::Shared<JsonObject> JsonBaseType::GetParameterToObject(const std::string& _json)
@@ -91,6 +155,18 @@ ChPtr::Shared<JsonNumber> JsonBaseType::GetParameterToNumber(const std::string& 
 	auto&& res = ChPtr::Make_S<JsonNumber>();
 
 	*res = ChStr::GetFloatingFromText<long double>(_json);
+
+	return res;
+}
+
+std::string JsonBaseType::GetTabText(unsigned long _count)
+{
+	std::string res = "";
+
+	for (unsigned long i = 0; i < _count; i++)
+	{
+		res += "\t";
+	}
 
 	return res;
 }
@@ -164,7 +240,7 @@ std::string JsonBaseType::GetRawText(unsigned long& _textPosition, const std::st
 		}
 
 
-		do
+		while (testNum->GetCount() > 0)
 		{
 			_textPosition++;
 			if (_parameterObject.LineCount() <= _textPosition)return "";
@@ -176,7 +252,7 @@ std::string JsonBaseType::GetRawText(unsigned long& _textPosition, const std::st
 				testNum->Update(testText[i]);
 			}
 
-		} while (testNum->GetCount() > 0);
+		}
 	}
 	else if (res[0] == '{')
 	{
@@ -202,7 +278,7 @@ std::string JsonBaseType::GetRawText(unsigned long& _textPosition, const std::st
 			testNum->Update(res[i]);
 		}
 
-		do
+		while(testNum->GetCount() > 0)
 		{
 			_textPosition++;
 			if (_parameterObject.LineCount() <= _textPosition)return "";
@@ -216,7 +292,7 @@ std::string JsonBaseType::GetRawText(unsigned long& _textPosition, const std::st
 			}
 
 
-		} while (testNum->GetCount() > 0);
+		} 
 	}
 
 	return res;

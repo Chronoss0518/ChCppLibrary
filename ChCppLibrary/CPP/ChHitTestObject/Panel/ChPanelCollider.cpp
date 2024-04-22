@@ -45,7 +45,6 @@ bool  PanelCollider::IsHit(
 		auto tmp = _target->GetMat();
 		pos = tmp.GetPosition();
 		ray = tmp.TransformCoord(ray);
-
 	}
 
 	{

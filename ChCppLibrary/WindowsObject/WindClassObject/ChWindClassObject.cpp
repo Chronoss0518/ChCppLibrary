@@ -56,7 +56,7 @@ LRESULT CALLBACK ChWin::BaseWndProc(
 		else
 		{
 
-			auto child = ((ChWin::WindObject*)GetWindowLongPtrA((HWND)LOWORD(_wParam), GWLP_USERDATA));
+			auto child = ((ChWin::WindObject*)GetWindowLongPtrFunction((HWND)LOWORD(_wParam), GWLP_USERDATA));
 
 			if (ChPtr::NotNullCheck(child))
 			{

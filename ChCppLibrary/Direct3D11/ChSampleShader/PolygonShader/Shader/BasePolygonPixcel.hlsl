@@ -6,6 +6,7 @@
 
 #include"../../../../ShaderHeaderFiles/HLSL/5.0/DrawPolygon.hlsli"
 #include"../../../../ShaderHeaderFiles/HLSL/5.0/Light.hlsli"
+#include"../../../../ShaderHeaderFiles/HLSL/5.0/Texture/BaseTexture.hlsli"
 
 float4 LightCol(VS_OUT _base, float4 _color);
 
@@ -13,19 +14,16 @@ float4 PLightCol(ChPointLight _plight, VS_OUT _base, float4 _color);
 
 #define DebugFlgs 0
 
+struct OutColor
+{
+	float4 color :SV_Target0;
+    float4 highLight : SV_Target1;
+	
 #if DebugFlgs
-struct OutColor
-{
-	float4 color :SV_Target0;
-};
-#else
-struct OutColor
-{
-	float4 color :SV_Target0;
-	//float depth : SV_DepthGreaterEqual;
+	float depth : SV_DepthGreaterEqual;
+#endif
 };
 
-#endif
 
 float3 GetLightColor(float4 _baseColor, VS_OUT _inVertex, ChP_Material _mate);
 
@@ -71,26 +69,29 @@ OutColor main(VS_OUT _in)
 
 	outColor.color = _in.color;
 
-	float4 baseTexCol = baseTex.Sample(baseSmp, _in.uv);
-
-	clip(baseTexCol.a - 0.1f);
-
-	float3 lightBloomColor = outColor.color.rgb;
-
-	outColor.color = mate.dif * baseTexCol * outColor.color;
-
-	lightBloomColor.r = max(mate.dif.r - 1.0f, 0.0f);
-	lightBloomColor.g = max(mate.dif.g - 1.0f, 0.0f);
-	lightBloomColor.b = max(mate.dif.b - 1.0f, 0.0f);
-
-	outColor.color.rgb =
-		lightBloomColor.r > 0.0f ||
-		lightBloomColor.g > 0.0f ||
-		lightBloomColor.b > 0.0f ?
+	float4 baseTexCol = GetBaseTextureColor(_in.uv);
+	
+    outColor.highLight = outColor.color = mate.dif * baseTexCol * outColor.color;
+	
+    AlphaTest(outColor.color.a);
+	
+	outColor.highLight.r = max(outColor.highLight.r - 1.0f, 0.0f);
+	outColor.highLight.g = max(outColor.highLight.g - 1.0f, 0.0f);
+    outColor.highLight.b = max(outColor.highLight.b - 1.0f, 0.0f);
+	
+    outColor.highLight.a = 
+		outColor.highLight.r +
+		outColor.highLight.g +
+		outColor.highLight.b > 0.0f ?
+		1.0f : 0.0f;
+	
+    outColor.color.rgb = 
+		outColor.highLight.a > 0.0f ?
 		outColor.color.rgb : GetLightColor(outColor.color, _in, mate);
-
-	//outColor.depth = outColor.color.a > 0.99f ? 0.0f : 0.99f;
-
+	
+    outColor.highLight.rgb = outColor.highLight.a > 0.0f ? outColor.highLight.rgb : 0.0f;
+    outColor.highLight.a = 1.0f;
+	
 #endif
 
 	return outColor;

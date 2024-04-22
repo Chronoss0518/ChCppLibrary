@@ -55,10 +55,10 @@ namespace ChCpp
 	private://Values//
 
 		//count‚ğã‚°‚é’l//
-		CharaType add = 0;
+		CharaType add;
 
 		//count‚ğ‰º‚°‚é’l//
-		CharaType sub = 0;
+		CharaType sub;
 
 	};
 }

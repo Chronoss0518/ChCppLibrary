@@ -9,11 +9,12 @@
 using namespace ChCpp;
 
 
-static constexpr unsigned char escapeSequenceBaseCharaList[8] =
+#define ESCAPE_SEQUENCE_COUNT 7
+
+static constexpr unsigned char escapeSequenceBaseCharaList[ESCAPE_SEQUENCE_COUNT] =
 {
 	'\"',
 	'\\',
-	'/',
 	'\b',
 	'\f',
 	'\n',
@@ -21,11 +22,10 @@ static constexpr unsigned char escapeSequenceBaseCharaList[8] =
 	'\t'
 };
 
-static constexpr unsigned char escapeSequenceTextCharaList[8] =
+static constexpr unsigned char escapeSequenceTextCharaList[ESCAPE_SEQUENCE_COUNT] =
 {
 	'\"',
 	'\\',
-	'/',
 	'b',
 	'f',
 	'n',
@@ -158,6 +158,10 @@ JsonString& JsonString::operator =(const long double& _value)
 	return *this;
 }
 
+JsonString::operator std::string()const
+{
+	return GetString();
+}
 
 JsonString::JsonString()
 {
@@ -259,48 +263,27 @@ bool JsonString::SetRawData(const std::string& _jsonText)
 	bool isEscapeSequence = false;
 	for (unsigned long i = 0; i < testText.size(); i++)
 	{
-		isEscapeSequence = false;
+
+		if (testText[i] == '\n')
+			return false;
+
 
 		if (testText[i] == '\\')
 		{
-			if (i + 1 >= testText.size())return false;
-
-			for (unsigned char j = 0; j < 8; j++)
+			isEscapeSequence = false;
+			for (unsigned long j = 0; j < ESCAPE_SEQUENCE_COUNT; j++)
 			{
 				if (testText[i + 1] != escapeSequenceTextCharaList[j])continue;
+				i++;
 				setTestText += escapeSequenceBaseCharaList[j];
 				isEscapeSequence = true;
 				break;
 			}
-			if (isEscapeSequence)continue;
-			if (testText[i + 1] == '0' && testText.size() > i + 3)
-			{
-				if (!AddDecimal(setTestText, testText.substr(i + 2, 2), ChStd::OCTAL()))return false;
-				i += 3;
-				continue;
-			}
-			if (testText[i + 1] == 'x' && testText.size() > i + 5)
-			{
-				if (AddDecimal(setTestText, testText.substr(i + 2, 4), ChStd::HEXA_DECIMAL()))
-				{
-					i += 5;
-					continue;
-				}
-			}
-			if (testText[i + 1] == 'x' && testText.size() > i + 3)
-			{
-				if (!AddDecimal(setTestText, testText.substr(i + 2, 2), ChStd::HEXA_DECIMAL()))return false;
-				i += 3;
-				continue;
-			}
-			if (testText[i + 1] == 'u' && testText.size() > i + 5)
-			{
-				if (!AddDecimal(setTestText,testText.substr(i + 2,4), ChStd::HEXA_DECIMAL()))return false;
-				i += 5;
-				continue;
-			}
 
-			return false;
+			if (!isEscapeSequence)
+				return false;
+
+			continue;
 		}
 
 		setTestText += testText[i];
@@ -321,9 +304,9 @@ std::string JsonString::GetRawData()const
 	{
 		isEscapeSequence = false;
 
-		for (unsigned char j = 0; j < 8; j++)
+		for (unsigned char j = 0; j < ESCAPE_SEQUENCE_COUNT; j++)
 		{
-			if (escapeSequenceBaseCharaList[j] != outText[i])continue;
+			if (escapeSequenceBaseCharaList[j] != value[i])continue;
 			outText += "\\";
 			outText += escapeSequenceTextCharaList[j];
 			isEscapeSequence = true;

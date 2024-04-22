@@ -36,7 +36,7 @@ void FBX::LoadFBXBinary(const std::string& _filePath)
 
 	{
 
-		ChCpp::File<> file;
+		ChCpp::CharFile file;
 		file.FileOpen(_filePath, std::ios::in | std::ios::binary);
 
 		file.FileReadBinary(binarys);
@@ -267,7 +267,7 @@ void FBX::LoadFBXText(const std::string& _filePath)
 
 	{
 
-		ChCpp::File<> file;
+		ChCpp::CharFile file;
 		file.FileOpen(_filePath, std::ios::in);
 
 		text = file.FileReadText();

@@ -80,7 +80,6 @@ namespace ChCpp
 			for (auto&& com : comList)
 			{
 				if (com->dFlg)continue;
-				if (!com->useFlg)continue;
 
 				auto testCom = ChPtr::SharedSafeCast<T>(com);
 
@@ -102,7 +101,6 @@ namespace ChCpp
 			for (auto&& com : comList)
 			{
 				if (com->dFlg)continue;
-				if (!com->useFlg)continue;
 
 				auto test = ChPtr::SharedSafeCast<T>(com);
 				if (test == nullptr)continue;
