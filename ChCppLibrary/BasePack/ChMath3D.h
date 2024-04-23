@@ -27,6 +27,11 @@ struct ChUIMatrix;
 struct ChVector2 : public ChMath::Vector2Base<float>
 {
 
+	static ChVector2 FromPosition(const float& _x, const float& _y);
+	static ChVector2 FromSize(const float& _w, const float& _h);
+	static ChVector2 FromTime(const float& _start, const float& _end);
+	static ChVector2 FromHighLow(const float& _high, const float& _low);
+
 	ChVector2& operator*=(const float& _num);
 	ChVector2 operator*(const float& _num) const;
 	ChVector2& operator/=(const float& _num);
@@ -92,11 +97,22 @@ struct ChVector2 : public ChMath::Vector2Base<float>
 		const std::string& _cutChar = ","
 		, const std::string& _endChar = ";");
 
+	std::wstring Serialize(
+		const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";");
+
 	void Deserialize(
 		const std::string& _str
 		, const size_t _fPos = 0
 		, const std::string& _cutChar = ","
 		, const std::string& _endChar = ";"
+		, const unsigned int _digit = 6);
+
+	void Deserialize(
+		const std::wstring& _str
+		, const size_t _fPos = 0
+		, const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";"
 		, const unsigned int _digit = 6);
 
 public://Set Function//
@@ -206,6 +222,9 @@ using ChVec2 = ChVector2;
 struct ChVector3 : public ChMath::Vector3Base<float>
 {
 
+	static ChVector3 FromPosition(const float& _x, const float& _y, const float _z);
+	static ChVector3 FromColor(const float& _r, const float& _g, const float& _b);
+
 	ChVector3& operator*=(const float& _num);
 	ChVector3 operator*(const float& _num) const;
 	ChVector3& operator/=(const float& _num);
@@ -289,11 +308,22 @@ struct ChVector3 : public ChMath::Vector3Base<float>
 		const std::string& _cutChar = ","
 		, const std::string& _endChar = ";");
 
+	std::wstring Serialize(
+		const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";");
+
 	void Deserialize(
 		const std::string& _str
 		, const size_t _fPos = 0
 		, const std::string& _cutChar = ","
 		, const std::string& _endChar = ";"
+		, const unsigned int _digit = 6);
+
+	void Deserialize(
+		const std::wstring& _str
+		, const size_t _fPos = 0
+		, const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";"
 		, const unsigned int _digit = 6);
 
 public://Set Function//
@@ -420,6 +450,10 @@ struct ChVector4 : public ChMath::Vector4Base<float>
 	///////////////////////////////////////////////////////////////////////////////////
 	//StaticFunction//
 
+	static ChVector4 FromPosition(const float& _x, const float& _y, const float _z, const float& _w);
+	static ChVector4 FromColor(const float& _r, const float& _g, const float& _b, const float& _a);
+	static ChVector4 FromRect(const float& _left, const float& _top, const float& _right, const float& _bottom);
+
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//Operator//
@@ -491,9 +525,17 @@ struct ChVector4 : public ChMath::Vector4Base<float>
 		const std::string& _cutChar = ","
 		, const std::string& _endChar = ";");
 
+	std::wstring Serialize(
+		const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";");
+
 	std::string SerializeARGB(
 		const std::string& _cutChar = ","
 		, const std::string& _endChar = ";");
+
+	std::wstring SerializeARGB(
+		const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";");
 
 	void Deserialize(
 		const std::string& _str
@@ -502,11 +544,25 @@ struct ChVector4 : public ChMath::Vector4Base<float>
 		, const std::string& _endChar = ";"
 		, const unsigned int _digit = 6);
 
+	void Deserialize(
+		const std::wstring& _str
+		, const size_t _fPos = 0
+		, const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";"
+		, const unsigned int _digit = 6);
+
 	void DeserializeARGB(
 		const std::string& _str
 		, const size_t _fPos = 0
 		, const std::string& _cutChar = ","
 		, const std::string& _endChar = ";"
+		, const unsigned int _digit = 6);
+
+	void DeserializeARGB(
+		const std::wstring& _str
+		, const size_t _fPos = 0
+		, const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";"
 		, const unsigned int _digit = 6);
 
 	inline void WParamSaturate()
@@ -687,11 +743,22 @@ public:
 		const std::string& _cutChar = ","
 		, const std::string& _endChar = ";");
 
+	std::wstring Serialize(
+		const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";");
+
 	void Deserialize(
 		const std::string& _str
-		, const size_t _fPos = 0,
-		const std::string& _cutChar = ","
+		, const size_t _fPos = 0
+		, const std::string& _cutChar = ","
 		, const std::string& _endChar = ";"
+		, const unsigned int _digit = 6);
+
+	void Deserialize(
+		const std::wstring& _str
+		, const size_t _fPos = 0
+		, const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";"
 		, const unsigned int _digit = 6);
 
 public:
@@ -803,10 +870,25 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 		return m.Serialize(_cutChar);
 	}
 
+	inline std::wstring Serialize(
+		const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";")
+	{
+		return m.Serialize(_cutChar);
+	}
+
 	inline std::string SerializeUpper(
 		const std::string& _cutChar = ","
 		, const std::string& _endChar = ";"
 		, const std::string& _cutTo4Char = "\n")
+	{
+		return m.SerializeUpper(_cutChar, _endChar, _cutTo4Char);
+	}
+
+	inline std::wstring SerializeUpper(
+		const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";"
+		, const std::wstring& _cutTo4Char = L"\n")
 	{
 		return m.SerializeUpper(_cutChar, _endChar, _cutTo4Char);
 	}
@@ -821,6 +903,15 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 		m.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
 	}
 
+	inline void Deserialize(
+		const std::wstring& _str
+		, const size_t _fPos = 0
+		, const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";"
+		, const unsigned int _digit = 6)
+	{
+		m.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
+	}
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//SetFunction//
@@ -939,10 +1030,25 @@ struct ChRMatrix : public ChMath::BaseMatrix4x4<float>
 		return m.Serialize(_cutChar);
 	}
 
+	inline std::wstring Serialize(
+		const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";")
+	{
+		return m.Serialize(_cutChar);
+	}
+
 	inline std::string SerializeUpper(
 		const std::string& _cutChar = ","
 		, const std::string& _endChar = ";"
 		, const std::string& _cutTo4Char = "\n")
+	{
+		return m.SerializeUpper(_cutChar, _endChar, _cutTo4Char);
+	}
+
+	inline std::wstring SerializeUpper(
+		const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";"
+		, const std::wstring& _cutTo4Char = L"\n")
 	{
 		return m.SerializeUpper(_cutChar, _endChar, _cutTo4Char);
 	}
@@ -952,6 +1058,16 @@ struct ChRMatrix : public ChMath::BaseMatrix4x4<float>
 		, const size_t _fPos = 0
 		, const std::string& _cutChar = ","
 		, const std::string& _endChar = ";"
+		, const unsigned int _digit = 6)
+	{
+		m.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
+	}
+
+	inline void Deserialize(
+		const std::wstring& _str
+		, const size_t _fPos = 0
+		, const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";"
 		, const unsigned int _digit = 6)
 	{
 		m.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);

@@ -7,6 +7,38 @@
 //ChVector2 Method//
 ///////////////////////////////////////////////////////////////////////////////////
 
+ChVector2 ChVector2::FromPosition(const float& _x, const float& _y)
+{
+	ChVector2 res;
+	res.x = _x;
+	res.y = _y;
+	return res;
+}
+
+ChVector2 ChVector2::FromSize(const float& _w, const float& _h)
+{
+	ChVector2 res;
+	res.w = _w;
+	res.h = _h;
+	return res;
+}
+
+ChVector2 ChVector2::FromTime(const float& _start, const float& _end)
+{
+	ChVector2 res;
+	res.start = _start;
+	res.end = _end;
+	return res;
+}
+
+ChVector2 ChVector2::FromHighLow(const float& _high, const float& _low)
+{
+	ChVector2 res;
+	res.high = _high;
+	res.low = _low;
+	return res;
+}
+
 ChVector2& ChVector2::operator=(const ChVector2& _vec)
 {
 	if (this == &_vec)return *this;
@@ -178,6 +210,13 @@ std::string ChVec2::Serialize(
 	return val.Serialize(_cutChar, _endChar);
 }
 
+std::wstring ChVec2::Serialize(
+	const std::wstring& _cutChar
+	, const std::wstring& _endChar)
+{
+	return val.Serialize(_cutChar, _endChar);
+}
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChVec2::Deserialize(
@@ -185,6 +224,16 @@ void ChVec2::Deserialize(
 	, const size_t _fPos
 	, const std::string& _cutChar
 	, const std::string& _endChar
+	, const unsigned int _digit)
+{
+	val.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
+}
+
+void ChVec2::Deserialize(
+	const std::wstring& _str
+	, const size_t _fPos
+	, const std::wstring& _cutChar
+	, const std::wstring& _endChar
 	, const unsigned int _digit)
 {
 	val.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
@@ -302,6 +351,24 @@ void ChVec2::Cross(
 ///////////////////////////////////////////////////////////////////////////////////
 //ChVector3 Method//
 ///////////////////////////////////////////////////////////////////////////////////
+
+ChVector3 ChVector3::FromPosition(const float& _x, const float& _y, const float _z)
+{
+	ChVector3 res;
+	res.x = _x;
+	res.y = _y;
+	res.z = _z;
+	return res;
+}
+
+ChVector3 ChVector3::FromColor(const float& _r, const float& _g, const float& _b)
+{
+	ChVector3 res;
+	res.r = _r;
+	res.g = _g;
+	res.b = _b;
+	return res;
+}
 
 ChVector3& ChVec3::operator*= (const float& _num)
 {
@@ -476,6 +543,13 @@ std::string ChVec3::Serialize(
 	return val.Serialize(_cutChar, _endChar);
 }
 
+std::wstring ChVec3::Serialize(
+	const std::wstring& _cutChar
+	, const std::wstring& _endChar)
+{
+	return val.Serialize(_cutChar, _endChar);
+}
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChVec3::Deserialize(
@@ -483,6 +557,16 @@ void ChVec3::Deserialize(
 	, const size_t _fPos
 	, const std::string& _cutChar
 	, const std::string& _endChar
+	, const unsigned int _digit)
+{
+	val.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
+}
+
+void ChVec3::Deserialize(
+	const std::wstring& _str
+	, const size_t _fPos
+	, const std::wstring& _cutChar
+	, const std::wstring& _endChar
 	, const unsigned int _digit)
 {
 	val.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
@@ -599,6 +683,36 @@ void ChVec3::Cross(
 ///////////////////////////////////////////////////////////////////////////////////
 //ChVector4 Method//
 ///////////////////////////////////////////////////////////////////////////////////
+
+ChVector4 ChVector4::FromPosition(const float& _x, const float& _y, const float _z, const float& _w)
+{
+	ChVector4 res;
+	res.x = _x;
+	res.y = _y;
+	res.z = _z;
+	res.w = _w;
+	return res;
+}
+
+ChVector4 ChVector4::FromColor(const float& _r, const float& _g, const float& _b, const float& _a)
+{
+	ChVector4 res;
+	res.r = _r;
+	res.g = _g;
+	res.b = _b;
+	res.a = _a;
+	return res;
+}
+
+ChVector4 ChVector4::FromRect(const float& _left, const float& _top, const float& _right, const float& _bottom)
+{
+	ChVector4 res;
+	res.left = _left;
+	res.top = _top;
+	res.right = _right;
+	res.bottom = _bottom;
+	return res;
+}
 
 ChVector4& ChVec4::operator*= (const float& _num)
 {
@@ -775,11 +889,32 @@ std::string ChVec4::Serialize(
 	return val.Serialize(_cutChar, _endChar);
 }
 
+std::wstring ChVec4::Serialize(
+	const std::wstring& _cutChar
+	, const std::wstring& _endChar)
+{
+	return val.Serialize(_cutChar, _endChar);
+}
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 std::string ChVec4::SerializeARGB(
 	const std::string& _cutChar
 	, const std::string& _endChar)
+{
+	ChVec4 tmpVec;
+
+	for (unsigned char i = 0; i < 4; i++)
+	{
+		tmpVec.val[(i + 1) % 4] = val[i];
+	}
+
+	return tmpVec.Serialize(_cutChar, _endChar);
+}
+
+std::wstring ChVec4::SerializeARGB(
+	const std::wstring& _cutChar
+	, const std::wstring& _endChar)
 {
 	ChVec4 tmpVec;
 
@@ -803,6 +938,16 @@ void ChVec4::Deserialize(
 	val.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
 }
 
+void ChVec4::Deserialize(
+	const std::wstring& _str
+	, const size_t _fPos
+	, const std::wstring& _cutChar
+	, const std::wstring& _endChar
+	, const unsigned int _digit)
+{
+	val.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////
 
@@ -811,6 +956,24 @@ void ChVec4::DeserializeARGB(
 	, const size_t _fPos
 	, const std::string& _cutChar
 	, const std::string& _endChar
+	, const unsigned int _digit)
+{
+
+	ChVec4 tmpVec;
+	tmpVec.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
+
+	for (unsigned char i = 0; i < 4; i++)
+	{
+		val[i] = tmpVec.val[(i + 1) % 4];
+	}
+
+}
+
+void ChVec4::DeserializeARGB(
+	const std::wstring& _str
+	, const size_t _fPos
+	, const std::wstring& _cutChar
+	, const std::wstring& _endChar
 	, const unsigned int _digit)
 {
 
@@ -962,6 +1125,13 @@ std::string ChQua::Serialize(
 	return val.Serialize(_cutChar, _endChar);
 }
 
+std::wstring ChQua::Serialize(
+	const std::wstring& _cutChar
+	, const std::wstring& _endChar)
+{
+	return val.Serialize(_cutChar, _endChar);
+}
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChQua::Deserialize(
@@ -969,6 +1139,16 @@ void ChQua::Deserialize(
 	, const size_t _fPos
 	, const std::string& _cutChar
 	, const std::string& _endChar
+	, const unsigned int _digit)
+{
+	val.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
+}
+
+void ChQua::Deserialize(
+	const std::wstring& _str
+	, const size_t _fPos
+	, const std::wstring& _cutChar
+	, const std::wstring& _endChar
 	, const unsigned int _digit)
 {
 	val.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
