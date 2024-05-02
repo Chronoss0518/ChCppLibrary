@@ -54,12 +54,17 @@ void DirectX3D11::Release()
 {
 
 	if (ChPtr::NotNullCheck(device)) { device->Release(); device = nullptr; }
+
 	if (ChPtr::NotNullCheck(dContext))
 	{
 		dContext->ClearState();  dContext->Release(); dContext = nullptr;
 	}
 
 	if (ChPtr::NotNullCheck(window)) { window->Release(); window = nullptr; }
+
+	if (ChPtr::NotNullCheck(surface)) { surface->Release(); surface = nullptr; }
+
+	if (ChPtr::NotNullCheck(renderTarget)) { renderTarget->Release(); renderTarget = nullptr; }
 
 	SetInitFlg(false);
 }
@@ -77,8 +82,8 @@ void DirectX3D11::CreateDevice(
 	ZeroMemory(&scd, sizeof(DXGI_SWAP_CHAIN_DESC));
 
 	scd.BufferCount = 1;
-	scd.BufferDesc.Width = static_cast<unsigned int>(_scrW);
-	scd.BufferDesc.Height = static_cast<unsigned int>(_scrH);
+	scd.BufferDesc.Width = static_cast<unsigned int>(createDeviceWitdh = _scrW);
+	scd.BufferDesc.Height = static_cast<unsigned int>(createDeviceHeight = _scrH);
 	scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 
 	//“h‚è‘Ö‚¦‚éŽžŠÔ//
@@ -103,12 +108,12 @@ void DirectX3D11::CreateDevice(
 	D3D_FEATURE_LEVEL lv[] = { D3D_FEATURE_LEVEL_11_0 };
 	D3D_FEATURE_LEVEL rLv;
 
-	D3D11CreateDeviceAndSwapChain
+	if (FAILED(D3D11CreateDeviceAndSwapChain
 	(
 		NULL
 		, D3D_DRIVER_TYPE_HARDWARE
 		, NULL
-		, NULL
+		, D3D11_CREATE_DEVICE_FLAG::D3D11_CREATE_DEVICE_BGRA_SUPPORT
 		//,0
 		, lv
 		, 1
@@ -118,7 +123,25 @@ void DirectX3D11::CreateDevice(
 		, &device
 		, &rLv
 		, &dContext
-	);
+	)))
+	{
+		Release();
+		return;
+	};
+
+	if (FAILED(window->GetBuffer(0, IID_PPV_ARGS(&surface))))
+	{
+		Release();
+		return;
+	}
+
+	ID3D11Texture2D* pBackBuffer = nullptr;
+
+	window->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
+
+	device->CreateRenderTargetView(pBackBuffer, nullptr, &renderTarget);
+
+	pBackBuffer->Release();
 
 
 }

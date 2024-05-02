@@ -86,7 +86,26 @@ bool  SphereCollider::IsHit(
 bool  SphereCollider::IsHit(
 	HitTestRay* _target)
 {
-	return false;
+	auto&& pos = _target->GetPos();
+	auto&& dir = _target->GetRayDir();
+
+	auto&& thisPos = GetPos();
+
+	ChVec3 vec1 = dir;
+	ChVec3 vec2 = thisPos - pos;
+
+	ChVec3 toDir = vec2 - vec1;
+	toDir.Normalize();
+	float tmpLen = toDir.Len() - GetScl().Len();
+
+	if (tmpLen < 0.0f)return false;
+	toDir *= tmpLen;
+
+	SetHitVector(toDir);
+
+	_target->SetHitVector(toDir * -1.0f);
+
+	return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////

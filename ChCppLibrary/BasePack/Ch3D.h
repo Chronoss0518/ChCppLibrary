@@ -25,6 +25,7 @@ namespace Ch3D
 		_pos->pos = _val;
 	}
 
+	//ç∂è„Ç™0.0,0.0ÇÃç¿ïWån//
 	struct UV
 	{
 		ChVec2 uv;
@@ -78,10 +79,10 @@ namespace Ch3D
 				blendPows[i] = 0.0f;
 			}
 		}
+		unsigned long boneNum = 0;
 
 		float blendPows[Num];
 
-		unsigned long boneNum = 0;
 	};
 
 	struct BoneData
@@ -150,7 +151,7 @@ namespace Ch3D
 	struct Transform
 	{
 		ChVec3 pos;
-		ChVec3 rot;
+		ChQua rot;
 		ChVec3 scl = 1.0f;
 
 		inline ChLMat& GetLeftHandMatrix()

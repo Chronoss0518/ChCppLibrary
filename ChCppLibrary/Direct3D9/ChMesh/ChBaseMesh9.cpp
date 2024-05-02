@@ -93,7 +93,7 @@ void BaseMesh9::CreateEasyFaceList()
 void BaseMesh9::SetMaterialName(const std::string& _fileName)
 {
 
-	ChCpp::File<> file;
+	ChCpp::CharFile file;
 	file.FileOpen(_fileName);
 
 	std::string tmpStr;
@@ -581,7 +581,7 @@ void SXFileMesh9::OpenFile(
 		std::string fStr;
 		{
 
-			ChCpp::File<> file;
+			ChCpp::CharFile file;
 			file.FileOpen(_pathName + _fileName);
 			fStr = file.FileReadText();
 			file.FileClose();

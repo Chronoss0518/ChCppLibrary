@@ -5,7 +5,15 @@
 
 namespace ChCpp
 {
+
 	class BaseFrame;
+
+	struct SendDataClass{
+		virtual ~SendDataClass(){}
+	};
+	struct SaveDataClass{
+		virtual ~SaveDataClass() {}
+	};
 
 	class FrameList
 	{
@@ -39,6 +47,7 @@ namespace ChCpp
 			return ChPtr::SharedSafeCast<T>(GetNowFrame());
 		}
 
+		inline void SetSendData(ChPtr::Shared<SendDataClass> _sendData) { sendData = _sendData; }
 
 		inline unsigned long GetNowFrameNo() { return nowFrameNo; }
 
@@ -52,11 +61,8 @@ namespace ChCpp
 
 		void Release()
 		{
-			if (ChPtr::NotNullCheck(saveData))
-			{
-				delete saveData;
-				saveData = nullptr;
-			}
+			saveData = nullptr;
+			sendData = nullptr;
 
 			nextFrame = nullptr;
 			GetNowFrame() = nullptr;
@@ -64,29 +70,20 @@ namespace ChCpp
 		}
 	public://Other Function
 
-		template<class T>
-		void SaveData(const T* _save)
+		void SaveData(ChPtr::Shared<SaveDataClass> _save)
 		{
-			if (ChPtr::NullCheck(saveData))
-			{
-				saveData = new T();
-			}
+			saveData = _save;
+		}
 
-			auto tmp = static_cast<T*>(saveData);
-
-
-			*tmp = *_save;
+		ChPtr::Shared<SaveDataClass> GetData()
+		{
+			return saveData;
 		}
 
 		template<class T>
-		T* GetData()
+		auto GetData()->typename std::enable_if<std::is_base_of<SaveDataClass,T>::value,ChPtr::Shared<T>>::type
 		{
-			if (ChPtr::NullCheck(saveData))return nullptr;
-
-			auto tmp = static_cast<T*>(saveData);
-
-
-			return tmp;
+			return saveData;
 		}
 
 	protected://Other Function
@@ -99,7 +96,8 @@ namespace ChCpp
 
 		friend BaseFrame;
 
-		void* saveData = nullptr;
+		ChPtr::Shared<SaveDataClass> saveData = nullptr;
+		ChPtr::Shared<SendDataClass> sendData = nullptr;
 
 		unsigned long nextFrameNo = -1;
 		unsigned long nowFrameNo = -1;
@@ -162,16 +160,14 @@ namespace ChCpp
 
 	public://Other Functions//
 
-		template<class T>
-		void SaveData(const T* _save)
+		void SaveData(ChPtr::Shared<SaveDataClass> _save)
 		{
-			FrameList::SaveData<T>(_save);
+			FrameList::SaveData(_save);
 		}
 
-		template<class T>
-		T* GetData()
+		ChPtr::Shared<SaveDataClass> GetData()
 		{
-			return FrameList::GetData<T>();
+			return FrameList::GetData();
 		}
 
 		void ChangeFrame(const std::string& _frameName);
@@ -207,7 +203,7 @@ namespace ChCpp
 	{
 
 	public://InitAndRelease//
-		virtual inline void Init() {};
+		virtual inline void Init(ChPtr::Shared<SendDataClass> _sendData) {};
 
 		virtual inline void Release(){};
 
@@ -221,18 +217,22 @@ namespace ChCpp
 
 	protected://Other Functions//
 
-		template<class T>
-		void SaveData(const T* _save)
+		void SaveData(ChPtr::Shared<SaveDataClass> _save)
 		{
-			if (ChPtr::NullCheck(mgr))return nullptr;
+			if (ChPtr::NullCheck(mgr))return;
 			mgr->SaveData(_save);
 		}
 
-		template<class T>
-		T* GetData()
+		ChPtr::Shared<SaveDataClass> GetData()
 		{
 			if (ChPtr::NullCheck(mgr))return nullptr;
-			return mgr->GetData<T>();
+			return mgr->GetData();
+		}
+
+		void SendData(ChPtr::Shared<SendDataClass> _send)
+		{
+			if (ChPtr::NullCheck(mgr))return;
+			mgr->SetSendData(_send);
 		}
 
 		//ìoò^Ç≥ÇÍÇƒÇ¢ÇÈÉtÉåÅ[ÉÄÇ…à⁄ìÆÇ∑ÇÈ//

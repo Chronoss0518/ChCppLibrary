@@ -1,5 +1,6 @@
 
 #include<Windows.h>
+#include<windowsx.h>
 #include"../../BaseIncluder/ChBase.h"
 #include"../../CPP/ChBitBool/ChBitBool.h"
 #include"../PackData/ChPoint.h"
@@ -10,21 +11,53 @@
 //MouseControllerƒƒ\ƒbƒh//
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChWin::MouseController::Init(const HWND& _hWnd)
+void ChWin::MouseController::Init(WindObject& _windObject)
 {
-	if (ChPtr::NullCheck(_hWnd))return;
+	hWnd = _windObject.GethWnd();
 
-	hWnd = _hWnd;
+	if (ChPtr::NullCheck(hWnd))return;
 
+	_windObject.SetWindProcedure(
+		WM_MOUSEWHEEL,
+		[&](
+			HWND _hWnd,
+			UINT _uMsg,
+			WPARAM _wParam,
+			LPARAM _lParam)->LRESULT
+		{
+			wheelMoveVal.y = GET_WHEEL_DELTA_WPARAM(_wParam);
+			wheelVMoveFlg = true;
+			return 0;
+		});
+
+	_windObject.SetWindProcedure(
+		WM_MOUSEHWHEEL,
+		[&](
+			HWND _hWnd,
+			UINT _uMsg,
+			WPARAM _wParam,
+			LPARAM _lParam)->LRESULT
+		{
+			wheelMoveVal.x = GET_WHEEL_DELTA_WPARAM(_wParam);
+			wheelHMoveFlg = true;
+			return 0;
+		});
+
+	windSize = _windObject.GetWindSize();
+
+	centerPos.x = windSize.w / 2;
+	centerPos.y = windSize.h / 2;
+
+	ScreenToClient(hWnd, &centerPos);
 
 	SetInitFlg(true);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChWin::MouseController::Init(const ChSystem::Windows& _win)
+void ChWin::MouseController::Init(ChSystem::Windows& _win)
 {
-	Init(_win.GethWnd());
+	Init(_win.GetWindObject());
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -32,6 +65,38 @@ void ChWin::MouseController::Init(const ChSystem::Windows& _win)
 void ChWin::MouseController::Release()
 {
 	SetInitFlg(false);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void ChWin::MouseController::SetCursolFromClient(unsigned long _x, unsigned long _y)
+{
+	if (ChPtr::NullCheck(hWnd))return;
+	POINT tmp = {_x,_y};
+
+	ClientToScreen(hWnd, &tmp);
+
+	SetCursolFromScreen(tmp);
+}
+
+void ChWin::MouseController::SetCursolFromClient(const POINT& _point)
+{
+	if (ChPtr::NullCheck(hWnd))return;
+	POINT tmp = _point;
+
+	ClientToScreen(hWnd, &tmp);
+
+	SetCursolFromScreen(tmp);
+}
+
+void ChWin::MouseController::SetCursolFromScreen(unsigned long _x, unsigned long _y)
+{
+	SetCursorPos(_x, _y);
+}
+
+void ChWin::MouseController::SetCursolFromScreen(const POINT& _point)
+{
+	SetCursorPos(_point.x, _point.y);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -54,7 +119,7 @@ ChVec2 ChWin::MouseController::GetNowProPosToChVec2()
 
 	ChVec2 tmpWSize;
 
-	tmpWSize.val = windSize.val;
+	tmpWSize.val = windSize.vec.val;
 
 	ChVec2 tmpVec;
 	tmpVec.x = static_cast<float>(nowPos.x);
@@ -101,47 +166,48 @@ ChVec2 ChWin::MouseController::GetMoveValueToChVec2()
 void ChWin::MouseController::Update()
 {
 	if (!*this)return;
-	
-	UpdateCenterPos();
+
+	if (!wheelVMoveFlg)
+	{
+		wheelMoveVal.y = 0;
+	}
+
+	if (!wheelHMoveFlg)
+	{
+		wheelMoveVal.x = 0;
+	}
+
+	wheelVMoveFlg = false;
+	wheelHMoveFlg = false;
 
 	beforPos = nowPos;
 
-	GetCursorPos(nowPos);
+	GetCursorPos(&nowPos);
 
-	ScreenToClient(hWnd, nowPos);
+	ScreenToClient(hWnd, &nowPos);
 
-	if (!setCenterPosFlg)return;
+	if (setCenterPosFlg)
+	{
+		beforPos = centerPos;
+		POINT tmp;
 
-	beforPos = centerPos;
-	POINT tmp;
+		tmp = centerPos;
 
-	tmp = centerPos;
+		ClientToScreen(hWnd, &tmp);
+		SetCursorPos(tmp.x, tmp.y);
+	}
 
-	ClientToScreen(hWnd, &tmp);
-	SetCursorPos(tmp.x, tmp.y);
+	RECT Rec;
 
-}
+	GetClientRect(hWnd, &Rec);
 
-void ChWin::MouseController::UpdateCenterPos()
-{
-	if (!*this)return;
-	if (!setCenterPosFlg)return;
+	windSize.w = Rec.right - Rec.left;
+	windSize.h = Rec.bottom - Rec.top;
 
-	RECT rec;
-
-	GetClientRect(hWnd, &rec);
-
-	unsigned long w = (rec.right - rec.left);
-	unsigned long h = (rec.bottom - rec.top);
-
-	if (windSize.w == (rec.right - rec.left) && windSize.h == h)return;
-
-	windSize.w = w;
-	windSize.h = h;
-
-	centerPos.x = static_cast<long>((windSize.w) / 2);
-	centerPos.y = static_cast<long>((windSize.h) / 2);
-
-	ScreenToClient(hWnd, centerPos);
+	if (setCenterPosFlg)
+	{
+		centerPos.x = static_cast<long>((Rec.right - Rec.left) / 2);
+		centerPos.y = static_cast<long>((Rec.bottom - Rec.top) / 2);
+	}
 
 }

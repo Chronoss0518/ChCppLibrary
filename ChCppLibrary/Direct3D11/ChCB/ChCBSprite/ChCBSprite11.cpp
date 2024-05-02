@@ -4,6 +4,7 @@
 
 #include"../../ChTexture/ChTexture11.h"
 #include"ChCBSprite11.h"
+#include"../../../ShaderHeaderFiles/HLSL/5.0/Texture/BaseTexture.hlsli"
 
 using namespace ChD3D11;
 using namespace CB;

@@ -164,9 +164,9 @@ bool WindObject::UpdateA()
 
 	if (!IsInit())return false;
 
-	if (!PeekMessageA(&msg, NULL, 0, 0, PM_NOREMOVE))return true;
+	if (!PeekMessageA(&msg, nullptr, 0, 0, PM_NOREMOVE))return true;
 
-	if ((GetMessageA(&msg, NULL, 0, 0)) <= 0)return false;
+	if ((GetMessageA(&msg, nullptr, 0, 0)) <= 0)return false;
 	TranslateMessage(&msg);
 	DispatchMessageA(&msg);
 
@@ -180,9 +180,9 @@ bool WindObject::UpdateW()
 	
 	if (!IsInit())return false;
 
-	if (!PeekMessageW(&msg, NULL, 0, 0, PM_NOREMOVE))return true;
+	if (!PeekMessageW(&msg, nullptr, 0, 0, PM_NOREMOVE))return true;
 
-	if ((GetMessageW(&msg, NULL, 0, 0)) <= 0)return false;
+	if ((GetMessageW(&msg, nullptr, 0, 0)) <= 0)return false;
 	TranslateMessage(&msg);
 	DispatchMessageW(&msg);
 

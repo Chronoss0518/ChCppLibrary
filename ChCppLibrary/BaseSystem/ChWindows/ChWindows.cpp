@@ -13,12 +13,6 @@
 
 using namespace ChSystem;
 
-bool BaseWndProcs(
-	const HWND _hWnd
-	, const UINT _uMsg
-	, const WPARAM _wParam
-	, const LPARAM _lParam);
-
 ///////////////////////////////////////////////////////////////////////////////////////
 //ChWindowsƒƒ\ƒbƒh
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -426,7 +420,7 @@ bool Windows::IsUpdate()
 
 void Windows::SetKeyCode()
 {
-	if (!system->IsUseSystemButtons())return;
+	if (!useSystemButtonFlg)return;
 	if (isKeyUpdate)return;
 	unsigned char keyCode[256];
 	int tmp = GetKeyboardState(keyCode);

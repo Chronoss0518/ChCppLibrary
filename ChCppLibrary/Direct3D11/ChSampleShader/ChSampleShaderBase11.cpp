@@ -41,6 +41,7 @@ void SampleShaderBase11::Init(ID3D11Device* _device)
 		desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
 		desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE::D3D11_COLOR_WRITE_ENABLE_ALL;
 
+
 		CreateBlender(desc);
 	}
 
@@ -60,6 +61,7 @@ void SampleShaderBase11::Init(ID3D11Device* _device)
 		CreateDepthStencilTester(desc);
 
 	}
+
 	SetInitFlg(true);
 }
 
@@ -249,6 +251,7 @@ void SampleShaderBase11::DrawStart(ID3D11DeviceContext* _dc)
 
 	SetShaderRasteriser(_dc);
 
+	dc = _dc;
 
 	drawFlg = true; 
 
@@ -260,6 +263,7 @@ void SampleShaderBase11::DrawEnd()
 {
 	if (!drawFlg)return;
 	drawFlg = false;
+	dc = nullptr;
 	GetShaderNowRunFlg() = false;
 
 }

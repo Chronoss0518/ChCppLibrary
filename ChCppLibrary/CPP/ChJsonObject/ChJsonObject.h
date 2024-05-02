@@ -11,7 +11,7 @@ namespace ChCpp
 
 		bool SetRawData(const std::string& _jsonText)override;
 
-		void SetObject(const std::string& _parameterName,const ChPtr::Shared<JsonBaseType> _value);
+		void Set(const std::string& _parameterName,const ChPtr::Shared<JsonBaseType> _value);
 
 	public: //Get Function//
 
@@ -39,6 +39,28 @@ namespace ChCpp
 		const JsonBoolean* const GetJsonBoolean(const std::string& _parameterName)const;
 		
 		const JsonNumber* const GetJsonNumber(const std::string& _parameterName)const;
+
+		std::vector<std::string>GetKeys()const;
+
+		ChPtr::Shared<JsonArray> GetKeysToArray()const;
+
+		std::vector<ChPtr::Shared<JsonBaseType>>GetValues()const;
+
+		ChPtr::Shared<JsonArray> GetValuesToArray()const;
+
+	public:
+
+		void Remove(const std::string& _parameterName);
+
+		void RemoveHard(const std::string& _parameterName);
+
+		void Clear();
+
+	public:
+
+		inline std::map<std::string, ChPtr::Shared<JsonBaseType>>::iterator begin() { return values.begin(); }
+
+		inline std::map<std::string, ChPtr::Shared<JsonBaseType>>::iterator end() { return values.end(); }
 
 	private:
 

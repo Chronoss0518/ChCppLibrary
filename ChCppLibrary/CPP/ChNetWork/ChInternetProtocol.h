@@ -2,13 +2,12 @@
 #ifndef Ch_CPP_IP_h
 #define Ch_CPP_IP_h
 
-#ifdef _WIN32
+#ifdef _WINDOWS
 
 #include<Windows.h>
 #include<winsock.h>
 
 using socklen_t = int;
-
 #elif __linux__
 
 #include<unistd.h>

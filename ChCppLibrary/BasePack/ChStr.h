@@ -119,7 +119,9 @@ namespace ChStr
 
 		useText = RemoveToUnNums(useText);
 
-		long long tmp = std::atoll(useText.c_str());
+		if (useText.empty())return static_cast<BaseType>(0);
+
+		long long tmp = std::stoll(useText.c_str());
 
 		return static_cast<BaseType>(tmp);
 
@@ -147,7 +149,9 @@ namespace ChStr
 
 		useText = RemoveToUnNums(useText);
 
-		double tmp = std::atof(useText.c_str());
+		if (useText.empty())return static_cast<BaseType>(0.0);
+
+		double tmp = std::stof(useText.c_str());
 
 		return static_cast<BaseType>(tmp);
 	}
@@ -177,7 +181,9 @@ namespace ChStr
 
 		useText = RemoveToUnNums(useText);
 
-		long long tmp = std::atoll(useText.c_str());
+		if (useText.empty())return static_cast<BaseType>(0);
+
+		long long tmp = std::stoll(useText.c_str());
 
 		return static_cast<BaseType>(tmp);
 	}
@@ -204,12 +210,13 @@ namespace ChStr
 
 		useText = RemoveToUnNums(useText);
 
-		double tmp = std::atof(useText.c_str());
+		if (useText.empty())return static_cast<BaseType>(0.0);
+
+		double tmp = std::stof(useText.c_str());
 
 		return static_cast<BaseType>(tmp);
 
 	}
-
 
 	using ConvertUTF8 = std::codecvt_utf8<wchar_t>;
 	using ConvertUTF16 = std::codecvt_utf16<wchar_t>;

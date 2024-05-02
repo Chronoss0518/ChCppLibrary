@@ -1,9 +1,15 @@
 
+#ifndef _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS 4996
+#endif
+
 #include<cstdlib>
 #include<cstring>
 #include<wchar.h>
 #include"../BaseIncluder/ChBase.h"
 #include"ChStr.h"
+
+#define LOCALE_TYPE_COUNT 6
 
 namespace ChStr
 {
@@ -268,31 +274,30 @@ namespace ChStr
 	}
 
 
-
 	//文字列からUTF8のワイド文字列へ変換する//
 	std::wstring UTF8ToWString(const std::string& _str)
 	{
 
-		return GetU8Converter().from_bytes(_str);
+		return GetU8Converter().from_bytes(_str.c_str());
 	}
 
 	//ワイド文字列から文字列へ変換する//
 	std::string UTF8ToString(const std::wstring& _str)
 	{
-		return GetU8Converter().to_bytes(_str);
+		return GetU8Converter().to_bytes(_str.c_str());
 	}
 
 	//文字列からUTF16のワイド文字列へ変換する//
 	std::wstring UTF16ToWString(const std::string& _str)
 	{
 
-		return GetU16Converter().from_bytes(_str);
+		return GetU16Converter().from_bytes(_str.c_str());
 	}
 
 	//ワイド文字列から文字列へ変換する//
 	std::string UTF16ToString(const std::wstring& _str)
 	{
-		return GetU16Converter().to_bytes(_str);
+		return GetU16Converter().to_bytes(_str.c_str());
 	}
 
 }
