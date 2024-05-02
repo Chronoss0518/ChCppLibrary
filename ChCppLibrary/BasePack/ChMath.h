@@ -1639,6 +1639,25 @@ namespace ChMath
 	};
 
 	template<typename T>
+	struct QuaternionBase
+	{
+		union {
+			struct
+			{
+				T x, y, z, w;
+			};
+			VectorBase<T, 4> val;
+		};
+
+		inline QuaternionBase()
+		{
+			val.Identity();
+		}
+
+		inline QuaternionBase(const QuaternionBase<T>& _vec) { val = _vec.val; }
+	};
+
+	template<typename T>
 	struct BaseMatrix2x2
 	{
 		union

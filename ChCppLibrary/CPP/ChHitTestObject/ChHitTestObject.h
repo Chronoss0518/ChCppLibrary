@@ -16,7 +16,7 @@ namespace ChCpp
 
 		inline void SetPosition(const ChVec3& _pos) { mat.SetPosition(_pos); }
 
-		inline void SetRotation(const ChVec3& _rot) { mat.SetRotation(_rot); }
+		inline void SetRotation(const ChQua& _rot) { mat.SetRotation(_rot); }
 
 		inline void SetScalling(const ChVec3& _scl) { mat.SetScalling(_scl); }
 
@@ -35,7 +35,7 @@ namespace ChCpp
 
 		inline ChVec3 GetPos() const { return mat.GetPosition(); }
 
-		inline ChVec3 GetRot()const { return mat.GetRotation(); }
+		inline ChQua GetRot()const { return mat.GetRotation(); }
 
 		inline ChVec3 GetScl()const { return mat.GetScalling(); }
 

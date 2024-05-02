@@ -1,5 +1,10 @@
 #include"../BaseIncluder/ChBase.h"
 
+#define FLOAT_TEST(val, testSize) val >= -testSize && val <= testSize
+
+#include <float.h>
+#include <cmath>
+
 ///////////////////////////////////////////////////////////////////////////////////
 //ChVector2 Method//
 ///////////////////////////////////////////////////////////////////////////////////
@@ -1098,6 +1103,23 @@ void ChVec4::Cross(
 //ChQuaternion Method//
 ///////////////////////////////////////////////////////////////////////////////////
 
+ChQuaternion& ChQuaternion::operator=(const ChQuaternion& _qua)
+{
+	val.Set(_qua.val);
+	return *this;
+}
+
+ChQuaternion& ChQuaternion::operator*=(const ChQuaternion& _num)
+{
+	Mul(_num);
+	return *this;
+}
+
+ChQuaternion ChQuaternion::operator*(const ChQuaternion& _num)const
+{
+	return  GetMul(*this, _num);
+}
+
 std::string ChQua::Serialize(
 	const std::string& _cutChar
 	, const std::string& _endChar)
@@ -1134,57 +1156,215 @@ void ChQua::Deserialize(
 	val.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVec3 ChQua::GetEulerAngleForVec3()const
+//à»â∫ÇÃURLÇéQè∆//
+//https://qiita.com/aa_debdeb/items/3d02e28fb9ebfa357eaf#%E3%82%AF%E3%82%A9%E3%83%BC%E3%82%BF%E3%83%8B%E3%82%AA%E3%83%B3%E3%81%8B%E3%82%89%E5%9B%9E%E8%BB%A2%E8%A1%8C%E5%88%97
+//
+void ChQua::SetRotationLMatrix(const ChLMatrix& _mat)
 {
 
-	float xx = x * x;
-	float xy = x * y;
-	float xz = x * z;
-	float xw = x * w;
-	float yy = y * y;
-	float yz = y * z;
-	float yw = y * w;
-	float zz = z * z;
-	float zw = z * w;
-	float ww = w * w;
+	w = std::sqrtf(_mat.l_11 + _mat.l_22 + _mat.l_33 + 1.0f) / 2.0f;
 
-	ChVec3 out;
+	if (w != 0)
+	{
+		x = (_mat.l_32 - _mat.l_23) / (w * 4.0f);
+		y = (_mat.l_13 - _mat.l_31) / (w * 4.0f);
+		z = (_mat.l_21 - _mat.l_12) / (w * 4.0f);
+		return;
+	}
 
-	out.x = std::asin(2.0f * (xz - yw));
-	out.y = std::atan2(2.0f * (yz + xw), xx + yy - zz - ww);
-	out.z = std::atan2(2.0f * (zw + xy), xx - yy - zz + ww);
+	z = std::sqrtf(-_mat.l_11 - _mat.l_22 + _mat.l_33 + 1.0f) / 2.0f;
 
-	return out;
+	if (z != 0)
+	{
+		x = (_mat.l_13 + _mat.l_31) / (z * 4.0f);
+		y = (_mat.l_32 + _mat.l_23) / (z * 4.0f);
+		return;
+	}
+
+	y = std::sqrtf(-_mat.l_11 + _mat.l_22 - _mat.l_33 + 1.0f) / 2.0f;
+
+	if (y != 0)
+	{
+		x = (_mat.l_13 + _mat.l_31) / (z * 4.0f);
+		return;
+	}
+
+	x = std::sqrtf(_mat.l_11 - _mat.l_22 - _mat.l_33 + 1.0f) / 2.0f;
+
+	return;
+
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChQua::RotYPR(
-	const float _x
-	, const float _y
-	, const float _z)
+//à»â∫ÇÃURLÇéQè∆//
+//https://qiita.com/aa_debdeb/items/3d02e28fb9ebfa357eaf#%E3%82%AF%E3%82%A9%E3%83%BC%E3%82%BF%E3%83%8B%E3%82%AA%E3%83%B3%E3%81%8B%E3%82%89%E5%9B%9E%E8%BB%A2%E8%A1%8C%E5%88%97
+//
+void ChQua::SetRotationRMatrix(const ChRMatrix& _mat)
 {
+	
+	w = std::sqrtf(_mat.r_11 + _mat.r_22 + _mat.r_33 + 1.0f) / 2.0f;
 
-	ChVec3 Cos;
-	ChVec3 Sin;
+	if (w != 0)
+	{
+		x = (_mat.r_32 - _mat.r_23) / (w * 4.0f);
+		y = (_mat.r_13 - _mat.r_31) / (w * 4.0f);
+		z = (_mat.r_21 - _mat.r_12) / (w * 4.0f);
+		return;
+	}
 
-	Cos.x = cos(_x / 2.0f);
-	Sin.x = sin(_x / 2.0f);
+	z = std::sqrtf(-_mat.r_11 - _mat.r_22 + _mat.r_33 + 1.0f) / 2.0f;
 
-	Cos.y = cos(_y / 2.0f);
-	Sin.y = sin(_y / 2.0f);
+	if (z != 0)
+	{
+		x = (_mat.r_13 + _mat.r_31) / (z * 4.0f);
+		y = (_mat.r_32 + _mat.r_23) / (z * 4.0f);
+		return;
+	}
 
-	Cos.z = cos(_z / 2.0f);
-	Sin.z = sin(_z / 2.0f);
+	y = std::sqrtf(-_mat.r_11 + _mat.r_22 - _mat.r_33 + 1.0f) / 2.0f;
 
-	x = (Cos.y * Cos.x * Cos.z) + (Sin.y * Sin.x * Sin.z);
-	y = (Cos.y * Cos.x * Sin.z) - (Sin.y * Sin.x * Cos.z);
-	z = (Cos.y * Sin.x * Cos.z) + (Sin.y * Cos.x * Sin.z);
-	w = (Sin.y * Cos.x * Cos.z) + (Cos.y * Sin.x * Sin.z);
+	if (y != 0)
+	{
+		x = (_mat.r_13 + _mat.r_31) / (z * 4.0f);
+		return;
+	}
 
+	x = std::sqrtf(_mat.r_11 - _mat.r_22 - _mat.r_33 + 1.0f) / 2.0f;
+
+	return;
 }
+
+void ChQua::SetRotationXAxis(const float _x)
+{
+	SetRotation(ChVec3(1.0f, 0.0f, 0.0f), _x);
+}
+
+void ChQua::SetRotationYAxis(const float _y)
+{
+	SetRotation(ChVec3(0.0f, 1.0f, 0.0f), _y);
+}
+
+void ChQua::SetRotationZAxis(const float _z)
+{
+	SetRotation(ChVec3(0.0f,0.0f,1.0f), _z);
+}
+
+void ChQua::SetRotation(const ChVec3& _axis, const float _angle)
+{
+	ChVec3 tmp = _axis;
+
+	tmp.Normalize();
+
+	float tmpAngle = _angle * 0.5f;
+
+	w = std::cosf(tmpAngle);
+
+	x = FLOAT_TEST(tmp.x, 0.00001f) ?  0.0f : tmp.x * std::sinf(tmpAngle);
+	y = FLOAT_TEST(tmp.y, 0.00001f) ?  0.0f : tmp.y * std::sinf(tmpAngle);
+	z = FLOAT_TEST(tmp.z, 0.00001f) ?  0.0f : tmp.z * std::sinf(tmpAngle);
+}
+
+ChLMatrix ChQua::GetRotationLMatrix(const unsigned long _digit)const
+{
+	ChLMat mat;
+	mat.SetRotation(*this, _digit);
+	return mat;
+}
+
+ChRMatrix ChQua::GetRotationRMatrix(const unsigned long _digit)const
+{
+	ChRMat mat;
+	mat.SetRotation(*this, _digit);
+	return mat;
+}
+
+float ChQua::GetRadian()const
+{
+	return std::acosf(w) * 2.0f;
+}
+
+float ChQua::GetCos()const
+{
+	return std::cosf(GetRadian());
+}
+
+float ChQua::GetSin()const
+{
+	return std::sinf(GetRadian());
+}
+
+void ChQua::AddRotationXAxis(float _x)
+{
+	ChQua qua;
+	qua.SetRotationXAxis(_x);
+
+	*this = *this * qua;
+}
+
+void ChQua::AddRotationYAxis(float _y)
+{
+	ChQua qua;
+	qua.SetRotationYAxis(_y);
+
+	*this = *this * qua;
+}
+
+void ChQua::AddRotationZAxis(float _z)
+{
+	ChQua qua;
+	qua.SetRotationZAxis(_z);
+
+	*this = *this * qua;
+}
+
+void ChQua::Mul(const ChQua& _value)
+{
+	val.Set(GetMul(*this, _value).val);
+}
+
+ChVec3 ChQua::Mul(const ChVec3& _dir)
+{
+	return GetMul(*this, _dir);
+}
+
+////
+//https://qiita.com/drken/items/0639cf34cce14e8d58a5#1-4-%E3%82%AF%E3%82%A9%E3%83%BC%E3%82%BF%E3%83%8B%E3%82%AA%E3%83%B3%E3%81%AE%E3%81%8B%E3%81%91%E7%AE%97
+////
+// = q1 * q2;
+ChQua ChQua::GetMul(const ChQua& _qua1, const ChQua& _qua2)
+{
+	ChQua res;
+
+	res.x = (_qua1.w * _qua2.x) - (_qua1.z * _qua2.y) + (_qua1.y * _qua2.z) + (_qua1.x * _qua2.w);
+	res.y = (_qua1.z * _qua2.x) + (_qua1.w * _qua2.y) - (_qua1.x * _qua2.z) + (_qua1.y * _qua2.w);
+	res.z = -(_qua1.y * _qua2.x) + (_qua1.x * _qua2.y) + (_qua1.w * _qua2.z) + (_qua1.z * _qua2.w);
+
+	res.w = (_qua1.w * _qua2.w) - (_qua1.x * _qua2.x) - (_qua1.y * _qua2.y) - (_qua1.z * _qua2.z);
+
+	return res;
+}
+
+ChVec3 ChQua::GetMul(const ChQuaternion& _qua, const ChVec3& _dir)
+{
+	ChVec3 res = _dir;
+	res.Normalize();
+
+	ChQua tmp;
+	tmp.x = _dir.x;
+	tmp.y = _dir.y;
+	tmp.z = _dir.z;
+	tmp.w = 0.0f;
+
+	ChQua idn = _qua;
+	idn.Inverse();
+
+	tmp = GetMul(tmp,idn);
+	tmp = GetMul(_qua, tmp);
+
+	res = ChVec3(tmp.x, tmp.y, tmp.z);
+
+	return res;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////
 //ChLMatrix Method//
@@ -1293,36 +1473,29 @@ void ChLMatrix::SetPosition(const float _x, const float _y, const float _z)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChLMatrix::ChLMatrix::SetRotation(
-	const ChVec3& _vec,
-	const unsigned long _digit)
+//à»â∫ÇÃURLÇéQè∆//
+//https://qiita.com/aa_debdeb/items/3d02e28fb9ebfa357eaf#%E3%82%AF%E3%82%A9%E3%83%BC%E3%82%BF%E3%83%8B%E3%82%AA%E3%83%B3%E3%81%8B%E3%82%89%E5%9B%9E%E8%BB%A2%E8%A1%8C%E5%88%97
+//
+void ChLMatrix::SetRotation(const ChQua& _qua, const unsigned long _digit)
 {
-	SetRotation(_vec.x, _vec.y, _vec.z,_digit);
-}
+	float sin = _qua.GetSin();
+	float cos = _qua.GetCos();
 
-///////////////////////////////////////////////////////////////////////////////////
+	ChVec3 scl = GetScalling(_digit);
 
-void ChLMatrix::SetRotation(
-	const float _x, 
-	const float _y, 
-	const float _z,
-	const unsigned long _digit)
-{
+	for (unsigned char i = 0; i < 3; i++)
+	{
+		m[i][i] = cos + (_qua.val[i] * _qua.val[i]) * (1.0f - cos) * scl.val[i];
+	}
 
-	ChLMat XAxis, YAxis, ZAxis;
+	m[0][1] = (_qua.x * _qua.y) * (1.0f - cos) - _qua.z * sin * scl.x;
+	m[0][2] = (_qua.x * _qua.z) * (1.0f - cos) + _qua.y * sin * scl.x;
 
-	XAxis.SetRotationXAxis(_x);
-	YAxis.SetRotationYAxis(_y);
-	ZAxis.SetRotationZAxis(_z);
+	m[1][0] = (_qua.y * _qua.x) * (1.0f - cos) + _qua.z * sin * scl.y;
+	m[1][2] = (_qua.y * _qua.z) * (1.0f - cos) - _qua.x * sin * scl.y;
 
-	YAxis = XAxis * YAxis;
-
-	YAxis = ZAxis * YAxis;
-
-	YAxis.SetPosition(GetPosition());
-	YAxis.SetScalling(GetScalling(_digit),_digit);
-
-	m.Set(YAxis.m);
+	m[2][0] = (_qua.z * _qua.x) * (1.0f - cos) - _qua.y * sin * scl.z;
+	m[2][1] = (_qua.z * _qua.y) * (1.0f - cos) + _qua.x * sin * scl.z;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -1400,33 +1573,11 @@ ChVec3 ChLMatrix::GetPosition()const
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ChVec3 ChLMatrix::GetRotation(const unsigned long _digit)const
+ChQua ChLMatrix::GetRotation(const unsigned long _digit)const
 {
-	ChVec3 tmpScl = GetScalling(_digit);
-
-	float outM[4][4];
-
-	for (unsigned char i = 0; i < 3; i++)
-	{
-		for (unsigned char j = 0; j < 3; j++)
-		{
-			outM[i][j] = m[i][j];
-			outM[i][j] /= tmpScl.val[i] != 0.0f ? tmpScl.val[i] : 1.0f;
-		}
-	}
-
-	ChVec3 out = ChVec3(
-		(std::atan2f(outM[2][1], outM[2][2])),
-		(std::asinf(-outM[2][0])),
-		(std::atan2f(outM[1][0], outM[0][0])));
-
-	//ChVec3 out = ChVec3(
-	//	(std::atan2f(_32,_33)),
-	//	(std::asinf(_31)),
-	//	(std::atan2f(_21,_11)));
-
-
-	return out;
+	ChQua res;
+	res.SetRotationLMatrix(*this);
+	return res;
 
 }
 
@@ -1616,36 +1767,9 @@ void ChRMatrix::SetPosition(const float _x, const float _y, const float _z)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChRMatrix::ChRMatrix::SetRotation(
-	const ChVec3& _vec,
-	const unsigned long _digit)
-{
-	SetRotation(_vec.x, _vec.y, _vec.z,_digit);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChRMatrix::SetRotation(
-	const float _x, 
-	const float _y, 
-	const float _z,
-	const unsigned long _digit)
+void ChRMatrix::SetRotation(const ChQua& _qua, const unsigned long _digit)
 {
 
-	ChRMat XAxis, YAxis, ZAxis;
-
-	XAxis.SetRotationXAxis(_x);
-	YAxis.SetRotationYAxis(_y);
-	ZAxis.SetRotationZAxis(_z);
-
-	YAxis = XAxis * YAxis;
-
-	YAxis = ZAxis * YAxis;
-
-	YAxis.SetPosition(GetPosition());
-	YAxis.SetScalling(GetScalling(_digit),_digit);
-
-	m.Set(YAxis.m);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -1714,7 +1838,6 @@ void ChRMatrix::SetScalling(
 		}
 	}
 
-
 	vec[0].Normalize(_digit);
 	vec[0].val.Mul(_x);
 	
@@ -1740,33 +1863,6 @@ void ChRMatrix::SetScalling(
 ChVec3 ChRMatrix::GetPosition()const
 {
 	return ChVec3(r_41, r_42, r_43);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVec3 ChRMatrix::GetRotation(const unsigned long _digit)const
-{
-	ChVec3 tmpScl = GetScalling(_digit);
-
-	float outM[4][4];
-
-	for (unsigned char i = 0; i < 3; i++)
-	{
-		for (unsigned char j = 0; j < 3; j++)
-		{
-			outM[i][j] = m[j][i];
-			outM[i][j] /= tmpScl.val[j] != 0.0f ? tmpScl.val[j] : 1.0f;
-		}
-	}
-
-	ChVec3 out = ChVec3(
-		(std::atan2f(outM[2][1], outM[2][2])),
-		(std::asinf(-outM[2][0])),
-		(std::atan2f(outM[1][0], outM[0][0])));
-
-
-	return out;
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -1878,27 +1974,12 @@ std::string ChUIMatrix::Serialize(
 	return m.Serialize(_cutChar, _endChar);
 }
 
-std::wstring ChUIMatrix::Serialize(
-	const std::wstring& _cutChar
-	, const std::wstring& _endChar)
-{
-	return m.Serialize(_cutChar, _endChar);
-}
-
 ///////////////////////////////////////////////////////////////////////////////////
 
 std::string ChUIMatrix::SerializeUpper(
 	const std::string& _cutChar
 	, const std::string& _endChar
 	, const std::string& _cutTo4Char)
-{
-	return m.SerializeUpper(_cutChar, _endChar, _cutTo4Char);
-}
-
-std::wstring ChUIMatrix::SerializeUpper(
-	const std::wstring& _cutChar
-	, const std::wstring& _endChar
-	, const std::wstring& _cutTo4Char)
 {
 	return m.SerializeUpper(_cutChar, _endChar, _cutTo4Char);
 }
@@ -1912,330 +1993,6 @@ void ChUIMatrix::Deserialize(
 	, const std::string& _endChar)
 {
 	m.Deserialize(_str, _fPos, _cutChar, _endChar);
-}
-
-void ChUIMatrix::Deserialize(
-	const std::wstring& _str
-	, const size_t _fPos
-	, const std::wstring& _cutChar
-	, const std::wstring& _endChar)
-{
-	m.Deserialize(_str, _fPos, _cutChar, _endChar);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-//Math Function//
-///////////////////////////////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////////////////////////////
-//Degree Method//
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Degree& ChMath::Degree::operator=(const float _num)
-{
-	val = _num;
-	Math();
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Degree& ChMath::Degree::operator+=(const float _num)
-{
-
-	val += _num;
-	Math();
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Degree ChMath::Degree::operator+(const float _num)const
-{
-	Degree tmp = *this;
-	tmp += _num;
-	return tmp;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Degree& ChMath::Degree::operator-=(const float _num)
-{
-	val -= _num;
-	Math();
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Degree ChMath::Degree::operator-(const float _num)const
-{
-
-	Degree tmp = *this;
-	tmp -= _num;
-	return tmp;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Degree& ChMath::Degree::operator*=(const float _num)
-{
-	val *= _num;
-	Math();
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Degree ChMath::Degree::operator*(const float _num)const
-{
-
-	Degree tmp = *this;
-	tmp *= _num;
-	return tmp;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Degree& ChMath::Degree::operator/=(const float _num)
-{
-	val /= _num;
-	Math();
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Degree ChMath::Degree::operator/(const float _num)const
-{
-
-	Degree tmp = *this;
-	tmp /= _num;
-	return tmp;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Degree::operator float()const
-{
-	float tmp;
-	tmp = val;
-	return tmp;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Degree& ChMath::Degree::operator=(const ChMath::Radian _num)
-{
-	*this = ToDegree(_num);
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Degree::Degree()
-{
-	val = 0.0f;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Degree::Degree(const float _val)
-{
-	*this = _val;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Degree::Degree(const Degree& _val)
-{
-	val = _val;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Degree::Degree(const Radian& _val)
-{
-	*this = _val;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChMath::Degree::Math()
-{
-	if (val < 0.0f)
-	{
-		unsigned int tmp;
-		tmp = static_cast<unsigned int>(std::floor((val / -360.0f)));
-		val += (tmp + 1) * 360.0f;
-		return;
-	}
-
-	if (val >= 360.0f)
-	{
-		unsigned int tmp;
-		tmp = static_cast<unsigned int>(std::floor((val / 360.0f)));
-		val -= (tmp) * 360.0f;
-		return;
-	}
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-//Radian Method//
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Radian& ChMath::Radian::operator=(const float _num)
-{
-	val = _num;
-	Math();
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Radian& ChMath::Radian::operator+=(const float _num)
-{
-
-	val += _num;
-	Math();
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Radian ChMath::Radian::operator+(const float _num)const
-{
-	Radian tmp = *this;
-	tmp += _num;
-	return tmp;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Radian& ChMath::Radian::operator-=(const float _num)
-{
-	val -= _num;
-	Math();
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Radian ChMath::Radian::operator-(const float _num)const
-{
-
-	Radian tmp = *this;
-	tmp -= _num;
-	return tmp;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Radian& ChMath::Radian::operator*=(const float _num)
-{
-	val *= _num;
-	Math();
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Radian ChMath::Radian::operator*(const float _num)const
-{
-
-	Radian tmp = *this;
-	tmp *= _num;
-	return tmp;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Radian& ChMath::Radian::operator/=(const float _num)
-{
-	val /= _num;
-	Math();
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Radian ChMath::Radian::operator/(const float _num)const
-{
-
-	Radian tmp = *this;
-	tmp /= _num;
-	return tmp;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Radian::operator float()const
-{
-	float tmp;
-	tmp = val;
-	return tmp;
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Radian& ChMath::Radian::operator=(const Degree _num)
-{
-	*this = ToRadian(_num);
-	return *this;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Radian::Radian()
-{
-	val = 0.0f;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Radian::Radian(const float _val)
-{
-	*this = _val;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Radian::Radian(const Radian& _val)
-{
-	val = _val;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChMath::Radian::Radian(const Degree& _val)
-{
-	*this = _val;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChMath::Radian::Math()
-{
-	float tmpVal;
-	tmpVal = (val / PI);
-	if (tmpVal < 0.0f)
-	{
-		unsigned int tmp;
-		tmp = static_cast<unsigned int>(std::floor((tmpVal / -2.0f)));
-		val += (tmp + 1) * 2.0f * PI;
-		return;
-	}
-
-	if (tmpVal >= 360.0f)
-	{
-		unsigned int tmp;
-		tmp = static_cast<unsigned int>(std::floor((tmpVal / 2.0f)));
-		val -= (tmp) * 2.0f * PI;
-		return;
-	}
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -2259,13 +2016,4 @@ ChVector3 ChMath::GetFaceNormal(
 	tmpVec.Normalize(_digit);
 
 	return tmpVec;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ChVector3 ChMath::GetFaceNormal(
-	const TriVertex& _PlEq,
-	const unsigned long _digit)
-{
-	return GetFaceNormal(_PlEq.Ver1, _PlEq.Ver2, _PlEq.Ver3,_digit);
 }
