@@ -679,7 +679,7 @@ using ChVec4 = ChVector4;
 struct ChLMatrix;
 struct ChRMatrix;
 
-struct ChQuaternion : public ChMath::Vector4Base<float>
+struct ChQuaternion : public ChMath::QuaternionBase<float>
 {
 
 	ChQuaternion& operator=(const ChQuaternion& _qua);
@@ -706,10 +706,7 @@ public:
 
 	inline ChQuaternion()
 	{
-		x = 0.0f;
-		y = 0.0f;
-		z = 0.0f;
-		w = 1.0f;
+		Identity();
 	}
 
 	inline ChQuaternion(
@@ -761,42 +758,74 @@ public:
 		, const std::wstring& _endChar = L";"
 		, const unsigned int _digit = 6);
 
-public:
-
-	///////////////////////////////////////////////////////////////////////////////////
-	//SetFunction//
+public://Sed Method//
 	
 	void SetRotationLMatrix(const ChLMatrix& _mat);
 
 	void SetRotationRMatrix(const ChRMatrix& _mat);
 
-	void SetRotationXAxis(const float _x);
+	void SetRotationXAxis(float _x);
 
-	void SetRotationYAxis(const float _y);
+	void SetRotationYAxis(float _y);
 
-	void SetRotationZAxis(const float _z);
+	void SetRotationZAxis(float _z);
 
 	void SetRotation(const ChVec3& _axis, const float _angle);
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//GetFunction//
+public://Get Method//
 
 	ChLMatrix GetRotationLMatrix(const unsigned long _digit = 6)const;
 
 	ChRMatrix GetRotationRMatrix(const unsigned long _digit = 6)const;
 
+	float GetRadian()const;
+
+	float GetCos()const;
+
+	float GetSin()const;
+
+public:
+
+	void AddRotationXAxis(float _x);
+
+	void AddRotationYAxis(float _y);
+
+	void AddRotationZAxis(float _z);
+
 public:
 
 	static ChQuaternion GetMul(const ChQuaternion& _qua1, const ChQuaternion& _qua2);
+
+	static ChVec3 GetMul(const ChQuaternion& _qua, const ChVec3& _dir);
 
 public:
 
 	void Mul(const ChQuaternion& _value);
 
+	ChVec3 Mul(const ChVec3& _dir);
+
 public:
 
 	static ChQuaternion Lerp(const ChQuaternion& _start, const ChQuaternion& _end, const float _pow);
 
+public:
+
+	void Identity()
+	{
+		x = 0.0f;
+		y = 0.0f;
+		z = 0.0f;
+		w = 1.0f;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////
+
+	void Inverse()
+	{
+		x = -x;
+		y = -y;
+		z = -z;
+	}
 
 };
 
@@ -952,6 +981,12 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 	ChVec3 GetYAxisDirection()const;
 
 	ChVec3 GetZAxisDirection()const;
+
+	float GetRadian()const;
+
+	float GetCos()const;
+
+	float GetSin()const;
 
 	///////////////////////////////////////////////////////////////////////////////////
 

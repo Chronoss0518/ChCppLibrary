@@ -1,5 +1,7 @@
 #include"../BaseIncluder/ChBase.h"
 
+#define FLOAT_TEST(val, testSize) val >= -testSize && val <= testSize
+
 #include <float.h>
 #include <cmath>
 
@@ -1231,6 +1233,36 @@ void ChQua::SetRotationRMatrix(const ChRMatrix& _mat)
 	return;
 }
 
+void ChQua::SetRotationXAxis(const float _x)
+{
+	SetRotation(ChVec3(1.0f, 0.0f, 0.0f), _x);
+}
+
+void ChQua::SetRotationYAxis(const float _y)
+{
+	SetRotation(ChVec3(0.0f, 1.0f, 0.0f), _y);
+}
+
+void ChQua::SetRotationZAxis(const float _z)
+{
+	SetRotation(ChVec3(0.0f,0.0f,1.0f), _z);
+}
+
+void ChQua::SetRotation(const ChVec3& _axis, const float _angle)
+{
+	ChVec3 tmp = _axis;
+
+	tmp.Normalize();
+
+	float tmpAngle = _angle * 0.5f;
+
+	w = std::cosf(tmpAngle);
+
+	x = FLOAT_TEST(tmp.x, 0.00001f) ?  0.0f : tmp.x * std::sinf(tmpAngle);
+	y = FLOAT_TEST(tmp.y, 0.00001f) ?  0.0f : tmp.y * std::sinf(tmpAngle);
+	z = FLOAT_TEST(tmp.z, 0.00001f) ?  0.0f : tmp.z * std::sinf(tmpAngle);
+}
+
 ChLMatrix ChQua::GetRotationLMatrix(const unsigned long _digit)const
 {
 	ChLMat mat;
@@ -1245,46 +1277,43 @@ ChRMatrix ChQua::GetRotationRMatrix(const unsigned long _digit)const
 	return mat;
 }
 
-
-
-void ChQua::SetRotationXAxis(const float _x)
+float ChQua::GetRadian()const
 {
-	x = std::sinf(_x * 0.5f);
-	y = 0.0f;
-	z = 0.0f;
-
-	w = std::cosf(_x * 0.5f);
+	return std::acosf(w) * 2.0f;
 }
 
-void ChQua::SetRotationYAxis(const float _y)
+float ChQua::GetCos()const
 {
-	x = 0.0f;
-	y = std::sinf(_y * 0.5f);
-	z = 0.0f;
-
-	w = std::cosf(_y * 0.5f);
+	return std::cosf(GetRadian());
 }
 
-void ChQua::SetRotationZAxis(const float _z)
+float ChQua::GetSin()const
 {
-	x = 0.0f;
-	y = 0.0f;
-	z = std::sinf(_z * 0.5f);
-
-	w = std::cosf(_z * 0.5f);
+	return std::sinf(GetRadian());
 }
 
-void ChQua::SetRotation(const ChVec3& _axis, const float _angle)
+void ChQua::AddRotationXAxis(float _x)
 {
-	ChVec3 tmp = _axis;
+	ChQua qua;
+	qua.SetRotationXAxis(_x);
 
-	tmp.Normalize();
-	
-	w = std::cosf(_angle * 0.5f);
+	*this = *this * qua;
+}
 
-	x = std::sinf(tmp.x * 0.5f);
-	y = std::sinf(tmp.y * 0.5f);
-	z = std::sinf(tmp.z * 0.5f);
+void ChQua::AddRotationYAxis(float _y)
+{
+	ChQua qua;
+	qua.SetRotationYAxis(_y);
+
+	*this = *this * qua;
+}
+
+void ChQua::AddRotationZAxis(float _z)
+{
+	ChQua qua;
+	qua.SetRotationZAxis(_z);
+
+	*this = *this * qua;
 }
 
 void ChQua::Mul(const ChQua& _value)
@@ -1292,24 +1321,50 @@ void ChQua::Mul(const ChQua& _value)
 	val.Set(GetMul(*this, _value).val);
 }
 
-//q1* q2 = 
-//(a1 * a2 - b1 * b2 - c1 * c2 - d1 * d2)
-//+ (a1 * b2 + b1 * a2 + c1 * d2 - d1 * c2)i 
-//+ (a1 * c2 - b1 * d2 + c1 * a2 + d1 * b2)j
-//+ (a1 * d2 + b1 * c2 - c1 * b2 + d1 * a2)k
+ChVec3 ChQua::Mul(const ChVec3& _dir)
+{
+	return GetMul(*this, _dir);
+}
+
+////
+//https://qiita.com/drken/items/0639cf34cce14e8d58a5#1-4-%E3%82%AF%E3%82%A9%E3%83%BC%E3%82%BF%E3%83%8B%E3%82%AA%E3%83%B3%E3%81%AE%E3%81%8B%E3%81%91%E7%AE%97
+////
+// = q1 * q2;
 ChQua ChQua::GetMul(const ChQua& _qua1, const ChQua& _qua2)
 {
 	ChQua res;
 
+	res.x = (_qua1.w * _qua2.x) - (_qua1.z * _qua2.y) + (_qua1.y * _qua2.z) + (_qua1.x * _qua2.w);
+	res.y = (_qua1.z * _qua2.x) + (_qua1.w * _qua2.y) - (_qua1.x * _qua2.z) + (_qua1.y * _qua2.w);
+	res.z = -(_qua1.y * _qua2.x) + (_qua1.x * _qua2.y) + (_qua1.w * _qua2.z) + (_qua1.z * _qua2.w);
+
 	res.w = (_qua1.w * _qua2.w) - (_qua1.x * _qua2.x) - (_qua1.y * _qua2.y) - (_qua1.z * _qua2.z);
-
-	res.x = (_qua1.w * _qua2.x) + (_qua1.x * _qua2.w) + (_qua1.y * _qua2.z) - (_qua1.z * _qua2.y);
-	res.y = (_qua1.w * _qua2.y) - (_qua1.x * _qua2.z) + (_qua1.y * _qua2.w) + (_qua1.z * _qua2.x);
-	res.z = (_qua1.w * _qua2.z) + (_qua1.x * _qua2.y) - (_qua1.y * _qua2.x) + (_qua1.z * _qua2.w);
-
 
 	return res;
 }
+
+ChVec3 ChQua::GetMul(const ChQuaternion& _qua, const ChVec3& _dir)
+{
+	ChVec3 res = _dir;
+	res.Normalize();
+
+	ChQua tmp;
+	tmp.x = _dir.x;
+	tmp.y = _dir.y;
+	tmp.z = _dir.z;
+	tmp.w = 0.0f;
+
+	ChQua idn = _qua;
+	idn.Inverse();
+
+	tmp = GetMul(tmp,idn);
+	tmp = GetMul(_qua, tmp);
+
+	res = ChVec3(tmp.x, tmp.y, tmp.z);
+
+	return res;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////
 //ChLMatrix Method//
@@ -1423,30 +1478,24 @@ void ChLMatrix::SetPosition(const float _x, const float _y, const float _z)
 //
 void ChLMatrix::SetRotation(const ChQua& _qua, const unsigned long _digit)
 {
-	float xy2 = _qua.x * _qua.y * 2;
-	float xz2 = _qua.x * _qua.z * 2;
-	float xw2 = _qua.x * _qua.w * 2;
-	float yz2 = _qua.y * _qua.z * 2;
-	float yw2 = _qua.y * _qua.w * 2;
-	float zw2 = _qua.z * _qua.w * 2;
-
-	float ww = _qua.w * _qua.w;
+	float sin = _qua.GetSin();
+	float cos = _qua.GetCos();
 
 	ChVec3 scl = GetScalling(_digit);
 
-	l_11 = (_qua.x * _qua.x + ww - 1) * scl.x;
-	l_22 = (_qua.y * _qua.y + ww - 1) * scl.x;
-	l_33 = (_qua.z * _qua.z + ww - 1) * scl.x;
+	for (unsigned char i = 0; i < 3; i++)
+	{
+		m[i][i] = cos + (_qua.val[i] * _qua.val[i]) * (1.0f - cos) * scl.val[i];
+	}
 
-	l_12 = (xy2 - zw2) * scl.x;
-	l_13 = (xz2 + yw2) * scl.x;
+	m[0][1] = (_qua.x * _qua.y) * (1.0f - cos) - _qua.z * sin * scl.x;
+	m[0][2] = (_qua.x * _qua.z) * (1.0f - cos) + _qua.y * sin * scl.x;
 
-	l_21 = (xy2 + zw2) * scl.y;
-	l_23 = (yz2 - xw2) * scl.y;
+	m[1][0] = (_qua.y * _qua.x) * (1.0f - cos) + _qua.z * sin * scl.y;
+	m[1][2] = (_qua.y * _qua.z) * (1.0f - cos) - _qua.x * sin * scl.y;
 
-	l_31 = (xz2 - yw2) * scl.z;
-	l_32 = (yz2 + xw2) * scl.z;
-
+	m[2][0] = (_qua.z * _qua.x) * (1.0f - cos) - _qua.y * sin * scl.z;
+	m[2][1] = (_qua.z * _qua.y) * (1.0f - cos) + _qua.x * sin * scl.z;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -1565,7 +1614,6 @@ ChVec3 ChLMatrix::GetZAxisDirection()const
 
 	return res;
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////////
 
