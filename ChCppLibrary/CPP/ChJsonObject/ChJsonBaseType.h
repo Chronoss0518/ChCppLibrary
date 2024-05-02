@@ -17,6 +17,8 @@ namespace ChCpp
 
 		static ChPtr::Shared<JsonBaseType> GetParameter(const std::string& _json);
 
+		static std::string FormatDocument(const std::string& _str);
+
 	private:
 
 		static ChPtr::Shared<JsonObject> GetParameterToObject(const std::string& _json);
@@ -28,6 +30,8 @@ namespace ChCpp
 		static ChPtr::Shared<JsonBoolean> GetParameterToBoolean(const std::string& _json);
 
 		static ChPtr::Shared<JsonNumber> GetParameterToNumber(const std::string& _json);
+
+		static std::string GetTabText(unsigned long _count);
 
 	public://Set Function//
 

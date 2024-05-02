@@ -14,9 +14,9 @@ VS_OUT main(
 ) {
 	VS_OUT res;
 
-	res.pos = pos;
-
-	res.pos = mul(res.pos, spriteMat);
+    MTWStruct str = ModelToWorld(pos, uv);
+	
+    res.pos = str.pos;
 
 	//テクスチャマップ上の位置情報//
 	res.uv = uv;

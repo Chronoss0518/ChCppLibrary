@@ -25,6 +25,9 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include<Windows.h>
+#include<wincodec.h>
+
+
 #include"../../BaseIncluder/ChBase.h"
 #include"../../BaseIncluder/ChD3D11I.h"
 
@@ -350,7 +353,7 @@ void Texture11::CreateColorTexture(
 	{
 		for (unsigned long w = 0; w < _width; w++)
 		{
-			pixelData[w + (h * w)] = (_colorArray[w + (h * w)]);
+			pixelData[w + (h * _width)] = (_colorArray[w + (h * _width)]);
 		}
 	}
 
@@ -365,6 +368,87 @@ void Texture11::CreateColorTexture(
 
 	Init(_device);
 }
+
+void Texture11::CreateColorTexture(
+	IWICBitmap* _bitmap,
+	const unsigned int _CPUFlg)
+{
+	if (!D3D11API().IsInit())return;
+
+	ID3D11Device* tmpDevice = (D3D11Device());
+
+	CreateColorTexture(tmpDevice, _bitmap, _CPUFlg);
+}
+
+void Texture11::CreateColorTexture(
+	ID3D11Device* _device,
+	IWICBitmap* _bitmap,
+	const unsigned int _CPUFlg)
+{
+	if (ChPtr::NullCheck(_device))return;
+	if (ChPtr::NullCheck(_bitmap))return;
+
+	Release();
+
+	WICRect wicRect;
+	wicRect.X = 0;
+	wicRect.Y = 0;
+	{
+		unsigned int w, h;
+		_bitmap->GetSize(&w, &h);
+		wicRect.Width = w;
+		wicRect.Height = h;
+	}
+	device = _device;
+
+	D3D11_TEXTURE2D_DESC Desc;
+	ZeroMemory(&Desc, sizeof(Desc));
+	Desc.Width = wicRect.Width;
+	Desc.Height = wicRect.Height;
+	Desc.MipLevels = 1;
+	Desc.ArraySize = 1;
+	Desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	Desc.SampleDesc.Count = 1;
+	Desc.SampleDesc.Quality = 0;
+	Desc.Usage = D3D11_USAGE_DEFAULT;
+	Desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	Desc.CPUAccessFlags = _CPUFlg;
+	Desc.MiscFlags = 0;
+
+	UINT stride = wicRect.Width * 4;
+
+	D3D11_MAPPED_SUBRESOURCE mapper;
+	std::vector<unsigned char>testVector;
+	testVector.resize(stride * wicRect.Height * 4);
+
+	_bitmap->CopyPixels(nullptr, stride * 4, stride * wicRect.Height * 4, &testVector[0]);
+
+	D3D11_SUBRESOURCE_DATA data;
+	ChStd::MZero(&data);
+
+	std::vector<ChVec4>tmpPixelData;
+	tmpPixelData.resize(wicRect.Height * wicRect.Width);
+
+	pixelData = new ChVec4[wicRect.Height * wicRect.Width];
+	memcpy(&tmpPixelData[0], &testVector[0], testVector.size());
+
+	for (unsigned long i = 0;i< tmpPixelData.size();i++)
+	{
+		pixelData[i] = tmpPixelData[i];
+	}
+
+	data.pSysMem = pixelData;
+	data.SysMemPitch = wicRect.Width * sizeof(ChVec4);
+	data.SysMemSlicePitch = 0;
+
+
+	device->CreateTexture2D(&Desc, &data, &baseTex);
+
+	CreateSRV();
+
+	Init(_device);
+}
+
 
 void RenderTarget11::Release()
 {

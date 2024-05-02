@@ -9,12 +9,6 @@
 
 namespace ChSystem
 {
-	LRESULT CALLBACK WndProc(
-		HWND _hWnd
-		, UINT _uMsg
-		, WPARAM _wParam
-		, LPARAM _lParam);
-
 
 	//Windowsで作成されたWindとWindowsに関する入出力などを管理した、//
 	//WIndows全体の管理クラス//
@@ -257,12 +251,6 @@ namespace ChSystem
 		{
 			wndObject.InvalidateWind(_clear);
 		}
-
-		friend LRESULT CALLBACK ChSystem::WndProc(
-			HWND _hWnd
-			, UINT _uMsg
-			, WPARAM _wParam
-			, LPARAM _lParam);
 
 	protected:
 

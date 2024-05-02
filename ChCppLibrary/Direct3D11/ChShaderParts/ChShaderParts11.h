@@ -25,7 +25,7 @@ namespace ChD3D11
 
 		private:
 
-			D3D11_VIEWPORT View;
+			D3D11_VIEWPORT View = D3D11_VIEWPORT();
 
 		};
 

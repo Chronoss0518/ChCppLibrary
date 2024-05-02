@@ -24,10 +24,12 @@ namespace ChSystem
 		///////////////////////////////////////////////////////////////////////////////////
 		//SetFunction//
 
-		void SetSystemManager(const SystemManager* _own)
-		{
-			system = const_cast<SystemManager*>(_own);
-		}
+		inline void SetUseSystemButtons(const bool _button) { useSystemButtonFlg = _button; }
+
+		//全体で利用するFPSを管理//
+		inline void SetFPS(const unsigned long _FPS) { FPS = _FPS; }
+
+		inline void SetNowTime(const unsigned long _time) { lastFPSPoint = _time; }
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//GetFunction//
@@ -37,6 +39,11 @@ namespace ChSystem
 
 		//Windの立幅サイズ取得//
 		const inline unsigned int GetWindHeight()const { return windSize.h; }
+
+		//FPSカウントの取得//
+		const inline unsigned long GetFPS() const { return FPS; }
+
+		const inline long double GetNowFPSPoint()const { return lastFPSPoint; }
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//IsFunction//
@@ -48,6 +55,9 @@ namespace ChSystem
 		virtual bool IsPause(const int _key);
 
 		virtual bool IsUpdate() { return false; };
+
+		//システムで提供されているボタンを利用するか//
+		bool IsUseSystemButtons() { return useSystemButtonFlg; }
 
 		///////////////////////////////////////////////////////////////////////////////////
 		//UpdateFunction//
@@ -65,18 +75,38 @@ namespace ChSystem
 			std::cerr << _mainStr;
 		};
 
-	protected:
+		//FPS処理
+		inline bool FPSProcess()
+		{
+			if (!*this)return false;
 
-		SystemManager* system = nullptr;
+			unsigned long nowTime = GetNowTime();
+			unsigned long tmp = nowTime - lastFPSTime;
+
+			if (tmp < 1000 / FPS)return false;
+
+			lastFPSPoint = 1000 / tmp;
+			lastFPSTime = nowTime;
+
+			return true;
+		}
+
+	protected:
 
 		ChMath::Vector2Base<unsigned long> windSize;
 
 		ChCpp::BitBool buttonList;
 		ChCpp::BitBool isNowPush;
 
+		bool useSystemButtonFlg = true;
+
 		//Pause用変数//
 		bool nowKey = false;
 		bool pauseFlg = false;
+
+		unsigned long FPS = 60;
+		long double lastFPSPoint = 0;
+		unsigned long lastFPSTime = 0;
 
 	};
 
@@ -102,8 +132,6 @@ namespace ChSystem
 			baseSystems = nullptr;
 
 			baseSystems = new C();
-			baseSystems->SetSystemManager(this);
-
 			SetInitFlg(true);
 
 			return ChPtr::SafeCast<C>(baseSystems);
@@ -123,19 +151,19 @@ namespace ChSystem
 		//SetFunction//
 
 		//全体で利用するFPSを管理//
-		inline void SetFPS(const unsigned long _FPS) { FPS = _FPS; }
+		inline void SetFPS(const unsigned long _FPS) { if (ChPtr::NotNullCheck(baseSystems))baseSystems->SetFPS(_FPS); }
 
-		inline void SetNowTime(const unsigned long _time) { lastFPSPoint = _time; }
+		inline void SetNowTime(const unsigned long _time) { if (ChPtr::NotNullCheck(baseSystems))baseSystems->SetNowTime(_time); }
 
-		inline void SetUseSystemButtons(const bool _button) { useSystemButton = _button; }
+		inline void SetUseSystemButtons(const bool _button) { if(ChPtr::NotNullCheck(baseSystems)) baseSystems->SetUseSystemButtons(_button); }
 
 		///////////////////////////////////////////////////////////////////////////////////s
 		//GetFunction//
 
 		//FPSカウントの取得//
-		const inline unsigned long GetFPS() const { return FPS; }
+		const inline unsigned long GetFPS() const { return ChPtr::NotNullCheck(baseSystems) ? baseSystems->GetFPS() : 0; }
 
-		const inline long double GetNowFPSPoint()const { return lastFPSPoint; }
+		const inline long double GetNowFPSPoint()const { return ChPtr::NotNullCheck(baseSystems) ? baseSystems->GetNowFPSPoint() : 0; }
 
 		//ウィンドシステム(BaseSystem継承)を取得する//
 		template<class T>
@@ -153,7 +181,7 @@ namespace ChSystem
 		inline bool IsPushKey(const int _key)
 		{
 			if (!*this)return false;
-			if (baseSystems == nullptr)return false;
+			if (ChPtr::NullCheck(baseSystems))return false;
 			return baseSystems->IsPushKey(_key);
 		}
 
@@ -161,7 +189,7 @@ namespace ChSystem
 		inline bool IsPushKeyNoHold(const int _key)
 		{
 			if (!*this)return false;
-			if (baseSystems == nullptr)return false;
+			if (ChPtr::NullCheck(baseSystems))return false;
 			return baseSystems->IsPushKeyNoHold(_key);
 
 		}
@@ -170,7 +198,7 @@ namespace ChSystem
 		inline bool IsPause(const int _key)
 		{
 			if (!*this)return false;
-			if (baseSystems == nullptr)return false;
+			if (ChPtr::NullCheck(baseSystems))return false;
 			return baseSystems->IsPause(_key);
 
 		}
@@ -178,13 +206,13 @@ namespace ChSystem
 		//システムを継続するか//
 		bool IsUpdate()
 		{
-			if (baseSystems == nullptr)return false;
+			if (ChPtr::NullCheck(baseSystems))return false;
 
 			return baseSystems->IsUpdate();
 		}
 
 		//システムで提供されているボタンを利用するか//
-		bool IsUseSystemButtons() { return useSystemButton; }
+		bool IsUseSystemButtons() { return ChPtr::NotNullCheck(baseSystems) ? baseSystems->IsUseSystemButtons() : false; }
 
 		///////////////////////////////////////////////////////////////////////////////////s
 
@@ -192,17 +220,9 @@ namespace ChSystem
 		inline bool FPSProcess()
 		{
 			if (!*this)return false;
-			if (baseSystems == nullptr)return false;
+			if (ChPtr::NullCheck(baseSystems))return false;
 
-			unsigned long nowTime = baseSystems->GetNowTime();
-			unsigned long tmp = nowTime - lastFPSTime;
-
-			if (tmp < 1000 / FPS)return false;
-
-			lastFPSPoint = 1000 / tmp;
-			lastFPSTime = nowTime;
-
-			return true;
+			return baseSystems->FPSProcess();
 		}
 
 	private:
@@ -215,12 +235,6 @@ namespace ChSystem
 		{
 			Release();
 		}
-
-		unsigned long FPS = 60;
-		long double lastFPSPoint = 0;
-		unsigned long lastFPSTime = 0;
-
-		bool useSystemButton = true;
 
 	public:
 

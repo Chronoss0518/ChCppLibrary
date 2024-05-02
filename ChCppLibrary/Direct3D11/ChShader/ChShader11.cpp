@@ -78,7 +78,7 @@ void ShaderController11::Init(
 
 	dsBuffer.CreateDepthBuffer(_device, _width, _height);
 
-	outSprite.Init(device);
+	outSprite.Init();
 
 	window.Init(_device, _SC);
 
@@ -139,7 +139,7 @@ void ShaderController11::DrawEnd(ChD3D11::TextureBase11& _tex)
 
 	spriteShader->DrawStart(dc);
 
-	spriteShader->Draw(dc, _tex, outSprite);
+	spriteShader->Draw(_tex, outSprite);
 
 	spriteShader->DrawEnd();
 

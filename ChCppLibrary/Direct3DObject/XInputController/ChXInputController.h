@@ -1,5 +1,5 @@
-#ifndef Ch_CPP_D3DOBJ_XICon_h
-#define Ch_CPP_D3DOBJ_XICon_h
+#ifndef Ch_D3DOBJ_XICon_h
+#define Ch_D3DOBJ_XICon_h
 
 namespace ChD3D
 {
@@ -118,7 +118,7 @@ namespace ChD3D
 
 		inline bool GetR1Flg()
 		{
-			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) > 0;
+			return (state.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) > 0;
 		}
 
 		inline float GetR2Trigger() 

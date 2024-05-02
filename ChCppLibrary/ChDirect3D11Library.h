@@ -24,10 +24,18 @@
 #include"Direct3D11/ChCB/ChCBSprite/ChCBSprite11.h"
 #include"Direct3D11/ChCB/ChCBLight/ChCBLight11.h"
 #include"Direct3D11/ChCB/ChCBBone/ChCBBone11.h"
+#include"Direct3D11/ChCB/ChCBCircleCulling/ChCBCircleCulling11.h"
+#include"Direct3D11/ChCB/ChCBBasicShapes/ChCBBasicShapes11.h"
+#include"Direct3D11/ChCB/ChCBBlur/ChCBBlur11.h"
+#include"Direct3D11/ChCB/ChCBHighlight/ChCBHighlight11.h"
 //サンプルシェーダー//
 #include"Direct3D11/ChSampleShader/PolygonShader/ChBaseDrawMesh11.h"
 #include"Direct3D11/ChSampleShader/PolygonShader/ChBaseDrawPolygonBoard11.h"
 #include"Direct3D11/ChSampleShader/SpriteShader/ChBaseDrawSprite11.h"
+#include"Direct3D11/ChSampleShader/SpriteShader/ChCircleCullingSpriteShader11.h"
+#include"Direct3D11/ChSampleShader/SpriteShader/ChBasicShapesShader11.h"
+#include"Direct3D11/ChSampleShader/SpriteShader/ChBasicBlurShader11.h"
+#include"Direct3D11/ChSampleShader/SpriteShader/ChBasicHighlightShader11.h"
 
 //空間操作//
 #include"Direct3D11/ChCameraController/ChCameraController11.h"

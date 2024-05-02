@@ -59,21 +59,21 @@ ChD3D9ライブラリやChD3D11ライブラリを呼ぶ際に同時に呼ばれ�
 
 以下にそれぞれの使い方を記述していく。
 
-[ChBaseライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/BasePack)
+[ChBaseライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChCppLibrary/BasePack)
 
-[ChCppライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/CPP)
+[ChCppライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChCppLibrary/CPP)
 
-[ChWinライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/WindowsObject)
+[ChWinライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChCppLibrary/WindowsObject)
 
-[ChD3D9ライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/Direct3D9)
+[ChD3D9ライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChCppLibrary/Direct3D9)
 
-[ChD3D11ライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/Direct3D11)
+[ChD3D11ライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChCppLibrary/Direct3D11)
 
-[ChD3Dライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/Direct3DObject)
+[ChD3Dライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChCppLibrary/Direct3DObject)
 
-[ChImGuiライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChWinLibrary/ImGUIAPI)
+[ChImGuiライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChCppLibrary/ImGUIAPI)
 
-[ExternalLibrary(https://github.com/Chronoss0518/ChCppLibrary/tree/master/ChCppLibrary/External)
+[ExternalLibrary](https://github.com/Chronoss0518/ChCppLibrary/tree/master/ChCppLibrary/External)
 
 # 予定
 

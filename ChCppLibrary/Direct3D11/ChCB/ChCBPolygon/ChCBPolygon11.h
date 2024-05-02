@@ -39,6 +39,8 @@ namespace ChD3D11
 
 			void SetWorldMatrix(const ChLMat& _mat);
 
+			void SetMoveUV(const ChVec2& _move);
+
 			void SetViewMatrix(const ChLMat& _mat);
 
 			void SetProjectionMatrix(const ChLMat& _mat);
@@ -101,6 +103,8 @@ namespace ChD3D11
 			inline ChLMat GetWorldMatrix() { return charaData.worldMat; }
 
 			inline ChLMat GetFrameMatrix() { return charaData.frameMatrix; }
+
+			inline ChVec2 GetMoveUV() { return charaData.moveUV; }
 
 		public://Update Function//
 

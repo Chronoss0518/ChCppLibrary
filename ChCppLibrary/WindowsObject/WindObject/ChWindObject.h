@@ -81,14 +81,14 @@ namespace ChWin
 
 		inline void SetWindSize(const ChPOINT& _size, const unsigned int _flgs = SWP_NOMOVE | SWP_NOZORDER)
 		{
-			SetWindPos(_size.w, _size.h, _flgs);
+			SetWindSize(_size.w, _size.h, _flgs);
 		}
 
 		void SetWindRect(const unsigned int _x, const unsigned int _y, const unsigned int _w, const unsigned int _h, const unsigned int _flgs = SWP_NOZORDER);
 
 		inline void SetWindRect(const RECT& _rec, const unsigned int _flgs = SWP_NOZORDER)
 		{
-			SetWindRect(_rec.top, _rec.left, _rec.right - _rec.left, _rec.bottom - _rec.top, _flgs);
+			SetWindRect(_rec.left, _rec.top, _rec.right - _rec.left, _rec.bottom - _rec.top, _flgs);
 		}
 
 		inline void SetEnableFlg(const bool _flg) { EnableWindow(hWnd, _flg); }
