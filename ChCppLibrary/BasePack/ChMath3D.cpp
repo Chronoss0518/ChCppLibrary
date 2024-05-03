@@ -992,13 +992,13 @@ void ChVec4::DeserializeARGB(
 ///////////////////////////////////////////////////////////////////////////////////
 
 ChVector4 ChVec4::GetCross(
-	const ChVector4& _vec1, 
+	const ChVector4& _vec1,
 	const ChVector4& _vec2,
 	const unsigned long _digit)
 {
 	ChVector4 tmpVec;
 
-	tmpVec.val.Cross(_vec1.val, _vec2.val,_digit);
+	tmpVec.val.Cross(_vec1.val, _vec2.val, _digit);
 
 	return tmpVec;
 
@@ -1007,21 +1007,21 @@ ChVector4 ChVec4::GetCross(
 ///////////////////////////////////////////////////////////////////////////////////
 
 float ChVec4::GetCos(
-	const ChVector4& _vec1, 
+	const ChVector4& _vec1,
 	const ChVector4& _vec2,
 	const unsigned long _digit)
 {
-	return _vec1.val.GetCos(_vec2.val,_digit);
+	return _vec1.val.GetCos(_vec2.val, _digit);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 float ChVec4::GetRadian(
-	const ChVector4& _vec1, 
+	const ChVector4& _vec1,
 	const ChVector4& _vec2,
 	const unsigned long _digit)
 {
-	return _vec1.val.GetRadian(_vec2.val,_digit);
+	return _vec1.val.GetRadian(_vec2.val, _digit);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -1031,14 +1031,14 @@ float ChVec4::GetDot(
 	const ChVector4& _vec2,
 	const unsigned long _digit)
 {
-	return _vec1.val.GetDot(_vec2.val,_digit);
+	return _vec1.val.GetDot(_vec2.val, _digit);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 //ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
 ChVector4 ChVec4::GetCorrection(
-	const ChVector4& _start, 
+	const ChVector4& _start,
 	const ChVector4& _end,
 	const float _Now)
 {
@@ -1096,7 +1096,7 @@ void ChVec4::Cross(
 	, const ChVector4& _vec2,
 	const unsigned long _digit)
 {
-	val.Cross(_vec1.val, _vec2.val,_digit);
+	val.Cross(_vec1.val, _vec2.val, _digit);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -1211,7 +1211,7 @@ void ChQua::SetRotationLMatrix(const ChLMatrix& _mat)
 //
 void ChQua::SetRotationRMatrix(const ChRMatrix& _mat)
 {
-	
+
 	w = std::sqrtf(_mat.r_11 + _mat.r_22 + _mat.r_33 + 1.0f) / 2.0f;
 
 	if (w != 0)
@@ -1256,7 +1256,7 @@ void ChQua::SetRotationYAxis(const float _y)
 
 void ChQua::SetRotationZAxis(const float _z)
 {
-	SetRotation(ChVec3(0.0f,0.0f,1.0f), _z);
+	SetRotation(ChVec3(0.0f, 0.0f, 1.0f), _z);
 }
 
 void ChQua::SetRotation(const ChVec3& _axis, const float _angle)
@@ -1266,12 +1266,12 @@ void ChQua::SetRotation(const ChVec3& _axis, const float _angle)
 	tmp.Normalize();
 
 	float tmpAngle = std::fmod(_angle * 0.5f, ChMath::PI * 2.0f);
-	
+
 	w = std::cosf(tmpAngle);
 
-	x = FLOAT_TEST(tmp.x, 0.00001f) ?  0.0f : tmp.x * std::sinf(tmpAngle);
-	y = FLOAT_TEST(tmp.y, 0.00001f) ?  0.0f : tmp.y * std::sinf(tmpAngle);
-	z = FLOAT_TEST(tmp.z, 0.00001f) ?  0.0f : tmp.z * std::sinf(tmpAngle);
+	x = FLOAT_TEST(tmp.x, 0.00001f) ? 0.0f : tmp.x * std::sinf(tmpAngle);
+	y = FLOAT_TEST(tmp.y, 0.00001f) ? 0.0f : tmp.y * std::sinf(tmpAngle);
+	z = FLOAT_TEST(tmp.z, 0.00001f) ? 0.0f : tmp.z * std::sinf(tmpAngle);
 }
 
 ChLMatrix ChQua::GetRotationLMatrix(const unsigned long _digit)const
@@ -1296,7 +1296,7 @@ ChVec3 ChQua::GetAxis()const
 
 	float sin = std::sinf(GetRadian() / 2.0f);
 
-	if(sin <= 0.00001f)return ChVec3(0.0f, 1.0f, 0.0f);
+	if (sin <= 0.00001f)return ChVec3(0.0f, 1.0f, 0.0f);
 
 	return res / sin;
 
@@ -1385,17 +1385,11 @@ ChVec3 ChQua::GetMul(const ChQuaternion& _qua, const ChVec3& _dir)
 	ChVec3 res = _dir;
 	res.Normalize();
 
-	ChQua tmp;
-	tmp.x = _dir.x;
-	tmp.y = _dir.y;
-	tmp.z = _dir.z;
-	tmp.w = 0.0f;
+	ChQua tmp = ChQua(res.x, res.y, res.z);
 
 	ChQua idn = _qua;
 	idn.Inverse();
-
-	tmp = GetMul(tmp,idn);
-	tmp = GetMul(_qua, tmp);
+	tmp = _qua * tmp * idn;
 
 	res = ChVec3(tmp.x, tmp.y, tmp.z);
 
@@ -1404,24 +1398,26 @@ ChVec3 ChQua::GetMul(const ChQuaternion& _qua, const ChVec3& _dir)
 
 ChQuaternion ChQuaternion::Lerp(const ChQuaternion& _start, const ChQuaternion& _end, const float _pow)
 {
-	if (_pow >= 1.0f)return _start;
-	if (_pow <= 0.0f)return _end;
+	if (_pow >= 1.0f)return _end;
+	if (_pow <= 0.0f)return _start;
 
 	ChQua start = _start;
 	ChQua end = _end;
 
-	float rad = start.val.GetRadian(end.val);
-
+	float rad = start.val.GetDot(end.val);
+	rad = std::acosf(rad);
 	if (rad == 0.0f)return start;
 
 	float baseSin = std::sinf(rad);
 
 	if (baseSin == 0.0f)return start;
 
-	start.val.Mul(std::sin((1.0f - _pow) * rad) / baseSin);
-	end.val.Mul(std::sin(_pow * rad) / baseSin);
+	start.val.Mul(std::sinf((1.0f - _pow) * rad) / baseSin);
+	end.val.Mul(std::sinf(_pow * rad) / baseSin);
 
-	return start + end;
+	ChQua res = (start + end);
+
+	return res;
 }
 
 
@@ -1561,25 +1557,25 @@ void ChLMatrix::SetRotationYPR(const ChVec3& _vec, const unsigned long _digit)
 //
 void ChLMatrix::SetRotation(const ChQua& _qua, const unsigned long _digit)
 {
-	float sin = _qua.GetSin();
-	float cos = _qua.GetCos();
+
+	float squaredW = _qua.w * _qua.w;
 
 	ChVec3 scl = GetScalling(_digit);
 
 	for (unsigned char i = 0; i < 3; i++)
 	{
-		m[i][i] = (cos + (_qua.val[i] * _qua.val[i]) * (1.0f - cos)) * scl.val[i];
+		m[i][i] = ((2.0f * squaredW) + (2.0f * _qua.val[i] * _qua.val[i]) - 1) * scl.val[i];
 	}
 
-	m[0][1] = ((_qua.x * _qua.y) * (1.0f - cos) - _qua.z * sin) * scl.x;
-	m[0][2] = ((_qua.x * _qua.z) * (1.0f - cos) + _qua.y * sin) * scl.x;
-															 
-	m[1][0] = ((_qua.y * _qua.x) * (1.0f - cos) + _qua.z * sin) * scl.y;
-	m[1][2] = ((_qua.y * _qua.z) * (1.0f - cos) - _qua.x * sin) * scl.y;
-															 
-	m[2][0] = ((_qua.z * _qua.x) * (1.0f - cos) - _qua.y * sin) * scl.z;
-	m[2][1] = ((_qua.z * _qua.y) * (1.0f - cos) + _qua.x * sin) * scl.z;
-}			  
+	m[0][1] = ((2.0f * _qua.x * _qua.y) - (2.0f * _qua.z * _qua.w)) * scl.x;
+	m[0][2] = ((2.0f * _qua.x * _qua.z) + (2.0f * _qua.y * _qua.w)) * scl.x;
+
+	m[1][0] = ((2.0f * _qua.y * _qua.x) + (2.0f * _qua.z * _qua.w)) * scl.y;
+	m[1][2] = ((2.0f * _qua.y * _qua.z) - (2.0f * _qua.x * _qua.w)) * scl.y;
+
+	m[2][0] = ((2.0f * _qua.z * _qua.x) - (2.0f * _qua.y * _qua.w)) * scl.z;
+	m[2][1] = ((2.0f * _qua.z * _qua.y) + (2.0f * _qua.x * _qua.w)) * scl.z;
+}
 
 ///////////////////////////////////////////////////////////////////////////////////
 
@@ -1632,7 +1628,7 @@ void ChLMatrix::SetScalling(
 	const ChVec3& _vec,
 	const unsigned long _digit)
 {
-	SetScalling(_vec.x, _vec.y, _vec.z,_digit);
+	SetScalling(_vec.x, _vec.y, _vec.z, _digit);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -1936,14 +1932,14 @@ void ChRMatrix::SetScalling(
 	const ChVec3& _vec,
 	const unsigned long _digit)
 {
-	SetScalling(_vec.x, _vec.y, _vec.z,_digit);
+	SetScalling(_vec.x, _vec.y, _vec.z, _digit);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChRMatrix::SetScalling(
-	const float _x, 
-	const float _y, 
+	const float _x,
+	const float _y,
 	const float _z,
 	const unsigned long _digit)
 {
@@ -1959,10 +1955,10 @@ void ChRMatrix::SetScalling(
 
 	vec[0].Normalize(_digit);
 	vec[0].val.Mul(_x);
-	
+
 	vec[1].Normalize(_digit);
 	vec[1].val.Mul(_y);
-	
+
 	vec[2].Normalize(_digit);
 	vec[2].val.Mul(_z);
 
@@ -2130,7 +2126,7 @@ ChVector3 ChMath::GetFaceNormal(
 	tmpVec = _Pos1 - _Pos2;
 	tmpVec2 = _Pos2 - _Pos3;
 
-	tmpVec.Cross(tmpVec, tmpVec2,_digit);
+	tmpVec.Cross(tmpVec, tmpVec2, _digit);
 
 	tmpVec.Normalize(_digit);
 

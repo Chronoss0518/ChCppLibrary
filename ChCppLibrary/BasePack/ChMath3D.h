@@ -715,10 +715,10 @@ public:
 	inline ChQuaternion(
 		const float _x, const float _y, const float _z)
 	{
-		ChVector3 tmp;
-		tmp.x = _x;
-		tmp.y = _y;
-		tmp.z = _z;
+		x = _x;
+		y = _y;
+		z = _z;
+		w = 0.0f;
 	}
 
 	inline ChQuaternion(const ChQuaternion& _qua) 
