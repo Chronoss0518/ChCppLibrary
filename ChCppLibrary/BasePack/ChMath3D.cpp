@@ -1288,6 +1288,16 @@ ChRMatrix ChQua::GetRotationRMatrix(const unsigned long _digit)const
 	return mat;
 }
 
+ChVec3 ChQua::GetAxis()const
+{
+	ChVec3 res = ChVec3(x, y, z);
+
+	if (res.Len() <= 0.00001f)return ChVec3(0.0f, 1.0f, 0.0f);
+
+	float sin = std::sinf(GetRadian() / 2.0f);
+
+}
+
 float ChQua::GetRadian()const
 {
 	return std::acosf(w) * 2.0f;

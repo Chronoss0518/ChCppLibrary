@@ -781,6 +781,8 @@ public://Get Method//
 
 	ChRMatrix GetRotationRMatrix(const unsigned long _digit = 6)const;
 
+	ChVec3 GetAxis()const;
+
 	float GetRadian()const;
 
 	float GetCos()const;
