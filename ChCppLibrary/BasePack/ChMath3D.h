@@ -958,7 +958,11 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 
 	void SetPosition(const float _x, const float _y, const float _z);
 
+	void SetRotationYPR(const float _x, const float _y, const float _z, const unsigned long _digit = 6);
+
 	void SetRotation(const ChQua& _qua, const unsigned long _digit = 6);
+
+	void SetRotationYPR(const ChVec3& _vec, const unsigned long _digit = 6);
 
 	void SetRotationXAxis(const float _x);
 
@@ -990,12 +994,6 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 	ChVec3 GetYAxisDirection()const;
 
 	ChVec3 GetZAxisDirection()const;
-
-	float GetRadian()const;
-
-	float GetCos()const;
-
-	float GetSin()const;
 
 	///////////////////////////////////////////////////////////////////////////////////
 

@@ -1265,8 +1265,8 @@ void ChQua::SetRotation(const ChVec3& _axis, const float _angle)
 
 	tmp.Normalize();
 
-	float tmpAngle = _angle * 0.5f;
-
+	float tmpAngle = std::fmod(_angle * 0.5f, ChMath::PI * 2.0f);
+	
 	w = std::cosf(tmpAngle);
 
 	x = FLOAT_TEST(tmp.x, 0.00001f) ?  0.0f : tmp.x * std::sinf(tmpAngle);
@@ -1530,7 +1530,28 @@ void ChLMatrix::SetPosition(const float _x, const float _y, const float _z)
 	l_43 = _z;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+void ChLMatrix::SetRotationYPR(const float _x, const float _y, const float _z, const unsigned long _digit)
+{
+	ChVec3 scale = GetScalling();
+	ChVec3 pos = GetPosition();
+
+	SetRotationYAxis(_y);
+
+	ChLMat tmp;
+
+	tmp.SetRotationXAxis(_x);
+
+	*this = tmp * *this;
+
+	tmp.SetRotationZAxis(_z);
+
+	*this = tmp * *this;
+}
+
+void ChLMatrix::SetRotationYPR(const ChVec3& _vec, const unsigned long _digit)
+{
+	SetRotationYPR(_vec.x, _vec.y, _vec.z, _digit);
+}
 
 //à»â∫ÇÃURLÇéQè∆//
 //https://qiita.com/aa_debdeb/items/3d02e28fb9ebfa357eaf#%E3%82%AF%E3%82%A9%E3%83%BC%E3%82%BF%E3%83%8B%E3%82%AA%E3%83%B3%E3%81%8B%E3%82%89%E5%9B%9E%E8%BB%A2%E8%A1%8C%E5%88%97
@@ -1544,23 +1565,25 @@ void ChLMatrix::SetRotation(const ChQua& _qua, const unsigned long _digit)
 
 	for (unsigned char i = 0; i < 3; i++)
 	{
-		m[i][i] = cos + (_qua.val[i] * _qua.val[i]) * (1.0f - cos) * scl.val[i];
+		m[i][i] = (cos + (_qua.val[i] * _qua.val[i]) * (1.0f - cos)) * scl.val[i];
 	}
 
-	m[0][1] = (_qua.x * _qua.y) * (1.0f - cos) - _qua.z * sin * scl.x;
-	m[0][2] = (_qua.x * _qua.z) * (1.0f - cos) + _qua.y * sin * scl.x;
-
-	m[1][0] = (_qua.y * _qua.x) * (1.0f - cos) + _qua.z * sin * scl.y;
-	m[1][2] = (_qua.y * _qua.z) * (1.0f - cos) - _qua.x * sin * scl.y;
-
-	m[2][0] = (_qua.z * _qua.x) * (1.0f - cos) - _qua.y * sin * scl.z;
-	m[2][1] = (_qua.z * _qua.y) * (1.0f - cos) + _qua.x * sin * scl.z;
-}
+	m[0][1] = ((_qua.x * _qua.y) * (1.0f - cos) - _qua.z * sin) * scl.x;
+	m[0][2] = ((_qua.x * _qua.z) * (1.0f - cos) + _qua.y * sin) * scl.x;
+															 
+	m[1][0] = ((_qua.y * _qua.x) * (1.0f - cos) + _qua.z * sin) * scl.y;
+	m[1][2] = ((_qua.y * _qua.z) * (1.0f - cos) - _qua.x * sin) * scl.y;
+															 
+	m[2][0] = ((_qua.z * _qua.x) * (1.0f - cos) - _qua.y * sin) * scl.z;
+	m[2][1] = ((_qua.z * _qua.y) * (1.0f - cos) + _qua.x * sin) * scl.z;
+}			  
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChLMatrix::SetRotationXAxis(const float _x)
 {
+	Identity();
+
 	float x = -std::fmod(_x, ChMath::PI * 2.0f);
 
 	l_22 = std::cos(x);
@@ -1574,6 +1597,8 @@ void ChLMatrix::SetRotationXAxis(const float _x)
 
 void ChLMatrix::SetRotationYAxis(const float _y)
 {
+	Identity();
+
 	float  y = -std::fmod(_y, ChMath::PI * 2.0f);
 
 	l_11 = std::cos(y);
@@ -1587,6 +1612,8 @@ void ChLMatrix::SetRotationYAxis(const float _y)
 
 void ChLMatrix::SetRotationZAxis(const float _z)
 {
+	Identity();
+
 	float z = -std::fmod(_z, ChMath::PI * 2.0f);
 
 	l_11 = std::cos(z);
