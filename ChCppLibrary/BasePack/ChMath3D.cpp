@@ -1546,6 +1546,9 @@ void ChLMatrix::SetRotationYPR(const float _x, const float _y, const float _z, c
 	tmp.SetRotationZAxis(_z);
 
 	*this = tmp * *this;
+
+	SetPosition(pos);
+	SetScalling(scale);
 }
 
 void ChLMatrix::SetRotationYPR(const ChVec3& _vec, const unsigned long _digit)
@@ -1664,6 +1667,36 @@ ChQua ChLMatrix::GetRotation(const unsigned long _digit)const
 	ChQua res;
 	res.SetRotationLMatrix(*this);
 	return res;
+
+}
+
+ChVec3 ChLMatrix::GetRotationYPR(const unsigned long _digit)const
+{
+
+	ChVec3 tmpScl = GetScalling(_digit);
+
+	float outM[3][3];
+
+	for (unsigned char i = 0; i < 3; i++)
+	{
+		for (unsigned char j = 0; j < 3; j++)
+		{
+			outM[i][j] = m[i][j];
+			outM[i][j] /= tmpScl.val[i] != 0.0f ? tmpScl.val[i] : 1.0f;
+		}
+	}
+
+	float x = std::asinf(-outM[1][2]);
+	ChVec3 out;
+
+	bool zeroFlg = FLOAT_TEST(x, 0.000001f);
+
+	out = ChVec3(
+		x,
+		zeroFlg ? std::atanf(-outM[2][0] / outM[0][0]) : (std::atanf(outM[0][2] / outM[2][2])),
+		zeroFlg ? 0.0f : (std::atanf(outM[1][0] / outM[1][1])));
+
+	return out;
 
 }
 

@@ -987,6 +987,8 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 
 	ChQua GetRotation(const unsigned long _digit = 6)const;
 
+	ChVec3 GetRotationYPR(const unsigned long _digit = 6)const;
+
 	ChVec3 GetScalling(const unsigned long _digit = 6)const;
 
 	ChVec3 GetXAxisDirection()const;
