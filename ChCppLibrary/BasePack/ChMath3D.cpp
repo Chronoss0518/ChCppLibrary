@@ -1296,6 +1296,10 @@ ChVec3 ChQua::GetAxis()const
 
 	float sin = std::sinf(GetRadian() / 2.0f);
 
+	if(sin <= 0.00001f)return ChVec3(0.0f, 1.0f, 0.0f);
+
+	return res / sin;
+
 }
 
 float ChQua::GetRadian()const
