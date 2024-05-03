@@ -684,6 +684,9 @@ struct ChQuaternion : public ChMath::QuaternionBase<float>
 
 	ChQuaternion& operator=(const ChQuaternion& _qua);
 
+	ChQuaternion& operator+=(const ChQuaternion& _num);
+	ChQuaternion operator+(const ChQuaternion& _num) const;
+
 	ChQuaternion& operator*=(const ChQuaternion& _num);
 	ChQuaternion operator*(const ChQuaternion& _num) const;
 
@@ -794,11 +797,15 @@ public:
 
 public:
 
+	static ChQuaternion GetSum(const ChQuaternion& _qua1, const ChQuaternion& _qua2);
+
 	static ChQuaternion GetMul(const ChQuaternion& _qua1, const ChQuaternion& _qua2);
 
 	static ChVec3 GetMul(const ChQuaternion& _qua, const ChVec3& _dir);
 
 public:
+
+	void Sum(const ChQuaternion& _value);
 
 	void Mul(const ChQuaternion& _value);
 

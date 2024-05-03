@@ -1109,6 +1109,17 @@ ChQuaternion& ChQuaternion::operator=(const ChQuaternion& _qua)
 	return *this;
 }
 
+ChQuaternion& ChQuaternion::operator+=(const ChQuaternion& _num)
+{
+	Sum(_num);
+	return *this;
+}
+
+ChQuaternion ChQuaternion::operator+(const ChQuaternion& _num) const
+{
+	return  GetSum(*this, _num);
+}
+
 ChQuaternion& ChQuaternion::operator*=(const ChQuaternion& _num)
 {
 	Mul(_num);
@@ -1297,7 +1308,7 @@ void ChQua::AddRotationXAxis(float _x)
 	ChQua qua;
 	qua.SetRotationXAxis(_x);
 
-	*this = *this * qua;
+	*this = qua * *this;
 }
 
 void ChQua::AddRotationYAxis(float _y)
@@ -1305,7 +1316,7 @@ void ChQua::AddRotationYAxis(float _y)
 	ChQua qua;
 	qua.SetRotationYAxis(_y);
 
-	*this = *this * qua;
+	*this = qua * *this;
 }
 
 void ChQua::AddRotationZAxis(float _z)
@@ -1313,7 +1324,12 @@ void ChQua::AddRotationZAxis(float _z)
 	ChQua qua;
 	qua.SetRotationZAxis(_z);
 
-	*this = *this * qua;
+	*this = qua * *this;
+}
+
+void ChQua::Sum(const ChQua& _value)
+{
+	val.Set(GetSum(*this, _value).val);
 }
 
 void ChQua::Mul(const ChQua& _value)
@@ -1324,6 +1340,13 @@ void ChQua::Mul(const ChQua& _value)
 ChVec3 ChQua::Mul(const ChVec3& _dir)
 {
 	return GetMul(*this, _dir);
+}
+
+ChQuaternion ChQuaternion::GetSum(const ChQuaternion& _qua1, const ChQuaternion& _qua2)
+{
+	ChQuaternion res = _qua1;
+	res.val.Add(_qua2.val);
+	return res;
 }
 
 ////
@@ -1363,6 +1386,28 @@ ChVec3 ChQua::GetMul(const ChQuaternion& _qua, const ChVec3& _dir)
 	res = ChVec3(tmp.x, tmp.y, tmp.z);
 
 	return res;
+}
+
+ChQuaternion ChQuaternion::Lerp(const ChQuaternion& _start, const ChQuaternion& _end, const float _pow)
+{
+	if (_pow >= 1.0f)return _start;
+	if (_pow <= 0.0f)return _end;
+
+	ChQua start = _start;
+	ChQua end = _end;
+
+	float rad = start.val.GetRadian(end.val);
+
+	if (rad == 0.0f)return start;
+
+	float baseSin = std::sinf(rad);
+
+	if (baseSin == 0.0f)return start;
+
+	start.val.Mul(std::sin((1.0f - _pow) * rad) / baseSin);
+	end.val.Mul(std::sin(_pow * rad) / baseSin);
+
+	return start + end;
 }
 
 
