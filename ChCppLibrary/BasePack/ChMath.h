@@ -702,11 +702,40 @@ namespace ChMath
 			const VectorBase& _end,
 			const float _pow)
 		{
+			if (_pow <= 0.0f)return _start;
+			if (_pow >= 1.0f)return _end;
+
 			VectorBase out;
 
 			out = (_start * (1.0f - _pow)) + (_end * _pow);
 
 			return out;
+		}
+
+		static VectorBase SLerp(
+			const VectorBase& _start,
+			const VectorBase& _end,
+			const float _pow)
+		{
+
+			if (_pow >= 1.0f)return _end;
+			if (_pow <= 0.0f)return _start;
+
+			VectorBase start = _start;
+			VectorBase end = _end;
+
+			float rad = start.GetDot(end);
+			rad = std::acosf(rad);
+			if (rad == 0.0f)return start;
+
+			float baseSin = std::sinf(rad);
+
+			if (baseSin == 0.0f)return start;
+
+			start.Mul(std::sinf((1.0f - _pow) * rad) / baseSin);
+			end.Mul(std::sinf(_pow * rad) / baseSin);
+
+			return (start + end);
 		}
 
 	private:

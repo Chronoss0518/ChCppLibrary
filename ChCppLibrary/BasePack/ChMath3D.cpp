@@ -1396,26 +1396,10 @@ ChVec3 ChQua::GetMul(const ChQuaternion& _qua, const ChVec3& _dir)
 	return res;
 }
 
-ChQuaternion ChQuaternion::Lerp(const ChQuaternion& _start, const ChQuaternion& _end, const float _pow)
+ChQuaternion ChQuaternion::SLerp(const ChQuaternion& _start, const ChQuaternion& _end, const float _pow)
 {
-	if (_pow >= 1.0f)return _end;
-	if (_pow <= 0.0f)return _start;
-
-	ChQua start = _start;
-	ChQua end = _end;
-
-	float rad = start.val.GetDot(end.val);
-	rad = std::acosf(rad);
-	if (rad == 0.0f)return start;
-
-	float baseSin = std::sinf(rad);
-
-	if (baseSin == 0.0f)return start;
-
-	start.val.Mul(std::sinf((1.0f - _pow) * rad) / baseSin);
-	end.val.Mul(std::sinf(_pow * rad) / baseSin);
-
-	ChQua res = (start + end);
+	ChQua res;
+	res.val.Set(_start.val.SLerp(_start.val, _end.val, _pow));
 
 	return res;
 }

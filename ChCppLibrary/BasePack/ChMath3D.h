@@ -815,7 +815,7 @@ public:
 
 public:
 
-	static ChQuaternion Lerp(const ChQuaternion& _start, const ChQuaternion& _end, const float _pow);
+	static ChQuaternion SLerp(const ChQuaternion& _start, const ChQuaternion& _end, const float _pow);
 
 public:
 
