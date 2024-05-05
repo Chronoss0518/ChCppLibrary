@@ -24,6 +24,76 @@ struct ChRMatrix;
 struct ChLMatrix;
 struct ChUIMatrix;
 
+struct ChOrder
+{
+	ChOrder()
+	{
+		mathOrder[0] = 0.0f;
+		mathOrder[1] = 0.0f;
+		mathOrder[2] = 0.0f;
+	}
+
+	ChOrder(float _1, float _2, float _3)
+	{
+		mathOrder[0] = _1;
+		mathOrder[1] = _2;
+		mathOrder[2] = _3;
+	}
+
+	union
+	{
+		struct
+		{
+			float _1, _2, _3;
+		};
+
+		float mathOrder[3];
+	};
+};
+
+struct ChEularXYZ : public ChOrder
+{
+	ChEularXYZ():ChOrder(){}
+
+	ChEularXYZ(float _1, float _2, float _3):ChOrder(_1,_2,_3){}
+};
+
+struct ChEularXZY : public ChOrder
+{
+	ChEularXZY() :ChOrder() {}
+
+	ChEularXZY(float _1, float _2, float _3) :ChOrder(_1, _2, _3) {}
+};
+
+struct ChEularYXZ : public ChOrder
+{
+	ChEularYXZ() :ChOrder() {}
+
+	ChEularYXZ(float _1, float _2, float _3) :ChOrder(_1, _2, _3) {}
+};
+
+struct ChEularYZX : public ChOrder
+{
+	ChEularYZX() :ChOrder() {}
+
+	ChEularYZX(float _1, float _2, float _3) :ChOrder(_1, _2, _3) {}
+};
+
+struct ChEularZXY : public ChOrder
+{
+	ChEularZXY() :ChOrder() {}
+
+	ChEularZXY(float _1, float _2, float _3) :ChOrder(_1, _2, _3) {}
+};
+
+struct ChEularZYX : public ChOrder
+{
+	ChEularZYX() :ChOrder() {}
+
+	ChEularZYX(float _1, float _2, float _3) :ChOrder(_1, _2, _3) {}
+};
+
+
 struct ChVector2 : public ChMath::Vector2Base<float>
 {
 
@@ -783,6 +853,18 @@ public://Get Method//
 
 	ChVec3 GetAxis()const;
 
+	ChEularXYZ GetEularRotationXYZ(const unsigned long _digit = 6)const;
+
+	ChEularXZY GetEularRotationXZY(const unsigned long _digit = 6)const;
+
+	ChEularYXZ GetEularRotationYXZ(const unsigned long _digit = 6)const;
+
+	ChEularYZX GetEularRotationYZX(const unsigned long _digit = 6)const;
+
+	ChEularZXY GetEularRotationZXY(const unsigned long _digit = 6)const;
+
+	ChEularZYX GetEularRotationZYX(const unsigned long _digit = 6)const;
+
 	float GetRadian()const;
 
 	float GetCos()const;
@@ -987,7 +1069,17 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 
 	ChQua GetRotation(const unsigned long _digit = 6)const;
 
-	ChVec3 GetRotationYPR(const unsigned long _digit = 6)const;
+	ChEularXYZ GetEularRotationXYZ(const unsigned long _digit = 6)const;
+
+	ChEularXZY GetEularRotationXZY(const unsigned long _digit = 6)const;
+
+	ChEularYXZ GetEularRotationYXZ(const unsigned long _digit = 6)const;
+
+	ChEularYZX GetEularRotationYZX(const unsigned long _digit = 6)const;
+
+	ChEularZXY GetEularRotationZXY(const unsigned long _digit = 6)const;
+
+	ChEularZYX GetEularRotationZYX(const unsigned long _digit = 6)const;
 
 	ChVec3 GetScalling(const unsigned long _digit = 6)const;
 

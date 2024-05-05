@@ -770,7 +770,7 @@ namespace ChMath
 			{
 				for (unsigned long j = 0; j < MinRow; j++)
 				{
-					out[Column][Row] = m[Column][Row];
+					out[i][j] = m[i][j];
 				}
 			}
 
