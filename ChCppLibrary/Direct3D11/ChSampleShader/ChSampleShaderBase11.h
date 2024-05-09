@@ -6,6 +6,8 @@
 namespace ChD3D11
 {
 	class Texture11;
+	class TextureBase11;
+	class RenderTarget11;
 
 	namespace Shader
 	{
@@ -18,7 +20,7 @@ namespace ChD3D11
 
 		public://Init And Release//
 
-			void Init(ID3D11Device* _device);
+			virtual void Init(ID3D11Device* _device);
 
 			virtual void Release();
 
@@ -98,6 +100,8 @@ namespace ChD3D11
 
 			ID3D11Device* GetDevice() { return device; }
 
+			ID3D11DeviceContext* GetDC() { return dc; }
+
 		private://Get Functions//
 
 			inline static bool& GetShaderNowRunFlg()
@@ -110,19 +114,22 @@ namespace ChD3D11
 
 			bool IsDraw()const { return drawFlg; }
 
+		public://Update Function//
+
+			virtual void Update(ID3D11DeviceContext* _dc) {};
+
 		public://Other Functions//
 
 			virtual void DrawStart(ID3D11DeviceContext* _dc);
 
 			virtual void DrawEnd();
 
-			virtual void Update(ID3D11DeviceContext* _dc) {};
-
 		private://Member Value//
 
 			ID3D11RasterizerState* rasteriser = nullptr;
 			ID3D11DepthStencilState* depthStencilTester = nullptr;
 			ID3D11Device* device = nullptr;
+			ID3D11DeviceContext* dc = nullptr;
 
 			VertexShader11 vs;
 			GeometryShader11 gs;
@@ -136,10 +143,9 @@ namespace ChD3D11
 
 			D3D_PRIMITIVE_TOPOLOGY primitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
-			bool drawFlg;
+			bool drawFlg = false;
 
 			ID3D11BlendState* blender = nullptr;
-
 		};
 	}
 }

@@ -9,12 +9,6 @@
 
 namespace ChSystem
 {
-	LRESULT CALLBACK WndProc(
-		HWND _hWnd
-		, UINT _uMsg
-		, WPARAM _wParam
-		, LPARAM _lParam);
-
 
 	//Windowsで作成されたWindとWindowsに関する入出力などを管理した、//
 	//WIndows全体の管理クラス//
@@ -35,9 +29,9 @@ namespace ChSystem
 
 		//Windの生成(stringVer)//
 		void Init(
+			const ChWin::WindCreater& _creater,
 			const std::string& _appName,
 			const std::string& _windClassName,
-			const ChINTPOINT& _windSize,
 			const HINSTANCE _hInst,
 			const int _nCmdShow);
 
@@ -62,7 +56,6 @@ namespace ChSystem
 			HMENU _hMenu = nullptr,
 			LPVOID _param = nullptr);
 
-		//Windの生成(stringVer)//
 		void Init(
 			const std::string& _appName,
 			const std::string& _windClassName,
@@ -78,13 +71,6 @@ namespace ChSystem
 			const int _windHeight,
 			const int _initWindPosX,
 			const int _initWindPosY,
-			const HINSTANCE _hInst,
-			const int _nCmdShow);
-
-		void Init(
-			const ChWin::WindCreater& _creater,
-			const std::string& _appName,
-			const std::string& _windClassName,
 			const HINSTANCE _hInst,
 			const int _nCmdShow);
 
@@ -105,9 +91,9 @@ namespace ChSystem
 
 		//Windの生成(wstringVer)//
 		void Init(
+			const ChWin::WindCreater& _creater,
 			const std::wstring& _appName,
 			const std::wstring& _windClassName,
-			const ChINTPOINT& _windSize,
 			const HINSTANCE _hInst,
 			const int _nCmdShow);
 
@@ -132,7 +118,6 @@ namespace ChSystem
 			HMENU _hMenu = nullptr,
 			LPVOID _param = nullptr);
 
-		//Windの生成(wstringVer)//
 		void Init(
 			const std::wstring& _appName,
 			const std::wstring& _windClassName,
@@ -148,13 +133,6 @@ namespace ChSystem
 			const int _windHeight,
 			const int _initWindPosX,
 			const int _initWindPosY,
-			const HINSTANCE _hInst,
-			const int _nCmdShow);
-
-		void Init(
-			const ChWin::WindCreater& _creater,
-			const std::wstring& _appName,
-			const std::wstring& _windClassName,
 			const HINSTANCE _hInst,
 			const int _nCmdShow);
 
@@ -273,12 +251,6 @@ namespace ChSystem
 		{
 			wndObject.InvalidateWind(_clear);
 		}
-
-		friend LRESULT CALLBACK ChSystem::WndProc(
-			HWND _hWnd
-			, UINT _uMsg
-			, WPARAM _wParam
-			, LPARAM _lParam);
 
 	protected:
 

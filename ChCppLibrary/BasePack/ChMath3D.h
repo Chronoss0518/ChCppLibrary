@@ -1,9 +1,6 @@
 #ifndef Ch_CPP_Math3D_h
 #define Ch_CPP_Math3D_h
 
-#include <float.h>
-#include <cmath>
-
 #include"ChMath.h"
 
 struct D3DXVECTOR4;
@@ -29,6 +26,11 @@ struct ChUIMatrix;
 
 struct ChVector2 : public ChMath::Vector2Base<float>
 {
+
+	static ChVector2 FromPosition(const float& _x, const float& _y);
+	static ChVector2 FromSize(const float& _w, const float& _h);
+	static ChVector2 FromTime(const float& _start, const float& _end);
+	static ChVector2 FromHighLow(const float& _high, const float& _low);
 
 	ChVector2& operator*=(const float& _num);
 	ChVector2 operator*(const float& _num) const;
@@ -95,11 +97,22 @@ struct ChVector2 : public ChMath::Vector2Base<float>
 		const std::string& _cutChar = ","
 		, const std::string& _endChar = ";");
 
+	std::wstring Serialize(
+		const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";");
+
 	void Deserialize(
 		const std::string& _str
 		, const size_t _fPos = 0
 		, const std::string& _cutChar = ","
 		, const std::string& _endChar = ";"
+		, const unsigned int _digit = 6);
+
+	void Deserialize(
+		const std::wstring& _str
+		, const size_t _fPos = 0
+		, const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";"
 		, const unsigned int _digit = 6);
 
 public://Set Function//
@@ -209,6 +222,9 @@ using ChVec2 = ChVector2;
 struct ChVector3 : public ChMath::Vector3Base<float>
 {
 
+	static ChVector3 FromPosition(const float& _x, const float& _y, const float _z);
+	static ChVector3 FromColor(const float& _r, const float& _g, const float& _b);
+
 	ChVector3& operator*=(const float& _num);
 	ChVector3 operator*(const float& _num) const;
 	ChVector3& operator/=(const float& _num);
@@ -292,11 +308,22 @@ struct ChVector3 : public ChMath::Vector3Base<float>
 		const std::string& _cutChar = ","
 		, const std::string& _endChar = ";");
 
+	std::wstring Serialize(
+		const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";");
+
 	void Deserialize(
 		const std::string& _str
 		, const size_t _fPos = 0
 		, const std::string& _cutChar = ","
 		, const std::string& _endChar = ";"
+		, const unsigned int _digit = 6);
+
+	void Deserialize(
+		const std::wstring& _str
+		, const size_t _fPos = 0
+		, const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";"
 		, const unsigned int _digit = 6);
 
 public://Set Function//
@@ -423,6 +450,10 @@ struct ChVector4 : public ChMath::Vector4Base<float>
 	///////////////////////////////////////////////////////////////////////////////////
 	//StaticFunction//
 
+	static ChVector4 FromPosition(const float& _x, const float& _y, const float _z, const float& _w);
+	static ChVector4 FromColor(const float& _r, const float& _g, const float& _b, const float& _a);
+	static ChVector4 FromRect(const float& _left, const float& _top, const float& _right, const float& _bottom);
+
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//Operator//
@@ -494,9 +525,17 @@ struct ChVector4 : public ChMath::Vector4Base<float>
 		const std::string& _cutChar = ","
 		, const std::string& _endChar = ";");
 
+	std::wstring Serialize(
+		const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";");
+
 	std::string SerializeARGB(
 		const std::string& _cutChar = ","
 		, const std::string& _endChar = ";");
+
+	std::wstring SerializeARGB(
+		const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";");
 
 	void Deserialize(
 		const std::string& _str
@@ -505,11 +544,25 @@ struct ChVector4 : public ChMath::Vector4Base<float>
 		, const std::string& _endChar = ";"
 		, const unsigned int _digit = 6);
 
+	void Deserialize(
+		const std::wstring& _str
+		, const size_t _fPos = 0
+		, const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";"
+		, const unsigned int _digit = 6);
+
 	void DeserializeARGB(
 		const std::string& _str
 		, const size_t _fPos = 0
 		, const std::string& _cutChar = ","
 		, const std::string& _endChar = ";"
+		, const unsigned int _digit = 6);
+
+	void DeserializeARGB(
+		const std::wstring& _str
+		, const size_t _fPos = 0
+		, const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";"
 		, const unsigned int _digit = 6);
 
 	inline void WParamSaturate()
@@ -623,15 +676,26 @@ public://Get Function//
 
 using ChVec4 = ChVector4;
 
-///////////////////////////////////////////////////////////////////////////////////
+struct ChEularXYZ : public ChVector3 {};
+struct ChEularXZY : public ChVector3 {};
+struct ChEularYXZ : public ChVector3 {};
+struct ChEularYZX : public ChVector3 {};
+struct ChEularZXY : public ChVector3 {};
+struct ChEularZYX : public ChVector3 {};
 
-struct ChQuaternion : public ChMath::Vector4Base<float>
+struct ChLMatrix;
+struct ChRMatrix;
+
+struct ChQuaternion : public ChMath::QuaternionBase<float>
 {
 
-	inline ChQuaternion& operator=(const ChQuaternion& _qua)
-	{
-		val.Set(_qua.val);
-	}
+	ChQuaternion& operator=(const ChQuaternion& _qua);
+
+	ChQuaternion& operator+=(const ChQuaternion& _num);
+	ChQuaternion operator+(const ChQuaternion& _num) const;
+
+	ChQuaternion& operator*=(const ChQuaternion& _num);
+	ChQuaternion operator*(const ChQuaternion& _num) const;
 
 	operator const D3DXQUATERNION() const;
 	operator const D3DXQUATERNION* () const;
@@ -648,21 +712,11 @@ struct ChQuaternion : public ChMath::Vector4Base<float>
 	ChQuaternion& operator=(const D3DXMATRIX&);
 	ChQuaternion& operator=(const DirectX::XMFLOAT4X4&);
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//ConstructerDestructer//
+public:
 
 	inline ChQuaternion()
 	{
-		x = 0.0f;
-		y = 0.0f;
-		z = 0.0f;
-	}
-
-	inline ChQuaternion(const float _num)
-	{
-		x = _num;
-		y = _num;
-		z = _num;
+		Identity();
 	}
 
 	inline ChQuaternion(
@@ -671,10 +725,15 @@ struct ChQuaternion : public ChMath::Vector4Base<float>
 		x = _x;
 		y = _y;
 		z = _z;
+		w = 0.0f;
 	}
 
-	inline ChQuaternion(const ChQuaternion& _qua) { *this = _qua; }
+	inline ChQuaternion(const ChQuaternion& _qua) 
+	{
+		val.Set(_qua.val);
+	}
 
+#if false
 	inline ChQuaternion(const D3DXVECTOR3& _vec) { *this = _vec; }
 	inline ChQuaternion(const DirectX::XMFLOAT3& _vec) { *this = _vec; }
 
@@ -683,42 +742,123 @@ struct ChQuaternion : public ChMath::Vector4Base<float>
 
 	inline ChQuaternion(const D3DXMATRIX& _mat) { *this = _mat; }
 	inline ChQuaternion(const DirectX::XMFLOAT4X4& _mat) { *this = _mat; }
+#endif
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//SerializeDeserialize//
+public:
 
 	std::string Serialize(
 		const std::string& _cutChar = ","
 		, const std::string& _endChar = ";");
 
+	std::wstring Serialize(
+		const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";");
+
 	void Deserialize(
 		const std::string& _str
-		, const size_t _fPos = 0,
-		const std::string& _cutChar = ","
+		, const size_t _fPos = 0
+		, const std::string& _cutChar = ","
 		, const std::string& _endChar = ";"
 		, const unsigned int _digit = 6);
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//GetFunction//
+	void Deserialize(
+		const std::wstring& _str
+		, const size_t _fPos = 0
+		, const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";"
+		, const unsigned int _digit = 6);
 
-	ChVec3 GetEulerAngleForVec3() const;
+public://Sed Method//
+	
+	void SetRotationLMatrix(const ChLMatrix& _mat);
 
-	///////////////////////////////////////////////////////////////////////////////////
+	void SetRotationRMatrix(const ChRMatrix& _mat);
 
-	inline void RotYPR(const ChVec3& _vec)
+	void SetRotationXAxis(float _x);
+
+	void SetRotationYAxis(float _y);
+
+	void SetRotationZAxis(float _z);
+
+	void SetRotation(const ChVec3& _axis, const float _angle);
+
+public://Get Method//
+
+	ChLMatrix GetRotationLMatrix(const unsigned long _digit = 6)const;
+
+	ChRMatrix GetRotationRMatrix(const unsigned long _digit = 6)const;
+
+	ChVec3 GetAxis()const;
+
+	ChEularXYZ GetEularRotationXYZ(const unsigned long _digit = 6)const;
+
+	ChEularXZY GetEularRotationXZY(const unsigned long _digit = 6)const;
+
+	ChEularYXZ GetEularRotationYXZ(const unsigned long _digit = 6)const;
+
+	ChEularYZX GetEularRotationYZX(const unsigned long _digit = 6)const;
+
+	ChEularZXY GetEularRotationZXY(const unsigned long _digit = 6)const;
+
+	ChEularZYX GetEularRotationZYX(const unsigned long _digit = 6)const;
+
+	float GetRadian()const;
+
+	float GetCos()const;
+
+	float GetSin()const;
+
+public:
+
+	void AddRotationXAxis(float _x);
+
+	void AddRotationYAxis(float _y);
+
+	void AddRotationZAxis(float _z);
+
+public:
+
+	static ChQuaternion GetSum(const ChQuaternion& _qua1, const ChQuaternion& _qua2);
+
+	static ChQuaternion GetMul(const ChQuaternion& _qua1, const ChQuaternion& _qua2);
+
+	static ChVec3 GetMul(const ChQuaternion& _qua, const ChVec3& _dir);
+
+public:
+
+	void Sum(const ChQuaternion& _value);
+
+	void Mul(const ChQuaternion& _value);
+
+	ChVec3 Mul(const ChVec3& _dir);
+
+public:
+
+	static ChQuaternion SLerp(const ChQuaternion& _start, const ChQuaternion& _end, const float _pow);
+
+public:
+
+	void Identity()
 	{
-		RotYPR(_vec.x, _vec.y, _vec.z);
+		x = 0.0f;
+		y = 0.0f;
+		z = 0.0f;
+		w = 1.0f;
 	}
 
-	void RotYPR(
-		const float _x, const float _y, const float _z);
+	///////////////////////////////////////////////////////////////////////////////////
+
+	void Inverse()
+	{
+		x = -x;
+		y = -y;
+		z = -z;
+	}
 
 };
 
 using ChQua = ChQuaternion;
 
-struct ChLMatrix;
-struct ChRMatrix;
 
 //LeftHandAxisMatrix//
 struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
@@ -787,10 +927,25 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 		return m.Serialize(_cutChar);
 	}
 
+	inline std::wstring Serialize(
+		const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";")
+	{
+		return m.Serialize(_cutChar);
+	}
+
 	inline std::string SerializeUpper(
 		const std::string& _cutChar = ","
 		, const std::string& _endChar = ";"
 		, const std::string& _cutTo4Char = "\n")
+	{
+		return m.SerializeUpper(_cutChar, _endChar, _cutTo4Char);
+	}
+
+	inline std::wstring SerializeUpper(
+		const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";"
+		, const std::wstring& _cutTo4Char = L"\n")
 	{
 		return m.SerializeUpper(_cutChar, _endChar, _cutTo4Char);
 	}
@@ -805,6 +960,15 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 		m.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
 	}
 
+	inline void Deserialize(
+		const std::wstring& _str
+		, const size_t _fPos = 0
+		, const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";"
+		, const unsigned int _digit = 6)
+	{
+		m.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
+	}
 
 	///////////////////////////////////////////////////////////////////////////////////
 	//SetFunction//
@@ -813,15 +977,11 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 
 	void SetPosition(const float _x, const float _y, const float _z);
 
-	void SetRotation(
-		const ChVec3& _vec,
-		const unsigned long _digit = 6);
+	void SetRotationYPR(const float _x, const float _y, const float _z, const unsigned long _digit = 6);
 
-	void SetRotation(
-		const float _x, 
-		const float _y, 
-		const float _z,
-		const unsigned long _digit = 6);
+	void SetRotation(const ChQua& _qua, const unsigned long _digit = 6);
+
+	void SetRotationYPR(const ChVec3& _vec, const unsigned long _digit = 6);
 
 	void SetRotationXAxis(const float _x);
 
@@ -844,7 +1004,19 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 
 	ChVec3 GetPosition()const;
 
-	ChVec3 GetRotation(const unsigned long _digit = 6)const;
+	ChQua GetRotation(const unsigned long _digit = 6)const;
+
+	ChEularXYZ GetEularRotationXYZ(const unsigned long _digit = 6)const;
+
+	ChEularXZY GetEularRotationXZY(const unsigned long _digit = 6)const;
+
+	ChEularYXZ GetEularRotationYXZ(const unsigned long _digit = 6)const;
+
+	ChEularYZX GetEularRotationYZX(const unsigned long _digit = 6)const;
+
+	ChEularZXY GetEularRotationZXY(const unsigned long _digit = 6)const;
+
+	ChEularZYX GetEularRotationZYX(const unsigned long _digit = 6)const;
 
 	ChVec3 GetScalling(const unsigned long _digit = 6)const;
 
@@ -931,10 +1103,25 @@ struct ChRMatrix : public ChMath::BaseMatrix4x4<float>
 		return m.Serialize(_cutChar);
 	}
 
+	inline std::wstring Serialize(
+		const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";")
+	{
+		return m.Serialize(_cutChar);
+	}
+
 	inline std::string SerializeUpper(
 		const std::string& _cutChar = ","
 		, const std::string& _endChar = ";"
 		, const std::string& _cutTo4Char = "\n")
+	{
+		return m.SerializeUpper(_cutChar, _endChar, _cutTo4Char);
+	}
+
+	inline std::wstring SerializeUpper(
+		const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";"
+		, const std::wstring& _cutTo4Char = L"\n")
 	{
 		return m.SerializeUpper(_cutChar, _endChar, _cutTo4Char);
 	}
@@ -949,6 +1136,16 @@ struct ChRMatrix : public ChMath::BaseMatrix4x4<float>
 		m.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
 	}
 
+	inline void Deserialize(
+		const std::wstring& _str
+		, const size_t _fPos = 0
+		, const std::wstring& _cutChar = L","
+		, const std::wstring& _endChar = L";"
+		, const unsigned int _digit = 6)
+	{
+		m.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
+	}
+
 	///////////////////////////////////////////////////////////////////////////////////
 	//SetFunction//
 
@@ -956,15 +1153,7 @@ struct ChRMatrix : public ChMath::BaseMatrix4x4<float>
 
 	void SetPosition(const float _x, const float _y, const float _z);
 
-	void SetRotation(
-		const ChVec3& _vec,
-		const unsigned long _digit = 6);
-
-	void SetRotation(
-		const float _x, 
-		const float _y, 
-		const float _z,
-		const unsigned long _digit = 6);
+	void SetRotation(const ChQua& _qua, const unsigned long _digit = 6);
 
 	void SetRotationXAxis(const float _x);
 
@@ -986,8 +1175,6 @@ struct ChRMatrix : public ChMath::BaseMatrix4x4<float>
 	//GetFunction//
 
 	ChVec3 GetPosition()const;
-
-	ChVec3 GetRotation(const unsigned long _digit = 6)const;
 
 	ChVec3 GetScalling(const unsigned long _digit = 6)const;
 
@@ -1080,138 +1267,6 @@ using ChUIMat = ChUIMatrix;
 namespace ChMath
 {
 
-	class Degree;
-	class Radian;
-
-	//度数法であらわされた角度を取りまとめるクラス//
-	class Degree
-	{
-	public:
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//operator
-		///////////////////////////////////////////////////////////////////////////////////
-
-		inline Degree& operator=(const Degree _num)
-		{
-			val = _num;
-			return *this;
-		}
-
-		Degree& operator=(const float _num);
-		Degree& operator=(const Radian _num);
-
-		Degree& operator+=(const float _num);
-		Degree operator+(const float _num) const;
-
-		Degree& operator-=(const float _num);
-		Degree operator-(const float _num) const;
-
-		Degree& operator*=(const float _num);
-		Degree operator*(const float _num) const;
-
-		Degree& operator/=(const float _num);
-		Degree operator/(const float _num) const;
-
-		operator float() const;
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//ConstructerDestructer
-		///////////////////////////////////////////////////////////////////////////////////
-
-		Degree();
-
-		Degree(const float _val);
-
-		Degree(const Degree& _val);
-
-		Degree(const Radian& _val);
-
-		///////////////////////////////////////////////////////////////////////////////////
-
-	private:
-		void Math();
-
-		float val;
-	};
-
-	//弧度法(円周率)であらわされた角度を取りまとめるクラス//
-	class Radian
-	{
-
-	public:
-		///////////////////////////////////////////////////////////////////////////////////
-		//operator
-		///////////////////////////////////////////////////////////////////////////////////
-
-		inline Radian operator=(const Radian _num)
-		{
-			val = _num;
-			return *this;
-		}
-
-		Radian& operator=(const float _num);
-		Radian& operator=(const Degree _num);
-
-		Radian& operator+=(const float _num);
-		Radian operator+(const float _num) const;
-
-		Radian& operator-=(const float _num);
-		Radian operator-(const float _num) const;
-
-		Radian& operator*=(const float _num);
-		Radian operator*(const float _num) const;
-
-		Radian& operator/=(const float _num);
-		Radian operator/(const float _num) const;
-
-		operator float() const;
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//ConstructerDestructer
-		///////////////////////////////////////////////////////////////////////////////////
-
-		Radian();
-
-		Radian(const float _val);
-
-		Radian(const Radian& _val);
-
-		Radian(const Degree& _val);
-
-		///////////////////////////////////////////////////////////////////////////////////
-
-	private:
-		void Math();
-
-		float val;
-	};
-
-	//三角面を構成する3頂点をまとめたもの//
-	typedef struct TriVertex
-	{
-		ChVec3 Ver1, Ver2, Ver3;
-		///////////////////////////////////////////////////////////////////////////////////
-		//ConstructerDestructer//
-
-		inline TriVertex() {}
-
-		inline TriVertex(
-			const ChVec3& _1, const ChVec3& _2, const ChVec3& _3)
-		{
-			Ver1 = _1;
-			Ver2 = _2;
-			Ver3 = _3;
-		}
-
-	} TriVer;
-
-	//3頂点より法線を作成する//
-	//法線は三頂点の外積(交差するベクトル)を算出して作成される//
-	ChVector3 GetFaceNormal(
-		const TriVertex& _PlEq,
-		const unsigned long _digit = 6);
-
 	ChVector3 GetFaceNormal(
 		const ChVec3& _Pos1, 
 		const ChVec3& _Pos2,
@@ -1225,12 +1280,12 @@ namespace ChMath
 	static inline float ToRadian(const float _degree) { return (_degree * PI / 180.0f); }
 
 	//正の符号かどうかを確認する//
-	static inline bool IsPSign(const int _val) { return _val >= 0.0f ? true : false; }
-	static inline bool IsPSign(const char _val) { return _val >= 0.0f ? true : false; }
-	static inline bool IsPSign(const short _val) { return _val >= 0.0f ? true : false; }
-	static inline bool IsPSign(const long _val) { return _val >= 0.0f ? true : false; }
-	static inline bool IsPSign(const float _val) { return _val >= 0.0f ? true : false; }
-	static inline bool IsPSign(const double _val) { return _val >= 0.0f ? true : false; }
+	static inline bool IsPSign(const int _val) { return _val >= 0.0f; }
+	static inline bool IsPSign(const char _val) { return _val >= 0.0f; }
+	static inline bool IsPSign(const short _val) { return _val >= 0.0f; }
+	static inline bool IsPSign(const long _val) { return _val >= 0.0f; }
+	static inline bool IsPSign(const float _val) { return _val >= 0.0f; }
+	static inline bool IsPSign(const double _val) { return _val >= 0.0f; }
 
 } // namespace ChMath
 

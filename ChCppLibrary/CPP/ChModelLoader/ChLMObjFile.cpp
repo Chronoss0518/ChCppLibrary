@@ -12,6 +12,8 @@
 using namespace ChCpp;
 using namespace ModelLoader;
 
+#define NULL_OBJECT_NAME "root"
+
 ///////////////////////////////////////////////////////////////////////////////////////
 //ChCMObjeFile Method//
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -38,7 +40,7 @@ void ObjFile::CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& 
 	{
 		std::string tmp;
 
-		ChCpp::File<> files;
+		ChCpp::CharFile files;
 
 		files.FileOpen(_filePath);
 
@@ -130,7 +132,7 @@ void ObjFile::CreateMaterials(const std::string& _fileName)
 	{
 		std::string tmp;
 
-		ChCpp::File<> files;
+		ChCpp::CharFile files;
 
 		files.FileOpen(folderPath + fileName);
 
@@ -341,6 +343,8 @@ void ObjFile::SetVertex(const std::string& _line)
 
 	if (!IsPrefix(_line, &vertexTags, sizeof(vertexTags)))return;
 
+	NullModelTest();
+
 	auto pos = ChPtr::Make_S<ChVec3>();
 
 	pos->Deserialize(_line, 2, " ");
@@ -354,6 +358,8 @@ void ObjFile::SetUV(const std::string& _line)
 {
 
 	if (!IsPrefix(_line, uvTags, sizeof(uvTags)))return;
+
+	NullModelTest();
 
 	auto uv = ChPtr::Make_S<ChVec2>();
 
@@ -369,6 +375,8 @@ void ObjFile::SetNormal(const std::string& _line)
 
 	if (!IsPrefix(_line, normalTags, sizeof(normalTags)))return;
 
+	NullModelTest();
+
 	auto normal = ChPtr::Make_S<ChVec3>();
 
 	normal->Deserialize(_line, 3, " ");
@@ -381,6 +389,8 @@ void ObjFile::SetNormal(const std::string& _line)
 void ObjFile::SetFace(const std::string& _line)
 {
 	if (!IsPrefix(_line, &meshTags, sizeof(meshTags)))return;
+
+	NullModelTest();
 
 	unsigned long pos = _line.find(' ');
 
@@ -675,4 +685,15 @@ std::string ObjFile::LoadTextureName(const std::string& _line)
 	}
 
 	return name;
+}
+
+void ObjFile::NullModelTest()
+{
+	if (makeObject != nullptr)return;
+
+	std::string createText = {objectBlockTags};
+
+	createText = createText + " " + NULL_OBJECT_NAME;
+
+	CreateObject(createText);
 }

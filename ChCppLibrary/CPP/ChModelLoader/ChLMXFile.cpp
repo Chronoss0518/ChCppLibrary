@@ -24,7 +24,7 @@ void XFile::CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& _f
 	{
 		loadFileName = _filePath;
 
-		ChCpp::File<> files;
+		ChCpp::CharFile files;
 
 		files.FileOpen(_filePath);
 

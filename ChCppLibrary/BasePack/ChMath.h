@@ -340,6 +340,23 @@ namespace ChMath
 			return tmp;
 		}
 
+		std::wstring Serialize(
+			const std::wstring& _cutChar = L","
+			, const std::wstring& _endChar = L";")
+		{
+			std::wstring tmp = L"";
+			for (unsigned char i = 0; i < Array; i++)
+			{
+				tmp += std::to_wstring(val[i]);
+				if (i == (Array - 1))break;
+				tmp += _cutChar;
+			}
+
+			tmp += _endChar;
+
+			return tmp;
+		}
+
 		void Deserialize(
 			const std::string& _str
 			, const size_t _fPos = 0
@@ -372,6 +389,53 @@ namespace ChMath
 					tmpFPos = Test;
 
 					std::string Num = tmpStr.substr(tmp, tmpFPos - tmp);
+
+					val[i] = static_cast<T>(ChStr::GetFloatingFromText<float>(Num));
+
+					//val[i] = ChMath::Round(val[i], _digit);
+
+					tmp += Num.length();
+					tmp += 1;
+
+				}
+
+				if (Test >= EPos)return;
+			}
+
+		}
+
+		void Deserialize(
+			const std::wstring& _str
+			, const size_t _fPos = 0
+			, const std::wstring& _cutChar = L","
+			, const std::wstring& _endChar = L";"
+			, const unsigned int _digit = 6)
+		{
+
+			std::wstring tmpStr = _str;
+
+			size_t tmpFPos = _fPos;
+
+			size_t EPos = tmpStr.find(_endChar, tmpFPos);
+
+			if (EPos == tmpStr.npos)EPos = tmpStr.size();
+
+			tmpStr = tmpStr.substr(tmpFPos, EPos - tmpFPos);
+
+			tmpFPos = 0;
+
+			EPos = tmpStr.length();
+
+			size_t tmp = tmpFPos;
+
+			for (unsigned char i = 0; i < Array; i++)
+			{
+				size_t Test = tmpStr.find(_cutChar, tmp);
+				if (Test > EPos)Test = EPos;
+				{
+					tmpFPos = Test;
+
+					std::wstring Num = tmpStr.substr(tmp, tmpFPos - tmp);
 
 					val[i] = static_cast<T>(ChStr::GetFloatingFromText<float>(Num));
 
@@ -638,11 +702,40 @@ namespace ChMath
 			const VectorBase& _end,
 			const float _pow)
 		{
+			if (_pow <= 0.0f)return _start;
+			if (_pow >= 1.0f)return _end;
+
 			VectorBase out;
 
 			out = (_start * (1.0f - _pow)) + (_end * _pow);
 
 			return out;
+		}
+
+		static VectorBase SLerp(
+			const VectorBase& _start,
+			const VectorBase& _end,
+			const float _pow)
+		{
+
+			if (_pow >= 1.0f)return _end;
+			if (_pow <= 0.0f)return _start;
+
+			VectorBase start = _start;
+			VectorBase end = _end;
+
+			float rad = start.GetDot(end);
+			rad = std::acosf(rad);
+			if (rad == 0.0f)return start;
+
+			float baseSin = std::sinf(rad);
+
+			if (baseSin == 0.0f)return start;
+
+			start.Mul(std::sinf((1.0f - _pow) * rad) / baseSin);
+			end.Mul(std::sinf(_pow * rad) / baseSin);
+
+			return (start + end);
 		}
 
 	private:
@@ -677,7 +770,7 @@ namespace ChMath
 			{
 				for (unsigned long j = 0; j < MinRow; j++)
 				{
-					out[Column][Row] = m[Column][Row];
+					out[i][j] = m[i][j];
 				}
 			}
 
@@ -949,6 +1042,27 @@ namespace ChMath
 			return tmp;
 		}
 
+		std::wstring Serialize(
+			const std::wstring& _cutChar = L","
+			, const std::wstring& _endChar = L";")
+		{
+			std::wstring tmp = L"";
+			for (unsigned char i = 0; i < Column; i++)
+			{
+				for (unsigned char j = 0; j < Row; j++)
+				{
+					if (i == 3 && j == 3)break;
+					tmp += std::to_wstring(m[i][j]);
+					tmp += _cutChar;
+				}
+			}
+
+			tmp += std::to_wstring(m[3][3]);
+			tmp += _endChar;
+
+			return tmp;
+		}
+
 		std::string SerializeUpper(
 			const std::string& _cutChar = ","
 			, const std::string& _endChar = ";"
@@ -969,6 +1083,31 @@ namespace ChMath
 			}
 
 			tmp += std::to_string(m[3][3]);
+			tmp += _endChar;
+
+			return tmp;
+		}
+
+		std::wstring SerializeUpper(
+			const std::wstring& _cutChar = L","
+			, const std::wstring& _endChar = L";"
+			, const std::wstring& _cutTo4Char = L"\n")
+		{
+			std::wstring tmp = L"";
+			for (unsigned char i = 0; i < Column; i++)
+			{
+				for (unsigned char j = 0; j < Row; j++)
+				{
+					if (i == 3 && j == 3)break;
+					tmp += std::to_wstring(m[i][j]);
+					tmp += _cutChar;
+
+					if (j < 3)continue;
+					tmp += _cutTo4Char;
+				}
+			}
+
+			tmp += std::to_wstring(m[3][3]);
 			tmp += _endChar;
 
 			return tmp;
@@ -1010,6 +1149,56 @@ namespace ChMath
 						tmpFPos = Test;
 
 						std::string Num = tmpStr.substr(tmp, tmpFPos - tmp);
+
+						m[i][j] = static_cast<T>(ChStr::GetFloatingFromText<float>(Num));
+
+						tmp = Test + 1;
+
+					}
+
+					if (Test >= EPos)return;
+				}
+
+			}
+
+		}
+
+		void Deserialize(
+			const std::wstring& _str
+			, const size_t _fPos = 0
+			, const std::wstring& _cutChar = L","
+			, const std::wstring& _endChar = L";"
+			, const unsigned int _digit = 6)
+		{
+
+			std::wstring tmpStr = _str;
+
+			size_t tmpFPos = _fPos;
+
+			size_t EPos = tmpStr.find(_endChar, tmpFPos);
+
+			if (EPos == tmpStr.npos)EPos = tmpStr.size() - 1;
+
+			tmpStr = tmpStr.substr(tmpFPos, EPos - tmpFPos);
+
+			tmpFPos = 0;
+
+			EPos = tmpStr.length();
+
+			size_t tmp = tmpFPos;
+
+			for (unsigned char i = 0; i < Column; i++)
+			{
+				for (unsigned char j = 0; j < Row; j++)
+				{
+					size_t Test = tmpStr.find(_cutChar, tmp);
+
+					if (Test > EPos)Test = EPos;
+
+					{
+						tmpFPos = Test;
+
+						std::wstring Num = tmpStr.substr(tmp, tmpFPos - tmp);
 
 						m[i][j] = static_cast<T>(ChStr::GetFloatingFromText<float>(Num));
 
@@ -1476,6 +1665,25 @@ namespace ChMath
 			return overlapsRect;
 		}
 
+	};
+
+	template<typename T>
+	struct QuaternionBase
+	{
+		union {
+			struct
+			{
+				T x, y, z, w;
+			};
+			VectorBase<T, 4> val;
+		};
+
+		inline QuaternionBase()
+		{
+			val.Identity();
+		}
+
+		inline QuaternionBase(const QuaternionBase<T>& _vec) { val = _vec.val; }
 	};
 
 	template<typename T>

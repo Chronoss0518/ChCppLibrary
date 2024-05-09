@@ -160,9 +160,19 @@ void XAudio2Manager::Init()
 
 	XAudio2Create(&audio, 0, XAUDIO2_DEFAULT_PROCESSOR);
 
-	if (audio == nullptr)return;
+	if (ChPtr::NullCheck(audio))
+	{
+		Release();
+		return;
+	}
 
 	audio->CreateMasteringVoice(&audioMV);
+
+	if (ChPtr::NullCheck(audioMV))
+	{
+		Release();
+		return;
+	}
 	DWORD dwChannelMask;
 	audioMV->GetChannelMask(&dwChannelMask);
 	//X3DAudioInitialize(dwChannelMask, X3DAUDIO_SPEED_OF_SOUND, X3DInstance);

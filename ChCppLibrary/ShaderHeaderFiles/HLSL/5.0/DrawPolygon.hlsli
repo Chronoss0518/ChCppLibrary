@@ -21,10 +21,6 @@
 #define MATERIAL_DATA_REGISTERNO 2
 #endif
 
-#ifndef BASE_TEXTURE_REGISTER
-#define	BASE_TEXTURE_REGISTER 0
-#endif
-
 #ifndef NORMAL_TEXTURE_REGISTER
 #define	NORMAL_TEXTURE_REGISTER 1
 #endif
@@ -41,17 +37,23 @@ struct ChP_CharaData
 	row_major float4x4 worldMat;
 
 	row_major float4x4 frameMatrix;
+	
+    float2 moveUV;
+	
+    float alphaTestValue;
+	
+    float charaDataTmp;
 };
 
 struct ChP_Material
 {
 	//diffuse//
-	float4 dif;
+    float4 dif;
 	//specular//
-	float3 speCol;
-	float spePow;
+    float3 speCol;
+    float spePow;
 	//ambient//
-	float4 ambient;
+    float4 ambient;
 };
 
 #ifdef __SHADER__
@@ -70,10 +72,6 @@ cbuffer Material:register(CHANGE_CBUFFER(MATERIAL_DATA_REGISTERNO))
 {
 	uniform ChP_Material mate;
 };
-
-texture2D baseTex :register(CHANGE_TBUFFER(BASE_TEXTURE_REGISTER));
-//画像から1ピクセルの色を取得するための物//
-sampler baseSmp :register(CHANGE_SBUFFER(BASE_TEXTURE_REGISTER));
 
 texture2D normalTex :register(CHANGE_TBUFFER(NORMAL_TEXTURE_REGISTER));
 //画像から1ピクセルの色を取得するための物//
@@ -123,7 +121,7 @@ MTWStruct ModelToWorld(
 
 	res.proPos = mul(res.viewPos, drawData.proMat);
 
-	res.uv = _uv;
+	res.uv = _uv + charaDatas.moveUV;
 
 	res.vertexNormal = normalize(mul(_normal, (float3x3)tmpMat));
 	res.faceNormal = normalize(mul(_faceNormal, (float3x3)tmpMat));
@@ -142,6 +140,11 @@ void FrustumCulling(float4 _pos)
 	clip(1.0f - x);
 	clip(1.0f - y);
 	clip(1.0f - z);
+}
+
+void AlphaTest(float _alpha)
+{
+	clip(_alpha - charaDatas.alphaTestValue);
 }
 
 
