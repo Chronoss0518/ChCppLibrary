@@ -676,6 +676,13 @@ public://Get Function//
 
 using ChVec4 = ChVector4;
 
+struct ChEularXYZ : public ChVector3 {};
+struct ChEularXZY : public ChVector3 {};
+struct ChEularYXZ : public ChVector3 {};
+struct ChEularYZX : public ChVector3 {};
+struct ChEularZXY : public ChVector3 {};
+struct ChEularZYX : public ChVector3 {};
+
 struct ChLMatrix;
 struct ChRMatrix;
 
@@ -715,10 +722,10 @@ public:
 	inline ChQuaternion(
 		const float _x, const float _y, const float _z)
 	{
-		ChVector3 tmp;
-		tmp.x = _x;
-		tmp.y = _y;
-		tmp.z = _z;
+		x = _x;
+		y = _y;
+		z = _z;
+		w = 0.0f;
 	}
 
 	inline ChQuaternion(const ChQuaternion& _qua) 
@@ -783,6 +790,18 @@ public://Get Method//
 
 	ChVec3 GetAxis()const;
 
+	ChEularXYZ GetEularRotationXYZ(const unsigned long _digit = 6)const;
+
+	ChEularXZY GetEularRotationXZY(const unsigned long _digit = 6)const;
+
+	ChEularYXZ GetEularRotationYXZ(const unsigned long _digit = 6)const;
+
+	ChEularYZX GetEularRotationYZX(const unsigned long _digit = 6)const;
+
+	ChEularZXY GetEularRotationZXY(const unsigned long _digit = 6)const;
+
+	ChEularZYX GetEularRotationZYX(const unsigned long _digit = 6)const;
+
 	float GetRadian()const;
 
 	float GetCos()const;
@@ -815,7 +834,7 @@ public:
 
 public:
 
-	static ChQuaternion Lerp(const ChQuaternion& _start, const ChQuaternion& _end, const float _pow);
+	static ChQuaternion SLerp(const ChQuaternion& _start, const ChQuaternion& _end, const float _pow);
 
 public:
 
@@ -958,7 +977,11 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 
 	void SetPosition(const float _x, const float _y, const float _z);
 
+	void SetRotationYPR(const float _x, const float _y, const float _z, const unsigned long _digit = 6);
+
 	void SetRotation(const ChQua& _qua, const unsigned long _digit = 6);
+
+	void SetRotationYPR(const ChVec3& _vec, const unsigned long _digit = 6);
 
 	void SetRotationXAxis(const float _x);
 
@@ -983,6 +1006,18 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 
 	ChQua GetRotation(const unsigned long _digit = 6)const;
 
+	ChEularXYZ GetEularRotationXYZ(const unsigned long _digit = 6)const;
+
+	ChEularXZY GetEularRotationXZY(const unsigned long _digit = 6)const;
+
+	ChEularYXZ GetEularRotationYXZ(const unsigned long _digit = 6)const;
+
+	ChEularYZX GetEularRotationYZX(const unsigned long _digit = 6)const;
+
+	ChEularZXY GetEularRotationZXY(const unsigned long _digit = 6)const;
+
+	ChEularZYX GetEularRotationZYX(const unsigned long _digit = 6)const;
+
 	ChVec3 GetScalling(const unsigned long _digit = 6)const;
 
 	ChVec3 GetXAxisDirection()const;
@@ -990,12 +1025,6 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 	ChVec3 GetYAxisDirection()const;
 
 	ChVec3 GetZAxisDirection()const;
-
-	float GetRadian()const;
-
-	float GetCos()const;
-
-	float GetSin()const;
 
 	///////////////////////////////////////////////////////////////////////////////////
 
