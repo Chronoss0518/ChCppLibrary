@@ -5,12 +5,15 @@
 
 namespace ChArray
 {
+
 	template<typename T>
 	class ListArrayItem
 	{
 	public:
 
 		T& operator->() { return item; }
+
+		T& operator*() { return item; }
 
 		operator T& () { return item; }
 
@@ -45,6 +48,8 @@ namespace ChArray
 
 	};
 
+	//This Valiable Length Array is Use List Structure //
+	//List構造を使用した可変長配列//
 	template<typename T>
 	class ListArray : public VLAArrayBase<T>
 	{
@@ -61,7 +66,7 @@ namespace ChArray
 		{
 			ListArrayItem<T>* res = itemBegin;
 			ListArrayItem<T>* test = nullptr;
-			for (unsigned long i = 1; i < _num; i++)
+			for (unsigned long i = 0; i < _num; i++)
 			{
 				test = res->GetNext();
 				if (test == nullptr)return *res;

@@ -4,18 +4,11 @@
 #include<stdlib.h>
 #include"ChPtr.h"
 #include"ChListArray.h"
+#include"ChFixedArray.h"
 
 template<typename T>
 T& ChArray::ListArray<T>::InsertAdd(unsigned long _num)
 {
-	if (ChPtr::NullCheck(itemBegin))
-	{
-		itemBegin = new ListArrayItem<T>();
-
-		ArrayBase<T>::AddCount();
-
-		return *itemBegin;
-	}
 
 	unsigned long arrayCount = ArrayBase<T>::GetCount();
 
@@ -23,14 +16,25 @@ T& ChArray::ListArray<T>::InsertAdd(unsigned long _num)
 
 	if (num >= arrayCount)num = arrayCount;
 
+	ArrayBase<T>::AddCount();
+
+	ListArrayItem<T>* res = new ListArrayItem<T>();
+
 	ListArrayItem<T>* nowItem = itemBegin;
+
+	if (num <= 0)
+	{
+		nowItem = itemBegin;
+		itemBegin = res;
+		itemBegin->SetNext(nowItem);
+
+		return *res;
+	}
 
 	for (unsigned long i = 1; i < num; i++)
 	{
 		nowItem = nowItem->GetNext();
 	}
-
-	ListArrayItem<T>* res = new ListArrayItem<T>();
 
 	ListArrayItem<T>* nextTmp = nowItem->GetNext();
 
@@ -40,8 +44,6 @@ T& ChArray::ListArray<T>::InsertAdd(unsigned long _num)
 	{
 		res->SetNext(nextTmp);
 	}
-
-	ArrayBase<T>::AddCount();
 
 	return *res;
 }
@@ -55,6 +57,8 @@ void ChArray::ListArray<T>::Remove(unsigned long _num)
 	unsigned long num = _num;
 	if (num >= arrayCount)num = arrayCount;
 
+	ArrayBase<T>::SubCount();
+
 	if (num <= 0)
 	{
 		ListArrayItem<T>* tmpItem = itemBegin->GetNext();
@@ -63,30 +67,22 @@ void ChArray::ListArray<T>::Remove(unsigned long _num)
 
 		itemBegin = tmpItem;
 
-		ArrayBase<T>::SubCount();
 		return;
 	}
 
 	ListArrayItem<T>* nowItem = itemBegin;
+	ListArrayItem<T>* beforeItem = nullptr;
 
-	for (unsigned long i = 1; i < num; i++)
+	for (unsigned long i = 0; i < num; i++)
 	{
+		beforeItem = nowItem;
 		nowItem = nowItem->GetNext();
 	}
+	
+	if(ChPtr::NotNullCheck(beforeItem))beforeItem->SetNext(nowItem->GetNext());
 
-	if (ChPtr::NullCheck(nowItem))return;
+	delete nowItem;
 
-	ListArrayItem<T>* removeItem = nowItem->GetNext();
-
-	if (ChPtr::NullCheck(removeItem))return;
-
-	ListArrayItem<T>* removeNextItem = removeItem->GetNext();
-
-	nowItem->SetNext(removeNextItem);
-
-	delete removeItem;
-
-	ArrayBase<T>::SubCount();
 }
 
 template<typename T>
@@ -105,7 +101,6 @@ void ChArray::ListArray<T>::Clear()
 
 	ArrayBase<T>::SetCount(0);
 }
-
 
 
 #endif
