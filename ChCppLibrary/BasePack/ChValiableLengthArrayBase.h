@@ -7,7 +7,7 @@ namespace ChArray
 {
 
 	template<typename T>
-	class VLAArrayBase : public ArrayBase<T>
+	class VLArrayBase : public ArrayBase<T>
 	{
 	public://Other Functions//
 

@@ -51,7 +51,7 @@ namespace ChArray
 	//This Valiable Length Array is Use List Structure //
 	//List構造を使用した可変長配列//
 	template<typename T>
-	class ListArray : public VLAArrayBase<T>
+	class ListArray : public VLArrayBase<T>
 	{
 	public:
 
