@@ -50,9 +50,25 @@ namespace ChArray
 	{
 	public:
 
+		~ListArray()
+		{
+			Clear();
+		}
+
+	public:
+
 		inline T& GetItem(unsigned long _num)override
 		{
+			ListArrayItem<T>* res = itemBegin;
+			ListArrayItem<T>* test = nullptr;
+			for (unsigned long i = 1; i < _num; i++)
+			{
+				test = res->GetNext();
+				if (test == nullptr)return *res;
+				res = test;
+			}
 
+			return *res;
 		}
 
 	public:
@@ -95,7 +111,7 @@ namespace ChArray
 
 	private:
 
-		ListArrayItem<T>* itemBegin = nullptr;
+		ListArrayItem<T>* itemBegin;
 
 	};
 

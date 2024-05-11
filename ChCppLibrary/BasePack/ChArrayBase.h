@@ -30,6 +30,8 @@ namespace ChArray
 
 		T& operator->();
 
+		T& operator*();
+
 		bool operator==(const ArrayIterator& _it)
 		{
 			return _it.value == value && _it.base == base;
@@ -45,6 +47,12 @@ namespace ChArray
 		ArrayIterator(ArrayBase<T>* _base)
 		{
 			base = _base;
+		}
+
+		ArrayIterator(ArrayBase<T>* _base, unsigned long _val)
+		{
+			base = _base;
+			value = _val;
 		}
 
 	private:
@@ -80,6 +88,8 @@ namespace ChArray
 
 	public://Get Functions//
 
+		//if _num is over the array length, get the last array item//
+		//_num の値が配列の長さを超える場合は配列の最後の値を取得します。// 
 		virtual T& GetItem(unsigned long _num) = 0;
 
 		inline unsigned long GetLength() { return itemCount; };
@@ -106,6 +116,11 @@ namespace ChArray
 		{
 			if (itemCount <= 0)return;
 			itemCount--;
+		}
+
+		inline void SetCount(unsigned long _num)
+		{
+			itemCount = _num;
 		}
 
 	private:
@@ -141,7 +156,13 @@ namespace ChArray
 	template<typename T>
 	T& ArrayIterator<T>::operator->()
 	{
-		return base->GetItem();
+		return base->GetItem(value);
+	}
+
+	template<typename T>
+	T& ArrayIterator<T>::operator*()
+	{
+		return base->GetItem(value);
 	}
 
 }

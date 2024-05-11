@@ -5,79 +5,107 @@
 #include"ChPtr.h"
 #include"ChListArray.h"
 
-namespace ChArray
+template<typename T>
+T& ChArray::ListArray<T>::InsertAdd(unsigned long _num)
 {
-
-	template<typename T>
-	T& ListArray<T>::InsertAdd(unsigned long _num)
+	if (ChPtr::NullCheck(itemBegin))
 	{
-		unsigned long num = _num;
-		if (num >= ArrayBase<T>::GetCount())num = ArrayBase<T>::GetCount();
-
-		ListArrayItem<T>* nowItem = itemBegin;
-
-		for (unsigned long i = 1; i < num; i++)
-		{
-			nowItem = nowItem->GetNext();
-		}
-
-		ListArrayItem<T>* res = new ListArrayItem<T>();
-
-		nowItem->SetNext(res);
-
-		ListArrayItem<T>* nextTmp = nowItem->GetNext();
-
-		if (ChPtr::NotNullCheck(nextTmp))
-		{
-			nextTmp->SetNext(res);
-		}
+		itemBegin = new ListArrayItem<T>();
 
 		ArrayBase<T>::AddCount();
 
-		return *res;
+		return *itemBegin;
 	}
 
-	template<typename T>
-	void ListArray<T>::Remove(unsigned long _num)
+	unsigned long arrayCount = ArrayBase<T>::GetCount();
+
+	unsigned long num = _num;
+
+	if (num >= arrayCount)num = arrayCount;
+
+	ListArrayItem<T>* nowItem = itemBegin;
+
+	for (unsigned long i = 1; i < num; i++)
 	{
-		unsigned long num = _num;
-		if (num >= ArrayBase<T>::GetCount())num = ArrayBase<T>::GetCount();
+		nowItem = nowItem->GetNext();
+	}
 
-		ListArrayItem<T>* nowItem = itemBegin;
+	ListArrayItem<T>* res = new ListArrayItem<T>();
 
-		for (unsigned long i = 1; i < num; i++)
-		{
-			nowItem = nowItem->GetNext();
-		}
+	ListArrayItem<T>* nextTmp = nowItem->GetNext();
 
-		ListArrayItem<T>* removeItem = nowItem->GetNext();
+	nowItem->SetNext(res);
 
-		ListArrayItem<T>* removeNextItem = removeItem->GetNext();
+	if (ChPtr::NotNullCheck(nextTmp))
+	{
+		res->SetNext(nextTmp);
+	}
 
-		nowItem->SetNext(removeNextItem);
+	ArrayBase<T>::AddCount();
 
-		delete removeItem;
+	return *res;
+}
+
+template<typename T>
+void ChArray::ListArray<T>::Remove(unsigned long _num)
+{
+	if (ChPtr::NullCheck(itemBegin))return;
+
+	unsigned long arrayCount = ArrayBase<T>::GetCount() - 1;
+	unsigned long num = _num;
+	if (num >= arrayCount)num = arrayCount;
+
+	if (num <= 0)
+	{
+		ListArrayItem<T>* tmpItem = itemBegin->GetNext();
+
+		delete itemBegin;
+
+		itemBegin = tmpItem;
 
 		ArrayBase<T>::SubCount();
-
+		return;
 	}
 
-	template<typename T>
-	void ListArray<T>::Clear()
+	ListArrayItem<T>* nowItem = itemBegin;
+
+	for (unsigned long i = 1; i < num; i++)
 	{
-		ListArrayItem<T>* removeNextItem = itemBegin;
-
-		for (unsigned long i = 0; i < ArrayBase<T>::GetCount(); i++)
-		{
-			if (ChPtr::NullCheck(removeNextItem))return;
-			removeNextItem = removeNextItem->GetNext();
-			delete removeNextItem;
-			ArrayBase<T>::SubCount();
-		}
+		nowItem = nowItem->GetNext();
 	}
 
+	if (ChPtr::NullCheck(nowItem))return;
 
+	ListArrayItem<T>* removeItem = nowItem->GetNext();
 
+	if (ChPtr::NullCheck(removeItem))return;
+
+	ListArrayItem<T>* removeNextItem = removeItem->GetNext();
+
+	nowItem->SetNext(removeNextItem);
+
+	delete removeItem;
+
+	ArrayBase<T>::SubCount();
 }
+
+template<typename T>
+void ChArray::ListArray<T>::Clear()
+{
+	ListArrayItem<T>* removeNextItem = itemBegin;
+	ListArrayItem<T>* tmp = nullptr;
+
+	for (unsigned long i = 0; i < ArrayBase<T>::GetCount(); i++)
+	{
+		if (ChPtr::NullCheck(removeNextItem))return;
+		tmp = removeNextItem->GetNext();
+		delete removeNextItem;
+		removeNextItem = tmp;
+	}
+
+	ArrayBase<T>::SetCount(0);
+}
+
+
 
 #endif
