@@ -5,11 +5,13 @@
 #include"ChPtr.h"
 #include"ChListArray.h"
 #include"ChFixedArray.h"
+#include"ChFixedAllocArray.h"
+#include"ChAllocArray.h"
+
 
 template<typename T>
 T& ChArray::ListArray<T>::InsertAdd(unsigned long _num)
 {
-
 	unsigned long arrayCount = ArrayBase<T>::GetCount();
 
 	unsigned long num = _num;
@@ -102,5 +104,115 @@ void ChArray::ListArray<T>::Clear()
 	ArrayBase<T>::SetCount(0);
 }
 
+template<typename T>
+ChArray::FixedAllocArray<T>::FixedAllocArray(unsigned long _arraySize)
+{
+	item = new T[_arraySize];
+	ArrayBase<T>::SetCount(_arraySize);
+}
+
+template<typename T>
+ChArray::FixedAllocArray<T>::~FixedAllocArray()
+{
+	delete[] item;
+	ArrayBase<T>::SetCount(0);
+}
+
+template<typename T>
+void ChArray::FixedAllocArray<T>::ReSize(unsigned long _newArraySize)
+{
+	unsigned long loopCount = ArrayBase<T>::GetCount();
+
+	if (_newArraySize == loopCount)return;
+
+	T* tmpArray = new T[_newArraySize];
+
+	if (loopCount > _newArraySize)loopCount = _newArraySize;
+
+	for (unsigned long i = 0; i < loopCount; i++)
+	{
+		*(tmpArray + i) = *(item + i);
+	}
+
+	delete[] item;
+	item = tmpArray;
+
+	ArrayBase<T>::SetCount(_newArraySize);
+}
+
+
+template<typename T>
+T& ChArray::AllocArray<T>::InsertAdd(unsigned long _num)
+{
+	unsigned long count = ArrayBase<T>::GetCount();
+
+	T* tmp = new T[count + 1];
+
+	bool findFlg;
+	T* res = nullptr;
+
+	for (unsigned long i = 0; i < count; i++)
+	{
+		if (i == _num)
+		{
+			findFlg = true;
+			res = tmp[i];
+			continue;
+		}
+		tmp[findFlg ? (i + 1) : i] = item[i];
+	}
+
+	delete[] item;
+	item = tmp;
+
+	ArrayBase<T>::AddCount();
+
+	return *res;
+}
+
+template<typename T>
+void ChArray::AllocArray<T>::Remove(unsigned long _num)
+{
+	if (ArrayBase<T>::IsEmpty())return;
+
+	unsigned long count = ArrayBase<T>::GetCount();
+
+	if (count <= 1)
+	{
+		delete[] item;
+		ArrayBase<T>::SubCount();
+
+		return;
+	}
+
+	T* tmp = new T[count - 1];
+
+	bool findFlg;
+	T* res = nullptr;
+
+	for (unsigned long i = 0; i < count; i++)
+	{
+		if (i == _num)
+		{
+			findFlg = true;
+			continue;
+		}
+		tmp[i] = item[findFlg ? (i + 1) : i];
+	}
+
+	delete[] item;
+	item = tmp;
+
+	ArrayBase<T>::SubCount();
+
+	return *res;
+}
+
+template<typename T>
+void ChArray::AllocArray<T>::Clear()
+{
+	delete[] item;
+	ArrayBase<T>::SetCount(0);
+}
 
 #endif

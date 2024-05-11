@@ -105,11 +105,18 @@ namespace ChArray
 			return _it.value;
 		}
 
+	public:
+
+		inline bool IsEmpty()
+		{
+			return itemCount == 0;
+		}
+
 	protected://Count Controll//
 
 		inline void AddCount()
 		{
-			itemCount++; 
+			itemCount++;
 		}
 
 		inline void SubCount()
