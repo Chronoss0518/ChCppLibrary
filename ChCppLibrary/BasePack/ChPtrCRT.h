@@ -1,27 +1,30 @@
-#ifndef Ch_CPP_Ptr_h
-#define Ch_CPP_Ptr_h
+#ifndef Ch_CPP_PTR_CRT_h
+#define Ch_CPP_PTR_CRT_h
 
-#ifndef MEMORY_
-#include<memory>
-#endif
+#include"ChPtr.h"
 
-#ifndef Ch_CPP_Std_h
-#include"ChStd.h"
-#endif
+template<typename T, class... _Types>
+T* ChPtr::Instantiate(_Types&&... _args)
+{
+	return new T(_args...);
+}
+
+template<typename T>
+T* ChPtr::InstantiateArray(unsigned long _num)
+{
+	return new T[_num];
+}
+
+template<typename T>
+void ChPtr::Release(T*& _release)
+{
+	delete[] _release;
+}
+
 
 //ChLibraryで利用するポインタに対して利用する関数、変数群のまとまり//
 namespace ChPtr
 {
-
-	template<typename T, class... _Types>
-	T* Instantiate(_Types&&... _args);
-
-	template<typename T>
-	T* InstantiateArray(unsigned long _num);
-
-	template<typename T>
-	void Release(T*& _release);
-
 	//SharedPtrの簡略版//
 	template<class T>
 	using Shared = std::shared_ptr<T>;
@@ -37,7 +40,7 @@ namespace ChPtr
 	//SharedPtr用ダウンキャスト//
 	template<class C, class C2>
 	static inline auto SharedSafeCast(Shared<C2> _sPtr)
-		->typename std::enable_if<std::is_base_of<C2, C>::value &&
+		-> typename std::enable_if<std::is_base_of<C2, C>::value &&
 		!std::is_same<C2, C>::value, Shared<C>>::type
 	{
 		return std::dynamic_pointer_cast<C, C2>(_sPtr);
@@ -45,30 +48,30 @@ namespace ChPtr
 
 		template<class C, class C2>
 	static inline auto SharedSafeCast(Shared<C2> _sPtr)
-		->typename  std::enable_if<std::is_same<C2, C>::value, Shared<C>>::type
+		-> typename  std::enable_if<std::is_same<C2, C>::value, Shared<C>>::type
 	{
 		return _sPtr;
 	}
 
 	//*Ptr用ダウンキャスト//
 	template<class C, class C2>
-	static inline auto SafeCast(C2*_ptr)
-		->typename  std::enable_if<std::is_base_of<C2, C>::value &&
+	static inline auto SafeCast(C2* _ptr)
+		-> typename  std::enable_if<std::is_base_of<C2, C>::value &&
 		!std::is_same<C2, C>::value, C*>::type
 	{
 		return dynamic_cast<C*>(_ptr);
 	}
 
-		template<class C, class C2>
+	template<class C, class C2>
 	static inline auto SafeCast(C2* _ptr)
-		->typename  std::enable_if<std::is_same<C2, C>::value, C*>::type
+		-> typename  std::enable_if<std::is_same<C2, C>::value, C*>::type
 	{
 		return (_ptr);
 	}
 
 	//クラスがNULLまたはnullptrかをチェックする関数//
 	template<class C>
-	static inline auto NullCheck(const C _class)->typename
+	static inline auto NullCheck(const C _class) -> typename
 		std::enable_if<std::is_pointer<C>::value, bool>::type
 	{
 		if (_class == NULL) return true;
@@ -78,7 +81,7 @@ namespace ChPtr
 
 	//クラスがNULLとnullptrのどちらでもないかをチェックする関数//
 	template<class C>
-	static inline auto NotNullCheck(const C _class)->typename
+	static inline auto NotNullCheck(const C _class) -> typename
 		std::enable_if<std::is_pointer<C>::value, bool>::type
 	{
 		if (_class != NULL)
@@ -111,8 +114,6 @@ namespace ChPtr
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
-
-
 }
 
 #endif

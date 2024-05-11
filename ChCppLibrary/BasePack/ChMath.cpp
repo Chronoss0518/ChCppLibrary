@@ -1,13 +1,7 @@
 #include"../BaseIncluder/ChBase.h"
-#include"ChListArray.h"
-#include"ChArrayCRT.h"
 
-using namespace ChMath;
-
-float Round(const float& _val, const unsigned int _digit)
+float ChMath::Round(const float& _val, const unsigned int _digit)
 {
-	ChArray::ListArray<long>test;
-
 	double tmp = (double)(_val);
 
 	float out = (float)Round(tmp, _digit);
@@ -15,7 +9,7 @@ float Round(const float& _val, const unsigned int _digit)
 	return out;
 }
 
-double SqrtEx(const double& _base, const unsigned long _digit)
+double ChMath::SqrtEx(const double& _base, const unsigned long _digit)
 {
 	if (_base == 0.0)return 0.0;
 
@@ -30,7 +24,7 @@ double SqrtEx(const double& _base, const unsigned long _digit)
 	return out;
 }
 
-float SqrtEx(const float& _base, const unsigned long _digit)
+float ChMath::SqrtEx(const float& _base, const unsigned long _digit)
 {
 	if (_base == 0.0f)return 0.0f;
 

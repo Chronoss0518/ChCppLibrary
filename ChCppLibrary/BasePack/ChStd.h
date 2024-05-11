@@ -1,6 +1,9 @@
 #ifndef Ch_CPP_Std_h
 #define Ch_CPP_Std_h
 
+#include<vector>
+#include<map>
+
 //ChLibraryのベースとなる関数、変数群のまとまり//
 namespace ChStd
 {
