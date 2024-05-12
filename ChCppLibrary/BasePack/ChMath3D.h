@@ -782,6 +782,8 @@ public://Sed Method//
 
 	void SetRotation(const ChVec3& _axis, const float _angle);
 
+	void SetRotation(const ChVec3& _from, const ChVec3& _to);
+
 public://Get Method//
 
 	ChLMatrix GetRotationLMatrix(const unsigned long _digit = 6)const;
