@@ -6,6 +6,9 @@
 namespace ChArray
 {
 	template<typename T>
+	class ListArray;
+
+	template<typename T>
 	class AllocArray :public VLArrayBase<T>
 	{
 	public:
@@ -57,6 +60,10 @@ namespace ChArray
 		}
 
 		void Clear()override;
+
+		void ReSize(unsigned long _newArraySize);
+
+		ListArray<T> ToListArray();
 
 	private:
 		

@@ -5,9 +5,8 @@
 #include"ChPtr.h"
 #include"ChListArray.h"
 #include"ChFixedArray.h"
-#include"ChFixedAllocArray.h"
 #include"ChAllocArray.h"
-
+#include"ChMappingArray.h"
 
 template<typename T>
 T& ChArray::ListArray<T>::InsertAdd(unsigned long _num)
@@ -105,41 +104,20 @@ void ChArray::ListArray<T>::Clear()
 }
 
 template<typename T>
-ChArray::FixedAllocArray<T>::FixedAllocArray(unsigned long _arraySize)
+ChArray::AllocArray<T> ChArray::ListArray <T>::ToAllocArray()
 {
-	item = new T[_arraySize];
-	ArrayBase<T>::SetCount(_arraySize);
-}
+	AllocArray<T>res;
+	unsigned long count = ArrayBase<T>::GetCount();
+	ListArrayItem<T>* nowItem = itemBegin;
 
-template<typename T>
-ChArray::FixedAllocArray<T>::~FixedAllocArray()
-{
-	delete[] item;
-	ArrayBase<T>::SetCount(0);
-}
-
-template<typename T>
-void ChArray::FixedAllocArray<T>::ReSize(unsigned long _newArraySize)
-{
-	unsigned long loopCount = ArrayBase<T>::GetCount();
-
-	if (_newArraySize == loopCount)return;
-
-	T* tmpArray = new T[_newArraySize];
-
-	if (loopCount > _newArraySize)loopCount = _newArraySize;
-
-	for (unsigned long i = 0; i < loopCount; i++)
+	for (unsigned long i = 0; i < count; i++)
 	{
-		*(tmpArray + i) = *(item + i);
+		res.Push(nowItem->GetItem());
+		nowItem = nowItem->GetNext();
 	}
 
-	delete[] item;
-	item = tmpArray;
-
-	ArrayBase<T>::SetCount(_newArraySize);
+	return res;
 }
-
 
 template<typename T>
 T& ChArray::AllocArray<T>::InsertAdd(unsigned long _num)
@@ -213,6 +191,64 @@ void ChArray::AllocArray<T>::Clear()
 {
 	delete[] item;
 	ArrayBase<T>::SetCount(0);
+}
+
+template<typename T>
+void ChArray::AllocArray<T>::ReSize(unsigned long _newArraySize)
+{
+	unsigned long loopCount = ArrayBase<T>::GetCount();
+
+	if (_newArraySize == loopCount)return;
+
+	T* tmpArray = new T[_newArraySize];
+
+	if (loopCount > _newArraySize)loopCount = _newArraySize;
+
+	for (unsigned long i = 0; i < loopCount; i++)
+	{
+		*(tmpArray + i) = *(item + i);
+	}
+
+	delete[] item;
+	item = tmpArray;
+
+	ArrayBase<T>::SetCount(_newArraySize);
+}
+
+template<typename T>
+ChArray::ListArray<T> ChArray::AllocArray <T>::ToListArray()
+{
+	ListArray<T>res;
+	unsigned long count = ArrayBase<T>::GetCount();
+
+	for (unsigned long i = 0; i < count; i++)
+	{
+		res.Push(*(item + i));
+	}
+
+	return res;
+}
+
+template<typename Key, typename Value>
+ChArray::MappingArrayPair<Key, Value>* ChArray::MappingArray<Key, Value>::FindKeyMethod(unsigned long& _outNum, Key _key)
+{
+	_outNum = 0;
+	ChArray::MappingArrayPair<Key, Value>* res = nullptr;
+
+	for (auto&& it : base)
+	{
+		if (it.key == _key) 
+		{
+			res = &it;
+			break;
+		}
+
+		if (it.key >= _key)break;
+		_outNum++;
+	}
+
+	return res;
+
 }
 
 #endif

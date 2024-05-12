@@ -7,6 +7,9 @@ namespace ChArray
 {
 
 	template<typename T>
+	class AllocArray;
+
+	template<typename T>
 	class ListArrayItem
 	{
 	public:
@@ -113,6 +116,8 @@ namespace ChArray
 		}
 
 		void Clear()override;
+
+		AllocArray<T> ToAllocArray();
 
 	private:
 
