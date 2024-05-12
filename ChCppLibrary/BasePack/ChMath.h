@@ -539,8 +539,6 @@ namespace ChMath
 		{
 			T tmp = GetCos(_vec, _digit);
 
-			if (tmp == 0.0f)return 0.0f;
-
 			return static_cast<T>(std::acos(tmp));
 		}
 
@@ -548,8 +546,6 @@ namespace ChMath
 			const VectorBase& _vec,
 			const unsigned long _digit = 6)const
 		{
-
-			if (GetLen(_digit) <= 0.0f || _vec.GetLen(_digit) <= 0.0f)return 0.0f;
 
 			T tmpLen = 0.0f;
 
@@ -702,11 +698,40 @@ namespace ChMath
 			const VectorBase& _end,
 			const float _pow)
 		{
+			if (_pow <= 0.0f)return _start;
+			if (_pow >= 1.0f)return _end;
+
 			VectorBase out;
 
 			out = (_start * (1.0f - _pow)) + (_end * _pow);
 
 			return out;
+		}
+
+		static VectorBase SLerp(
+			const VectorBase& _start,
+			const VectorBase& _end,
+			const float _pow)
+		{
+
+			if (_pow >= 1.0f)return _end;
+			if (_pow <= 0.0f)return _start;
+
+			VectorBase start = _start;
+			VectorBase end = _end;
+
+			float rad = start.GetDot(end);
+			rad = std::acosf(rad);
+			if (rad == 0.0f)return start;
+
+			float baseSin = std::sinf(rad);
+
+			if (baseSin == 0.0f)return start;
+
+			start.Mul(std::sinf((1.0f - _pow) * rad) / baseSin);
+			end.Mul(std::sinf(_pow * rad) / baseSin);
+
+			return (start + end);
 		}
 
 	private:
@@ -741,7 +766,7 @@ namespace ChMath
 			{
 				for (unsigned long j = 0; j < MinRow; j++)
 				{
-					out[Column][Row] = m[Column][Row];
+					out[i][j] = m[i][j];
 				}
 			}
 
