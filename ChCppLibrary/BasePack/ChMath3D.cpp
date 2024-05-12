@@ -1274,6 +1274,20 @@ void ChQua::SetRotation(const ChVec3& _axis, const float _angle)
 	z = FLOAT_ZERO_TEST(tmp.z, 0.00001f) ? 0.0f : tmp.z * std::sinf(tmpAngle);
 }
 
+void ChQua::SetRotation(const ChVec3& _from, const ChVec3& _to)
+{
+
+	ChVec3 from = _from, to = _to;
+	from.Normalize();
+	to.Normalize();
+
+	auto&& axis = ChVec3::GetCross(from, to);
+	auto&& cos = ChVec3::GetRadian(from, to);
+
+	SetRotation(axis, cos);
+
+}
+
 ChLMatrix ChQua::GetRotationLMatrix(const unsigned long _digit)const
 {
 	ChLMat mat;
@@ -1306,7 +1320,7 @@ ChEularXYZ ChQua::GetEularRotationXYZ(const unsigned long _digit)const
 {
 	ChEularXYZ res;
 
-	res.y = std::asinf((2.0f * x * z + 2.0f * y * w));
+	res.y = std::asinf(-(2.0f * x * z + 2.0f * y * w));
 
 	float yz = 2.0f * y * z;
 	float xw = 2.0f * x * w;
@@ -1315,13 +1329,13 @@ ChEularXYZ ChQua::GetEularRotationXYZ(const unsigned long _digit)const
 
 	if (FLOAT_ZERO_TEST(std::cosf(res.y), 0.000001f))
 	{
-		res.x = std::atanf((yz + xw) / (ww + 2.0f * y * y - 1.0f));
+		res.x = std::atanf(-(yz + xw) / (ww + 2.0f * y * y - 1.0f));
 		res.z = 0.0f;
 	}
 	else
 	{
-		res.x = std::atanf(-(yz - xw) / (ww + 2.0f * z * z - 1.0f));
-		res.z = std::atanf(-(2.0f * x * z - 2.0f * y * w) / (ww + 2.0f * x * x - 1.0f));
+		res.x = std::atanf((yz - xw) / (ww + 2.0f * z * z - 1.0f));
+		res.z = std::atanf((2.0f * x * z - 2.0f * y * w) / (ww + 2.0f * x * x - 1.0f));
 	}
 
 	return res;
@@ -1331,7 +1345,7 @@ ChEularXZY ChQua::GetEularRotationXZY(const unsigned long _digit)const
 {
 	ChEularXZY res;
 
-	res.z = std::asinf(-(2.0f * x * y - 2.0f * z * w));
+	res.z = std::asinf((2.0f * x * y - 2.0f * z * w));
 
 	float ww = 2.0f * w * w;
 
@@ -1340,13 +1354,13 @@ ChEularXZY ChQua::GetEularRotationXZY(const unsigned long _digit)const
 
 	if (FLOAT_ZERO_TEST(std::cosf(res.x), 0.000001f))
 	{
-		res.x = std::atanf(-(yz - xw) / (ww + 2.0f * z * z - 1.0f));
+		res.x = std::atanf((yz - xw) / (ww + 2.0f * z * z - 1.0f));
 		res.y = 0.0f;
 	}
 	else
 	{
-		res.x = std::atanf((yz + xw) / (ww + 2.0f * y * y - 1.0f));
-		res.y = std::atanf((2.0f * x * z + 2.0f * y * w) / (ww + 2.0f * x * x - 1.0f));
+		res.x = std::atanf(-(yz + xw) / (ww + 2.0f * y * y - 1.0f));
+		res.y = std::atanf(-(2.0f * x * z + 2.0f * y * w) / (ww + 2.0f * x * x - 1.0f));
 	}
 
 	return res;
@@ -1356,7 +1370,7 @@ ChEularYXZ ChQua::GetEularRotationYXZ(const unsigned long _digit)const
 {
 	ChEularYXZ res;
 
-	res.x = std::asinf(-(2.0f * y * z - 2.0f * x * w));
+	res.x = std::asinf((2.0f * y * z - 2.0f * x * w));
 
 	float ww = 2.0f * w * w;
 
@@ -1365,13 +1379,13 @@ ChEularYXZ ChQua::GetEularRotationYXZ(const unsigned long _digit)const
 
 	if (FLOAT_ZERO_TEST(std::cosf(res.x), 0.000001f))
 	{
-		res.y = std::atanf(-(xz - yw) / (ww + 2.0f * x * x - 1.0f));
+		res.y = std::atanf((xz - yw) / (ww + 2.0f * x * x - 1.0f));
 		res.z = 0.0f;
 	}
 	else
 	{
-		res.y = std::atanf((xz + yw) / (ww + 2.0f * z * z - 1.0f));
-		res.z = std::atanf((2.0f * x * y + 2.0f * z * w) / (ww + 2.0f * y * y - 1.0f));
+		res.y = std::atanf(-(xz + yw) / (ww + 2.0f * z * z - 1.0f));
+		res.z = std::atanf(-(2.0f * x * y + 2.0f * z * w) / (ww + 2.0f * y * y - 1.0f));
 	}
 
 	return res;
@@ -1381,7 +1395,7 @@ ChEularYZX ChQua::GetEularRotationYZX(const unsigned long _digit)const
 {
 	ChEularYZX res;
 
-	res.z = std::asinf((2.0f * x * y + 2.0f * z * w));
+	res.z = std::asinf(-(2.0f * x * y + 2.0f * z * w));
 
 	float ww = 2.0f * w * w;
 
@@ -1391,12 +1405,12 @@ ChEularYZX ChQua::GetEularRotationYZX(const unsigned long _digit)const
 	if (FLOAT_ZERO_TEST(std::cosf(res.x), 0.000001f))
 	{
 		res.x = 0.0f;
-		res.y = std::atanf((xz + yw) / (ww + 2.0f * z * z - 1.0f));
+		res.y = std::atanf(-(xz + yw) / (ww + 2.0f * z * z - 1.0f));
 	}
 	else
 	{
-		res.x = std::atanf(-(2.0f * y * z - 2.0f * x * w) / (ww + 2.0f * y * y - 1.0f));
-		res.y = std::atanf(-(xz - yw) / (ww + 2.0f * x * x - 1.0f));
+		res.x = std::atanf((2.0f * y * z - 2.0f * x * w) / (ww + 2.0f * y * y - 1.0f));
+		res.y = std::atanf((xz - yw) / (ww + 2.0f * x * x - 1.0f));
 	}
 
 	return res;
@@ -1406,7 +1420,7 @@ ChEularZXY ChQua::GetEularRotationZXY(const unsigned long _digit)const
 {
 	ChEularZXY res;
 
-	res.x = std::asinf(-(2.0f * y * z + 2.0f * x * w));
+	res.x = std::asinf((2.0f * y * z + 2.0f * x * w));
 
 	float ww = 2.0f * w * w;
 
@@ -1416,12 +1430,12 @@ ChEularZXY ChQua::GetEularRotationZXY(const unsigned long _digit)const
 	if (FLOAT_ZERO_TEST(std::cosf(res.x), 0.000001f))
 	{
 		res.y = 0.0f;
-		res.z = std::atanf((xz + yw) / (ww + 2.0f * x * x - 1.0f));
+		res.z = std::atanf(-(xz + yw) / (ww + 2.0f * x * x - 1.0f));
 	}
 	else
 	{
-		res.y = std::atanf(-(2.0f * x * y - 2.0f * z * w) / (ww + 2.0f * y * y - 1.0f));
-		res.z = std::atanf(-(xz - yw) / (ww + 2.0f * z * z - 1.0f));
+		res.y = std::atanf((2.0f * x * y - 2.0f * z * w) / (ww + 2.0f * y * y - 1.0f));
+		res.z = std::atanf((xz - yw) / (ww + 2.0f * z * z - 1.0f));
 	}
 
 	return res;
@@ -1431,7 +1445,7 @@ ChEularZYX ChQua::GetEularRotationZYX(const unsigned long _digit)const
 {
 	ChEularZYX res;
 
-	res.y = std::asinf(-(2.0f * x * z - 2.0f * y * w));
+	res.y = std::asinf((2.0f * x * z - 2.0f * y * w));
 
 	float ww = 2.0f * w * w;
 
@@ -1441,12 +1455,12 @@ ChEularZYX ChQua::GetEularRotationZYX(const unsigned long _digit)const
 	if (FLOAT_ZERO_TEST(std::cosf(res.y), 0.000001f))
 	{
 		res.x = 0.0f;
-		res.z = std::atanf(-(xy - zw) / (ww + 2.0f * y * y - 1.0f));
+		res.z = std::atanf((xy - zw) / (ww + 2.0f * y * y - 1.0f));
 	}
 	else
 	{
-		res.x = std::atanf((2.0f * x * y + 2.0f * z * w) / (ww + 2.0f * y * y - 1.0f));
-		res.z = std::atanf((xy + zw) / (ww + 2.0f * z * z - 1.0f));
+		res.x = std::atanf(-(2.0f * x * y + 2.0f * z * w) / (ww + 2.0f * y * y - 1.0f));
+		res.z = std::atanf(-(xy + zw) / (ww + 2.0f * z * z - 1.0f));
 	}
 
 	return res;
@@ -1692,23 +1706,26 @@ void ChLMatrix::SetRotationYPR(const ChVec3& _vec, const unsigned long _digit)
 void ChLMatrix::SetRotation(const ChQua& _qua, const unsigned long _digit)
 {
 
-	float squaredW = _qua.w * _qua.w;
+	float squaredW = 2.0f * _qua.w * _qua.w;
 
 	ChVec3 scl = GetScalling(_digit);
 
 	for (unsigned char i = 0; i < 3; i++)
 	{
-		m[i][i] = ((2.0f * squaredW) + (2.0f * _qua.val[i] * _qua.val[i]) - 1) * scl.val[i];
+		m[i][i] = (squaredW + (2.0f * _qua.val[i] * _qua.val[i]) - 1.0f) * scl.val[i];
 	}
 
-	m[0][1] = ((2.0f * _qua.x * _qua.y) - (2.0f * _qua.z * _qua.w)) * scl.x;
-	m[0][2] = ((2.0f * _qua.x * _qua.z) + (2.0f * _qua.y * _qua.w)) * scl.x;
+	m[0][1] = 2.0f * ((_qua.x * _qua.y) + (_qua.z * _qua.w)) * scl.x;
+	m[0][2] = 2.0f * ((_qua.x * _qua.z) - (_qua.y * _qua.w)) * scl.x;
 
-	m[1][0] = ((2.0f * _qua.y * _qua.x) + (2.0f * _qua.z * _qua.w)) * scl.y;
-	m[1][2] = ((2.0f * _qua.y * _qua.z) - (2.0f * _qua.x * _qua.w)) * scl.y;
+	m[1][0] = 2.0f * ((_qua.y * _qua.x) - (_qua.z * _qua.w)) * scl.y;
+	m[1][2] = 2.0f * ((_qua.y * _qua.z) + (_qua.x * _qua.w)) * scl.y;
 
-	m[2][0] = ((2.0f * _qua.z * _qua.x) - (2.0f * _qua.y * _qua.w)) * scl.z;
-	m[2][1] = ((2.0f * _qua.z * _qua.y) + (2.0f * _qua.x * _qua.w)) * scl.z;
+	m[2][0] = 2.0f * ((_qua.z * _qua.x) + (_qua.y * _qua.w)) * scl.z;
+	m[2][1] = 2.0f * ((_qua.z * _qua.y) - (_qua.x * _qua.w)) * scl.z;
+
+
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -1810,12 +1827,12 @@ ChEularXYZ ChLMatrix::GetEularRotationXYZ(const unsigned long _digit)const
 	outM.m[1].Normalize(_digit);
 	outM.m[2].Normalize(_digit);
 
-	res.y = std::asinf(outM.m[0][2]);
+	res.y = std::asinf(-outM.m[0][2]);
 
 	bool zeroFlg = FLOAT_ZERO_TEST(std::cosf(res.y), 0.000001f);
 
-	res.x = std::atanf(zeroFlg ? outM.m[2][1] / outM.m[1][1] : -outM.m[1][2] / outM.m[2][2]);
-	res.z = zeroFlg ? 0.0f : (std::atanf(-outM.m[0][1] / outM.m[0][0]));
+	res.x = std::atanf(zeroFlg ? -outM.m[2][1] / outM.m[1][1] : outM.m[1][2] / outM.m[2][2]);
+	res.z = zeroFlg ? 0.0f : (std::atanf(outM.m[0][1] / outM.m[0][0]));
 
 	return res;
 }
@@ -1830,12 +1847,12 @@ ChEularXZY ChLMatrix::GetEularRotationXZY(const unsigned long _digit)const
 	outM.m[1].Normalize(_digit);
 	outM.m[2].Normalize(_digit);
 
-	res.z = std::asinf(-outM.m[0][1]);
+	res.z = std::asinf(outM.m[0][1]);
 
 	bool zeroFlg = FLOAT_ZERO_TEST(std::cosf(res.z), 0.000001f);
 
-	res.x = std::atanf(zeroFlg ? -outM.m[1][2] / outM.m[2][2] : outM.m[0][2] / outM.m[2][2]);
-	res.y = zeroFlg ? 0.0f : (std::atanf(outM.m[0][2] / outM.m[0][0]));
+	res.x = std::atanf(zeroFlg ? outM.m[1][2] / outM.m[2][2] : -outM.m[0][2] / outM.m[2][2]);
+	res.y = zeroFlg ? 0.0f : (std::atanf(-outM.m[0][2] / outM.m[0][0]));
 
 	return res;
 }
@@ -1851,12 +1868,12 @@ ChEularYXZ ChLMatrix::GetEularRotationYXZ(const unsigned long _digit)const
 	outM.m[1].Normalize(_digit);
 	outM.m[2].Normalize(_digit);
 
-	res.x = std::asinf(-outM.m[1][2]);
+	res.x = std::asinf(outM.m[1][2]);
 
 	bool zeroFlg = FLOAT_ZERO_TEST(std::cosf(res.x), 0.000001f);
 
-	res.y = std::atanf(zeroFlg ? -outM.m[2][0] / outM.m[0][0] : outM.m[0][2] / outM.m[2][2]);
-	res.z = zeroFlg ? 0.0f : (std::atanf(outM.m[1][0] / outM.m[1][1]));
+	res.y = std::atanf(zeroFlg ? outM.m[2][0] / outM.m[0][0] : -outM.m[0][2] / outM.m[2][2]);
+	res.z = zeroFlg ? 0.0f : (std::atanf(-outM.m[1][0] / outM.m[1][1]));
 
 	return res;
 }
@@ -1872,12 +1889,12 @@ ChEularYZX ChLMatrix::GetEularRotationYZX(const unsigned long _digit)const
 	outM.m[1].Normalize(_digit);
 	outM.m[2].Normalize(_digit);
 
-	res.z = std::asinf(outM.m[1][0]);
+	res.z = std::asinf(-outM.m[1][0]);
 
 	bool zeroFlg = FLOAT_ZERO_TEST(std::cosf(res.z), 0.000001f);
 
-	res.x = zeroFlg ? 0.0f : (std::atanf(-outM.m[1][2] / outM.m[1][1]));
-	res.y = std::atanf(zeroFlg ? outM.m[0][2] / outM.m[2][2] : -outM.m[2][0] / outM.m[0][0]);
+	res.x = zeroFlg ? 0.0f : (std::atanf(outM.m[1][2] / outM.m[1][1]));
+	res.y = std::atanf(zeroFlg ? -outM.m[0][2] / outM.m[2][2] : outM.m[2][0] / outM.m[0][0]);
 
 	return res;
 }
@@ -1892,12 +1909,12 @@ ChEularZXY ChLMatrix::GetEularRotationZXY(const unsigned long _digit)const
 	outM.m[1].Normalize(_digit);
 	outM.m[2].Normalize(_digit);
 
-	res.x = std::asinf(outM.m[2][1]);
+	res.x = std::asinf(-outM.m[2][1]);
 
 	bool zeroFlg = FLOAT_ZERO_TEST(std::cosf(res.x), 0.000001f);
 
-	res.y = zeroFlg ? 0.0f : (std::atanf(-outM.m[2][0] / outM.m[2][2]));
-	res.z = std::atanf(zeroFlg ? outM.m[1][0] / outM.m[0][0]  : -outM.m[0][1] / outM.m[1][1]);
+	res.y = zeroFlg ? 0.0f : (std::atanf(outM.m[2][0] / outM.m[2][2]));
+	res.z = std::atanf(zeroFlg ? -outM.m[1][0] / outM.m[0][0]  : outM.m[0][1] / outM.m[1][1]);
 
 	return res;
 }
@@ -1912,12 +1929,12 @@ ChEularZYX ChLMatrix::GetEularRotationZYX(const unsigned long _digit)const
 	outM.m[1].Normalize(_digit);
 	outM.m[2].Normalize(_digit);
 
-	res.y = std::asinf(-outM.m[2][0]);
+	res.y = std::asinf(outM.m[2][0]);
 
 	bool zeroFlg = FLOAT_ZERO_TEST(std::cosf(res.y), 0.000001f);
 
 	res.x = zeroFlg ? 0.0f : (std::atanf(outM.m[2][1] / outM.m[2][2]));
-	res.z = std::atanf(zeroFlg ? outM.m[1][0] / outM.m[0][0] : -outM.m[0][1] / outM.m[1][1]);
+	res.z = std::atanf(zeroFlg ? -outM.m[1][0] / outM.m[0][0] : outM.m[0][1] / outM.m[1][1]);
 
 	return res;
 }

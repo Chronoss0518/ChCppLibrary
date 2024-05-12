@@ -539,8 +539,6 @@ namespace ChMath
 		{
 			T tmp = GetCos(_vec, _digit);
 
-			if (tmp == 0.0f)return 0.0f;
-
 			return static_cast<T>(std::acos(tmp));
 		}
 
@@ -548,8 +546,6 @@ namespace ChMath
 			const VectorBase& _vec,
 			const unsigned long _digit = 6)const
 		{
-
-			if (GetLen(_digit) <= 0.0f || _vec.GetLen(_digit) <= 0.0f)return 0.0f;
 
 			T tmpLen = 0.0f;
 
