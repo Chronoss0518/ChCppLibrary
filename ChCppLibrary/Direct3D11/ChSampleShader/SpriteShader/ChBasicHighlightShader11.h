@@ -78,6 +78,8 @@ namespace ChD3D11
 
 			CB::CBHighlight11 highlightMapData;
 
+			ID3D11SamplerState* sampler = nullptr;
+
 		};
 	}
 }
