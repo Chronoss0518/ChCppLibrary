@@ -59,6 +59,16 @@ void CBHighlight11::SetLiteBlurFlg(const bool _flg)
 	updateFlg = true;
 }
 
+void CBHighlight11::SetBoostPower(const float& _boostPower)
+{
+	if (_boostPower < 0)return;
+	if (blurData.boostPower == _boostPower)return;
+
+	blurData.boostPower = _boostPower;
+
+	updateFlg = true;
+}
+
 void CBHighlight11::SetBlurData(const ChS_HighLight& _data)
 {
 	blurData = _data;

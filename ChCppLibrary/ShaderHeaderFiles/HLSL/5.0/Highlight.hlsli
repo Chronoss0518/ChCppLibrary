@@ -20,6 +20,8 @@ struct ChS_HighLight
     float2 windowSize = float2(0.0f, 0.0f);
     int blurPower = 5;
     int liteBlurFlg = 0;
+    float boostPower = 1.0f;
+    float3 tmp = 0.0f;
 };
 
 #ifdef __SHADER__
@@ -41,11 +43,10 @@ float4 HighLightColor(float2 _uv)
         resultColor += GetBaseTextureColor(float2(_uv.x + (baseWidth * -i), _uv.y));
         resultColor += GetBaseTextureColor(float2(_uv.x, _uv.y + (baseHeight * -i)));
     }
-    resultColor /= float((blurPower * mulCount) + 1);
-    
-    resultColor.a = resultColor.r + resultColor.g + resultColor.b;
-    resultColor.a /= 3.0f;
-
+    resultColor.rgb /= float(blurPower * mulCount);
+    resultColor.rgb *= boostPower;
+    resultColor.a = 1.0f;
+    //resultColor.a = resultColor.r / 3.0f  + resultColor.g / 3.0f + resultColor.b / 3.0f;
     return resultColor;
 }
 

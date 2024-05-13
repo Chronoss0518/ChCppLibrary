@@ -10,11 +10,8 @@
 //‹¤—p//
 float4 main(VS_OUT _in) : SV_Target0
 {
-    float4 res = _in.color;
-    res *= HighLightColor(_in.uv) * baseColor;
-
-    AlphaTest(res.a);
-    
+    float4 res =  HighLightColor(_in.uv) * baseColor * _in.color;
+    res.a = 1.0f;
     return res;
 
 }
