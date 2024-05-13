@@ -36,6 +36,8 @@ namespace ChD3D11
 
 			void SetLiteBlurFlg(const bool _flg);
 
+			void SetBoostPower(const float& _boostPower);
+
 			void SetBlurData(const ChS_HighLight& _data);
 
 			void SetPSSpriteData(ID3D11DeviceContext* _dc);
@@ -54,6 +56,8 @@ namespace ChD3D11
 			inline int GetBlurPower() { return blurData.blurPower; }
 
 			inline bool GetLiteBlurFlg() { return blurData.liteBlurFlg == 1; }
+
+			inline float GetBoostPower() { return blurData.boostPower; }
 
 		private:
 

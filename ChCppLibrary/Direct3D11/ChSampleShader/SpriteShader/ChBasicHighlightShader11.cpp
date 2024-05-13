@@ -30,8 +30,8 @@ void BasicHighlightShader11::Init(ID3D11Device* _device)
 		desc.RenderTarget[0].SrcBlend = D3D11_BLEND::D3D11_BLEND_SRC_COLOR;
 		desc.RenderTarget[0].DestBlend = D3D11_BLEND::D3D11_BLEND_DEST_COLOR;
 		desc.RenderTarget[0].BlendOp = D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
-		desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND::D3D11_BLEND_SRC_COLOR;
-		desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND::D3D11_BLEND_SRC_COLOR;
+		desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND::D3D11_BLEND_ONE;
+		desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND::D3D11_BLEND_ONE;
 		desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP::D3D11_BLEND_OP_MAX;
 		desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE::D3D11_COLOR_WRITE_ENABLE_ALL;
 
@@ -58,6 +58,18 @@ void BasicHighlightShader11::InitPixelShader()
 	SampleSpriteShaderBase11::CreatePixelShader(main, sizeof(main));
 }
 
+
+void BasicHighlightShader11::DrawStart(ID3D11DeviceContext* _dc)
+{
+	if (ChPtr::NullCheck(_dc))return;
+	if (!IsInit())return;
+	if (IsDraw())return;
+
+	SampleSpriteShaderBase11::DrawStart(_dc);
+
+	SampleSpriteShaderBase11::SetShaderBlender(GetDC());
+
+}
 
 void BasicHighlightShader11::Draw(
 	TextureBase11& _tex
@@ -89,8 +101,6 @@ void BasicHighlightShader11::Draw(
 
 	highlightMapData.SetPSSpriteData(GetDC());
 
-	SampleSpriteShaderBase11::SetShaderBlender(GetDC());
-
 	unsigned int offsets = 0;
 
 	auto&& vertexs = _sprite.GetVertexs();
@@ -103,5 +113,14 @@ void BasicHighlightShader11::Draw(
 
 	GetDC()->DrawIndexed(6, 0, 0);
 
+}
+
+void BasicHighlightShader11::DrawEnd()
+{
+	if (!IsDraw())return;
+
+	SampleSpriteShaderBase11::DrawEnd();
+
 	SampleSpriteShaderBase11::SetShaderDefaultBlender(GetDC());
+
 }
