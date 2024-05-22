@@ -1950,7 +1950,8 @@ ChVec3 ChLMatrix::GetScalling(const unsigned long _digit)const
 
 ChVec3 ChLMatrix::GetXAxisDirection()const
 {
-	ChVec3 res = ChVec3(m[0][0], m[1][0], m[2][0]);
+	ChVec3 res;
+	res.val.Set(m[0]);
 
 	return res;
 }
@@ -1959,7 +1960,8 @@ ChVec3 ChLMatrix::GetXAxisDirection()const
 
 ChVec3 ChLMatrix::GetYAxisDirection()const
 {
-	ChVec3 res = ChVec3(m[0][1], m[1][1], m[2][1]);
+	ChVec3 res;
+	res.val.Set(m[1]);
 
 	return res;
 }
@@ -1968,7 +1970,8 @@ ChVec3 ChLMatrix::GetYAxisDirection()const
 
 ChVec3 ChLMatrix::GetZAxisDirection()const
 {
-	ChVec3 res = ChVec3(m[0][2], m[1][2], m[2][2]);
+	ChVec3 res;
+	res.val.Set(m[2]);
 
 	return res;
 }
@@ -2244,7 +2247,7 @@ ChVec3 ChRMatrix::GetScalling(const unsigned long _digit)const
 
 ChVec3 ChRMatrix::GetXAxisDirection()const
 {
-	ChVec3 res = ChVec3(m[0][0], m[0][1], m[0][1]);
+	ChVec3 res = ChVec3(m[0][0], m[1][0], m[2][0]);
 
 	return res;
 }
@@ -2253,7 +2256,7 @@ ChVec3 ChRMatrix::GetXAxisDirection()const
 
 ChVec3 ChRMatrix::GetYAxisDirection()const
 {
-	ChVec3 res = ChVec3(m[1][0], m[1][1], m[1][1]);
+	ChVec3 res = ChVec3(m[0][1], m[1][1], m[2][1]);
 
 	return res;
 }
@@ -2262,7 +2265,7 @@ ChVec3 ChRMatrix::GetYAxisDirection()const
 
 ChVec3 ChRMatrix::GetZAxisDirection()const
 {
-	ChVec3 res = ChVec3(m[2][0], m[2][1], m[2][1]);
+	ChVec3 res = ChVec3(m[0][2], m[1][2], m[2][2]);
 
 	return res;
 }
