@@ -1278,10 +1278,18 @@ void ChQua::SetRotation(const ChVec3& _from, const ChVec3& _to)
 {
 
 	ChVec3 from = _from, to = _to;
+
 	from.Normalize();
 	to.Normalize();
 
 	auto&& axis = ChVec3::GetCross(from, to);
+	
+	if (!axis.Normalize())
+	{
+		Identity();
+		return;
+	}
+
 	auto&& cos = ChVec3::GetRadian(from, to);
 
 	SetRotation(axis, cos);
