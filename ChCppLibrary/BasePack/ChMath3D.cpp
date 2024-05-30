@@ -1523,9 +1523,14 @@ void ChQua::Mul(const ChQua& _value)
 	val.Set(GetMul(*this, _value).val);
 }
 
-ChVec3 ChQua::Mul(const ChVec3& _dir)
+ChVec3 ChQua::MulRHand(const ChVec3& _dir)
 {
-	return GetMul(*this, _dir);
+	return GetMulRHand(*this, _dir);
+}
+
+ChVec3 ChQua::MulLHand(const ChVec3& _dir)
+{
+	return GetMulLHand(*this, _dir);
 }
 
 ChQuaternion ChQuaternion::GetSum(const ChQuaternion& _qua1, const ChQuaternion& _qua2)
@@ -1552,7 +1557,7 @@ ChQua ChQua::GetMul(const ChQua& _qua1, const ChQua& _qua2)
 	return res;
 }
 
-ChVec3 ChQua::GetMul(const ChQuaternion& _qua, const ChVec3& _dir)
+ChVec3 ChQua::GetMulRHand(const ChQuaternion& _qua, const ChVec3& _dir)
 {
 	ChVec3 res = _dir;
 	res.Normalize();
@@ -1564,6 +1569,14 @@ ChVec3 ChQua::GetMul(const ChQuaternion& _qua, const ChVec3& _dir)
 	tmp = _qua * tmp * idn;
 
 	res = ChVec3(tmp.x, tmp.y, tmp.z);
+
+	return res;
+}
+
+ChVec3 ChQua::GetMulLHand(const ChQuaternion& _qua, const ChVec3& _dir)
+{
+	ChVec3 res = GetMulRHand(_qua,_dir);
+	res.z = -res.z;
 
 	return res;
 }
