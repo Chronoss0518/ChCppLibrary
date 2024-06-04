@@ -21,6 +21,13 @@ float4 GetBaseTextureColor(float2 _uv)
     return res;
 }
 
+float4 GetBaseTextureColorFromSampler(float2 _uv, sampler _sampler)
+{
+    float4 res = baseTex.Sample(_sampler, _uv);
+    res.a = min(res.a,1.0f);
+    return res;
+}
+
 #endif
 
 #endif

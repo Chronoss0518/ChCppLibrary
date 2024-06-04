@@ -39,6 +39,18 @@ void BasicHighlightShader11::Init(ID3D11Device* _device)
 		CreateBlender(desc);
 	}
 
+	{
+
+		D3D11_SAMPLER_DESC sDesc;
+		ZeroMemory(&sDesc, sizeof(D3D11_SAMPLER_DESC));
+		sDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+		sDesc.AddressU = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_CLAMP;
+		sDesc.AddressV = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_CLAMP;
+		sDesc.AddressW = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_CLAMP;
+
+		_device->CreateSamplerState(&sDesc, &sampler);
+
+	}
 }
 
 void BasicHighlightShader11::Release()
@@ -100,6 +112,8 @@ void BasicHighlightShader11::Draw(
 	spriteData.SetShaderTexture(GetDC());
 
 	highlightMapData.SetPSSpriteData(GetDC());
+
+	GetDC()->PSSetSamplers(HIGHLIGHT_SAMPLER_REGISTERNO, 1, &sampler);
 
 	unsigned int offsets = 0;
 
