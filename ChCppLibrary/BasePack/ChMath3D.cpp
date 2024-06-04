@@ -1438,12 +1438,12 @@ ChEularZXY ChQua::GetEularRotationZXY(const unsigned long _digit)const
 	if (FLOAT_ZERO_TEST(std::cosf(res.x), 0.000001f))
 	{
 		res.y = 0.0f;
-		res.z = std::atanf(-(xz + yw) / (ww + 2.0f * x * x - 1.0f));
+		res.z = std::atanf((xz + yw) / (ww + 2.0f * x * x - 1.0f));
 	}
 	else
 	{
-		res.y = std::atanf((2.0f * x * y - 2.0f * z * w) / (ww + 2.0f * y * y - 1.0f));
-		res.z = std::atanf((xz - yw) / (ww + 2.0f * z * z - 1.0f));
+		res.y = std::atanf(-(2.0f * x * y - 2.0f * z * w) / (ww + 2.0f * y * y - 1.0f));
+		res.z = std::atanf(-(xz - yw) / (ww + 2.0f * z * z - 1.0f));
 	}
 
 	return res;
