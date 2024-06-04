@@ -1328,7 +1328,7 @@ ChEularXYZ ChQua::GetEularRotationXYZ(const unsigned long _digit)const
 {
 	ChEularXYZ res;
 
-	res.y = std::asinf(-(2.0f * x * z + 2.0f * y * w));
+	res.y = std::asinf((2.0f * x * z + 2.0f * y * w));
 
 	float yz = 2.0f * y * z;
 	float xw = 2.0f * x * w;
@@ -1337,13 +1337,13 @@ ChEularXYZ ChQua::GetEularRotationXYZ(const unsigned long _digit)const
 
 	if (FLOAT_ZERO_TEST(std::cosf(res.y), 0.000001f))
 	{
-		res.x = std::atanf(-(yz + xw) / (ww + 2.0f * y * y - 1.0f));
+		res.x = std::atanf((yz + xw) / (ww + 2.0f * y * y - 1.0f));
 		res.z = 0.0f;
 	}
 	else
 	{
-		res.x = std::atanf((yz - xw) / (ww + 2.0f * z * z - 1.0f));
-		res.z = std::atanf((2.0f * x * z - 2.0f * y * w) / (ww + 2.0f * x * x - 1.0f));
+		res.x = std::atanf(-(yz - xw) / (ww + 2.0f * z * z - 1.0f));
+		res.z = std::atanf(-(2.0f * x * y - 2.0f * z * w) / (ww + 2.0f * x * x - 1.0f));
 	}
 
 	return res;
@@ -1353,7 +1353,7 @@ ChEularXZY ChQua::GetEularRotationXZY(const unsigned long _digit)const
 {
 	ChEularXZY res;
 
-	res.z = std::asinf((2.0f * x * y - 2.0f * z * w));
+	res.z = std::asinf(-(2.0f * x * y - 2.0f * z * w));
 
 	float ww = 2.0f * w * w;
 
@@ -1523,14 +1523,9 @@ void ChQua::Mul(const ChQua& _value)
 	val.Set(GetMul(*this, _value).val);
 }
 
-ChVec3 ChQua::MulRHand(const ChVec3& _dir)
+ChVec3 ChQua::Mul(const ChVec3& _dir)
 {
-	return GetMulRHand(*this, _dir);
-}
-
-ChVec3 ChQua::MulLHand(const ChVec3& _dir)
-{
-	return GetMulLHand(*this, _dir);
+	return GetMul(*this, _dir);
 }
 
 ChQuaternion ChQuaternion::GetSum(const ChQuaternion& _qua1, const ChQuaternion& _qua2)
@@ -1557,7 +1552,7 @@ ChQua ChQua::GetMul(const ChQua& _qua1, const ChQua& _qua2)
 	return res;
 }
 
-ChVec3 ChQua::GetMulRHand(const ChQuaternion& _qua, const ChVec3& _dir)
+ChVec3 ChQua::GetMul(const ChQuaternion& _qua, const ChVec3& _dir)
 {
 	ChVec3 res = _dir;
 	res.Normalize();
@@ -1569,14 +1564,6 @@ ChVec3 ChQua::GetMulRHand(const ChQuaternion& _qua, const ChVec3& _dir)
 	tmp = _qua * tmp * idn;
 
 	res = ChVec3(tmp.x, tmp.y, tmp.z);
-
-	return res;
-}
-
-ChVec3 ChQua::GetMulLHand(const ChQuaternion& _qua, const ChVec3& _dir)
-{
-	ChVec3 res = GetMulRHand(_qua,_dir);
-	res.z = -res.z;
 
 	return res;
 }

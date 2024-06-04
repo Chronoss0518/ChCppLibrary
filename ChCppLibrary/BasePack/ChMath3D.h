@@ -824,9 +824,7 @@ public:
 
 	static ChQuaternion GetMul(const ChQuaternion& _qua1, const ChQuaternion& _qua2);
 
-	static ChVec3 GetMulRHand(const ChQuaternion& _qua, const ChVec3& _dir);
-
-	static ChVec3 GetMulLHand(const ChQuaternion& _qua, const ChVec3& _dir);
+	static ChVec3 GetMul(const ChQuaternion& _qua, const ChVec3& _dir);
 
 public:
 	
@@ -834,9 +832,7 @@ public:
 
 	void Mul(const ChQuaternion& _value);
 
-	ChVec3 MulRHand(const ChVec3& _dir);
-
-	ChVec3 MulLHand(const ChVec3& _dir);
+	ChVec3 Mul(const ChVec3& _dir);
 
 public:
 

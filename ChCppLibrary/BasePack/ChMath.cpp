@@ -20,7 +20,6 @@ double ChMath::Round(const double& _val, const unsigned int _digit)
 	out = std::round(out);
 	out = out * std::powl(0.1, static_cast<double>(_digit - 1));
 
-
 	return out;
 
 }
