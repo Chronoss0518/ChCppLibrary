@@ -1453,7 +1453,7 @@ ChEularZYX ChQua::GetEularRotationZYX(const unsigned long _digit)const
 {
 	ChEularZYX res;
 
-	res.y = std::asinf((2.0f * x * z - 2.0f * y * w));
+	res.y = std::asinf(-(2.0f * x * z - 2.0f * y * w));
 
 	float ww = 2.0f * w * w;
 
@@ -1463,12 +1463,12 @@ ChEularZYX ChQua::GetEularRotationZYX(const unsigned long _digit)const
 	if (FLOAT_ZERO_TEST(std::cosf(res.y), 0.000001f))
 	{
 		res.x = 0.0f;
-		res.z = std::atanf((xy - zw) / (ww + 2.0f * y * y - 1.0f));
+		res.z = std::atanf(-(xy - zw) / (ww + 2.0f * y * y - 1.0f));
 	}
 	else
 	{
-		res.x = std::atanf(-(2.0f * x * y + 2.0f * z * w) / (ww + 2.0f * y * y - 1.0f));
-		res.z = std::atanf(-(xy + zw) / (ww + 2.0f * z * z - 1.0f));
+		res.x = std::atanf((2.0f * y *z + 2.0f * x * w) / (ww + 2.0f * z * z - 1.0f));
+		res.z = std::atanf((xy + zw) / (ww + 2.0f * x * x - 1.0f));
 	}
 
 	return res;
