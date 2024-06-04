@@ -792,17 +792,17 @@ public://Get Method//
 
 	ChVec3 GetAxis()const;
 
-	ChEularXYZ GetEularRotationXYZ(const unsigned long _digit = 6)const;
+	ChEularXYZ GetEulerRotationXYZ(const unsigned long _digit = 6)const;
 
-	ChEularXZY GetEularRotationXZY(const unsigned long _digit = 6)const;
+	ChEularXZY GetEulerRotationXZY(const unsigned long _digit = 6)const;
 
-	ChEularYXZ GetEularRotationYXZ(const unsigned long _digit = 6)const;
+	ChEularYXZ GetEulerRotationYXZ(const unsigned long _digit = 6)const;
 
-	ChEularYZX GetEularRotationYZX(const unsigned long _digit = 6)const;
+	ChEularYZX GetEulerRotationYZX(const unsigned long _digit = 6)const;
 
-	ChEularZXY GetEularRotationZXY(const unsigned long _digit = 6)const;
+	ChEularZXY GetEulerRotationZXY(const unsigned long _digit = 6)const;
 
-	ChEularZYX GetEularRotationZYX(const unsigned long _digit = 6)const;
+	ChEularZYX GetEulerRotationZYX(const unsigned long _digit = 6)const;
 
 	float GetRadian()const;
 
@@ -1008,17 +1008,17 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 
 	ChQua GetRotation(const unsigned long _digit = 6)const;
 
-	ChEularXYZ GetEularRotationXYZ(const unsigned long _digit = 6)const;
+	ChEularXYZ GetEulerRotationXYZ(const unsigned long _digit = 6)const;
 
-	ChEularXZY GetEularRotationXZY(const unsigned long _digit = 6)const;
+	ChEularXZY GetEulerRotationXZY(const unsigned long _digit = 6)const;
 
-	ChEularYXZ GetEularRotationYXZ(const unsigned long _digit = 6)const;
+	ChEularYXZ GetEulerRotationYXZ(const unsigned long _digit = 6)const;
 
-	ChEularYZX GetEularRotationYZX(const unsigned long _digit = 6)const;
+	ChEularYZX GetEulerRotationYZX(const unsigned long _digit = 6)const;
 
-	ChEularZXY GetEularRotationZXY(const unsigned long _digit = 6)const;
+	ChEularZXY GetEulerRotationZXY(const unsigned long _digit = 6)const;
 
-	ChEularZYX GetEularRotationZYX(const unsigned long _digit = 6)const;
+	ChEularZYX GetEulerRotationZYX(const unsigned long _digit = 6)const;
 
 	ChVec3 GetScalling(const unsigned long _digit = 6)const;
 

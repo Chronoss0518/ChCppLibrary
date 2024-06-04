@@ -1324,7 +1324,7 @@ ChVec3 ChQua::GetAxis()const
 
 }
 
-ChEularXYZ ChQua::GetEularRotationXYZ(const unsigned long _digit)const
+ChEularXYZ ChQua::GetEulerRotationXYZ(const unsigned long _digit)const
 {
 	ChEularXYZ res;
 
@@ -1349,7 +1349,7 @@ ChEularXYZ ChQua::GetEularRotationXYZ(const unsigned long _digit)const
 	return res;
 }
 
-ChEularXZY ChQua::GetEularRotationXZY(const unsigned long _digit)const
+ChEularXZY ChQua::GetEulerRotationXZY(const unsigned long _digit)const
 {
 	ChEularXZY res;
 
@@ -1374,7 +1374,7 @@ ChEularXZY ChQua::GetEularRotationXZY(const unsigned long _digit)const
 	return res;
 }
 
-ChEularYXZ ChQua::GetEularRotationYXZ(const unsigned long _digit)const
+ChEularYXZ ChQua::GetEulerRotationYXZ(const unsigned long _digit)const
 {
 	ChEularYXZ res;
 
@@ -1399,7 +1399,7 @@ ChEularYXZ ChQua::GetEularRotationYXZ(const unsigned long _digit)const
 	return res;
 }
 
-ChEularYZX ChQua::GetEularRotationYZX(const unsigned long _digit)const
+ChEularYZX ChQua::GetEulerRotationYZX(const unsigned long _digit)const
 {
 	ChEularYZX res;
 
@@ -1424,7 +1424,7 @@ ChEularYZX ChQua::GetEularRotationYZX(const unsigned long _digit)const
 	return res;
 }
 
-ChEularZXY ChQua::GetEularRotationZXY(const unsigned long _digit)const
+ChEularZXY ChQua::GetEulerRotationZXY(const unsigned long _digit)const
 {
 	ChEularZXY res;
 
@@ -1449,7 +1449,7 @@ ChEularZXY ChQua::GetEularRotationZXY(const unsigned long _digit)const
 	return res;
 }
 
-ChEularZYX ChQua::GetEularRotationZYX(const unsigned long _digit)const
+ChEularZYX ChQua::GetEulerRotationZYX(const unsigned long _digit)const
 {
 	ChEularZYX res;
 
@@ -1825,7 +1825,7 @@ ChQua ChLMatrix::GetRotation(const unsigned long _digit)const
 
 }
 
-ChEularXYZ ChLMatrix::GetEularRotationXYZ(const unsigned long _digit)const
+ChEularXYZ ChLMatrix::GetEulerRotationXYZ(const unsigned long _digit)const
 {
 	ChEularXYZ res;
 	ChMath::BaseMatrix3x3<float> outM;
@@ -1845,7 +1845,7 @@ ChEularXYZ ChLMatrix::GetEularRotationXYZ(const unsigned long _digit)const
 	return res;
 }
 
-ChEularXZY ChLMatrix::GetEularRotationXZY(const unsigned long _digit)const
+ChEularXZY ChLMatrix::GetEulerRotationXZY(const unsigned long _digit)const
 {
 	ChEularXZY res;
 	ChMath::BaseMatrix3x3<float> outM;
@@ -1865,7 +1865,7 @@ ChEularXZY ChLMatrix::GetEularRotationXZY(const unsigned long _digit)const
 	return res;
 }
 
-ChEularYXZ ChLMatrix::GetEularRotationYXZ(const unsigned long _digit)const
+ChEularYXZ ChLMatrix::GetEulerRotationYXZ(const unsigned long _digit)const
 {
 	ChEularYXZ res;
 
@@ -1886,7 +1886,7 @@ ChEularYXZ ChLMatrix::GetEularRotationYXZ(const unsigned long _digit)const
 	return res;
 }
 
-ChEularYZX ChLMatrix::GetEularRotationYZX(const unsigned long _digit)const
+ChEularYZX ChLMatrix::GetEulerRotationYZX(const unsigned long _digit)const
 {
 	ChEularYZX res;
 
@@ -1907,7 +1907,7 @@ ChEularYZX ChLMatrix::GetEularRotationYZX(const unsigned long _digit)const
 	return res;
 }
 
-ChEularZXY ChLMatrix::GetEularRotationZXY(const unsigned long _digit)const
+ChEularZXY ChLMatrix::GetEulerRotationZXY(const unsigned long _digit)const
 {
 	ChEularZXY res;
 	ChMath::BaseMatrix3x3<float> outM;
@@ -1927,7 +1927,7 @@ ChEularZXY ChLMatrix::GetEularRotationZXY(const unsigned long _digit)const
 	return res;
 }
 
-ChEularZYX ChLMatrix::GetEularRotationZYX(const unsigned long _digit)const
+ChEularZYX ChLMatrix::GetEulerRotationZYX(const unsigned long _digit)const
 {
 	ChEularZYX res;
 	ChMath::BaseMatrix3x3<float> outM;
