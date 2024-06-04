@@ -1362,13 +1362,13 @@ ChEularXZY ChQua::GetEularRotationXZY(const unsigned long _digit)const
 
 	if (FLOAT_ZERO_TEST(std::cosf(res.x), 0.000001f))
 	{
-		res.x = std::atanf((yz - xw) / (ww + 2.0f * z * z - 1.0f));
+		res.x = std::atanf(-(yz - xw) / (ww + 2.0f * z * z - 1.0f));
 		res.y = 0.0f;
 	}
 	else
 	{
-		res.x = std::atanf(-(yz + xw) / (ww + 2.0f * y * y - 1.0f));
-		res.y = std::atanf(-(2.0f * x * z + 2.0f * y * w) / (ww + 2.0f * x * x - 1.0f));
+		res.x = std::atanf((yz + xw) / (ww + 2.0f * y * y - 1.0f));
+		res.y = std::atanf((2.0f * x * z + 2.0f * y * w) / (ww + 2.0f * x * x - 1.0f));
 	}
 
 	return res;
