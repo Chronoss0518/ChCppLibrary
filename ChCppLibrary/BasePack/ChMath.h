@@ -1273,39 +1273,36 @@ namespace ChMath
 		{
 			if(Row != Column)return *this;
 
-			if (GetLen() == static_cast<T>(0.0f))return *this;
-
-			MatrixBase tmpMat = *this;
+			T detVal = GetLen();
+			if (detVal == static_cast<T>(0.0f))return *this;
+			detVal = static_cast<T>(1.0f) / detVal;
 
 			MatrixBase out;
+			bool findColFlg = false;
+			bool findRowFlg = false;
 
-			for (unsigned long i = 0; i < Column; i++)
+			MatrixBase<T, 3, 3>massMat;
+
+			for (unsigned long col = 0; col < Column; col++)
 			{
 
-				T basicNum = tmpMat.m[i][i];
-				VectorBase<T, Row> basicOutVec = out.m[i];
-				VectorBase<T, Row> subVec = tmpMat.m[i];
-				out.m[i] /= basicNum;
-				tmpMat.m[i] /= basicNum;
-
-				for (unsigned long j = 0; j < Row; j++)
+				for (unsigned long row = 0; row < Row; row++)
 				{
-					if (i == j)continue;
+					findColFlg = false;
+					for (unsigned long massCol = 0; massCol < Column - 1; massCol++)
+					{
+						findRowFlg = false;
+						findColFlg = massCol == col ? true : findColFlg;
+						for (unsigned long massRow = 0; massRow < Row - 1; massRow++)
+						{
+							findRowFlg = massRow == row ? true : findRowFlg;
+							massMat[massRow][massCol] = m[findRowFlg ? massRow + 1 : massRow][findColFlg ? massCol + 1 : massCol];
 
-					T num = tmpMat.m[j][i];
+						}
 
-					if (num == static_cast<T>(0.0f))continue;
-
-					num = num /basicNum;
-
-					VectorBase<T, Row> tmpVec;
-
-					tmpVec = basicOutVec * num;
-
-					out.m[j] -= tmpVec;
-
-					tmpVec = subVec * num;
-					tmpMat.m[j] -= tmpVec;
+					}
+					out[col][row] = massMat.GetLen() / detVal;
+					if ((row + col) % 2 == 1)out[col][row] *= static_cast<T>(-1.0f);
 
 				}
 
