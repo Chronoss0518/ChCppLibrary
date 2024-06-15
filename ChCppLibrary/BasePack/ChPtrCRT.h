@@ -69,29 +69,6 @@ namespace ChPtr
 		return (_ptr);
 	}
 
-	//クラスがNULLまたはnullptrかをチェックする関数//
-	template<class C>
-	static inline auto NullCheck(const C _class) -> typename
-		std::enable_if<std::is_pointer<C>::value, bool>::type
-	{
-		if (_class == NULL) return true;
-		if (_class == nullptr)return true;
-		return false;
-	}
-
-	//クラスがNULLとnullptrのどちらでもないかをチェックする関数//
-	template<class C>
-	static inline auto NotNullCheck(const C _class) -> typename
-		std::enable_if<std::is_pointer<C>::value, bool>::type
-	{
-		if (_class != NULL)
-		{
-			if (_class != nullptr)return true;
-		}
-
-		return false;
-	}
-
 	//make_sharedを短縮するための関数//
 	template<class T, class... _Types>
 	static inline Shared<T> Make_S(_Types&&... _args)
@@ -112,6 +89,7 @@ namespace ChPtr
 	{
 		return std::move<T>(_obj);
 	}
+
 
 	///////////////////////////////////////////////////////////////////////////////////////
 }
