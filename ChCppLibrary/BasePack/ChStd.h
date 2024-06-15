@@ -1,26 +1,28 @@
 #ifndef Ch_CPP_Std_h
 #define Ch_CPP_Std_h
 
-#include<vector>
-#include<map>
+#ifdef __cplusplus
+
+#endif
+
 
 //ChLibraryのベースとなる関数、変数群のまとまり//
 namespace ChStd
 {
 	//10進数//
-	const std::vector<char> DECIMAL_NUMBUR();
+	static const char* DECIMAL_NUMBUR = "0123456789";
 
 	//16進数//
-	const std::vector<char> HEXA_DECIMAL();
+	static const char* HEXA_DECIMAL = "0123456789ABCDEF";
 
 	//8進数//
-	const std::vector<char> OCTAL();
+	static const char* OCTAL = "01234567";
 
 	//2進数//
-	const std::vector<char> BINARY_NUMBER();
+	static const char* BINARY_NUMBER = "01";
 
 	//64進数//
-	const std::vector<char> BASE_NUMBER_64();
+	static const char* BASE_NUMBER_64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" "abcdefghijklmnopqrstuvwxyz" "0123456789+/";
 
 #ifdef WIN32
 	
@@ -49,14 +51,6 @@ namespace ChStd
 	constexpr static unsigned int W_MAX_INT_BIT = MAX_LONG_BIT;
 #endif
 
-	//EnumClassを基底型へキャストするためのクラス//
-	template<typename Enum>
-	constexpr static inline auto EnumCast(const Enum _enum)->typename std::enable_if
-		<std::is_enum<Enum>::value, typename std::underlying_type< Enum >::type>::type
-	{
-		return static_cast<typename std::underlying_type<Enum>::type>(_enum);
-	}
-
 	//指定したアドレス先を値0で初期化する//
 	template<class T>
 	static inline void MZero(T* _val)
@@ -83,7 +77,7 @@ namespace ChStd
 	}
 
 	template<typename Type>
-	static inline Type BinaryToNumWithLittleEndian(const std::vector<char>& _binary, unsigned long _filePos = 0)
+	static inline Type BinaryToNumWithLittleEndian(const char* _binary, unsigned long _filePos = 0)
 	{
 
 		Type Num = 0;
@@ -104,19 +98,19 @@ namespace ChStd
 	}
 
 	//10進数の数値を入れると指定した配列によって生成された進数表記で出力される//
-	std::vector<char> DecimalNumberToBaseNumber(const long _decimal, const std::vector<char>& _baseNumber = HEXA_DECIMAL());
+	char* DecimalNumberToBaseNumber(const long _decimal, const char* _baseNumber = HEXA_DECIMAL);
 
 	//指定した進数の配列を入れると10進数の数値が出力される//
-	long BaseNumberToDecimalNumber(const std::vector<char>& _decimal, const std::vector<char>& _baseNumber = HEXA_DECIMAL());
+	long BaseNumberToDecimalNumber(const char* _decimal, const char* _baseNumber = HEXA_DECIMAL);
 
 	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
-	std::vector<char> ToBaseNumber(const std::vector<char>& _baseNum, const std::vector<char>& _beforeBaseNumber = DECIMAL_NUMBUR(), const std::vector<char>& _afterBaseNumber = HEXA_DECIMAL());
+	char* ToBaseNumber(const char*& _baseNum, const char*& _beforeBaseNumber = DECIMAL_NUMBUR, const char* _afterBaseNumber = HEXA_DECIMAL);
 
 	//指定した新数の配列を入れるとその配列によって数値を置換できるかのテストを行う//
-	bool IsBaseNumbers(const std::vector<char>& _baseNum, const std::vector<char>& _beforeBaseNumber = DECIMAL_NUMBUR());
+	bool IsBaseNumbers(const char* _baseNum, const char* _beforeBaseNumber = DECIMAL_NUMBUR);
 
-	template<typename Type>
-	static inline Type BinaryToNumWithBigEndian(const std::vector<char>& _binary, unsigned long _filePos = 0)
+	template<typename Type,unsigned long ByteSize>
+	static inline Type BinaryToNumWithBigEndian(const char* _binary, unsigned long _filePos = 0)
 	{
 
 		Type Num = 0;
@@ -136,14 +130,6 @@ namespace ChStd
 
 		return Num;
 
-	}
-
-	template<typename Type>
-	static inline std::map<Type,unsigned long> CreateHuffmanTree(const std::vector<Type>& _binary)
-	{
-		std::map<Type, unsigned long>out;
-
-		return out;
 	}
 
 }
