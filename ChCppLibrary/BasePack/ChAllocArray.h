@@ -13,7 +13,64 @@ namespace ChArray
 	{
 	public:
 
+		AllocArray& operator=(const AllocArray& _array)
+		{
+			Set(_array);
+			return *this;
+		}
+
+		bool operator==(const AllocArray& _array)
+		{
+			return Is(_array);
+		}
+
+		bool operator!=(const AllocArray& _array)
+		{
+			return IsNot(_array);
+		}
+
+	public:
+
+		AllocArray(){}
+
+		AllocArray(const AllocArray& _array)
+		{
+			Set(_array);
+		}
+
 		~AllocArray() { Clear(); }
+
+	public:
+
+		void Set(const AllocArray& _array);
+
+		bool Is(const AllocArray& _array)
+		{
+			return &_array == this;
+		}
+
+		bool IsNot(const AllocArray& _array)
+		{
+			return &_array != this;
+		}
+
+		bool IsNotValue(const AllocArray& _array)
+		{
+			if (ArrayBase<T>::GetCount() != ArrayBase<T>::GetCount(_array))return true;
+
+			for (unsigned long i = 0; i < ArrayBase<T>::GetCount(); i++)
+			{
+				if (item[i] == _array.item[i])continue;
+				return true;
+			}
+
+			return false;
+		}
+
+		bool IsValue(const AllocArray& _array)
+		{
+			return !IsNot(_array);
+		}
 
 	public:
 
@@ -67,7 +124,7 @@ namespace ChArray
 
 	private:
 		
-		T* item;
+		T* item = nullptr;
 
 	};
 }

@@ -1,6 +1,7 @@
 #ifndef Ch_CPP_MappingArray_h
 #define Ch_CPP_MappingArray_h
 
+#include"ChPtr.h"
 #include"ChListArray.h"
 
 namespace ChArray
@@ -20,6 +21,24 @@ namespace ChArray
 	template<typename Key,typename Value>
 	class MappingArray: public ArrayBase<MappingArrayPair<Key,Value>>
 	{
+	public:
+
+		MappingArray& operator=(const MappingArray& _array)
+		{
+			Set(_array);
+			return *this;
+		}
+
+		bool operator==(const MappingArray& _array)
+		{
+			return Is(_array);
+		}
+
+		bool operator!=(const MappingArray& _array)
+		{
+			return IsNot(_array);
+		}
+
 	public://Operator Function//
 
 		inline Value& operator[](Key _key)
@@ -29,9 +48,49 @@ namespace ChArray
 
 	public:
 
+		MappingArray() {}
+
+		MappingArray(const MappingArray& _array)
+		{
+			Set(_array);
+		}
+
 		~MappingArray()
 		{
-			base.Clear();
+			Clear();
+		}
+
+	public:
+
+		void Set(const MappingArray& _array);
+
+		bool Is(const MappingArray& _array)
+		{
+			return &_array == this;
+		}
+
+		bool IsNot(const MappingArray& _array)
+		{
+			return &_array != this;
+		}
+
+		bool IsNotValue(const MappingArray& _array)
+		{
+			if (ArrayBase<MappingArrayPair<Key, Value>>::GetCount() != ArrayBase<MappingArrayPair<Key, Value>>::GetCount(_array))return true;
+
+			for (unsigned long i = 0; i < ArrayBase<MappingArrayPair<Key, Value>>::GetCount(); i++)
+			{
+				if (base[i].key == _array.base[i].key)continue;
+				if (base[i].value == _array.base[i].value)continue;
+				return true;
+			}
+
+			return false;
+		}
+
+		bool IsValue(const MappingArray& _array)
+		{
+			return !IsNot(_array);
 		}
 
 	public://Get Function//

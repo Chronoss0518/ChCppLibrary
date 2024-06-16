@@ -58,9 +58,74 @@ namespace ChArray
 	{
 	public:
 
+		ListArray& operator=(const ListArray& _array)
+		{
+			Set(_array);
+			return *this;
+		}
+
+		bool operator==(const ListArray& _array)
+		{
+			return Is(_array);
+		}
+
+		bool operator!=(const ListArray& _array)
+		{
+			return IsNot(_array);
+		}
+
+	public:
+
+		ListArray() {}
+
+		ListArray(const ListArray& _array)
+		{
+			Set(_array);
+		}
+
 		~ListArray()
 		{
 			Clear();
+		}
+
+	public:
+
+		void Set(const ListArray& _array);
+
+		bool Is(const ListArray& _array)
+		{
+			return &_array == this;
+		}
+
+		bool IsNot(const ListArray& _array)
+		{
+			return &_array != this;
+		}
+
+		bool IsNotValue(const ListArray& _array)
+		{
+			if (ArrayBase<T>::GetCount() != ArrayBase<T>::GetCount(_array))return true;
+
+			ListArrayItem<T>* thisItem = itemBegin;
+			ListArrayItem<T>* arrayItem = _array.itemBegin;
+
+			for (unsigned long i = 0; i < ArrayBase<T>::GetCount(); i++)
+			{
+				if (thisItem->GetItem() == arrayItem->GetItem())
+				{
+					thisItem = thisItem->GetNext();
+					arrayItem = arrayItem->GetNext();
+					continue;
+				}
+				return true;
+			}
+
+			return false;
+		}
+
+		bool IsValue(const ListArray& _array)
+		{
+			return !IsNot(_array);
 		}
 
 	public:

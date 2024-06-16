@@ -12,14 +12,77 @@ namespace ChArray
 	{
 	public:
 
+		FixedArray& operator=(const FixedArray& _array)
+		{
+			Set(_array);
+			return *this;
+		}
+
+		bool operator==(const FixedArray& _array)
+		{
+			return Is(_array);
+		}
+
+		bool operator!=(const FixedArray& _array)
+		{
+			return IsNot(_array);
+		}
+
+	public:
+
 		inline FixedArray()
 		{
 			ArrayBase<T>::SetCount(Array);
 		}
 
+		FixedArray(const FixedArray& _array)
+		{
+			if (this == &_array)return;
+			Set(_array);
+		}
+
 		inline ~FixedArray()
 		{
 			ArrayBase<T>::SetCount(0);
+		}
+
+	public:
+
+		void Set(const FixedArray& _array)
+		{
+			if (Is(_array))return;
+			for (unsigned long i = 0; i < Array; i++)
+			{
+				item[i] = _array.item[i];
+			}
+		}
+
+		bool Is(const FixedArray& _array)
+		{
+			return &_array == this;
+		}
+
+		bool IsNot(const FixedArray& _array)
+		{
+			return &_array != this;
+		}
+
+		bool IsNotValue(const FixedArray& _array)
+		{
+			if (ArrayBase<T>::GetCount() != ArrayBase<T>::GetCount(_array))return true;
+
+			for (unsigned long i = 0; i < ArrayBase<T>::GetCount(); i++)
+			{
+				if (item[i] == _array.item[i])continue;
+				return true;
+			}
+
+			return false;
+		}
+
+		bool IsValue(const FixedArray& _array)
+		{
+			return !IsNot(_array);
 		}
 
 	public:

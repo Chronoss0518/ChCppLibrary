@@ -98,6 +98,12 @@ namespace ChArray
 
 		inline unsigned long GetSize() { return itemCount; };
 
+		static inline unsigned long GetLength(const ArrayBase& _array) { return _array.itemCount; };
+
+		static inline unsigned long GetCount(const ArrayBase& _array) { return _array.itemCount; };
+
+		static inline unsigned long GetSize(const ArrayBase& _array) { return _array.itemCount; };
+
 	protected://Get Functions//
 
 		inline unsigned long GetItNum(const ArrayIterator<T>& _it)

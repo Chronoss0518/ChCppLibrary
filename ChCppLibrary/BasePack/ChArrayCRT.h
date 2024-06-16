@@ -1,12 +1,23 @@
 #ifndef Ch_CPP_Array_CRT_h
 #define Ch_CPP_Array_CRT_h
 
-#include<stdlib.h>
-#include"ChPtr.h"
 #include"ChListArray.h"
 #include"ChFixedArray.h"
 #include"ChAllocArray.h"
 #include"ChMappingArray.h"
+
+#include"ChPtrCRT.h"
+
+template<class T>
+void ChArray::ListArray<T>::Set(const ListArray<T>& _array)
+{
+	if (Is(_array))return;
+	Clear();
+	for (unsigned long i = 0;i< ArrayBase<T>::GetCount(_array);i++)
+	{
+		Push(_array.item[i]);
+	}
+}
 
 template<typename T>
 T& ChArray::ListArray<T>::InsertAdd(unsigned long _num)
@@ -100,6 +111,8 @@ void ChArray::ListArray<T>::Clear()
 		removeNextItem = tmp;
 	}
 
+	itemBegin = nullptr;
+
 	ArrayBase<T>::SetCount(0);
 }
 
@@ -119,6 +132,20 @@ ChArray::AllocArray<T> ChArray::ListArray <T>::ToAllocArray()
 	return res;
 }
 
+
+
+
+template<class T>
+void ChArray::AllocArray<T>::Set(const AllocArray& _array)
+{
+	if (Is(_array))return;
+	Clear();
+	for (unsigned long i = 0; i < ArrayBase<T>::GetCount(_array); i++)
+	{
+		Push(_array.item[i]);
+	}
+}
+
 template<typename T>
 T& ChArray::AllocArray<T>::InsertAdd(unsigned long _num)
 {
@@ -126,7 +153,7 @@ T& ChArray::AllocArray<T>::InsertAdd(unsigned long _num)
 
 	T* tmp = new T[count + 1];
 
-	bool findFlg;
+	bool findFlg  = false;
 	T* res = nullptr;
 
 	for (unsigned long i = 0; i < count; i++)
@@ -134,13 +161,17 @@ T& ChArray::AllocArray<T>::InsertAdd(unsigned long _num)
 		if (i == _num)
 		{
 			findFlg = true;
-			res = tmp[i];
+			res = (tmp + i);
 			continue;
 		}
 		tmp[findFlg ? (i + 1) : i] = item[i];
 	}
 
-	delete[] item;
+	if (!findFlg)
+	{
+		res = (tmp + count);
+	}
+	if(ChPtr::NotNullCheck(item))delete[] item;
 	item = tmp;
 
 	ArrayBase<T>::AddCount();
@@ -183,13 +214,18 @@ void ChArray::AllocArray<T>::Remove(unsigned long _num)
 
 	ArrayBase<T>::SubCount();
 
-	return *res;
+	return;
 }
 
 template<typename T>
 void ChArray::AllocArray<T>::Clear()
 {
-	delete[] item;
+	if (ChPtr::NotNullCheck(item))
+	{
+		delete[] item;
+		item = nullptr;
+	}
+
 	ArrayBase<T>::SetCount(0);
 }
 
@@ -227,6 +263,18 @@ ChArray::ListArray<T> ChArray::AllocArray <T>::ToListArray()
 	}
 
 	return res;
+}
+
+template<typename Key, typename Value>
+void ChArray::MappingArray<Key, Value>::Set(const MappingArray& _array)
+{
+	if (Is(_array))return;
+	Clear();
+	for (unsigned long i = 0; i < ArrayBase<MappingArrayPair<Key, Value>>::GetCount(_array.base); i++)
+	{
+		auto&& pair = FindFromKey(_array[i].base.key);
+		pair.value = base.value;
+	}
 }
 
 template<typename Key, typename Value>
