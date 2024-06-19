@@ -1,10 +1,7 @@
 #ifndef Ch_CPP_Std_h
 #define Ch_CPP_Std_h
 
-#ifdef __cplusplus
-
-#endif
-
+#include"ChStr.h"
 
 //ChLibraryのベースとなる関数、変数群のまとまり//
 namespace ChStd
@@ -79,11 +76,8 @@ namespace ChStd
 	template<typename Type>
 	static inline Type BinaryToNumWithLittleEndian(const char* _binary, unsigned long _filePos = 0)
 	{
-
 		Type Num = 0;
-
 		if (_filePos + sizeof(Type) >= _binary.size())return Num;
-
 		void* tmp = &Num;
 
 		for (unsigned long i = 0; i < sizeof(Type); i++)
@@ -94,17 +88,16 @@ namespace ChStd
 		}
 
 		return Num;
-
 	}
 
 	//10進数の数値を入れると指定した配列によって生成された進数表記で出力される//
-	char* DecimalNumberToBaseNumber(const long _decimal, const char* _baseNumber = HEXA_DECIMAL);
+	ChStr::BaseString<char> DecimalNumberToBaseNumber(const long _decimal, const char* _baseNumber = HEXA_DECIMAL);
 
 	//指定した進数の配列を入れると10進数の数値が出力される//
 	long BaseNumberToDecimalNumber(const char* _decimal, const char* _baseNumber = HEXA_DECIMAL);
 
 	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
-	char* ToBaseNumber(const char*& _baseNum, const char*& _beforeBaseNumber = DECIMAL_NUMBUR, const char* _afterBaseNumber = HEXA_DECIMAL);
+	ChStr::BaseString<char> ToBaseNumber(const char* _baseNum, const char* _beforeBaseNumber = DECIMAL_NUMBUR, const char* _afterBaseNumber = HEXA_DECIMAL);
 
 	//指定した新数の配列を入れるとその配列によって数値を置換できるかのテストを行う//
 	bool IsBaseNumbers(const char* _baseNum, const char* _beforeBaseNumber = DECIMAL_NUMBUR);
@@ -112,24 +105,18 @@ namespace ChStd
 	template<typename Type,unsigned long ByteSize>
 	static inline Type BinaryToNumWithBigEndian(const char* _binary, unsigned long _filePos = 0)
 	{
-
 		Type Num = 0;
-
 		if (_filePos + sizeof(Type) >= _binary.size())return Num;
-
 		void* tmp = &Num;
 
 		for (unsigned long i = sizeof(Type) - 1; i >= 0; i--)
 		{
 			auto& test = reinterpret_cast<char*>(tmp)[sizeof(Type) - i - 1];
-
 			test = (_binary[i + _filePos]);
-
 			if (i == 0)break;
 		}
 
 		return Num;
-
 	}
 
 }
