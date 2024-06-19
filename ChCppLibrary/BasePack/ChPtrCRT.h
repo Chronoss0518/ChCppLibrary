@@ -2,6 +2,7 @@
 #define Ch_CPP_PTR_CRT_h
 
 #include"ChPtr.h"
+#include<memory>
 
 template<typename T, class... _Types>
 T* ChPtr::Instantiate(_Types&&... _args)
@@ -18,7 +19,9 @@ T* ChPtr::InstantiateArray(unsigned long _num)
 template<typename T>
 void ChPtr::Release(T*& _release)
 {
+	if(NullCheck(_release))return;
 	delete[] _release;
+	_release = nullptr;
 }
 
 
@@ -90,8 +93,6 @@ namespace ChPtr
 		return std::move<T>(_obj);
 	}
 
-
-	///////////////////////////////////////////////////////////////////////////////////////
 }
 
 #endif

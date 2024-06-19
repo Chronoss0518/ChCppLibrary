@@ -8,7 +8,6 @@
 //ChLibraryで利用するポインタに対して利用する関数、変数群のまとまり//
 namespace ChPtr
 {
-
 	template<typename T, class... _Types>
 	T* Instantiate(_Types&&... _args);
 
@@ -22,21 +21,34 @@ namespace ChPtr
 	template<class C>
 	static inline bool NullCheck(const C _class)
 	{
-		if (_class == NULL) return true;
-		if (_class == nullptr)return true;
-		return false;
+		return (_class == NULL || _class == nullptr);
 	}
 
 	//クラスがNULLとnullptrのどちらでもないかをチェックする関数//
 	template<class C>
 	static inline bool NotNullCheck(const C _class)
 	{
-		if (_class != NULL)
-			if (_class != nullptr)return true;
-
-		return false;
+		return (_class != NULL && _class != nullptr);
 	}
 
+	template<class T>
+	class LibPtr
+	{
+	public:
+
+		
+
+	private:
+
+		unsigned long* count = nullptr;
+		T* ins;
+
+	};
+
+	template<typename T, class... _Types>
+	LibPtr<T> MakePtr(_Types&&... _args);
+
+	class LibNullPtr{};
 }
 
 #endif
