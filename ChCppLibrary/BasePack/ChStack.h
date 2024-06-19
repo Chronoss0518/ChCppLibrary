@@ -82,9 +82,9 @@ namespace ChArray
 
 	public://Get Function//
 
-		inline unsigned long GetMaxSize() { return MaxSize; }
+		inline unsigned long GetMaxSize() const { return MaxSize; }
 
-		inline unsigned long GetRegistCount() { return count; }
+		inline unsigned long GetRegistCount() const { return count; }
 
 	public://Item Controll Function//
 
