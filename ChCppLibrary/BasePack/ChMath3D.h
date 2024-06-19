@@ -26,11 +26,14 @@ struct ChUIMatrix;
 
 struct ChVector2 : public ChMath::Vector2Base<float>
 {
+public://Static Functions//
 
 	static ChVector2 FromPosition(const float& _x, const float& _y);
 	static ChVector2 FromSize(const float& _w, const float& _h);
 	static ChVector2 FromTime(const float& _start, const float& _end);
 	static ChVector2 FromHighLow(const float& _high, const float& _low);
+
+public://Operator Functions//
 
 	ChVector2& operator*=(const float& _num);
 	ChVector2 operator*(const float& _num) const;
@@ -66,8 +69,7 @@ struct ChVector2 : public ChMath::Vector2Base<float>
 
 	ChVector2& operator=(const D3DXVECTOR2&);
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//ConstructerDestructer//
+public://Constructor Destructor//
 
 	inline ChVector2()
 	{
@@ -79,8 +81,7 @@ struct ChVector2 : public ChMath::Vector2Base<float>
 		val.Set(_num);
 	}
 
-	inline ChVector2(
-		const float _x, const float _y)
+	inline ChVector2(const float _x, const float _y)
 	{
 		x = _x;
 		y = _y;
@@ -90,30 +91,29 @@ struct ChVector2 : public ChMath::Vector2Base<float>
 
 	inline ChVector2(const D3DXVECTOR2& _vec) { *this = _vec; }
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//SerializeDeserialize//
+public://Serialize Deserialize//
 
-	std::string Serialize(
-		const std::string& _cutChar = ","
-		, const std::string& _endChar = ";");
+	const char* Serialize(
+		const char* _cutChar = ",",
+		const char* _endChar = ";")const;
 
-	std::wstring Serialize(
-		const std::wstring& _cutChar = L","
-		, const std::wstring& _endChar = L";");
-
-	void Deserialize(
-		const std::string& _str
-		, const size_t _fPos = 0
-		, const std::string& _cutChar = ","
-		, const std::string& _endChar = ";"
-		, const unsigned int _digit = 6);
+	const wchar_t* Serialize(
+		const wchar_t* _cutChar = L",",
+		const wchar_t* _endChar = L";")const;
 
 	void Deserialize(
-		const std::wstring& _str
-		, const size_t _fPos = 0
-		, const std::wstring& _cutChar = L","
-		, const std::wstring& _endChar = L";"
-		, const unsigned int _digit = 6);
+		const char* _str,
+		const size_t _fPos = 0,
+		const char* _cutChar = ",",
+		const char* _endChar = ";",
+		const unsigned int _digit = 6);
+
+	void Deserialize(
+		const wchar_t* _str,
+		const size_t _fPos = 0,
+		const wchar_t* _cutChar = L",",
+		const wchar_t* _endChar = L";",
+		const unsigned int _digit = 6);
 
 public://Set Function//
 
@@ -159,19 +159,7 @@ public://Get Function//
 		const ChVector2& _vec1,
 		const ChVector2& _vec2);
 
-	///////////////////////////////////////////////////////////////////////////////////
-
-	inline float Len(const unsigned long _digit = 6) const
-	{
-		return GetLen(*this, ChVector2(),_digit);
-	}
-
-	inline float ElementsLen() const
-	{
-		return GetElementsLen(*this, ChVector2());
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////
+public://Other Functions//
 
 	inline void Abs()
 	{
@@ -183,37 +171,50 @@ public://Get Function//
 		val.Abs(_vec.val);
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////
+public:
+
+	inline float Len(const unsigned long _digit = 6) const
+	{
+		return GetLen(*this, ChVector2(),_digit);
+	}
+
+	inline float ElementsLen() const
+	{
+		return GetElementsLen(*this, ChVector2());
+	}
 
 	//ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
 	inline void Correction(
-		const ChVector2& _start, const ChVector2& _end, const float _Now)
+		const ChVector2& _start,
+		const ChVector2& _end,
+		const float _Now)
 	{
 		*this = GetCorrection(_start, _end, _Now);
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////
+	bool Normalize(const unsigned long _digit = 6)
+	{
+		return val.Normalize(_digit);
+}
 
-	bool Normalize(const unsigned long _digit = 6);
-
-	void ElementsNormalize();
-
-	///////////////////////////////////////////////////////////////////////////////////
+	void ElementsNormalize()
+	{
+		val.ElementsNormalize();
+	}
 
 	void Cross(
 		const ChVector2& _vec1, 
 		const ChVector2& _vec2,
-		const unsigned long _digit = 6);
+		const unsigned long _digit = 6)
+	{
+		*this = GetCross(_vec1, _vec2, _digit);
+	}
+
 
 	static ChVector2 Lerp(
-		const ChVector2& _start, 
-		const ChVector2& _end, 
-		const float _pow)
-	{
-		ChVector2 out;
-		out.val.Set(ChMath::VectorBase<float, 2>::Lerp(_start.val, _end.val, _pow));
-		return out;
-	}
+		const ChVector2& _start,
+		const ChVector2& _end,
+		const float _pow);
 
 };
 
@@ -221,9 +222,12 @@ using ChVec2 = ChVector2;
 
 struct ChVector3 : public ChMath::Vector3Base<float>
 {
+public://Static Functions//
 
 	static ChVector3 FromPosition(const float& _x, const float& _y, const float _z);
 	static ChVector3 FromColor(const float& _r, const float& _g, const float& _b);
+
+public://Operator Functions//
 
 	ChVector3& operator*=(const float& _num);
 	ChVector3 operator*(const float& _num) const;
@@ -269,8 +273,7 @@ struct ChVector3 : public ChMath::Vector3Base<float>
 	ChVector3& operator=(const D3DXMATRIX&);
 	ChVector3& operator=(const DirectX::XMFLOAT4X4&);
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//ConstructerDestructer//
+public://Constructor Destructor//
 
 	inline ChVector3()
 	{
@@ -301,30 +304,41 @@ struct ChVector3 : public ChMath::Vector3Base<float>
 	inline ChVector3(const D3DXMATRIX& _mat) { *this = _mat; }
 	inline ChVector3(const DirectX::XMFLOAT4X4& _mat) { *this = _mat; }
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//SerializeDeserialize//
+public://Serialize Deserialize//
 
-	std::string Serialize(
-		const std::string& _cutChar = ","
-		, const std::string& _endChar = ";");
+	inline const char* Serialize(
+		const char* _cutChar = ",",
+		const char* _endChar = ";")const
+	{
+		return val.Serialize(_cutChar, _endChar);
+	}
 
-	std::wstring Serialize(
-		const std::wstring& _cutChar = L","
-		, const std::wstring& _endChar = L";");
+	inline const wchar_t* Serialize(
+		const wchar_t* _cutChar = L",",
+		const wchar_t* _endChar = L";")const
+	{
+		return val.Serialize(_cutChar, _endChar);
+	}
 
-	void Deserialize(
-		const std::string& _str
-		, const size_t _fPos = 0
-		, const std::string& _cutChar = ","
-		, const std::string& _endChar = ";"
-		, const unsigned int _digit = 6);
+	inline void Deserialize(
+		const char* _str,
+		const size_t _fPos = 0,
+		const char* _cutChar = ",",
+		const char* _endChar = ";",
+		const unsigned int _digit = 6)
+	{
+		val.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
+	}
 
-	void Deserialize(
-		const std::wstring& _str
-		, const size_t _fPos = 0
-		, const std::wstring& _cutChar = L","
-		, const std::wstring& _endChar = L";"
-		, const unsigned int _digit = 6);
+	inline void Deserialize(
+		const wchar_t* _str,
+		const size_t _fPos = 0,
+		const wchar_t* _cutChar = L",",
+		const wchar_t* _endChar = L";",
+		const unsigned int _digit = 6)
+	{
+		val.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
+	}
 
 public://Set Function//
 
@@ -370,19 +384,7 @@ public://Get Function//
 		const ChVector3& _vec1,
 		const ChVector3& _vec2);
 
-	///////////////////////////////////////////////////////////////////////////////////
-
-	inline float Len(const unsigned long _digit = 6) const
-	{
-		return GetLen(*this, ChVector3(), _digit);
-	}
-
-	inline float ElementsLen()const
-	{
-		return GetElementsLen(*this, ChVector3());
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////
+public://Other Functions//
 
 	inline void Abs()
 	{
@@ -394,7 +396,17 @@ public://Get Function//
 		val.Abs(_vec.val);
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////
+public:
+
+	inline float Len(const unsigned long _digit = 6) const
+	{
+		return GetLen(*this, ChVector3(), _digit);
+	}
+
+	inline float ElementsLen()const
+	{
+		return GetElementsLen(*this, ChVector3());
+	}
 
 	inline float Dot(
 		const ChVector3& _vec,
@@ -403,28 +415,32 @@ public://Get Function//
 		return GetDot(*this, _vec, _digit);
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////
-
 	//ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
 	inline void Correction(
-		const ChVector3& _start, const ChVector3& _end, const float _Now)
+		const ChVector3& _start,
+		const ChVector3& _end,
+		const float _Now)
 	{
 		*this = GetCorrection(_start, _end, _Now);
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////
+	bool Normalize(const unsigned long _digit = 6)
+	{
+		return val.Normalize(_digit);
+	}
 
-	bool Normalize(
-		const unsigned long _digit = 6);
-
-	void ElementsNormalize();
-
-	///////////////////////////////////////////////////////////////////////////////////
+	void ElementsNormalize()
+	{
+		val.ElementsNormalize();
+	}
 
 	void Cross(
 		const ChVector3& _vec1,
 		const ChVector3& _vec2,
-		const unsigned long _digit = 6);
+		const unsigned long _digit = 6)
+	{
+		*this = GetCross(_vec1, _vec2, _digit);
+	}
 
 	static ChVector3 Lerp(
 		const ChVector3& _start,
@@ -446,17 +462,13 @@ using ChVec3 = ChVector3;
 
 struct ChVector4 : public ChMath::Vector4Base<float>
 {
-
-	///////////////////////////////////////////////////////////////////////////////////
-	//StaticFunction//
+public://Static Functions//
 
 	static ChVector4 FromPosition(const float& _x, const float& _y, const float _z, const float& _w);
 	static ChVector4 FromColor(const float& _r, const float& _g, const float& _b, const float& _a);
 	static ChVector4 FromRect(const float& _left, const float& _top, const float& _right, const float& _bottom);
 
-
-	///////////////////////////////////////////////////////////////////////////////////
-	//Operator//
+public://Operator Functions//
 
 	ChVector4& operator*=(const float& _num);
 	ChVector4 operator*(const float& _num) const;
@@ -492,8 +504,7 @@ struct ChVector4 : public ChMath::Vector4Base<float>
 
 	ChVector4& operator=(const D3DXVECTOR4&);
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//ConstructerDestructer//
+public://Constructor Destructor//
 
 	inline ChVector4()
 	{
@@ -518,52 +529,65 @@ struct ChVector4 : public ChMath::Vector4Base<float>
 
 	inline ChVector4(const D3DXVECTOR4& _vec) { *this = _vec; }
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//SerializeDeserialize//
+public://Serialize Deserialize//
 
-	std::string Serialize(
-		const std::string& _cutChar = ","
-		, const std::string& _endChar = ";");
+	inline const char* Serialize(
+		const char* _cutChar = ",",
+		const char* _endChar = ";")const
+	{
+		return val.Serialize(_cutChar, _endChar);
+	}
 
-	std::wstring Serialize(
-		const std::wstring& _cutChar = L","
-		, const std::wstring& _endChar = L";");
+	inline const wchar_t* Serialize(
+		const wchar_t* _cutChar = L",",
+		const wchar_t* _endChar = L";")const
+	{
+		return val.Serialize(_cutChar, _endChar);
+	}
 
-	std::string SerializeARGB(
-		const std::string& _cutChar = ","
-		, const std::string& _endChar = ";");
+	const char* SerializeARGB(
+		const char* _cutChar = ",",
+		const char* _endChar = ";")const;
 
-	std::wstring SerializeARGB(
-		const std::wstring& _cutChar = L","
-		, const std::wstring& _endChar = L";");
+	const wchar_t* SerializeARGB(
+		const wchar_t* _cutChar = L",",
+		const wchar_t* _endChar = L";")const;
 
-	void Deserialize(
-		const std::string& _str
-		, const size_t _fPos = 0
-		, const std::string& _cutChar = ","
-		, const std::string& _endChar = ";"
-		, const unsigned int _digit = 6);
+	inline void Deserialize(
+		const char* _str,
+		const size_t _fPos = 0,
+		const char* _cutChar = ",",
+		const char* _endChar = ";",
+		const unsigned int _digit = 6)
+	{
+		val.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
+	}
 
-	void Deserialize(
-		const std::wstring& _str
-		, const size_t _fPos = 0
-		, const std::wstring& _cutChar = L","
-		, const std::wstring& _endChar = L";"
-		, const unsigned int _digit = 6);
+	inline void Deserialize(
+		const wchar_t* _str,
+		const size_t _fPos = 0,
+		const wchar_t* _cutChar = L",",
+		const wchar_t* _endChar = L";",
+		const unsigned int _digit = 6)
+	{
+		val.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
+	}
 
 	void DeserializeARGB(
-		const std::string& _str
-		, const size_t _fPos = 0
-		, const std::string& _cutChar = ","
-		, const std::string& _endChar = ";"
-		, const unsigned int _digit = 6);
+		const char* _str,
+		const size_t _fPos = 0,
+		const char* _cutChar = ",",
+		const char* _endChar = ";",
+		const unsigned int _digit = 6);
 
 	void DeserializeARGB(
-		const std::wstring& _str
-		, const size_t _fPos = 0
-		, const std::wstring& _cutChar = L","
-		, const std::wstring& _endChar = L";"
-		, const unsigned int _digit = 6);
+		const wchar_t* _str,
+		const size_t _fPos = 0,
+		const wchar_t* _cutChar = L",",
+		const wchar_t* _endChar = L";",
+		const unsigned int _digit = 6);
+
+public:
 
 	inline void WParamSaturate()
 	{
@@ -579,54 +603,69 @@ public://Set Function//
 
 public://Get Function//
 
-	static ChVector4 GetCross(
+	inline static ChVector4 GetCross(
 		const ChVector4& _vec1,
 		const ChVector4& _vec2,
-		const unsigned long _digit = 6);
+		const unsigned long _digit = 6)
+	{
+		ChVector4 tmpVec;
+		tmpVec.val.Cross(_vec1.val, _vec2.val, _digit);
+		return tmpVec;
+	}
 
 	static float GetCos(
 		const ChVector4& _vec1,
 		const ChVector4& _vec2,
-		const unsigned long _digit = 6);
+		const unsigned long _digit = 6)
+	{
+		return _vec1.val.GetCos(_vec2.val, _digit);
+	}
 
 	static float GetRadian(
 		const ChVector4& _vec1,
 		const ChVector4& _vec2,
-		const unsigned long _digit = 6);
+		const unsigned long _digit = 6)
+	{
+		return _vec1.val.GetRadian(_vec2.val, _digit);
+	}
 
 	static float GetDot(
 		const ChVector4& _vec1,
 		const ChVector4& _vec2,
-		const unsigned long _digit = 6);
+		const unsigned long _digit = 6)
+	{
+		return _vec1.val.GetDot(_vec2.val, _digit);
+	}
 
 	//ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
 	static ChVector4 GetCorrection(
 		const ChVector4& _start,
 		const ChVector4& _end,
-		const float _Now);
+		const float _Now)
+	{
+		ChVector4 tmpVec;
+		tmpVec.val.Correction(_start.val, _end.val, _Now);
+		return tmpVec;
+	}
 
 	static float GetLen(
 		const ChVector4& _vec1,
 		const ChVector4& _vec2,
-		const unsigned long _digit = 6);
+		const unsigned long _digit = 6)
+	{
+		ChVector4 tmpVec = _vec1 - _vec2;
+		return  tmpVec.val.GetLen(_digit);
+	}
 
 	static float GetElementsLen(
 		const ChVector4& _vec1,
-		const ChVector4& _vec2);
-
-	///////////////////////////////////////////////////////////////////////////////////
-
-	inline float Len(const unsigned long _digit = 6) const
+		const ChVector4& _vec2)
 	{
-		return GetLen(*this, ChVector4(), _digit);
+		ChVector4 tmpVec = _vec1 - _vec2;
+		return  tmpVec.val.GetElementsLen();
 	}
 
-	inline float ElementsLen()const
-	{
-		return GetElementsLen(*this, ChVector4());
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////
+public://Other Functions//
 
 	inline void Abs()
 	{
@@ -638,7 +677,17 @@ public://Get Function//
 		val.Abs(_vec.val);
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////
+public:
+
+	inline float Len(const unsigned long _digit = 6) const
+	{
+		return GetLen(*this, ChVector4(), _digit);
+	}
+
+	inline float ElementsLen()const
+	{
+		return GetElementsLen(*this, ChVector4());
+	}
 
 	//ï‚ê≥ÇçsÇ§(NowÇÕ0Å`1)
 	inline void Correction(
@@ -649,18 +698,23 @@ public://Get Function//
 		*this = GetCorrection(_start, _end, _Now);
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////
-
-	bool Normalize(const unsigned long _digit = 6);
-
-	void ElementsNormalize();
-
-	///////////////////////////////////////////////////////////////////////////////////
+	inline bool Normalize(const unsigned long _digit = 6)
+	{
+		return val.Normalize(_digit);
+	}
 
 	void Cross(
 		const ChVector4& _vec1,
 		const ChVector4& _vec2,
-		const unsigned long _digit = 6);
+		const unsigned long _digit = 6)
+	{
+		val.Cross(_vec1.val, _vec2.val, _digit);
+	}
+
+	void ElementsNormalize()
+	{
+		val.ElementsNormalize();
+	}
 
 	static ChVector4 Lerp(
 		const ChVector4& _start,
@@ -688,6 +742,7 @@ struct ChRMatrix;
 
 struct ChQuaternion : public ChMath::QuaternionBase<float>
 {
+public://Operator Functions//
 
 	ChQuaternion& operator=(const ChQuaternion& _qua);
 
@@ -712,15 +767,14 @@ struct ChQuaternion : public ChMath::QuaternionBase<float>
 	ChQuaternion& operator=(const D3DXMATRIX&);
 	ChQuaternion& operator=(const DirectX::XMFLOAT4X4&);
 
-public:
+public://Constructor Destructor//
 
 	inline ChQuaternion()
 	{
 		Identity();
 	}
 
-	inline ChQuaternion(
-		const float _x, const float _y, const float _z)
+	inline ChQuaternion(const float _x, const float _y, const float _z)
 	{
 		x = _x;
 		y = _y;
@@ -744,31 +798,43 @@ public:
 	inline ChQuaternion(const DirectX::XMFLOAT4X4& _mat) { *this = _mat; }
 #endif
 
-public:
+public://Serialize Deserialize//
 
-	std::string Serialize(
-		const std::string& _cutChar = ","
-		, const std::string& _endChar = ";");
+	inline const char* Serialize(
+		const char* _cutChar = ",",
+		const char* _endChar = ";")const
+	{
+		return val.Serialize(_cutChar, _endChar);
+	}
 
-	std::wstring Serialize(
-		const std::wstring& _cutChar = L","
-		, const std::wstring& _endChar = L";");
+	inline const wchar_t* Serialize(
+		const wchar_t* _cutChar = L",",
+		const wchar_t* _endChar = L";")const
+	{
+		return val.Serialize(_cutChar, _endChar);
+	}
 
-	void Deserialize(
-		const std::string& _str
-		, const size_t _fPos = 0
-		, const std::string& _cutChar = ","
-		, const std::string& _endChar = ";"
-		, const unsigned int _digit = 6);
+	inline void Deserialize(
+		const char* _str,
+		const size_t _fPos = 0,
+		const char* _cutChar = ",",
+		const char* _endChar = ";",
+		const unsigned int _digit = 6)
+	{
+		val.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
+	}
 
-	void Deserialize(
-		const std::wstring& _str
-		, const size_t _fPos = 0
-		, const std::wstring& _cutChar = L","
-		, const std::wstring& _endChar = L";"
-		, const unsigned int _digit = 6);
+	inline void Deserialize(
+		const wchar_t* _str,
+		const size_t _fPos = 0,
+		const wchar_t* _cutChar = L",",
+		const wchar_t* _endChar = L";",
+		const unsigned int _digit = 6)
+	{
+		val.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
+	}
 
-public://Sed Method//
+public://Sed Functions//
 	
 	void SetRotationLMatrix(const ChLMatrix& _mat);
 
@@ -784,7 +850,7 @@ public://Sed Method//
 
 	void SetRotation(const ChVec3& _from, const ChVec3& _to);
 
-public://Get Method//
+public://Get Functions//
 
 	ChLMatrix GetRotationLMatrix(const unsigned long _digit = 6)const;
 
@@ -810,7 +876,13 @@ public://Get Method//
 
 	float GetSin()const;
 
-public:
+	static ChQuaternion GetSum(const ChQuaternion& _qua1, const ChQuaternion& _qua2);
+
+	static ChQuaternion GetMul(const ChQuaternion& _qua1, const ChQuaternion& _qua2);
+
+	static ChVec3 GetMul(const ChQuaternion& _qua, const ChVec3& _dir);
+
+public://Add Functions//
 
 	void AddRotationXAxis(float _x);
 
@@ -818,15 +890,7 @@ public:
 
 	void AddRotationZAxis(float _z);
 
-public:
-
-	static ChQuaternion GetSum(const ChQuaternion& _qua1, const ChQuaternion& _qua2);
-
-	static ChQuaternion GetMul(const ChQuaternion& _qua1, const ChQuaternion& _qua2);
-
-	static ChVec3 GetMul(const ChQuaternion& _qua, const ChVec3& _dir);
-
-public:
+public://Operator Math Functions//
 	
 	void Sum(const ChQuaternion& _value);
 
@@ -834,11 +898,9 @@ public:
 
 	ChVec3 Mul(const ChVec3& _dir);
 
-public:
+public://Other Functions//
 
 	static ChQuaternion SLerp(const ChQuaternion& _start, const ChQuaternion& _end, const float _pow);
-
-public:
 
 	void Identity()
 	{
@@ -847,8 +909,6 @@ public:
 		z = 0.0f;
 		w = 1.0f;
 	}
-
-	///////////////////////////////////////////////////////////////////////////////////
 
 	void Inverse()
 	{
@@ -865,8 +925,7 @@ using ChQua = ChQuaternion;
 //LeftHandAxisMatrix//
 struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 {
-	///////////////////////////////////////////////////////////////////////////////////
-	//Operator//
+public://Operator Functions//
 
 	ChLMatrix& operator =(const ChLMatrix& _mat);
 
@@ -900,8 +959,7 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 	ChLMatrix& operator=(const D3DXMATRIX&);
 	ChLMatrix& operator=(const DirectX::XMFLOAT4X4&);
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//ConstructerDestructer//
+public://Constructor Destructor//
 
 	inline ChLMatrix()
 	{
@@ -919,61 +977,59 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 	inline ChLMatrix(const D3DXMATRIX& _mat) { *this = _mat; }
 	inline ChLMatrix(const DirectX::XMFLOAT4X4& _mat) { *this = _mat; }
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//SerializeDeserialize//
+public://Serialize Deserialize//
 
-	inline std::string Serialize(
-		const std::string& _cutChar = ","
-		, const std::string& _endChar = ";")
+	inline const char* Serialize(
+		const char* _cutChar = ",",
+		const char* _endChar = ";")const
 	{
 		return m.Serialize(_cutChar);
 	}
 
-	inline std::wstring Serialize(
-		const std::wstring& _cutChar = L","
-		, const std::wstring& _endChar = L";")
+	inline const wchar_t* Serialize(
+		const wchar_t* _cutChar = L",",
+		const wchar_t* _endChar = L";")const
 	{
 		return m.Serialize(_cutChar);
 	}
 
-	inline std::string SerializeUpper(
-		const std::string& _cutChar = ","
-		, const std::string& _endChar = ";"
-		, const std::string& _cutTo4Char = "\n")
+	inline const char* SerializeUpper(
+		const char* _cutChar = ",",
+		const char* _endChar = ";",
+		const char* _cutTo4Char = "\n")const
 	{
 		return m.SerializeUpper(_cutChar, _endChar, _cutTo4Char);
 	}
 
-	inline std::wstring SerializeUpper(
-		const std::wstring& _cutChar = L","
-		, const std::wstring& _endChar = L";"
-		, const std::wstring& _cutTo4Char = L"\n")
+	inline const wchar_t* SerializeUpper(
+		const wchar_t* _cutChar = L",",
+		const wchar_t* _endChar = L";",
+		const wchar_t* _cutTo4Char = L"\n")const
 	{
 		return m.SerializeUpper(_cutChar, _endChar, _cutTo4Char);
 	}
 
 	inline void Deserialize(
-		const std::string& _str
-		, const size_t _fPos = 0
-		, const std::string& _cutChar = ","
-		, const std::string& _endChar = ";"
-		, const unsigned int _digit = 6)
+		const char* _str,
+		const size_t _fPos = 0,
+		const char* _cutChar = ",",
+		const char* _endChar = ";",
+		const unsigned int _digit = 6)
 	{
 		m.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
 	}
 
 	inline void Deserialize(
-		const std::wstring& _str
-		, const size_t _fPos = 0
-		, const std::wstring& _cutChar = L","
-		, const std::wstring& _endChar = L";"
-		, const unsigned int _digit = 6)
+		const wchar_t* _str,
+		const size_t _fPos = 0,
+		const wchar_t* _cutChar = L",",
+		const wchar_t* _endChar = L";",
+		const unsigned int _digit = 6)
 	{
 		m.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//SetFunction//
+public://Set Functions//
 
 	void SetPosition(const ChVec3& _vec);
 
@@ -1001,8 +1057,7 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 		const float _z,
 		const unsigned long _digit = 6);
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//GetFunction//
+public://Get Functions//
 
 	ChVec3 GetPosition()const;
 
@@ -1028,20 +1083,18 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 
 	ChVec3 GetZAxisDirection()const;
 
-	///////////////////////////////////////////////////////////////////////////////////
+public://Transform Functions//
 
 	ChVec4 Transform(const ChVec4& _Base)const;
 
 	ChVec4 TransformCoord(const ChVec4& _Base)const;
 
-	///////////////////////////////////////////////////////////////////////////////////
+public://Other Functions//
 
 	void Identity()
 	{
 		m.Identity();
 	}
-
-	///////////////////////////////////////////////////////////////////////////////////
 
 	void Inverse()
 	{
@@ -1058,16 +1111,15 @@ struct ChLMatrix : public ChMath::BaseMatrix4x4<float>
 		return out;
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////
-
 	ChRMatrix ConvertAxis();
-
 };
 
 
 //RightHandAxisMatrix//
 struct ChRMatrix : public ChMath::BaseMatrix4x4<float>
 {
+public://Operator Functions//
+
 	ChRMatrix& operator =(const ChRMatrix& _mat);
 
 	ChRMatrix& operator += (const ChRMatrix& _mat);
@@ -1085,8 +1137,7 @@ struct ChRMatrix : public ChMath::BaseMatrix4x4<float>
 	bool operator == (const ChRMatrix& _mat)const;
 	bool operator != (const ChRMatrix& _mat)const;
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//ConstructerDestructer//
+public://Constructor Destructor//
 
 	inline ChRMatrix()
 	{
@@ -1095,61 +1146,59 @@ struct ChRMatrix : public ChMath::BaseMatrix4x4<float>
 
 	inline ChRMatrix(const ChRMatrix& _mat) { m.Set(_mat.m); }
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//SerializeDeserialize//
+public://Serialize Deserialize//
 
-	inline std::string Serialize(
-		const std::string& _cutChar = ","
-		, const std::string& _endChar = ";")
+	inline const char* Serialize(
+		const char* _cutChar = ",",
+		const char* _endChar = ";")const
 	{
 		return m.Serialize(_cutChar);
 	}
 
-	inline std::wstring Serialize(
-		const std::wstring& _cutChar = L","
-		, const std::wstring& _endChar = L";")
+	inline const wchar_t* Serialize(
+		const wchar_t* _cutChar = L",",
+		const wchar_t* _endChar = L";")const
 	{
 		return m.Serialize(_cutChar);
 	}
 
-	inline std::string SerializeUpper(
-		const std::string& _cutChar = ","
-		, const std::string& _endChar = ";"
-		, const std::string& _cutTo4Char = "\n")
+	inline const char* SerializeUpper(
+		const char* _cutChar = ",",
+		const char* _endChar = ";",
+		const char* _cutTo4Char = "\n")const
 	{
 		return m.SerializeUpper(_cutChar, _endChar, _cutTo4Char);
 	}
 
-	inline std::wstring SerializeUpper(
-		const std::wstring& _cutChar = L","
-		, const std::wstring& _endChar = L";"
-		, const std::wstring& _cutTo4Char = L"\n")
+	inline const wchar_t* SerializeUpper(
+		const wchar_t* _cutChar = L",",
+		const wchar_t* _endChar = L";",
+		const wchar_t* _cutTo4Char = L"\n")const
 	{
 		return m.SerializeUpper(_cutChar, _endChar, _cutTo4Char);
 	}
 
 	inline void Deserialize(
-		const std::string& _str
-		, const size_t _fPos = 0
-		, const std::string& _cutChar = ","
-		, const std::string& _endChar = ";"
-		, const unsigned int _digit = 6)
+		const char* _str,
+		const size_t _fPos = 0,
+		const char* _cutChar = ",",
+		const char* _endChar = ";",
+		const unsigned int _digit = 6)
 	{
 		m.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
 	}
 
 	inline void Deserialize(
-		const std::wstring& _str
-		, const size_t _fPos = 0
-		, const std::wstring& _cutChar = L","
-		, const std::wstring& _endChar = L";"
-		, const unsigned int _digit = 6)
+		const wchar_t* _str,
+		const size_t _fPos = 0,
+		const wchar_t* _cutChar = L",",
+		const wchar_t* _endChar = L";",
+		const unsigned int _digit = 6)
 	{
 		m.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//SetFunction//
+public://Set Functions//
 
 	void SetPosition(const ChVec3& _vec);
 
@@ -1173,8 +1222,7 @@ struct ChRMatrix : public ChMath::BaseMatrix4x4<float>
 		const float _z,
 		const unsigned long _digit = 6);
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//GetFunction//
+public://Get Functions//
 
 	ChVec3 GetPosition()const;
 
@@ -1186,20 +1234,18 @@ struct ChRMatrix : public ChMath::BaseMatrix4x4<float>
 
 	ChVec3 GetZAxisDirection()const;
 
-	///////////////////////////////////////////////////////////////////////////////////
+public://Transform Functions//
 
 	ChVec4 Transform(const ChVec4 _Base)const;
 
 	ChVec4 TransformCoord(const ChVec4 _Base)const;
 
-	///////////////////////////////////////////////////////////////////////////////////
+public://Other Functions//
 
 	void Identity()
 	{
 		m.Identity();
 	}
-
-	///////////////////////////////////////////////////////////////////////////////////
 
 	void Inverse()
 	{
@@ -1216,10 +1262,7 @@ struct ChRMatrix : public ChMath::BaseMatrix4x4<float>
 		return out;
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////
-
 	ChLMatrix ConvertAxis()const;
-
 };
 
 using ChRMat = ChRMatrix;
@@ -1227,13 +1270,11 @@ using ChLMat = ChLMatrix;
 
 struct ChUIMatrix : public ChMath::BaseMatrix4x4<unsigned long>
 {
-	///////////////////////////////////////////////////////////////////////////////////
-	//Operator//
+public://Operator Functions//
 
 	ChUIMatrix& operator =(const ChUIMatrix _mat);
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//ConstructerDestructer//
+public://Constructor Destructor//
 
 	inline ChUIMatrix()
 	{
@@ -1242,26 +1283,55 @@ struct ChUIMatrix : public ChMath::BaseMatrix4x4<unsigned long>
 
 	inline ChUIMatrix(const ChUIMatrix& _mat) { m.Set(_mat.m); }
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//SerializeDeserialize//
+public://Serialize Deserialize//
 
-	std::string Serialize(
-		const std::string& _cutChar = ","
-		, const std::string& _endChar = ";");
+	inline const char* Serialize(
+		const char* _cutChar = ",",
+		const char* _endChar = ";")const
+	{
+		return m.Serialize(_cutChar, _endChar);
+	}
 
-	std::string SerializeUpper(
-		const std::string& _cutChar = ","
-		, const std::string& _endChar = ";"
-		, const std::string& _cutTo4Char = "\n");
+	inline const char* SerializeUpper(
+		const char* _cutChar = ",",
+		const char* _endChar = ";",
+		const char* _cutTo4Char = "\n")const
+	{
+		return m.SerializeUpper(_cutChar, _endChar, _cutTo4Char);
+	}
 
-	void Deserialize(
-		const std::string& _str
-		, const size_t _fPos = 0
-		, const std::string& _cutChar = ","
-		, const std::string& _endChar = ";");
+	inline void Deserialize(
+		const char* _str,
+		const size_t _fPos = 0,
+		const char* _cutChar = ",",
+		const char* _endChar = ";")
+	{
+		m.Deserialize(_str, _fPos, _cutChar, _endChar);
+	}
 
-	///////////////////////////////////////////////////////////////////////////////////
+	inline const wchar_t* Serialize(
+		const wchar_t* _cutChar = L",",
+		const wchar_t* _endChar = L";")const
+	{
+		return m.Serialize(_cutChar, _endChar);
+	}
 
+	inline const wchar_t* SerializeUpper(
+		const wchar_t* _cutChar = L",",
+		const wchar_t* _endChar = L";",
+		const wchar_t* _cutTo4Char = L"\n")const
+	{
+		return m.SerializeUpper(_cutChar, _endChar, _cutTo4Char);
+	}
+
+	inline void Deserialize(
+		const wchar_t* _str,
+		const size_t _fPos = 0,
+		const wchar_t* _cutChar = L",",
+		const wchar_t* _endChar = L";")
+	{
+		m.Deserialize(_str, _fPos, _cutChar, _endChar);
+	}
 };
 
 using ChUIMat = ChUIMatrix;
@@ -1276,10 +1346,10 @@ namespace ChMath
 		const unsigned long _digit = 6);
 
 	//RadianäpÇ©ÇÁDegreeäpÇ÷//
-	static inline float ToDegree(const float _Radian) { return (_Radian * 180.0f / PI); }
+	static constexpr inline float ToDegree(const float _Radian) { return (_Radian * 180.0f / PI); }
 
 	//DegreeäpÇ©ÇÁRadianäpÇ÷//
-	static inline float ToRadian(const float _degree) { return (_degree * PI / 180.0f); }
+	static constexpr inline float ToRadian(const float _degree) { return (_degree * PI / 180.0f); }
 
 	//ê≥ÇÃïÑçÜÇ©Ç«Ç§Ç©ÇämîFÇ∑ÇÈ//
 	static inline bool IsPSign(const int _val) { return _val >= 0.0f; }

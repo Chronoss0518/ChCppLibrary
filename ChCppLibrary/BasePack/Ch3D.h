@@ -1,10 +1,11 @@
 #ifndef Ch_CPP_3D_h
 #define Ch_CPP_3D_h
 
-#include<string>
-#include<vector>
+#include"ChPtr.h"
 #include"ChMath.h"
 #include"ChMath3D.h"
+#include"ChMappingArray.h"
+#include"ChAllocArray.h"
 
 namespace Ch3D
 {
@@ -144,8 +145,8 @@ namespace Ch3D
 	struct MaterialData
 	{
 		Material mate;
-		std::string mateName;
-		std::map<TextureType, std::string>textures;
+		char* mateName = nullptr;
+		ChArray::MappingArray<TextureType, char*>textures;
 	};
 
 	struct Transform
@@ -182,7 +183,7 @@ namespace Ch3D
 	//Material‚É‘Î‰‚·‚é–Ê‚ğŠÇ—‚·‚é//
 	struct Primitive:public FaceNormal
 	{
-		std::vector<ChPtr::Shared<SavePolyData>> vertexData;
+		ChArray::AllocArray<ChPtr::Shared<SavePolyData>> vertexData;
 		unsigned long mateNo;
 	};
 

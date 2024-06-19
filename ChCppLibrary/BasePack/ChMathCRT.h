@@ -14,7 +14,8 @@
 #include <string>
 #include <cassert>
 #include <locale>
-#include"ChStr.h"
+
+#include"ChStrCRT.h"
 
 double ChMath::Round(const double& _val, const unsigned int _digit)
 {
