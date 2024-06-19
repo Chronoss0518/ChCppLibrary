@@ -69,7 +69,7 @@ namespace ChArray
 
 		bool IsNotValue(const FixedArray& _array)
 		{
-			if (ArrayBase<T>::GetCount() != ArrayBase<T>::GetCount(_array))return true;
+			if (GetCount() != _array.GetCount())return true;
 
 			for (unsigned long i = 0; i < ArrayBase<T>::GetCount(); i++)
 			{
@@ -93,6 +93,12 @@ namespace ChArray
 			if (Array - 1<= num)num = Array - 1;
 			return item[num];
 		}
+
+		inline unsigned long GetLength()const { return ArrayBase<T>::GetLength(); };
+
+		inline unsigned long GetCount()const { return ArrayBase<T>::GetCount(); };
+
+		inline unsigned long GetSize()const { return ArrayBase<T>::GetSize(); };
 
 	private:
 

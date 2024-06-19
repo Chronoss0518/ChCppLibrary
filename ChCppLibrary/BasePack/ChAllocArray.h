@@ -8,6 +8,7 @@ namespace ChArray
 	template<typename T>
 	class ListArray;
 
+	//“®“I‚ÉˆêŠ‡‚Åƒƒ‚ƒŠ‚ğŠm•Û‚·‚é‰Â•Ï’·”z—ñ//
 	template<typename T>
 	class AllocArray :public VLArrayBase<T>
 	{
@@ -74,10 +75,16 @@ namespace ChArray
 
 	public:
 
+		inline unsigned long GetLength()const { return ArrayBase<T>::GetLength(); };
+
+		inline unsigned long GetCount() const { return ArrayBase<T>::GetCount(); };
+
+		inline unsigned long GetSize()const { return ArrayBase<T>::GetSize(); };
+
 		inline T& GetItem(unsigned long _num)override
 		{
 			unsigned long num = _num;
-			if (ArrayBase<T>::GetCount() - 1 <= num)num = ArrayBase<T>::GetCount() - 1;
+			if (GetCount() - 1 <= num)num = GetCount() - 1;
 			return *(item + num);
 		}
 

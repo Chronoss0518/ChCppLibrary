@@ -144,6 +144,12 @@ namespace ChArray
 			return *res;
 		}
 
+		inline unsigned long GetLength()const { return ArrayBase<T>::GetLength(); };
+
+		inline unsigned long GetCount()const { return ArrayBase<T>::GetCount(); };
+
+		inline unsigned long GetSize() const { return ArrayBase<T>::GetSize(); };
+
 	public:
 
 		void Push(const T& _pushItem)override

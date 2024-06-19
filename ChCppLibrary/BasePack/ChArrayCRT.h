@@ -232,7 +232,7 @@ void ChArray::AllocArray<T>::Clear()
 template<typename T>
 void ChArray::AllocArray<T>::ReSize(unsigned long _newArraySize)
 {
-	unsigned long loopCount = ArrayBase<T>::GetCount();
+	unsigned long loopCount = GetCount();
 
 	if (_newArraySize == loopCount)return;
 

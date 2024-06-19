@@ -92,11 +92,11 @@ namespace ChArray
 		//_num の値が配列の長さを超える場合は配列の最後の値を取得します。// 
 		virtual T& GetItem(unsigned long _num) = 0;
 
-		inline unsigned long GetLength() { return itemCount; };
+		inline unsigned long GetLength()const { return itemCount; };
 
-		inline unsigned long GetCount() { return itemCount; };
+		inline unsigned long GetCount()const { return itemCount; };
 
-		inline unsigned long GetSize() { return itemCount; };
+		inline unsigned long GetSize() const { return itemCount; };
 
 		static inline unsigned long GetLength(const ArrayBase& _array) { return _array.itemCount; };
 

@@ -18,6 +18,7 @@ namespace ChArray
 		Value value;
 	};
 
+	//map”z—ñ//
 	template<typename Key,typename Value>
 	class MappingArray: public ArrayBase<MappingArrayPair<Key,Value>>
 	{
@@ -102,6 +103,12 @@ namespace ChArray
 			unsigned long startNum = 0;
 			return base[_num];
 		}
+
+		inline unsigned long GetLength()const { return base.GetLength(); };
+
+		inline unsigned long GetCount()const { return base.GetCount(); };
+
+		inline unsigned long GetSize() const { return base.GetSize(); };
 
 	public://Find Function//
 
