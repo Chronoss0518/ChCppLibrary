@@ -1,23 +1,208 @@
 #ifndef Ch_CPP_Str_h
 #define Ch_CPP_Str_h
 
+#include"ChPtr.h"
+#include"ChAllocArray.h"
+
+
 namespace ChStr
 {
 
-	///////////////////////////////////////////////////////////////////////////////////
+	template<typename CharaType = char>
+	class BaseString
+	{
+	public:
+
+		BaseString& operator=(const BaseString& _str) { Set(_str); return *this; }
+
+		BaseString& operator += (const BaseString& _str) { Add(_str); return *this; }
+
+		BaseString operator + (const BaseString& _str)const 
+		{
+			BaseString res = *this;
+			res.Add(_str);
+			return res;
+		}
+
+		BaseString& operator += (const CharaType _str) { Add(&_str); return *this; }
+
+		BaseString operator + (const CharaType _str)const 
+		{
+			BaseString res = *this;
+			res.Add(_str);
+			return res;
+		}
+
+		CharaType operator[](unsigned long _num) 
+		{
+			if (_num >= GetLength())return 0;
+			return str[_num];
+		}
+
+		const CharaType operator[](unsigned long _num)const
+		{
+			if (_num >= GetLength())return 0;
+			return str[_num];
+		}
+
+		operator const CharaType* () const { return GetCStr(); }
+
+	public:
+
+		BaseString() { Set(static_cast<CharaType>(0)); }
+
+		BaseString(const CharaType* _char) { Set(_char); }
+
+		BaseString(const CharaType _char) { Set(&_char); }
+
+		BaseString(const BaseString& _str) { Set(_str); }
+
+		~BaseString() { Release(); }
+
+	private:
+
+		void Release();
+
+	public:
+
+		void Set(const CharaType* _char);
+
+		void Set(const BaseString& _str)
+		{
+			Set(_str.str);
+		}
+
+		inline void Set(const CharaType _char) { Set(&_char); }
+
+		void Add(const BaseString& _str);
+
+		inline void Add(const CharaType _char) { Add(&_char); }
+
+	public:
+
+		unsigned long GetLength()const;
+
+		inline const CharaType* const GetCStr()const { return str; }
+
+	public:
+
+		long Find(
+			const BaseString& _str,
+			unsigned long _start = 0)
+		{
+			if (GetLength() <= 0)return -1;
+			if (_str.GetLength() <= 0)return -1;
+			if (GetLength() - _start < _str.GetLength())return -1;
+
+			bool findFlg = true;
+
+			for (unsigned long i = _start; i < GetLength() - _str.GetLength() + 1; i++)
+			{
+				findFlg = true;
+				for (unsigned long j = 0; j < _str.GetLength(); j++)
+				{
+					if (_str.str[j] == str[i + j])continue;
+					findFlg = false;
+
+				}
+				if (findFlg)
+					return i;
+			}
+
+			return -1;
+		}
+
+		long Find(
+			CharaType _char,
+			unsigned long _start = 0) { Find(&_char, _start); }
+
+		long FindFromLast(
+			const BaseString& _str,
+			unsigned long _start = 0)
+		{
+			if (GetLength() <= 0)return -1;
+			if (_str.GetLength() <= 0)return -1;
+			if (_start >= GetLength())_start = GetLength();
+			if (GetLength() < _str.GetLength())return -1;
+
+			bool findFlg = true;
+
+			for (unsigned long i = _start; i < GetLength(); i++)
+			{
+				findFlg = true;
+				for (unsigned long j = 0; j < _str.GetLength(); j++)
+				{
+					if (_str.str[j] == str[GetLength() - i - j])continue;
+					findFlg = false;
+
+				}
+				if (!findFlg)continue;
+				return GetLength() - i - _start;
+			}
+
+			return -1;
+		}
+
+		unsigned long FindFromLast(
+			CharaType _char,
+			unsigned long _start = 0)
+		{
+			FindFromLast(&_char, _start);
+		}
+
+	public:
+
+		void Replace(
+			const BaseString _before,
+			const BaseString _after,
+			unsigned long _start = 0);
+
+	public:
+
+		BaseString SubStr(unsigned long _start, unsigned long _count)
+		{
+			if (GetLength() <= 0)return "";
+			if (_start >= GetLength())return "";
+			if (static_cast<unsigned long long>(_start) + static_cast<unsigned long long>(_count) >= static_cast<unsigned long long>(GetLength()))return &str[_start];
+
+			BaseString res = &str[_start];
+			res.ReSize(_count);
+
+			return res;
+		}
+
+	public:
+
+		ChArray::AllocArray<BaseString> Split(const CharaType _str)
+		{
+			return Split(&_str);
+		}
+
+		ChArray::AllocArray<BaseString> Split(const BaseString _str);
+
+
+	public:
+
+		void ReSize(unsigned long _value);
+
+	private:
+
+		CharaType* str = nullptr;
+	};
 
 	//文字列をバイナリデータにして//
 	//整数型に変換する//
-	template<typename T>
+	template<typename T, typename CharType>
 	static inline void StrBinaryToNum(
 		T& _setData
-		, const char* const _str
+		, const BaseString<CharType>& _str
 		, const size_t& _sPos = 0)
 	{
+		
 		_setData = 0;
 		for (unsigned char i = 0; i < sizeof(T); i++)
 		{
-			if (_str[_sPos + i] == '\0')break;
+			if (_str[_sPos + i] == 0)break;
 
 			unsigned char Test = _str[_sPos + i];
 			if (Test <= 0)continue;
@@ -26,87 +211,45 @@ namespace ChStr
 
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////
-
 	//クラス名を取得する関数//
-	template<class T = int>
-	static inline std::string GetTypeName()
-	{
-		std::string tmpStr = typeid(T).name();
+	template<typename CharaType, class T>
+	static inline BaseString<CharaType> GetTypeName();
 
-
-		size_t tmp = tmpStr.find(" ");
-		if (tmp == std::string::npos)tmp = 0;
-		else tmp += 1;
-
-		return &tmpStr[tmp];
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////
-
+	template<typename CharType>
 	//文字の置き換え//
-	std::string StrReplase(
-		const std::string& _base
-		, const std::string _before
-		, const std::string _after = "");
-
-	///////////////////////////////////////////////////////////////////////////////////
+	BaseString<CharType> StrReplase(
+		const BaseString<CharType>& _base,
+		const BaseString<CharType>& _before,
+		const BaseString<CharType>& _after = "");
 
 	//空文字を取り除く//
-	std::string RemoveToWhiteSpaceChars(const std::string& _str);
-
-	//空文字を取り除く//
-	std::wstring RemoveToWhiteSpaceChars(const std::wstring& _str);
-
-	///////////////////////////////////////////////////////////////////////////////////
+	template<typename CharType>
+	BaseString<CharType> RemoveToWhiteSpaceChars(const BaseString<CharType>& _str);
 
 	//指定した文字を取り除く//
-	std::string RemoveToChars(const std::string& _str, const char _rempveChars);
-
-	//指定した文字を取り除く//
-	std::wstring RemoveToChars(const std::wstring& _str, const wchar_t _rempveChars);
-
-	///////////////////////////////////////////////////////////////////////////////////
+	template<typename CharType>
+	BaseString<CharType> RemoveToChars(const BaseString<CharType> _str, const BaseString<CharType> _rempveChars);
 
 	//数値に変換可能な文字以外の文字を取り除く//
-	std::string RemoveToUnNums(const std::string& _str);
-
-	//数値に変換可能な文字以外の文字を取り除く//
-	std::wstring RemoveToUnNums(const std::wstring& _str);
-
-	///////////////////////////////////////////////////////////////////////////////////
+	template<typename CharType>
+	BaseString<CharType> RemoveToUnNums(const BaseString<CharType> _str);
 
 	//対象の文字で区切り配列にする//
-	std::vector<std::string> Split(const std::string& _str,const std::string& _splitChar);
-
-	//対象の文字で区切り配列にする//
-	std::vector<std::wstring> Split(const std::wstring& _str, const std::wstring& _splitChar);
-
-	///////////////////////////////////////////////////////////////////////////////////
+	template<typename CharType>
+	ChArray::AllocArray<BaseString<CharType>> Split(const CharType* _str, const CharType* _splitChar);
 
 	//指定されたコード値の範囲の文字のみを返す//
-	std::string GetCharsToRangeCode(
-		const std::string& _str
-		, const char _min
-		, const char _max);
+	template<typename CharType>
+	BaseString<CharType> GetCharsToRangeCode(
+		const BaseString<CharType> _str,
+		const CharType _min,
+		const CharType _max);
 
-	//指定されたコード値の範囲の文字のみを返す//
-	std::wstring GetCharsToRangeCode(
-		const std::wstring& _str
-		, const wchar_t _min
-		, const wchar_t _max);
-
-	///////////////////////////////////////////////////////////////////////////////////
-
-	template<typename BaseType>
-	inline auto GetIntegialFromText(
-		const std::string& _text
+	template<typename BaseType, typename CharType>
+	inline BaseType GetIntegialFromText(
+		const BaseString<CharType> _text
 		, const size_t& _startPos = 0
-		, const size_t& _endPos = std::string::npos)
-		->typename std::enable_if<
-		std::is_integral<BaseType>::value
-		&& !std::is_same<bool, BaseType>::value, BaseType>::type
-
+		, const size_t& _endPos = -1)
 	{
 		size_t endPos = _endPos;
 
@@ -124,19 +267,13 @@ namespace ChStr
 		long long tmp = std::stoll(useText.c_str());
 
 		return static_cast<BaseType>(tmp);
-
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////
-
-	template<typename BaseType>
-	inline auto GetFloatingFromText(
-		const std::string& _text
+	template<typename BaseType, typename CharType>
+	inline BaseType GetFloatingFromText(
+		const CharType* _text
 		, const size_t& _startPos = 0
-		, const size_t& _endPos = std::string::npos)
-		->typename std::enable_if<
-		std::is_floating_point<BaseType>::value, BaseType>::type
-
+		, const size_t& _endPos = -1)
 	{
 		size_t endPos = _endPos;
 
@@ -156,83 +293,7 @@ namespace ChStr
 		return static_cast<BaseType>(tmp);
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////
 
-	template<typename BaseType>
-	inline auto GetIntegialFromText(
-		const std::wstring& _text
-		, const size_t& _startPos = 0
-		, const size_t& _endPos = std::wstring::npos)
-		->typename std::enable_if<
-		std::is_integral<BaseType>::value
-		&& !std::is_same<bool, BaseType>::value, BaseType>::type
-
-	{
-
-
-		size_t endPos = _endPos;
-
-		if (_text.size() <= endPos)
-		{
-			endPos = _text.size();
-		}
-
-		std::wstring useText = _text.substr(_startPos, endPos - _startPos);
-
-		useText = RemoveToUnNums(useText);
-
-		if (useText.empty())return static_cast<BaseType>(0);
-
-		long long tmp = std::stoll(useText.c_str());
-
-		return static_cast<BaseType>(tmp);
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////
-
-	template<typename BaseType>
-	inline auto GetFloatingFromText(
-		const std::wstring& _text
-		, const size_t& _startPos = 0
-		, const size_t& _endPos = std::wstring::npos)
-		->typename std::enable_if<
-		std::is_floating_point<BaseType>::value, BaseType>::type
-
-	{
-		size_t endPos = _endPos;
-
-		if (_text.size() <= endPos)
-		{
-			endPos = _text.size();
-		}
-
-		std::wstring useText = _text.substr(_startPos, endPos - _startPos);
-
-		useText = RemoveToUnNums(useText);
-
-		if (useText.empty())return static_cast<BaseType>(0.0);
-
-		double tmp = std::stof(useText.c_str());
-
-		return static_cast<BaseType>(tmp);
-
-	}
-
-	using ConvertUTF8 = std::codecvt_utf8<wchar_t>;
-	using ConvertUTF16 = std::codecvt_utf16<wchar_t>;
-
-	//文字列からUTF8のワイド文字列へ変換する//
-	std::wstring UTF8ToWString(const std::string& _str);
-
-	//ワイド文字列から文字列へ変換する//
-	std::string UTF8ToString(const std::wstring& _str);
-
-	//文字列からUTF16のワイド文字列へ変換する//
-	std::wstring UTF16ToWString(const std::string& _str);
-
-	//ワイド文字列から文字列へ変換する//
-	std::string UTF16ToString(const std::wstring& _str);
-	
 }
 
 
