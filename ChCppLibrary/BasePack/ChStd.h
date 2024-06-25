@@ -69,7 +69,6 @@ static auto Function ()->typename std::enable_if<std::is_same< Type ,CharaType>:
 #endif
 
 #ifdef CRT
-
 #ifndef CPP20
 #ifndef TO_NUMBER_TEXT_FUNCTION
 #define TO_NUMBER_TEXT_FUNCTION(FunctionDefine,ToDefine)\
@@ -77,10 +76,8 @@ FunctionDefine(char) { return ToDefine(""); }\
 FunctionDefine(wchar_t) { return ToDefine(L); }\
 FunctionDefine(char16_t) { return ToDefine(u); }\
 FunctionDefine(char32_t) { return ToDefine(U); }
-
-#endif
-#else CPP20
-#ifndef TO_NUMBER_FUNCTION
+#endif //TO_NUMBER_TEXT_FUNCTION//
+#else //CPP20//
 #ifndef TO_NUMBER_TEXT_FUNCTION
 #define TO_NUMBER_TEXT_FUNCTION(FunctionDefine,ToDefine)\
 FunctionDefine(char) { return ToDefine(""); }\
@@ -88,9 +85,9 @@ FunctionDefine(wchar_t) { return ToDefine(L); }\
 FunctionDefine(char16_t) { return ToDefine(u); }\
 FunctionDefine(char32_t) { return ToDefine(U); }\
 FunctionDefine(char8_t) { return ToDefine(u8); }
-#endif
-#endif
-#endif
+#endif //TO_NUMBER_TEXT_FUNCTION//
+#endif //CPP20//
+#endif //CRT//
 
 #ifdef CRT
 
@@ -103,7 +100,7 @@ FunctionDefine(char16_t) { return TO_CHAR16(Chara); }\
 FunctionDefine(char32_t) { return TO_CHAR32(Chara); }
 #endif
 
-#else CPP20
+#else
 #ifndef TO_NUMBER_FUNCTION
 #define TO_NUMBER_FUNCTION(FunctionDefine,Chara)\
 FunctionDefine(char) { return TO_CHAR(Chara); }\
@@ -212,6 +209,83 @@ namespace ChStd
 	constexpr static unsigned int W_MAX_INT_BIT = MAX_SHORT_BIT;
 #else
 	constexpr static unsigned int W_MAX_INT_BIT = MAX_LONG_BIT;
+#endif
+
+
+#ifdef CRT
+
+	template<typename OutType>
+	inline auto GetAllOneBit()
+		->typename std::enable_if<
+		std::is_same<OutType, signed char>::value ||
+		std::is_same<OutType, unsigned char>::value,
+		OutType>::type
+	{
+		return 0xff;
+	}
+
+	template<typename OutType>
+	inline auto GetAllOneBit()
+		-> typename std::enable_if<
+		std::is_same<OutType, signed short>::value ||
+		std::is_same<OutType, unsigned short>::value,
+		OutType>::type
+	{
+		return 0xffff;
+	}
+
+#ifdef _M_IX86
+
+	template<typename OutType>
+	inline auto GetAllOneBit()
+		-> typename std::enable_if<
+		std::is_same<OutType, signed int>::value ||
+		std::is_same<OutType, unsigned int>::value,
+		OutType>::type
+	{
+		return 0xffffffff;
+	}
+
+#else
+
+	template<typename OutType>
+	inline auto GetAllOneBit()
+		-> typename std::enable_if<
+		std::is_same<OutType, signed int>::value ||
+		std::is_same<OutType, unsigned int>::value,
+		OutType>::type
+	{
+		return 0xffffffff;
+	}
+
+#endif
+
+#ifdef _M_IX86
+
+	template<typename OutType>
+	inline auto GetAllOneBit()
+		-> typename std::enable_if<
+		std::is_same<OutType, signed long>::value ||
+		std::is_same<OutType, unsigned long>::value,
+		OutType>::type
+	{
+		return 0xffffffff; 
+	}
+
+#else
+
+	template<typename OutType>
+	inline auto GetAllOneBit()
+		-> typename std::enable_if<
+		std::is_same<OutType, signed long>::value ||
+		std::is_same<OutType, unsigned long>::value,
+		OutType>::type
+	{
+		return 0xffffffffffffffff;
+	}
+
+#endif
+
 #endif
 
 #ifdef CRT
