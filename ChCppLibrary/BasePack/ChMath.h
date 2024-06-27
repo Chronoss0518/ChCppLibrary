@@ -4,6 +4,11 @@
 #include"ChStd.h"
 #include"ChStr.h"
 
+#ifdef CRT
+#include <float.h>
+#include <cmath>
+#endif
+
 #ifndef CRLF_CHARA_FUNCTION
 #define CRLF_CHARA_FUNCTION(type) NUMBER_FUNCTION_BASE(GetCRLFChara,type)
 #endif
@@ -82,39 +87,65 @@ namespace ChMath
 
 	float SqrtEx(const float& _base, const unsigned long _digit = 37);
 
-#ifdef CRT
 	template<typename Floating>
+#ifdef CRT
 	Floating GetSin(Floating _val)
 	{
 		return std::sin(_val);
 	}
 #else
-	template<typename Floating>
 	Floating GetSin(Floating _val);
 #endif
 
-#ifdef CRT
 	template<typename Floating>
+#ifdef CRT
+	Floating GetASin(Floating _val)
+	{
+		return std::asin(_val);
+	}
+#else
+	Floating GetASin(Floating _val);
+#endif
+
+	template<typename Floating>
+#ifdef CRT
 	Floating GetACos(Floating _val)
 	{
 		return std::acos(_val);
 	}
 #else
-	template<typename Floating>
 	Floating GetACos(Floating _val);
 #endif
 
-#ifdef CRT
 	template<typename Floating>
+#ifdef CRT
 	Floating GetCos(Floating _val)
 	{
 		return std::cos(_val);
 	}
 #else
-	template<typename Floating>
 	Floating GetCos(Floating _val);
 #endif
 
+	template<typename Floating>
+#ifdef CRT
+	Floating GetATan(Floating _val)
+	{
+		return std::atanf(_val);
+	}
+#else
+	Floating GetATan(Floating _val);
+#endif
+
+	template<typename Floating>
+#ifdef CRT
+	Floating GetFMod(Floating _valx, Floating _valy)
+	{
+		return std::fmod(_valx, _valy);
+	}
+#else
+	Floating GetFMod(Floating _valx, Floating _valy);
+#endif
 
 
 	//2ÇÃïΩï˚ç™(óLå¯åÖêî8åÖ)//
@@ -507,7 +538,6 @@ namespace ChMath
 
 			l = SqrtEx(l);
 			Mul(l);
-
 		}
 
 	public://Get Functions//
@@ -569,7 +599,6 @@ namespace ChMath
 			const VectorBase& _vec,
 			const unsigned long _digit = 6)const
 		{
-
 			T tmpLen = 0.0f;
 
 			for (unsigned long i = 0; i < Array; i++)
@@ -578,7 +607,6 @@ namespace ChMath
 			}
 
 			return tmpLen;
-
 		}
 
 		VectorBase GetCross(
