@@ -6,12 +6,14 @@
 #endif
 
 #include"ChStd.h"
+#include"ChPtr.h"
 
 #ifdef CRT
 #include<string>
 #include<cstdlib>
 #include<cstring>
 #include<wchar.h>
+#include<stddef.h>
 
 #ifndef CPP20
 #include <codecvt>
@@ -20,6 +22,18 @@
 #endif
 
 #endif
+
+#ifndef	IS_INTEGETR_TYPE
+#define IS_INTEGETR_TYPE(Type)\
+->typename std::enable_if<std::is_integral<Type>::value&& \
+!std::is_same<bool, Type>::value, Type>::type
+#endif
+
+#ifndef	IS_FLOATING_TYPE
+#define IS_FLOATING_TYPE(Type)\
+->typename std::enable_if<std::is_floating_point<Type>::value, Type>::type
+#endif
+
 
 namespace ChStr
 {
@@ -143,30 +157,92 @@ namespace ChStr
 #endif
 
 #ifdef CRT
+
 	//数値に変換可能な文字以外の文字を取り除く//
 	template<typename CharaType>
-	std::basic_string<CharaType> RemoveToUnNums(const std::basic_string<CharaType>& _str)
+	std::basic_string<CharaType> RemoveToUnNumCharas(const std::basic_string<CharaType>& _str)
 	{
+		if (_str.length() <= 0)return  _str;
 
-		std::string out = ChStd::GetZeroChara();
+		std::basic_string<CharaType> out = ChStd::GetZeroChara<CharaType>();
 
 		const CharaType startNum = static_cast<CharaType>('0');
 		const CharaType endNum = static_cast<CharaType>('9');
 
 		for (unsigned long i = 0; i < _str.length(); i++)
 		{
-			bool conFlg = false;
+			if (_str[i] < startNum || _str[i] > endNum)continue;
+
+			out = out + _str[i];
+		}
+
+		return out;
+	}
+
+	//数値に変換可能な文字以外の文字を取り除く//
+	template<typename CharaType>
+	std::basic_string<CharaType> RemoveToUnFloatingNumCharas(
+		const std::basic_string<CharaType>& _str,
+		unsigned long* _ePosition = nullptr,
+		unsigned long* _colonPoint = nullptr)
+	{
+		if (ChPtr::NotNullCheck(_ePosition))*_ePosition = -1;
+		if (ChPtr::NotNullCheck(_colonPoint))*_colonPoint = -1;
+		if (_str.length() <= 0)return  _str;
+
+		std::basic_string<CharaType> out = ChStd::GetZeroChara<CharaType>();
+
+		const CharaType startNum = static_cast<CharaType>('0');
+		const CharaType endNum = static_cast<CharaType>('9');
+
+		bool colonFlg = false;
+		CharaType colonChara = static_cast<CharaType>('.');
+
+		CharaType mChara = static_cast<CharaType>('-');
+		CharaType pChara = static_cast<CharaType>('+');
+		CharaType eChara = static_cast<CharaType>('e');
+		CharaType EChara = static_cast<CharaType>('E');
+		unsigned long ePosition = -1;
+		bool conFlg = false;
+		for (unsigned long i = 0; i < _str.length(); i++)
+		{
+			conFlg = false;
 
 			if (_str[i] < startNum)conFlg = true;
 			if (_str[i] > endNum)conFlg = true;
+			if (i == 0 && _str[i] > mChara)conFlg = false;
 
-			if (_str[i] == static_cast<CharaType>('.'))conFlg = false;
-			if (_str[i] == static_cast<CharaType>('-'))conFlg = false;
+			if (!colonFlg && _str[i] == colonChara)
+			{
+				conFlg = false;
+				colonFlg = true;
+				if (ChPtr::NotNullCheck(_colonPoint))*_colonPoint = i;
+			}
+
+			if ((_str[i] == eChara && _str[i + 1] == mChara) || (_str[i] == EChara && _str[i + 1] == mChara))
+			{
+				
+				ePosition = i + 2;
+				out = out + _str[i] + _str[i + 1];
+				break;
+			}
+
+			if ((_str[i] == eChara && _str[i + 1] == pChara) || (_str[i] == EChara && _str[i + 1] == pChara))
+			{
+				ePosition = i + 2;
+				out = out + _str[i] + _str[i + 1];
+				break;
+			}
 
 			if (conFlg)continue;
 
 			out = out + _str[i];
+		}
 
+		if (ePosition < _str.length())
+		{
+			if (ChPtr::NotNullCheck(_ePosition))*_ePosition = ePosition;
+			out += RemoveToUnNumCharas<CharaType>(&_str[ePosition]);
 		}
 
 		return out;
@@ -221,23 +297,96 @@ namespace ChStr
 			if (_str[i] > _max || _str[i] < _min)continue;
 
 			out = out + _str[i];
-
 		}
 
 		return out;
 	}
 #endif
 
+	namespace BaseFunctions
+	{
 #ifdef CRT
-	template<typename CharaType,typename BaseType>
-	inline auto GetIntegialFromText(
+
+		template<typename CharaType>
+		inline long double GetExponentialFromTextBase(const std::basic_string<CharaType>& _text)
+		{
+			if (_text.empty())return 0.0f;
+
+			unsigned long tmp = 0.0;
+			for (unsigned long i = 0; i < _text.size(); i++)
+			{
+				tmp *= 10;
+				tmp += static_cast<unsigned long>(_text[i] - static_cast<CharaType>('0'));
+			}
+
+			long double res = 1.0f;
+
+			for (unsigned long i = 0; i < tmp; i++)
+			{
+				res *= 10.0;
+			}
+
+			return res;
+		}
+
+#endif
+	}
+
+#ifdef CRT
+
+#if true
+
+	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
+	template<typename BaseType, typename CharaType>
+	static inline auto GetNumFromText(
+		const std::basic_string<CharaType>& _text,
+		const size_t& _startPos = 0,
+		const size_t& _endPos = std::basic_string<CharaType>::npos) -> typename std::enable_if<std::is_same<char, CharaType>::value && std::is_integral<BaseType>::value, BaseType>::type
+	{
+		std::basic_string<CharaType> text = RemoveToUnFloatingNumCharas<CharaType>(_text.substr(_startPos, _endPos - _startPos));
+		return static_cast<BaseType>(std::atoll(text.c_str()));
+	}
+
+	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
+	template<typename BaseType, typename CharaType>
+	static inline auto GetNumFromText(
+		const std::basic_string<CharaType>& _text,
+		const size_t& _startPos = 0,
+		const size_t& _endPos = std::basic_string<CharaType>::npos) -> typename std::enable_if<std::is_same<char, CharaType>::value&& std::is_floating_point<BaseType>::value, BaseType>::type
+	{
+		std::basic_string<CharaType> text = RemoveToUnFloatingNumCharas<CharaType>(_text.substr(_startPos, _endPos - _startPos));
+		return static_cast<BaseType>(std::atof(text.c_str()));
+	}
+
+	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
+	template<typename BaseType, typename CharaType>
+	static inline auto GetNumFromText(
+		const std::basic_string<CharaType>& _text,
+		const size_t& _startPos = 0,
+		const size_t& _endPos = std::basic_string<CharaType>::npos) -> typename std::enable_if<std::is_same<wchar_t, CharaType>::value&& std::is_integral<BaseType>::value, BaseType>::type
+	{
+		std::basic_string<CharaType> text = RemoveToUnFloatingNumCharas<CharaType>(_text.substr(_startPos, _endPos - _startPos));
+		return static_cast<BaseType>(_wtoll(text.c_str()));
+	}
+
+	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
+	template<typename BaseType, typename CharaType>
+	static inline auto GetNumFromText(
+		const std::basic_string<CharaType>& _text,
+		const size_t& _startPos = 0,
+		const size_t& _endPos = std::basic_string<CharaType>::npos) -> typename std::enable_if<std::is_same<wchar_t, CharaType>::value&& std::is_floating_point<BaseType>::value, BaseType>::type
+	{
+		std::basic_string<CharaType> text = RemoveToUnFloatingNumCharas<CharaType>(_text.substr(_startPos, _endPos - _startPos));
+		return static_cast<BaseType>(_wtof(text.c_str()));
+	}
+
+#else
+
+	template<typename BaseType, typename CharaType>
+	inline auto GetNumFromText(
 		const std::basic_string<CharaType>& _text,
 		const size_t& _startPos = 0,
 		const size_t& _endPos = std::basic_string<CharaType>::npos)
-		->typename std::enable_if<
-		std::is_integral<BaseType>::value
-		&& !std::is_same<bool, BaseType>::value, BaseType>::type
-
 	{
 		size_t endPos = _endPos;
 
@@ -248,44 +397,88 @@ namespace ChStr
 
 		std::basic_string<CharaType> useText = _text.substr(_startPos, endPos - _startPos);
 
-		useText = RemoveToUnNums(useText);
+		if (useText.empty())return static_cast<BaseType>(0.0);
+		unsigned long colonPosition = -1;
+		unsigned long ePosition = -1;
+		useText = RemoveToUnFloatingNumCharas<CharaType>(useText, &ePosition, &colonPosition);
+		if (useText.empty())return static_cast<BaseType>(0.0);
 
-		if (useText.empty())return static_cast<BaseType>(0);
+		unsigned long loopSize = -1;
+		loopSize = loopSize > colonPosition ? colonPosition : loopSize;
+		long double res = 0.0l;
+		if (useText.size() > loopSize)
+		{
+			for (unsigned long i = 0; i < loopSize; i++)
+			{
+				res *= 10.0l;
+				res += static_cast<long long>(useText[i] - static_cast<CharaType>('0'));
+			}
+			loopSize = useText.size();
+			loopSize = loopSize > ePosition ? ePosition : loopSize;
+			long double tmp = 0.0l;
+			for (unsigned long i = 1; i < loopSize; i++)
+			{
+				tmp /= 10.0l;
+				tmp += static_cast<long long>(useText[loopSize - i] - static_cast<CharaType>('0'));
+			}
+			res += tmp;
+		}
+		else
+		{
 
-		long long tmp = std::stoll(useText.c_str());
+			for (unsigned long i = 0; i < useText.size(); i++)
+			{
+				res *= 10.0l;
+				res += static_cast<long long>(useText[i] - static_cast<CharaType>('0'));
+			}
+		}
 
-		return static_cast<BaseType>(tmp);
 
+		if (ePosition < useText.size())
+		{
+			std::basic_string<CharaType> test = &useText[ePosition];
+			long double exponential = BaseFunctions::GetExponentialFromTextBase<CharaType>(&useText[ePosition]);
+
+			res = useText[ePosition - 1] == static_cast<CharaType>('-') ?
+				res / exponential : res * exponential;
+		}
+
+		return  static_cast<BaseType>(res);
 	}
+
+#endif
+
 #endif
 
 #ifdef CRT
-	template<typename CharaType,typename BaseType>
-	inline auto GetFloatingFromText(
-		const std::basic_string<CharaType>& _text,
-		const size_t& _startPos = 0,
-		const size_t& _endPos = std::basic_string<CharaType>::npos)
-		->typename std::enable_if<
-		std::is_floating_point<BaseType>::value, BaseType>::type
 
+#if true
+
+	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
+	template<typename CharaType, typename InType>
+	static inline auto GetTextFromNum(const InType& _baseNum)-> typename std::enable_if<std::is_same<char,CharaType>::value, std::basic_string<CharaType>>::type
 	{
-		size_t endPos = _endPos;
-
-		if (_text.size() <= endPos)
-		{
-			endPos = _text.size();
-		}
-
-		std::basic_string<CharaType> useText = _text.substr(_startPos, endPos - _startPos);
-
-		useText = RemoveToUnNums(useText);
-
-		if (useText.empty())return static_cast<BaseType>(0.0);
-
-		double tmp = std::stof(useText.c_str());
-
-		return static_cast<BaseType>(tmp);
+		return std::to_string(_baseNum);
 	}
+
+	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
+	template<typename CharaType, typename InType>
+	static inline auto GetTextFromNum(const InType& _baseNum) -> typename std::enable_if<std::is_same<wchar_t, CharaType>::value, std::basic_string<CharaType>>::type
+	{
+		return std::to_wstring(_baseNum);
+	}
+
+#else
+
+	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
+	template<typename CharaType, typename InType>
+	static inline std::basic_string<CharaType> GetTextFromNum(const InType& _baseNum)
+	{
+		return BaseFunctions::GetTextFromNumBase<CharaType, InType>(_baseNum);
+	}
+
+#endif
+
 #endif
 
 #ifdef CRT
