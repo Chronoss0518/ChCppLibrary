@@ -1,18 +1,121 @@
-#ifndef Ch_CPP_BMatrix_h
-#define Ch_CPP_BMatrix_h
+#ifndef Ch_CPP_BMath_h
+#define Ch_CPP_BMath_h
+
+#include"ChStd.h"
+#include"ChStr.h"
+
+#ifndef CRLF_CHARA_FUNCTION
+#define CRLF_CHARA_FUNCTION(type) NUMBER_FUNCTION_BASE(GetCRLFChara,type)
+#endif
+
+#ifndef COMMA_CHARA_FUNCTION
+#define COMMA_CHARA_FUNCTION(type) NUMBER_FUNCTION_BASE(GetCommaChara,type)
+#endif
+
+
+#ifndef SEMICOLON_CHARA_FUNCTION
+#define SEMICOLON_CHARA_FUNCTION(type) NUMBER_FUNCTION_BASE(GetSemiColonChara,type)
+#endif
+
+namespace ChStd
+{
+#ifdef CRT
+	TO_NUMBER_FUNCTION(CRLF_CHARA_FUNCTION, "\r\n");
+#endif
+
+#ifdef CRT
+	TO_NUMBER_FUNCTION(COMMA_CHARA_FUNCTION, ",");
+#endif
+
+#ifdef CRT
+	TO_NUMBER_FUNCTION(SEMICOLON_CHARA_FUNCTION, ";");
+#endif
+}
 
 namespace ChMath
 {
+#ifdef CRT
+	double Round(const double& _val, const unsigned long _digit = 307)
+	{
+		if (_val == 0.0)return 0.0;
 
-	float Round(const float& _val, const unsigned int _digit);
+		double out = _val * std::powl(10, static_cast<double>(_digit - 1));
+		out = std::round(out);
+		out = out * std::powl(0.1, static_cast<double>(_digit - 1));
 
-	double Round(const double& _val, const unsigned int _digit);
+		return out;
+	}
+#else
+	double Round(const double& _val, const unsigned long _digit = 307);
+#endif
 
+	float Round(const float& _val, const unsigned long _digit = 37);
+
+#ifdef CRT
+	long double SqrtEx(const long double& _base, const unsigned long _digit = 4931)
+	{
+		if (_base == 0.0)return 0.0;
+
+		long double out = std::sqrt(_base);
+
+		//微分積分自分で使えるようになってから再度考える//
+		return out;
+
+		unsigned long maxCount = _digit > 4931 ? 4931 : _digit;
+
+		//以下を参照//
+		//https://qiita.com/rytaryu/items/e5d760a80f9ce5db860f
+		//
+
+		for (unsigned long i = 0; i < maxCount; i++)
+		{
+			out = ((out * out) + _base) / (2 * out);
+		}
+
+		return out;
+	}
+#else
 	long double SqrtEx(const long double& _base, const unsigned long _digit = 4931);
+#endif
 
 	double SqrtEx(const double& _base, const unsigned long _digit = 307);
 
 	float SqrtEx(const float& _base, const unsigned long _digit = 37);
+
+#ifdef CRT
+	template<typename Floating>
+	Floating GetSin(Floating _val)
+	{
+		return std::sin(_val);
+	}
+#else
+	template<typename Floating>
+	Floating GetSin(Floating _val);
+#endif
+
+#ifdef CRT
+	template<typename Floating>
+	Floating GetACos(Floating _val)
+	{
+		return std::acos(_val);
+	}
+#else
+	template<typename Floating>
+	Floating GetACos(Floating _val);
+#endif
+
+#ifdef CRT
+	template<typename Floating>
+	Floating GetCos(Floating _val)
+	{
+		return std::cos(_val);
+	}
+#else
+	template<typename Floating>
+	Floating GetCos(Floating _val);
+#endif
+
+
 
 	//2の平方根(有効桁数8桁)//
 	static const float SQUARE_ROOT = 1.41421356f;
@@ -20,21 +123,11 @@ namespace ChMath
 	//円周率//
 	static const float PI = 3.1415f;
 
-
-	template<typename T, unsigned long Array>
-	using VectorTest = typename std::enable_if<(Array > 0), T>::type;
-
-	template<typename T, unsigned long Row, unsigned long Column>
-	using MatrixTest = typename std::enable_if<(Row > 0 && Column > 0), T>::type;
-
 	template<typename T, unsigned long Array>
 	class VectorBase
 	{
 
-	public:
-
-		///////////////////////////////////////////////////////////////////////////////////////
-		//Operator//
+	public://Operator Function//
 
 		template<unsigned long _ArrayCount>
 		operator VectorBase<T, _ArrayCount>()const
@@ -203,8 +296,7 @@ namespace ChMath
 			return false;
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//ConstructorDestructor//
+	public://Constructor Destructor//
 
 		VectorBase()
 		{
@@ -223,11 +315,7 @@ namespace ChMath
 			Set(_val);
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//InitAndRelease//
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//OperatorMathFunction//
+	public://Operator Math Function//
 
 		void Set(const VectorBase& _vec)
 		{
@@ -320,17 +408,18 @@ namespace ChMath
 			}
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//SerializeDesirialize//
+	public://Serialize Deserialize//
 
-		std::string Serialize(
-			const std::string& _cutChar = ","
-			, const std::string& _endChar = ";")
+#ifdef CRT
+		template<typename CharaType>
+		std::basic_string<CharaType> Serialize(
+			const std::basic_string<CharaType>& _cutChar = ChStd::GetCommaChara<CharaType>(),
+			const std::basic_string<CharaType>& _endChar = ChStd::GetSemiColonChara<CharaType>())
 		{
-			std::string tmp = "";
+			std::basic_string<CharaType> tmp = ChStd::GetZeroChara<CharaType>();
 			for (unsigned char i = 0; i < Array; i++)
 			{
-				tmp += std::to_string(val[i]);
+				tmp += ChStr::GetTextFromNum<CharaType,T>(val[i]);
 				if (i == (Array - 1))break;
 				tmp += _cutChar;
 			}
@@ -339,33 +428,19 @@ namespace ChMath
 
 			return tmp;
 		}
+#endif
 
-		std::wstring Serialize(
-			const std::wstring& _cutChar = L","
-			, const std::wstring& _endChar = L";")
-		{
-			std::wstring tmp = L"";
-			for (unsigned char i = 0; i < Array; i++)
-			{
-				tmp += std::to_wstring(val[i]);
-				if (i == (Array - 1))break;
-				tmp += _cutChar;
-			}
-
-			tmp += _endChar;
-
-			return tmp;
-		}
-
+#ifdef CRT
+		template<typename CharaType>
 		void Deserialize(
-			const std::string& _str
-			, const size_t _fPos = 0
-			, const std::string& _cutChar = ","
-			, const std::string& _endChar = ";"
-			, const unsigned int _digit = 6)
+			const std::basic_string<CharaType>& _str,
+			const size_t _fPos = 0,
+			const std::basic_string<CharaType>& _cutChar = ChStd::GetCommaChara<CharaType>(),
+			const std::basic_string<CharaType>& _endChar = ChStd::GetSemiColonChara<CharaType>(),
+			const unsigned int _digit = 6)
 		{
 
-			std::string tmpStr = _str;
+			std::basic_string<CharaType> tmpStr = _str;
 
 			size_t tmpFPos = _fPos;
 
@@ -388,56 +463,9 @@ namespace ChMath
 				{
 					tmpFPos = Test;
 
-					std::string Num = tmpStr.substr(tmp, tmpFPos - tmp);
+					std::basic_string<CharaType> Num = tmpStr.substr(tmp, tmpFPos - tmp);
 
-					val[i] = static_cast<T>(ChStr::GetFloatingFromText<float>(Num));
-
-					//val[i] = ChMath::Round(val[i], _digit);
-
-					tmp += Num.length();
-					tmp += 1;
-
-				}
-
-				if (Test >= EPos)return;
-			}
-
-		}
-
-		void Deserialize(
-			const std::wstring& _str
-			, const size_t _fPos = 0
-			, const std::wstring& _cutChar = L","
-			, const std::wstring& _endChar = L";"
-			, const unsigned int _digit = 6)
-		{
-
-			std::wstring tmpStr = _str;
-
-			size_t tmpFPos = _fPos;
-
-			size_t EPos = tmpStr.find(_endChar, tmpFPos);
-
-			if (EPos == tmpStr.npos)EPos = tmpStr.size();
-
-			tmpStr = tmpStr.substr(tmpFPos, EPos - tmpFPos);
-
-			tmpFPos = 0;
-
-			EPos = tmpStr.length();
-
-			size_t tmp = tmpFPos;
-
-			for (unsigned char i = 0; i < Array; i++)
-			{
-				size_t Test = tmpStr.find(_cutChar, tmp);
-				if (Test > EPos)Test = EPos;
-				{
-					tmpFPos = Test;
-
-					std::wstring Num = tmpStr.substr(tmp, tmpFPos - tmp);
-
-					val[i] = static_cast<T>(ChStr::GetFloatingFromText<float>(Num));
+					val[i] = ChStr::GetNumFromText<T, CharaType>(Num);
 
 					//val[i] = ChMath::Round(val[i], _digit);
 
@@ -445,14 +473,12 @@ namespace ChMath
 					tmp += 1;
 
 				}
-
 				if (Test >= EPos)return;
 			}
-
 		}
+#endif
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
+	public://Set Functions//
 
 		void SetLen(const T _len)
 		{
@@ -484,8 +510,7 @@ namespace ChMath
 
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//GetFunction//
+	public://Get Functions//
 
 		constexpr const unsigned long GetArray()const  { return Array; }
 
@@ -519,8 +544,7 @@ namespace ChMath
 
 		T GetCos(
 			const VectorBase& _vec,
-			const unsigned long _digit = 6
-		)const
+			const unsigned long _digit = 6)const
 		{
 			VectorBase tmp1, tmp2;
 
@@ -534,12 +558,11 @@ namespace ChMath
 
 		T GetRadian(
 			const VectorBase& _vec,
-			const unsigned long _digit = 6
-		)const
+			const unsigned long _digit = 6)const
 		{
 			T tmp = GetCos(_vec, _digit);
 
-			return static_cast<T>(std::acos(tmp));
+			return static_cast<T>(GetACos(tmp));
 		}
 
 		T GetDot(
@@ -583,7 +606,7 @@ namespace ChMath
 			return val;
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////
+	public://Other Functions//
 
 		inline void Abs()
 		{
@@ -595,21 +618,17 @@ namespace ChMath
 
 		inline void Abs(const VectorBase& _vec)
 		{
-
 			for (unsigned long i = 0; i < Array; i++)
 			{
 				val[i] = _vec.val[i] < static_cast<T>(0.0f) ? _vec.val[i] * static_cast<T>(-1.0f) : _vec.val[i];
 			}
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////
-
 		void Cross(
 			const VectorBase& _vec,
 			const unsigned long _digit = 6)
 		{
 			Set(GetCross(*this, _vec, _digit));
-
 		}
 
 		void Cross(
@@ -620,11 +639,11 @@ namespace ChMath
 			Set(GetCross(_vec1, _vec2, _digit));
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////
-
 		//補正を行う(Nowは0～1)
 		void Correction(
-			const VectorBase& _start, const VectorBase& _end, const float _Now)
+			const VectorBase& _start,
+			const VectorBase& _end,
+			const float _Now)
 		{
 			if (_Now <= 0.0f)
 			{
@@ -645,8 +664,6 @@ namespace ChMath
 
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////
-
 		void Identity()
 		{
 			for (unsigned long i = 0; i < Array; i++)
@@ -655,14 +672,9 @@ namespace ChMath
 			}
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////
-
 		//ベクトルの長さを1にする//
-		bool Normalize(
-			const unsigned long _digit = 6
-		)
+		bool Normalize(const unsigned long _digit = 6)
 		{
-
 			T len = GetLen(_digit);
 
 			if (len == static_cast<T>(1.0))return true;
@@ -721,22 +733,22 @@ namespace ChMath
 			VectorBase end = _end;
 
 			float rad = start.GetDot(end);
-			rad = std::acosf(rad);
+			rad = GetACos(rad);
 			if (rad == 0.0f)return start;
 
-			float baseSin = std::sinf(rad);
+			float baseSin = GetSin(rad);
 
 			if (baseSin == 0.0f)return start;
 
-			start.Mul(std::sinf((1.0f - _pow) * rad) / baseSin);
-			end.Mul(std::sinf(_pow * rad) / baseSin);
+			start.Mul(GetSin((1.0f - _pow)* rad) / baseSin);
+			end.Mul(GetSin(_pow* rad) / baseSin);
 
 			return (start + end);
 		}
 
 	private:
 		
-		VectorTest<T, Array> val[Array];
+		T val[Array];
 
 	};
 
@@ -751,8 +763,7 @@ namespace ChMath
 			MatrixBase lMat;
 		};
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//Operator//
+	public://Operator Functions//
 
 		template<unsigned long _Row, unsigned long _Column>
 		operator MatrixBase<T, _Row, _Column>()const
@@ -858,8 +869,7 @@ namespace ChMath
 			return out;
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//ConstructorDestructor//
+	public://Contructor Destructor//
 
 		MatrixBase()
 		{
@@ -871,11 +881,7 @@ namespace ChMath
 			Set(_Mat);
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//InitAndRelease//
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//OperatorMathFunction//
+	public://Operator Math Function//
 
 		void Set(const MatrixBase& _mat)
 		{
@@ -1014,63 +1020,46 @@ namespace ChMath
 
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//SerializeDesirialize//
+	public://Serialize Deserialize//
 
-		std::string Serialize(
-			const std::string& _cutChar = ","
-			, const std::string& _endChar = ";")
+#ifdef CRT
+		template<typename CharaType>
+		std::basic_string<CharaType> Serialize(
+			const std::basic_string<CharaType>& _cutChar = ChStd::GetCommaChara<CharaType>(),
+			const std::basic_string<CharaType>& _endChar = ChStd::GetSemiColonChara<CharaType>())
 		{
-			std::string tmp = "";
+			std::basic_string<CharaType> tmp = ChStd::GetZeroChara<CharaType>();
 			for (unsigned char i = 0; i < Column; i++)
 			{
 				for (unsigned char j = 0; j < Row; j++)
 				{
 					if (i == 3 && j == 3)break;
-					tmp += std::to_string(m[i][j]);
+					tmp += ChStr::GetTextFromNum<CharaType, T>(m[i][j]);
 					tmp += _cutChar;
 				}
 			}
 
-			tmp += std::to_string(m[3][3]);
+			tmp += ChStr::GetTextFromNum<CharaType, T>(m[3][3]);
 			tmp += _endChar;
 
 			return tmp;
 		}
+#endif
 
-		std::wstring Serialize(
-			const std::wstring& _cutChar = L","
-			, const std::wstring& _endChar = L";")
+#ifdef CRT
+		template<typename CharaType>
+		std::basic_string<CharaType> SerializeUpper(
+			const std::basic_string<CharaType>& _cutChar = ChStd::GetCommaChara<CharaType>(),
+			const std::basic_string<CharaType>& _endChar = ChStd::GetSemiColonChara<CharaType>(),
+			const std::basic_string<CharaType>& _cutTo4Char = ChStd::GetCRLFChara<CharaType>())
 		{
-			std::wstring tmp = L"";
+			std::basic_string<CharaType> tmp = ChStd::GetZeroChara<CharaType>();
 			for (unsigned char i = 0; i < Column; i++)
 			{
 				for (unsigned char j = 0; j < Row; j++)
 				{
 					if (i == 3 && j == 3)break;
-					tmp += std::to_wstring(m[i][j]);
-					tmp += _cutChar;
-				}
-			}
-
-			tmp += std::to_wstring(m[3][3]);
-			tmp += _endChar;
-
-			return tmp;
-		}
-
-		std::string SerializeUpper(
-			const std::string& _cutChar = ","
-			, const std::string& _endChar = ";"
-			, const std::string& _cutTo4Char = "\n")
-		{
-			std::string tmp = "";
-			for (unsigned char i = 0; i < Column; i++)
-			{
-				for (unsigned char j = 0; j < Row; j++)
-				{
-					if (i == 3 && j == 3)break;
-					tmp += std::to_string(m[i][j]);
+					tmp += ChStr::GetTextFromNum<CharaType, T>(m[i][j]);
 					tmp += _cutChar;
 
 					if (j < 3)continue;
@@ -1078,46 +1067,24 @@ namespace ChMath
 				}
 			}
 
-			tmp += std::to_string(m[3][3]);
+			tmp += ChStr::GetTextFromNum<CharaType, T>(m[3][3]);
 			tmp += _endChar;
 
 			return tmp;
 		}
+#endif
 
-		std::wstring SerializeUpper(
-			const std::wstring& _cutChar = L","
-			, const std::wstring& _endChar = L";"
-			, const std::wstring& _cutTo4Char = L"\n")
-		{
-			std::wstring tmp = L"";
-			for (unsigned char i = 0; i < Column; i++)
-			{
-				for (unsigned char j = 0; j < Row; j++)
-				{
-					if (i == 3 && j == 3)break;
-					tmp += std::to_wstring(m[i][j]);
-					tmp += _cutChar;
-
-					if (j < 3)continue;
-					tmp += _cutTo4Char;
-				}
-			}
-
-			tmp += std::to_wstring(m[3][3]);
-			tmp += _endChar;
-
-			return tmp;
-		}
-
+#ifdef CRT
+		template<typename CharaType>
 		void Deserialize(
-			const std::string& _str
-			, const size_t _fPos = 0
-			, const std::string& _cutChar = ","
-			, const std::string& _endChar = ";"
-			, const unsigned int _digit = 6)
+			const std::basic_string<CharaType>& _str,
+			const size_t _fPos = 0,
+			const std::basic_string<CharaType>& _cutChar = ChStd::GetCommaChara<CharaType>(),
+			const std::basic_string<CharaType>& _endChar = ChStd::GetSemiColonChara<CharaType>(),
+			const unsigned int _digit = 6)
 		{
 
-			std::string tmpStr = _str;
+			std::basic_string<CharaType> tmpStr = _str;
 
 			size_t tmpFPos = _fPos;
 
@@ -1144,12 +1111,11 @@ namespace ChMath
 					{
 						tmpFPos = Test;
 
-						std::string Num = tmpStr.substr(tmp, tmpFPos - tmp);
+						std::basic_string<CharaType> Num = tmpStr.substr(tmp, tmpFPos - tmp);
 
-						m[i][j] = static_cast<T>(ChStr::GetFloatingFromText<float>(Num));
+						m[i][j] = ChStr::GetNumFromText<T, CharaType>(Num);
 
 						tmp = Test + 1;
-
 					}
 
 					if (Test >= EPos)return;
@@ -1158,59 +1124,9 @@ namespace ChMath
 			}
 
 		}
+#endif
 
-		void Deserialize(
-			const std::wstring& _str
-			, const size_t _fPos = 0
-			, const std::wstring& _cutChar = L","
-			, const std::wstring& _endChar = L";"
-			, const unsigned int _digit = 6)
-		{
-
-			std::wstring tmpStr = _str;
-
-			size_t tmpFPos = _fPos;
-
-			size_t EPos = tmpStr.find(_endChar, tmpFPos);
-
-			if (EPos == tmpStr.npos)EPos = tmpStr.size() - 1;
-
-			tmpStr = tmpStr.substr(tmpFPos, EPos - tmpFPos);
-
-			tmpFPos = 0;
-
-			EPos = tmpStr.length();
-
-			size_t tmp = tmpFPos;
-
-			for (unsigned char i = 0; i < Column; i++)
-			{
-				for (unsigned char j = 0; j < Row; j++)
-				{
-					size_t Test = tmpStr.find(_cutChar, tmp);
-
-					if (Test > EPos)Test = EPos;
-
-					{
-						tmpFPos = Test;
-
-						std::wstring Num = tmpStr.substr(tmp, tmpFPos - tmp);
-
-						m[i][j] = static_cast<T>(ChStr::GetFloatingFromText<float>(Num));
-
-						tmp = Test + 1;
-
-					}
-
-					if (Test >= EPos)return;
-				}
-
-			}
-
-		}
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//GetFunction//
+	public://Get Functions//
 
 		T GetLen()const
 		{
@@ -1234,9 +1150,7 @@ namespace ChMath
 				}
 
 				out = out + add - sub;
-
 			}
-
 			return out;
 		}
 
@@ -1281,11 +1195,10 @@ namespace ChMath
 			bool findColFlg = false;
 			bool findRowFlg = false;
 
-			MatrixBase<T, 3, 3>massMat;
+			MatrixBase<T, Row - 1, Column - 1>massMat;
 
 			for (unsigned long col = 0; col < Column; col++)
 			{
-
 				for (unsigned long row = 0; row < Row; row++)
 				{
 					findColFlg = false;
@@ -1297,31 +1210,23 @@ namespace ChMath
 						{
 							findRowFlg = massRow == row ? true : findRowFlg;
 							massMat[massRow][massCol] = m[findRowFlg ? massRow + 1 : massRow][findColFlg ? massCol + 1 : massCol];
-
 						}
-
 					}
 					out[col][row] = massMat.GetLen() / detVal;
 					if ((row + col) % 2 == 1)out[col][row] *= static_cast<T>(-1.0f);
-
 				}
-
 			}
-
 			return out;
-
 		}
 
 		//ドゥーリトル法三角行列//
 		ULMatrix GetDLUMatrix()const
 		{
-
 			ULMatrix luMat;
 
 			if (Row != Column)return luMat;
 
 			luMat.uMat.Set(*this);
-
 
 			for (unsigned long i = 1; i < Row; i++)
 			{
@@ -1341,12 +1246,8 @@ namespace ChMath
 					luMat.lMat[j][i - 1] = tmpCol[i - 1];
 
 					luMat.uMat[j] -= tmpCol;
-
 				}
-
 			}
-
-
 			return luMat;
 		}
 
@@ -1370,6 +1271,8 @@ namespace ChMath
 
 		constexpr const unsigned long GetRow()const { return Row; }
 
+	public://Is Functions//
+
 		bool IsValue(const MatrixBase& _mat)const
 		{
 			for (unsigned long i = 0; i < Row; i++)
@@ -1385,7 +1288,7 @@ namespace ChMath
 			return true;
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////
+	public://Other Functions//
 
 		void Identity()
 		{
@@ -1414,14 +1317,10 @@ namespace ChMath
 			return out;
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////
-
 		void Inverse()
 		{
 			Set(GetInverse());
 		}
-
-		///////////////////////////////////////////////////////////////////////////////////
 
 		void Inverse(const MatrixBase<T, Row, Column>& _mat)
 		{
@@ -1430,13 +1329,12 @@ namespace ChMath
 
 	private:
 
-		VectorBase<MatrixTest<T, Row, Column>, Column> m[Row];
+		VectorBase<T, Column> m[Row];
 
 	};
 
 	template<typename T,unsigned long Array>
 	using SquareMatrixBase = MatrixBase<T, Array, Array>;
-
 
 	template<typename T>
 	struct Vector2Base
@@ -1479,7 +1377,6 @@ namespace ChMath
 		}
 
 		inline Vector2Base(const Vector2Base& _vec) { val = _vec.val; }
-
 	};
 
 	template<typename T>
@@ -1516,7 +1413,6 @@ namespace ChMath
 		}
 
 		inline Vector3Base(const Vector3Base& _vec) { val = _vec.val; }
-
 	};
 
 	template<typename T>
@@ -1586,9 +1482,10 @@ namespace ChMath
 		inline Vector2Base<T> GetCoordinatesSizeFromCenter()const
 		{
 			Vector2Base<T> res;
-			res.w = std::abs(right - left) * 0.5f;
-			res.h = std::abs(top - bottom) * 0.5f;
-
+			res.w = (right - left);
+			res.w = (res.w < 0 ? -res.w : res.w) * 0.5f;
+			res.h = (top - bottom) * 0.5f;
+			res.h = (res.h < 0 ? -res.h : res.h) * 0.5f;
 			return res;
 		}
 
@@ -1657,7 +1554,6 @@ namespace ChMath
 
 			return overlapsRect;
 		}
-
 	};
 
 	template<typename T>
@@ -1686,17 +1582,13 @@ namespace ChMath
 		{
 			struct
 			{
-
 				T l_11, l_12;
 				T l_21, l_22;
-
 			};
 			struct
 			{
-
 				T r_11, r_21;
 				T r_12, r_22;
-
 			};
 			SquareMatrixBase<T, 2> m;
 		};
@@ -1717,19 +1609,15 @@ namespace ChMath
 		{
 			struct
 			{
-
 				T l_11, l_12, l_13;
 				T l_21, l_22, l_23;
 				T l_31, l_32, l_33;
-
 			};
 			struct
 			{
-
 				T r_11, r_21, r_31;
 				T r_12, r_22, r_32;
 				T r_13, r_23, r_33;
-
 			};
 			SquareMatrixBase<T, 3> m;
 		};
@@ -1740,7 +1628,6 @@ namespace ChMath
 		}
 
 		inline BaseMatrix3x3(const BaseMatrix3x3& _mat) { m = _mat.m; }
-
 	};
 
 	template<typename T>
@@ -1750,21 +1637,17 @@ namespace ChMath
 		{
 			struct
 			{
-
 				T l_11, l_12, l_13, l_14;
 				T l_21, l_22, l_23, l_24;
 				T l_31, l_32, l_33, l_34;
 				T l_41, l_42, l_43, l_44;
-
 			};
 			struct
 			{
-
 				T r_11, r_21, r_31, r_41;
 				T r_12, r_22, r_32, r_42;
 				T r_13, r_23, r_33, r_43;
 				T r_14, r_24, r_34, r_44;
-
 			};
 			SquareMatrixBase<T, 4> m;
 		};
@@ -1775,9 +1658,7 @@ namespace ChMath
 		}
 
 		inline BaseMatrix4x4(const BaseMatrix4x4& _mat) { m = _mat.m; }
-
 	};
-
 }
 
 #endif
