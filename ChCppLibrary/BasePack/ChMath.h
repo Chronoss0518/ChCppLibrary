@@ -39,114 +39,33 @@ namespace ChStd
 
 namespace ChMath
 {
-#ifdef CRT
-	double Round(const double& _val, const unsigned long _digit = 307)
-	{
-		if (_val == 0.0)return 0.0;
-
-		double out = _val * std::powl(10, static_cast<double>(_digit - 1));
-		out = std::round(out);
-		out = out * std::powl(0.1, static_cast<double>(_digit - 1));
-
-		return out;
-	}
-#else
 	double Round(const double& _val, const unsigned long _digit = 307);
-#endif
 
 	float Round(const float& _val, const unsigned long _digit = 37);
 
-#ifdef CRT
-	long double SqrtEx(const long double& _base, const unsigned long _digit = 4931)
-	{
-		if (_base == 0.0)return 0.0;
-
-		long double out = std::sqrt(_base);
-
-		//微分積分自分で使えるようになってから再度考える//
-		return out;
-
-		unsigned long maxCount = _digit > 4931 ? 4931 : _digit;
-
-		//以下を参照//
-		//https://qiita.com/rytaryu/items/e5d760a80f9ce5db860f
-		//
-
-		for (unsigned long i = 0; i < maxCount; i++)
-		{
-			out = ((out * out) + _base) / (2 * out);
-		}
-
-		return out;
-	}
-#else
 	long double SqrtEx(const long double& _base, const unsigned long _digit = 4931);
-#endif
 
 	double SqrtEx(const double& _base, const unsigned long _digit = 307);
 
 	float SqrtEx(const float& _base, const unsigned long _digit = 37);
 
 	template<typename Floating>
-#ifdef CRT
-	Floating GetSin(Floating _val)
-	{
-		return std::sin(_val);
-	}
-#else
 	Floating GetSin(Floating _val);
-#endif
 
 	template<typename Floating>
-#ifdef CRT
-	Floating GetASin(Floating _val)
-	{
-		return std::asin(_val);
-	}
-#else
 	Floating GetASin(Floating _val);
-#endif
 
 	template<typename Floating>
-#ifdef CRT
-	Floating GetACos(Floating _val)
-	{
-		return std::acos(_val);
-	}
-#else
 	Floating GetACos(Floating _val);
-#endif
 
 	template<typename Floating>
-#ifdef CRT
-	Floating GetCos(Floating _val)
-	{
-		return std::cos(_val);
-	}
-#else
 	Floating GetCos(Floating _val);
-#endif
 
 	template<typename Floating>
-#ifdef CRT
-	Floating GetATan(Floating _val)
-	{
-		return std::atanf(_val);
-	}
-#else
 	Floating GetATan(Floating _val);
-#endif
 
 	template<typename Floating>
-#ifdef CRT
-	Floating GetFMod(Floating _valx, Floating _valy)
-	{
-		return std::fmod(_valx, _valy);
-	}
-#else
 	Floating GetFMod(Floating _valx, Floating _valy);
-#endif
-
 
 	//2の平方根(有効桁数8桁)//
 	static const float SQUARE_ROOT = 1.41421356f;
@@ -238,7 +157,7 @@ namespace ChMath
 
 		VectorBase operator +(const VectorBase& _Array)const
 		{
-			VectorBase out= *this;
+			VectorBase out = *this;
 			out.Add(_Array);
 			return out;
 		}
@@ -250,7 +169,7 @@ namespace ChMath
 		}
 		VectorBase operator *(const VectorBase& _Array)const
 		{
-			VectorBase out= *this;
+			VectorBase out = *this;
 			out.Mul(_Array);
 			return out;
 		}
@@ -450,7 +369,7 @@ namespace ChMath
 			std::basic_string<CharaType> tmp = ChStd::GetZeroChara<CharaType>();
 			for (unsigned char i = 0; i < Array; i++)
 			{
-				tmp += ChStr::GetTextFromNum<CharaType,T>(val[i]);
+				tmp += ChStr::GetTextFromNum<CharaType, T>(val[i]);
 				if (i == (Array - 1))break;
 				tmp += _cutChar;
 			}
@@ -542,7 +461,7 @@ namespace ChMath
 
 	public://Get Functions//
 
-		constexpr const unsigned long GetArray()const  { return Array; }
+		constexpr const unsigned long GetArray()const { return Array; }
 
 		//ベクトルの要素の大きさを得る//
 		T GetElementsLen()
@@ -569,7 +488,7 @@ namespace ChMath
 				Len += val[i] * val[i];
 			}
 
-			return SqrtEx(Len,_digit);
+			return SqrtEx(Len, _digit);
 		}
 
 		T GetCos(
@@ -661,7 +580,7 @@ namespace ChMath
 
 		void Cross(
 			const VectorBase& _vec1,
-			const VectorBase& _vec2, 
+			const VectorBase& _vec2,
 			const unsigned long _digit = 6)
 		{
 			Set(GetCross(_vec1, _vec2, _digit));
@@ -768,14 +687,14 @@ namespace ChMath
 
 			if (baseSin == 0.0f)return start;
 
-			start.Mul(GetSin((1.0f - _pow)* rad) / baseSin);
-			end.Mul(GetSin(_pow* rad) / baseSin);
+			start.Mul(GetSin((1.0f - _pow) * rad) / baseSin);
+			end.Mul(GetSin(_pow * rad) / baseSin);
 
 			return (start + end);
 		}
 
 	private:
-		
+
 		T val[Array];
 
 	};
@@ -992,9 +911,9 @@ namespace ChMath
 			{
 				tmpMat.m[i][0] = _vec[i];
 			}
-			
+
 			tmpMat = (*this) * tmpMat;
-			
+
 			VectorBase<T, _Arrarys> out;
 
 			for (i = 0; i < maxSize; i++)
@@ -1161,7 +1080,7 @@ namespace ChMath
 			T out = static_cast<T>(0.0f);
 
 			if (Row != Column)return out;
-			
+
 			unsigned long tmpNum;
 			for (unsigned long i = 0; i < Column; i++)
 			{
@@ -1213,7 +1132,7 @@ namespace ChMath
 		//掃き出し法による逆行列//
 		MatrixBase GetInverse()const
 		{
-			if(Row != Column)return *this;
+			if (Row != Column)return *this;
 
 			T detVal = GetLen();
 			if (detVal == static_cast<T>(0.0f))return *this;
@@ -1320,7 +1239,7 @@ namespace ChMath
 
 		void Identity()
 		{
-			for (unsigned long i = 0; i < Column;i++)
+			for (unsigned long i = 0; i < Column; i++)
 			{
 				for (unsigned long j = 0; j < Row; j++)
 				{
@@ -1341,7 +1260,6 @@ namespace ChMath
 				out[i] = VectorBase<T, Column>::Lerp(_start[i], _end[i], _pow);
 			}
 
-
 			return out;
 		}
 
@@ -1361,7 +1279,7 @@ namespace ChMath
 
 	};
 
-	template<typename T,unsigned long Array>
+	template<typename T, unsigned long Array>
 	using SquareMatrixBase = MatrixBase<T, Array, Array>;
 
 	template<typename T>
@@ -1530,29 +1448,19 @@ namespace ChMath
 		//対象のVectorlで表される四角形に引数で入れたVectorlであらわされる四角形が重なっているかの確認//
 		inline bool IsOverlaps(const Vector4Base<T>& _target) const
 		{
-			if (right < _target.left ||
-				left > _target.right ||
-				top < _target.bottom ||
-				bottom > _target.top)
-			{
-				return false;
-			}
-
-			return true;
+			return right >= _target.left &&
+				left <= _target.right &&
+				top >= _target.bottom &&
+				bottom <= _target.top;
 		}
 
 		//対象のVectorlで表される四角形に引数で入れたVectorlで表される位置が重なっているかの確認//
 		inline bool IsOnPoint(const Vector2Base<T>& _target) const
 		{
-			if (right < _target.x ||
-				left > _target.x ||
-				top < _target.y ||
-				bottom > _target.y)
-			{
-				return false;
-			}
-
-			return true;
+			return right >= _target.x &&
+				left <= _target.x &&
+				top >= _target.y &&
+				bottom <= _target.y;
 		}
 
 		//対象のVectorlで表される四角形と引数で入れたVectorlであらわされる四角形に重なっている四角形をあらわした　Vectorlを取得する//
@@ -1569,7 +1477,7 @@ namespace ChMath
 		}
 
 		//対象のVectorlで表される四角形と引数で入れたVectorlであらわされる四角形に重なっている四角形をあらわした　Vectorlを取得する//
-		inline static Vector4Base<T> OverlapsRect(const Vector4Base<T>& _vec1,const Vector4Base<T>& _vec2)
+		inline static Vector4Base<T> OverlapsRect(const Vector4Base<T>& _vec1, const Vector4Base<T>& _vec2)
 		{
 			if (!_vec1.IsOverlaps(_vec2))return _vec1;
 
@@ -1688,5 +1596,77 @@ namespace ChMath
 		inline BaseMatrix4x4(const BaseMatrix4x4& _mat) { m = _mat.m; }
 	};
 }
+
+#ifdef CRT
+
+double ChMath::Round(const double& _val, const unsigned long _digit)
+{
+	if (_val == 0.0)return 0.0;
+
+	double out = _val * std::powl(10, static_cast<double>(_digit - 1));
+	out = std::round(out);
+	out = out * std::powl(0.1, static_cast<double>(_digit - 1));
+
+	return out;
+}
+
+long double ChMath::SqrtEx(const long double& _base, const unsigned long _digit)
+{
+	if (_base == 0.0)return 0.0;
+
+	long double out = std::sqrt(_base);
+	//微分積分自分で使えるようになってから再度考える//
+	return out;
+
+	unsigned long maxCount = _digit > 4931 ? 4931 : _digit;
+
+	//以下を参照//
+	//https://qiita.com/rytaryu/items/e5d760a80f9ce5db860f
+	//
+
+	for (unsigned long i = 0; i < maxCount; i++)
+	{
+		out = ((out * out) + _base) / (2 * out);
+	}
+
+	return out;
+}
+
+template<typename Floating>
+Floating ChMath::GetSin(Floating _val)
+{
+	return std::sin(_val);
+}
+
+template<typename Floating>
+Floating ChMath::GetASin(Floating _val)
+{
+	return std::asin(_val);
+}
+
+template<typename Floating>
+Floating ChMath::GetACos(Floating _val)
+{
+	return std::acos(_val);
+}
+
+template<typename Floating>
+Floating ChMath::GetCos(Floating _val)
+{
+	return std::cos(_val);
+}
+
+template<typename Floating>
+Floating ChMath::GetATan(Floating _val)
+{
+	return std::atanf(_val);
+}
+
+template<typename Floating>
+Floating ChMath::GetFMod(Floating _valx, Floating _valy)
+{
+	return std::fmod(_valx, _valy);
+}
+#endif
 
 #endif
