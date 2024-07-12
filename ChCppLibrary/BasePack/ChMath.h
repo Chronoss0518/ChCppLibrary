@@ -49,23 +49,29 @@ namespace ChMath
 
 	float SqrtEx(const float& _base, const unsigned long _digit = 37);
 
-	template<typename Floating>
-	Floating GetSin(Floating _val);
+	float GetSin(float _val);
+	double GetSin(double _val);
+	long double GetSin(long double _val);
 
-	template<typename Floating>
-	Floating GetASin(Floating _val);
+	float GetASin(float _val);
+	double GetASin(double _val);
+	long double GetASin(long double _val);
 
-	template<typename Floating>
-	Floating GetACos(Floating _val);
+	float GetACos(float _val);
+	double GetACos(double _val);
+	long double GetACos(long double _val);
 
-	template<typename Floating>
-	Floating GetCos(Floating _val);
+	float GetCos(float _val);
+	double GetCos(double _val);
+	long double GetCos(long double _val);
 
-	template<typename Floating>
-	Floating GetATan(Floating _val);
+	float GetATan(float _val);
+	double GetATan(double _val);
+	long double GetATan(long double _val);
 
-	template<typename Floating>
-	Floating GetFMod(Floating _valx, Floating _valy);
+	float GetFMod(float _valx, float _valy);
+	double GetFMod(double _valx, double _valy);
+	long double GetFMod(long double _valx, long double _valy);
 
 	//2の平方根(有効桁数8桁)//
 	static const float SQUARE_ROOT = 1.41421356f;
@@ -430,33 +436,37 @@ namespace ChMath
 
 	public://Set Functions//
 
-		void SetLen(const T _len)
+		void SetLen(const T _len);
+
+		void SetCross(
+			const VectorBase& _vec,
+			const unsigned long _digit = 6)
 		{
-			if (GetLen() == 0.0f)return;
+			Set(GetCross(*this, _vec, _digit));
+		}
 
-			Normalize();
+		void SetCross(
+			const VectorBase& _vec1,
+			const VectorBase& _vec2,
+			const unsigned long _digit = 6)
+		{
+			Set(GetCross(_vec1, _vec2, _digit));
+		}
 
-			T tmp = _len * _len;
+		void SetLerp(
+			const VectorBase& _start,
+			const VectorBase& _end,
+			const float _pow)
+		{
+			Set(Lerp(_start, _end, _pow));
+		}
 
-			/*
-			x^2 + y^2 + z^2 = r^2
-
-			(nx * l)^2 + (ny * l)^2 + (nz * l)^2 = r^2
-
-			l^2 = r^2 /(nx^2 + ny^2 + nz^2)
-			*/
-
-			T add = static_cast<T>(0.0f);
-
-			for (unsigned long i = 0; i < Array; i++)
-			{
-				add += val[i] * val[i];
-			}
-
-			T l = tmp / add;
-
-			l = SqrtEx(l);
-			Mul(l);
+		void SetSLerp(
+			const VectorBase& _start,
+			const VectorBase& _end,
+			const float _pow)
+		{
+			Set(SLerp(_start, _end, _pow));
 		}
 
 	public://Get Functions//
@@ -464,7 +474,7 @@ namespace ChMath
 		constexpr const unsigned long GetArray()const { return Array; }
 
 		//ベクトルの要素の大きさを得る//
-		T GetElementsLen()
+		T GetElementsLen()const
 		{
 			VectorBase tmp = *this;
 			tmp.Abs();
@@ -481,14 +491,14 @@ namespace ChMath
 		//ベクトルの大きさを得る//
 		T GetLen(const unsigned long _digit = 6)const
 		{
-			T Len = static_cast<T>(0.0f);
+			T len = static_cast<T>(0.0f);
 
 			for (unsigned long i = 0; i < Array; i++)
 			{
-				Len += val[i] * val[i];
+				len += val[i] * val[i];
 			}
 
-			return SqrtEx(Len, _digit);
+			return static_cast<T>(SqrtEx(static_cast<long double>(len), _digit));
 		}
 
 		T GetCos(
@@ -507,12 +517,7 @@ namespace ChMath
 
 		T GetRadian(
 			const VectorBase& _vec,
-			const unsigned long _digit = 6)const
-		{
-			T tmp = GetCos(_vec, _digit);
-
-			return static_cast<T>(GetACos(tmp));
-		}
+			const unsigned long _digit = 6)const;
 
 		T GetDot(
 			const VectorBase& _vec,
@@ -533,7 +538,6 @@ namespace ChMath
 			const VectorBase& _vec2,
 			const unsigned long _digit = 6)const
 		{
-
 			VectorBase out;
 
 			for (unsigned char i = 0; i < Array; i++)
@@ -546,6 +550,47 @@ namespace ChMath
 			out.Normalize(_digit);
 
 			return out;
+		}
+
+		VectorBase Lerp(
+			const VectorBase& _start,
+			const VectorBase& _end,
+			const float _pow)const
+		{
+			if (_pow <= 0.0f)return _start;
+			if (_pow >= 1.0f)return _end;
+
+			VectorBase out;
+
+			out = (_start * (1.0f - _pow)) + (_end * _pow);
+
+			return out;
+		}
+
+		VectorBase GetSLerp(
+			const VectorBase& _start,
+			const VectorBase& _end,
+			const float _pow)const
+		{
+
+			if (_pow >= 1.0f)return _end;
+			if (_pow <= 0.0f)return _start;
+
+			VectorBase start = _start;
+			VectorBase end = _end;
+
+			T rad = start.GetDot(end);
+			rad = GetACos(rad);
+			if (rad == 0.0f)return start;
+
+			float baseSin = GetSin(rad);
+
+			if (baseSin == 0.0f)return start;
+
+			start.Mul(GetSin((1.0f - _pow) * rad) / baseSin);
+			end.Mul(GetSin(_pow * rad) / baseSin);
+
+			return (start + end);
 		}
 
 		const T* const GetVal()const
@@ -569,46 +614,6 @@ namespace ChMath
 			{
 				val[i] = _vec.val[i] < static_cast<T>(0.0f) ? _vec.val[i] * static_cast<T>(-1.0f) : _vec.val[i];
 			}
-		}
-
-		void Cross(
-			const VectorBase& _vec,
-			const unsigned long _digit = 6)
-		{
-			Set(GetCross(*this, _vec, _digit));
-		}
-
-		void Cross(
-			const VectorBase& _vec1,
-			const VectorBase& _vec2,
-			const unsigned long _digit = 6)
-		{
-			Set(GetCross(_vec1, _vec2, _digit));
-		}
-
-		//補正を行う(Nowは0～1)
-		void Correction(
-			const VectorBase& _start,
-			const VectorBase& _end,
-			const float _Now)
-		{
-			if (_Now <= 0.0f)
-			{
-				return;
-			}
-
-			if (_Now >= 1.0f)
-			{
-				return;
-			}
-
-			VectorBase tmpVec;
-
-			tmpVec = _end - _start;
-
-			tmpVec = _start + (tmpVec * _Now);
-
-
 		}
 
 		void Identity()
@@ -638,7 +643,6 @@ namespace ChMath
 		//ベクトルの要素の合計を1にする//
 		bool ElementsNormalize()
 		{
-
 			T len = GetElementsLen();
 
 			if (len == static_cast<T>(1.0))return true;
@@ -650,47 +654,6 @@ namespace ChMath
 			}
 
 			return true;
-		}
-
-		static VectorBase Lerp(
-			const VectorBase& _start,
-			const VectorBase& _end,
-			const float _pow)
-		{
-			if (_pow <= 0.0f)return _start;
-			if (_pow >= 1.0f)return _end;
-
-			VectorBase out;
-
-			out = (_start * (1.0f - _pow)) + (_end * _pow);
-
-			return out;
-		}
-
-		static VectorBase SLerp(
-			const VectorBase& _start,
-			const VectorBase& _end,
-			const float _pow)
-		{
-
-			if (_pow >= 1.0f)return _end;
-			if (_pow <= 0.0f)return _start;
-
-			VectorBase start = _start;
-			VectorBase end = _end;
-
-			float rad = start.GetDot(end);
-			rad = GetACos(rad);
-			if (rad == 0.0f)return start;
-
-			float baseSin = GetSin(rad);
-
-			if (baseSin == 0.0f)return start;
-
-			start.Mul(GetSin((1.0f - _pow) * rad) / baseSin);
-			end.Mul(GetSin(_pow * rad) / baseSin);
-
-			return (start + end);
 		}
 
 	private:
@@ -717,12 +680,12 @@ namespace ChMath
 		{
 			MatrixBase<T, _Row, _Column> out;
 
-			unsigned long MinRow = _Row > Row ? Row : _Row;
-			unsigned long MinColumn = _Column > Column ? Column : _Column;
+			unsigned long minRow = _Row > Row ? Row : _Row;
+			unsigned long minColumn = _Column > Column ? Column : _Column;
 
-			for (unsigned long i = 0; i < MinColumn; i++)
+			for (unsigned long i = 0; i < minColumn; i++)
 			{
-				for (unsigned long j = 0; j < MinRow; j++)
+				for (unsigned long j = 0; j < minRow; j++)
 				{
 					out[i][j] = m[i][j];
 				}
@@ -898,14 +861,12 @@ namespace ChMath
 		template<unsigned long _Arrarys>
 		VectorBase<T, _Arrarys> VerticalMul(const VectorBase<T, _Arrarys> _vec)const
 		{
-
 			MatrixBase<T, Row, Column> tmpMat;
 
 			tmpMat.Set(static_cast<T>(0.0f));
 
-			unsigned long maxSize = _Arrarys;
+			unsigned long maxSize = _Arrarys >= Row ? Row : _Arrarys;
 
-			maxSize = maxSize >= Row ? Row : maxSize;
 			unsigned long i = 0;
 			for (i = 0; i < maxSize; i++)
 			{
@@ -929,14 +890,12 @@ namespace ChMath
 		template<unsigned long _Arrarys>
 		VectorBase<T, _Arrarys>HorizontalMul(const VectorBase<T, _Arrarys> _vec)const
 		{
-
 			MatrixBase<T, Row, Column> tmpMat;
 
 			tmpMat.Set(static_cast<T>(0.0f));
 
-			unsigned long maxSize = _Arrarys;
+			unsigned long maxSize = _Arrarys >= Column ? Column : _Arrarys;
 
-			maxSize = maxSize >= Column ? Column : maxSize;
 			unsigned long i = 0;
 			for (i = 0; i < maxSize; i++)
 			{
@@ -953,7 +912,6 @@ namespace ChMath
 			}
 
 			return out;
-
 		}
 
 		void Div(const MatrixBase& _mat)
@@ -964,7 +922,6 @@ namespace ChMath
 			tmpMat.Inverse();
 
 			Mul(tmpMat);
-
 		}
 
 	public://Serialize Deserialize//
@@ -1030,7 +987,6 @@ namespace ChMath
 			const std::basic_string<CharaType>& _endChar = ChStd::GetSemiColonChara<CharaType>(),
 			const unsigned int _digit = 6)
 		{
-
 			std::basic_string<CharaType> tmpStr = _str;
 
 			size_t tmpFPos = _fPos;
@@ -1051,25 +1007,21 @@ namespace ChMath
 			{
 				for (unsigned char j = 0; j < Row; j++)
 				{
-					size_t Test = tmpStr.find(_cutChar, tmp);
+					size_t test = tmpStr.find(_cutChar, tmp);
 
-					if (Test > EPos)Test = EPos;
+					if (test > EPos)test = EPos;
 
-					{
-						tmpFPos = Test;
+					tmpFPos = test;
 
-						std::basic_string<CharaType> Num = tmpStr.substr(tmp, tmpFPos - tmp);
+					std::basic_string<CharaType> Num = tmpStr.substr(tmp, tmpFPos - tmp);
 
-						m[i][j] = ChStr::GetNumFromText<T, CharaType>(Num);
+					m[i][j] = ChStr::GetNumFromText<T, CharaType>(Num);
 
-						tmp = Test + 1;
-					}
+					tmp = test + 1;
 
-					if (Test >= EPos)return;
+					if (test >= EPos)return;
 				}
-
 			}
-
 		}
 #endif
 
@@ -1081,7 +1033,6 @@ namespace ChMath
 
 			if (Row != Column)return out;
 
-			unsigned long tmpNum;
 			for (unsigned long i = 0; i < Column; i++)
 			{
 				T add = m[0][i];
@@ -1089,11 +1040,9 @@ namespace ChMath
 
 				for (unsigned long j = 1; j < Row; j++)
 				{
-					tmpNum = (i + j) % Row;
-					add *= m[j % Column][tmpNum];
+					add *= m[j % Column][(i + j) % Row];
 
-					tmpNum = (Row + i - j) % Row;
-					sub *= m[j % Column][tmpNum];
+					sub *= m[j % Column][(Row + i - j) % Row];
 				}
 
 				out = out + add - sub;
@@ -1107,18 +1056,18 @@ namespace ChMath
 
 			if (_Row >= Row || _Col >= Column)return out;
 
-			bool ColFlg = false;
+			bool colFlg = false;
 
 			for (unsigned long i = 0; i < Column - 1; i++)
 			{
-				if (i == _Col)ColFlg = true;
+				if (i == _Col)colFlg = true;
 
-				bool RowFlg = false;
+				bool rowFlg = false;
 
 				for (unsigned long j = 0; j < Row - 1; j++)
 				{
-					if (j == _Row)RowFlg = true;
-					out.m[i][j] = m[ColFlg ? i + 1 : i][RowFlg ? j + 1 : j];
+					if (j == _Row)rowFlg = true;
+					out.m[i][j] = m[colFlg ? i + 1 : i][rowFlg ? j + 1 : j];
 				}
 			}
 		}
@@ -1231,7 +1180,6 @@ namespace ChMath
 					return false;
 				}
 			}
-
 			return true;
 		}
 
@@ -1632,41 +1580,148 @@ long double ChMath::SqrtEx(const long double& _base, const unsigned long _digit)
 	return out;
 }
 
-template<typename Floating>
-Floating ChMath::GetSin(Floating _val)
+float ChMath::GetSin(float _val)
 {
 	return std::sin(_val);
 }
 
-template<typename Floating>
-Floating ChMath::GetASin(Floating _val)
+double ChMath::GetSin(double _val)
+{
+	return std::sin(_val);
+}
+
+long double ChMath::GetSin(long double _val)
+{
+	return std::sin(_val);
+}
+
+
+float ChMath::GetASin(float _val)
 {
 	return std::asin(_val);
 }
 
-template<typename Floating>
-Floating ChMath::GetACos(Floating _val)
+double ChMath::GetASin(double _val)
+{
+	return std::asin(_val);
+}
+
+long double ChMath::GetASin(long double _val)
+{
+	return std::asin(_val);
+}
+
+
+float ChMath::GetACos(float _val)
 {
 	return std::acos(_val);
 }
 
-template<typename Floating>
-Floating ChMath::GetCos(Floating _val)
+double ChMath::GetACos(double _val)
+{
+	return std::acos(_val);
+}
+
+long double ChMath::GetACos(long double _val)
+{
+	return std::acos(_val);
+}
+
+
+float ChMath::GetCos(float _val)
 {
 	return std::cos(_val);
 }
 
-template<typename Floating>
-Floating ChMath::GetATan(Floating _val)
+double ChMath::GetCos(double _val)
 {
-	return std::atanf(_val);
+	return std::cos(_val);
 }
 
-template<typename Floating>
-Floating ChMath::GetFMod(Floating _valx, Floating _valy)
+long double ChMath::GetCos(long double _val)
+{
+	return std::cos(_val);
+}
+
+
+float ChMath::GetATan(float _val)
+{
+	return std::atan(_val);
+}
+
+double ChMath::GetATan(double _val)
+{
+	return std::atan(_val);
+}
+
+long double ChMath::GetATan(long double _val)
+{
+	return std::atan(_val);
+}
+
+
+float ChMath::GetFMod(float _valx, float _valy)
 {
 	return std::fmod(_valx, _valy);
 }
+
+double ChMath::GetFMod(double _valx, double _valy)
+{
+	return std::fmod(_valx, _valy);
+}
+
+long double ChMath::GetFMod(long double _valx, long double _valy)
+{
+	return std::fmod(_valx, _valy);
+}
+
 #endif
+
+#ifdef CRT
+
+template<typename T, unsigned long Array>
+void ChMath::VectorBase<T, Array>::SetLen(const T _len)
+{
+	if (GetLen() == 0.0f)return;
+
+	Normalize();
+
+	T tmp = _len * _len;
+
+	/*
+	x^2 + y^2 + z^2 = r^2
+
+	(nx * l)^2 + (ny * l)^2 + (nz * l)^2 = r^2
+
+	l^2 = r^2 /(nx^2 + ny^2 + nz^2)
+	*/
+
+	T add = static_cast<T>(0.0f);
+
+	for (unsigned long i = 0; i < Array; i++)
+	{
+		add += val[i] * val[i];
+	}
+
+	tmp = tmp / add;
+
+	tmp = static_cast<T>(SqrtEx(static_cast<long double>(tmp)));
+	Mul(tmp);
+}
+
+
+template<typename T, unsigned long Array>
+T ChMath::VectorBase<T, Array>::GetRadian(
+	const VectorBase<T, Array>& _vec,
+	const unsigned long _digit)const
+{
+	T tmp = GetCos(_vec, _digit);
+
+	return ChMath::GetACos(tmp);
+}
+
+
+#endif
+
 
 #endif
