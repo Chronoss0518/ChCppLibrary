@@ -544,14 +544,6 @@ namespace ChMath
 			}
 		}
 
-		inline void Abs(const VectorBase& _vec)
-		{
-			for (unsigned long i = 0; i < Array; i++)
-			{
-				val[i] = _vec.val[i] < static_cast<T>(0.0f) ? _vec.val[i] * static_cast<T>(-1.0f) : _vec.val[i];
-			}
-		}
-
 		void Identity()
 		{
 			for (unsigned long i = 0; i < Array; i++)
