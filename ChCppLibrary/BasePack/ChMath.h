@@ -17,7 +17,6 @@
 #define COMMA_CHARA_FUNCTION(type) NUMBER_FUNCTION_BASE(GetCommaChara,type)
 #endif
 
-
 #ifndef SEMICOLON_CHARA_FUNCTION
 #define SEMICOLON_CHARA_FUNCTION(type) NUMBER_FUNCTION_BASE(GetSemiColonChara,type)
 #endif
@@ -26,9 +25,14 @@
 #define FLOAT_ZERO_TEST(val, testSize) val >= -testSize && val <= testSize
 #endif
 
+#ifndef CH_MATH_VECTOR_OPERATOR_ACT
+#define CH_MATH_VECTOR_OPERATOR_ACT(_Operator,_TargetValue) \
+for (unsigned long i = 0; i < Array; i++){val[i] _Operator _TargetValue;}
+#endif
+
 #ifndef CH_MATH_METHOD
 #define CH_MATH_METHOD(_OutClass,_InClass,_Method,_MethodType)\
-_OutClass & operator _MethodType (const _InClass& _val)\
+inline _OutClass & operator _MethodType (const _InClass& _val)\
 {\
 	_Method (_val);\
 	return *this;\
@@ -37,7 +41,7 @@ _OutClass & operator _MethodType (const _InClass& _val)\
 
 #ifndef CH_MATH_METHOD_CONST
 #define CH_MATH_METHOD_CONST(_OutClass,_InClass,_MethodType,_Method)\
-_OutClass operator _MethodType(const _InClass& _val)const\
+inline _OutClass operator _MethodType(const _InClass& _val)const\
 {\
 	_OutClass out = *this;\
 	out._Method(_val);\
@@ -47,7 +51,7 @@ _OutClass operator _MethodType(const _InClass& _val)const\
 
 #ifndef	CH_MATH_METHOD_EQUALS
 #define	CH_MATH_METHOD_EQUALS(_InClass,_Flg,_Operator,_Array)\
-bool operator _Operator(const _InClass& _val)const\
+inline bool operator _Operator(const _InClass& _val)const\
 {\
 	for (unsigned long i = 0; i < _Array; i++)\
 	{\
@@ -123,7 +127,7 @@ namespace ChMath
 	public://Operator Function//
 
 		template<unsigned long _ArrayCount>
-		operator VectorBase<T, _ArrayCount>()const
+		inline operator VectorBase<T, _ArrayCount>()const
 		{
 			VectorBase<T, _ArrayCount> out;
 
@@ -138,7 +142,7 @@ namespace ChMath
 		}
 
 		template<typename _T>
-		operator VectorBase<_T, Array>()const
+		inline operator VectorBase<_T, Array>()const
 		{
 			VectorBase<_T, Array> out;
 
@@ -150,17 +154,17 @@ namespace ChMath
 			return out;
 		}
 
-		T& operator [](const unsigned long _val)
+		inline T& operator [](const unsigned long _val)
 		{
 			return val[_val % Array];
 		}
 
-		T operator [](const unsigned long _val)const
+		inline T operator [](const unsigned long _val)const
 		{
 			return val[_val % Array];
 		}
 
-		explicit operator const T* const ()const
+		inline explicit operator const T* const ()const
 		{
 			return val;
 		}
@@ -190,114 +194,81 @@ namespace ChMath
 
 	public://Constructor Destructor//
 
-		VectorBase()
+		inline VectorBase()
 		{
 			Identity();
 		}
 
-		VectorBase(const T(&_val)[Array]) :val(_val) {}
+		inline VectorBase(const T(&_val)[Array]) :val(_val) {}
 
 		inline VectorBase(const T(&_val))
 		{
 			Set(_val);
 		}
 
-		VectorBase(const VectorBase& _val)
+		inline VectorBase(const VectorBase& _val)
 		{
 			Set(_val);
 		}
 
 	public://Operator Math Function//
 
-		void Set(const VectorBase& _vec)
+		inline void Set(const VectorBase& _vec)
 		{
-			for (unsigned long i = 0; i < Array; i++)
-			{
-				val[i] = _vec.val[i];
-			}
+			if (this == &_vec)return;
+			CH_MATH_VECTOR_OPERATOR_ACT(=, _vec.val[i]);
 		}
 
-		void Set(const T& _val)
+		inline void Set(const T& _val)
 		{
-			for (unsigned long i = 0; i < Array; i++)
-			{
-				val[i] = _val;
-			}
+			CH_MATH_VECTOR_OPERATOR_ACT(=, _val);
 		}
 
-		void Set(const T(&_arrayVal)[Array])
+		inline void Set(const T(&_arrayVal)[Array])
 		{
-
-			for (unsigned long i = 0; i < Array; i++)
-			{
-				val[i] = _arrayVal[i];
-			}
+			CH_MATH_VECTOR_OPERATOR_ACT(=, _arrayVal[i]);
 		}
 
-		void Add(const VectorBase& _vec)
+		inline void Add(const VectorBase& _vec)
 		{
-			for (unsigned long i = 0; i < Array; i++)
-			{
-				val[i] += _vec.val[i];
-			}
+			CH_MATH_VECTOR_OPERATOR_ACT(+=, _vec.val[i]);
 		}
 
-		void Add(const T& _val)
+		inline void Add(const T& _val)
 		{
-			for (unsigned long i = 0; i < Array; i++)
-			{
-				val[i] += _val;
-			}
+			CH_MATH_VECTOR_OPERATOR_ACT(+=, _val);
 		}
 
-		void Sub(const VectorBase& _vec)
+		inline void Sub(const VectorBase& _vec)
 		{
-			for (unsigned long i = 0; i < Array; i++)
-			{
-				val[i] -= _vec.val[i];
-			}
+			CH_MATH_VECTOR_OPERATOR_ACT(-=, _vec.val[i]);
 		}
 
-		void Sub(const T& _val)
+		inline void Sub(const T& _val)
 		{
-			for (unsigned long i = 0; i < Array; i++)
-			{
-				val[i] -= _val;
-			}
+			CH_MATH_VECTOR_OPERATOR_ACT(-=, _val);
 		}
 
-		void Mul(const VectorBase& _vec)
+		inline void Mul(const VectorBase& _vec)
 		{
-			for (unsigned long i = 0; i < Array; i++)
-			{
-				val[i] *= _vec.val[i];
-			}
+			CH_MATH_VECTOR_OPERATOR_ACT(*=, _vec.val[i]);
 		}
 
-		void Mul(const T& _val)
+		inline void Mul(const T& _val)
 		{
-			for (unsigned long i = 0; i < Array; i++)
-			{
-				val[i] *= _val;
-			}
+			CH_MATH_VECTOR_OPERATOR_ACT(*=, _val);
 		}
 
-		void Div(const VectorBase& _vec)
+		inline void Div(const VectorBase& _vec)
 		{
-			for (unsigned long i = 0; i < Array; i++)
-			{
-				val[i] /= _vec.val[i] != static_cast<T>(0.0f) ? _vec.val[i] : static_cast<T>(1.0f);
-			}
+			CH_MATH_VECTOR_OPERATOR_ACT(/=, _vec.val[i] != static_cast<T>(0.0f) ? _vec.val[i] : static_cast<T>(1.0f));
 		}
 
-		void Div(const T& _val)
+		inline void Div(const T& _val)
 		{
 			T tmp = _val != static_cast<T>(0.0f) ? _val : static_cast<T>(1.0f);
 
-			for (unsigned long i = 0; i < Array; i++)
-			{
-				val[i] /= tmp;
-			}
+			CH_MATH_VECTOR_OPERATOR_ACT(/=, tmp);
 		}
 
 	public://Serialize Deserialize//
@@ -538,18 +509,12 @@ namespace ChMath
 
 		inline void Abs()
 		{
-			for (unsigned long i = 0; i < Array; i++)
-			{
-				val[i] = val[i] < static_cast<T>(0.0f) ? val[i] * static_cast<T>(-1.0f) : val[i];
-			}
+			CH_MATH_VECTOR_OPERATOR_ACT(=, val[i] < static_cast<T>(0.0f) ? -val[i] : val[i]);
 		}
 
 		void Identity()
 		{
-			for (unsigned long i = 0; i < Array; i++)
-			{
-				val[i] = static_cast<T>(i != 3 ? 0.0f : 1.0f);
-			}
+			CH_MATH_VECTOR_OPERATOR_ACT(=, static_cast<T>((i + 1) % 3 == 0 ? 0.0f : 1.0f));
 		}
 
 		//ƒxƒNƒgƒ‹‚Ì’·‚³‚ð1‚É‚·‚é//
@@ -560,10 +525,7 @@ namespace ChMath
 			if (len == static_cast<T>(1.0))return true;
 			if (len == static_cast<T>(0.0))return false;
 
-			for (unsigned long i = 0; i < Array; i++)
-			{
-				val[i] /= len;
-			}
+			CH_MATH_VECTOR_OPERATOR_ACT(/=, len);
 
 			return true;
 		}
@@ -576,10 +538,7 @@ namespace ChMath
 			if (len == static_cast<T>(1.0))return true;
 			if (len == static_cast<T>(0.0))return false;
 
-			for (unsigned long i = 0; i < Array; i++)
-			{
-				val[i] /= len;
-			}
+			CH_MATH_VECTOR_OPERATOR_ACT(/=, len);
 
 			return true;
 		}
