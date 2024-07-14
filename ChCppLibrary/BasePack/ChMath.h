@@ -22,6 +22,43 @@
 #define SEMICOLON_CHARA_FUNCTION(type) NUMBER_FUNCTION_BASE(GetSemiColonChara,type)
 #endif
 
+#ifndef FLOAT_ZERO_TEST
+#define FLOAT_ZERO_TEST(val, testSize) val >= -testSize && val <= testSize
+#endif
+
+#ifndef CH_MATH_METHOD
+#define CH_MATH_METHOD(_OutClass,_InClass,_Method,_MethodType)\
+_OutClass & operator _MethodType (const _InClass& _val)\
+{\
+	_Method (_val);\
+	return *this;\
+}
+#endif
+
+#ifndef CH_MATH_METHOD_CONST
+#define CH_MATH_METHOD_CONST(_OutClass,_InClass,_MethodType,_Method)\
+_OutClass operator _MethodType(const _InClass& _val)const\
+{\
+	_OutClass out = *this;\
+	out._Method(_val);\
+	return out;\
+}
+#endif
+
+#ifndef	CH_MATH_METHOD_EQUALS
+#define	CH_MATH_METHOD_EQUALS(_InClass,_Flg,_Operator,_Array)\
+bool operator _Operator(const _InClass& _val)const\
+{\
+	for (unsigned long i = 0; i < _Array; i++)\
+	{\
+		if (_val.val[i] == val[i])continue;\
+		return !(_Flg);\
+	}\
+	return (_Flg);\
+}
+#endif
+
+
 namespace ChStd
 {
 #ifdef CRT
@@ -128,129 +165,28 @@ namespace ChMath
 			return val;
 		}
 
-		VectorBase& operator =(const VectorBase& _Array)
-		{
-			Set(_Array);
-			return *this;
-		}
+		CH_MATH_METHOD(VectorBase, VectorBase, Set, =);
+		CH_MATH_METHOD(VectorBase, T, Set, =);
+		CH_MATH_METHOD(VectorBase, VectorBase, Add, +=);
+		CH_MATH_METHOD(VectorBase, T, Add, +=);
+		CH_MATH_METHOD(VectorBase, VectorBase, Sub, -=);
+		CH_MATH_METHOD(VectorBase, T, Sub, -=);
+		CH_MATH_METHOD(VectorBase, VectorBase, Mul, *=);
+		CH_MATH_METHOD(VectorBase, T, Mul, *=);
+		CH_MATH_METHOD(VectorBase, VectorBase, Div, /=);
+		CH_MATH_METHOD(VectorBase, T, Div, /=);
 
-		VectorBase& operator =(const T& _val)
-		{
-			Set(_val);
-			return *this;
-		}
+		CH_MATH_METHOD_CONST(VectorBase, VectorBase, +, Add);
+		CH_MATH_METHOD_CONST(VectorBase, T, +, Add);
+		CH_MATH_METHOD_CONST(VectorBase, VectorBase, -, Sub);
+		CH_MATH_METHOD_CONST(VectorBase, T, -, Sub);
+		CH_MATH_METHOD_CONST(VectorBase, VectorBase, *, Mul);
+		CH_MATH_METHOD_CONST(VectorBase, T, *, Mul);
+		CH_MATH_METHOD_CONST(VectorBase, VectorBase, / , Div);
+		CH_MATH_METHOD_CONST(VectorBase, T, / , Div);
 
-		VectorBase& operator +=(const VectorBase& _Array)
-		{
-			Add(_Array);
-			return *this;
-		}
-		VectorBase& operator -=(const VectorBase& _Array)
-		{
-			Sub(_Array);
-			return *this;
-		}
-		VectorBase& operator *=(const VectorBase& _Array)
-		{
-			Mul(_Array);
-			return *this;
-		}
-		VectorBase& operator /=(const VectorBase& _Array)
-		{
-			Div(_Array);
-			return *this;
-		}
-
-		VectorBase operator +(const VectorBase& _Array)const
-		{
-			VectorBase out = *this;
-			out.Add(_Array);
-			return out;
-		}
-		VectorBase operator -(const VectorBase& _Array)const
-		{
-			VectorBase out = *this;
-			out.Sub(_Array);
-			return out;
-		}
-		VectorBase operator *(const VectorBase& _Array)const
-		{
-			VectorBase out = *this;
-			out.Mul(_Array);
-			return out;
-		}
-		VectorBase operator /(const VectorBase& _Array)const
-		{
-			VectorBase<T, Array> out = *this;
-			out.Div(_Array);
-			return out;
-		}
-
-		VectorBase& operator +=(const T& _val)
-		{
-			Add(_val);
-			return *this;
-		}
-		VectorBase& operator -=(const T& _val)
-		{
-			Sub(_val);
-			return *this;
-		}
-		VectorBase& operator *=(const T& _val)
-		{
-			Mul(_val);
-			return *this;
-		}
-		VectorBase& operator /=(const T& _val)
-		{
-			Div(_val);
-			return *this;
-		}
-
-		VectorBase operator +(const T& _val)const
-		{
-			VectorBase<T, Array> out = *this;
-			out.Add(_val);
-			return out;
-		}
-		VectorBase operator -(const T& _val)const
-		{
-			VectorBase<T, Array> out = *this;
-			out.Sub(_val);
-			return out;
-		}
-		VectorBase operator *(const T& _val)const
-		{
-			VectorBase<T, Array> out = *this;
-			out.Mul(_val);
-			return out;
-		}
-		VectorBase operator /(const T& _val)const
-		{
-			VectorBase<T, Array> out = *this;
-			out.Div(_val);
-			return out;
-		}
-
-		bool operator ==(const VectorBase& _Array)const
-		{
-			for (unsigned long i = 0; i < Array; i++)
-			{
-				if (_Array.val[i] == val[i])continue;
-				return false;
-			}
-			return true;
-		}
-
-		bool operator !=(const VectorBase& _Array)const
-		{
-			for (unsigned long i = 0; i < Array; i++)
-			{
-				if (_Array.val[i] == val[i])continue;
-				return true;
-			}
-			return false;
-		}
+		CH_MATH_METHOD_EQUALS(VectorBase, true, == , Array);
+		CH_MATH_METHOD_EQUALS(VectorBase, false, != , Array);
 
 	public://Constructor Destructor//
 
@@ -466,7 +402,7 @@ namespace ChMath
 			const VectorBase& _end,
 			const float _pow)
 		{
-			Set(SLerp(_start, _end, _pow));
+			Set(GetSLerp(_start, _end, _pow));
 		}
 
 	public://Get Functions//
@@ -709,75 +645,16 @@ namespace ChMath
 			return m;
 		}
 
-		MatrixBase& operator =(const MatrixBase& _mat)
-		{
-			Set(_mat);
-			return *this;
-		}
+		CH_MATH_METHOD(MatrixBase, MatrixBase, Set, =);
+		CH_MATH_METHOD(MatrixBase, MatrixBase, Add, +=);
+		CH_MATH_METHOD(MatrixBase, MatrixBase, Sub, -=);
+		CH_MATH_METHOD(MatrixBase, MatrixBase, Mul, *=);
+		CH_MATH_METHOD(MatrixBase, MatrixBase, Div, /=);
 
-		MatrixBase& operator +=(const MatrixBase& _mat)
-		{
-			Add(_mat);
-
-			return *this;
-		}
-
-		MatrixBase operator +(const MatrixBase& _Array)const
-		{
-			MatrixBase out;
-
-			out = *this;
-			out += _Array;
-
-			return out;
-		}
-
-		MatrixBase& operator -=(const MatrixBase& _mat)
-		{
-			Sub(_mat);
-			return *this;
-		}
-
-		MatrixBase operator -(const MatrixBase& _Array)const
-		{
-			MatrixBase out;
-
-			out = *this;
-			out -= _Array;
-
-			return out;
-		}
-
-		MatrixBase& operator *=(const MatrixBase& _mat)
-		{
-			Mul(_mat);
-			return *this;
-		}
-
-		MatrixBase operator *(const MatrixBase& _Mat)const
-		{
-			MatrixBase out;
-
-			out = *this;
-			out *= _Mat;
-
-			return out;
-		}
-
-		MatrixBase& operator /=(const MatrixBase& _mat)
-		{
-			Div(_mat);
-			return *this;
-		}
-
-		MatrixBase operator /(const MatrixBase& _Mat)const
-		{
-			MatrixBase out;
-			out = *this;
-			out /= _Mat;
-
-			return out;
-		}
+		CH_MATH_METHOD_CONST(MatrixBase, MatrixBase, +, Add);
+		CH_MATH_METHOD_CONST(MatrixBase, MatrixBase, -, Sub);
+		CH_MATH_METHOD_CONST(MatrixBase, MatrixBase, *, Mul);
+		CH_MATH_METHOD_CONST(MatrixBase, MatrixBase, / , Div);
 
 	public://Contructor Destructor//
 
@@ -797,10 +674,7 @@ namespace ChMath
 		{
 			for (unsigned long i = 0; i < Column; i++)
 			{
-				for (unsigned long j = 0; j < Row; j++)
-				{
-					m[i][j] = _mat.m[i][j];
-				}
+				m[i].Set(_mat.m[i]);
 			}
 		}
 
@@ -808,10 +682,7 @@ namespace ChMath
 		{
 			for (unsigned long i = 0; i < Column; i++)
 			{
-				for (unsigned long j = 0; j < Row; j++)
-				{
-					m[i][j] = _val;
-				}
+				m[i].Set(_val);
 			}
 		}
 
@@ -819,10 +690,7 @@ namespace ChMath
 		{
 			for (unsigned long i = 0; i < Column; i++)
 			{
-				for (unsigned long j = 0; j < Row; j++)
-				{
-					m[i][j] += _mat.m[i][j];
-				}
+				m[i].Add(_mat.m[i]);
 			}
 		}
 
@@ -830,10 +698,7 @@ namespace ChMath
 		{
 			for (unsigned long i = 0; i < Column; i++)
 			{
-				for (unsigned long j = 0; j < Row; j++)
-				{
-					m[i][j] -= _mat.m[i][j];
-				}
+				m[i].Sub(_mat.m[i]);
 			}
 		}
 
