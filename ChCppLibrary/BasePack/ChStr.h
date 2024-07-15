@@ -23,14 +23,14 @@
 
 #endif
 
-#ifndef	IS_INTEGETR_TYPE
-#define IS_INTEGETR_TYPE(Type)\
+#ifndef	CH_IS_INTEGETR_TYPE
+#define CH_IS_INTEGETR_TYPE(Type)\
 ->typename std::enable_if<std::is_integral<Type>::value&& \
 !std::is_same<bool, Type>::value, Type>::type
 #endif
 
-#ifndef	IS_FLOATING_TYPE
-#define IS_FLOATING_TYPE(Type)\
+#ifndef	CH_IS_FLOATING_TYPE
+#define CH_IS_FLOATING_TYPE(Type)\
 ->typename std::enable_if<std::is_floating_point<Type>::value, Type>::type
 #endif
 

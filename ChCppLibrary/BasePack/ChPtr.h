@@ -5,19 +5,19 @@
 #include<memory>
 #endif
 
-#ifndef SAFE_CAST_TRUE
-#define SAFE_CAST_TRUE(BaseClass,TargetClass)\
+#ifndef CH_SAFE_CAST_TRUE
+#define CH_SAFE_CAST_TRUE(BaseClass,TargetClass)\
 ->typename std::enable_if<std::is_base_of<BaseClass, TargetClass>::value && \
 !std::is_same<BaseClass, TargetClass>::value, Shared<TargetClass>>::type
 #endif 
 
-#ifndef SAFE_CAST_FALSE
-#define SAFE_CAST_FALSE(BaseClass,TargetClass)\
+#ifndef CH_SAFE_CAST_FALSE
+#define CH_SAFE_CAST_FALSE(BaseClass,TargetClass)\
 ->typename  std::enable_if<std::is_same<BaseClass, TargetClass>::value, Shared<TargetClass>>::type
 #endif 
 
-#ifndef POINTER_TEST
-#define POINTER_TEST(TargetClass)\
+#ifndef CH_POINTER_TEST
+#define CH_POINTER_TEST(TargetClass)\
 ->typename std::enable_if<std::is_pointer<TargetClass>::value, bool>::type
 #endif
 
@@ -45,7 +45,7 @@ namespace ChPtr
 #ifdef CRT
 	//SharedPtr用ダウンキャスト//
 	template<class C, class C2>
-	static inline auto SharedSafeCast(Shared<C2> _sPtr)SAFE_CAST_TRUE(C2,C)
+	static inline auto SharedSafeCast(Shared<C2> _sPtr)CH_SAFE_CAST_TRUE(C2,C)
 	{
 		return std::dynamic_pointer_cast<C, C2>(_sPtr);
 	}
@@ -53,7 +53,7 @@ namespace ChPtr
 
 #ifdef CRT
 	template<class C, class C2>
-	static inline auto SharedSafeCast(Shared<C2> _sPtr)SAFE_CAST_FALSE(C2,C)
+	static inline auto SharedSafeCast(Shared<C2> _sPtr)CH_SAFE_CAST_FALSE(C2,C)
 	{
 		return _sPtr;
 	}
@@ -62,7 +62,7 @@ namespace ChPtr
 #ifdef CRT
 	//*Ptr用ダウンキャスト//
 	template<class C, class C2>
-	static inline auto SafeCast(C2*_ptr)SAFE_CAST_TRUE(C2, C)
+	static inline auto SafeCast(C2*_ptr)CH_SAFE_CAST_TRUE(C2, C)
 	{
 		return dynamic_cast<C*>(_ptr);
 	}
@@ -70,7 +70,7 @@ namespace ChPtr
 
 #ifdef CRT
 	template<class C, class C2>
-	static inline auto SafeCast(C2* _ptr)SAFE_CAST_FALSE(C2, C)
+	static inline auto SafeCast(C2* _ptr)CH_SAFE_CAST_FALSE(C2, C)
 	{
 		return (_ptr);
 	}
@@ -79,7 +79,7 @@ namespace ChPtr
 #ifdef CRT
 	//クラスがNULLまたはnullptrかをチェックする関数//
 	template<class C>
-	static inline auto NullCheck(const C& _class)POINTER_TEST(C)
+	static inline auto NullCheck(const C& _class)CH_POINTER_TEST(C)
 	{
 		return (_class == NULL || _class == nullptr);
 	}
@@ -88,7 +88,7 @@ namespace ChPtr
 #ifdef CRT
 	//クラスがNULLとnullptrのどちらでもないかをチェックする関数//
 	template<class C>
-	static inline auto NotNullCheck(const C& _class)POINTER_TEST(C)
+	static inline auto NotNullCheck(const C& _class)CH_POINTER_TEST(C)
 	{
 		return (_class != NULL && _class != nullptr);
 	}

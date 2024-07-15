@@ -21,65 +21,65 @@
 #endif
 #endif
 
-#ifndef TO_CHAR
-#define TO_CHAR(Text) Text
+#ifndef CH_TO_CHAR
+#define CH_TO_CHAR(Text) Text
 #endif
 
-#ifndef TO_WCHAR
-#define TO_WCHAR(Text) L##Text
+#ifndef CH_TO_WCHAR
+#define CH_TO_WCHAR(Text) L##Text
 #endif
 
-#ifndef TO_CHAR16
-#define TO_CHAR16(Text) u##Text
+#ifndef CH_TO_CHAR16
+#define CH_TO_CHAR16(Text) u##Text
 #endif
 
-#ifndef TO_CHAR32
-#define TO_CHAR32(Text) U##Text
+#ifndef CH_TO_CHAR32
+#define CH_TO_CHAR32(Text) U##Text
 #endif
 
 #ifdef CPP20
-#ifndef TO_CHAR8
-#define TO_CHAR8(Text) u8##Text
+#ifndef CH_TO_CHAR8
+#define CH_TO_CHAR8(Text) u8##Text
 #endif
 #endif
 
-#ifndef DECIMAL_NUM_TEXT
-#define DECIMAL_NUM_TEXT(Text) Text##"01234456789"
+#ifndef CH_DECIMAL_NUM_TEXT
+#define CH_DECIMAL_NUM_TEXT(Text) Text##"01234456789"
 #endif
 
-#ifndef HEXA_NUM_TEXT
-#define HEXA_NUM_TEXT(Text) Text##"01234456789ABCDE"
+#ifndef CH_HEXA_NUM_TEXT
+#define CH_HEXA_NUM_TEXT(Text) Text##"01234456789ABCDE"
 #endif
 
-#ifndef OCTAL_NUM_TEXT
-#define OCTAL_NUM_TEXT(Text) Text##"012344567"
+#ifndef CH_OCTAL_NUM_TEXT
+#define CH_OCTAL_NUM_TEXT(Text) Text##"012344567"
 #endif
 
-#ifndef BINARY_NUM_TEXT
-#define BINARY_NUM_TEXT(Text) Text##"01"
+#ifndef CH_BINARY_NUM_TEXT
+#define CH_BINARY_NUM_TEXT(Text) Text##"01"
 #endif
 
-#ifndef BASE_64_NUM_TEXT
-#define BASE_64_NUM_TEXT(Text) Text##"ABCDEFGHIJKLMNOPQRSTUVWXYZ" Text##"abcdefghijklmnopqrstuvwxyz" Text##"0123456789+/"
+#ifndef CH_BASE_64_NUM_TEXT
+#define CH_BASE_64_NUM_TEXT(Text) Text##"ABCDEFGHIJKLMNOPQRSTUVWXYZ" Text##"abcdefghijklmnopqrstuvwxyz" Text##"0123456789+/"
 #endif
 
-#ifndef NUMBER_FUNCTION_BASE
-#define NUMBER_FUNCTION_BASE(Function,Type)template<typename CharaType>\
+#ifndef CH_NUMBER_FUNCTION_BASE
+#define CH_NUMBER_FUNCTION_BASE(Function,Type)template<typename CharaType>\
 static auto Function ()->typename std::enable_if<std::is_same< Type ,CharaType>::value , const CharaType*>::type
 #endif
 
 #ifdef CRT
 #ifndef CPP20
-#ifndef TO_NUMBER_TEXT_FUNCTION
-#define TO_NUMBER_TEXT_FUNCTION(FunctionDefine,ToDefine)\
+#ifndef CH_TO_NUMBER_TEXT_FUNCTION
+#define CH_TO_NUMBER_TEXT_FUNCTION(FunctionDefine,ToDefine)\
 FunctionDefine(char) { return ToDefine(""); }\
 FunctionDefine(wchar_t) { return ToDefine(L); }\
 FunctionDefine(char16_t) { return ToDefine(u); }\
 FunctionDefine(char32_t) { return ToDefine(U); }
 #endif //TO_NUMBER_TEXT_FUNCTION//
 #else //CPP20//
-#ifndef TO_NUMBER_TEXT_FUNCTION
-#define TO_NUMBER_TEXT_FUNCTION(FunctionDefine,ToDefine)\
+#ifndef CH_TO_NUMBER_TEXT_FUNCTION
+#define CH_TO_NUMBER_TEXT_FUNCTION(FunctionDefine,ToDefine)\
 FunctionDefine(char) { return ToDefine(""); }\
 FunctionDefine(wchar_t) { return ToDefine(L); }\
 FunctionDefine(char16_t) { return ToDefine(u); }\
@@ -92,52 +92,52 @@ FunctionDefine(char8_t) { return ToDefine(u8); }
 #ifdef CRT
 
 #ifndef CPP20
-#ifndef TO_NUMBER_FUNCTION
-#define TO_NUMBER_FUNCTION(FunctionDefine,Chara)\
-FunctionDefine(char) { return TO_CHAR(Chara); }\
-FunctionDefine(wchar_t) { return TO_WCHAR(Chara); }\
-FunctionDefine(char16_t) { return TO_CHAR16(Chara); }\
-FunctionDefine(char32_t) { return TO_CHAR32(Chara); }
+#ifndef CH_TO_NUMBER_FUNCTION
+#define CH_TO_NUMBER_FUNCTION(FunctionDefine,Chara)\
+FunctionDefine(char) { return CH_TO_CHAR(Chara); }\
+FunctionDefine(wchar_t) { return CH_TO_WCHAR(Chara); }\
+FunctionDefine(char16_t) { return CH_TO_CHAR16(Chara); }\
+FunctionDefine(char32_t) { return CH_TO_CHAR32(Chara); }
 #endif
 
 #else
-#ifndef TO_NUMBER_FUNCTION
-#define TO_NUMBER_FUNCTION(FunctionDefine,Chara)\
-FunctionDefine(char) { return TO_CHAR(Chara); }\
-FunctionDefine(wchar_t) { return TO_WCHAR(Chara); }\
-FunctionDefine(char16_t) { return TO_CHAR16(Chara); }\
-FunctionDefine(char32_t) { return TO_CHAR32(Chara); }\
-FunctionDefine(char8_t) { return TO_CHAR8(Chara); }
+#ifndef CH_TO_NUMBER_FUNCTION
+#define CH_TO_NUMBER_FUNCTION(FunctionDefine,Chara)\
+FunctionDefine(char) { return CH_TO_CHAR(Chara); }\
+FunctionDefine(wchar_t) { return CH_TO_WCHAR(Chara); }\
+FunctionDefine(char16_t) { return CH_TO_CHAR16(Chara); }\
+FunctionDefine(char32_t) { return CH_TO_CHAR32(Chara); }\
+FunctionDefine(char8_t) { return CH_TO_CHAR8(Chara); }
 #endif
 #endif
 #endif
 
-#ifndef DECIMAL_NUMBUR_FUNCTION
-#define DECIMAL_NUMBUR_FUNCTION(type) NUMBER_FUNCTION_BASE(DECIMAL_NUMBUR,type)
+#ifndef CH_DECIMAL_NUMBUR_FUNCTION
+#define CH_DECIMAL_NUMBUR_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(DECIMAL_NUMBUR,type)
 #endif
 
-#ifndef HEXA_DECIMAL_FUNCTION
-#define HEXA_DECIMAL_FUNCTION(type) NUMBER_FUNCTION_BASE(HEXA_DECIMAL,type)
+#ifndef CH_HEXA_DECIMAL_FUNCTION
+#define CH_HEXA_DECIMAL_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(HEXA_DECIMAL,type)
 #endif
 
-#ifndef OCTAL_FUNCTION
-#define OCTAL_FUNCTION(type) NUMBER_FUNCTION_BASE(OCTAL,type)
+#ifndef CH_OCTAL_FUNCTION
+#define CH_OCTAL_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(OCTAL,type)
 #endif
 
-#ifndef BINARY_FUNCTION
-#define BINARY_FUNCTION(type) NUMBER_FUNCTION_BASE(BINARY_NUMBER,type)
+#ifndef CH_BINARY_FUNCTION
+#define CH_BINARY_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(BINARY_NUMBER,type)
 #endif
 
-#ifndef BASE_64_FUNCTION
-#define BASE_64_FUNCTION(type) NUMBER_FUNCTION_BASE(BASE_NUMBER_64,type)
+#ifndef CH_BASE_64_FUNCTION
+#define CH_BASE_64_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(BASE_NUMBER_64,type)
 #endif
 
-#ifndef ZERO_CHARA_FUNCTION
-#define ZERO_CHARA_FUNCTION(type) NUMBER_FUNCTION_BASE(GetZeroChara,type)
+#ifndef CH_ZERO_CHARA_FUNCTION
+#define CH_ZERO_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetZeroChara,type)
 #endif
 
-#ifndef HYPHEN_CHARA_FUNCTION
-#define HYPHEN_CHARA_FUNCTION(type) NUMBER_FUNCTION_BASE(GetHyphenChara,type)
+#ifndef CH_HYPHEN_CHARA_FUNCTION
+#define CH_HYPHEN_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetHyphenChara,type)
 #endif
 
 
@@ -155,37 +155,20 @@ namespace ChStd
 {
 #ifdef CRT
 	//10進数//
-	TO_NUMBER_TEXT_FUNCTION(DECIMAL_NUMBUR_FUNCTION, DECIMAL_NUM_TEXT);
-#endif
-
-#ifdef CRT
+	CH_TO_NUMBER_TEXT_FUNCTION(CH_DECIMAL_NUMBUR_FUNCTION, CH_DECIMAL_NUM_TEXT);
 	//16進数//
-	TO_NUMBER_TEXT_FUNCTION(HEXA_DECIMAL_FUNCTION, HEXA_NUM_TEXT);
-#endif
-
-#ifdef CRT
+	CH_TO_NUMBER_TEXT_FUNCTION(CH_HEXA_DECIMAL_FUNCTION, CH_HEXA_NUM_TEXT);
 	//8進数//
-	TO_NUMBER_TEXT_FUNCTION(OCTAL_FUNCTION, OCTAL_NUM_TEXT);
-#endif
-
-#ifdef CRT
+	CH_TO_NUMBER_TEXT_FUNCTION(CH_OCTAL_FUNCTION, CH_OCTAL_NUM_TEXT);
 	//2進数//
-	TO_NUMBER_TEXT_FUNCTION(BINARY_FUNCTION, BINARY_NUM_TEXT);
-#endif
-
-#ifdef CRT
+	CH_TO_NUMBER_TEXT_FUNCTION(CH_BINARY_FUNCTION, CH_BINARY_NUM_TEXT);
 	//64進数//
-	TO_NUMBER_TEXT_FUNCTION(BASE_64_FUNCTION, BASE_64_NUM_TEXT);
-#endif
+	CH_TO_NUMBER_TEXT_FUNCTION(CH_BASE_64_FUNCTION, CH_BASE_64_NUM_TEXT);
 
-#ifdef CRT
-	TO_NUMBER_FUNCTION(ZERO_CHARA_FUNCTION, "\0");
-#endif
+	CH_TO_NUMBER_FUNCTION(CH_ZERO_CHARA_FUNCTION, "\0");
 
-#ifdef CRT
-	TO_NUMBER_FUNCTION(HYPHEN_CHARA_FUNCTION, "-");
+	CH_TO_NUMBER_FUNCTION(CH_HYPHEN_CHARA_FUNCTION, "-");
 #endif
-
 
 #ifdef _WINDOWS_
 	//Windowsで使用される相対パス・絶対パスの最大文字数//
