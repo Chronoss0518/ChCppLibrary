@@ -9,21 +9,26 @@
 #include <cmath>
 #endif
 
-#ifndef CRLF_CHARA_FUNCTION
-#define CRLF_CHARA_FUNCTION(type) NUMBER_FUNCTION_BASE(GetCRLFChara,type)
+#ifndef CH_CRLF_CHARA_FUNCTION
+#define CH_CRLF_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetCRLFChara,type)
 #endif
 
-#ifndef COMMA_CHARA_FUNCTION
-#define COMMA_CHARA_FUNCTION(type) NUMBER_FUNCTION_BASE(GetCommaChara,type)
+#ifndef CH_COMMA_CHARA_FUNCTION
+#define CH_COMMA_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetCommaChara,type)
 #endif
 
-#ifndef SEMICOLON_CHARA_FUNCTION
-#define SEMICOLON_CHARA_FUNCTION(type) NUMBER_FUNCTION_BASE(GetSemiColonChara,type)
+#ifndef CH_SEMICOLON_CHARA_FUNCTION
+#define CH_SEMICOLON_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetSemiColonChara,type)
 #endif
 
-#ifndef FLOAT_ZERO_TEST
-#define FLOAT_ZERO_TEST(val, testSize) val >= -testSize && val <= testSize
+#ifndef CH_FLOAT_ZERO_TEST
+#define CH_FLOAT_ZERO_TEST(val, testSize) val >= -testSize && val <= testSize
 #endif
+
+#ifndef CH_MATH_FUNCTION
+#define CH_MATH_FUNCTION(_Type,_FunctionName,_FunctionArg,_UseFunctionName,_UseFunctionArg) _Type ChMath::##_FunctionName##_FunctionArg { return std::##_UseFunctionName##_UseFunctionArg; }
+#endif
+
 
 #ifndef CH_MATH_VECTOR_OPERATOR_ACT
 #define CH_MATH_VECTOR_OPERATOR_ACT(_Operator,_TargetValue) \
@@ -63,19 +68,48 @@ inline bool operator _Operator(const _InClass& _val)const\
 #endif
 
 
+#ifndef CH_MATH3D_METHOD_SERIALIZE
+#define CH_MATH3D_METHOD_SERIALIZE(_Value) \
+template<typename CharaType>\
+inline std::basic_string<CharaType> Serialize(\
+const std::basic_string<CharaType>& _cutChar = ChStd::GetCommaChara<CharaType>(),\
+ const std::basic_string<CharaType>& _endChar =  ChStd::GetSemiColonChara<CharaType>())\
+{return _Value.Serialize<CharaType>(_cutChar, _endChar);}
+#endif
+
+#ifndef CH_MATH3D_METHOD_DESERIALIZE
+#define CH_MATH3D_METHOD_DESERIALIZE(_Value) \
+template<typename CharaType>\
+inline void Deserialize(\
+const std::basic_string<CharaType>& _str,\
+const size_t _fPos = 0,\
+const std::basic_string<CharaType>& _cutChar = ChStd::GetCommaChara<CharaType>(),\
+const std::basic_string<CharaType>& _endChar = ChStd::GetSemiColonChara<CharaType>(),\
+const unsigned int _digit = 6)\
+{_Value.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);}
+#endif
+
+#ifndef CH_MATH3D_METHOD_MATRIX_DESERIALIZE_UPPER
+#define CH_MATH3D_METHOD_MATRIX_DESERIALIZE_UPPER \
+template<typename CharaType>\
+inline std::basic_string<CharaType> SerializeUpper(\
+	const std::basic_string<CharaType>&_cutChar = ChStd::GetCommaChara<CharaType>()\
+	, const std::basic_string<CharaType>&_endChar = ChStd::GetSemiColonChara<CharaType>()\
+	, const std::basic_string<CharaType>&_cutTo4Char = ChStd::GetCRLFChara<CharaType>())\
+{return m.SerializeUpper(_cutChar, _endChar, _cutTo4Char);}
+#endif
+
 namespace ChStd
 {
 #ifdef CRT
-	TO_NUMBER_FUNCTION(CRLF_CHARA_FUNCTION, "\r\n");
+	CH_TO_NUMBER_FUNCTION(CH_CRLF_CHARA_FUNCTION, "\r\n");
+
+	CH_TO_NUMBER_FUNCTION(CH_COMMA_CHARA_FUNCTION, ",");
+
+	CH_TO_NUMBER_FUNCTION(CH_SEMICOLON_CHARA_FUNCTION, ";");
 #endif
 
-#ifdef CRT
-	TO_NUMBER_FUNCTION(COMMA_CHARA_FUNCTION, ",");
-#endif
 
-#ifdef CRT
-	TO_NUMBER_FUNCTION(SEMICOLON_CHARA_FUNCTION, ";");
-#endif
 }
 
 namespace ChMath
@@ -194,22 +228,13 @@ namespace ChMath
 
 	public://Constructor Destructor//
 
-		inline VectorBase()
-		{
-			Identity();
-		}
+		inline VectorBase() { Identity(); }
 
 		inline VectorBase(const T(&_val)[Array]) :val(_val) {}
 
-		inline VectorBase(const T(&_val))
-		{
-			Set(_val);
-		}
+		inline VectorBase(const T(&_val)) { Set(_val); }
 
-		inline VectorBase(const VectorBase& _val)
-		{
-			Set(_val);
-		}
+		inline VectorBase(const VectorBase& _val) { Set(_val); }
 
 	public://Operator Math Function//
 
@@ -275,7 +300,7 @@ namespace ChMath
 
 #ifdef CRT
 		template<typename CharaType>
-		std::basic_string<CharaType> Serialize(
+		inline std::basic_string<CharaType> Serialize(
 			const std::basic_string<CharaType>& _cutChar = ChStd::GetCommaChara<CharaType>(),
 			const std::basic_string<CharaType>& _endChar = ChStd::GetSemiColonChara<CharaType>())
 		{
@@ -295,7 +320,7 @@ namespace ChMath
 
 #ifdef CRT
 		template<typename CharaType>
-		void Deserialize(
+		inline void Deserialize(
 			const std::basic_string<CharaType>& _str,
 			const size_t _fPos = 0,
 			const std::basic_string<CharaType>& _cutChar = ChStd::GetCommaChara<CharaType>(),
@@ -343,16 +368,43 @@ namespace ChMath
 
 	public://Set Functions//
 
-		void SetLen(const T _len);
+		inline void SetLen(const T _len)
+		{
+			if (GetLen() == 0.0f)return;
 
-		void SetCross(
+			Normalize();
+
+			T tmp = _len * _len;
+
+			/*
+			x^2 + y^2 + z^2 = r^2
+
+			(nx * l)^2 + (ny * l)^2 + (nz * l)^2 = r^2
+
+			l^2 = r^2 /(nx^2 + ny^2 + nz^2)
+			*/
+
+			T add = static_cast<T>(0.0f);
+
+			for (unsigned long i = 0; i < Array; i++)
+			{
+				add += val[i] * val[i];
+			}
+
+			tmp = tmp / add;
+
+			tmp = static_cast<T>(SqrtEx(static_cast<long double>(tmp)));
+			Mul(tmp);
+		}
+
+		inline void SetCross(
 			const VectorBase& _vec,
 			const unsigned long _digit = 6)
 		{
 			Set(GetCross(*this, _vec, _digit));
 		}
 
-		void SetCross(
+		inline void SetCross(
 			const VectorBase& _vec1,
 			const VectorBase& _vec2,
 			const unsigned long _digit = 6)
@@ -360,7 +412,7 @@ namespace ChMath
 			Set(GetCross(_vec1, _vec2, _digit));
 		}
 
-		void SetLerp(
+		inline void SetLerp(
 			const VectorBase& _start,
 			const VectorBase& _end,
 			const float _pow)
@@ -368,7 +420,7 @@ namespace ChMath
 			Set(Lerp(_start, _end, _pow));
 		}
 
-		void SetSLerp(
+		inline void SetSLerp(
 			const VectorBase& _start,
 			const VectorBase& _end,
 			const float _pow)
@@ -378,10 +430,10 @@ namespace ChMath
 
 	public://Get Functions//
 
-		constexpr const unsigned long GetArray()const { return Array; }
+		inline constexpr const unsigned long GetArray()const { return Array; }
 
 		//ベクトルの要素の大きさを得る//
-		T GetElementsLen()const
+		inline T GetElementsLen()const
 		{
 			VectorBase tmp = *this;
 			tmp.Abs();
@@ -396,7 +448,7 @@ namespace ChMath
 		}
 
 		//ベクトルの大きさを得る//
-		T GetLen(const unsigned long _digit = 6)const
+		inline T GetLen(const unsigned long _digit = 6)const
 		{
 			T len = static_cast<T>(0.0f);
 
@@ -408,7 +460,7 @@ namespace ChMath
 			return static_cast<T>(SqrtEx(static_cast<long double>(len), _digit));
 		}
 
-		T GetCos(
+		inline T GetCos(
 			const VectorBase& _vec,
 			const unsigned long _digit = 6)const
 		{
@@ -422,11 +474,17 @@ namespace ChMath
 			return tmp1.GetDot(tmp2);
 		}
 
-		T GetRadian(
+		inline T GetRadian(
 			const VectorBase& _vec,
-			const unsigned long _digit = 6)const;
+			const unsigned long _digit = 6)const
+		{
+			T tmp = GetCos(_vec, _digit);
 
-		T GetDot(
+			return ChMath::GetACos(tmp);
+		}
+
+
+		inline T GetDot(
 			const VectorBase& _vec,
 			const unsigned long _digit = 6)const
 		{
@@ -440,7 +498,7 @@ namespace ChMath
 			return tmpLen;
 		}
 
-		VectorBase GetCross(
+		inline VectorBase GetCross(
 			const VectorBase& _vec1,
 			const VectorBase& _vec2,
 			const unsigned long _digit = 6)const
@@ -459,7 +517,7 @@ namespace ChMath
 			return out;
 		}
 
-		VectorBase Lerp(
+		inline VectorBase Lerp(
 			const VectorBase& _start,
 			const VectorBase& _end,
 			const float _pow)const
@@ -474,7 +532,7 @@ namespace ChMath
 			return out;
 		}
 
-		VectorBase GetSLerp(
+		inline VectorBase GetSLerp(
 			const VectorBase& _start,
 			const VectorBase& _end,
 			const float _pow)const
@@ -500,7 +558,7 @@ namespace ChMath
 			return (start + end);
 		}
 
-		const T* const GetVal()const
+		inline const T* const GetVal()const
 		{
 			return val;
 		}
@@ -512,13 +570,13 @@ namespace ChMath
 			CH_MATH_VECTOR_OPERATOR_ACT(=, val[i] < static_cast<T>(0.0f) ? -val[i] : val[i]);
 		}
 
-		void Identity()
+		inline void Identity()
 		{
 			CH_MATH_VECTOR_OPERATOR_ACT(=, static_cast<T>((i + 1) % 3 == 0 ? 0.0f : 1.0f));
 		}
 
 		//ベクトルの長さを1にする//
-		bool Normalize(const unsigned long _digit = 6)
+		inline bool Normalize(const unsigned long _digit = 6)
 		{
 			T len = GetLen(_digit);
 
@@ -531,7 +589,7 @@ namespace ChMath
 		}
 
 		//ベクトルの要素の合計を1にする//
-		bool ElementsNormalize()
+		inline bool ElementsNormalize()
 		{
 			T len = GetElementsLen();
 
@@ -563,7 +621,7 @@ namespace ChMath
 	public://Operator Functions//
 
 		template<unsigned long _Row, unsigned long _Column>
-		operator MatrixBase<T, _Row, _Column>()const
+		inline operator MatrixBase<T, _Row, _Column>()const
 		{
 			MatrixBase<T, _Row, _Column> out;
 
@@ -581,17 +639,17 @@ namespace ChMath
 			return out;
 		}
 
-		VectorBase<T, Row>& operator [](const unsigned long _col)
+		inline VectorBase<T, Row>& operator [](const unsigned long _col)
 		{
 			return m[_col % Row];
 		}
 
-		VectorBase<T, Row> operator [](const unsigned long _col)const
+		inline VectorBase<T, Row> operator [](const unsigned long _col)const
 		{
 			return m[_col % Row];
 		}
 
-		explicit operator const T** const ()const
+		inline explicit operator const T** const ()const
 		{
 			return m;
 		}
@@ -609,19 +667,19 @@ namespace ChMath
 
 	public://Contructor Destructor//
 
-		MatrixBase()
+		inline MatrixBase()
 		{
 			Identity();
 		}
 
-		MatrixBase(const MatrixBase& _Mat)
+		inline MatrixBase(const MatrixBase& _Mat)
 		{
 			Set(_Mat);
 		}
 
 	public://Operator Math Function//
 
-		void Set(const MatrixBase& _mat)
+		inline void Set(const MatrixBase& _mat)
 		{
 			for (unsigned long i = 0; i < Column; i++)
 			{
@@ -629,7 +687,7 @@ namespace ChMath
 			}
 		}
 
-		void Set(const T& _val)
+		inline void Set(const T& _val)
 		{
 			for (unsigned long i = 0; i < Column; i++)
 			{
@@ -637,7 +695,7 @@ namespace ChMath
 			}
 		}
 
-		void Add(const MatrixBase& _mat)
+		inline void Add(const MatrixBase& _mat)
 		{
 			for (unsigned long i = 0; i < Column; i++)
 			{
@@ -645,7 +703,7 @@ namespace ChMath
 			}
 		}
 
-		void Sub(const MatrixBase& _mat)
+		inline void Sub(const MatrixBase& _mat)
 		{
 			for (unsigned long i = 0; i < Column; i++)
 			{
@@ -653,7 +711,7 @@ namespace ChMath
 			}
 		}
 
-		void Mul(const MatrixBase& _mat)
+		inline void Mul(const MatrixBase& _mat)
 		{
 			MatrixBase tmp;
 			tmp.Set(*this);
@@ -675,7 +733,7 @@ namespace ChMath
 
 		//縦軸の掛け算//
 		template<unsigned long _Arrarys>
-		VectorBase<T, _Arrarys> VerticalMul(const VectorBase<T, _Arrarys> _vec)const
+		inline VectorBase<T, _Arrarys> VerticalMul(const VectorBase<T, _Arrarys> _vec)const
 		{
 			MatrixBase<T, Row, Column> tmpMat;
 
@@ -704,7 +762,7 @@ namespace ChMath
 
 		//横軸の掛け算//
 		template<unsigned long _Arrarys>
-		VectorBase<T, _Arrarys>HorizontalMul(const VectorBase<T, _Arrarys> _vec)const
+		inline VectorBase<T, _Arrarys>HorizontalMul(const VectorBase<T, _Arrarys> _vec)const
 		{
 			MatrixBase<T, Row, Column> tmpMat;
 
@@ -730,7 +788,7 @@ namespace ChMath
 			return out;
 		}
 
-		void Div(const MatrixBase& _mat)
+		inline void Div(const MatrixBase& _mat)
 		{
 			MatrixBase tmpMat;
 			tmpMat = _mat;
@@ -744,7 +802,7 @@ namespace ChMath
 
 #ifdef CRT
 		template<typename CharaType>
-		std::basic_string<CharaType> Serialize(
+		inline std::basic_string<CharaType> Serialize(
 			const std::basic_string<CharaType>& _cutChar = ChStd::GetCommaChara<CharaType>(),
 			const std::basic_string<CharaType>& _endChar = ChStd::GetSemiColonChara<CharaType>())
 		{
@@ -768,7 +826,7 @@ namespace ChMath
 
 #ifdef CRT
 		template<typename CharaType>
-		std::basic_string<CharaType> SerializeUpper(
+		inline std::basic_string<CharaType> SerializeUpper(
 			const std::basic_string<CharaType>& _cutChar = ChStd::GetCommaChara<CharaType>(),
 			const std::basic_string<CharaType>& _endChar = ChStd::GetSemiColonChara<CharaType>(),
 			const std::basic_string<CharaType>& _cutTo4Char = ChStd::GetCRLFChara<CharaType>())
@@ -796,7 +854,7 @@ namespace ChMath
 
 #ifdef CRT
 		template<typename CharaType>
-		void Deserialize(
+		inline void Deserialize(
 			const std::basic_string<CharaType>& _str,
 			const size_t _fPos = 0,
 			const std::basic_string<CharaType>& _cutChar = ChStd::GetCommaChara<CharaType>(),
@@ -843,7 +901,7 @@ namespace ChMath
 
 	public://Get Functions//
 
-		T GetLen()const
+		inline T GetLen()const
 		{
 			T out = static_cast<T>(0.0f);
 
@@ -866,7 +924,7 @@ namespace ChMath
 			return out;
 		}
 
-		MatrixBase GetCofactor(const unsigned long _Row, const unsigned long _Col)const
+		inline MatrixBase GetCofactor(const unsigned long _Row, const unsigned long _Col)const
 		{
 			MatrixBase out;
 
@@ -889,13 +947,13 @@ namespace ChMath
 		}
 
 		//行列式//
-		T GetDeterminant()const
+		inline T GetDeterminant()const
 		{
 			return GetLen();
 		}
 
 		//掃き出し法による逆行列//
-		MatrixBase GetInverse()const
+		inline MatrixBase GetInverse()const
 		{
 			if (Row != Column)return *this;
 
@@ -932,7 +990,7 @@ namespace ChMath
 		}
 
 		//ドゥーリトル法三角行列//
-		ULMatrix GetDLUMatrix()const
+		inline ULMatrix GetDLUMatrix()const
 		{
 			ULMatrix luMat;
 
@@ -979,13 +1037,13 @@ namespace ChMath
 		}
 		*/
 
-		constexpr const unsigned long GetColumn()const { return Column; }
+		inline constexpr const unsigned long GetColumn()const { return Column; }
 
-		constexpr const unsigned long GetRow()const { return Row; }
+		inline constexpr const unsigned long GetRow()const { return Row; }
 
 	public://Is Functions//
 
-		bool IsValue(const MatrixBase& _mat)const
+		inline bool IsValue(const MatrixBase& _mat)const
 		{
 			for (unsigned long i = 0; i < Row; i++)
 			{
@@ -1001,7 +1059,7 @@ namespace ChMath
 
 	public://Other Functions//
 
-		void Identity()
+		inline void Identity()
 		{
 			for (unsigned long i = 0; i < Column; i++)
 			{
@@ -1012,7 +1070,7 @@ namespace ChMath
 			}
 		}
 
-		static MatrixBase Lerp(
+		inline static MatrixBase Lerp(
 			const MatrixBase& _start,
 			const MatrixBase& _end,
 			const float _pow)
@@ -1027,12 +1085,12 @@ namespace ChMath
 			return out;
 		}
 
-		void Inverse()
+		inline void Inverse()
 		{
 			Set(GetInverse());
 		}
 
-		void Inverse(const MatrixBase<T, Row, Column>& _mat)
+		inline void Inverse(const MatrixBase<T, Row, Column>& _mat)
 		{
 			Set(_mat.GetInverse());
 		}
@@ -1050,72 +1108,51 @@ namespace ChMath
 	struct Vector2Base
 	{
 		union {
-			struct
-			{
-				T x, y;
-			};
-			struct
-			{
-				T w, h;
-			};
-			struct
-			{
-				T start, end;
-			};
-			struct
-			{
-				T high, low;
-			};
+			struct { T x, y; };
+			struct { T w, h; };
+			struct { T start, end; };
+			struct { T high, low; };
 			VectorBase<T, 2> val;
 		};
 
-		inline Vector2Base()
-		{
-			val.Identity();
-		}
+		inline Vector2Base() { val.Identity(); }
 
-		inline Vector2Base(const T _num)
-		{
-			val.Set(_num);
-		}
+		inline Vector2Base(const T _num) { val.Set(_num); }
 
-		inline Vector2Base(
-			const T _x, const T _y)
+		inline Vector2Base(const T _x, const T _y)
 		{
 			x = _x;
 			y = _y;
 		}
 
 		inline Vector2Base(const Vector2Base& _vec) { val = _vec.val; }
+
+	public://Serialize Deserialize//
+
+#ifdef CRT
+
+		CH_MATH3D_METHOD_SERIALIZE(val);
+
+		CH_MATH3D_METHOD_DESERIALIZE(val);
+
+#endif
+
 	};
 
 	template<typename T>
 	struct Vector3Base
 	{
 		union {
-			struct
-			{
-				T x, y, z;
-			};
-			struct
-			{
-				T r, g, b;
-			};
+			struct { T x, y, z; };
+			struct { T r, g, b; };
 			VectorBase<T, 3> val;
 		};
 
-		inline Vector3Base()
-		{
-			val.Identity();
-		}
+		inline Vector3Base() { val.Identity(); }
 
-		inline Vector3Base(const T _num)
-		{
-			val.Set(_num);
-		}
+		inline Vector3Base(const T _num) { val.Set(_num); }
 
-		inline Vector3Base(
-			const T _x, const T _y, const T _z)
+		inline Vector3Base(const T _x, const T _y, const T _z)
 		{
 			x = _x;
 			y = _y;
@@ -1123,39 +1160,34 @@ namespace ChMath
 		}
 
 		inline Vector3Base(const Vector3Base& _vec) { val = _vec.val; }
+
+	public://Serialize Deserialize//
+
+#ifdef CRT
+
+		CH_MATH3D_METHOD_SERIALIZE(val);
+
+		CH_MATH3D_METHOD_DESERIALIZE(val);
+
+#endif
+
 	};
 
 	template<typename T>
 	struct Vector4Base
 	{
 		union {
-			struct
-			{
-				T x, y, z, w;
-			};
-			struct
-			{
-				T r, g, b, a;
-			};
-			struct
-			{
-				T left, top, right, bottom;
-			};
+			struct { T x, y, z, w; };
+			struct { T r, g, b, a; };
+			struct { T left, top, right, bottom; };
 			VectorBase<T, 4> val;
 		};
 
-		inline Vector4Base()
-		{
-			val.Identity();
-		}
+		inline Vector4Base() { val.Identity(); }
 
-		inline Vector4Base(const T _num)
-		{
-			val.Set(_num);
-		}
+		inline Vector4Base(const T _num) { val.Set(_num); }
 
-		inline Vector4Base(
-			const T _x, const T _y, const T _z, const T _w)
+		inline Vector4Base(const T _x, const T _y, const T _z, const T _w)
 		{
 			x = _x;
 			y = _y;
@@ -1254,6 +1286,47 @@ namespace ChMath
 
 			return overlapsRect;
 		}
+	public://Serialize Deserialize//
+
+#ifdef CRT
+
+		CH_MATH3D_METHOD_SERIALIZE(val);
+
+		template<typename CharaType>
+		inline std::basic_string<CharaType> SerializeARGB(
+			const std::basic_string<CharaType>& _cutChar = ChStd::GetCommaChara<CharaType>(),
+			const std::basic_string<CharaType>& _endChar = ChStd::GetSemiColonChara<CharaType>())
+		{
+			Vector4Base<T> tmpVec;
+
+			for (unsigned char i = 0; i < 4; i++)
+			{
+				tmpVec.val[(i + 1) % 4] = val[i];
+			}
+
+			return tmpVec.Serialize<CharaType>(_cutChar, _endChar);
+		}
+
+		CH_MATH3D_METHOD_DESERIALIZE(val);
+
+		template<typename CharaType>
+		void DeserializeARGB(
+			const std::basic_string<CharaType>& _str,
+			const size_t _fPos = 0,
+			const std::basic_string<CharaType>& _cutChar = ChStd::GetCommaChara<CharaType>(),
+			const std::basic_string<CharaType>& _endChar = ChStd::GetSemiColonChara<CharaType>(),
+			const unsigned int _digit = 6)
+		{
+			Vector4Base<T> tmpVec;
+			tmpVec.Deserialize<CharaType>(_str, _fPos, _cutChar, _endChar, _digit);
+
+			for (unsigned char i = 0; i < 4; i++)
+			{
+				val[i] = tmpVec.val[(i + 1) % 4];
+			}
+		}
+#endif
+
 	};
 
 	template<typename T>
@@ -1267,12 +1340,117 @@ namespace ChMath
 			VectorBase<T, 4> val;
 		};
 
-		inline QuaternionBase()
+		inline QuaternionBase() { val.Identity(); }
+
+		inline QuaternionBase(const QuaternionBase<T>& _qua) { val = _qua.val; }
+
+		inline QuaternionBase(const T _x, const T _y, const T _z)
 		{
-			val.Identity();
+			x = _x;
+			y = _y;
+			z = _z;
+			w = 0.0f;
 		}
 
-		inline QuaternionBase(const QuaternionBase<T>& _vec) { val = _vec.val; }
+		inline QuaternionBase(const T _x, const T _y, const T _z, const T _w)
+		{
+			x = _x;
+			y = _y;
+			z = _z;
+			w = _w;
+		}
+
+		inline QuaternionBase(const Vector3Base<T>& _vec) { val = _vec.val; w = 0.0f; }
+
+	public://Serialize Deserialize//
+
+#ifdef CRT
+
+		CH_MATH3D_METHOD_SERIALIZE(val);
+
+		CH_MATH3D_METHOD_DESERIALIZE(val);
+
+#endif
+
+	public://Operator Functions//
+
+		inline QuaternionBase<T> SetSum(const QuaternionBase<T>& _qua1, const QuaternionBase<T>& _qua2) { val.Set(_qua1.val + _qua2.val); }
+
+		////
+		//https://qiita.com/drken/items/0639cf34cce14e8d58a5#1-4-%E3%82%AF%E3%82%A9%E3%83%BC%E3%82%BF%E3%83%8B%E3%82%AA%E3%83%B3%E3%81%AE%E3%81%8B%E3%81%91%E7%AE%97
+		////
+		// = q1 * q2;
+		inline void SetMul(const QuaternionBase<T>& _qua1, const QuaternionBase<T>& _qua2)
+		{
+			QuaternionBase<T> tmp1 = _qua1, tmp2 = _qua2;
+			x = (tmp1.w * tmp2.x) - (tmp1.z * tmp2.y) + (tmp1.y * tmp2.z) + (tmp1.x * tmp2.w);
+			y = (tmp1.z * tmp2.x) + (tmp1.w * tmp2.y) - (tmp1.x * tmp2.z) + (tmp1.y * tmp2.w);
+			z = -(tmp1.y * tmp2.x) + (tmp1.x * tmp2.y) + (tmp1.w * tmp2.z) + (tmp1.z * tmp2.w);
+
+			w = (tmp1.w * tmp2.w) - (tmp1.x * tmp2.x) - (tmp1.y * tmp2.y) - (tmp1.z * tmp2.z);
+		}
+
+		inline Vector3Base<T> GetMul(const QuaternionBase<T>& _qua, const Vector3Base<T>& _dir)
+		{
+			Vector3Base<T> res = _dir;
+			res.Normalize();
+
+			QuaternionBase<T> tmp = QuaternionBase<T>(res);
+
+			QuaternionBase<T> idn = _qua;
+			idn.Inverse();
+			tmp = _qua * tmp * idn;
+
+			res = Vector3Base<T>(tmp.val);
+
+			return res;
+		}
+
+		inline void SetSum(const QuaternionBase<T>& _value) { SetSum(*this, _value); }
+
+		inline void SetMul(const QuaternionBase<T>& _value) { SetMul(*this, _value); }
+
+		inline Vector3Base<T> GetMul(const Vector3Base<T>& _dir) { return GetMul(*this, _dir); }
+
+	};
+
+	template<typename T>
+	struct BaseMatrix1x1
+	{
+		union
+		{
+			struct
+			{
+				T l_11;
+			};
+			struct
+			{
+				T r_11;
+			};
+			SquareMatrixBase<T, 1> m;
+		};
+
+		inline BaseMatrix1x1() { m.Identity(); }
+
+		inline BaseMatrix1x1(const BaseMatrix1x1& _mat) { m = _mat.m; }
+
+	public://Serialize Deserialize//
+
+#ifdef CRT
+
+		CH_MATH3D_METHOD_SERIALIZE(m);
+
+		CH_MATH3D_METHOD_DESERIALIZE(m);
+
+		CH_MATH3D_METHOD_MATRIX_DESERIALIZE_UPPER;
+#endif
+
+	public://Other Functions//
+
+		void Identity() { m.Identity(); }
+
+		void Inverse() { m.Inverse(); }
+
 	};
 
 	template<typename T>
@@ -1293,12 +1471,26 @@ namespace ChMath
 			SquareMatrixBase<T, 2> m;
 		};
 
-		inline BaseMatrix2x2()
-		{
-			m.Identity();
-		}
+		inline BaseMatrix2x2() { m.Identity(); }
 
 		inline BaseMatrix2x2(const BaseMatrix2x2& _mat) { m = _mat.m; }
+
+	public://Serialize Deserialize//
+
+#ifdef CRT
+
+		CH_MATH3D_METHOD_SERIALIZE(m);
+
+		CH_MATH3D_METHOD_DESERIALIZE(m);
+
+		CH_MATH3D_METHOD_MATRIX_DESERIALIZE_UPPER;
+#endif
+
+	public://Other Functions//
+
+		void Identity() { m.Identity(); }
+
+		void Inverse() { m.Inverse(); }
 
 	};
 
@@ -1322,12 +1514,27 @@ namespace ChMath
 			SquareMatrixBase<T, 3> m;
 		};
 
-		inline BaseMatrix3x3()
-		{
-			m.Identity();
-		}
+		inline BaseMatrix3x3() { m.Identity(); }
 
 		inline BaseMatrix3x3(const BaseMatrix3x3& _mat) { m = _mat.m; }
+
+	public://Serialize Deserialize//
+
+#ifdef CRT
+
+		CH_MATH3D_METHOD_SERIALIZE(m);
+
+		CH_MATH3D_METHOD_DESERIALIZE(m);
+
+		CH_MATH3D_METHOD_MATRIX_DESERIALIZE_UPPER;
+#endif
+
+	public://Other Functions//
+
+		void Identity() { m.Identity(); }
+
+		void Inverse() { m.Inverse(); }
+
 	};
 
 	template<typename T>
@@ -1352,12 +1559,27 @@ namespace ChMath
 			SquareMatrixBase<T, 4> m;
 		};
 
-		inline BaseMatrix4x4()
-		{
-			m.Identity();
-		}
+		inline BaseMatrix4x4() { m.Identity(); }
 
 		inline BaseMatrix4x4(const BaseMatrix4x4& _mat) { m = _mat.m; }
+
+	public://Serialize Deserialize//
+
+#ifdef CRT
+
+		CH_MATH3D_METHOD_SERIALIZE(m);
+
+		CH_MATH3D_METHOD_DESERIALIZE(m);
+
+		CH_MATH3D_METHOD_MATRIX_DESERIALIZE_UPPER;
+#endif
+
+	public://Other Functions//
+
+		void Identity() { m.Identity(); }
+
+		void Inverse() { m.Inverse(); }
+
 	};
 }
 
@@ -1396,146 +1618,29 @@ long double ChMath::SqrtEx(const long double& _base, const unsigned long _digit)
 	return out;
 }
 
-float ChMath::GetSin(float _val)
-{
-	return std::sin(_val);
-}
+CH_MATH_FUNCTION(float, GetSin, (float _val), sin, (_val));
+CH_MATH_FUNCTION(double, GetSin, (double _val), sin, (_val));
+CH_MATH_FUNCTION(long double, GetSin, (long double _val), sin, (_val));
 
-double ChMath::GetSin(double _val)
-{
-	return std::sin(_val);
-}
+CH_MATH_FUNCTION(float, GetASin, (float _val), asin, (_val));
+CH_MATH_FUNCTION(double, GetASin, (double _val), asin, (_val));
+CH_MATH_FUNCTION(long double, GetASin, (long double _val), asin, (_val));
 
-long double ChMath::GetSin(long double _val)
-{
-	return std::sin(_val);
-}
+CH_MATH_FUNCTION(float, GetCos, (float _val), cos, (_val));
+CH_MATH_FUNCTION(double, GetCos, (double _val), cos, (_val));
+CH_MATH_FUNCTION(long double, GetCos, (long double _val), cos, (_val));
 
+CH_MATH_FUNCTION(float, GetACos, (float _val), acos, (_val));
+CH_MATH_FUNCTION(double, GetACos, (double _val), acos, (_val));
+CH_MATH_FUNCTION(long double, GetACos, (long double _val), acos, (_val));
 
-float ChMath::GetASin(float _val)
-{
-	return std::asin(_val);
-}
+CH_MATH_FUNCTION(float, GetATan, (float _val), atan, (_val));
+CH_MATH_FUNCTION(double, GetATan, (double _val), atan, (_val));
+CH_MATH_FUNCTION(long double, GetATan, (long double _val), atan, (_val));
 
-double ChMath::GetASin(double _val)
-{
-	return std::asin(_val);
-}
-
-long double ChMath::GetASin(long double _val)
-{
-	return std::asin(_val);
-}
-
-
-float ChMath::GetACos(float _val)
-{
-	return std::acos(_val);
-}
-
-double ChMath::GetACos(double _val)
-{
-	return std::acos(_val);
-}
-
-long double ChMath::GetACos(long double _val)
-{
-	return std::acos(_val);
-}
-
-
-float ChMath::GetCos(float _val)
-{
-	return std::cos(_val);
-}
-
-double ChMath::GetCos(double _val)
-{
-	return std::cos(_val);
-}
-
-long double ChMath::GetCos(long double _val)
-{
-	return std::cos(_val);
-}
-
-
-float ChMath::GetATan(float _val)
-{
-	return std::atan(_val);
-}
-
-double ChMath::GetATan(double _val)
-{
-	return std::atan(_val);
-}
-
-long double ChMath::GetATan(long double _val)
-{
-	return std::atan(_val);
-}
-
-
-float ChMath::GetFMod(float _valx, float _valy)
-{
-	return std::fmod(_valx, _valy);
-}
-
-double ChMath::GetFMod(double _valx, double _valy)
-{
-	return std::fmod(_valx, _valy);
-}
-
-long double ChMath::GetFMod(long double _valx, long double _valy)
-{
-	return std::fmod(_valx, _valy);
-}
-
-#endif
-
-#ifdef CRT
-
-template<typename T, unsigned long Array>
-void ChMath::VectorBase<T, Array>::SetLen(const T _len)
-{
-	if (GetLen() == 0.0f)return;
-
-	Normalize();
-
-	T tmp = _len * _len;
-
-	/*
-	x^2 + y^2 + z^2 = r^2
-
-	(nx * l)^2 + (ny * l)^2 + (nz * l)^2 = r^2
-
-	l^2 = r^2 /(nx^2 + ny^2 + nz^2)
-	*/
-
-	T add = static_cast<T>(0.0f);
-
-	for (unsigned long i = 0; i < Array; i++)
-	{
-		add += val[i] * val[i];
-	}
-
-	tmp = tmp / add;
-
-	tmp = static_cast<T>(SqrtEx(static_cast<long double>(tmp)));
-	Mul(tmp);
-}
-
-
-template<typename T, unsigned long Array>
-T ChMath::VectorBase<T, Array>::GetRadian(
-	const VectorBase<T, Array>& _vec,
-	const unsigned long _digit)const
-{
-	T tmp = GetCos(_vec, _digit);
-
-	return ChMath::GetACos(tmp);
-}
-
+CH_MATH_FUNCTION(float, GetFMod, (float _valx, float _valy), fmod, (_valx, _valy));
+CH_MATH_FUNCTION(double, GetFMod, (double _valx, double _valy), fmod, (_valx, _valy));
+CH_MATH_FUNCTION(long double, GetFMod, (long double _valx, long double _valy), fmod, (_valx,_valy));
 
 #endif
 
