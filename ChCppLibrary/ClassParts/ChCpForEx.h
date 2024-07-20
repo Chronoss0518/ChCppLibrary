@@ -12,9 +12,9 @@ namespace ChCp
 	{
 	public:
 
-		virtual T& Begin() = 0;
+		virtual T& begin() = 0;
 
-		virtual T& End() = 0;
+		virtual T& end() = 0;
 
 	};
 
