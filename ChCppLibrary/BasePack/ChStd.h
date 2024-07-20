@@ -90,7 +90,6 @@ FunctionDefine(char8_t) { return ToDefine(u8); }
 #endif //CRT//
 
 #ifdef CRT
-
 #ifndef CPP20
 #ifndef CH_TO_NUMBER_FUNCTION
 #define CH_TO_NUMBER_FUNCTION(FunctionDefine,Chara)\
