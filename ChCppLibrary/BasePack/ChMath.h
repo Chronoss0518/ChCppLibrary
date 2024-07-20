@@ -366,9 +366,7 @@ namespace ChMath
 
 			return tmp;
 		}
-#endif
 
-#ifdef CRT
 		template<typename CharaType>
 		inline void Deserialize(
 			const std::basic_string<CharaType>& _str,
