@@ -1,6 +1,14 @@
 #ifndef Ch_CPP_BaFr_h
 #define Ch_CPP_BaFr_h
 
+#ifdef CRT
+
+#include<vector>
+#include<map>
+#include<functional>
+
+#endif
+
 #include"../../BaseIncluder/ChBase.h"
 
 namespace ChCpp
@@ -19,6 +27,13 @@ namespace ChCpp
 	{
 	public:
 
+		FrameList() {};
+
+		virtual ~FrameList() { Release(); }
+
+	public:
+
+#ifdef CRT
 		//自作フレームをセット//
 		//BaseFrameを継承しているもののみセットできる//
 		template<class T>
@@ -47,11 +62,13 @@ namespace ChCpp
 			return ChPtr::SharedSafeCast<T>(GetNowFrame());
 		}
 
-		inline void SetSendData(ChPtr::Shared<SendDataClass> _sendData) { sendData = _sendData; }
+		void SetSendData(ChPtr::Shared<SendDataClass> _sendData) { sendData = _sendData; }
 
-		inline unsigned long GetNowFrameNo() { return nowFrameNo; }
+#endif
 
-		inline unsigned long GetRegisterFrameCount() { return frameList.size(); }
+		unsigned long GetNowFrameNo() { return nowFrameNo; }
+
+		unsigned long GetRegisterFrameCount();
 
 	public://UpdateFunction//
 
@@ -59,17 +76,11 @@ namespace ChCpp
 
 	public://Release Funciton//
 
-		void Release()
-		{
-			saveData = nullptr;
-			sendData = nullptr;
+		void Release();
 
-			nextFrame = nullptr;
-			GetNowFrame() = nullptr;
-
-		}
 	public://Other Function
 
+#ifdef CRT
 		void SaveData(ChPtr::Shared<SaveDataClass> _save)
 		{
 			saveData = _save;
@@ -85,6 +96,7 @@ namespace ChCpp
 		{
 			return saveData;
 		}
+#endif
 
 	protected://Other Function
 
@@ -96,11 +108,12 @@ namespace ChCpp
 
 		friend BaseFrame;
 
-		ChPtr::Shared<SaveDataClass> saveData = nullptr;
-		ChPtr::Shared<SendDataClass> sendData = nullptr;
-
 		unsigned long nextFrameNo = -1;
 		unsigned long nowFrameNo = -1;
+
+#ifdef CRT
+		ChPtr::Shared<SaveDataClass> saveData = nullptr;
+		ChPtr::Shared<SendDataClass> sendData = nullptr;
 
 		ChPtr::Shared<BaseFrame>nextFrame = nullptr;
 		
@@ -111,19 +124,22 @@ namespace ChCpp
 		}
 
 		std::vector<std::function<ChPtr::Shared<BaseFrame>()>>frameList;
+#endif
 	};
 
 
 	//BaseFrame管理用クラス//
+	template<typename CharaType>
 	class FrameManager :protected FrameList
 	{
 	public://Set Function//
 
+#ifdef CRT
 		//自作フレームをセット//
 		//BaseFrameを継承しているもののみセットできる//
 		template<class T>
 		void SetFrame(typename std::enable_if
-			<std::is_base_of<BaseFrame, T>::value, const std::string&>::type _useFrameName)
+			<std::is_base_of<BaseFrame, T>::value, const std::basic_string<CharaType>&>::type _useFrameName)
 		{
 			if (frameNames.find(_useFrameName) != frameNames.end())
 			{
@@ -137,11 +153,12 @@ namespace ChCpp
 			frameNames[_useFrameName] = no;
 
 			FrameList::SetFrame<T>();
-
 		}
+#endif
 
 	public://Get Function//
 
+#ifdef CRT
 		template<class T>
 		auto GetNowFrame()->
 			typename std::enable_if
@@ -150,7 +167,8 @@ namespace ChCpp
 			return FrameList::GetNowFrame<T>();
 		}
 
-		std::string GetNowFrameName();
+		std::basic_string<CharaType> GetNowFrameName();
+#endif
 
 		inline unsigned long GetRegisterFrameCount() { return FrameList::GetRegisterFrameCount(); }
 
@@ -160,6 +178,7 @@ namespace ChCpp
 
 	public://Other Functions//
 
+#ifdef CRT
 		void SaveData(ChPtr::Shared<SaveDataClass> _save)
 		{
 			FrameList::SaveData(_save);
@@ -170,19 +189,24 @@ namespace ChCpp
 			return FrameList::GetData();
 		}
 
-		void ChangeFrame(const std::string& _frameName);
+		void ChangeFrame(const std::basic_string<CharaType>& _frameName);
+#endif
 
 	private:// Member Value//
 
 		friend BaseFrame;
 
-		std::map<std::string, unsigned long>frameNames;
+#ifdef CRT
+
+		std::map<std::basic_string<CharaType>, unsigned long>frameNames;
+
+#endif
 
 	private://ConstructerDestructer//
 
 		FrameManager() {}
 
-		~FrameManager() { FrameList::Release(); }
+		~FrameManager() {}
 
 	public://Get Instance//
 
@@ -194,7 +218,8 @@ namespace ChCpp
 
 	};
 
-	inline FrameManager& FrameMgr() { return FrameManager::GetIns(); }
+	template<typename CharaType>
+	static inline FrameManager<CharaType>& FrameMgr() { return FrameManager<CharaType>::GetIns(); }
 
 	//ゲームシーンを簡易的生成を行うためのクラス//
 	//必要に応じて以下の関数をオーバーライドする//
@@ -203,7 +228,8 @@ namespace ChCpp
 	{
 
 	public://InitAndRelease//
-		virtual inline void Init(ChPtr::Shared<SendDataClass> _sendData) {};
+
+		virtual inline void Init(SendDataClass* _sendData) {};
 
 		virtual inline void Release(){};
 
@@ -217,6 +243,7 @@ namespace ChCpp
 
 	protected://Other Functions//
 
+#ifdef CRT
 		void SaveData(ChPtr::Shared<SaveDataClass> _save)
 		{
 			if (ChPtr::NullCheck(mgr))return;
@@ -234,7 +261,7 @@ namespace ChCpp
 			if (ChPtr::NullCheck(mgr))return;
 			mgr->SetSendData(_send);
 		}
-
+#endif
 		//登録されているフレームに移動する//
 		void ChangeFrame(const unsigned long _frameNo)
 		{
@@ -258,6 +285,85 @@ namespace ChCpp
 
 	};
 }
+#ifdef CRT
 
+void ChCpp::FrameList::Release()
+{
+	saveData = nullptr;
+	sendData = nullptr;
+
+	nextFrame = nullptr;
+	GetNowFrame() = nullptr;
+}
+
+void ChCpp::FrameList::Update()
+{
+
+	auto&& nowframe = GetNowFrame();
+	if (nowframe == nullptr)return;
+	nowframe->Update();
+
+	Changes();
+}
+
+void ChCpp::FrameList::ChangeFrame(const unsigned long _frameNo)
+{
+	if (frameList.size() <= _frameNo)return;
+
+	nextFrame = frameList[_frameNo]();
+
+	nextFrameNo = _frameNo;
+
+	nextFrame->SetManager(this);
+}
+
+void ChCpp::FrameList::Changes()
+{
+	if (nextFrame == nullptr)return;
+
+	auto&& nowframe = GetNowFrame();
+	if (nowframe != nullptr)
+	{
+		nowframe->Release();
+	}
+
+	nowFrameNo = nextFrameNo;
+	nowframe = nextFrame;
+
+	nowframe->Init(sendData.get());
+	sendData = nullptr;
+
+	nextFrame = nullptr;
+	nextFrameNo = -1;
+}
+
+unsigned long ChCpp::FrameList::GetRegisterFrameCount() { return frameList.size(); }
+
+template<typename CharaType>
+void ChCpp::FrameManager<CharaType>::ChangeFrame(const std::basic_string<CharaType>& _frameName)
+{
+	if (frameNames.find(_frameName) == frameNames.end())return;
+
+	FrameList::ChangeFrame(frameNames[_frameName]);
+}
+
+template<typename CharaType>
+std::basic_string<CharaType> ChCpp::FrameManager<CharaType>::GetNowFrameName()
+{
+	if (frameNames.empty())return ChStd::GetZeroChara<CharaType>();
+
+	if (frameNames.size() <= nowFrameNo)return ChStd::GetZeroChara<CharaType>();
+
+	for (auto&& name : frameNames)
+	{
+		if (name.second != nowFrameNo)continue;
+
+		return name.first;
+	}
+
+	return ChStd::GetZeroChara<CharaType>();
+}
+
+#endif
 
 #endif
