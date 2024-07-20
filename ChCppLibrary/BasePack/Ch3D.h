@@ -1,10 +1,13 @@
 #ifndef Ch_CPP_3D_h
 #define Ch_CPP_3D_h
 
+#ifdef CRT
 #include<string>
 #include<vector>
-#include"ChMath.h"
+#endif
+
 #include"ChMath3D.h"
+#include"ChPtr.h"
 
 namespace Ch3D
 {
@@ -18,12 +21,13 @@ namespace Ch3D
 	{
 		ChVec3 pos;
 	};
-
-	inline void SetPosition(Position* _pos, const ChVec3& _val)
+#ifdef CRT
+	void SetPosition(Position* _pos, const ChVec3& _val)
 	{
 		if (ChPtr::NullCheck(_pos))return;
 		_pos->pos = _val;
 	}
+#endif
 
 	//ç∂è„Ç™0.0,0.0ÇÃç¿ïWån//
 	struct UV
@@ -31,44 +35,52 @@ namespace Ch3D
 		ChVec2 uv;
 	};
 
-	inline void SetUV(UV* _uv, const ChVec2& _val)
+#ifdef CRT
+	void SetUV(UV* _uv, const ChVec2& _val)
 	{
 		if (ChPtr::NullCheck(_uv))return;
 		_uv->uv = _val;
 	}
+#endif
 
 	struct Color
 	{
 		ChVec4 color = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
 	};
 
-	inline void SetColor(Color* _color, const ChVec4& _val)
+#ifdef CRT
+	void SetColor(Color* _color, const ChVec4& _val)
 	{
 		if (ChPtr::NullCheck(_color))return;
 		_color->color = _val;
 	}
+#endif
 
 	struct Normal
 	{
 		ChVec3 normal = ChVec3(0.0f,1.0f,0.0f);
 	};
 
-	inline void SetNormal(Normal* _normal, const ChVec3& _val)
+#ifdef CRT
+	void SetNormal(Normal* _normal, const ChVec3& _val)
 	{
 		if (ChPtr::NullCheck(_normal))return;
 		_normal->normal = _val;
 	}
+#endif
 
 	struct FaceNormal
 	{
 		ChVec3 faceNormal = ChVec3(0.0f, 1.0f, 0.0f);
 	};
 
-	inline void SetFaceNormal(FaceNormal* _faceNormal, const ChVec3& _val)
+#ifdef CRT
+	void SetFaceNormal(FaceNormal* _faceNormal, const ChVec3& _val)
 	{
 		if (ChPtr::NullCheck(_faceNormal))return;
 		_faceNormal->faceNormal = _val;
 	}
+#endif
 
 	template<unsigned long Num>
 	struct Bone
@@ -85,9 +97,12 @@ namespace Ch3D
 
 	};
 
+
 	struct BoneData
 	{
+#ifdef CRT
 		std::vector<float> blendPow;
+#endif
 	};
 
 	struct Vertex:
@@ -141,11 +156,14 @@ namespace Ch3D
 		None
 	};
 
+	template<typename CharaType>
 	struct MaterialData
 	{
 		Material mate;
-		std::string mateName;
-		std::map<TextureType, std::string>textures;
+#ifdef CRT
+		std::basic_string<CharaType> mateName;
+		std::map<TextureType, std::basic_string<CharaType>>textures;
+#endif
 	};
 
 	struct Transform
@@ -156,20 +174,20 @@ namespace Ch3D
 
 		inline ChLMat& GetLeftHandMatrix()
 		{
-			static ChLMat out;
-			out.SetPosition(pos);
-			out.SetRotation(rot);
-			out.SetScalling(scl);
-			return out;
+			static ChLMat res;
+			res.SetPosition(pos);
+			res.SetRotation(rot);
+			res.SetScalling(scl);
+			return res;
 		}
 
 		inline ChRMat& GetRightHandMatrix()
 		{
-			static ChRMat out;
-			out.SetPosition(pos);
-			out.SetRotation(rot);
-			out.SetScalling(scl);
-			return out;
+			static ChRMat res;
+			res.SetPosition(pos);
+			res.SetRotation(rot);
+			res.SetScalling(scl);
+			return res;
 		}
 
 	};
@@ -182,13 +200,11 @@ namespace Ch3D
 	//MaterialÇ…ëŒâûÇ∑ÇÈñ Çä«óùÇ∑ÇÈ//
 	struct Primitive:public FaceNormal
 	{
+#ifdef CRT
 		std::vector<ChPtr::Shared<SavePolyData>> vertexData;
+#endif
 		unsigned long mateNo;
 	};
-
-
-	
-
 }
 
 #endif
