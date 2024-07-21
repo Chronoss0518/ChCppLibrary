@@ -38,8 +38,7 @@ namespace ChCpp
 		//BaseFrame‚ğŒp³‚µ‚Ä‚¢‚é‚à‚Ì‚Ì‚İƒZƒbƒg‚Å‚«‚é//
 		template<class T>
 		auto SetFrame()->
-			typename std::enable_if
-			<std::is_base_of<BaseFrame, T>::value, const void>::type
+			typename std::enable_if<std::is_base_of<BaseFrame, T>::value, void>::type
 		{
 			frameList.push_back(
 				[]()-> ChPtr::Shared<BaseFrame>
@@ -56,8 +55,7 @@ namespace ChCpp
 
 		template<class T>
 		static auto GetNowFrame()->
-			typename std::enable_if
-			<std::is_base_of<BaseFrame, T>::value, ChPtr::Weak<T>>::type
+			typename std::enable_if<std::is_base_of<BaseFrame, T>::value, ChPtr::Weak<T>>::type
 		{
 			return ChPtr::SharedSafeCast<T>(GetNowFrame());
 		}
@@ -92,7 +90,8 @@ namespace ChCpp
 		}
 
 		template<class T>
-		auto GetData()->typename std::enable_if<std::is_base_of<SaveDataClass,T>::value,ChPtr::Shared<T>>::type
+		auto GetData()->
+			typename std::enable_if<std::is_base_of<SaveDataClass,T>::value,ChPtr::Shared<T>>::type
 		{
 			return saveData;
 		}
