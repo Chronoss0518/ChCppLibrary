@@ -1,7 +1,6 @@
 #ifndef Ch_CPP_Cumulative_h
 #define Ch_CPP_Cumulative_h
 
-
 #include"../ChCounter/ChCounter.h"
 
 namespace ChCpp
@@ -39,18 +38,20 @@ namespace ChCpp
 
 	public://Update Function//
 
+#ifdef CRT
+
 		//確認したい値を入れる//
-		long Update(CharaType _value)
-		{
-			return Update([&]()->bool {return _value == add; }, [&]()->bool {return _value == sub; });
-		}
+		long Update(CharaType _value);
+
+#endif
 
 	private://Base Update Function//
 
-		long Update(const std::function<bool()>& _addMethod, const std::function<bool()>& _subMethod)override
-		{
-			return Counter::Update(_addMethod, _subMethod);
-		}
+#ifdef CRT
+
+		long Update(const std::function<bool()>& _addMethod, const std::function<bool()>& _subMethod)override;
+
+#endif
 
 	private://Values//
 
@@ -62,5 +63,22 @@ namespace ChCpp
 
 	};
 }
+
+#ifdef CRT
+
+//確認したい値を入れる//
+template<typename CharaType>
+long ChCpp::Cumulative<CharaType>::Update(CharaType _value)
+{
+	return Update([&]()->bool {return _value == add; }, [&]()->bool {return _value == sub; });
+}
+
+template<typename CharaType>
+long ChCpp::Cumulative<CharaType>::Update(const std::function<bool()>& _addMethod, const std::function<bool()>& _subMethod)
+{
+	return Counter::Update(_addMethod, _subMethod);
+}
+
+#endif
 
 #endif
