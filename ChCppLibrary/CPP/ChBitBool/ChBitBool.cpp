@@ -36,7 +36,7 @@ void BitBool::SetBitFalse(const unsigned char _argsNum)
 	GetFlgs(byteCount) -= mask;
 }
 
-void BitBool::SetValue(const unsigned char _value, const unsigned long _byteCount)
+void BitBool::SetValue(const unsigned char _value, const unsigned char _byteCount)
 {
 	if (_byteCount >= GetSize())return;
 

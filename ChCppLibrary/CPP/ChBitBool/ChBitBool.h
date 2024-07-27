@@ -33,7 +33,7 @@ namespace ChCpp
 		//引数で選択された位置のByteをセットする//
 		//第一引数はセットする値//
 		//第二引数はアドレス内の一番小さいビットから数えた数値を入力//
-		void SetValue(const unsigned char _value, const unsigned long _byteCount = 0);
+		void SetValue(const unsigned char _value, const unsigned char _byteCount = 0);
 
 		void SetAllDownFlg();
 
