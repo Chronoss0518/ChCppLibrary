@@ -37,6 +37,27 @@ namespace ChPtr
 	template<class T>
 	using Weak = std::weak_ptr<T>;
 
+	//make_shared‚ğ’Zk‚·‚é‚½‚ß‚ÌŠÖ”//
+	template<class T, class... _Types>
+	static inline Shared<T> Make_S(_Types&&... _args)
+	{
+		return std::make_shared<T>(_args...);
+	}
+
+	//make_unique‚ğ’Zk‚·‚é‚½‚ß‚ÌŠÖ”//
+	template<class T, class... _Types>
+	static inline Unique<T> Make_U(_Types&&... _args)
+	{
+		return std::make_unique<T>(_args...);
+	}
+
+	//move_ptr‚ğ’Zk‚·‚é‚½‚ß‚ÌŠÖ”//
+	template<class T>
+	static inline T Move(T _obj)
+	{
+		return std::move<T>(_obj);
+	}
+
 	//SharedPtr—pƒ_ƒEƒ“ƒLƒƒƒXƒg//
 	template<class C, class C2>
 	static inline auto SharedSafeCast(Shared<C2> _sPtr)CH_SAFE_CAST_TRUE(C2,C)
@@ -77,26 +98,6 @@ namespace ChPtr
 		return (_class != NULL && _class != nullptr);
 	}
 
-	//make_shared‚ğ’Zk‚·‚é‚½‚ß‚ÌŠÖ”//
-	template<class T, class... _Types>
-	static inline Shared<T> Make_S(_Types&&... _args)
-	{
-		return std::make_shared<T>(_args...);
-	}
-
-	//make_unique‚ğ’Zk‚·‚é‚½‚ß‚ÌŠÖ”//
-	template<class T, class... _Types>
-	static inline Unique<T> Make_U(_Types&&... _args)
-	{
-		return std::make_unique<T>(_args...);
-	}
-
-	//move_ptr‚ğ’Zk‚·‚é‚½‚ß‚ÌŠÖ”//
-	template<class T>
-	static inline T Move(T _obj)
-	{
-		return std::move<T>(_obj);
-	}
 #endif
 }
 #endif
