@@ -4,26 +4,22 @@
 
 namespace ChCpp
 {
-	class BaseObject;
+	class BasicObject;
 
 	//ChBaseObjectに対するコンポーネントシステム//
-	 class BaseComponent :public  std::enable_shared_from_this<BaseComponent>
+	 class BaseComponent
 	{
 	public:
 
-		friend BaseObject;
+		friend BasicObject;
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//ConstructerDestructer//
+	public://Constructor Destructor//
 
 		virtual ~BaseComponent() { Release(); }
 
 		BaseComponent() {}
 
-	protected:
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//InitAndRelease//
+	protected://Init and Release
 
 		//セットされる際に自動的に呼ばれる//
 		virtual void Init() {};
@@ -51,15 +47,13 @@ namespace ChCpp
 
 	protected:
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//LookFunction//
+#ifdef CRT
 
 		//直接本体に触りたいときに呼ぶ関数//
-		template<class Class = BaseObject>
+		template<class Class = BasicObject>
 		bool LookObj(typename std::enable_if<
-			std::is_base_of<BaseObject, Class>::value,
+			std::is_base_of<BasicObject, Class>::value,
 			Class*>::type _out)
-			
 		{
 			auto&& testObj = ChPtr::SafeCast<Class>(obj);
 
@@ -72,15 +66,18 @@ namespace ChCpp
 		}
 
 		//直接本体に触りたいときに呼ぶ関数//
-		template<class Class = BaseObject>
+		template<class Class = BasicObject>
 		auto LookObj()->typename std::enable_if<
-			std::is_base_of<BaseObject, Class>::value,
+			std::is_base_of<BasicObject, Class>::value,
 			Class*>::type
 		{
 			return ChPtr::SafeCast<Class>(obj);
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////
+#endif
+
+	protected:
+
 		//UpdateFuncsions//
 		virtual void UpdateBegin() {};
 		virtual void Update() {};
@@ -100,13 +97,13 @@ namespace ChCpp
 	private:
 
 		//セットされる際に呼ばれる//
-		void BaseInit(BaseObject* _obj);
+		void BaseInit(BasicObject* _obj);
 
-		///////////////////////////////////////////////////////////////////////////////////
+	private://Member Value//
 
 		bool useFlg = true;
 
-		BaseObject* obj = nullptr;
+		BasicObject* obj = nullptr;
 
 		bool dFlg = false;
 
