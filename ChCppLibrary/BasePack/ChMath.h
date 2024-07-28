@@ -9,18 +9,6 @@
 #include <cmath>
 #endif
 
-#ifndef CH_CRLF_CHARA_FUNCTION
-#define CH_CRLF_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetCRLFChara,type)
-#endif
-
-#ifndef CH_COMMA_CHARA_FUNCTION
-#define CH_COMMA_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetCommaChara,type)
-#endif
-
-#ifndef CH_SEMICOLON_CHARA_FUNCTION
-#define CH_SEMICOLON_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetSemiColonChara,type)
-#endif
-
 #ifndef CH_FLOAT_ZERO_TEST
 #define CH_FLOAT_ZERO_TEST(val, testSize) val >= -testSize && val <= testSize
 #endif
@@ -152,17 +140,6 @@ inline ChEular##_AxisOrder##<T> GetEulerRotation##_AxisOrder(const unsigned long
 	return res;\
 }
 #endif
-
-namespace ChStd
-{
-#ifdef CRT
-	CH_TO_NUMBER_FUNCTION(CH_CRLF_CHARA_FUNCTION, "\r\n");
-
-	CH_TO_NUMBER_FUNCTION(CH_COMMA_CHARA_FUNCTION, ",");
-
-	CH_TO_NUMBER_FUNCTION(CH_SEMICOLON_CHARA_FUNCTION, ";");
-#endif
-}
 
 namespace ChMath
 {
