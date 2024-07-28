@@ -45,14 +45,15 @@ namespace ChCpp
 	public:
 
 #ifdef CRT
-		friend std::shared_ptr<BasicObject>;
-#endif
-
-#ifdef CRT
 		template<class T>
 		static typename std::enable_if<
 			std::is_base_of<BasicObject, T>::value || std::is_same<BasicObject, T>::value,ChPtr::Shared<T>>::type
-			CreateObject() { return ChPtr::Make_S<T>(); }
+			CreateObject()
+		{
+			ChPtr::Shared<BasicObject>res = nullptr;
+			res.reset(new T());
+			return res;
+		}
 #endif
 
 	public:
@@ -304,12 +305,6 @@ protected://Get Functions//
 
 		friend ObjectList<CharaType>;
 
-#ifdef CRT
-		
-		friend std::shared_ptr<BaseObject<CharaType>>;
-
-#endif
-
 	protected:
 
 		BaseObject(){}
@@ -322,7 +317,12 @@ protected://Get Functions//
 		static typename std::enable_if<
 			std::is_base_of<BaseObject<CharaType>, T>::value || 
 			std::is_same<BaseObject<CharaType>, T>::value, ChPtr::Shared<T>>::type
-			CreateObject() { return ChPtr::Make_S<T>(); }
+			CreateObject() 
+		{
+			ChPtr::Shared<BaseObject<CharaType>>res = nullptr;
+			res.reset(new T());
+			return res;
+		}
 #endif
 
 	public:

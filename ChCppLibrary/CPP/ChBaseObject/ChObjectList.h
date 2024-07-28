@@ -58,12 +58,13 @@ namespace ChCpp
 			std::is_same<BaseObject<CharaType>, T>::value, ChPtr::Shared<T>>::type
 			SetObject(const std::basic_string<CharaType>& _objectName)
 		{
-			ChPtr::Shared<BaseObject<CharaType>> tmpObj = ChPtr::Make_S<T>();
-			tmpObj->SetObjectList(this);
-			tmpObj->SetMyName(_objectName);
-			tmpObj->Init();
-			objectList.push_back(tmpObj);
-			return ChPtr::SharedSafeCast<T>(tmpObj);
+			ChPtr::Shared<BaseObject<CharaType>> res = nullptr;
+			res.reset(new T());
+			res->SetObjectList(this);
+			res->SetMyName(_objectName);
+			res->Init();
+			objectList.push_back(res);
+			return ChPtr::SharedSafeCast<T>(res);
 		}
 		
 		void SetObject(ChPtr::Shared<BaseObject<CharaType>> _obj);
