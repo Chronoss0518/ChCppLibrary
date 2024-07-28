@@ -153,9 +153,7 @@ namespace ChCpp
 			for (auto&& com : comList)
 			{
 				if (com->dFlg)continue;
-
 				auto testCom = ChPtr::SharedSafeCast<T>(com);
-
 				if (testCom != nullptr) { return testCom; }
 			}
 			return nullptr;
