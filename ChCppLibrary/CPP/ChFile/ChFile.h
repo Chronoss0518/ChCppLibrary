@@ -5,11 +5,23 @@
 #include<iostream>
 #include<ios>
 #include<fstream>
+#include<sstream>
 #include<locale>
 #endif
 
 #include"../../BasePack/ChStd.h"
 #include"../../BasePack/ChStr.h"
+
+#ifndef CH_ERROR_TEXT_TYPE_FUNCTION
+#define CH_ERROR_TEXT_TYPE_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetErrorTextType,type)
+#endif
+
+namespace ChStd
+{
+#ifdef CRT
+	CH_TO_NUMBER_FUNCTION(CH_ERROR_TEXT_TYPE_FUNCTION, ".txt");
+#endif
+}
 
 namespace ChCpp
 {
@@ -20,7 +32,11 @@ namespace ChCpp
 
 		const enum class OTEAddType :unsigned char
 		{
-			None, AfterFirst, All
+			None, 
+			//後ろに追加していく//
+			AfterFirst, 
+			//全ての内容を残しておく//
+			All
 		};
 
 	public://Static Functions//
@@ -29,15 +45,26 @@ namespace ChCpp
 
 		//専用エラーファイルを出力する//
 		static inline void OutToErrorText(
-			const std::basic_string<CharaType>& _errorName
-			, const std::basic_string<CharaType>& _errorDitails
-			, const OTEAddType _addFlg = OTEAddType::None)
+			const std::basic_string<CharaType>& _errorName,
+			const std::basic_string<CharaType>& _errorDitails,
+			const OTEAddType _addFlg = OTEAddType::None)
+		{
+			OutToErrorText(_errorName, _errorDitails, "", _addFlg);
+		}
+
+
+		static inline void OutToErrorText(
+			const std::basic_string<CharaType>& _errorName,
+			const std::basic_string<CharaType>& _errorDitails,
+			const char* _localeName,
+			const OTEAddType _addFlg = OTEAddType::None)
 		{
 			File outFiles;
 			std::basic_string<CharaType> outData = ChStd::GetZeroChara<CharaType>();
-			std::basic_string<CharaType> outFileName = "";
-			outFileName = _errorName + ".txt";
+			std::basic_string<CharaType> outFileName = ChStd::GetZeroChara<CharaType>();
+			outFileName = _errorName + ChStd::GetErrorTextType<CharaType>();
 			outFiles.FileOpen(outFileName);
+			outFiles.SetLocaleName(_localeName);
 
 			if (_addFlg == OTEAddType::All)
 			{
@@ -47,16 +74,17 @@ namespace ChCpp
 
 			if (_addFlg == OTEAddType::AfterFirst)
 			{
-				static bool Flgs = false;
-				if (Flgs)
+				static bool flgs = false;
+				if (flgs)
 				{
 					outData = outFiles.FileReadText();
 					outData = outData + ChStd::GetCRLFChara<CharaType>();
 				}
-				Flgs = true;
+				flgs = true;
 			}
 
 			outData = outData + _errorDitails;
+
 
 			outFiles.FileWriteText(outData);
 
@@ -150,7 +178,7 @@ namespace ChCpp
 
 			if ((flg & std::ios::binary))return res;
 
-			std::locale tmpLocale = std::locale::classic;
+			std::locale tmpLocale = std::locale::classic();
 
 			if (localeName != "") { tmpLocale = stream.imbue(std::locale(localeName.c_str())); }
 
