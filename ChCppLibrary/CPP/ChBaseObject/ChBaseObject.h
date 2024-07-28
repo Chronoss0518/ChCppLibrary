@@ -112,8 +112,9 @@ namespace ChCpp
 
 		//コンポーネントのセット//
 		template<class T>
-		inline auto SetComponent() -> typename std::enable_if
-			<std::is_base_of<BaseComponent, T>::value, const ChPtr::Shared<T>>::type
+		inline typename std::enable_if
+			<std::is_base_of<BaseComponent, T>::value, const ChPtr::Shared<T>>::type 
+			SetComponent()
 		{
 			ChPtr::Shared<BaseComponent> tmpCom = ChPtr::Make_S<T>();
 
