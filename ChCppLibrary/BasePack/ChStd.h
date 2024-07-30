@@ -65,7 +65,7 @@
 
 #ifndef CH_NUMBER_FUNCTION_BASE
 #define CH_NUMBER_FUNCTION_BASE(Function,Type)template<typename CharaType>\
-static auto Function ()->typename std::enable_if<std::is_same< Type ,CharaType>::value , const CharaType*>::type
+constexpr static typename std::enable_if<std::is_same<Type ,CharaType>::value , const CharaType*>::type Function()
 #endif
 
 #ifdef CRT
@@ -147,8 +147,24 @@ FunctionDefine(char8_t) { return CH_TO_CHAR8(Chara); }
 #define CH_COMMA_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetCommaChara,type)
 #endif
 
+#ifndef CH_DOT_CHARA_FUNCTION
+#define CH_DOT_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetDotChara,type)
+#endif
+
 #ifndef CH_SEMICOLON_CHARA_FUNCTION
 #define CH_SEMICOLON_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetSemiColonChara,type)
+#endif
+
+#ifndef CH_SPACE_CHARA_FUNCTION
+#define CH_SPACE_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetSpaceChara,type)
+#endif
+
+#ifndef CH_SLASH_CHARA_FUNCTION
+#define CH_SLASH_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetSlashChara,type)
+#endif
+
+#ifndef CH_YEN_CHARA_FUNCTION
+#define CH_YEN_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetYenChara,type)
 #endif
 
 
@@ -184,7 +200,15 @@ namespace ChStd
 
 	CH_TO_NUMBER_FUNCTION(CH_COMMA_CHARA_FUNCTION, ",");
 
+	CH_TO_NUMBER_FUNCTION(CH_DOT_CHARA_FUNCTION, ".");
+
 	CH_TO_NUMBER_FUNCTION(CH_SEMICOLON_CHARA_FUNCTION, ";");
+
+	CH_TO_NUMBER_FUNCTION(CH_SPACE_CHARA_FUNCTION, " ");
+
+	CH_TO_NUMBER_FUNCTION(CH_SLASH_CHARA_FUNCTION, "/");
+
+	CH_TO_NUMBER_FUNCTION(CH_YEN_CHARA_FUNCTION, "\\");
 #endif
 
 #ifdef _WINDOWS_
