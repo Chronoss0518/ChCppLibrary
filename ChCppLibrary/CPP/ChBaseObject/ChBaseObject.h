@@ -112,7 +112,7 @@ namespace ChCpp
 
 		//コンポーネントのセット//
 		template<class T>
-		inline typename std::enable_if
+		typename std::enable_if
 			<std::is_base_of<BaseComponent, T>::value, const ChPtr::Shared<T>>::type 
 			SetComponent()
 		{
@@ -137,7 +137,7 @@ namespace ChCpp
 #endif
 
 		//使用フラグ//
-		inline void SetUseFlg(const bool& _flg) { useFlg = _flg; }
+		void SetUseFlg(const bool& _flg) { useFlg = _flg; }
 
 	public://Get Functions//
 
@@ -145,7 +145,7 @@ namespace ChCpp
 
 		//コンポーネントの取得//
 		template<class T = BaseComponent>
-		inline typename std::enable_if<
+		typename std::enable_if<
 			std::is_base_of<BaseComponent, T>::value,
 			ChPtr::Shared<T>>::type
 			GetComponent()
@@ -161,7 +161,7 @@ namespace ChCpp
 
 		//コンポーネントリストの取得//
 		template<typename T = BaseComponent>
-		inline typename std::enable_if<
+		typename std::enable_if<
 			std::is_base_of<BaseComponent, T>::value,
 			std::vector<ChPtr::Shared<T>>>::type
 			GetComponents()
@@ -180,7 +180,7 @@ namespace ChCpp
 
 		//子オブジェクト群の取得//
 		template<class T = BasicObject>
-		inline typename std::enable_if<
+		typename std::enable_if<
 			std::is_base_of<BasicObject, T>::value,
 			std::vector<ChPtr::Weak<T>>>::type
 			GetChildlen()
@@ -201,7 +201,7 @@ namespace ChCpp
 
 		//子オブジェクト群の取得//
 		template<class T = BasicObject>
-		inline typename std::enable_if<
+		typename std::enable_if<
 			std::is_base_of<BasicObject, T>::value,
 			std::vector<ChPtr::Weak<T>>>::type
 			GetAllChildlen()
@@ -235,9 +235,9 @@ protected://Get Functions//
 	public://Is Functions//
 
 		//使用可否の確認//
-		inline bool IsUseFlg() { return useFlg; }
+		bool IsUseFlg() { return useFlg; }
 
-		inline bool IsDethFlg() { return dFlg; }
+		bool IsDethFlg() { return dFlg; }
 
 	public://Life Cycle Base//
 
@@ -330,7 +330,7 @@ protected://Get Functions//
 
 		//子オブジェクト群の取得//
 		template<class T = BasicObject>
-		inline typename std::enable_if<
+		typename std::enable_if<
 			std::is_base_of<BasicObject, T>::value,
 			std::vector<ChPtr::Weak<T>>>::type
 			GetChildlenForName(const std::basic_string<CharaType>& _name)
@@ -351,7 +351,7 @@ protected://Get Functions//
 
 		//子オブジェクト群の取得//
 		template<class T = BaseObject>
-		inline typename std::enable_if<
+		typename std::enable_if<
 			std::is_base_of<BaseObject, T>::value,
 			std::vector<ChPtr::Weak<T>>>::type
 			GetChildlenConstainsName(const std::basic_string<CharaType>& _name)
@@ -372,7 +372,7 @@ protected://Get Functions//
 
 
 		//自身の名前のセット//
-		inline void SetMyName(const std::basic_string<CharaType>& _newName) { myName = _newName; }
+		void SetMyName(const std::basic_string<CharaType>& _newName) { myName = _newName; }
 
 #endif
 
@@ -390,7 +390,7 @@ protected://Get Functions//
 
 		//子オブジェクト群の取得//
 		template<class T = BasicObject>
-		inline typename std::enable_if<
+		typename std::enable_if<
 			std::is_base_of<BasicObject, T>::value,
 			std::vector<ChPtr::Weak<T>>>::type
 			GetAllChildlenForName(const std::basic_string<CharaType>& _name)
@@ -413,7 +413,7 @@ protected://Get Functions//
 
 		//子オブジェクト群の取得//
 		template<class T = BaseObject>
-		inline typename std::enable_if<
+		typename std::enable_if<
 			std::is_base_of<BaseObject, T>::value,
 			std::vector<ChPtr::Weak<T>>>::type
 			GetAllChildlenConstainsName(const std::basic_string<CharaType>& _name)

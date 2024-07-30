@@ -37,13 +37,13 @@ namespace ChCpp
 
 	public://Set Function//
 
-		inline void SetUsing(const bool _Flg) { useFlg = _Flg; }
+		void SetUsing(const bool _Flg) { useFlg = _Flg; }
 
 	public://Is Functions//
 
-		inline bool IsDeth() { return dFlg; }
+		bool IsDeth() { return dFlg; }
 
-		inline bool IsUseFlg() { return useFlg; }
+		bool IsUseFlg() { return useFlg; }
 
 	protected:
 
