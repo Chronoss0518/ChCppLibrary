@@ -328,6 +328,23 @@ protected://Get Functions//
 
 #ifdef CRT
 
+		//自身の名前のセット//
+		void SetMyName(const std::basic_string<CharaType>& _newName) { myName = _newName; }
+
+#endif
+
+	private://Set Functions//
+
+#ifdef CRT
+
+		void SetObjectList(ObjectList<CharaType>* _objMa) { objMaList = _objMa; }
+
+#endif
+
+	public:
+
+#ifdef CRT
+
 		//子オブジェクト群の取得//
 		template<class T = BasicObject>
 		typename std::enable_if<
@@ -369,24 +386,6 @@ protected://Get Functions//
 
 			return tmpObjList;
 		}
-
-
-		//自身の名前のセット//
-		void SetMyName(const std::basic_string<CharaType>& _newName) { myName = _newName; }
-
-#endif
-
-	private://Set Functions//
-
-#ifdef CRT
-
-		void SetObjectList(ObjectList<CharaType>* _objMa) { objMaList = _objMa; }
-
-#endif
-
-	public:
-
-#ifdef CRT
 
 		//子オブジェクト群の取得//
 		template<class T = BasicObject>
