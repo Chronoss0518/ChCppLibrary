@@ -81,7 +81,6 @@ namespace ChCpp
 		typename std::vector<std::basic_string<CharaType>>::iterator begin() { return textLines.begin(); }
 
 		typename std::vector<std::basic_string<CharaType>>::iterator end() { return textLines.end(); }
-
 #endif
 
 		//Text‚Ì’†‚Éw’è‚µ‚½•¶š—ñ‚ğæ“ª‚æ‚è’T‚µ//
