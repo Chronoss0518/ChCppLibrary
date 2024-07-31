@@ -1167,7 +1167,13 @@ namespace ChMath
 
 		CH_MATH_METHOD_VECTOR_CONSTRUCTOR(Vector4Base);
 
-		Vector4Base(const T _x, const T _y, const T _z, const T _w);
+		Vector4Base(const T _x, const T _y, const T _z, const T _w)
+		{
+			x = _x;
+			y = _y;
+			z = _z;
+			w = _w;
+		}
 
 	public://Set Functions//
 
