@@ -83,11 +83,11 @@ namespace ChStr
 	std::basic_string<CharaType> StrReplase(
 		const std::basic_string<CharaType>& _base,
 		const std::basic_string<CharaType>& _before,
-		const std::basic_string<CharaType>& _after = ChStd::GetZeroChara())
+		const std::basic_string<CharaType>& _after = ChStd::GetZeroChara<CharaType>())
 	{
 		if (_base.find(_before) == _base.npos)return _base;
 
-		std::basic_string<CharaType> out = ChStd::GetZeroChara();
+		std::basic_string<CharaType> out = ChStd::GetZeroChara<CharaType>();
 
 		size_t tmpPos = 0;
 		size_t testPos = 0;
