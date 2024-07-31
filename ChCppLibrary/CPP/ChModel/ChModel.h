@@ -1,15 +1,30 @@
 #ifndef Ch_CPP_Model_h
 #define Ch_CPP_Model_h
 
+
+#ifdef CRT
+
+#include<vector>
+#include<map>
+#include<string>
+
+#endif
+
+#include"../../BasePack/ChStd.h"
+#include"../../BasePack/Ch3D.h"
+
+#include"../ChBaseObject/ChBaseComponent.h"
+#include"../ChBaseObject/ChBaseObject.h"
+
 namespace ChCpp
 {
-	class ModelAnimator
+	class ModelAnimator:public BaseComponent
 	{
 	protected:
 
 		float Speed = 0.1f;
 
-		unsigned long AllAnimationCount;
+		unsigned long AllAnimationCount = 0;
 
 		struct AniDatas
 		{
@@ -22,13 +37,14 @@ namespace ChCpp
 		{
 			AniDatas Start;
 			AniDatas End;
-			unsigned long AnimationFrameCount;
+			unsigned long AnimationFrameCount = 0;
 		};
-
+#ifdef CRT
 		std::vector<ChPtr::Shared<AnimationData>>Animation;
-
+#endif
 	};
 
+	template<typename CharaType>
 	struct ModelFrame
 	{
 		///////////////////////////////////////////////////////////////////////////////////////
@@ -42,14 +58,17 @@ namespace ChCpp
 			ChLMat	blendPow;
 		};
 
+		template<typename CharaType>
 		struct Material
 		{
-			std::string materialName = "";
 			ChVec4 diffuse = 1.0f;
 			ChVec4 specular =1.0f;
 			ChVec4 ambient = 0.0f;
-			std::vector<std::string>textureNames = std::vector<std::string>(0);
 
+#ifdef CRT
+			std::basic_string<CharaType> materialName = ChStd::GetZeroChara<CharaType>();
+			std::vector<std::basic_string<CharaType>>textureNames;
+#endif
 		};
 
 		struct SurFace
@@ -72,23 +91,27 @@ namespace ChCpp
 			}
 		};
 
+		template<typename CharaType>
 		struct Mesh
 		{
+#ifdef CRT
 			std::vector<ChPtr::Shared<VertexData>>vertexList;
-			std::vector<ChPtr::Shared<Material>>materialList;
-			std::map<std::string, unsigned long> materialNo;
+			std::vector<ChPtr::Shared<Material<CharaType>>>materialList;
+			std::map<std::basic_string<CharaType>, unsigned long> materialNo;
 			std::vector<ChPtr::Shared<SurFace>>faceList;
+#endif
 
-			inline ~Mesh()
+			~Mesh()
 			{
+#ifdef CRT
 				faceList.clear();
-
 				vertexList.clear();
-
 				materialList.clear();
+#endif
 			}
 		};
 
+		template<typename CharaType>
 		struct Frame
 		{
 			union
@@ -97,27 +120,27 @@ namespace ChCpp
 				ChRMatrix baseRMat;
 			};
 
-			std::string myName = "";
-			ChPtr::Shared<Mesh>mesh = nullptr;
-			ChPtr::Weak<Frame>parent;
-			std::vector<ChPtr::Shared<Frame>>childFrames;
-
-			Frame()
-			{
-
-			}
+#ifdef CRT
+			std::basic_string<CharaType> myName = ChStd::GetZeroChara<CharaType>();
+			ChPtr::Shared<Mesh<CharaType>>mesh = nullptr;
+			ChPtr::Weak<Frame<CharaType>>parent;
+			std::vector<ChPtr::Shared<Frame<CharaType>>>childFrames;
+#endif
 
 			~Frame()
 			{
+#ifdef CRT
 				mesh = nullptr;
 				childFrames.clear();
+#endif
 			}
 
 		};
 
-		ChPtr::Shared<Frame>modelData = nullptr;
-		std::string modelName;
-
+#ifdef CRT
+		ChPtr::Shared<Frame<CharaType>>modelData = nullptr;
+		std::basic_string<CharaType> modelName;
+#endif
 	};
 
 }
