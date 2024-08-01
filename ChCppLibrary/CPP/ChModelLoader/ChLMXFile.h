@@ -1,173 +1,304 @@
 #ifndef Ch_CPP_XMesh_h
 #define Ch_CPP_XMesh_h
 
+#ifdef CRT
+
+#include<vector>
+#include<map>
+#include<string>
+
+#endif
+
+#include"../../BasePack/ChStd.h"
+#include"../../BasePack/ChPtr.h"
+#include"../../BasePack/ChStr.h"
+
 #include"ChModelLoaderBase.h"
+
+#ifndef	CH_LM_XFILE_TAG_XFILE_PREFIX_FUNCTION
+#define	CH_LM_XFILE_TAG_XFILE_PREFIX_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetXFilePrefixTag, type)
+#endif
+
+#ifndef	CH_LM_XFILE_TAG_TEMPLATE_FUNCTION
+#define	CH_LM_XFILE_TAG_TEMPLATE_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetTemplateTag,type)
+#endif
+
+#ifndef	CH_LM_XFILE_TAG_FRAME_FUNCTION
+#define	CH_LM_XFILE_TAG_FRAME_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetFrameTag,type)
+#endif
+
+#ifndef	CH_LM_XFILE_TAG_FRAME_TRANSFORM_MATRIX_FUNCTION
+#define	CH_LM_XFILE_TAG_FRAME_TRANSFORM_MATRIX_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetFrameTransformMatrixTag,type)
+#endif
+
+#ifndef	CH_LM_XFILE_TAG_MESH_FUNCTION
+#define	CH_LM_XFILE_TAG_MESH_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetMeshTag,type)
+#endif
+
+#ifndef	CH_LM_XFILE_TAG_NORMALS_FUNCTION
+#define	CH_LM_XFILE_TAG_NORMALS_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetNormalsTag,type)
+#endif
+
+#ifndef	CH_LM_XFILE_TAG_MATERIAL_LIST_FUNCTION
+#define	CH_LM_XFILE_TAG_MATERIAL_LIST_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetMaterialListTag,type)
+#endif
+
+#ifndef	CH_LM_XFILE_TAG_MATERIAL_FUNCTION
+#define	CH_LM_XFILE_TAG_MATERIAL_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetMaterialTag,type)
+#endif
+
+#ifndef	CH_LM_XFILE_TAG_SKIN_WEIGHTS_FUNCTION
+#define	CH_LM_XFILE_TAG_SKIN_WEIGHTS_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetSkinWeightsTag,type)
+#endif
+
+#ifndef	CH_LM_XFILE_TAG_TEXTURE_COORDS_FUNCTION
+#define	CH_LM_XFILE_TAG_TEXTURE_COORDS_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetTextureCoordsTag,type)
+#endif
+
+#ifndef	CH_LM_XFILE_TAG_TEXTUER_FILE_NAME_FUNCTION
+#define	CH_LM_XFILE_TAG_TEXTUER_FILE_NAME_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetTextureFileNameTag,type)
+#endif
+
+#ifndef CH_LM_XFILE_BASE_TYPE_CLASS_CHILD
+#define CH_LM_XFILE_BASE_TYPE_CLASS_CHILD(_StructName,_BaseType,_BaseTypeInitialize)\
+struct _StructName : public BaseType{\
+	void Desirialise(\
+		const std::basic_string<CharaType>& _text,\
+		const size_t& _start,\
+		const std::basic_string<CharaType>& _endChar)override{\
+		size_t tmp = _text.find(_endChar, _start);\
+		value = ChStr::GetNumFromText<_BaseType, CharaType>(_text, _start, tmp);}\
+\
+	std::basic_string<CharaType> Serialise()override\
+	{\
+		return ChStd::GetZeroChara<CharaType>();\
+	}\
+	_BaseType value = _BaseTypeInitialize;\
+};
+#endif
+
+
+#ifndef CH_LM_XFILE_BASE_TYPE_CLASS_CHILD_VECTOR
+#define CH_LM_XFILE_BASE_TYPE_CLASS_CHILD_VECTOR(_StructName,_BaseType,_BaseTypeInitialize)\
+struct _StructName : public BaseType{\
+	void Desirialise(\
+		const std::basic_string<CharaType>& _text,\
+		const size_t& _start,\
+		const std::basic_string<CharaType>& _endChar)override{\
+		value.Deserialize<CharaType>(_text, _start, ChStd::GetSemiColonChara<CharaType>(), _endChar); }\
+\
+	std::basic_string<CharaType> Serialise()override\
+	{\
+		return ChStd::GetZeroChara<CharaType>();\
+	}\
+	_BaseType value = _BaseTypeInitialize;\
+};
+#endif
 
 namespace ChCpp
 {
-
 	namespace ModelLoader
 	{
+		namespace XFileTag
+		{
+#ifdef CRT
+			CH_TO_NUMBER_FUNCTION(CH_LM_XFILE_TAG_XFILE_PREFIX_FUNCTION, "xof");
 
-		class XFile :public ModelLoaderBase
+			CH_TO_NUMBER_FUNCTION(CH_LM_XFILE_TAG_TEMPLATE_FUNCTION,"template");
+
+			CH_TO_NUMBER_FUNCTION(CH_LM_XFILE_TAG_FRAME_FUNCTION,"Frame");
+			
+			CH_TO_NUMBER_FUNCTION(CH_LM_XFILE_TAG_FRAME_TRANSFORM_MATRIX_FUNCTION,"FrameTransformMatrix");
+
+			CH_TO_NUMBER_FUNCTION(CH_LM_XFILE_TAG_MESH_FUNCTION,"Mesh");
+
+			CH_TO_NUMBER_FUNCTION(CH_LM_XFILE_TAG_NORMALS_FUNCTION,"MeshNormals");
+
+			CH_TO_NUMBER_FUNCTION(CH_LM_XFILE_TAG_MATERIAL_LIST_FUNCTION,"MeshMaterialList");
+
+			CH_TO_NUMBER_FUNCTION(CH_LM_XFILE_TAG_MATERIAL_FUNCTION,"Material");
+
+			CH_TO_NUMBER_FUNCTION(CH_LM_XFILE_TAG_SKIN_WEIGHTS_FUNCTION,"SkinWeights");
+
+			CH_TO_NUMBER_FUNCTION(CH_LM_XFILE_TAG_TEXTURE_COORDS_FUNCTION,"MeshTextureCoords");
+
+			CH_TO_NUMBER_FUNCTION(CH_LM_XFILE_TAG_TEXTUER_FILE_NAME_FUNCTION,"TextureFilename");
+#endif
+		}
+
+		template<typename CharaType>
+		class XFile :public ModelLoaderBase<CharaType>
 		{
 		protected:
 
-			struct XFileModelFrame
+			struct XVertex :public Ch3D::PolyVertex
+			{};
+
+			struct XMaterial :public Ch3D::Material
 			{
-				struct XVertex :public Ch3D::PolyVertex
-				{};
+#ifdef CRT
+				std::basic_string<CharaType> materialName = ChStd::GetZeroChara<CharaType>();
 
-				struct XMaterial :public Ch3D::Material
-				{
-					std::string materialName;
+				std::vector<std::basic_string<CharaType>>textureNameList;
+#endif
+			};
 
-					std::vector<std::string>textureNameList;
-				};
+			struct XFace
+			{
+#ifdef CRT
+				std::vector<unsigned long> vertexNos;
+#endif
+				unsigned long mateNo = 0;
+			};
 
-				struct XFace
-				{
-					std::vector<unsigned long> vertexNos;
-					unsigned long mateNo = 0;
-				};
+			struct XSkinWeights
+			{
+#ifdef CRT
+				std::basic_string<CharaType> targetFrameName = ChStd::GetZeroChara<CharaType>();
 
-				struct XSkinWeights
-				{
-					std::string targetFrameName = "";
+				std::map<unsigned long, float>weitPow;
+#endif
+				ChLMat boneOffset;
 
-					std::map<unsigned long, float>weitPow;
+			};
 
-					ChLMat boneOffset;
+			struct XMesh
+			{
+#ifdef CRT
+				std::vector<ChPtr::Shared<XVertex>>vertexList;
+				std::vector<ChPtr::Shared<XMaterial>>materialList;
+				std::vector<ChPtr::Shared<XFace>>faceList;
+#endif
+			};
 
-				};
+			struct XFrame
+			{
 
-				struct XMesh
-				{
-					std::vector<ChPtr::Shared<XVertex>>vertexList;
-					std::vector<ChPtr::Shared<XMaterial>>materialList;
-					std::vector<ChPtr::Shared<XFace>>faceList;
-				};
-
-				struct XFrame
-				{
-					std::string fName;
-					ChPtr::Shared<XMesh> mesh;
-					std::vector<ChPtr::Shared<XFrame>>next;
-					std::vector<ChPtr::Shared<XSkinWeights>>skinWeightDatas;
-					ChLMat frameMatrix;
-				};
-
-
-				ChPtr::Shared<XFrame> modelData = nullptr;
-				std::string modelName;
-
+#ifdef CRT
+				std::basic_string<CharaType> fName = ChStd::GetZeroChara<CharaType>();
+				ChPtr::Shared<XMesh> mesh;
+				std::vector<ChPtr::Shared<XFrame>>next;
+				std::vector<ChPtr::Shared<XSkinWeights>>skinWeightDatas;
+#endif
+				ChLMat frameMatrix;
 			};
 
 			struct BaseType
 			{
+#ifdef CRT
 				virtual void Desirialise(
-					const std::string& _Text
-					, const size_t& _Start
-					, const std::string& _EndChar) = 0;
+					const std::basic_string<CharaType>& _Text,
+					const size_t& _Start,
+					const std::basic_string<CharaType>& _EndChar) = 0;
 
-				virtual std::string Serialise() = 0;
+				virtual std::basic_string<CharaType> Serialise() = 0;
+#endif
+			};
+
+			struct XFileModelFrame
+			{
+
+#ifdef CRT
+				ChPtr::Shared<XFrame> modelData = nullptr;
+				std::basic_string<CharaType> modelName = ChStd::GetZeroChara<CharaType>();
+#endif
 			};
 
 			struct TemplateRange
 			{
 				size_t begin = 0;
 				size_t end = 0;
+#ifdef CRT
 				std::vector<ChPtr::Shared<TemplateRange>> nest;
+#endif
 			};
 
 		public:
 
+#ifdef CRT
 			//モデルデータの読み込み口//
-			void CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& _filePath)override;
+			void CreateModel(ChPtr::Shared<ModelObject<CharaType>> _model, const std::basic_string<CharaType>& _filePath)override;
 
-			///////////////////////////////////////////////////////////////////////////////////////
-
-			void OutModelFile(const ChPtr::Shared<ModelObject> _model, const std::string& _filePath)override;
-
+			void OutModelFile(const ChPtr::Shared<ModelObject<CharaType>> _model, const std::basic_string<CharaType>& _filePath)override;
+#endif
 		public:
 
 			inline void SetMaxBoneNum(const unsigned long _boneNum) { maxBoneNum = _boneNum; }
 
 		protected:
 
-			///////////////////////////////////////////////////////////////////////////////////////
-
+#ifdef CRT
 			//ChModelへ変換//
 			void XFrameToChFrame(
-				ChPtr::Shared<FrameObject> _chFrame
-				, const ChPtr::Shared<XFileModelFrame::XFrame>& _xFrame);
+				ChPtr::Shared<FrameObject<CharaType>> _chFrame,
+				const ChPtr::Shared<XFrame>& _xFrame);
+#endif
+		protected://SetFunction//
 
-			///////////////////////////////////////////////////////////////////////////////////////
-			//SetFunction//
-
+#ifdef CRT
 			bool SetFrame(
-				ChPtr::Shared<XFileModelFrame::XFrame>& _frames
-				, const ChPtr::Shared<TemplateRange>& _targetTemplate
-				, const std::string& _text);
+				ChPtr::Shared<XFrame>& _frames,
+				const ChPtr::Shared<TemplateRange>& _targetTemplate,
+				const std::basic_string<CharaType>& _text);
 
 			bool SetFremeTransformMatrix(
-				ChPtr::Shared<XFileModelFrame::XFrame>& _frames
-				, const ChPtr::Shared<TemplateRange>& _targetTemplate
-				, const std::string& _text);
+				ChPtr::Shared<XFrame>& _frames,
+				const ChPtr::Shared<TemplateRange>& _targetTemplate,
+				const std::basic_string<CharaType>& _text);
 
 			bool SetMesh(
-				ChPtr::Shared<XFileModelFrame::XFrame>& _frames
-				, const ChPtr::Shared<TemplateRange>& _targetTemplate
-				, const std::string& _text);
+				ChPtr::Shared<XFrame>& _frames,
+				const ChPtr::Shared<TemplateRange>& _targetTemplate,
+				const std::basic_string<CharaType>& _text);
 
 			bool SetMeshNormal(
-				ChPtr::Shared<XFileModelFrame::XFrame>& _frames
-				, const ChPtr::Shared<TemplateRange>& _targetTemplate
-				, const std::string& _text);
+				ChPtr::Shared<XFrame>& _frames,
+				const ChPtr::Shared<TemplateRange>& _targetTemplate,
+				const std::basic_string<CharaType>& _text);
 
 			bool SetMeshTextureCoords(
-				ChPtr::Shared<XFileModelFrame::XFrame>& _frames
-				, const ChPtr::Shared<TemplateRange>& _targetTemplate
-				, const std::string& _text);
+				ChPtr::Shared<XFrame>& _frames,
+				const ChPtr::Shared<TemplateRange>& _targetTemplate,
+				const std::basic_string<CharaType>& _text);
 
 			bool SetMeshMaterialList(
-				ChPtr::Shared<XFileModelFrame::XFrame>& _frames
-				, const ChPtr::Shared<TemplateRange>& _targetTemplate
-				, const std::string& _text);
+				ChPtr::Shared<XFrame>& _frames,
+				const ChPtr::Shared<TemplateRange>& _targetTemplate,
+				const std::basic_string<CharaType>& _text);
 
 			bool SetMaterial(
-				ChPtr::Shared<XFileModelFrame::XFrame>& _frames
-				, const ChPtr::Shared<TemplateRange>& _targetTemplate
-				, const std::string& _text);
+				ChPtr::Shared<XFrame>& _frames,
+				const ChPtr::Shared<TemplateRange>& _targetTemplate,
+				const std::basic_string<CharaType>& _text);
 
 			bool SetSkinWeights(
-				ChPtr::Shared<XFileModelFrame::XFrame>& _frames
-				, const ChPtr::Shared<TemplateRange>& _targetTemplate
-				, const std::string& _text);
-
+				ChPtr::Shared<XFrame>& _frames,
+				const ChPtr::Shared<TemplateRange>& _targetTemplate,
+				const std::basic_string<CharaType>& _text);
+#endif
 		public:
 
 			inline const unsigned long GetMaxBoneNum() const { return maxBoneNum; }
 
 		protected:
 
+#ifdef CRT
 			template<class T>
-			auto GetArrayValues(
-				const std::string& _text
-				, const size_t& _startPos = 0
-				, const std::string& _cutChar = ","
-				, const std::string& _endChar = ";"
-			)->typename std::enable_if
-				<std::is_base_of<BaseType, T>::value
-				, std::vector<ChPtr::Shared<T>>>::type
-			{
+			typename std::enable_if
+				<std::is_base_of<BaseType, T>::value,
+				std::vector<ChPtr::Shared<T>>>::type GetArrayValues(
+					const std::basic_string<CharaType>& _text,
+					const size_t& _startPos = 0,
+					const std::basic_string<CharaType>& _cutChar = ChStd::GetCommaChara<CharaType>(),
+					const std::basic_string<CharaType>& _endChar = ChStd::GetSemiColonChara<CharaType>()
+			){
 
 				std::vector<ChPtr::Shared<T>> out;
 
-				std::string useText = "";
+				std::basic_string<CharaType> useText = ChStd::GetZeroChara<CharaType>();
 
 				{
-					size_t tmpEnd = _text.find(";", _startPos);
+					size_t tmpEnd = _text.find(ChStd::GetSemiColonChara<CharaType>(), _startPos);
 					tmpEnd = _text.find(_endChar, tmpEnd + 1);
 					tmpEnd += _endChar.length();
 
@@ -176,13 +307,13 @@ namespace ChCpp
 				}
 
 				size_t tmpPos = 0;
-				tmpPos = useText.find(";");
+				tmpPos = useText.find(ChStd::GetSemiColonChara<CharaType>());
 
 				if (tmpPos > useText.size())tmpPos = useText.size();
 
 				unsigned long arrayCount = 0;
 
-				arrayCount = ChStr::GetIntegialFromText<unsigned long>(useText, useText.find("\n"), tmpPos);
+				arrayCount = ChStr::GetNumFromText<unsigned long,CharaType>(useText, useText.find(ChStd::GetLFChara<CharaType>()), tmpPos);
 
 				if (arrayCount <= 0)return out;
 
@@ -192,7 +323,7 @@ namespace ChCpp
 					size_t sPos = tmpPos + 1;
 
 					tmpPos = useText.find(_cutChar, sPos);
-					std::string tmpEnd = _cutChar;
+					std::basic_string<CharaType> tmpEnd = _cutChar;
 
 					if (i >= arrayCount - 1)
 					{
@@ -200,7 +331,7 @@ namespace ChCpp
 						tmpEnd = _endChar;
 					}
 
-					if (tmpPos >= std::string::npos)
+					if (tmpPos >= std::basic_string<CharaType>::npos)
 					{
 						out.clear();
 						return out;
@@ -211,7 +342,7 @@ namespace ChCpp
 
 					value->Desirialise(useText, sPos, tmpEnd);
 
-					out.push_back(ChPtr::SharedSafeCast<T>(value));
+					out.push_back(value);
 
 					tmpPos += _endChar.length();
 
@@ -222,19 +353,18 @@ namespace ChCpp
 			}
 
 			template<class T>
-			auto GetArrayValuesNC(
-				const std::string& _text
-				, const size_t& _startPos = 0
-				, const std::string& _cutChar = ","
-				, const std::string& _endChar = ";"
-			)->typename std::enable_if
-				<std::is_base_of<BaseType, T>::value
-				, std::vector<ChPtr::Shared<T>>>::type
-			{
+			typename std::enable_if
+				<std::is_base_of<BaseType, T>::value,
+				std::vector<ChPtr::Shared<T>>>::type GetArrayValuesNC(
+					const std::basic_string<CharaType>& _text,
+					const size_t& _startPos = 0,
+					const std::basic_string<CharaType>& _cutChar = ChStd::GetCommaChara<CharaType>(),
+					const std::basic_string<CharaType>& _endChar = ChStd::GetSemiColonChara<CharaType>()
+			){
 
 				std::vector<ChPtr::Shared<T>> out;
 
-				std::string useText = "";
+				std::basic_string<CharaType> useText = ChStd::GetZeroChara<CharaType>();
 
 				{
 					size_t tmpEnd = _text.find(_endChar, _startPos);
@@ -254,7 +384,7 @@ namespace ChCpp
 					size_t sPos = tmpPos + 1;
 
 					tmpPos = useText.find(_cutChar, sPos);
-					std::string tmpEnd = _cutChar;
+					std::basic_string<CharaType> tmpEnd = _cutChar;
 
 					if (tmpPos >= useText.size())
 					{
@@ -267,11 +397,11 @@ namespace ChCpp
 
 					value->Desirialise(useText, sPos, tmpEnd);
 
-					out.push_back(ChPtr::SharedSafeCast<T>(value));
+					out.push_back(value);
 
 					tmpPos += _endChar.length();
 
-					if (tmpEnd == ";")break;
+					if (tmpEnd == ChStd::GetSemiColonChara<CharaType>())break;
 
 				}
 
@@ -279,172 +409,74 @@ namespace ChCpp
 				return out;
 
 			}
+#endif
+			protected://IsFunction//
 
-			///////////////////////////////////////////////////////////////////////////////////////
-			//IsFunction//
+#ifdef CRT
+			bool IsTags(
+				size_t& _outTagPos,
+				const std::basic_string<CharaType>& _tagName,
+				const ChPtr::Shared<TemplateRange> _lookTemplate,
+				const std::basic_string<CharaType>& _text);
 
 			bool IsTags(
-				size_t& _outTagPos
-				, const std::string& _tagName
-				, const ChPtr::Shared<TemplateRange> _lookTemplate
-				, const std::string& _text);
-
-			inline bool IsTags(
-				const std::string& _tagName
-				, const ChPtr::Shared<TemplateRange> _lookTemplate
-				, const std::string& _text)
+				const std::basic_string<CharaType>& _tagName,
+				const ChPtr::Shared<TemplateRange> _lookTemplate,
+				const std::basic_string<CharaType>& _text)
 			{
-
 				size_t tmp;
 
 				return IsTags(tmp, _tagName, _lookTemplate, _text);
 			}
+#endif
+			protected://TmplateCreate//
 
-			///////////////////////////////////////////////////////////////////////////////////////
-			//TmplateCreate//
-
+#ifdef CRT
 			void LoadToTemplates(
-				ChPtr::Shared<TemplateRange>& _templates
-				, const size_t& _offset
-				, const std::string& _text);
+				ChPtr::Shared<TemplateRange>& _templates,
+				const size_t& _offset,
+				const std::basic_string<CharaType>& _text);
 
 			void SetToTemplate(
-				ChPtr::Shared<TemplateRange>& _tmp
-				, size_t& _bCnt
-				, size_t& _eCnt
-				, const std::vector<size_t>& _sTemplateTags
-				, const std::vector<size_t>& _eTemplateTags);
+				ChPtr::Shared<TemplateRange>& _tmp,
+				size_t& _bCnt,
+				size_t& _eCnt,
+				const std::vector<size_t>& _sTemplateTags,
+				const std::vector<size_t>& _eTemplateTags);
+#endif
+		protected://XFileBaseTypes//
 
+#ifdef CRT
+			CH_LM_XFILE_BASE_TYPE_CLASS_CHILD(XDWORD, unsigned long, 0);
 
-			///////////////////////////////////////////////////////////////////////////////////////
-			//XFileBaseTypes//
+			CH_LM_XFILE_BASE_TYPE_CLASS_CHILD(XCHAR, unsigned char, 0);
 
-			struct XDWORD : public BaseType
-			{
-				void Desirialise(
-					const std::string& _text
-					, const size_t& _start
-					, const std::string& _endChar)override
-				{
+			CH_LM_XFILE_BASE_TYPE_CLASS_CHILD(XFLOAT, float, 0.0f);
 
-					size_t Tmp = _text.find(_endChar, _start);
+			CH_LM_XFILE_BASE_TYPE_CLASS_CHILD_VECTOR(XVECTOR, ChVec3, ChVec3(0.0f));
 
-					value = ChStr::GetIntegialFromText<unsigned long>(_text, _start, Tmp);
-				}
-
-				std::string Serialise()override
-				{
-
-					return "";
-				}
-
-				unsigned long value = 0;
-			};
-
-			struct XCHAR : public BaseType
-			{
-				void Desirialise(
-					const std::string& _text
-					, const size_t& _start
-					, const std::string& _endChar)override
-				{
-
-					size_t Tmp = _text.find(_endChar, _start);
-
-					value = ChStr::GetIntegialFromText<unsigned char>(_text, _start, Tmp);
-				}
-
-				std::string Serialise()override
-				{
-
-					return "";
-				}
-
-				unsigned char value;
-			};
-
-			struct XFLOAT : public BaseType
-			{
-				void Desirialise(
-					const std::string& _text
-					, const size_t& _start
-					, const std::string& _endChar)override
-				{
-
-					size_t tmp = _text.find(_endChar, _start);
-
-					value = ChStr::GetFloatingFromText<float>(_text, _start, tmp);
-				}
-
-				std::string Serialise()override
-				{
-
-					return "";
-				}
-
-				float value = 0.0f;
-			};
-
-			struct XVECTOR : public BaseType
-			{
-				void Desirialise(
-					const std::string& _text
-					, const size_t& _start
-					, const std::string& _endChar)override
-				{
-					value.Deserialize(_text, _start, ";", _endChar);
-				}
-
-				std::string Serialise()override
-				{
-					return "";
-				}
-
-				ChVec3 value;
-
-			};
-
-			struct XCOODS2D : public BaseType
-			{
-				void Desirialise(
-					const std::string& _text
-					, const size_t& _start
-					, const std::string& _endChar)override
-				{
-					value.Deserialize(_text, _start, ";", _endChar);
-				}
-
-				std::string Serialise()override
-				{
-					return "";
-				}
-
-				ChVec2 value;
-
-			};
+			CH_LM_XFILE_BASE_TYPE_CLASS_CHILD_VECTOR(XCOODS2D, ChVec2, ChVec2(0.0f));
 
 			struct XMESHFACE : public BaseType
 			{
 				void Desirialise(
-					const std::string& _text
-					, const size_t& _start
-					, const std::string& _endChar)override
+					const std::basic_string<CharaType>& _text,
+					const size_t& _start,
+					const std::basic_string<CharaType>& _endChar)override
 				{
-
-
 					size_t end = _text.find(_endChar, _start);
 
-					std::string useText = _text.substr(_start, end - _start);
+					std::basic_string<CharaType> useText = _text.substr(_start, end - _start);
 
 
 					size_t tmpPos = 0;
-					tmpPos = useText.find(";");
+					tmpPos = useText.find(ChStd::GetSemiColonChara<CharaType>());
 
 					if (tmpPos >= end)return;
 
 					unsigned long arrayCount = 0;
 
-					arrayCount = ChStr::GetIntegialFromText<unsigned long>(useText, 0, tmpPos);
+					arrayCount = ChStr::GetNumFromText<unsigned long, CharaType>(useText, 0, tmpPos);
 
 					if (arrayCount <= 0)return;
 
@@ -452,112 +484,934 @@ namespace ChCpp
 					{
 
 						size_t sPos = tmpPos + 1;
-						tmpPos = useText.find(",", sPos + 1);
+						tmpPos = useText.find(ChStd::GetCommaChara<CharaType>(), sPos + 1);
 
 						if (i >= arrayCount - 1)
 						{
-							tmpPos = useText.find(";", sPos);
+							tmpPos = useText.find(ChStd::GetSemiColonChara<CharaType>(), sPos);
 						}
 
-						if (tmpPos >= std::string::npos)
+						if (tmpPos >= std::basic_string<CharaType>::npos)
 						{
 							tmpPos = useText.size();
 						}
 
 						unsigned long Value;
 
-						Value = ChStr::GetIntegialFromText<unsigned long>(useText, sPos, tmpPos);
+						Value = ChStr::GetNumFromText<unsigned long>(useText, sPos, tmpPos);
 
 						value.push_back(Value);
-
 					}
-
 				}
 
-				std::string Serialise()override
+				std::basic_string<CharaType> Serialise()override
 				{
-
-					return "";
+					return ChStd::GetZeroChara<CharaType>();
 				}
 
 				std::vector<unsigned long> value;
 
 			};
 
-			struct ColorRGBA : public BaseType
-			{
-				void Desirialise(
-					const std::string& _text
-					, const size_t& _start
-					, const std::string& _endChar)override
-				{
-					value.Deserialize(_text, _start, ";", _endChar);
-				}
 
-				std::string Serialise()override
-				{
-					return "";
-				}
+			CH_LM_XFILE_BASE_TYPE_CLASS_CHILD_VECTOR(ColorRGBA, ChVec4, ChVec4(0.0f));
 
-				ChVec4 value;
-
-			};
-
-			struct ColorRGB : public BaseType
-			{
-				void Desirialise(
-					const std::string& _text
-					, const size_t& _start
-					, const std::string& _endChar)override
-				{
-					value.Deserialize(_text, _start, ";", _endChar);
-				}
-
-				std::string Serialise()override
-				{
-					return "";
-				}
-
-				ChVec3 value;
-
-			};
-
-			///////////////////////////////////////////////////////////////////////////////////////
+			CH_LM_XFILE_BASE_TYPE_CLASS_CHILD_VECTOR(ColorRGB, ChVec3, ChVec3(0.0f));
+#endif
+		protected://Member Value//
 
 			bool exceptionFlg = false;
 
-			std::string loadFileName  = "";
-			std::string loadFilePath = "";
-
+#ifdef CRT
+			std::basic_string<CharaType> loadFileName  = ChStd::GetZeroChara<CharaType>();
+			std::basic_string<CharaType> loadFilePath = ChStd::GetZeroChara<CharaType>();
+#endif
 			unsigned long maxBoneNum = 16;
+		
+		protected://XFileTemplateNames//
 
-			///////////////////////////////////////////////////////////////////////////////////////
-			//XFileTemplateNames//
-
-
-			const std::string frameTags = "Frame ";
-
-			const std::string frameTransformMatrixTags = "FrameTransformMatrix ";
-
-			const std::string meshTags = "Mesh ";
-
-			const std::string normalTags = "MeshNormals ";
-
-			const std::string materialListTags = "MeshMaterialList ";
-
-			const std::string materialTags = "Material ";
-
-			const std::string skinWeightsTags = "SkinWeights ";
-
-			const std::string uvTags = "MeshTextureCoords ";
-
-			const std::string textureFileNameTag = "TextureFilename ";
-
-			const std::string skinWeightsTag = "SkinWeights ";
 		};
 
 	}
 
 }
+
+#ifdef CRT
+
+template<typename CharaType>
+void ChCpp::ModelLoader::XFile<CharaType>::CreateModel(ChPtr::Shared<ModelObject<CharaType>> _model, const std::basic_string<CharaType>& _filePath)
+{
+	if (_filePath.size() <= 0)return;
+
+	std::basic_string<CharaType> text;
+	{
+		loadFileName = _filePath;
+
+		ChCpp::File<CharaType> files;
+
+		files.FileOpen(_filePath);
+
+		text = files.FileReadText();
+
+		files.FileClose();
+
+		if (text.length() <= 0)
+		{
+			return;
+		}
+	}
+
+	if (text.find(XFileTag::GetXFilePrefixTag<CharaType>()) != 0)return;
+
+	size_t textPos = text.find(XFileTag::GetXFilePrefixTag<CharaType>());
+
+	{
+		std::basic_string<CharaType> tmp = XFileTag::GetTemplateTag<CharaType>() + ChStd::GetSpaceChara<CharaType>() + XFileTag::GetFrameTag<CharaType>();
+		size_t tmpLen = text.find(tmp, textPos);
+
+		if (tmpLen != tmp.npos) {
+			textPos = tmpLen;
+			textPos += tmp.length();
+		}
+	}
+
+	size_t tmpLen = text.find(XFileTag::GetFrameTag<CharaType>(), textPos);
+	if (tmpLen == text.npos)return;
+
+	tmpLen = text.find(ChStd::GetEndSquareBracketsChara<CharaType>(), tmpLen);
+	if (tmpLen == text.npos)return;
+
+	ChPtr::Shared<TemplateRange> templates = ChPtr::Make_S<TemplateRange>();
+
+	LoadToTemplates(templates, textPos, text);
+
+	auto xModel = ChPtr::Make_S<XFileModelFrame>();
+
+	for (auto&& tmp : templates->nest)
+	{
+		SetFrame(xModel->modelData, tmp, text);
+
+		SetMesh(xModel->modelData, tmp, text);
+	}
+
+	if (exceptionFlg)return;
+
+	Init();
+
+	loadFilePath = GetRoutePath(loadFileName);
+
+	_model->SetModelName(_filePath);
+
+	XFrameToChFrame(_model, xModel->modelData);
+
+	SetMaxPos(*_model, maxPos);
+	SetMinPos(*_model, minPos);
+	SetCenterPos(*_model, CreateCenterPos(minPos, maxPos));
+	SetBoxSize(*_model, CreateBoxSize(minPos, maxPos));
+
+	_model->Create();
+}
+
+template<typename CharaType>
+void ChCpp::ModelLoader::XFile<CharaType>::OutModelFile(const ChPtr::Shared<ModelObject<CharaType>> _model, const std::basic_string<CharaType>& _filePath)
+{
+
+}
+
+template<typename CharaType>
+bool ChCpp::ModelLoader::XFile<CharaType>::SetFrame(
+	ChPtr::Shared<XFrame>& _frames,
+	const ChPtr::Shared<TemplateRange>& _targetTemplate,
+	const std::basic_string<CharaType>& _text)
+{
+	if (exceptionFlg)return false;
+
+	size_t framePos;
+
+	if (!IsTags(framePos, frameTags, _targetTemplate, _text))return false;
+
+	framePos += frameTags.length();
+
+	auto tmpFrame = ChPtr::Make_S<XFrame>();
+
+	tmpFrame->fName = _text.substr(framePos, _targetTemplate->begin - framePos);
+
+	tmpFrame->fName = ChStr::RemoveToWhiteSpaceChars(tmpFrame->fName);
+
+	for (auto&& tmp : _targetTemplate->nest)
+	{
+		if (SetFremeTransformMatrix(tmpFrame, tmp, _text)) continue;
+
+		{
+			ChPtr::Shared<XFrame> obj = nullptr;
+
+			if (SetFrame(obj, tmp, _text))
+			{
+
+				tmpFrame->next.push_back(obj);
+
+				continue;
+			}
+		}
+
+		if (SetMesh(tmpFrame, tmp, _text)) continue;
+	}
+
+	_frames = tmpFrame;
+
+	return true;
+}
+
+template<typename CharaType>
+bool ChCpp::ModelLoader::XFile<CharaType>::SetFremeTransformMatrix(
+	ChPtr::Shared<XFrame>& _frames,
+	const ChPtr::Shared<TemplateRange>& _targetTemplate,
+	const std::basic_string<CharaType>& _text)
+{
+
+	if (exceptionFlg)return false;
+
+	if (!IsTags(XFileTag::GetFrameTransformMatrixTag<CharaType>(), _targetTemplate, _text))return false;
+
+	std::basic_string<CharaType> useText;
+
+	{
+		size_t textLen = _targetTemplate->end - _targetTemplate->begin - 1;
+
+		useText = _text.substr(_targetTemplate->begin + 1, textLen);
+	}
+
+	_frames->frameMatrix.Deserialize(useText, 0, ChStd::GetCommaChara<CharaType>(), ChStd::GetSemiColonChara<CharaType>() + ChStd::GetSemiColonChara<CharaType>());
+	return true;
+}
+
+template<typename CharaType>
+bool ChCpp::ModelLoader::XFile<CharaType>::SetMesh(
+	ChPtr::Shared<XFrame>& _frames,
+	const ChPtr::Shared<TemplateRange>& _targetTemplate,
+	const std::basic_string<CharaType>& _text)
+{
+	if (exceptionFlg)return false;
+
+	if (!IsTags(meshTags, _targetTemplate, _text))return false;
+
+	std::basic_string<CharaType> arrayFirstTag = ChStd::GetSemiColonChara<CharaType>() + ChStd::GetCommaChara<CharaType>();
+	std::basic_string<CharaType> arraySeccondTag = ChStd::GetSemiColonChara<CharaType>() + ChStd::GetSemiColonChara<CharaType>();
+
+	if (_frames == nullptr)
+	{
+		_frames = ChPtr::Make_S<XFrame>();
+		_frames->fName = "Root";
+	}
+
+	size_t tmpPos = _targetTemplate->begin;
+
+	tmpPos += 1;
+
+	auto mesh = ChPtr::Make_S<XMesh>();
+
+	{
+
+		auto values = GetArrayValues<XVECTOR>(_text, tmpPos, arrayFirstTag, arraySeccondTag);
+
+		for (auto&& poss : values)
+		{
+			auto vertex = ChPtr::Make_S<XVertex>();
+
+			vertex->pos = poss->value;
+
+			mesh->vertexList.push_back(vertex);
+
+		}
+
+	}
+
+	tmpPos = _text.find(arraySeccondTag, tmpPos);
+	tmpPos += 2;
+
+	{
+		auto values = GetArrayValues<XMESHFACE>(_text, tmpPos, arrayFirstTag, arraySeccondTag);
+
+		for (auto&& Poss : values)
+		{
+			auto face = ChPtr::Make_S<XFace>();
+
+			for (auto&& no : Poss->value)
+			{
+				face->vertexNos.push_back(no);
+			}
+
+			mesh->faceList.push_back(face);
+
+		}
+	}
+
+	_frames->mesh = mesh;
+
+	for (auto&& tmp : _targetTemplate->nest)
+	{
+
+		if (SetMeshNormal(_frames, tmp, _text)) continue;
+
+		if (SetMeshTextureCoords(_frames, tmp, _text)) continue;
+
+		if (SetMeshMaterialList(_frames, tmp, _text)) continue;
+
+		if (SetSkinWeights(_frames, tmp, _text)) continue;
+
+	}
+	return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+template<typename CharaType>
+bool ChCpp::ModelLoader::XFile<CharaType>::SetMeshNormal(
+	ChPtr::Shared<XFrame>& _frames,
+	const ChPtr::Shared<TemplateRange>& _targetTemplate,
+	const std::basic_string<CharaType>& _text)
+{
+
+	if (exceptionFlg)return false;
+
+	if (!IsTags(normalTags, _targetTemplate, _text))return false;
+
+	std::basic_string<CharaType> arrayFirstTag = ChStd::GetSemiColonChara<CharaType>() + ChStd::GetCommaChara<CharaType>();
+	std::basic_string<CharaType> arraySeccondTag = ChStd::GetSemiColonChara<CharaType>() + ChStd::GetSemiColonChara<CharaType>();
+
+	size_t tmpPos = _targetTemplate->begin;
+
+	tmpPos += 1;
+
+	auto normals = GetArrayValues<XVECTOR>(_text, tmpPos, arrayFirstTag, arraySeccondTag);
+
+	tmpPos = _text.find(arraySeccondTag, tmpPos);
+	tmpPos += 2;
+
+	auto faces = GetArrayValues<XMESHFACE>(_text, tmpPos, arrayFirstTag, arraySeccondTag);
+
+	for (unsigned long i = 0; i < faces.size(); i++)
+	{
+		auto Mesh = _frames->mesh->faceList[i];
+
+		for (unsigned long j = 0; j < Mesh->vertexNos.size(); j++)
+		{
+
+			_frames->mesh->vertexList[Mesh->vertexNos[j]]->normal +=
+				normals[faces[i]->value[j]]->value;
+
+		}
+	}
+
+	for (auto&& vertex : _frames->mesh->vertexList)
+	{
+		if (vertex->normal.Len() == 1.00000000f)continue;
+		vertex->normal.Normalize();
+	}
+
+	return true;
+}
+
+template<typename CharaType>
+bool ChCpp::ModelLoader::XFile<CharaType>::SetMeshTextureCoords(
+	ChPtr::Shared<XFrame>& _frames,
+	const ChPtr::Shared<TemplateRange>& _targetTemplate,
+	const std::basic_string<CharaType>& _text)
+{
+	if (exceptionFlg)return false;
+
+	if (!IsTags(uvTags, _targetTemplate, _text))return false;
+
+	std::basic_string<CharaType> arrayFirstTag = ChStd::GetSemiColonChara<CharaType>() + ChStd::GetCommaChara<CharaType>();
+	std::basic_string<CharaType> arraySeccondTag = ChStd::GetSemiColonChara<CharaType>() + ChStd::GetSemiColonChara<CharaType>();
+
+	size_t tmpPos = _targetTemplate->begin;
+
+	tmpPos += 1;
+
+	auto UVs = GetArrayValues<XCOODS2D>(_text, tmpPos, arrayFirstTag, arraySeccondTag);
+
+	tmpPos = _text.find(arraySeccondTag, tmpPos);
+	tmpPos += 2;
+
+	auto& vertexList = _frames->mesh->vertexList;
+
+	for (unsigned long i = 0; i < vertexList.size(); i++)
+	{
+		vertexList[i]->uv = UVs[i]->value;
+	}
+
+	return true;
+}
+
+template<typename CharaType>
+bool ChCpp::ModelLoader::XFile<CharaType>::SetMeshMaterialList(
+	ChPtr::Shared<XFrame>& _frames
+	, const ChPtr::Shared<TemplateRange>& _targetTemplate
+	, const std::basic_string<CharaType>& _text)
+{
+	if (exceptionFlg)return false;
+
+	if (!IsTags(materialListTags, _targetTemplate, _text))return false;
+
+	size_t tmpPos = _targetTemplate->begin;
+
+	tmpPos += 1;
+
+	tmpPos = _text.find(ChStd::GetSemiColonChara<CharaType>(), tmpPos);
+
+	tmpPos += 1;
+
+	auto mateNo = GetArrayValues<XDWORD>(_text, tmpPos, ChStd::GetCommaChara<CharaType>(), ChStd::GetSemiColonChara<CharaType>());
+
+	auto& faces = _frames->mesh->faceList;
+
+	for (unsigned long i = 0; i < faces.size(); i++)
+	{
+		faces[i]->mateNo = mateNo[i]->value;
+	}
+
+	for (auto&& tmp : _targetTemplate->nest)
+	{
+		SetMaterial(_frames, tmp, _text);
+	}
+
+	return true;
+}
+
+template<typename CharaType>
+bool ChCpp::ModelLoader::XFile<CharaType>::SetMaterial(
+	ChPtr::Shared<XFrame>& _frames
+	, const ChPtr::Shared<TemplateRange>& _targetTemplate
+	, const std::basic_string<CharaType>& _text)
+{
+	if (exceptionFlg)return false;
+
+	size_t matePos;
+
+	if (!IsTags(matePos, XFileTag::GetMaterialTag<CharaType>(), _targetTemplate, _text))return false;
+
+	std::basic_string<CharaType> arrayTag = ChStd::GetSemiColonChara<CharaType>() + ChStd::GetSemiColonChara<CharaType>();
+
+	std::basic_string<CharaType> materialName = ChStd::GetZeroChara<CharaType>();
+
+	matePos += materialTags.length();
+
+	materialName = _text.substr(matePos, _targetTemplate->begin - matePos);
+
+	materialName = ChStr::RemoveToWhiteSpaceChars(materialName);
+
+	size_t tmpPos = _targetTemplate->begin;
+
+	tmpPos += 1;
+
+	ColorRGBA diffuse;
+
+	{
+		std::basic_string<CharaType> useText = ChStd::GetZeroChara<CharaType>();
+
+		size_t tmpEnd = _text.find(arrayTag, tmpPos);
+		tmpEnd += 2;
+
+		useText = _text.substr(tmpPos, tmpEnd - tmpPos);
+
+		tmpPos = tmpEnd;
+
+		diffuse.Desirialise(useText, 0, arrayTag);
+	}
+
+	XFLOAT spePow;
+
+	{
+		std::basic_string<CharaType> useText = ChStd::GetZeroChara<CharaType>();
+
+		size_t tmpEnd = _text.find(ChStd::GetSemiColonChara<CharaType>(), tmpPos);
+		tmpEnd += 1;
+
+		useText = _text.substr(tmpPos, tmpEnd - tmpPos);
+
+		tmpPos = tmpEnd;
+
+		spePow.Desirialise(useText, 0, ChStd::GetSemiColonChara<CharaType>());
+	}
+
+	ColorRGB specular;
+
+	{
+		std::basic_string<CharaType> useText = ChStd::GetZeroChara<CharaType>();
+
+		size_t tmpEnd = _text.find(arrayTag, tmpPos);
+		tmpEnd += 2;
+
+		useText = _text.substr(tmpPos, tmpEnd - tmpPos);
+
+		tmpPos = tmpEnd;
+
+		specular.Desirialise(useText, 0, arrayTag);
+	}
+
+	ColorRGB ambient;
+
+	{
+		std::basic_string<CharaType> useText = ChStd::GetZeroChara<CharaType>();
+
+		size_t tmpEnd = _text.find(arrayTag, tmpPos);
+		tmpEnd += 2;
+
+		useText = _text.substr(tmpPos, tmpEnd - tmpPos);
+
+		tmpPos = tmpEnd;
+
+		ambient.Desirialise(useText, 0, arrayTag);
+	}
+
+	auto mate = ChPtr::Make_S<XMaterial>();
+
+	mate->materialName = materialName;
+	mate->diffuse = diffuse.value;
+	mate->specularPower = spePow.value;
+	mate->specularColor = specular.value;
+	mate->ambient = ambient.value;
+
+	for (auto&& tmp : _targetTemplate->nest)
+	{
+
+		if (!IsTags(textureFileNameTag, tmp, _text))continue;
+
+		size_t start = _text.find(ChStd::GetDBQuotation<CharaType>(), tmp->begin);
+
+		if (start >= tmp->end)continue;
+
+		size_t end = _text.find(ChStd::GetDBQuotation<CharaType>(), start + 1);
+
+		if (end >= tmp->end)continue;
+
+		std::basic_string<CharaType> texturePath = _text.substr(start + 1, end - start - 1);
+
+		mate->textureNameList.push_back(texturePath);
+
+	}
+
+	_frames->mesh->materialList.push_back(mate);
+
+	return true;
+}
+
+template<typename CharaType>
+bool ChCpp::ModelLoader::XFile<CharaType>::SetSkinWeights(
+	ChPtr::Shared<XFrame>& _frames,
+	const ChPtr::Shared<TemplateRange>& _targetTemplate,
+	const std::basic_string<CharaType>& _text)
+{
+
+	if (exceptionFlg)return false;
+
+	if (!IsTags(skinWeightsTag, _targetTemplate, _text))return false;
+
+	size_t tmpPos = _targetTemplate->begin;
+
+	tmpPos += 1;
+
+	std::string boneName;
+
+	{
+		size_t tmpStart = _text.find(ChStd::GetDBQuotation<CharaType>(), tmpPos);
+
+		size_t tmpEnd = _text.find(ChStd::GetDBQuotation<CharaType>() + ChStd::GetSemiColonChara<CharaType>(), tmpPos);
+
+		if (tmpStart > _targetTemplate->end
+			|| tmpEnd > _targetTemplate->end)return true;
+
+
+		boneName = _text.substr(tmpStart + 1, tmpEnd - tmpStart - 1);
+
+		tmpPos = tmpEnd + 2;
+	}
+
+	tmpPos = _text.find(ChStd::GetSemiColonChara<CharaType>(), tmpPos);
+	tmpPos += 1;
+
+
+	auto vertexNo = GetArrayValuesNC<XDWORD>(_text, tmpPos, ChStd::GetCommaChara<CharaType>(), ChStd::GetSemiColonChara<CharaType>());
+
+	tmpPos = _text.find(ChStd::GetSemiColonChara<CharaType>(), tmpPos);
+	tmpPos += 1;
+
+	auto weightPow = GetArrayValuesNC<XFLOAT>(_text, tmpPos, ChStd::GetCommaChara<CharaType>(), ChStd::GetSemiColonChara<CharaType>());
+
+	tmpPos = _text.find(ChStd::GetSemiColonChara<CharaType>(), tmpPos);
+	tmpPos += 1;
+
+	ChLMat tmpOffMat;
+
+	tmpOffMat.Deserialize(_text, tmpPos, ChStd::GetCommaChara<CharaType>(), ChStd::GetSemiColonChara<CharaType>() + ChStd::GetSemiColonChara<CharaType>());
+
+	auto skinWeight = ChPtr::Make_S<XSkinWeights>();
+
+	skinWeight->boneOffset = tmpOffMat;
+
+	skinWeight->targetFrameName = boneName;
+
+	{
+		size_t weightingCount = vertexNo.size();
+
+		if (weightingCount > weightPow.size())weightingCount = weightPow.size();
+
+		for (unsigned long i = 0; i < weightingCount; i++)
+		{
+			skinWeight->weitPow[vertexNo[i]->value] = weightPow[i]->value;
+		}
+	}
+
+	_frames->skinWeightDatas.push_back(skinWeight);
+
+	return true;
+}
+
+template<typename CharaType>
+bool ChCpp::ModelLoader::XFile<CharaType>::IsTags(
+	size_t& _outTagPos,
+	const std::basic_string<CharaType>& _TagName,
+	const ChPtr::Shared<TemplateRange> _LookTemplate,
+	const std::basic_string<CharaType>& _text)
+{
+
+	size_t checkStartPos
+		= _text.rfind(ChStd::GetLFChara<CharaType>(), _LookTemplate->begin);
+
+
+	if (checkStartPos == _text.npos)
+	{
+		exceptionFlg = true;
+		return false;
+	}
+
+	std::basic_string<CharaType> tmp = _text.substr(
+		checkStartPos
+		, _LookTemplate->begin - checkStartPos);
+
+	size_t checked = tmp.find(_TagName);
+
+	if (checked == _text.npos)return false;
+
+	_outTagPos = _text.find(_TagName, checkStartPos);
+
+	return true;
+}
+
+template<typename CharaType>
+void ChCpp::ModelLoader::XFile<CharaType>::LoadToTemplates(
+	ChPtr::Shared<TemplateRange>& _templates,
+	const size_t& _offset,
+	const std::basic_string<CharaType>& _text)
+{
+	std::vector<size_t>templateTags[2];
+	CharaType tags[] = { ChStd::GetStartSquareBracketsChara<CharaType>()[0],ChStd::GetEndSquareBracketsChara<CharaType>()[0] };
+
+	for (size_t i = 0; i < 2; i++)
+	{
+
+		size_t offset = _offset;
+
+		while (1)
+		{
+			offset = _text.find(tags[i], offset + 1);
+
+			if (offset >= _text.npos)break;
+
+			templateTags[i].push_back(offset);
+
+		}
+	}
+
+
+	if (templateTags[0].size() != templateTags[1].size())
+	{
+		exceptionFlg = true;
+		return;
+	}
+
+
+	size_t tempCount = templateTags[0].size();
+
+	size_t beginCount = 0;
+	size_t endCount = 0;
+
+	_templates = ChPtr::Make_S<TemplateRange>();
+
+	_templates->begin = 0;
+	_templates->end = 0;
+
+	while (1)
+	{
+
+		if (beginCount >= templateTags[0].size())
+		{
+			break;
+		}
+
+		SetToTemplate(
+			_templates
+			, beginCount
+			, endCount
+			, templateTags[0]
+			, templateTags[1]);
+
+	}
+
+
+
+}
+
+template<typename CharaType>
+void ChCpp::ModelLoader::XFile<CharaType>::SetToTemplate(
+	ChPtr::Shared<TemplateRange>& _tmp,
+	size_t& _bCnt,
+	size_t& _eCnt,
+	const std::vector<size_t>& _sTemplateTags,
+	const std::vector<size_t>& _eTemplateTags)
+{
+
+	if (_eCnt >= _eTemplateTags.size())
+	{
+		exceptionFlg = true;
+		return;
+	}
+
+	auto tmp = ChPtr::Make_S<TemplateRange>();
+
+	tmp->begin = _sTemplateTags[_bCnt];
+
+	_tmp->nest.push_back(tmp);
+
+	_bCnt++;
+
+	while (1)
+	{
+
+		if (_bCnt >= _sTemplateTags.size())
+		{
+
+			tmp->end = _eTemplateTags[_eCnt];
+			_eCnt++;
+			break;
+		}
+
+		if (_sTemplateTags[_bCnt] > _eTemplateTags[_eCnt])
+		{
+			tmp->end = _eTemplateTags[_eCnt];
+			_eCnt++;
+			break;
+		}
+
+		SetToTemplate(
+			tmp
+			, _bCnt
+			, _eCnt
+			, _sTemplateTags
+			, _eTemplateTags);
+
+
+	}
+
+
+}
+
+template<typename CharaType>
+void ChCpp::ModelLoader::XFile<CharaType>::XFrameToChFrame(
+	ChPtr::Shared<FrameObject<CharaType>> _chFrame,
+	const ChPtr::Shared<XFrame>& _xFrame)
+{
+
+	_chFrame->SetMyName(_xFrame->fName);
+
+	_chFrame->SetFrameTransform(_xFrame->frameMatrix);
+
+	_chFrame->GetDrawLHandMatrix();
+
+	for (auto&& frame : _xFrame->next)
+	{
+		auto chFrame = ChPtr::Make_S<FrameObject>();
+
+		_chFrame->SetChild(chFrame);
+
+		XFrameToChFrame(chFrame, frame);
+
+	}
+
+	if (_xFrame->mesh == nullptr)return;
+
+	std::map<unsigned long, unsigned long>summarizeVertex;
+
+	auto mesh = _chFrame->SetComponent<FrameComponent>();
+	auto& chVertexList = mesh->vertexList;
+	//SetVertexList//
+	{
+		auto& xVertexList = _xFrame->mesh->vertexList;
+
+
+		for (unsigned long i = 0; i < xVertexList.size(); i++)
+		{
+			bool lookFlg = false;
+			ChPtr::Shared<Ch3D::SavePolyVertex> chVertex = nullptr;
+
+			for (unsigned long j = 0; j < chVertexList.size(); j++)
+			{
+
+				if (chVertexList[j]->pos != xVertexList[i]->pos)continue;
+
+				summarizeVertex[i] = j;
+
+				chVertex = chVertexList[summarizeVertex[i]];
+
+				chVertex->normal += xVertexList[i]->normal;
+				lookFlg = true;
+
+				break;
+
+			}
+
+			if (lookFlg)continue;
+
+			summarizeVertex[i] = chVertexList.size();
+
+			chVertex = ChPtr::Make_S<Ch3D::SavePolyVertex>();
+
+			chVertex->pos = xVertexList[i]->pos;
+			chVertex->normal = xVertexList[i]->normal;
+
+			chVertexList.push_back(chVertex);
+
+			mesh->maxPos = ChCpp::ModelLoaderBase<CharaType>::TestMaxPos(mesh->maxPos, chVertex->pos);
+			mesh->minPos = ChCpp::ModelLoaderBase<CharaType>::TestMinPos(mesh->minPos, chVertex->pos);
+
+		}
+
+		for (auto&& chVertex : chVertexList)
+		{
+			chVertex->normal.Normalize();
+		}
+
+		for (unsigned long i = 0; i < _xFrame->skinWeightDatas.size() && i < maxBoneNum; i++)
+		{
+			auto&& skinWeight = _xFrame->skinWeightDatas[i];
+			for (unsigned long j = 0; j < chVertexList.size(); j++)
+			{
+				auto&& chVertex = *chVertexList[j];
+				auto weitPow = skinWeight->weitPow.find(j);
+
+				chVertex.blendPow.push_back(weitPow == skinWeight->weitPow.end() ? 0.0f : (*weitPow).second);
+			}
+			auto boneData = ChPtr::Make_S<ChCpp::TargetBoneData<CharaType>>();
+			boneData->boneObjectName = skinWeight->targetFrameName;
+			boneData->boneOffset = skinWeight->boneOffset;
+			mesh->boneDatas.push_back(boneData);
+		};
+
+		mesh->centerPos = ChCpp::ModelLoaderBase<CharaType>::CreateCenterPos(mesh->minPos, mesh->maxPos);
+		mesh->boxSize = ChCpp::ModelLoaderBase<CharaType>::CreateBoxSize(mesh->minPos, mesh->maxPos);
+
+	}
+
+	//SetFaceList//
+	{
+		auto& xVertexList = _xFrame->mesh->vertexList;
+
+		auto& xFaceList = _xFrame->mesh->faceList;
+
+		auto& chFaceList = mesh->primitives;
+
+		for (auto&& xFace : xFaceList)
+		{
+
+			auto chFace = ChPtr::Make_S<Ch3D::Primitive>();
+
+			for (unsigned long i = 0; i < xFace->vertexNos.size(); i++)
+			{
+
+				auto chVertexData = ChPtr::Make_S<Ch3D::SavePolyData>();
+
+				unsigned long VertexNo = summarizeVertex[xFace->vertexNos[i]];
+
+				chVertexData->vertexNo = VertexNo;
+				chVertexData->uv = xVertexList[xFace->vertexNos[i]]->uv;
+				chFace->faceNormal += chVertexList[VertexNo]->normal;
+
+				chFace->vertexData.push_back(chVertexData);
+			}
+			chFace->faceNormal.Normalize();
+			chFace->mateNo = xFace->mateNo;
+			chFaceList.push_back(chFace);
+		}
+
+
+	}
+
+	//SetMaterial//
+
+	{
+		auto& chMateList = mesh->materialList;
+		auto& chMateNos = mesh->mateNames;
+
+		unsigned long i = 0;
+
+		for (auto&& xMate : _xFrame->mesh->materialList)
+		{
+			auto chMate = ChPtr::Make_S<Ch3D::MaterialData<CharaType>>();
+
+			chMate->mate.diffuse = xMate->diffuse;
+			chMate->mateName = xMate->materialName;
+			chMate->mate.specularColor = xMate->specularColor;
+			chMate->mate.specularPower = xMate->specularPower;
+			chMate->mate.ambient = xMate->ambient.Len() / 4.0f;
+
+			for (unsigned long j = 0; j < xMate->textureNameList.size(); j++)
+			{
+				if (j > ChStd::EnumCast(Ch3D::TextureType::Metallic))break;
+				chMate->textures[static_cast<Ch3D::TextureType>(j)] =
+					loadFilePath + xMate->textureNameList[j];
+
+			}
+
+			chMateNos[chMate->mateName] = i;
+
+			chMateList.push_back(chMate);
+
+			i++;
+
+		}
+
+		if (chMateList.empty())
+		{
+
+			auto chMate = ChPtr::Make_S<Ch3D::MaterialData<CharaType>>();
+
+			chMate->mate.diffuse = ChVec4(1.0f);
+			chMate->mateName = "tmp Material";
+			chMate->mate.specularColor = ChVec3(1.0f);
+			chMate->mate.specularPower = 0.3f;
+			chMate->mate.ambient = ChVec4(0.3f);
+
+			chMateNos[chMate->mateName] = 0;
+
+			chMateList.push_back(chMate);
+
+		}
+
+	}
+
+	ChVec3 tmpMaxPos = _chFrame->GetDrawLHandMatrix().Transform(mesh->maxPos);
+	ChVec3 tmpMinPos = _chFrame->GetDrawLHandMatrix().Transform(mesh->minPos);
+
+	maxPos = ChCpp::ModelLoaderBase<CharaType>::TestMaxPos(tmpMaxPos, maxPos);
+	minPos = ChCpp::ModelLoaderBase<CharaType>::TestMinPos(tmpMaxPos, minPos);
+
+	maxPos = ChCpp::ModelLoaderBase<CharaType>::TestMaxPos(tmpMinPos, maxPos);
+	minPos = ChCpp::ModelLoaderBase<CharaType>::TestMinPos(tmpMinPos, minPos);
+}
+
+
+
+#endif
 
 #endif
