@@ -198,7 +198,7 @@
 #define CH_LM_OBJ_SET_VECTOR_FUNCTION(_SetVecPascal, _SetVecCamel,_VectorStruct) \
 template<typename CharaType>\
 void ChCpp::ModelLoader::ObjFile<CharaType>::Set##_SetVecPascal##(const std::basic_string<CharaType>& _line){\
-	std::basic_string<CharaType>tag = Obj::Get##_SetVecPascal##Tag<CharaType>();\
+	std::basic_string<CharaType>tag = ObjTag::Get##_SetVecPascal##Tag<CharaType>();\
 	if (!IsPrefix(_line, tag, tag.length()))return;\
 	NullModelTest();\
 	auto _SetVecCamel = ChPtr::Make_S<##_VectorStruct##>();\
@@ -222,7 +222,7 @@ namespace ChCpp
 	namespace ModelLoader
 	{
 
-		namespace Obj
+		namespace ObjTag
 		{
 #ifdef CRT
 			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_NULL_OBJECT_NAME_FUNCTION, "Root");
@@ -481,7 +481,7 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::CreateModel(ChPtr::Shared<ModelObje
 	for (auto line : text)
 	{
 		if (line.length() <= 0)continue;
-		if (line[0] == Obj::GetCommentTag<CharaType>()[0])continue;
+		if (line[0] == ObjTag::GetCommentTag<CharaType>()[0])continue;
 
 		CreateMaterials(line);
 
@@ -499,7 +499,7 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::CreateModel(ChPtr::Shared<ModelObje
 
 	_model->SetModelName(_filePath);
 
-	_model->SetMyName(Obj::GetNullObjectName<CharaType>());
+	_model->SetMyName(ObjTag::GetNullObjectName<CharaType>());
 
 	_model->SetComponent<FrameComponent<CharaType>>();
 
@@ -516,7 +516,7 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::CreateModel(ChPtr::Shared<ModelObje
 template<typename CharaType>
 void ChCpp::ModelLoader::ObjFile<CharaType>::CreateObject(const std::basic_string<CharaType>& _objectName)
 {
-	std::basic_string<CharaType>tag = Obj::GetObjectBlockTag<CharaType>();
+	std::basic_string<CharaType>tag = ObjTag::GetObjectBlockTag<CharaType>();
 	if (!IsPrefix(_objectName, tag, tag.length()))return;
 
 	auto name = _objectName.substr(2);
@@ -538,7 +538,7 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::CreateObject(const std::basic_strin
 template<typename CharaType>
 void ChCpp::ModelLoader::ObjFile<CharaType>::CreateMaterials(const std::basic_string<CharaType>& _fileName)
 {
-	std::basic_string<CharaType>tag = Obj::GetUseMaterialFileNameTag<CharaType>();
+	std::basic_string<CharaType>tag = ObjTag::GetUseMaterialFileNameTag<CharaType>();
 	if (!IsPrefix(_fileName, tag, tag.length()))return;
 
 	std::basic_string<CharaType> fileName = &_fileName[7];
@@ -568,7 +568,7 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::CreateMaterials(const std::basic_st
 	for (auto line : text)
 	{
 		if (line.length() <= 0)continue;
-		if (line[0] == Obj::GetCommentTag<CharaType>()[0])continue;
+		if (line[0] == ObjTag::GetCommentTag<CharaType>()[0])continue;
 
 		CreateMaterial(line);
 		SetMatAmbient(line);
@@ -591,7 +591,7 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::CreateMaterials(const std::basic_st
 template<typename CharaType>
 void ChCpp::ModelLoader::ObjFile<CharaType>::CreateMaterial(const std::basic_string<CharaType>& _matName)
 {
-	std::basic_string<CharaType>tag = Obj::GetMatMaterialBlockTag<CharaType>();
+	std::basic_string<CharaType>tag = ObjTag::GetMatMaterialBlockTag<CharaType>();
 	if (!IsPrefix(_matName, tag, tag.length()))return;
 
 	targetMaterial = nullptr;
@@ -754,7 +754,7 @@ CH_LM_OBJ_SET_VECTOR_FUNCTION(Normal, normal, ChVec3);
 template<typename CharaType>
 void ChCpp::ModelLoader::ObjFile<CharaType>::SetFace(const std::basic_string<CharaType>& _line)
 {
-	std::basic_string<CharaType>tag = Obj::GetMeshTag<CharaType>();
+	std::basic_string<CharaType>tag = ObjTag::GetMeshTag<CharaType>();
 	if (!IsPrefix(_line, tag, tag.length()))return;
 
 	NullModelTest();
@@ -826,37 +826,37 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::SetFace(const std::basic_string<Cha
 	}
 }
 
-CH_LM_OBJ_SET_METHOD(SetMateBlock, Obj::GetMaterialBlockTag<CharaType>(), (blockMaterial = &_line[tag.length() + 1]););
+CH_LM_OBJ_SET_METHOD(SetMateBlock, ObjTag::GetMaterialBlockTag<CharaType>(), (blockMaterial = &_line[tag.length() + 1]););
 
-CH_LM_OBJ_SET_METHOD(SetMatAmbient, Obj::GetMatAmbientTag<CharaType>(), (targetMaterial->ambient.Deserialize<CharaType>(&_line[tag.length() + 1], 0, ChStd::GetSpaceChara<CharaType>())););
+CH_LM_OBJ_SET_METHOD(SetMatAmbient, ObjTag::GetMatAmbientTag<CharaType>(), (targetMaterial->ambient.Deserialize<CharaType>(&_line[tag.length() + 1], 0, ChStd::GetSpaceChara<CharaType>())););
 
-CH_LM_OBJ_SET_METHOD(SetMatDiffuse, Obj::GetMatDiffuseTag<CharaType>(), (targetMaterial->diffuse.Deserialize<CharaType>(&_line[tag.length() + 1], 0, ChStd::GetSpaceChara<CharaType>())););
+CH_LM_OBJ_SET_METHOD(SetMatDiffuse, ObjTag::GetMatDiffuseTag<CharaType>(), (targetMaterial->diffuse.Deserialize<CharaType>(&_line[tag.length() + 1], 0, ChStd::GetSpaceChara<CharaType>())););
 
-CH_LM_OBJ_SET_METHOD(SetMatSpecular, Obj::GetMatSpecularTag<CharaType>(), (targetMaterial->specular.Deserialize<CharaType>(&_line[tag.length() + 1], 0, ChStd::GetSpaceChara<CharaType>())););
+CH_LM_OBJ_SET_METHOD(SetMatSpecular, ObjTag::GetMatSpecularTag<CharaType>(), (targetMaterial->specular.Deserialize<CharaType>(&_line[tag.length() + 1], 0, ChStd::GetSpaceChara<CharaType>())););
 
-CH_LM_OBJ_SET_METHOD(SetMatSpecularHighLight, Obj::GetMatSpecularHighLightTag<CharaType>(), (targetMaterial->spePow = ChStr::GetNumFromText<float, CharaType>(&_line[tag.length() + 1], 0)););
+CH_LM_OBJ_SET_METHOD(SetMatSpecularHighLight, ObjTag::GetMatSpecularHighLightTag<CharaType>(), (targetMaterial->spePow = ChStr::GetNumFromText<float, CharaType>(&_line[tag.length() + 1], 0)););
 
-CH_LM_OBJ_SET_METHOD(SetMatDissolve, Obj::GetMatDissolveTag<CharaType>(), (targetMaterial->alpha = ChStr::GetNumFromText<float, CharaType>(&_line[tag.length() + 1], 0)););
+CH_LM_OBJ_SET_METHOD(SetMatDissolve, ObjTag::GetMatDissolveTag<CharaType>(), (targetMaterial->alpha = ChStr::GetNumFromText<float, CharaType>(&_line[tag.length() + 1], 0)););
 
-CH_LM_OBJ_SET_METHOD(SetMatODensity, Obj::GetMatODensityTag<CharaType>(), (targetMaterial->ODensity = ChStr::GetNumFromText<float, CharaType>(&_line[tag.length() + 1], 0)););
+CH_LM_OBJ_SET_METHOD(SetMatODensity, ObjTag::GetMatODensityTag<CharaType>(), (targetMaterial->ODensity = ChStr::GetNumFromText<float, CharaType>(&_line[tag.length() + 1], 0)););
 
-CH_LM_OBJ_SET_METHOD(SetMatAmbientMap, Obj::GetMatAmbientMapTag<CharaType>(), (targetMaterial->ambientMap = LoadTextureName(&_line[tag.length() + 1])););
+CH_LM_OBJ_SET_METHOD(SetMatAmbientMap, ObjTag::GetMatAmbientMapTag<CharaType>(), (targetMaterial->ambientMap = LoadTextureName(&_line[tag.length() + 1])););
 
-CH_LM_OBJ_SET_METHOD(SetMatDiffuseMap, Obj::GetMatDiffuseMapTag<CharaType>(), (targetMaterial->diffuseMap = LoadTextureName(&_line[tag.length() + 1])););
+CH_LM_OBJ_SET_METHOD(SetMatDiffuseMap, ObjTag::GetMatDiffuseMapTag<CharaType>(), (targetMaterial->diffuseMap = LoadTextureName(&_line[tag.length() + 1])););
 
-CH_LM_OBJ_SET_METHOD(SetMatSpecularMap, Obj::GetMatSpecularMapTag<CharaType>(), (targetMaterial->specularMap = LoadTextureName(&_line[tag.length() + 1])););
+CH_LM_OBJ_SET_METHOD(SetMatSpecularMap, ObjTag::GetMatSpecularMapTag<CharaType>(), (targetMaterial->specularMap = LoadTextureName(&_line[tag.length() + 1])););
 
-CH_LM_OBJ_SET_METHOD(SetMatSpecularHighLightMap, Obj::GetMatSpecularHighLightMapTag<CharaType>(), (targetMaterial->specularHighLightMap = LoadTextureName(&_line[tag.length() + 1])););
+CH_LM_OBJ_SET_METHOD(SetMatSpecularHighLightMap, ObjTag::GetMatSpecularHighLightMapTag<CharaType>(), (targetMaterial->specularHighLightMap = LoadTextureName(&_line[tag.length() + 1])););
 
-CH_LM_OBJ_SET_METHOD(SetMatBumpMap, Obj::GetMatBumpMapTag<CharaType>(), (targetMaterial->bumpMap = LoadTextureName(&_line[tag.length() + 1])););
+CH_LM_OBJ_SET_METHOD(SetMatBumpMap, ObjTag::GetMatBumpMapTag<CharaType>(), (targetMaterial->bumpMap = LoadTextureName(&_line[tag.length() + 1])););
 
-CH_LM_OBJ_SET_METHOD(SetMatBumpMap2, Obj::GetMatBumpMapTag2<CharaType>(), (targetMaterial->bumpMap = LoadTextureName(&_line[tag.length() + 1])););
+CH_LM_OBJ_SET_METHOD(SetMatBumpMap2, ObjTag::GetMatBumpMapTag2<CharaType>(), (targetMaterial->bumpMap = LoadTextureName(&_line[tag.length() + 1])););
 
-CH_LM_OBJ_SET_METHOD(SetMatMetallicMap, Obj::GetMatMetallicMapTag<CharaType>(), (targetMaterial->metallicMap = LoadTextureName(&_line[tag.length() + 1])););
+CH_LM_OBJ_SET_METHOD(SetMatMetallicMap, ObjTag::GetMatMetallicMapTag<CharaType>(), (targetMaterial->metallicMap = LoadTextureName(&_line[tag.length() + 1])););
 
-CH_LM_OBJ_SET_METHOD(SetMatMetallicMap2, Obj::GetMatMetallicMapTag2<CharaType>(), (targetMaterial->metallicMap = LoadTextureName(&_line[tag.length() + 1])););
+CH_LM_OBJ_SET_METHOD(SetMatMetallicMap2, ObjTag::GetMatMetallicMapTag2<CharaType>(), (targetMaterial->metallicMap = LoadTextureName(&_line[tag.length() + 1])););
 
-CH_LM_OBJ_SET_METHOD(SetMatNormalMap, Obj::GetMatNormalMapTag<CharaType>(), (targetMaterial->normalMap = LoadTextureName(&_line[tag.length() + 1])););
+CH_LM_OBJ_SET_METHOD(SetMatNormalMap, ObjTag::GetMatNormalMapTag<CharaType>(), (targetMaterial->normalMap = LoadTextureName(&_line[tag.length() + 1])););
 
 template<typename CharaType>
 bool ChCpp::ModelLoader::ObjFile<CharaType>::IsPrefix(const std::basic_string<CharaType>& _str, const std::basic_string<CharaType>& _prefix, const unsigned long _prefixSize)
@@ -909,9 +909,9 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::NullModelTest()
 {
 	if (makeObject != nullptr)return;
 
-	std::basic_string<CharaType> createText = Obj::GetObjectBlockTag<CharaType>();
+	std::basic_string<CharaType> createText = ObjTag::GetObjectBlockTag<CharaType>();
 
-	createText = createText + ChStd::GetSpaceChara<CharaType>() + Obj::GetNullObjectName<CharaType>();
+	createText = createText + ChStd::GetSpaceChara<CharaType>() + ObjTag::GetNullObjectName<CharaType>();
 
 	CreateObject(createText);
 }
