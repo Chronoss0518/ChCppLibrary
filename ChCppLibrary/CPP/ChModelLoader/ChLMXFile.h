@@ -15,6 +15,9 @@
 
 #include"ChModelLoaderBase.h"
 
+#include"../ChFile/ChFile.h"
+#include"../ChTextObject/ChTextObject.h"
+
 #ifndef	CH_LM_XFILE_TAG_XFILE_PREFIX_FUNCTION
 #define	CH_LM_XFILE_TAG_XFILE_PREFIX_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetXFilePrefixTag, type)
 #endif
@@ -57,6 +60,15 @@
 
 #ifndef	CH_LM_XFILE_TAG_TEXTUER_FILE_NAME_FUNCTION
 #define	CH_LM_XFILE_TAG_TEXTUER_FILE_NAME_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetTextureFileNameTag,type)
+#endif
+
+
+#ifndef CH_LM_XFILE_ROOT_OBJECT_NAME_FUNCTION
+#define CH_LM_XFILE_ROOT_OBJECT_NAME_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetRootObjectName,type)
+#endif
+
+#ifndef CH_LM_XFILE_TMP_MATERIAL_NAME_FUNCTION
+#define CH_LM_XFILE_TMP_MATERIAL_NAME_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetTmpMaterialName,type)
 #endif
 
 #ifndef CH_LM_XFILE_BASE_TYPE_CLASS_CHILD
@@ -123,6 +135,10 @@ namespace ChCpp
 			CH_TO_NUMBER_FUNCTION(CH_LM_XFILE_TAG_TEXTURE_COORDS_FUNCTION,"MeshTextureCoords");
 
 			CH_TO_NUMBER_FUNCTION(CH_LM_XFILE_TAG_TEXTUER_FILE_NAME_FUNCTION,"TextureFilename");
+
+			CH_TO_NUMBER_FUNCTION(CH_LM_XFILE_ROOT_OBJECT_NAME_FUNCTION,"Root");
+
+			CH_TO_NUMBER_FUNCTION(CH_LM_XFILE_TMP_MATERIAL_NAME_FUNCTION,"tmp Material");
 #endif
 		}
 
@@ -293,7 +309,7 @@ namespace ChCpp
 					const std::basic_string<CharaType>& _endChar = ChStd::GetSemiColonChara<CharaType>()
 			){
 
-				std::vector<ChPtr::Shared<T>> out;
+				std::vector<ChPtr::Shared<T>> res;
 
 				std::basic_string<CharaType> useText = ChStd::GetZeroChara<CharaType>();
 
@@ -315,7 +331,7 @@ namespace ChCpp
 
 				arrayCount = ChStr::GetNumFromText<unsigned long,CharaType>(useText, useText.find(ChStd::GetLFChara<CharaType>()), tmpPos);
 
-				if (arrayCount <= 0)return out;
+				if (arrayCount <= 0)return res;
 
 				for (unsigned long i = 0; i < arrayCount; i++)
 				{
@@ -333,22 +349,22 @@ namespace ChCpp
 
 					if (tmpPos >= std::basic_string<CharaType>::npos)
 					{
-						out.clear();
-						return out;
+						res.clear();
+						return res;
 					}
 
 
-					ChPtr::Shared<BaseType> value = ChPtr::Make_S<T>();
+					auto&& value = ChPtr::Make_S<T>();
 
 					value->Desirialise(useText, sPos, tmpEnd);
 
-					out.push_back(value);
+					res.push_back(value);
 
 					tmpPos += _endChar.length();
 
 				}
 
-				return out;
+				return res;
 
 			}
 
@@ -362,7 +378,7 @@ namespace ChCpp
 					const std::basic_string<CharaType>& _endChar = ChStd::GetSemiColonChara<CharaType>()
 			){
 
-				std::vector<ChPtr::Shared<T>> out;
+				std::vector<ChPtr::Shared<T>> res;
 
 				std::basic_string<CharaType> useText = ChStd::GetZeroChara<CharaType>();
 
@@ -376,11 +392,10 @@ namespace ChCpp
 
 				size_t tmpPos = 0;
 
-				if (tmpPos >= useText.size())return out;
+				if (tmpPos >= useText.size())return res;
 
 				while (tmpPos <= useText.size())
 				{
-
 					size_t sPos = tmpPos + 1;
 
 					tmpPos = useText.find(_cutChar, sPos);
@@ -392,12 +407,11 @@ namespace ChCpp
 						tmpEnd = _endChar;
 					}
 
-
-					ChPtr::Shared<BaseType> value = ChPtr::Make_S<T>();
+					auto&& value = ChPtr::Make_S<T>();
 
 					value->Desirialise(useText, sPos, tmpEnd);
 
-					out.push_back(value);
+					res.push_back(value);
 
 					tmpPos += _endChar.length();
 
@@ -406,7 +420,7 @@ namespace ChCpp
 				}
 
 
-				return out;
+				return res;
 
 			}
 #endif
@@ -566,7 +580,8 @@ void ChCpp::ModelLoader::XFile<CharaType>::CreateModel(ChPtr::Shared<ModelObject
 	size_t textPos = text.find(XFileTag::GetXFilePrefixTag<CharaType>());
 
 	{
-		std::basic_string<CharaType> tmp = XFileTag::GetTemplateTag<CharaType>() + ChStd::GetSpaceChara<CharaType>() + XFileTag::GetFrameTag<CharaType>();
+		std::basic_string<CharaType> tmp = XFileTag::GetTemplateTag<CharaType>();
+		tmp += XFileTag::GetFrameTag<CharaType>();
 		size_t tmpLen = text.find(tmp, textPos);
 
 		if (tmpLen != tmp.npos) {
@@ -596,18 +611,18 @@ void ChCpp::ModelLoader::XFile<CharaType>::CreateModel(ChPtr::Shared<ModelObject
 
 	if (exceptionFlg)return;
 
-	Init();
+	ChCpp::ModelLoaderBase<CharaType>::Init();
 
-	loadFilePath = GetRoutePath(loadFileName);
+	loadFilePath = ChCpp::ModelLoaderBase<CharaType>::GetRoutePath(loadFileName);
 
 	_model->SetModelName(_filePath);
 
 	XFrameToChFrame(_model, xModel->modelData);
 
-	SetMaxPos(*_model, maxPos);
-	SetMinPos(*_model, minPos);
-	SetCenterPos(*_model, CreateCenterPos(minPos, maxPos));
-	SetBoxSize(*_model, CreateBoxSize(minPos, maxPos));
+	ChCpp::ModelLoaderBase<CharaType>::SetMaxPos(*_model, ChCpp::ModelLoaderBase<CharaType>::maxPos);
+	ChCpp::ModelLoaderBase<CharaType>::SetMinPos(*_model, ChCpp::ModelLoaderBase<CharaType>::minPos);
+	ChCpp::ModelLoaderBase<CharaType>::SetCenterPos(*_model, ChCpp::ModelLoaderBase<CharaType>::CreateCenterPos(ChCpp::ModelLoaderBase<CharaType>::minPos, ChCpp::ModelLoaderBase<CharaType>::maxPos));
+	ChCpp::ModelLoaderBase<CharaType>::SetBoxSize(*_model, ChCpp::ModelLoaderBase<CharaType>::CreateBoxSize(ChCpp::ModelLoaderBase<CharaType>::minPos, ChCpp::ModelLoaderBase<CharaType>::maxPos));
 
 	_model->Create();
 }
@@ -628,9 +643,13 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetFrame(
 
 	size_t framePos;
 
-	if (!IsTags(framePos, frameTags, _targetTemplate, _text))return false;
+	std::basic_string<CharaType> tag = XFileTag::GetFrameTag<CharaType>();
 
-	framePos += frameTags.length();
+	if (!IsTags(framePos, tag, _targetTemplate, _text))return false;
+
+
+
+	framePos += tag.length();
 
 	auto tmpFrame = ChPtr::Make_S<XFrame>();
 
@@ -673,6 +692,8 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetFremeTransformMatrix(
 
 	if (!IsTags(XFileTag::GetFrameTransformMatrixTag<CharaType>(), _targetTemplate, _text))return false;
 
+	std::basic_string<CharaType> argText = ChStd::GetSemiColonChara<CharaType>();
+	argText += ChStd::GetSemiColonChara<CharaType>();
 	std::basic_string<CharaType> useText;
 
 	{
@@ -681,7 +702,7 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetFremeTransformMatrix(
 		useText = _text.substr(_targetTemplate->begin + 1, textLen);
 	}
 
-	_frames->frameMatrix.Deserialize(useText, 0, ChStd::GetCommaChara<CharaType>(), ChStd::GetSemiColonChara<CharaType>() + ChStd::GetSemiColonChara<CharaType>());
+	_frames->frameMatrix.Deserialize<CharaType>(useText, 0, ChStd::GetCommaChara<CharaType>(), argText);
 	return true;
 }
 
@@ -693,15 +714,17 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetMesh(
 {
 	if (exceptionFlg)return false;
 
-	if (!IsTags(meshTags, _targetTemplate, _text))return false;
+	if (!IsTags(XFileTag::GetMeshTag<CharaType>(), _targetTemplate, _text))return false;
 
-	std::basic_string<CharaType> arrayFirstTag = ChStd::GetSemiColonChara<CharaType>() + ChStd::GetCommaChara<CharaType>();
-	std::basic_string<CharaType> arraySeccondTag = ChStd::GetSemiColonChara<CharaType>() + ChStd::GetSemiColonChara<CharaType>();
+	std::basic_string<CharaType> arrayFirstTag = ChStd::GetSemiColonChara<CharaType>();
+	arrayFirstTag += ChStd::GetCommaChara<CharaType>();
+	std::basic_string<CharaType> arraySeccondTag = ChStd::GetSemiColonChara<CharaType>();
+	arraySeccondTag += ChStd::GetSemiColonChara<CharaType>();
 
 	if (_frames == nullptr)
 	{
 		_frames = ChPtr::Make_S<XFrame>();
-		_frames->fName = "Root";
+		_frames->fName = XFileTag::GetRootObjectName<CharaType>();
 	}
 
 	size_t tmpPos = _targetTemplate->begin;
@@ -711,7 +734,6 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetMesh(
 	auto mesh = ChPtr::Make_S<XMesh>();
 
 	{
-
 		auto values = GetArrayValues<XVECTOR>(_text, tmpPos, arrayFirstTag, arraySeccondTag);
 
 		for (auto&& poss : values)
@@ -721,9 +743,7 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetMesh(
 			vertex->pos = poss->value;
 
 			mesh->vertexList.push_back(vertex);
-
 		}
-
 	}
 
 	tmpPos = _text.find(arraySeccondTag, tmpPos);
@@ -732,11 +752,11 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetMesh(
 	{
 		auto values = GetArrayValues<XMESHFACE>(_text, tmpPos, arrayFirstTag, arraySeccondTag);
 
-		for (auto&& Poss : values)
+		for (auto&& poss : values)
 		{
 			auto face = ChPtr::Make_S<XFace>();
 
-			for (auto&& no : Poss->value)
+			for (auto&& no : poss->value)
 			{
 				face->vertexNos.push_back(no);
 			}
@@ -774,10 +794,12 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetMeshNormal(
 
 	if (exceptionFlg)return false;
 
-	if (!IsTags(normalTags, _targetTemplate, _text))return false;
+	if (!IsTags(XFileTag::GetNormalsTag<CharaType>(), _targetTemplate, _text))return false;
 
-	std::basic_string<CharaType> arrayFirstTag = ChStd::GetSemiColonChara<CharaType>() + ChStd::GetCommaChara<CharaType>();
-	std::basic_string<CharaType> arraySeccondTag = ChStd::GetSemiColonChara<CharaType>() + ChStd::GetSemiColonChara<CharaType>();
+	std::basic_string<CharaType> arrayFirstTag = ChStd::GetSemiColonChara<CharaType>();
+	arrayFirstTag += ChStd::GetCommaChara<CharaType>();
+	std::basic_string<CharaType> arraySeccondTag = ChStd::GetSemiColonChara<CharaType>();
+	arraySeccondTag += ChStd::GetSemiColonChara<CharaType>();
 
 	size_t tmpPos = _targetTemplate->begin;
 
@@ -805,7 +827,7 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetMeshNormal(
 
 	for (auto&& vertex : _frames->mesh->vertexList)
 	{
-		if (vertex->normal.Len() == 1.00000000f)continue;
+		if (vertex->normal.GetLen() == 1.00000000f)continue;
 		vertex->normal.Normalize();
 	}
 
@@ -820,10 +842,12 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetMeshTextureCoords(
 {
 	if (exceptionFlg)return false;
 
-	if (!IsTags(uvTags, _targetTemplate, _text))return false;
+	if (!IsTags(XFileTag::GetTextureCoordsTag<CharaType>(), _targetTemplate, _text))return false;
 
-	std::basic_string<CharaType> arrayFirstTag = ChStd::GetSemiColonChara<CharaType>() + ChStd::GetCommaChara<CharaType>();
-	std::basic_string<CharaType> arraySeccondTag = ChStd::GetSemiColonChara<CharaType>() + ChStd::GetSemiColonChara<CharaType>();
+	std::basic_string<CharaType> arrayFirstTag = ChStd::GetSemiColonChara<CharaType>();
+	arrayFirstTag += ChStd::GetCommaChara<CharaType>();
+	std::basic_string<CharaType> arraySeccondTag = ChStd::GetSemiColonChara<CharaType>();
+	arraySeccondTag += ChStd::GetSemiColonChara<CharaType>();
 
 	size_t tmpPos = _targetTemplate->begin;
 
@@ -852,7 +876,7 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetMeshMaterialList(
 {
 	if (exceptionFlg)return false;
 
-	if (!IsTags(materialListTags, _targetTemplate, _text))return false;
+	if (!IsTags(XFileTag::GetMaterialListTag<CharaType>(), _targetTemplate, _text))return false;
 
 	size_t tmpPos = _targetTemplate->begin;
 
@@ -891,11 +915,13 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetMaterial(
 
 	if (!IsTags(matePos, XFileTag::GetMaterialTag<CharaType>(), _targetTemplate, _text))return false;
 
-	std::basic_string<CharaType> arrayTag = ChStd::GetSemiColonChara<CharaType>() + ChStd::GetSemiColonChara<CharaType>();
+	std::basic_string<CharaType> arrayTag = ChStd::GetSemiColonChara<CharaType>();
+	arrayTag += ChStd::GetSemiColonChara<CharaType>();
 
 	std::basic_string<CharaType> materialName = ChStd::GetZeroChara<CharaType>();
 
-	matePos += materialTags.length();
+	std::basic_string<CharaType>tag = XFileTag::GetMaterialTag<CharaType>();
+	matePos += tag.length();
 
 	materialName = _text.substr(matePos, _targetTemplate->begin - matePos);
 
@@ -976,7 +1002,7 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetMaterial(
 	for (auto&& tmp : _targetTemplate->nest)
 	{
 
-		if (!IsTags(textureFileNameTag, tmp, _text))continue;
+		if (!IsTags(XFileTag::GetTextureFileNameTag<CharaType>(), tmp, _text))continue;
 
 		size_t start = _text.find(ChStd::GetDBQuotation<CharaType>(), tmp->begin);
 
@@ -1006,18 +1032,21 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetSkinWeights(
 
 	if (exceptionFlg)return false;
 
-	if (!IsTags(skinWeightsTag, _targetTemplate, _text))return false;
+	if (!IsTags(XFileTag::GetSkinWeightsTag<CharaType>(), _targetTemplate, _text))return false;
 
 	size_t tmpPos = _targetTemplate->begin;
 
 	tmpPos += 1;
 
-	std::string boneName;
+	std::basic_string<CharaType> argText = ChStd::GetDBQuotation<CharaType>();
+	argText += ChStd::GetSemiColonChara<CharaType>();
+
+	std::basic_string<CharaType> boneName;
 
 	{
 		size_t tmpStart = _text.find(ChStd::GetDBQuotation<CharaType>(), tmpPos);
 
-		size_t tmpEnd = _text.find(ChStd::GetDBQuotation<CharaType>() + ChStd::GetSemiColonChara<CharaType>(), tmpPos);
+		size_t tmpEnd = _text.find(argText, tmpPos);
 
 		if (tmpStart > _targetTemplate->end
 			|| tmpEnd > _targetTemplate->end)return true;
@@ -1044,7 +1073,10 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetSkinWeights(
 
 	ChLMat tmpOffMat;
 
-	tmpOffMat.Deserialize(_text, tmpPos, ChStd::GetCommaChara<CharaType>(), ChStd::GetSemiColonChara<CharaType>() + ChStd::GetSemiColonChara<CharaType>());
+	argText = ChStd::GetSemiColonChara<CharaType>();
+	argText += ChStd::GetSemiColonChara<CharaType>();
+
+	tmpOffMat.Deserialize<CharaType>(_text, tmpPos, ChStd::GetCommaChara<CharaType>(), argText);
 
 	auto skinWeight = ChPtr::Make_S<XSkinWeights>();
 
@@ -1231,7 +1263,7 @@ void ChCpp::ModelLoader::XFile<CharaType>::XFrameToChFrame(
 
 	for (auto&& frame : _xFrame->next)
 	{
-		auto chFrame = ChPtr::Make_S<FrameObject>();
+		auto chFrame = ChPtr::Make_S<FrameObject<CharaType>>();
 
 		_chFrame->SetChild(chFrame);
 
@@ -1243,7 +1275,7 @@ void ChCpp::ModelLoader::XFile<CharaType>::XFrameToChFrame(
 
 	std::map<unsigned long, unsigned long>summarizeVertex;
 
-	auto mesh = _chFrame->SetComponent<FrameComponent>();
+	auto mesh = _chFrame->SetComponent<FrameComponent<CharaType>>();
 	auto& chVertexList = mesh->vertexList;
 	//SetVertexList//
 	{
@@ -1363,7 +1395,7 @@ void ChCpp::ModelLoader::XFile<CharaType>::XFrameToChFrame(
 			chMate->mateName = xMate->materialName;
 			chMate->mate.specularColor = xMate->specularColor;
 			chMate->mate.specularPower = xMate->specularPower;
-			chMate->mate.ambient = xMate->ambient.Len() / 4.0f;
+			chMate->mate.ambient = xMate->ambient.GetLen() / 4.0f;
 
 			for (unsigned long j = 0; j < xMate->textureNameList.size(); j++)
 			{
@@ -1387,7 +1419,7 @@ void ChCpp::ModelLoader::XFile<CharaType>::XFrameToChFrame(
 			auto chMate = ChPtr::Make_S<Ch3D::MaterialData<CharaType>>();
 
 			chMate->mate.diffuse = ChVec4(1.0f);
-			chMate->mateName = "tmp Material";
+			chMate->mateName = XFileTag::GetTmpMaterialName<CharaType>();
 			chMate->mate.specularColor = ChVec3(1.0f);
 			chMate->mate.specularPower = 0.3f;
 			chMate->mate.ambient = ChVec4(0.3f);
@@ -1403,11 +1435,11 @@ void ChCpp::ModelLoader::XFile<CharaType>::XFrameToChFrame(
 	ChVec3 tmpMaxPos = _chFrame->GetDrawLHandMatrix().Transform(mesh->maxPos);
 	ChVec3 tmpMinPos = _chFrame->GetDrawLHandMatrix().Transform(mesh->minPos);
 
-	maxPos = ChCpp::ModelLoaderBase<CharaType>::TestMaxPos(tmpMaxPos, maxPos);
-	minPos = ChCpp::ModelLoaderBase<CharaType>::TestMinPos(tmpMaxPos, minPos);
+	ChCpp::ModelLoaderBase<CharaType>::maxPos = ChCpp::ModelLoaderBase<CharaType>::TestMaxPos(tmpMaxPos, ChCpp::ModelLoaderBase<CharaType>::maxPos);
+	ChCpp::ModelLoaderBase<CharaType>::minPos = ChCpp::ModelLoaderBase<CharaType>::TestMinPos(tmpMaxPos, ChCpp::ModelLoaderBase<CharaType>::minPos);
 
-	maxPos = ChCpp::ModelLoaderBase<CharaType>::TestMaxPos(tmpMinPos, maxPos);
-	minPos = ChCpp::ModelLoaderBase<CharaType>::TestMinPos(tmpMinPos, minPos);
+	ChCpp::ModelLoaderBase<CharaType>::maxPos = ChCpp::ModelLoaderBase<CharaType>::TestMaxPos(tmpMinPos, ChCpp::ModelLoaderBase<CharaType>::maxPos);
+	ChCpp::ModelLoaderBase<CharaType>::minPos = ChCpp::ModelLoaderBase<CharaType>::TestMinPos(tmpMinPos, ChCpp::ModelLoaderBase<CharaType>::minPos);
 }
 
 
