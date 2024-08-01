@@ -116,7 +116,7 @@ namespace ChStr
 	std::basic_string<CharaType> RemoveToWhiteSpaceChars(const std::basic_string<CharaType>& _str)
 	{
 
-		std::basic_string<CharaType> out = ChStd::GetZeroChara();
+		std::basic_string<CharaType> out = ChStd::GetZeroChara<CharaType>();
 
 		const char whiteSpaceInterfaceChar = 32;
 		const char delCharNum = 127;
