@@ -1,6 +1,14 @@
 #ifndef Ch_Cpp_MSquare_h
 #define Ch_Cpp_MSquare_h
 
+#ifdef CRT
+
+#include<vector>
+
+#endif
+
+#include"../../BasePack/ChMath3D.h"
+
 namespace ChCpp
 {
 
@@ -18,23 +26,29 @@ namespace ChCpp
 
 		MathSquare(const ChVec4& _square) { SetSquare(_square); }
 
+#ifdef CRT
 		MathSquare(const std::vector<ChPtr::Shared<ChVec4>>& _squareList) { SetSquare(_squareList); }
+#endif
 
-		MathSquare(const float _left, const float _top, const float _right, const float _bottom)
-		{
-			SetSquare(ChVec4(_left, _top, _right, _bottom));
-		}
+		MathSquare(const float _left, const float _top, const float _right, const float _bottom) { SetSquare(ChVec4(_left, _top, _right, _bottom)); }
 
-		MathSquare(const ChVec2& _leftTop, const ChVec2& _rightTop, const ChVec2& _rightBottom, const ChVec2& _leftBottom, const unsigned long _cutCount = 1)
-		{
-			SetSquare(_leftTop, _rightTop, _rightBottom, _leftBottom, _cutCount);
-		}
+		MathSquare(const ChVec2& _leftTop, const ChVec2& _rightTop, const ChVec2& _rightBottom, const ChVec2& _leftBottom, const unsigned long _cutCount = 1) { SetSquare(_leftTop, _rightTop, _rightBottom, _leftBottom, _cutCount); }
 
 	public://Set Functions//
 
 		void SetSquare(const ChVec4& _square);
 
-		void SetSquare(const std::vector<ChPtr::Shared<ChVec4>>& _square);
+#ifdef CRT
+		void SetSquare(const std::vector<ChPtr::Shared<ChVec4>>& _square)
+		{
+			if (&_square == &squareList)return;
+			if (!squareList.empty())squareList.clear();
+			for (auto&& quare_it : _square)
+			{
+				AddSquare(*quare_it);
+			}
+		}
+#endif
 
 		void SetSquare(const MathSquare& _square);
 
@@ -42,13 +56,17 @@ namespace ChCpp
 
 	public://Get Functions//
 
-		inline std::vector<ChPtr::Shared<ChVec4>> GetSquare() const { return squareList; }
+#ifdef CRT
+		std::vector<ChPtr::Shared<ChVec4>> GetSquare() const { return squareList; }
+#endif
+
+		ChVec4 GetSquare(unsigned long _num)const;
 
 		ChVec4 GetFirstSquare() const;
 
 		ChVec4 GetLastSquare() const;
 
-		inline unsigned long GetCount() const { return squareList.size(); }
+		unsigned long GetCount() const;
 
 	public://Add Function//
 
@@ -57,6 +75,10 @@ namespace ChCpp
 		void AddSquare(const MathSquare& _square);
 
 		void AddSquare(const ChVec2& _leftTop, const ChVec2& _rightTop, const ChVec2& _rightBottom, const ChVec2& _leftBottom,const unsigned long _cutCount = 1);
+
+	public:
+
+		bool IsEmpty()const;
 
 	public://Math Functions//
 
@@ -92,6 +114,13 @@ namespace ChCpp
 
 		static MathSquare Sub(const ChVec4& _base, const ChVec4& _sub);
 
+
+	protected://Other Functions//
+
+		void Clear();
+
+		void PushBack(const ChVec4& _pushSquare);
+
 	private:
 
 		enum class DirectionName :unsigned char
@@ -101,10 +130,100 @@ namespace ChCpp
 			LeftBottomToRightBottom,
 			LeftTopToLeftBottom,
 		};
-
+#ifdef CRT
 		std::vector<ChPtr::Shared<ChVec4>> squareList;
-
+#endif
 	};
 }
+
+#ifdef CRT
+
+bool ChCpp::MathSquare::IsEmpty()const
+{
+	return squareList.empty();
+}
+
+unsigned long ChCpp::MathSquare::GetCount() const
+{
+	return squareList.size(); 
+}
+
+ChVec4 ChCpp::MathSquare::GetSquare(unsigned long _num)const
+{
+	if (_num >= GetCount())return ChVec4();
+	return *squareList[_num];
+}
+
+
+void ChCpp::MathSquare::AddSquare(const ChVec2& _leftTop, const ChVec2& _rightTop, const ChVec2& _rightBottom, const ChVec2& _leftBottom, const unsigned long _cutCount)
+{
+	if (_leftTop.x - _rightTop.x <= 0.0f)return;
+	if (_rightTop.y - _rightBottom.y <= 0.0f)return;
+	if (_rightBottom.x - _leftBottom.x <= 0.0f)return;
+	if (_leftBottom.y - _leftTop.y <= 0.0f)return;
+
+	std::vector<ChVec3>verticalDirectionList;
+	verticalDirectionList.resize(_cutCount + 2);
+
+	std::vector<ChVec3>horizontalDirectionList;
+	horizontalDirectionList.resize(verticalDirectionList.size());
+
+	{
+		ChVec2 direction[4];
+		float length[4];
+
+		direction[ChStd::EnumCast(DirectionName::LeftTopToRightTop)] =
+			_rightTop - _leftTop;
+		length[ChStd::EnumCast(DirectionName::LeftTopToRightTop)] = direction[ChStd::EnumCast(DirectionName::LeftTopToRightTop)].GetLen();
+
+
+		direction[ChStd::EnumCast(DirectionName::RightTopTopRightBottom)] =
+			_rightBottom - _rightTop;
+		length[ChStd::EnumCast(DirectionName::RightTopTopRightBottom)] = direction[ChStd::EnumCast(DirectionName::RightTopTopRightBottom)].GetLen();
+
+
+		direction[ChStd::EnumCast(DirectionName::LeftBottomToRightBottom)] =
+			_rightBottom - _leftBottom;
+		length[ChStd::EnumCast(DirectionName::LeftBottomToRightBottom)] = direction[ChStd::EnumCast(DirectionName::LeftBottomToRightBottom)].GetLen();
+
+
+		direction[ChStd::EnumCast(DirectionName::LeftTopToLeftBottom)] =
+			_leftBottom - _leftTop;
+		length[ChStd::EnumCast(DirectionName::LeftTopToLeftBottom)] = direction[ChStd::EnumCast(DirectionName::LeftTopToLeftBottom)].GetLen();
+
+		for (unsigned long i = 0; i < 4; i++)
+		{
+			direction[i].Normalize();
+		}
+
+		for (unsigned long i = 0; i < verticalDirectionList.size(); i++)
+		{
+
+		}
+	}
+
+	for (unsigned long w = 0; w < horizontalDirectionList.size() - 1; w++)
+	{
+		for (unsigned long h = 0; h < verticalDirectionList.size() - 1; h++)
+		{
+
+		}
+	}
+}
+
+void ChCpp::MathSquare::Clear()
+{
+	if (squareList.empty())return;
+	squareList.clear();
+}
+
+void ChCpp::MathSquare::PushBack(const ChVec4& _pushSquare)
+{
+	auto square = ChPtr::Make_S<ChVec4>();
+	*square = _pushSquare;
+	squareList.push_back(square);
+}
+
+#endif
 
 #endif
