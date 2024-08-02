@@ -154,7 +154,6 @@ namespace ChCpp
 			{
 #ifdef CRT
 				std::basic_string<CharaType> materialName = ChStd::GetZeroChara<CharaType>();
-
 				std::vector<std::basic_string<CharaType>>textureNameList;
 #endif
 			};
@@ -171,7 +170,6 @@ namespace ChCpp
 			{
 #ifdef CRT
 				std::basic_string<CharaType> targetFrameName = ChStd::GetZeroChara<CharaType>();
-
 				std::map<unsigned long, float>weitPow;
 #endif
 				ChLMat boneOffset;
@@ -306,8 +304,7 @@ namespace ChCpp
 					const std::basic_string<CharaType>& _text,
 					const size_t& _startPos = 0,
 					const std::basic_string<CharaType>& _cutChar = ChStd::GetCommaChara<CharaType>(),
-					const std::basic_string<CharaType>& _endChar = ChStd::GetSemiColonChara<CharaType>()
-			){
+					const std::basic_string<CharaType>& _endChar = ChStd::GetSemiColonChara<CharaType>()){
 
 				std::vector<ChPtr::Shared<T>> res;
 
@@ -317,9 +314,7 @@ namespace ChCpp
 					size_t tmpEnd = _text.find(ChStd::GetSemiColonChara<CharaType>(), _startPos);
 					tmpEnd = _text.find(_endChar, tmpEnd + 1);
 					tmpEnd += _endChar.length();
-
 					useText = _text.substr(_startPos, tmpEnd - _startPos);
-
 				}
 
 				size_t tmpPos = 0;
@@ -328,16 +323,13 @@ namespace ChCpp
 				if (tmpPos > useText.size())tmpPos = useText.size();
 
 				unsigned long arrayCount = 0;
-
 				arrayCount = ChStr::GetNumFromText<unsigned long,CharaType>(useText, useText.find(ChStd::GetLFChara<CharaType>()), tmpPos);
 
 				if (arrayCount <= 0)return res;
 
 				for (unsigned long i = 0; i < arrayCount; i++)
 				{
-
 					size_t sPos = tmpPos + 1;
-
 					tmpPos = useText.find(_cutChar, sPos);
 					std::basic_string<CharaType> tmpEnd = _cutChar;
 
@@ -353,19 +345,13 @@ namespace ChCpp
 						return res;
 					}
 
-
 					auto&& value = ChPtr::Make_S<T>();
-
 					value->Desirialise(useText, sPos, tmpEnd);
-
 					res.push_back(value);
-
 					tmpPos += _endChar.length();
-
 				}
 
 				return res;
-
 			}
 
 			template<class T>
@@ -375,8 +361,7 @@ namespace ChCpp
 					const std::basic_string<CharaType>& _text,
 					const size_t& _startPos = 0,
 					const std::basic_string<CharaType>& _cutChar = ChStd::GetCommaChara<CharaType>(),
-					const std::basic_string<CharaType>& _endChar = ChStd::GetSemiColonChara<CharaType>()
-			){
+					const std::basic_string<CharaType>& _endChar = ChStd::GetSemiColonChara<CharaType>()){
 
 				std::vector<ChPtr::Shared<T>> res;
 
@@ -385,9 +370,7 @@ namespace ChCpp
 				{
 					size_t tmpEnd = _text.find(_endChar, _startPos);
 					tmpEnd += _endChar.length();
-
 					useText = _text.substr(_startPos, tmpEnd - _startPos);
-
 				}
 
 				size_t tmpPos = 0;
@@ -397,7 +380,6 @@ namespace ChCpp
 				while (tmpPos <= useText.size())
 				{
 					size_t sPos = tmpPos + 1;
-
 					tmpPos = useText.find(_cutChar, sPos);
 					std::basic_string<CharaType> tmpEnd = _cutChar;
 
@@ -408,18 +390,12 @@ namespace ChCpp
 					}
 
 					auto&& value = ChPtr::Make_S<T>();
-
 					value->Desirialise(useText, sPos, tmpEnd);
-
 					res.push_back(value);
-
 					tmpPos += _endChar.length();
 
 					if (tmpEnd == ChStd::GetSemiColonChara<CharaType>())break;
-
 				}
-
-
 				return res;
 
 			}
