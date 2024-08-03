@@ -569,7 +569,7 @@ void ChCpp::ModelLoader::XFile<CharaType>::CreateModel(ChPtr::Shared<ModelObject
 	size_t tmpLen = text.find(XFileTag::GetFrameTag<CharaType>(), textPos);
 	if (tmpLen == text.npos)return;
 
-	tmpLen = text.find(ChStd::GetEndSquareBracketsChara<CharaType>(), tmpLen);
+	tmpLen = text.find(ChStd::GetEndBraceChara<CharaType>(), tmpLen);
 	if (tmpLen == text.npos)return;
 
 	ChPtr::Shared<TemplateRange> templates = ChPtr::Make_S<TemplateRange>();
@@ -1114,7 +1114,7 @@ void ChCpp::ModelLoader::XFile<CharaType>::LoadToTemplates(
 	const std::basic_string<CharaType>& _text)
 {
 	std::vector<size_t>templateTags[2];
-	CharaType tags[] = { ChStd::GetStartSquareBracketsChara<CharaType>()[0],ChStd::GetEndSquareBracketsChara<CharaType>()[0] };
+	CharaType tags[] = { ChStd::GetStartBraceChara<CharaType>()[0],ChStd::GetEndBraceChara<CharaType>()[0] };
 
 	for (size_t i = 0; i < 2; i++)
 	{
