@@ -270,7 +270,7 @@ namespace ChStr
 		while (testPos != std::basic_string<CharaType>::npos)
 		{
 			unsigned long tmp = testPos - nowPos;
-			out.push_back(tmp != 0 ? _str.substr(nowPos, testPos - nowPos) : ChStd::GetZeroChara());
+			out.push_back(tmp != 0 ? _str.substr(nowPos, testPos - nowPos) : ChStd::GetZeroChara<CharaType>());
 			nowPos = testPos + _splitChar.size();
 			testPos = _str.find(_splitChar, nowPos);
 		}
