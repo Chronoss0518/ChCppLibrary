@@ -1,10 +1,10 @@
 #ifndef Ch_CPP_HTO_h
 #define Ch_CPP_HTO_h
 
+#include"../../BasePack/ChMath3D.h"
+
 namespace ChCpp
 {
-
-
 	//“–‚½‚è”»’è‚ğs‚¤è–@//
 	class HitTestObject
 	{

@@ -1,10 +1,7 @@
-#include"../../../BaseIncluder/ChBase.h"
-#include<cmath>
-#include"../../ChModel/ChModel.h"
+#include"ChSphereCollider.h"
 
 #include"../Box/ChBoxCollider.h"
 #include"../ChHitTestRay.h"
-#include"ChSphereCollider.h"
 
 using namespace ChCpp;
 
@@ -56,7 +53,7 @@ bool  SphereCollider::IsHit(
 	//if (testVec.x > objVec.x)return false;
 	//if (testVec.y > objVec.y)return false;
 	//if (testVec.z > objVec.z)return false;
-	if (testVec.Len() > objVec.Len())return false;
+	if (testVec.GetLen() > objVec.GetLen())return false;
 	
 	{
 		//auto len = (objectSize - testLen);
@@ -96,7 +93,7 @@ bool  SphereCollider::IsHit(
 
 	ChVec3 toDir = vec2 - vec1;
 	toDir.Normalize();
-	float tmpLen = toDir.Len() - GetScl().Len();
+	float tmpLen = toDir.GetLen() - GetScl().GetLen();
 
 	if (tmpLen < 0.0f)return false;
 	toDir *= tmpLen;
@@ -130,7 +127,7 @@ bool  SphereCollider::IsInnerHit(
 
 	ChVec3 tmpVec = mPos - tPos;
 
-	float tmpLen = tmpVec.Len();
+	float tmpLen = tmpVec.GetLen();
 
 	//if (tmpLen + len <= _target->GetLen())return false;
 
@@ -145,5 +142,4 @@ bool  SphereCollider::IsInnerHit(
 	//_target->SetHitVector(tmpVec * (moveSize));
 
 	return true;
-
 }

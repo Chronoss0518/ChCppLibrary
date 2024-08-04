@@ -17,10 +17,7 @@ namespace ChCpp
 			ChVec3 pos[4];
 		};
 
-	public:
-
-		///////////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
+	public://SetFunction//
 
 		inline void SetSize(const ChVec2& _size)
 		{
@@ -30,19 +27,14 @@ namespace ChCpp
 		inline void SetRightHandFlg() { leftHandFlg = false; }
 
 		inline void SetLeftHandFlg() { leftHandFlg = true; }
+	
+	public://GetFunction//
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//GetFunction//
-
-		inline ChVec2 GetSize()
-		{
-			return size;
-		}
+		inline ChVec2 GetSize() { return size; }
 
 		Square GetSquarePositions();
-
-		///////////////////////////////////////////////////////////////////////////////////////
-		//IsFunction//
+	
+	public://IsFunction//
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
 		bool IsHit(

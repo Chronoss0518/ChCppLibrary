@@ -1,7 +1,3 @@
-#include"../../../BaseIncluder/ChBase.h"
-#include<cmath>
-#include"../../ChModel/ChModel.h"
-
 #include"ChBoxCollider.h"
 #include"../ChHitTestRay.h"
 #include"../Sphere/ChSphereCollider.h"
@@ -44,10 +40,7 @@ bool BoxCollider::IsHit(
 	return true;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
-bool  BoxCollider::IsHit(
-	HitTestSphere* _target)
+bool BoxCollider::IsHit(HitTestSphere* _target)
 {
 	//ˆÊ’uî•ñ‚¾‚¯‚Ì“–‚½‚è”»’è//
 
@@ -84,8 +77,8 @@ bool  BoxCollider::IsHit(
 	for (unsigned char i = 0; i < 3; i++)
 	{
 		auto vec = tmpPos[i + 1] - tmpPos[0];
-		auto len = vec.Len();
-		axisCoefficient.val[i] = vec.Dot(tmpVec) / (len * len);
+		auto len = vec.GetLen();
+		axisCoefficient.val[i] = vec.GetDot(tmpVec, vec) / (len * len);
 	}
 
 	//ˆê”Ô‹ß‚¢ˆÊ’u‚ğæ“¾
@@ -128,18 +121,12 @@ bool  BoxCollider::IsHit(
 	return true;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
-bool  BoxCollider::IsHit(
-	HitTestRay* _target)
+bool  BoxCollider::IsHit(HitTestRay* _target)
 {
 	return false;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
-bool  BoxCollider::IsInnerHit(
-	HitTestBox* _target)
+bool  BoxCollider::IsInnerHit(HitTestBox* _target)
 {
 
 	//ˆÊ’uî•ñ‚¾‚¯‚Ì“–‚½‚è”»’è//
@@ -153,16 +140,14 @@ bool  BoxCollider::IsInnerHit(
 	ChVec3 testVec = mPos - tPos;
 	testVec.Abs();
 
-
 	ChVec3 hitFlgs = 0.0f;
 
 	{
-
 		if (tSize.x < testVec.x + mSize.x)hitFlgs.x = testVec.x + mSize.x - tSize.x;
 		if (tSize.y < testVec.y + mSize.y)hitFlgs.y = testVec.y + mSize.y - tSize.y;
 		if (tSize.z < testVec.z + mSize.z)hitFlgs.z = testVec.z + mSize.z - tSize.z;
 
-		if (hitFlgs.Len() <= 0.0f)return false;
+		if (hitFlgs.GetLen() <= 0.0f)return false;
 	}
 
 	SetHitVector(hitFlgs);
@@ -172,15 +157,10 @@ bool  BoxCollider::IsInnerHit(
 	return true;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
-bool  BoxCollider::IsInnerHit(
-	HitTestSphere* _target)
+bool  BoxCollider::IsInnerHit(HitTestSphere* _target)
 {
 	return false;
 }
-
-///////////////////////////////////////////////////////////////////////////////////////
 
 Cube BoxCollider::CreateCube(const ChLMat& _mat)
 {
