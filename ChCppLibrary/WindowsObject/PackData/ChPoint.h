@@ -100,6 +100,11 @@ public://Operator Functions//
 		return *this;
 	}
 
+	Ch_Win_POINT_MATH_METHOD(+, ChLONGPOINT, ChLONGPOINT, vec.val.Add(_cm.vec.val););
+	Ch_Win_POINT_MATH_METHOD(-, ChLONGPOINT, ChLONGPOINT, vec.val.Sub(_cm.vec.val););
+	Ch_Win_POINT_MATH_METHOD(*, ChLONGPOINT, ChLONGPOINT, vec.val.Mul(_cm.vec.val););
+	Ch_Win_POINT_MATH_METHOD(/ , ChLONGPOINT, ChLONGPOINT, vec.val.Div(_cm.vec.val););
+
 	ChLONGPOINT& operator=(const ChMath::Vector2Base<long>& _cm)
 	{
 		if (&vec == &_cm)return *this;
@@ -107,17 +112,17 @@ public://Operator Functions//
 		return *this;
 	}
 
+	Ch_Win_POINT_MATH_METHOD(+, ChLONGPOINT, ChMath::Vector2Base<long>, vec.val.Add(_cm.val););
+	Ch_Win_POINT_MATH_METHOD(-, ChLONGPOINT, ChMath::Vector2Base<long>, vec.val.Sub(_cm.val););
+	Ch_Win_POINT_MATH_METHOD(*, ChLONGPOINT, ChMath::Vector2Base<long>, vec.val.Mul(_cm.val););
+	Ch_Win_POINT_MATH_METHOD(/ , ChLONGPOINT, ChMath::Vector2Base<long>, vec.val.Div(_cm.val););
+
 	ChLONGPOINT& operator=(const POINT& _cm)
 	{
 		if (&pt == &_cm)return *this;
 		pt = _cm;
 		return *this;
 	}
-
-	Ch_Win_POINT_MATH_METHOD(+, ChLONGPOINT, ChMath::Vector2Base<long>, vec.val.Add(_cm.val););
-	Ch_Win_POINT_MATH_METHOD(-, ChLONGPOINT, ChMath::Vector2Base<long>, vec.val.Sub(_cm.val););
-	Ch_Win_POINT_MATH_METHOD(*, ChLONGPOINT, ChMath::Vector2Base<long>, vec.val.Mul(_cm.val););
-	Ch_Win_POINT_MATH_METHOD(/, ChLONGPOINT, ChMath::Vector2Base<long>, vec.val.Div(_cm.val););
 
 	Ch_Win_POINT_MATH_METHOD(+, ChLONGPOINT, POINT, ChLONGPOINT tmp = _cm;vec.val.Add(tmp.val););
 	Ch_Win_POINT_MATH_METHOD(-, ChLONGPOINT, POINT, ChLONGPOINT tmp = _cm;vec.val.Sub(tmp.val););
