@@ -467,8 +467,6 @@ protected://Get Functions//
 
 #ifdef CRT
 
-#include"ChObjectList.h"
-
 void ChCpp::BaseComponent::DestroyObject()
 {
 	if (ChPtr::NullCheck(obj))return;
@@ -697,17 +695,10 @@ void ChCpp::BaseObject<CharaType>::BaseRelease()
 	WithdrawObjectList();
 }
 
-template<typename CharaType>
-void ChCpp::BaseObject<CharaType>::WithdrawObjectList()
-{
-	if (objMaList == nullptr)return;
-	if (objMaList->objectList.empty())return;
-
-	auto&& test = std::find(objMaList->objectList.begin(), objMaList->objectList.end(), shared_from_this());
-
-	if (test != objMaList->objectList.end()) { objMaList->objectList.erase(test); }
-}
-
 #endif
+
+#include"SharedFunctions/ChObjectSharedObjectList.h"
+
+#include"ChObjectList.h"
 
 #endif

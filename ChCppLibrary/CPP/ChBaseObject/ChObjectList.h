@@ -303,10 +303,8 @@ void ChCpp::ObjectList<CharaType>::DestroyObjectTest()
 	}
 }
 
-template<typename CharaType>
-ChCpp::ObjectList<CharaType>* ChCpp::BaseObject<CharaType>::LookObjectList() { return objMaList; }
-
 #endif
 
+#include"SharedFunctions/ChObjectSharedObjectList.h"
 
 #endif
