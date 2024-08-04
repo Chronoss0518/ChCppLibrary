@@ -158,18 +158,6 @@ namespace ChCpp
 
 }
 
-#ifdef CRT
-#ifdef Ch_CPP_JsonArray_h
-
-template<typename CharaType>
-template<typename BaseType>
-void ChCpp::JsonArray<CharaType>::Add(const BaseType _value)
-{
-	if (_value == nullptr)return;
-	values.push_back(JsonNumber<CharaType>::CreateObject(_value));
-}
-
-#endif
-#endif
+#include"SharedFunctions/ChJsonSharedArrayBooleanNumberString.h"
 
 #endif

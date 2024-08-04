@@ -160,18 +160,6 @@ std::basic_string<CharaType> ChCpp::JsonBoolean<CharaType>::GetRawData()const
 
 #endif
 
-
-#ifdef CRT
-#ifdef Ch_CPP_JsonArray_h
-
-template<typename CharaType>
-void ChCpp::JsonArray<CharaType>::Add(const bool _value)
-{
-	if (_value == nullptr)return;
-	values.push_back(_value);
-}
-
-#endif
-#endif
+#include"SharedFunctions/ChJsonSharedArrayBooleanNumberString.h"
 
 #endif

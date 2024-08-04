@@ -228,18 +228,6 @@ ChPtr::Shared<ChCpp::JsonArray<CharaType>> ChCpp::JsonArray<CharaType>::CreateOb
 	return res;
 }
 
-#ifdef Ch_CPP_JsonNumber_h
-
-template<typename CharaType>
-template<typename BaseType>
-void ChCpp::JsonArray<CharaType>::Add(const BaseType _value)
-{
-	if (_value == nullptr)return;
-	values.push_back(JsonNumber<CharaType>::CreateObject(_value));
-}
-
-#endif
-
 
 template<typename CharaType>
 static ChPtr::Shared<ChCpp::JsonArray<CharaType>> ChCpp::JsonArray<CharaType>::CreateObject(const std::vector<std::basic_string<CharaType>>& _array)
@@ -251,16 +239,6 @@ static ChPtr::Shared<ChCpp::JsonArray<CharaType>> ChCpp::JsonArray<CharaType>::C
 	}
 	return res;
 }
-
-#ifdef Ch_CPP_JsonString_h
-
-template<typename CharaType>
-void ChCpp::JsonArray<CharaType>::Add(const std::basic_string<CharaType>& _value)
-{
-	values.push_back(JsonString<CharaType>::CreateObject(_value));
-}
-
-#endif
 
 template<typename CharaType>
 static ChPtr::Shared<ChCpp::JsonArray<CharaType>> ChCpp::JsonArray<CharaType>::CreateObject(const std::vector<bool>& _array)
@@ -274,67 +252,11 @@ static ChPtr::Shared<ChCpp::JsonArray<CharaType>> ChCpp::JsonArray<CharaType>::C
 }
 
 
-#ifdef Ch_CPP_JsonBoolean_h
-
-template<typename CharaType>
-void ChCpp::JsonArray<CharaType>::Add(const bool _value)
-{
-	if (_value == nullptr)return;
-	values.push_back(_value);
-}
 
 #endif
 
+#include"SharedFunctions/ChJsonSharedArrayBooleanNumberString.h"
 
-
-#ifdef Ch_CPP_JsonObject_h
-
-template<typename CharaType>
-std::vector<std::basic_string<CharaType>> ChCpp::JsonObject<CharaType>::GetKeys()const
-{
-	std::vector<std::basic_string<CharaType>> res;
-	for (auto&& obj : values)
-	{
-		res.push_back(obj.first);
-	}
-	return res;
-}
-
-template<typename CharaType>
-ChPtr::Shared<ChCpp::JsonArray<CharaType>> ChCpp::JsonObject<CharaType>::GetKeysToArray()const
-{
-	auto&& res = ChPtr::Make_S<JsonArray<CharaType>>();
-	for (auto&& obj : values)
-	{
-		res->Add(obj.first);
-	}
-	return res;
-}
-
-template<typename CharaType>
-std::vector<ChPtr::Shared<ChCpp::JsonBaseType<CharaType>>> ChCpp::JsonObject<CharaType>::GetValues()const
-{
-	std::vector<ChPtr::Shared<ChCpp::JsonBaseType<CharaType>>> res;
-	for (auto&& obj : values)
-	{
-		res.push_back(obj.second);
-	}
-	return res;
-}
-
-template<typename CharaType>
-ChPtr::Shared<ChCpp::JsonArray<CharaType>> ChCpp::JsonObject<CharaType>::GetValuesToArray()const
-{
-	auto&& res = ChPtr::Make_S<JsonArray>();
-	for (auto&& obj : values)
-	{
-		res->Add(obj.second);
-	}
-	return res;
-}
-
-#endif
-
-#endif
+#include"SharedFunctions/ChJsonSharedArrayObject.h"
 
 #endif

@@ -308,16 +308,7 @@ bool ChCpp::JsonString<CharaType>::AddDecimal(std::basic_string<CharaType>& _out
 
 #endif
 
-#ifdef CRT
-#ifdef Ch_CPP_JsonArray_h
+#include"SharedFunctions/ChJsonSharedArrayBooleanNumberString.h"
 
-template<typename CharaType>
-void ChCpp::JsonArray<CharaType>::Add(const std::basic_string<CharaType>& _value)
-{
-	values.push_back(JsonString<CharaType>::CreateObject(_value));
-}
-
-#endif
-#endif
 
 #endif
