@@ -177,6 +177,8 @@ namespace ChMath
 	double GetFMod(double _valx, double _valy);
 	long double GetFMod(long double _valx, long double _valy);
 
+	static constexpr float GetMaxFloat();
+
 	//2‚Ì•½•ûª(—LŒøŒ…”8Œ…)//
 	static const float SQUARE_ROOT = 1.41421356f;
 
@@ -259,7 +261,11 @@ namespace ChMath
 
 		inline VectorBase() { Identity(); }
 
-		inline VectorBase(const T(&_val)[Array]) :val(_val) {}
+		inline VectorBase(const T(&_val)[Array]) 
+		{
+			for (unsigned long i = 0; i < Array;i++)
+				val[i] = _val[i];
+		}
 
 		inline VectorBase(const T(&_val)) { Set(_val); }
 
@@ -1746,6 +1752,12 @@ CH_MATH_FUNCTION(long double, GetATan, (long double _val), atan, (_val));
 CH_MATH_FUNCTION(float, GetFMod, (float _valx, float _valy), fmod, (_valx, _valy));
 CH_MATH_FUNCTION(double, GetFMod, (double _valx, double _valy), fmod, (_valx, _valy));
 CH_MATH_FUNCTION(long double, GetFMod, (long double _valx, long double _valy), fmod, (_valx, _valy));
+
+
+static constexpr float ChMath::GetMaxFloat()
+{
+	return FLT_MAX;
+}
 
 #endif
 
