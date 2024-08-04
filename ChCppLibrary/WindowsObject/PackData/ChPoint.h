@@ -155,7 +155,6 @@ public://ConstructerDestructer//
 
 	ChLONGPOINT(const ChMath::Vector2Base<long>& _cm)
 	{
-		if (&vec == &_cm)return;
 		vec.val.Set(_cm.val);
 	}
 
