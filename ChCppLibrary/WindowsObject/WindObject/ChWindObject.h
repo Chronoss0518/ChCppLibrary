@@ -96,15 +96,27 @@ namespace ChWin
 #ifdef CRT
 		//このウィンドウが子ウィンドウ以外の場合のみ実行される//
 		//_messageにはWM_やメッセージプロシージャ―が受け取れる方にしてください//
-		inline virtual void SetWindProcedure(const unsigned long _message, const std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>& _proc) { windProcedures->SetWindProcedure(_message, _proc); }
+		inline virtual void SetWindProcedure(const unsigned long _message, const std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>& _proc) 
+		{
+			if (ChPtr::NullCheck(windProcedures))return;
+			windProcedures->SetWindProcedure(_message, _proc); 
+		}
 
 		//登録されたどのメッセージも受け取らなかった場合に呼ばれる関数//
-		inline void SetDefaultWindProcedure(const std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>& _proc) { windProcedures->SetDefaultWindProcedure(_proc); }
+		inline void SetDefaultWindProcedure(const std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>& _proc) 
+		{
+			if (ChPtr::NullCheck(windProcedures))return;
+			windProcedures->SetDefaultWindProcedure(_proc); 
+		}
 
 		//子ウィンドウが動作して呼ばれたときに実行される関数//
 		//このウィンドウが子ウィンドウの場合のみ実行される//
 		//_messageにはWM_やメッセージプロシージャ―が受け取れる方にしてください//
-		inline void SetChildWindProcedure(const unsigned long _message, const std::function<void(HWND, UINT)>& _proc) { windProcedures->SetChildWindProcedure(_message, _proc); }
+		inline void SetChildWindProcedure(const unsigned long _message, const std::function<void(HWND, UINT)>& _proc) 
+		{
+			if (ChPtr::NullCheck( windProcedures))return;
+			windProcedures->SetChildWindProcedure(_message, _proc); 
+		}
 #endif
 		void SetWindPos(const unsigned int _x, const unsigned int _y,const unsigned int _flgs = SWP_NOSIZE | SWP_NOZORDER);
 
@@ -306,6 +318,12 @@ namespace ChWin
 
 	};
 
+	using WindObject =
+#ifdef UNICODE
+		WindObjectW;
+#else
+		WindObjectA;
+#endif
 }
 
 #ifdef CRT
