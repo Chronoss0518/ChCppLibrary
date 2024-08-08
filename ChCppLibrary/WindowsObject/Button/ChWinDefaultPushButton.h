@@ -5,22 +5,14 @@
 
 #include"ChWinButton.h"
 
-namespace ChSystem
-{
-	class Windows;
-}
-
 namespace ChWin
 {
-
 	class DefaultPushButton :public Button
 	{
 	protected:
 
 		void CreateStyle()override;
-
 	};
-
 }
 
 #endif
