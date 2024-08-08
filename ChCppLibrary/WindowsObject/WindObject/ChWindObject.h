@@ -14,6 +14,8 @@
 
 #include"../../BasePack/ChPtr.h"
 
+#include"../../ClassParts/ChCPInitializer.h"
+
 #include"../PackData/ChPoint.h"
 
 namespace ChWin
