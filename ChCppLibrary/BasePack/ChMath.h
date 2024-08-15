@@ -1,8 +1,6 @@
 #ifndef Ch_CPP_BMath_h
 #define Ch_CPP_BMath_h
 
-#include"../CRTBase/ChCRTMath.h"
-
 #include"ChStd.h"
 #include"ChStr.h"
 
@@ -14,6 +12,11 @@
 #ifndef CH_FLOAT_ZERO_TEST
 #define CH_FLOAT_ZERO_TEST(val, testSize) val >= -testSize && val <= testSize
 #endif
+
+#ifndef CH_MATH_FUNCTION
+#define CH_MATH_FUNCTION(_Type,_FunctionName,_FunctionArg,_UseFunctionName,_UseFunctionArg) _Type ChMath::##_FunctionName##_FunctionArg { return std::##_UseFunctionName##_UseFunctionArg; }
+#endif
+
 
 #ifndef CH_MATH_VECTOR_OPERATOR_ACT
 #define CH_MATH_VECTOR_OPERATOR_ACT(_Operator,_TargetValue) \
@@ -140,6 +143,42 @@ inline ChEular##_AxisOrder##<T> GetEulerRotation##_AxisOrder(const unsigned long
 
 namespace ChMath
 {
+	double Round(const double& _val, const unsigned long _digit = 307);
+
+	float Round(const float& _val, const unsigned long _digit = 37);
+
+	long double SqrtEx(const long double& _base, const unsigned long _digit = 4931);
+
+	double SqrtEx(const double& _base, const unsigned long _digit = 307);
+
+	float SqrtEx(const float& _base, const unsigned long _digit = 37);
+
+	float GetSin(float _val);
+	double GetSin(double _val);
+	long double GetSin(long double _val);
+
+	float GetASin(float _val);
+	double GetASin(double _val);
+	long double GetASin(long double _val);
+
+	float GetACos(float _val);
+	double GetACos(double _val);
+	long double GetACos(long double _val);
+
+	float GetCos(float _val);
+	double GetCos(double _val);
+	long double GetCos(long double _val);
+
+	float GetATan(float _val);
+	double GetATan(double _val);
+	long double GetATan(long double _val);
+
+	float GetFMod(float _valx, float _valy);
+	double GetFMod(double _valx, double _valy);
+	long double GetFMod(long double _valx, long double _valy);
+
+	static constexpr float GetMaxFloat();
+
 	//2の平方根(有効桁数8桁)//
 	static const float SQUARE_ROOT = 1.41421356f;
 
@@ -1063,7 +1102,7 @@ namespace ChMath
 			struct { T w, h; };
 			struct { T start, end; };
 			struct { T high, low; };
-			VectorBase<T, 2> val = VectorBase<T, 2>();
+			VectorBase<T, 2> val;
 		};
 
 	public://Constructor Destructor//
@@ -1094,7 +1133,7 @@ namespace ChMath
 		union {
 			struct { T x, y, z; };
 			struct { T r, g, b; };
-			VectorBase<T, 3> val = VectorBase<T, 3>();
+			VectorBase<T, 3> val;
 		};
 
 	public://Constructor Destructor//
@@ -1127,7 +1166,7 @@ namespace ChMath
 			struct { T x, y, z, w; };
 			struct { T r, g, b, a; };
 			struct { T left, top, right, bottom; };
-			VectorBase<T, 4> val = VectorBase<T, 4>();
+			VectorBase<T, 4> val;
 		};
 
 	public://Constructor Destructor//
@@ -1306,7 +1345,7 @@ namespace ChMath
 			{
 				T x, y, z, w;
 			};
-			VectorBase<T, 4> val = VectorBase<T, 4>();
+			VectorBase<T, 4> val;
 		};
 
 		inline QuaternionBase() { val.Identity(); }
@@ -1482,7 +1521,7 @@ namespace ChMath
 			{
 				T r_11;
 			};
-			SquareMatrixBase<T, 1> m = SquareMatrixBase<T, 1>();
+			SquareMatrixBase<T, 1> m;
 		};
 
 	public://Constructor Destructor//
@@ -1523,7 +1562,7 @@ namespace ChMath
 				T r_11, r_21;
 				T r_12, r_22;
 			};
-			SquareMatrixBase<T, 2> m = SquareMatrixBase<T, 2>();
+			SquareMatrixBase<T, 2> m;
 		};
 
 	public://Constructor Destructor//
@@ -1566,7 +1605,7 @@ namespace ChMath
 				T r_12, r_22, r_32;
 				T r_13, r_23, r_33;
 			};
-			SquareMatrixBase<T, 3> m = SquareMatrixBase<T, 3>();
+			SquareMatrixBase<T, 3> m;
 		};
 
 	public://Constructor Destructor//
@@ -1611,7 +1650,7 @@ namespace ChMath
 				T r_13, r_23, r_33, r_43;
 				T r_14, r_24, r_34, r_44;
 			};
-			SquareMatrixBase<T, 4> m = SquareMatrixBase<T, 4>();
+			SquareMatrixBase<T, 4> m;
 		};
 
 	public://Constructor Destructor//
@@ -1654,5 +1693,73 @@ namespace ChMath
 
 	};
 }
+
+#ifdef CRT
+
+double ChMath::Round(const double& _val, const unsigned long _digit)
+{
+	if (_val == 0.0)return 0.0;
+
+	double out = _val * std::powl(10, static_cast<double>(_digit - 1));
+	out = std::round(out);
+	out = out * std::powl(0.1, static_cast<double>(_digit - 1));
+
+	return out;
+}
+
+long double ChMath::SqrtEx(const long double& _base, const unsigned long _digit)
+{
+	if (_base == 0.0)return 0.0;
+
+	long double out = std::sqrt(_base);
+	//微分積分自分で使えるようになってから再度考える//
+	return out;
+
+	unsigned long maxCount = _digit > 4931 ? 4931 : _digit;
+
+	//以下を参照//
+	//https://qiita.com/rytaryu/items/e5d760a80f9ce5db860f
+	//
+
+	for (unsigned long i = 0; i < maxCount; i++)
+	{
+		out = ((out * out) + _base) / (2 * out);
+	}
+
+	return out;
+}
+
+CH_MATH_FUNCTION(float, GetSin, (float _val), sin, (_val));
+CH_MATH_FUNCTION(double, GetSin, (double _val), sin, (_val));
+CH_MATH_FUNCTION(long double, GetSin, (long double _val), sin, (_val));
+
+CH_MATH_FUNCTION(float, GetASin, (float _val), asin, (_val));
+CH_MATH_FUNCTION(double, GetASin, (double _val), asin, (_val));
+CH_MATH_FUNCTION(long double, GetASin, (long double _val), asin, (_val));
+
+CH_MATH_FUNCTION(float, GetCos, (float _val), cos, (_val));
+CH_MATH_FUNCTION(double, GetCos, (double _val), cos, (_val));
+CH_MATH_FUNCTION(long double, GetCos, (long double _val), cos, (_val));
+
+CH_MATH_FUNCTION(float, GetACos, (float _val), acos, (_val));
+CH_MATH_FUNCTION(double, GetACos, (double _val), acos, (_val));
+CH_MATH_FUNCTION(long double, GetACos, (long double _val), acos, (_val));
+
+CH_MATH_FUNCTION(float, GetATan, (float _val), atan, (_val));
+CH_MATH_FUNCTION(double, GetATan, (double _val), atan, (_val));
+CH_MATH_FUNCTION(long double, GetATan, (long double _val), atan, (_val));
+
+CH_MATH_FUNCTION(float, GetFMod, (float _valx, float _valy), fmod, (_valx, _valy));
+CH_MATH_FUNCTION(double, GetFMod, (double _valx, double _valy), fmod, (_valx, _valy));
+CH_MATH_FUNCTION(long double, GetFMod, (long double _valx, long double _valy), fmod, (_valx, _valy));
+
+
+static constexpr float ChMath::GetMaxFloat()
+{
+	return FLT_MAX;
+}
+
+#endif
+
 
 #endif
