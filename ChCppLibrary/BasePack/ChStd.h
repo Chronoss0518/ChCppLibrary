@@ -219,8 +219,6 @@ FunctionDefine(char8_t) { return CH_TO_CHAR8(Chara); }
 #define CH_DOUBLE_QUOTATION_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetDBQuotation,type)
 #endif
 
-
-
 #ifdef CRT
 #include<vector>
 #include<map>
@@ -315,8 +313,7 @@ namespace ChStd
 #ifdef CRT
 	//EnumClassを基底型へキャストするためのクラス//
 	template<typename Enum>
-	constexpr static inline auto EnumCast(const Enum _enum) -> typename std::enable_if
-		<std::is_enum<Enum>::value, typename std::underlying_type< Enum >::type>::type
+	constexpr static inline decltype(auto) EnumCast(const Enum _enum)
 	{
 		return static_cast<typename std::underlying_type<Enum>::type>(_enum);
 	}
