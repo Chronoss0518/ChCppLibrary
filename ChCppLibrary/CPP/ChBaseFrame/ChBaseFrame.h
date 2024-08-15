@@ -17,19 +17,19 @@ namespace ChCpp
 	class BaseFrame;
 
 	struct SendDataClass{
-		virtual ~SendDataClass(){}
+		inline virtual ~SendDataClass(){}
 	};
 	struct SaveDataClass{
-		virtual ~SaveDataClass() {}
+		inline virtual ~SaveDataClass() {}
 	};
 
 	class FrameList
 	{
 	public:
 
-		FrameList() {};
+		inline FrameList() {};
 
-		virtual ~FrameList() { Release(); }
+		inline virtual ~FrameList() { Release(); }
 
 	public:
 
@@ -37,8 +37,7 @@ namespace ChCpp
 		//自作フレームをセット//
 		//BaseFrameを継承しているもののみセットできる//
 		template<class T>
-		auto SetFrame()->
-			typename std::enable_if<std::is_base_of<BaseFrame, T>::value, void>::type
+		typename std::enable_if<std::is_base_of<BaseFrame, T>::value, void>::type SetFrame()
 		{
 			frameList.push_back(
 				[]()-> ChPtr::Shared<BaseFrame>
@@ -54,8 +53,7 @@ namespace ChCpp
 		}
 
 		template<class T>
-		static auto GetNowFrame()->
-			typename std::enable_if<std::is_base_of<BaseFrame, T>::value, ChPtr::Weak<T>>::type
+		static typename std::enable_if<std::is_base_of<BaseFrame, T>::value, ChPtr::Weak<T>>::type GetNowFrame()
 		{
 			return ChPtr::SharedSafeCast<T>(GetNowFrame());
 		}
@@ -79,19 +77,18 @@ namespace ChCpp
 	public://Other Function
 
 #ifdef CRT
-		void SaveData(ChPtr::Shared<SaveDataClass> _save)
+		inline void SaveData(ChPtr::Shared<SaveDataClass> _save)
 		{
 			saveData = _save;
 		}
 
-		ChPtr::Shared<SaveDataClass> GetData()
+		inline ChPtr::Shared<SaveDataClass> GetData()
 		{
 			return saveData;
 		}
 
 		template<class T>
-		auto GetData()->
-			typename std::enable_if<std::is_base_of<SaveDataClass,T>::value,ChPtr::Shared<T>>::type
+		typename std::enable_if<std::is_base_of<SaveDataClass, T>::value, ChPtr::Shared<T>>::type GetData()
 		{
 			return saveData;
 		}
@@ -124,6 +121,7 @@ namespace ChCpp
 
 		std::vector<std::function<ChPtr::Shared<BaseFrame>()>>frameList;
 #endif
+
 	};
 
 
@@ -159,9 +157,8 @@ namespace ChCpp
 
 #ifdef CRT
 		template<class T>
-		auto GetNowFrame()->
-			typename std::enable_if
-			<std::is_base_of<BaseFrame, T>::value, ChPtr::Weak<T>>::type
+		typename std::enable_if
+			<std::is_base_of<BaseFrame, T>::value, ChPtr::Weak<T>>::type GetNowFrame()
 		{
 			return FrameList::GetNowFrame<T>();
 		}
@@ -178,12 +175,12 @@ namespace ChCpp
 	public://Other Functions//
 
 #ifdef CRT
-		void SaveData(ChPtr::Shared<SaveDataClass> _save)
+		inline void SaveData(ChPtr::Shared<SaveDataClass> _save)
 		{
 			FrameList::SaveData(_save);
 		}
 
-		ChPtr::Shared<SaveDataClass> GetData()
+		inline ChPtr::Shared<SaveDataClass> GetData()
 		{
 			return FrameList::GetData();
 		}
@@ -203,13 +200,13 @@ namespace ChCpp
 
 	private://ConstructerDestructer//
 
-		FrameManager() {}
+		inline FrameManager() {}
 
-		~FrameManager() {}
+		inline ~FrameManager() {}
 
 	public://Get Instance//
 
-		static FrameManager& GetIns()
+		inline static FrameManager& GetIns()
 		{
 			static FrameManager ins;
 			return ins;
@@ -243,39 +240,39 @@ namespace ChCpp
 	protected://Other Functions//
 
 #ifdef CRT
-		void SaveData(ChPtr::Shared<SaveDataClass> _save)
+		inline void SaveData(ChPtr::Shared<SaveDataClass> _save)
 		{
 			if (ChPtr::NullCheck(mgr))return;
 			mgr->SaveData(_save);
 		}
 
-		ChPtr::Shared<SaveDataClass> GetData()
+		inline ChPtr::Shared<SaveDataClass> GetData()
 		{
 			if (ChPtr::NullCheck(mgr))return nullptr;
 			return mgr->GetData();
 		}
 
-		void SendData(ChPtr::Shared<SendDataClass> _send)
+		inline void SendData(ChPtr::Shared<SendDataClass> _send)
 		{
 			if (ChPtr::NullCheck(mgr))return;
 			mgr->SetSendData(_send);
 		}
 #endif
 		//登録されているフレームに移動する//
-		void ChangeFrame(const unsigned long _frameNo)
+		inline void ChangeFrame(const unsigned long _frameNo)
 		{
 			mgr->ChangeFrame(_frameNo);
 		}
 
 	private://Other Functions//
 
-		void SetManager(FrameList* _mgr) { mgr = _mgr; }
+		inline void SetManager(FrameList* _mgr) { mgr = _mgr; }
 
 	protected://ConstructerDestructer//
 
-		BaseFrame() {};
+		inline BaseFrame() {};
 
-		virtual ~BaseFrame() { Release(); };
+		inline virtual ~BaseFrame() { Release(); };
 
 
 	private:
