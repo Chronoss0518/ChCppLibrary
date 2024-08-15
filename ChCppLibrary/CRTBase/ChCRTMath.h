@@ -1,7 +1,5 @@
 #ifndef Ch_CRT_Math
 #define Ch_CRT_Math
-#endif
-
 
 namespace ChMath
 {
@@ -43,3 +41,5 @@ namespace ChMath
 	float GetMaxFloat();
 
 }
+
+#endif
