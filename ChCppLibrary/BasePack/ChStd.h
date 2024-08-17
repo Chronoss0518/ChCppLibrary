@@ -195,6 +195,14 @@ FunctionDefine(char8_t) { return CH_TO_CHAR8(Chara); }
 #define CH_YEN_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetYenChara,type)
 #endif
 
+#ifndef CH_START_PARENTHESES_CHARA_FUNCTION
+#define CH_START_PARENTHESES_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetStartParenthesesChara,type)
+#endif
+
+#ifndef CH_END_PARENTHESES_CHARA_FUNCTION
+#define CH_END_PARENTHESES_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetEndParenthesesChara,type)
+#endif
+
 #ifndef CH_START_BRACE_CHARA_FUNCTION
 #define CH_START_BRACE_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetStartBraceChara,type)
 #endif
@@ -217,6 +225,10 @@ FunctionDefine(char8_t) { return CH_TO_CHAR8(Chara); }
 
 #ifndef CH_DOUBLE_QUOTATION_CHARA_FUNCTION
 #define CH_DOUBLE_QUOTATION_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetDBQuotation,type)
+#endif
+
+#ifndef CH_ASTERISK_CHARA_FUNCTION
+#define CH_ASTERISK_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetAsterisk,type)
 #endif
 
 #ifdef CRT
@@ -272,7 +284,11 @@ namespace ChStd
 	CH_TO_NUMBER_FUNCTION(CH_SLASH_CHARA_FUNCTION, "/");
 
 	CH_TO_NUMBER_FUNCTION(CH_YEN_CHARA_FUNCTION, "\\");
+
+	CH_TO_NUMBER_FUNCTION(CH_START_PARENTHESES_CHARA_FUNCTION, "(");
 	
+	CH_TO_NUMBER_FUNCTION(CH_END_PARENTHESES_CHARA_FUNCTION, ")");
+
 	CH_TO_NUMBER_FUNCTION(CH_START_BRACE_CHARA_FUNCTION, "{");
 
 	CH_TO_NUMBER_FUNCTION(CH_END_BRACE_CHARA_FUNCTION, "}");
@@ -284,17 +300,10 @@ namespace ChStd
 	CH_TO_NUMBER_FUNCTION(CH_SINGLE_QUOTATION_CHARA_FUNCTION, "\'");
 
 	CH_TO_NUMBER_FUNCTION(CH_DOUBLE_QUOTATION_CHARA_FUNCTION, "\"");
+	
+	CH_TO_NUMBER_FUNCTION(CH_ASTERISK_CHARA_FUNCTION, "*");
 #endif
 
-#ifdef _WINDOWS_
-	//Windowsで使用される相対パス・絶対パスの最大文字数//
-	static constexpr unsigned short W_MAX_PATH_LEN
-#ifdef WIN32
-		= 258;
-#else
-		= 258;
-#endif
-#endif
 	///////////////////////////////////////////////////////////////////////////////////////
 	//StanderdFunction
 	///////////////////////////////////////////////////////////////////////////////////////
