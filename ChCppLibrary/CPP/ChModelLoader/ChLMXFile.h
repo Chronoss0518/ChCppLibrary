@@ -160,20 +160,19 @@ namespace ChCpp
 
 			struct XFace
 			{
+				unsigned long mateNo = 0;
 #ifdef CRT
 				std::vector<unsigned long> vertexNos;
 #endif
-				unsigned long mateNo = 0;
 			};
 
 			struct XSkinWeights
 			{
+				ChLMat boneOffset;
 #ifdef CRT
 				std::basic_string<CharaType> targetFrameName = ChStd::GetZeroChara<CharaType>();
 				std::map<unsigned long, float>weitPow;
 #endif
-				ChLMat boneOffset;
-
 			};
 
 			struct XMesh
@@ -187,14 +186,13 @@ namespace ChCpp
 
 			struct XFrame
 			{
-
+				ChLMat frameMatrix;
 #ifdef CRT
 				std::basic_string<CharaType> fName = ChStd::GetZeroChara<CharaType>();
 				ChPtr::Shared<XMesh> mesh;
 				std::vector<ChPtr::Shared<XFrame>>next;
 				std::vector<ChPtr::Shared<XSkinWeights>>skinWeightDatas;
 #endif
-				ChLMat frameMatrix;
 			};
 
 			struct BaseType
@@ -512,11 +510,11 @@ namespace ChCpp
 
 			bool exceptionFlg = false;
 
+			unsigned long maxBoneNum = 16;
 #ifdef CRT
 			std::basic_string<CharaType> loadFileName  = ChStd::GetZeroChara<CharaType>();
 			std::basic_string<CharaType> loadFilePath = ChStd::GetZeroChara<CharaType>();
 #endif
-			unsigned long maxBoneNum = 16;
 		
 		protected://XFileTemplateNames//
 

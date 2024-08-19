@@ -280,6 +280,10 @@ protected://Get Functions//
 
 	private:
 
+		bool dFlg = false;
+
+		bool useFlg = true;
+
 #ifdef CRT
 
 		std::vector<ChPtr::Shared<BasicObject>>childList;
@@ -288,10 +292,6 @@ protected://Get Functions//
 		std::vector<ChPtr::Shared<BaseComponent>>comList;
 
 #endif
-		bool dFlg = false;
-
-		bool useFlg = true;
-
 	};
 
 	template<typename CharaType>

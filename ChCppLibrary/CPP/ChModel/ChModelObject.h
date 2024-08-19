@@ -79,9 +79,9 @@ namespace ChCpp
 			float animationTime = 0;
 		};
 
+#ifdef CRT
 		std::vector<ChPtr::Shared<AnimationObject>>keyframeAnimation;
 
-#ifdef CRT
 		std::basic_string<CharaType> animationName = ChStd::GetZeroChara<CharaType>();
 #endif
 
@@ -230,17 +230,18 @@ namespace ChCpp
 
 	private:
 
-#ifdef CRT
-		std::vector<std::basic_string<CharaType>>animationNames;
-		std::basic_string<CharaType> modelName = ChStd::GetZeroChara<CharaType>();
-#endif
-
 		ChVec3 maxPos = ChVec3();
 		ChVec3 minPos = ChVec3();
 		ChVec3 centerPos = ChVec3();
 		ChVec3 boxSize = ChVec3();
 
 		Ch3D::ShaderAxisType axisType = Ch3D::ShaderAxisType::LeftHand;
+
+#ifdef CRT
+		std::vector<std::basic_string<CharaType>>animationNames;
+		std::basic_string<CharaType> modelName = ChStd::GetZeroChara<CharaType>();
+#endif
+
 	};
 
 }

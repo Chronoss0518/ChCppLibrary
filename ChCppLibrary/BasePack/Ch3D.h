@@ -200,10 +200,10 @@ namespace Ch3D
 	//Material‚É‘Î‰‚·‚é–Ê‚ğŠÇ—‚·‚é//
 	struct Primitive:public FaceNormal
 	{
+		unsigned long mateNo;
 #ifdef CRT
 		std::vector<ChPtr::Shared<SavePolyData>> vertexData;
 #endif
-		unsigned long mateNo;
 	};
 }
 

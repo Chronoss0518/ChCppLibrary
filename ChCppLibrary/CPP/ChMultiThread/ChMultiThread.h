@@ -49,12 +49,11 @@ namespace ChCpp
 
 	protected://Member Value//
 
+		bool endFlg = true;
 #ifdef CRT
 		std::thread thread;
 		std::function<void(void)> func = nullptr;
 #endif
-
-		bool endFlg = true;
 	};
 }
 

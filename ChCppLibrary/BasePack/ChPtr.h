@@ -60,26 +60,30 @@ namespace ChPtr
 
 	//SharedPtr用ダウンキャスト//
 	template<class C, class C2>
-	static inline auto SharedSafeCast(Shared<C2> _sPtr)CH_SAFE_CAST_TRUE(C2,C)
+	static inline typename std::enable_if<std::is_base_of<C2, C>::value && !std::is_same<C2, C>::value, Shared<C>>::type
+		SharedSafeCast(Shared<C2> _sPtr)
 	{
 		return std::dynamic_pointer_cast<C, C2>(_sPtr);
 	}
 
 	template<class C, class C2>
-	static inline auto SharedSafeCast(Shared<C2> _sPtr)CH_SAFE_CAST_FALSE(C2,C)
+	static inline typename std::enable_if<std::is_same<C2, C>::value, Shared<C>>::type
+		SharedSafeCast(Shared<C2> _sPtr)
 	{
 		return _sPtr;
 	}
 
 	//*Ptr用ダウンキャスト//
 	template<class C, class C2>
-	static inline auto SafeCast(C2*_ptr)CH_SAFE_CAST_TRUE(C2, C)
+	static inline typename std::enable_if<std::is_base_of<C2, C>::value && !std::is_same<C2, C>::value, C*>::type
+		SafeCast(C2* _ptr)
 	{
 		return dynamic_cast<C*>(_ptr);
 	}
 
 	template<class C, class C2>
-	static inline auto SafeCast(C2* _ptr)CH_SAFE_CAST_FALSE(C2, C)
+	static inline typename std::enable_if<std::is_same<C2, C>::value, C*>::type
+		SafeCast(C2* _ptr)
 	{
 		return (_ptr);
 	}

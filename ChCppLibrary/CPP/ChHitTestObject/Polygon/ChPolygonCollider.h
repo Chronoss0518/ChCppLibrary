@@ -60,15 +60,15 @@ namespace ChCpp
 		bool IsHitRayToMesh(FrameObject<CharaType>& _object, const ChVec3& _rayPos,const ChVec3& _rayDir,const float rayLen,const bool _nowHitFlg = false);
 
 		bool leftHandFlg = true;
+		bool cullHitFlg = true;
+		bool lHandWorldFlg = true;
+		float minLen = 0.0f;
 #ifdef CRT
 		std::basic_string<CharaType> hitMaterialName = ChStd::GetZeroChara<CharaType>();
 #endif
-		bool cullHitFlg = true;
-		bool lHandWorldFlg = true;
 #ifdef CRT
 		FrameObject<CharaType>* model = nullptr;
 #endif
-		float minLen = 0.0f;
 	};
 }
 

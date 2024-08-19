@@ -274,7 +274,6 @@ namespace ChCpp
 
 		inline virtual ~BaseFrame() { Release(); };
 
-
 	private:
 
 		FrameList* mgr;
