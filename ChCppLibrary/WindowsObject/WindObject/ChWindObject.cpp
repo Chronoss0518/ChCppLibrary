@@ -2,67 +2,9 @@
 
 #include"../../BaseIncluder/ChBase.h"
 
-#define NULL_CHECK(val) (val == NULL || val == nullptr)
-#define NOT_NULL_CHECK(val) (val != NULL && val != nullptr)
-
 #include"../PackData/ChPoint.h"
 #include"ChWindObject.h"
 #include"ChWindStyle.h"
-
-#define Wind_Object_Inheritance_Functions(_AorW,_CharaType) \
-void WindObject##_AorW##::Release(){\
-	if (!IsInit())return;\
-	if (NOT_NULL_CHECK(windProcedures)){\
-		delete windProcedures;\
-		windProcedures = nullptr;\
-		SetWindowLong##_AorW##(hWnd, GWLP_USERDATA, reinterpret_cast<long>(nullptr));}\
-	DestroyWindow(hWnd);\
-	SetInitFlg(false);}\
-\
-void WindObject##_AorW##::SetWindID(long _IDPtr){\
-	if (!IsInit())return;\
-	SetWindowLong##_AorW##(hWnd, GWLP_ID, _IDPtr);}\
-\
-long WindObject##_AorW##::GetWindID(){\
-	if (!IsInit())return 0;\
-	return GetWindowLong##_AorW##(hWnd, GWLP_ID);}\
-\
-const HINSTANCE WindObject##_AorW##::GetInstance()const{ return (HINSTANCE)GetWindowLong##_AorW##(hWnd, GWL_HINSTANCE); }\
-\
-bool WindObject##_AorW##::Update(){\
-	UpdateWindow(hWnd);\
-	if (!IsInit())return false;\
-	if (!PeekMessage##_AorW##(&msg, nullptr, 0, 0, PM_NOREMOVE))return true;\
-	if ((GetMessage##_AorW##(&msg, nullptr, 0, 0)) <= 0)return false;\
-	TranslateMessage(&msg);\
-	DispatchMessage##_AorW##(&msg);\
-	return true;}\
-\
-LPARAM WindObject##_AorW##::Send(const unsigned int _msg, WPARAM _wParam, LPARAM _lParam){\
-	LPARAM out = _lParam;\
-	if (!*this)return out;\
-	WPARAM wParam = _wParam;\
-	SendMessage##_AorW##(hWnd, _msg, wParam, out);\
-	return out;}\
-\
-bool WindCreater::Create(WindObject##_AorW##* _out, const _CharaType* _appName, const _CharaType* _windClassName, const int _nShowCmd)const{\
-	if (NULL_CHECK(_out))return false;\
-	_out->hWnd = CreateWindowEx##_AorW##(\
-		exStyle,\
-		_windClassName,\
-		_appName,\
-		style,\
-		pos.x, pos.y,\
-		size.w, size.h,\
-		parent,\
-		hMenu,\
-		hInst,\
-		param);\
-	if (NULL_CHECK(_out->hWnd))return false;\
-	_out->CreateEnd(_nShowCmd);\
-	SetWindowLong##_AorW##(_out->hWnd, GWLP_USERDATA, reinterpret_cast<long>(_out->windProcedures));\
-	_out->parent = parent;\
-	return true;}
 
 
 using namespace ChWin;
@@ -81,12 +23,12 @@ LRESULT CALLBACK ChWin::BaseWndProc(
 {
 	ChWin::WindProcedure* base = ((ChWin::WindProcedure*)GetWindowLongPtrFunction(_hWnd, GWLP_USERDATA));
 
-	if (NOT_NULL_CHECK(base))
+	if (ChPtr::NotNullCheck(base))
 	{
 		return base->UpdateProcedure(_hWnd,_uMsg,_wParam,_lParam, GetWindowLongPtrFunction);
 	}
 
-	if (NULL_CHECK(base))
+	if (ChPtr::NullCheck(base))
 	{
 		switch (_uMsg)
 		{
@@ -105,7 +47,7 @@ LRESULT CALLBACK ChWin::BaseWndProc(
 
 void WindObjectBase::Init(HWND _hWnd, const int _nShowCmd)
 {
-	if (NULL_CHECK(_hWnd))return;
+	if (ChPtr::NullCheck(_hWnd))return;
 	Release();
 	hWnd = _hWnd;
 	CreateEnd(_nShowCmd);
@@ -167,11 +109,6 @@ bool WindObjectBase::IsCursorPosOnWindow()
 
 	return false;
 }
-
-
-Wind_Object_Inheritance_Functions(A, char);
-
-Wind_Object_Inheritance_Functions(W, wchar_t);
 
 //WindowObjectCreate Method//
 

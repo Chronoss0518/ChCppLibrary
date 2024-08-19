@@ -11,12 +11,82 @@
 
 #endif
 
+#ifndef CH_WIND_OBJECT_INHERITANCE_FUNCTIONS
+#define CH_WIND_OBJECT_INHERITANCE_FUNCTIONS(_AorW,_CharaType) \
+void ChWin::WindObject##_AorW##::Release(){\
+	if (!IsInit())return;\
+	if (ChPtr::NotNullCheck(windProcedures)){\
+		delete windProcedures;\
+		windProcedures = nullptr;}\
+	if(ChPtr::NotNullCheck(hWnd)){\
+		SetWindowLong##_AorW##(hWnd, GWLP_USERDATA, reinterpret_cast<long>(nullptr));\
+		DestroyWindow(hWnd);\
+		hWnd = nullptr;}\
+	SetInitFlg(false);}\
+\
+void ChWin::WindObject##_AorW##::SetWindID(long _IDPtr){\
+	if (!IsInit())return;\
+	SetWindowLong##_AorW##(hWnd, GWLP_ID, _IDPtr);}\
+\
+long ChWin::WindObject##_AorW##::GetWindID(){\
+	if (!IsInit())return 0;\
+	return GetWindowLong##_AorW##(hWnd, GWLP_ID);}\
+\
+const HINSTANCE ChWin::WindObject##_AorW##::GetInstance()const{ return (HINSTANCE)GetWindowLong##_AorW##(hWnd, GWL_HINSTANCE); }\
+\
+LPARAM ChWin::WindObject##_AorW##::Send(const unsigned int _msg, WPARAM _wParam, LPARAM _lParam){\
+	LPARAM res = _lParam;\
+	if (!*this)return res;\
+	WPARAM wParam = _wParam;\
+	SendMessage##_AorW##(hWnd, _msg, wParam, res);\
+	return res;}\
+\
+bool ChWin::WindCreater::Create(WindObject##_AorW##& _out, const _CharaType* _appName, const _CharaType* _windClassName, const int _nShowCmd)const{\
+	_out.hWnd = Create(_appName,_windClassName);\
+	if (ChPtr::NullCheck(_out.hWnd))return false;\
+	_out.CreateEnd(_nShowCmd);\
+	_out.parent = parent;\
+	return true;}\
+\
+HWND ChWin::WindCreater::Create(const _CharaType* _appName, const _CharaType* _windClassName)const {\
+		return CreateWindowEx##_AorW##(\
+			exStyle, \
+			_windClassName, \
+			_appName, \
+			style, \
+			pos.x, pos.y, \
+			size.w, size.h, \
+			parent, \
+			hMenu, \
+			hInst, \
+			param);}\
+\
+void ChWin::WindObject##_AorW##::CreateEnd(const int _nCmdShow){\
+	WindObjectBase::CreateEnd(_nCmdShow);\
+	SetWindowLong##_AorW##(hWnd, GWLP_USERDATA, reinterpret_cast<long>(windProcedures));}\
+\
+bool ChWin::WindObject##_AorW##::Update() {\
+	if (!IsInit())return false;\
+	UpdateWindow(hWnd);\
+	if (!PeekMessage##_AorW##(&msg, nullptr, 0, 0, PM_NOREMOVE))return true;\
+	if ((GetMessage##_AorW##(&msg, nullptr, 0, 0)) <= 0)return false;\
+	TranslateMessage(&msg);\
+	DispatchMessage##_AorW##(&msg);\
+	return true;}
+#endif
 
 #include"../../BasePack/ChPtr.h"
 
 #include"../../ClassParts/ChCPInitializer.h"
 
 #include"../PackData/ChPoint.h"
+
+namespace ChSystem
+{
+	class WindowsA;
+	class WindowsW;
+}
+
 
 namespace ChWin
 {
@@ -89,38 +159,38 @@ namespace ChWin
 	{
 	public://InitAndRelease//
 
-		void Init(HWND _hWnd,const int _nShowCmd);
+		void Init(HWND _hWnd, const int _nShowCmd);
 
 		virtual void Release() = 0;
 
 	public://SetFunction//
-		
+
 #ifdef CRT
 		//このウィンドウが子ウィンドウ以外の場合のみ実行される//
 		//_messageにはWM_やメッセージプロシージャ―が受け取れる方にしてください//
-		inline virtual void SetWindProcedure(const unsigned long _message, const std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>& _proc) 
+		inline virtual void SetWindProcedure(const unsigned long _message, const std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>& _proc)
 		{
 			if (ChPtr::NullCheck(windProcedures))return;
-			windProcedures->SetWindProcedure(_message, _proc); 
+			windProcedures->SetWindProcedure(_message, _proc);
 		}
 
 		//登録されたどのメッセージも受け取らなかった場合に呼ばれる関数//
-		inline void SetDefaultWindProcedure(const std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>& _proc) 
+		inline void SetDefaultWindProcedure(const std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>& _proc)
 		{
 			if (ChPtr::NullCheck(windProcedures))return;
-			windProcedures->SetDefaultWindProcedure(_proc); 
+			windProcedures->SetDefaultWindProcedure(_proc);
 		}
 
 		//子ウィンドウが動作して呼ばれたときに実行される関数//
 		//このウィンドウが子ウィンドウの場合のみ実行される//
 		//_messageにはWM_やメッセージプロシージャ―が受け取れる方にしてください//
-		inline void SetChildWindProcedure(const unsigned long _message, const std::function<void(HWND, UINT)>& _proc) 
+		inline void SetChildWindProcedure(const unsigned long _message, const std::function<void(HWND, UINT)>& _proc)
 		{
-			if (ChPtr::NullCheck( windProcedures))return;
-			windProcedures->SetChildWindProcedure(_message, _proc); 
+			if (ChPtr::NullCheck(windProcedures))return;
+			windProcedures->SetChildWindProcedure(_message, _proc);
 		}
 #endif
-		void SetWindPos(const unsigned int _x, const unsigned int _y,const unsigned int _flgs = SWP_NOSIZE | SWP_NOZORDER);
+		void SetWindPos(const unsigned int _x, const unsigned int _y, const unsigned int _flgs = SWP_NOSIZE | SWP_NOZORDER);
 
 		inline void SetWindPos(const ChPOINT& _pos, const unsigned int _flgs = SWP_NOSIZE | SWP_NOZORDER) { SetWindPos(_pos.x, _pos.y, _flgs); }
 
@@ -175,25 +245,27 @@ namespace ChWin
 			UpdateWindow(hWnd);
 		}
 
-		//WIndCreaterにWindObjectのPrivate部分も見えるようにする//
-		friend WindCreater;
-
 	protected://CreateBaseFunction//
 
-		void CreateEnd(const int _nCmdShow);
+		virtual void CreateEnd(const int _nCmdShow);
 
 	protected://MemberValue//
-		
-		WindProcedure* windProcedures = nullptr;
 
 		HWND hWnd = nullptr;
 		HWND parent = nullptr;
 		MSG msg = { 0 };
 
+		WindProcedure* windProcedures = nullptr;
+
 	};
 
 	class WindObjectA : public WindObjectBase
 	{
+	public:
+
+		friend WindCreater;
+		friend ChSystem::WindowsA;
+
 	public://ConstructorDestructor//
 
 		~WindObjectA() { Release(); }
@@ -223,10 +295,19 @@ namespace ChWin
 		//メッセージを送る。戻り値は変更があった場合の数値//
 		LPARAM Send(const unsigned int _msg, WPARAM _wParam = 0, LPARAM _lParam = 0)override final;
 
+	protected://CreateBaseFunction//
+
+		void CreateEnd(const int _nCmdShow)override;
+
 	};
 
 	class WindObjectW : public WindObjectBase
 	{
+	public:
+
+		friend WindCreater;
+		friend ChSystem::WindowsW;
+
 	public://ConstructorDestructor//
 
 		~WindObjectW() { Release(); }
@@ -255,6 +336,10 @@ namespace ChWin
 
 		//メッセージを送る。戻り値は変更があった場合の数値//
 		LPARAM Send(const unsigned int _msg, WPARAM _wParam = 0, LPARAM _lParam = 0)override final;
+
+	protected://CreateBaseFunction//
+
+		void CreateEnd(const int _nCmdShow)override;
 
 	};
 
@@ -303,9 +388,13 @@ namespace ChWin
 	public://Create Functino//
 
 		//Set Functionを先に行う//
-		bool Create(WindObjectA* _out, const char* _appName, const char* _windClassName, const int _nShowCmd = true)const;
+		bool Create(WindObjectA& _out, const char* _appName, const char* _windClassName, const int _nShowCmd = true)const;
 
-		bool Create(WindObjectW* _out, const wchar_t* _appName, const wchar_t* _windClassName, const int _nShowCmd = true)const;
+		bool Create(WindObjectW& _out, const wchar_t* _appName, const wchar_t* _windClassName, const int _nShowCmd = true)const;
+
+		HWND Create(const char* _appName, const char* _windClassName)const;
+
+		HWND Create(const wchar_t* _appName, const wchar_t* _windClassName)const;
 
 	private://MemberValue//
 
@@ -316,7 +405,7 @@ namespace ChWin
 		HINSTANCE hInst = nullptr;
 		LPVOID param = nullptr;
 		ChINTPOINT pos = ChINTPOINT(0, 0);
-		ChINTPOINT size = ChINTPOINT(100,100);
+		ChINTPOINT size = ChINTPOINT(100, 100);
 
 	};
 
@@ -384,12 +473,12 @@ LRESULT ChWin::WindProcedure::UpdateProcedure(HWND _hWnd, UINT _uMsg, WPARAM _wP
 				}
 			}
 			child->defaultWindProc(_hWnd, _uMsg, _wParam, _lParam);
-			
+
 			return 0;
 		}
 	}
 
-	 return defaultWindProc(_hWnd, _uMsg, _wParam, _lParam);
+	return defaultWindProc(_hWnd, _uMsg, _wParam, _lParam);
 }
 
 void ChWin::WindObjectBase::CreateEnd(const int _nCmdShow)
@@ -404,6 +493,9 @@ void ChWin::WindObjectBase::CreateEnd(const int _nCmdShow)
 	UpdateWindow(hWnd);
 }
 
+CH_WIND_OBJECT_INHERITANCE_FUNCTIONS(A, char);
+
+CH_WIND_OBJECT_INHERITANCE_FUNCTIONS(W, wchar_t);
 
 #endif
 
