@@ -11,80 +11,32 @@
 //MouseControllerƒƒ\ƒbƒh//
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChWin::MouseController::Init(WindObject& _windObject)
-{
-	hWnd = _windObject.GethWnd();
-
-	if (ChPtr::NullCheck(hWnd))return;
-
-	_windObject.SetWindProcedure(
-		WM_MOUSEWHEEL,
-		[&](
-			HWND _hWnd,
-			UINT _uMsg,
-			WPARAM _wParam,
-			LPARAM _lParam)->LRESULT
-		{
-			wheelMoveVal.y = GET_WHEEL_DELTA_WPARAM(_wParam);
-			wheelVMoveFlg = true;
-			return 0;
-		});
-
-	_windObject.SetWindProcedure(
-		WM_MOUSEHWHEEL,
-		[&](
-			HWND _hWnd,
-			UINT _uMsg,
-			WPARAM _wParam,
-			LPARAM _lParam)->LRESULT
-		{
-			wheelMoveVal.x = GET_WHEEL_DELTA_WPARAM(_wParam);
-			wheelHMoveFlg = true;
-			return 0;
-		});
-
-	windSize = _windObject.GetWindSize();
-
-	centerPos.x = windSize.w / 2;
-	centerPos.y = windSize.h / 2;
-
-	ScreenToClient(hWnd, &centerPos);
-
-	SetInitFlg(true);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
 void ChWin::MouseController::Init(ChSystem::Windows& _win)
 {
 	Init(_win.GetWindObject());
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void ChWin::MouseController::Release()
 {
 	SetInitFlg(false);
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 void ChWin::MouseController::SetCursolFromClient(unsigned long _x, unsigned long _y)
 {
 	if (ChPtr::NullCheck(hWnd))return;
-	POINT tmp = {_x,_y};
+	ChPOINT tmp = ChPOINT(_x,_y);
 
-	ClientToScreen(hWnd, &tmp);
+	ClientToScreen(hWnd, &tmp.pt);
 
 	SetCursolFromScreen(tmp);
 }
 
-void ChWin::MouseController::SetCursolFromClient(const POINT& _point)
+void ChWin::MouseController::SetCursolFromClient(const ChPOINT& _point)
 {
 	if (ChPtr::NullCheck(hWnd))return;
-	POINT tmp = _point;
+	ChPOINT tmp = _point;
 
-	ClientToScreen(hWnd, &tmp);
+	ClientToScreen(hWnd, &tmp.pt);
 
 	SetCursolFromScreen(tmp);
 }
@@ -94,12 +46,10 @@ void ChWin::MouseController::SetCursolFromScreen(unsigned long _x, unsigned long
 	SetCursorPos(_x, _y);
 }
 
-void ChWin::MouseController::SetCursolFromScreen(const POINT& _point)
+void ChWin::MouseController::SetCursolFromScreen(const ChPOINT& _point)
 {
 	SetCursorPos(_point.x, _point.y);
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 ChVec2 ChWin::MouseController::GetNowPosToChVec2()
 {
@@ -110,8 +60,6 @@ ChVec2 ChWin::MouseController::GetNowPosToChVec2()
 	tmpVec.y = static_cast<float>(nowPos.y);
 	return tmpVec;
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 ChVec2 ChWin::MouseController::GetNowProPosToChVec2()
 {
@@ -134,20 +82,16 @@ ChVec2 ChWin::MouseController::GetNowProPosToChVec2()
 	return tmpVec;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
-POINT ChWin::MouseController::GetMoveValue()
+ChPOINT ChWin::MouseController::GetMoveValue()
 {
 	if (!*this)return { 0,0 };
 
-	POINT tmp;
+	ChPOINT tmp;
 	tmp.x = (nowPos.x - beforPos.x);
 	tmp.y = (nowPos.y - beforPos.y);
 
 	return tmp;
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 ChVec2 ChWin::MouseController::GetMoveValueToChVec2()
 {
@@ -160,8 +104,6 @@ ChVec2 ChWin::MouseController::GetMoveValueToChVec2()
 
 	return tmpVec;
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void ChWin::MouseController::Update()
 {
@@ -182,9 +124,9 @@ void ChWin::MouseController::Update()
 
 	beforPos = nowPos;
 
-	GetCursorPos(&nowPos);
+	GetCursorPos(&nowPos.pt);
 
-	ScreenToClient(hWnd, &nowPos);
+	ScreenToClient(hWnd, &nowPos.pt);
 
 	if (setCenterPosFlg)
 	{
