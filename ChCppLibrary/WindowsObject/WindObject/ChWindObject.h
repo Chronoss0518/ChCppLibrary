@@ -202,7 +202,8 @@ namespace ChWin
 
 		inline void SetWindRect(const RECT& _rec, const unsigned int _flgs = SWP_NOZORDER) { SetWindRect(_rec.left, _rec.top, _rec.right - _rec.left, _rec.bottom - _rec.top, _flgs); }
 
-		void SetEnableFlg(const bool _flg) { EnableWindow(hWnd, _flg); }
+		//ウィンドウの有効・無効を切り替える//
+		inline void SetEnableFlg(const bool _flg) { EnableWindow(hWnd, _flg); }
 
 		virtual void SetWindID(long _IDPtr) = 0;
 
