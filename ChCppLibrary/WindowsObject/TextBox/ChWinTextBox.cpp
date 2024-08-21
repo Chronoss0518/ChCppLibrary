@@ -27,7 +27,7 @@ void TextBox##_AorW##::Create(\
 	const _CharaType##* _startText,\
 	const ChINTPOINT& _pos,\
 	const ChINTPOINT& _size,\
-	const WindObject& _parentWind){\
+	const WindObject##_AorW##& _parentWind){\
 	Create(_parentWind.GetInstance(), _startText, _pos, _size, _parentWind.GethWnd());}\
 \
 void TextBox##_AorW##::Create(\
@@ -36,7 +36,7 @@ void TextBox##_AorW##::Create(\
 	const int _y,\
 	const int _w,\
 	const int _h,\
-	const WindObject& _parentWind){\
+	const WindObject##_AorW##& _parentWind){\
 	Create(_parentWind.GetInstance(), _startText, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), _parentWind.GethWnd());}\
 \
 void ChWin::TextBox##_AorW##::SetText(const _CharaType##* _text, const unsigned long _textLen){\

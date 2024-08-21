@@ -11,7 +11,12 @@
 //MouseControllerÉÅÉ\ÉbÉh//
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChWin::MouseController::Init(ChSystem::Windows& _win)
+void ChWin::MouseController::Init(ChSystem::WindowsA& _win)
+{
+	Init(_win.GetWindObject());
+}
+
+void ChWin::MouseController::Init(ChSystem::WindowsW& _win)
 {
 	Init(_win.GetWindObject());
 }

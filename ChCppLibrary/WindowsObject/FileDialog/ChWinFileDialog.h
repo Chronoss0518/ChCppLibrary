@@ -110,6 +110,15 @@ namespace ChWin
 		void CreateFilterStr();
 
 
+		bool openFlg = true;
+
+		static constexpr DWORD openDialogFlg = (OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_CREATEPROMPT | OFN_NONETWORKBUTTON);
+		static constexpr DWORD saveDialogFlg = (OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_CREATEPROMPT | OFN_NONETWORKBUTTON | OFN_OVERWRITEPROMPT);
+
+		static constexpr CharaType cutChar = 0;
+
+		HWND hOwn = nullptr;
+
 #ifdef CRT
 		std::basic_string<CharaType> PathToRerative();
 
@@ -126,14 +135,6 @@ namespace ChWin
 		std::basic_string<CharaType> filterText = ChStd::GetZeroChara<CharaType>();
 #endif
 
-		bool openFlg = true;
-
-		static constexpr DWORD openDialogFlg = (OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_CREATEPROMPT | OFN_NONETWORKBUTTON);
-		static constexpr DWORD saveDialogFlg = (OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_CREATEPROMPT | OFN_NONETWORKBUTTON | OFN_OVERWRITEPROMPT);
-
-		static constexpr CharaType cutChar = 0;
-
-		HWND hOwn = nullptr;
 	};
 
 	class FileDialogA:public FileDialogBase<char>

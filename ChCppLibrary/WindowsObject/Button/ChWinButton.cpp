@@ -26,7 +26,7 @@ void ButtonA::Create(
 	const char* _startText,
 	const ChINTPOINT& _pos,
 	const ChINTPOINT& _size,
-	const WindObject& _parentWind)
+	const WindObjectA& _parentWind)
 {
 
 	if (!_parentWind.IsInit())return;
@@ -40,7 +40,7 @@ void ButtonA::Create(
 	const int _y,
 	const int _w,
 	const int _h,
-	const WindObject& _parentWind)
+	const WindObjectA& _parentWind)
 {
 	Create(_startText, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), _parentWind);
 }
@@ -63,7 +63,7 @@ void ButtonW::Create(
 	const wchar_t* _startText,
 	const ChINTPOINT& _pos,
 	const ChINTPOINT& _size,
-	const WindObject& _parentWind)
+	const WindObjectW& _parentWind)
 {
 	if (!_parentWind.IsInit())return;
 
@@ -77,7 +77,7 @@ void ButtonW::Create(
 	const int _y,
 	const int _w,
 	const int _h,
-	const WindObject& _parentWind)
+	const WindObjectW& _parentWind)
 {
 	Create(_startText, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), _parentWind);
 }

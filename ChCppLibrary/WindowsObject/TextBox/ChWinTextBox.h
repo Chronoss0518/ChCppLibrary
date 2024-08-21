@@ -67,7 +67,7 @@ namespace ChWin
 			const char* _startText,
 			const ChINTPOINT& _pos,
 			const ChINTPOINT& _size,
-			const WindObject& _parentWind);
+			const WindObjectA& _parentWind);
 
 		//TextBox�̍쐬//
 		void Create(
@@ -76,7 +76,7 @@ namespace ChWin
 			const int _y,
 			const int _w,
 			const int _h,
-			const WindObject& _parentWind);
+			const WindObjectA& _parentWind);
 
 	public://SetFunction//
 
@@ -132,7 +132,7 @@ namespace ChWin
 			const wchar_t* _startText,
 			const ChINTPOINT& _pos,
 			const ChINTPOINT& _size,
-			const WindObject& _parentWind);
+			const WindObjectW& _parentWind);
 
 		//TextBox�̍쐬//
 		void Create(
@@ -141,7 +141,7 @@ namespace ChWin
 			const int _y,
 			const int _w,
 			const int _h,
-			const WindObject& _parentWind);
+			const WindObjectW& _parentWind);
 
 	public://SetFunction//
 
