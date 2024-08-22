@@ -250,10 +250,10 @@ namespace ChSystem
 
 		virtual ~WindowsA()
 		{
+			Release();
 #ifdef CRT
 			delete wndObject;
 #endif
-			Release();
 		}
 
 	public://Init And Release//
