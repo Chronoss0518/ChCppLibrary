@@ -1,19 +1,18 @@
 #ifdef _WINDOWS
-#ifdef WIN32
 
 #ifndef Ch_Win_Inc_h
 #define Ch_Win_Inc_h
 
-#ifdef _WINDEF_
 #include <mmsystem.h>
 #include <mmreg.h>
-#endif
 
-#ifdef _WINDEF_
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "Msimg32.lib")
 #pragma comment(lib,"Gdi32.lib")
 #pragma comment(lib,"user32.lib")
+
+#ifndef CRT
+#define CRT
 #endif
 
 //PackingClass//
@@ -42,25 +41,10 @@
 #include"WindowsObject/FileDialog/ChWinFileDialog.h"
 #include"WindowsObject/MsgBox/ChMsgBox.h"
 
-#ifndef Ch_Library_Create
-#ifdef _MT
-#ifdef _DLL
-#ifdef _DEBUG
-#pragma comment(lib,"ChWin_MDd.lib")
-#else
-#pragma comment(lib,"ChWin_MD.lib")
-#endif//_DEBUG
-#else//_DLL
-#ifdef _DEBUG
-#pragma comment(lib,"ChWin_MTd.lib")
-#else
-#pragma comment(lib,"ChWin_MT.lib")
-#endif//_DEBUG
-#endif//else
-#endif//_MT
-#endif//Ch_Library_Create
-
+#ifdef _WINDOWS
+#pragma comment(lib,"ChWinLibrary.lib")
 #endif
 
 #endif
+
 #endif
