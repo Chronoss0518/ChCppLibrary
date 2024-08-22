@@ -3,27 +3,23 @@
 #ifndef Ch_Win_DTexter_h
 #define Ch_Win_DTexter_h
 
-namespace ChSystem
-{
-	class Windows;
-}
+#ifdef CRT
+
+#include<string>
+
+#endif
+
 
 namespace ChWin
 {
-	class DrawTexter:public ChCp::Initializer
+	class DrawTexterBase :public ChCp::Initializer
 	{
-	public:
-
-		///////////////////////////////////////////////////////////////////////////////////////
-		//InitAndRelease//
-
-		void Init(const HWND& _baseWindHandl);
+	public://InitAndRelease//
 
 		virtual void Release();
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
-		
+	public://SetFunction//
+
 		inline void SetWind(const HWND& _wind)
 		{
 			if (ChPtr::NullCheck(_wind))return;
@@ -31,53 +27,65 @@ namespace ChWin
 
 			InvalidateRect(hOwn, nullptr, true);
 			UpdateWindow(hOwn);
-
 		}
 
-		void SetFontData(
-			const long& _FWidth
-			, const long& _FHeight
-			, const long& _FSize
-			, const bool& _ULFlg);
+		//ï`âÊÇ∑ÇÈï∂éöóÒÇÃêFê›íË//
+		inline void SetFontColor(unsigned char _r, unsigned char _g, unsigned char _b, unsigned char _a)
+		{
+			fontColor.a = _a;
+			fontColor.r = _r;
+			fontColor.g = _g;
+			fontColor.b = _b;
+		}
 
 		//ï`âÊÇ∑ÇÈï∂éöóÒÇÃêFê›íË//
-		inline void SetTexColor(const ChMath::Vector4Base<unsigned char>& _color)
+		inline void SetFontColor(const ChVec4& _color)
 		{
-			fontColor.a = _color.a * 255;
-			fontColor.r = _color.r * 255;
-			fontColor.g = _color.g * 255;
-			fontColor.b = _color.b * 255;
+			ChVec4 tmpColor = _color * 255;
+			ChMath::Vector4Base<unsigned char> col;
+			col.val = tmpColor.val;
+			SetFontColor(col.r, col.g, col.b, col.a);
+		}
+
+		//ï`âÊÇ∑ÇÈï∂éöóÒÇÃêFê›íË//
+		inline void SetFontColor(const ChMath::Vector4Base<unsigned char>& _color)
+		{
+			SetFontColor(_color.r, _color.g, _color.b, _color.a);
+		}
+
+		//ï`âÊÇ∑ÇÈï∂éöóÒÇÃêFê›íË//
+		inline void SetBackGroundColor(unsigned char _r, unsigned char _g, unsigned char _b, unsigned char _a)
+		{
+			backColor.a = _a;
+			backColor.r = _r;
+			backColor.g = _g;
+			backColor.b = _b;
 		}
 
 		//ï`âÊÇ∑ÇÈï∂éöóÒÇÃîwåiêFê›íË//
-		inline void SetTexBackColor(const ChMath::Vector4Base<unsigned char>& _color)
+		inline void SetBackGroundColor(const ChMath::Vector4Base<unsigned char>& _color)
 		{
-			backColor.a = _color.a * 255;
-			backColor.r = _color.r * 255;
-			backColor.g = _color.g * 255;
-			backColor.b = _color.b * 255;
+			SetBackGroundColor(_color.r, _color.g, _color.b, _color.a);
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////////
+		//ï`âÊÇ∑ÇÈï∂éöóÒÇÃîwåiêFê›íË//
+		inline void SetBackGroundColor(const ChVec4& _color)
+		{
+			ChVec4 tmpColor = _color * 255;
+			ChMath::Vector4Base<unsigned char> col;
+			col.val = tmpColor.val;
+			SetBackGroundColor(col.r, col.g, col.b, col.a);
+		}
 
-		void Draw(
-			const std::string&_drawText
-			, const long& _x
-			, const long& _y);
 
-	private:
+	protected://ConstructerDestructer//
 
+		inline DrawTexterBase() {}
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//ConstructerDestructer//
-
-		inline DrawTexter(){}
-
-		virtual ~DrawTexter()
+		virtual ~DrawTexterBase()
 		{
 			Release();
 		}
-
 
 		HWND hOwn = nullptr;
 
@@ -85,18 +93,151 @@ namespace ChWin
 
 		ChMath::Vector4Base<unsigned char> fontColor;
 		ChMath::Vector4Base<unsigned char> backColor;
+	};
+
+	class DrawTexterA :public DrawTexterBase
+	{
+	public://InitAndRelease//
+
+		void Init(const HWND& _baseWindHandl);
+
+	public://SetFunction//
+
+		void SetFontData(
+			const long& _FWidth,
+			const long& _FHeight,
+			const long& _FSize,
+			const bool& _ULFlg);
+
+	public://Other Functions//
+
+#ifdef CRT
+		void Draw(
+			const std::string& _drawText,
+			const long& _x,
+			const long& _y)
+		{
+			Draw(_drawText.c_str(), _drawText.length(), _x, _y);
+		}
+
+		void Draw(
+			HDC _hdc,
+			const std::string& _drawText,
+			const long& _x,
+			const long& _y)
+		{
+			Draw(_hdc, _drawText.c_str(), _drawText.length(), _x, _y);
+		}
+
+#endif
+
+	protected:
+
+		void Draw(
+			const char* _drawText,
+			const unsigned long _drawTextLength,
+			const long& _x,
+			const long& _y);
+
+		void Draw(
+			HDC _hdc,
+			const char* _drawText,
+			const unsigned long _drawTextLength,
+			const long& _x,
+			const long& _y);
+
+	private://ConstructerDestructer//
+
+		inline DrawTexterA() {}
 
 	public:
 
-		static inline DrawTexter& GetIns()
+		inline static DrawTexterA& GetIns()
 		{
-			static DrawTexter ins;
+			static DrawTexterA ins;
 			return ins;
 		}
 
 	};
 
-	static const std::function<DrawTexter&()>TextDraw = DrawTexter::GetIns;
+	class DrawTexterW :public DrawTexterBase
+	{
+	public://InitAndRelease//
+
+		void Init(const HWND& _baseWindHandl);
+
+	public://SetFunction//
+
+		void SetFontData(
+			const long& _FWidth,
+			const long& _FHeight,
+			const long& _FSize,
+			const bool& _ULFlg);
+
+	public://Other Functions//
+
+#ifdef CRT
+		void Draw(
+			const std::wstring& _drawText,
+			const long& _x,
+			const long& _y)
+		{
+			Draw(_drawText.c_str(), _drawText.length(), _x, _y);
+		}
+
+		void Draw(
+			HDC _hdc,
+			const std::wstring& _drawText,
+			const long& _x,
+			const long& _y)
+		{
+			Draw(_hdc, _drawText.c_str(), _drawText.length(), _x, _y);
+		}
+
+#endif
+
+	protected:
+
+		void Draw(
+			const wchar_t* _drawText,
+			const unsigned long _drawTextLength,
+			const long& _x,
+			const long& _y);
+
+		void Draw(
+			HDC _hdc,
+			const wchar_t* _drawText,
+			const unsigned long _drawTextLength,
+			const long& _x,
+			const long& _y);
+
+	private://ConstructerDestructer//
+
+		inline DrawTexterW() {}
+
+	public:
+
+		inline static DrawTexterW& GetIns()
+		{
+			static DrawTexterW ins;
+			return ins;
+		}
+
+	};
+
+	inline DrawTexterA& TextDrawerA() { return DrawTexterA::GetIns(); };
+
+	inline DrawTexterW& TextDrawerW() { return DrawTexterW::GetIns(); };
+
+	using DrawTexter =
+#ifdef UNICODE
+		DrawTexterW;
+#else
+		DrawTexterA;
+#endif
+
+	inline DrawTexter& TextDrawer() { return DrawTexter::GetIns(); };
+
 }
 
 #endif
