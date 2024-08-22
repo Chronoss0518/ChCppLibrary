@@ -18,7 +18,7 @@ LRESULT CALLBACK ChWin::BaseWndProc(
 	UINT _uMsg,
 	WPARAM _wParam,
 	LPARAM _lParam,
-	LONG(WINAPI* GetWindowLongPtrFunction)(_In_ HWND, _In_ int),
+	LONG_PTR(WINAPI* GetWindowLongPtrFunction)(_In_ HWND, _In_ int),
 	LRESULT(WINAPI* DefWindowProcFunction)(_In_ HWND, _In_ UINT, _In_ WPARAM, _In_ LPARAM))
 {
 	ChWin::WindProcedure* base = ((ChWin::WindProcedure*)GetWindowLongPtrFunction(_hWnd, GWLP_USERDATA));

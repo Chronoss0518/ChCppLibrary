@@ -26,7 +26,7 @@ void Texture::Release()
 
 bool Texture::CreateTexture(HWND _hWnd, const char* _fileName)
 {
-	HINSTANCE ins = reinterpret_cast<HINSTANCE>(GetWindowLongA(_hWnd, GWL_HINSTANCE));
+	HINSTANCE ins = reinterpret_cast<HINSTANCE>(GetWindowLongPtrA(_hWnd, GWLP_HINSTANCE));
 
 	return CreateTexture(ins, _fileName);
 }
@@ -46,7 +46,7 @@ bool Texture::CreateTexture(HINSTANCE _instance, const char* _fileName)
 bool Texture::CreateTexture(HWND _hWnd, const wchar_t* _fileName)
 {
 
-	HINSTANCE ins = reinterpret_cast<HINSTANCE>(GetWindowLongW(_hWnd, GWL_HINSTANCE));
+	HINSTANCE ins = reinterpret_cast<HINSTANCE>(GetWindowLongPtrW(_hWnd, GWLP_HINSTANCE));
 
 	return CreateTexture(ins, _fileName);
 }
@@ -982,7 +982,7 @@ void RenderTarget::FillRT(ChWin::Brush& _brush, const long _x, const long _y, co
 bool MaskTexture::CreateMaskTexture(HWND _hWnd, const char* _fileName)
 {
 
-	HINSTANCE ins = reinterpret_cast<HINSTANCE>(GetWindowLongA(_hWnd, GWL_HINSTANCE));
+	HINSTANCE ins = reinterpret_cast<HINSTANCE>(GetWindowLongPtrW(_hWnd, GWLP_HINSTANCE));
 
 	return CreateTexture(ins, _fileName);
 
@@ -991,7 +991,7 @@ bool MaskTexture::CreateMaskTexture(HWND _hWnd, const char* _fileName)
 bool MaskTexture::CreateMaskTexture(HWND _hWnd, const wchar_t* _fileName)
 {
 
-	HINSTANCE ins = reinterpret_cast<HINSTANCE>(GetWindowLongW(_hWnd, GWL_HINSTANCE));
+	HINSTANCE ins = reinterpret_cast<HINSTANCE>(GetWindowLongPtrW(_hWnd, GWLP_HINSTANCE));
 
 	return CreateTexture(ins, _fileName);
 }

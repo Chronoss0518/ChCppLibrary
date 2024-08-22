@@ -22,7 +22,7 @@ LRESULT CALLBACK ChWin::WndProcA(
 		_uMsg,
 		_wParam,
 		_lParam,
-		GetWindowLongA,
+		GetWindowLongPtrA,
 		DefWindowProcA
 	);
 }
@@ -38,7 +38,7 @@ LRESULT CALLBACK ChWin::WndProcW(
 		_uMsg,
 		_wParam,
 		_lParam,
-		GetWindowLongW,
+		GetWindowLongPtrW,
 		DefWindowProcW
 	);
 }

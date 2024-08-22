@@ -19,20 +19,20 @@ void ChWin::WindObject##_AorW##::Release(){\
 		delete windProcedures;\
 		windProcedures = nullptr;}\
 	if(ChPtr::NotNullCheck(hWnd)){\
-		SetWindowLong##_AorW##(hWnd, GWLP_USERDATA, reinterpret_cast<long>(nullptr));\
+		SetWindowLong##_AorW##(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(nullptr));\
 		DestroyWindow(hWnd);\
 		hWnd = nullptr;}\
 	SetInitFlg(false);}\
 \
-void ChWin::WindObject##_AorW##::SetWindID(long _IDPtr){\
+void ChWin::WindObject##_AorW##::SetWindID(LONG_PTR _IDPtr){\
 	if (!IsInit())return;\
 	SetWindowLong##_AorW##(hWnd, GWLP_ID, _IDPtr);}\
 \
-long ChWin::WindObject##_AorW##::GetWindID(){\
+LONG_PTR ChWin::WindObject##_AorW##::GetWindID(){\
 	if (!IsInit())return 0;\
 	return GetWindowLong##_AorW##(hWnd, GWLP_ID);}\
 \
-const HINSTANCE ChWin::WindObject##_AorW##::GetInstance()const{ return (HINSTANCE)GetWindowLong##_AorW##(hWnd, GWL_HINSTANCE); }\
+const HINSTANCE ChWin::WindObject##_AorW##::GetInstance()const{ return (HINSTANCE)GetWindowLong##_AorW##(hWnd, GWLP_HINSTANCE); }\
 \
 LPARAM ChWin::WindObject##_AorW##::Send(const unsigned int _msg, WPARAM _wParam, LPARAM _lParam){\
 	LPARAM res = _lParam;\
@@ -63,7 +63,7 @@ HWND ChWin::WindCreater::Create(const _CharaType* _appName, const _CharaType* _w
 \
 void ChWin::WindObject##_AorW##::CreateEnd(const int _nCmdShow){\
 	WindObjectBase::CreateEnd(_nCmdShow);\
-	SetWindowLong##_AorW##(hWnd, GWLP_USERDATA, reinterpret_cast<long>(windProcedures));}\
+	SetWindowLong##_AorW##(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(windProcedures));}\
 \
 bool ChWin::WindObject##_AorW##::Update() {\
 	if (!IsInit())return false;\
@@ -95,7 +95,7 @@ namespace ChWin
 		UINT _uMsg,
 		WPARAM _wParam,
 		LPARAM _lParam,
-		LONG(WINAPI* GetWindowLongPtrFunction)(_In_ HWND, _In_ int),
+		LONG_PTR(WINAPI* GetWindowLongPtrFunction)(_In_ HWND, _In_ int),
 		LRESULT(WINAPI* DefWindowProcFunction)(_In_ HWND, _In_ UINT, _In_ WPARAM, _In_ LPARAM));
 
 	LRESULT CALLBACK WndProcA(
@@ -136,7 +136,11 @@ namespace ChWin
 #endif
 	public:
 
-		LRESULT UpdateProcedure(HWND _hWnd, UINT _uMsg, WPARAM _wParam, LPARAM _lParam, LONG(WINAPI* GetWindowLongPtrFunction)(_In_ HWND, _In_ int));
+		LRESULT UpdateProcedure(HWND _hWnd, UINT _uMsg, WPARAM _wParam, LPARAM _lParam, LONG_PTR(WINAPI* GetWindowLongPtrFunction)(_In_ HWND, _In_ int));
+
+	private:
+
+		LRESULT DefaultWindProc(HWND, UINT, WPARAM, LPARAM);
 
 	private:
 
@@ -205,11 +209,11 @@ namespace ChWin
 		//ウィンドウの有効・無効を切り替える//
 		inline void SetEnableFlg(const bool _flg) { EnableWindow(hWnd, _flg); }
 
-		virtual void SetWindID(long _IDPtr) = 0;
+		virtual void SetWindID(LONG_PTR _IDPtr) = 0;
 
 	public://GetFunction//
 
-		virtual long GetWindID() = 0;
+		virtual LONG_PTR GetWindID() = 0;
 
 		//Windハンドルの取得//
 		HWND GethWnd(void)const { return hWnd; }
@@ -279,11 +283,11 @@ namespace ChWin
 
 	public://Set Functions//
 
-		void SetWindID(long _IDPtr)override final;
+		void SetWindID(LONG_PTR _IDPtr)override final;
 
 	public://Get Functions//
 
-		long GetWindID()override final;
+		LONG_PTR GetWindID()override final;
 
 		const HINSTANCE GetInstance()const override final;
 
@@ -321,11 +325,11 @@ namespace ChWin
 
 	public://Set Functions//
 
-		void SetWindID(long _IDPtr)override final;
+		void SetWindID(LONG_PTR _IDPtr)override final;
 
 	public://Get Functions//
 
-		long GetWindID()override final;
+		LONG_PTR GetWindID()override final;
 
 		const HINSTANCE GetInstance()const override final;
 
@@ -434,7 +438,7 @@ void ChWin::WindProcedure::Init()
 		};
 }
 
-LRESULT ChWin::WindProcedure::UpdateProcedure(HWND _hWnd, UINT _uMsg, WPARAM _wParam, LPARAM _lParam, LONG(WINAPI* GetWindowLongPtrFunction)(_In_ HWND, _In_ int))
+LRESULT ChWin::WindProcedure::UpdateProcedure(HWND _hWnd, UINT _uMsg, WPARAM _wParam, LPARAM _lParam, LONG_PTR(WINAPI* GetWindowLongPtrFunction)(_In_ HWND, _In_ int))
 {
 
 	auto it = wndProc.find(_uMsg);
@@ -445,7 +449,7 @@ LRESULT ChWin::WindProcedure::UpdateProcedure(HWND _hWnd, UINT _uMsg, WPARAM _wP
 		if (_uMsg != WM_COMMAND && _uMsg != WM_SYSCOMMAND)return res;
 	}
 
-	if (_uMsg != WM_COMMAND && _uMsg != WM_SYSCOMMAND)return defaultWindProc(_hWnd, _uMsg, _wParam, _lParam);
+	if (_uMsg != WM_COMMAND && _uMsg != WM_SYSCOMMAND)return DefaultWindProc(_hWnd, _uMsg, _wParam, _lParam);
 
 	if (_lParam <= 0)
 	{
@@ -473,12 +477,17 @@ LRESULT ChWin::WindProcedure::UpdateProcedure(HWND _hWnd, UINT _uMsg, WPARAM _wP
 					(cit)->second((HWND)LOWORD(_wParam), HIWORD(_wParam));
 				}
 			}
-			child->defaultWindProc(_hWnd, _uMsg, _wParam, _lParam);
+			child->DefaultWindProc(_hWnd, _uMsg, _wParam, _lParam);
 
 			return 0;
 		}
 	}
 
+	return DefaultWindProc(_hWnd, _uMsg, _wParam, _lParam);
+}
+
+LRESULT ChWin::WindProcedure::DefaultWindProc(HWND _hWnd, UINT _uMsg, WPARAM _wParam, LPARAM _lParam)
+{
 	return defaultWindProc(_hWnd, _uMsg, _wParam, _lParam);
 }
 
@@ -488,7 +497,7 @@ void ChWin::WindObjectBase::CreateEnd(const int _nCmdShow)
 	windProcedures->Init();
 
 	SetInitFlg(true);
-	SetWindID(reinterpret_cast<long>(hWnd));
+	SetWindID(reinterpret_cast<LONG_PTR>(hWnd));
 
 	ShowWindow(hWnd, _nCmdShow);
 	UpdateWindow(hWnd);
