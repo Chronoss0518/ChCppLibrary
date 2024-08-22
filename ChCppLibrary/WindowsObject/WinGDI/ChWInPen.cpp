@@ -20,9 +20,8 @@ void Pen::CreatePen(
 	unsigned short _width,
 	const PenStyle _style)
 {
-
 	Release();
-	pen = ::CreatePen(ChStd::EnumCast(_style), static_cast<int>(_style), RGB(_r, _g, _b));
+	pen = ::CreatePen(static_cast<int>(_style), _width, RGB(_r, _g, _b));
 }
 
 void Pen::CreateNullPen()
