@@ -210,13 +210,6 @@ namespace ChD3D9
 			device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
 		}
 
-		//描画開始時に呼ぶ関数//
-		void DrawStart(const D3DCOLOR& _backColor = D3DCOLOR_ARGB(255, 255, 255, 255));
-
-		//描画終了時に呼ぶ関数//
-		//レンダーターゲット利用した際にFlgをTrueにする//
-		void DrawEnd(const bool& _rtFlg = false);
-		
 	protected:
 
 		D3DPRESENT_PARAMETERS CreateParameter(
