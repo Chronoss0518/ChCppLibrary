@@ -78,12 +78,10 @@ namespace ChWin
 
 	public://Set Functions//
 
-#ifdef CRT
 		inline void SetDefaultButtonType(const DefaultButtonType _type)
 		{
-			buttonType = ChStd::EnumCast(_type);
+			buttonType = static_cast<unsigned int>(_type);
 		}
-#endif
 
 		inline void SetModalType(const ModalType _type)
 		{
@@ -107,12 +105,10 @@ namespace ChWin
 
 	public://Other Functions//
 
-#ifdef CRT
 		inline void AddDisplayButtonType(const DisplayButtonType _type)
 		{
-			buttonType |= ChStd::EnumCast(_type);
+			buttonType |= static_cast<unsigned int>(_type);
 		}
-#endif
 
 		inline void ClearDisplayButtonType()
 		{
