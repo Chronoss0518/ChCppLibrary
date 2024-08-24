@@ -106,7 +106,7 @@ D3DPRESENT_PARAMETERS DirectX3D9Base::CreateParameter(
 
 void DirectX3D9Base::DrawStart(const D3DCOLOR& _BackColor)
 {
-	CH_D3D9CONTROLLER_INIT_TEST(true);
+	CH_D3D9CONTROLLER_INIT_TEST(true, );
 	// 描画準備
 	device->BeginScene();
 	// バックバッファと Z バッファをクリア
@@ -118,7 +118,7 @@ void DirectX3D9Base::DrawStart(const D3DCOLOR& _BackColor)
 
 void DirectX3D9Base::DrawEnd(const bool& _RTFlg)
 {
-	CH_D3D9CONTROLLER_INIT_TEST(false);
+	CH_D3D9CONTROLLER_INIT_TEST(false, );
 	// 描画終了
 	device->EndScene();
 
@@ -239,12 +239,14 @@ void DirectX3D9W::Init(
 {
 	Release();
 
+#if 0
 	if (!_fullScreenFlg)
 	{
 		RECT rc = { 0,0,_scrW,_scrH };
 		AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 		SetWindowPos(_hWnd, NULL, 10, 10, rc.right - rc.left, rc.bottom - rc.top, SWP_SHOWWINDOW | SWP_NOZORDER);
 	}
+#endif
 
 	d3d9 = Direct3DCreate9(D3D_SDK_VERSION);
 
