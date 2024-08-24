@@ -48,8 +48,6 @@ float ChVector3_9::GetLen(const D3DXVECTOR3& _vec)
 	return D3DXVec3Length(&tmpVec);
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 float ChVector3_9::GetRadian(const D3DXVECTOR3& _vec)
 {
 	ChVector3_9 tmpVec1, tmpVec2;
@@ -60,8 +58,6 @@ float ChVector3_9::GetRadian(const D3DXVECTOR3& _vec)
 
 	return acosf(D3DXVec3Dot(&tmpVec1, &tmpVec2));
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 float ChVector3_9::GetDegree(const D3DXVECTOR3& _vec)
 {
@@ -76,41 +72,31 @@ float ChVector3_9::GetDegree(const D3DXVECTOR3& _vec)
 	return D3DXToDegree(acosf(D3DXVec3Dot(&tmpVec1, &tmpVec2)));
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 void ChVector3_9::Set0Param()
 {
 	*this = 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 bool ChVector3_9::CheckNormals() {
 
-	if (fabsf(x) + fabsf(y) + fabsf(z) == 1.0f)return true;
+	if (ChMath::GetAbs(x) + ChMath::GetAbs(y) + ChMath::GetAbs(z) == 1.0f)return true;
 	return false;
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 bool ChVector3_9::CheckAll0() 
 {
 
-	if (fabsf(x) == 0.0f
-		&& fabsf(y) == 0.0f
-		&& fabsf(z) == 0.0f)return true;
+	if (ChMath::GetAbs(x) == 0.0f
+		&& ChMath::GetAbs(y) == 0.0f
+		&& ChMath::GetAbs(z) == 0.0f)return true;
 
 	return false;
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void ChVector3_9::Move(const float _x, const float _y, const float _z)
 {
 	*this += D3DXVECTOR3(_x, _y, _z);
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void ChVector3_9::Move2D(const D3DXVECTOR3* _vec)
 {
@@ -122,32 +108,23 @@ void ChVector3_9::Move2D(const D3DXVECTOR3* _vec)
 	*this += (*_vec - tmpVec);
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
-
 void ChVector3_9::MatPos(const D3DXMATRIX& _mat, const D3DXVECTOR3& _vec)
 {
 	D3DXVec3TransformCoord(this, &_vec, &_mat);
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void ChVector3_9::MatNormal(const D3DXMATRIX& _mat, const D3DXVECTOR3& _vec)
 {
 	D3DXVec3TransformNormal(this, &_vec, &_mat);
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 void ChVector3_9::Normalize()
 {
 	if (CheckNormals())return;
-	float tmpLen = std::abs(this->x) + std::abs(this->y) + std::abs(this->z);
-	if (tmpLen > 0.0f)*this /= tmpLen;
+	float tmpLen = ChMath::GetAbs(this->x) + ChMath::GetAbs(this->y) + ChMath::GetAbs(this->z);
+	if (tmpLen > 0.0f)D3DXVec3Normalize(this, this);
 	else *this = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void ChVector3_9::Lerp(
 	const D3DXVECTOR3& _sVec
@@ -157,14 +134,10 @@ void ChVector3_9::Lerp(
 	D3DXVec3Lerp(this, &_sVec, &_eVec, _nowTime);
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 void ChVector3_9::CrossVec(const D3DXVECTOR3& _vec1, const D3DXVECTOR3& _vec2)
 {
 	D3DXVec3Cross(this, &_vec1, &_vec2);
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 float ChVector3_9::DotVec(const D3DXVECTOR3& _vec)
 {
@@ -244,14 +217,10 @@ void ChQuaternion_9::RotYPR(const float _x, const float _y, const float _z)
 		, D3DXToRadian(_z));
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 void ChQuaternion_9::RotYPR(const D3DXVECTOR3& _vec)
 {
 	RotYPR(_vec.x, _vec.y, _vec.z);
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void ChQuaternion_9::RotAxis(const D3DXVECTOR3* _vec, const float _ang)
 {
@@ -261,14 +230,10 @@ void ChQuaternion_9::RotAxis(const D3DXVECTOR3* _vec, const float _ang)
 		, D3DXToRadian(_ang));
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 void ChQuaternion_9::RotMat(const D3DXMATRIX* _mat)
 {
 	D3DXQuaternionRotationMatrix(this, _mat);
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void ChQuaternion_9::Lerp(
 	const D3DXQUATERNION& _sQua
@@ -277,8 +242,6 @@ void ChQuaternion_9::Lerp(
 {
 	D3DXQuaternionSlerp(this, &_sQua, &_eQua, _nowTime);
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void ChQuaternion_9::Identity()
 {
@@ -396,28 +359,20 @@ D3DXVECTOR3 ChMatrix_9::GetScaleSize()
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 void ChMatrix_9::Identity() 
 {
 	D3DXMatrixIdentity(this); 
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void ChMatrix_9::Inverse()
 {
 	D3DXMatrixInverse(this, NULL, this);
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 void ChMatrix_9::Inverse(const D3DXMATRIX& tmpMat)
 {
 	D3DXMatrixInverse(this, NULL, &tmpMat);
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void ChMatrix_9::RotYPR(const float _x, const float _y, const float _z)
 {
@@ -426,8 +381,6 @@ void ChMatrix_9::RotYPR(const float _x, const float _y, const float _z)
 	*this = tmpMat * *this;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 void ChMatrix_9::RotYPR(const D3DXVECTOR3& _vec)
 {
 	D3DXMATRIX tmpMat;
@@ -435,16 +388,12 @@ void ChMatrix_9::RotYPR(const D3DXVECTOR3& _vec)
 	*this = tmpMat * *this;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 void ChMatrix_9::RotQua(const D3DXQUATERNION& _qua)
 {
 	D3DXMATRIX tmpMat;
 	D3DXMatrixRotationQuaternion(&tmpMat, &_qua);
 	*this = tmpMat * *this;
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void ChMatrix_9::RotQua(const float _x, const float _y, const float _z)
 {
@@ -454,8 +403,6 @@ void ChMatrix_9::RotQua(const float _x, const float _y, const float _z)
 	D3DXMatrixRotationQuaternion(&tmpMat, &tmpQua);
 	*this = tmpMat * *this;
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void ChMatrix_9::RotVec(const D3DXVECTOR3& _vec)
 {
@@ -470,11 +417,9 @@ void ChMatrix_9::RotVec(const D3DXVECTOR3& _vec)
 	tmpRot = D3DXVec3Dot(&tmpVec, &tmp);
 
 	D3DXMATRIX tmpMat;
-	D3DXMatrixRotationAxis(&tmpMat, &tmpCross, std::acos(tmpRot));
+	D3DXMatrixRotationAxis(&tmpMat, &tmpCross, ChMath::GetACos(tmpRot));
 	*this = tmpMat * *this;
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void ChMatrix_9::RotAxis(const D3DXVECTOR3& _vec, const float _Ang)
 {
@@ -483,21 +428,15 @@ void ChMatrix_9::RotAxis(const D3DXVECTOR3& _vec, const float _Ang)
 	*this = tmpMat * *this;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 void ChMatrix_9::Trans(const float _x, const float _y, const float _z)
 {
 	D3DXMatrixTranslation(this, _x, _y, _z);
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 void ChMatrix_9::Trans(const D3DXVECTOR3& _vec)
 {
 	D3DXMatrixTranslation(this, _vec.x, _vec.y, _vec.z);
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void ChMatrix_9::VectorMove(const D3DXVECTOR3& _vec)
 {
@@ -506,16 +445,12 @@ void ChMatrix_9::VectorMove(const D3DXVECTOR3& _vec)
 	_43 += _vec.z;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 void ChMatrix_9::Move(const float _x, const float _y, const float _z)
 {
 	ChMatrix_9 tmpMat;
 	tmpMat.Trans(_x, _y, _z);
 	*this = tmpMat * *this;
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void ChMatrix_9::Scaling(const float _x, const float _y, const float _z)
 {
@@ -524,8 +459,6 @@ void ChMatrix_9::Scaling(const float _x, const float _y, const float _z)
 	*this = tmpMat * *this;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 void ChMatrix_9::Scaling(const D3DXVECTOR3& _tmpVec)
 {
 	D3DXMATRIX tmpMat;
@@ -533,16 +466,12 @@ void ChMatrix_9::Scaling(const D3DXVECTOR3& _tmpVec)
 	*this = tmpMat * *this;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 void ChMatrix_9::Scaling(const float _scl)
 {
 	D3DXMATRIX tmpMat;
 	D3DXMatrixScaling(&tmpMat, _scl, _scl, _scl);
 	*this = tmpMat * *this;
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void ChMatrix_9::Clear0()
 {
@@ -554,7 +483,6 @@ void ChMatrix_9::Clear0()
 		}
 	}
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////////
 //ChVector4Operator//
@@ -572,14 +500,10 @@ ChVec4::operator const D3DXVECTOR4()const
 	return tmpVec;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 ChVec4::operator const D3DXVECTOR4*()const
 {
 	return reinterpret_cast<D3DXVECTOR4*>(const_cast<ChVec4*>(this));
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 ChVec4& ChVec4::operator= (const D3DXVECTOR4& _vec)
 {
@@ -606,14 +530,10 @@ ChVec3::operator const D3DXVECTOR3()const
 	return tmpVec;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 ChVec3::operator const D3DXVECTOR3*()const
 {
 	return reinterpret_cast<D3DXVECTOR3*>(const_cast<ChVec3*>(this));
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 ChVec3& ChVec3::operator= (const D3DXVECTOR3& _vec)
 {
@@ -623,8 +543,6 @@ ChVec3& ChVec3::operator= (const D3DXVECTOR3& _vec)
 
 	return *this;
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 ChVec3& ChVec3::operator= (const D3DXQUATERNION& _qua)
 {
@@ -642,8 +560,6 @@ ChVec3& ChVec3::operator= (const D3DXQUATERNION& _qua)
 	return *this;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 ChVec3& ChVec3::operator= (const D3DXMATRIX& _mat)
 {
 	x = _mat._41;
@@ -651,7 +567,6 @@ ChVec3& ChVec3::operator= (const D3DXMATRIX& _mat)
 	z = _mat._43;
 
 	return *this;
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -668,14 +583,10 @@ ChVec2::operator const D3DXVECTOR2()const
 	return tmpVec;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 ChVec2::operator const D3DXVECTOR2*()const
 {
 	return reinterpret_cast<D3DXVECTOR2*>(const_cast<ChVec2*>(this));
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 ChVec2& ChVec2::operator= (const D3DXVECTOR2& _vec)
 {
@@ -700,14 +611,10 @@ ChQua::operator const D3DXQUATERNION()const
 	return tmpQua;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 ChQua::operator const D3DXQUATERNION*()const
 {
 	return reinterpret_cast<D3DXQUATERNION*>(const_cast<ChQua*>(this));
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 ChQua& ChQua::operator= (const D3DXQUATERNION& _qua)
 {
@@ -718,17 +625,12 @@ ChQua& ChQua::operator= (const D3DXQUATERNION& _qua)
 	return *this;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 ChQua& ChQua::operator= (const D3DXVECTOR3& _vec)
 {
 	ChQua_9 tmpQua = _vec;
 	*this = tmpQua;
 	return *this;
-
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 ChQua& ChQua::operator= (const D3DXMATRIX& _mat)
 {
@@ -756,14 +658,10 @@ ChLMat::operator const D3DXMATRIX()const
 	return tmpMat;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 ChLMat::operator const D3DXMATRIX*()const
 {
 	return reinterpret_cast<D3DXMATRIX*>(const_cast<ChLMat*>(this));
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 ChLMat& ChLMat::operator= (const D3DXQUATERNION& _qua)
 {
@@ -772,22 +670,15 @@ ChLMat& ChLMat::operator= (const D3DXQUATERNION& _qua)
 	return *this;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 ChLMat& ChLMat::operator= (const D3DXVECTOR3& _vec)
 {
 	ChMat_9 tmpMat = _vec;
 	*this = tmpMat;
 	return *this;
-
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 ChLMat& ChLMat::operator= (const D3DXMATRIX& _mat)
 {
-
-
 	for (unsigned char i = 0; i < 4; i++)
 	{
 		for (unsigned char j = 0; j < 4; j++)
