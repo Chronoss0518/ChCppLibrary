@@ -141,6 +141,23 @@ inline ChEular##_AxisOrder##<T> GetEulerRotation##_AxisOrder(const unsigned long
 }
 #endif
 
+#ifndef CH_MATH_LONG_TYPE
+#define CH_MATH_LONG_TYPE(_type) long _type
+#endif
+
+#ifndef CH_MATH_SIGNED_TYPE
+#define CH_MATH_SIGNED_TYPE(_type) signed _type
+#endif
+
+
+#ifndef CH_MATH_METHOD_SIGNED_ABS
+#define CH_MATH_METHOD_SIGNED_ABS(_type) inline _type GetAbs(_type _val){return _val < 0 ? -_val : _val;}
+#endif
+
+#ifndef CH_MATH_METHOD_UNSIGNED_ABS
+#define CH_MATH_METHOD_UNSIGNED_ABS(_type) inline unsigned _type GetAbs(unsigned _type _val){return _val;}
+#endif
+
 namespace ChMath
 {
 	double Round(const double& _val, const unsigned long _digit = 307);
@@ -178,6 +195,21 @@ namespace ChMath
 	long double GetFMod(long double _valx, long double _valy);
 
 	static constexpr float GetMaxFloat();
+
+	CH_MATH_METHOD_SIGNED_ABS(CH_MATH_SIGNED_TYPE(char));
+	CH_MATH_METHOD_SIGNED_ABS(CH_MATH_SIGNED_TYPE(short));
+	CH_MATH_METHOD_SIGNED_ABS(CH_MATH_SIGNED_TYPE(int));
+	CH_MATH_METHOD_SIGNED_ABS(CH_MATH_SIGNED_TYPE(long));
+	CH_MATH_METHOD_SIGNED_ABS(CH_MATH_SIGNED_TYPE(CH_MATH_LONG_TYPE(long)));
+	CH_MATH_METHOD_SIGNED_ABS(float);
+	CH_MATH_METHOD_SIGNED_ABS(double);
+	CH_MATH_METHOD_SIGNED_ABS(CH_MATH_LONG_TYPE(double));
+
+	CH_MATH_METHOD_UNSIGNED_ABS(char);
+	CH_MATH_METHOD_UNSIGNED_ABS(short);
+	CH_MATH_METHOD_UNSIGNED_ABS(int);
+	CH_MATH_METHOD_UNSIGNED_ABS(long);
+	CH_MATH_METHOD_UNSIGNED_ABS(CH_MATH_LONG_TYPE(long));
 
 	//2‚Ì•½•ûª(—LŒøŒ…”8Œ…)//
 	static const float SQUARE_ROOT = 1.41421356f;
@@ -574,7 +606,7 @@ namespace ChMath
 
 		inline void Abs()
 		{
-			CH_MATH_VECTOR_OPERATOR_ACT(=, val[i] < static_cast<T>(0.0f) ? -val[i] : val[i]);
+			CH_MATH_VECTOR_OPERATOR_ACT(=, ChMath::GetAbs(val[i]));
 		}
 
 		inline void Identity()
