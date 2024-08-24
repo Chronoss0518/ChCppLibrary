@@ -3,6 +3,8 @@
 #ifndef Ch_Win_Mou_h
 #define Ch_Win_Mou_h
 
+#include"../WindObject/ChWindObject.h"
+
 namespace ChWin
 {
 
