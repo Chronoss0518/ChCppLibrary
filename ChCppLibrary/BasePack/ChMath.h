@@ -1515,7 +1515,7 @@ namespace ChMath
 		inline static Vector3Base<T> GetMul(const QuaternionBase<T>& _qua, const Vector3Base<T>& _dir)
 		{
 			Vector3Base<T> res = _dir;
-			res.Normalize();
+			res.val.Normalize();
 
 			QuaternionBase<T> tmp = QuaternionBase<T>(res);
 
