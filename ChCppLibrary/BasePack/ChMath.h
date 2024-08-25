@@ -1437,7 +1437,7 @@ namespace ChMath
 
 	public://Get Functions//
 
-		inline Vector3Base<T> GetMul(const Vector3Base<T>& _dir) { return GetMul(*this, _dir); }
+		inline Vector3Base<T> GetMul(const Vector3Base<T>& _dir) const { return QuaternionBase<T>::GetMul(*this, _dir); }
 
 		CH_MATH_METHOD_QUATERNION_GET_EULER_ROTATION(
 			XYZ,
@@ -1521,9 +1521,11 @@ namespace ChMath
 
 			QuaternionBase<T> idn = _qua;
 			idn.Inverse();
-			tmp = _qua * tmp * idn;
 
-			res = Vector3Base<T>(tmp.val);
+			tmp.SetMul(tmp, idn);
+			tmp.SetMul(_qua, tmp);
+
+			res.val = tmp.val;
 
 			return res;
 		}
