@@ -135,7 +135,6 @@ void WindCreater::SetInitSize(const ChINTPOINT& _size)
 
 void WindCreater::SetInitSize(const int _w, const int _h)
 {
-
 	size.w = _w >= 0 ? _w : _w * -1;
 	size.y = _h >= 0 ? _h : _h * -1;
 }
