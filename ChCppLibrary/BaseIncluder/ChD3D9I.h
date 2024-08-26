@@ -5,10 +5,6 @@
 
 #include<dsound.h>
 
-#pragma comment(lib,"d3d9.lib")
-#pragma comment(lib,"d3dx9.lib")
-#pragma comment(lib, "dsound.lib")
-
 #include"../External/LegacyDirectX/Include/d3dx9.h"
 #include"../External/LegacyDirectX/Include/d3dx9anim.h"
 
