@@ -7,44 +7,31 @@ namespace ChD3D9
 	//標準機能で描画されるフォントクラス//
 	class DrawFont:public ChCp::Initializer
 	{
-	public:
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//InitAndRelease//
-
-		void Init(const LPDIRECT3DDEVICE9 _dv);
+	public://Init And Release//
 
 		virtual void Release();
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
+	public://Set Functions//
 
 		//描画する際のフォントサイズ//
-		inline void SetFontSize(const unsigned long _W, const unsigned long _H) {
-			
-			fontSize.w = _W;
-			fontSize.h = _H;
-			Release();
-			Init(device);
+		inline void SetFontSize(const unsigned long _w, const unsigned long _h)
+		{		
+			fontSize.w = _w;
+			fontSize.h = _h;
+			Create();
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////
-
-		//フォントの描画//
-		void Draw(
-			std::string _drawStr
-			, const long _x
-			, const long y
-			, ChVec4 _col = ChVec4(1.0f,1.0f,1.0f,1.0f));
-
-		///////////////////////////////////////////////////////////////////////////////////
+		inline void SetFontWeight(const unsigned long _weight)
+		{
+			fontWeight = _weight;
+			Create();
+		}
 
 	protected:
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//ConstructerDestructer//
+		virtual void Create() = 0;
 
-		DrawFont() {}
+	protected://Constructer Destructer//
 
 		virtual ~DrawFont()
 		{
@@ -52,26 +39,198 @@ namespace ChD3D9
 		}
 
 
+	protected://Member Value//
+
 		LPD3DXFONT lpFont;
 		LPDIRECT3DDEVICE9 device;
-		const long startSize = 90;
 
-		ChMath::Vector2Base<long>fontSize;
+		ChMath::Vector2Base<long>fontSize = ChMath::Vector2Base<long>(16,32);
+		unsigned long fontWeight = FW_REGULAR;
+	};
 
-		ChVec4 fontColor = { 1.0f,1.0f,1.0f,1.0f };
-		std::string fontType;
+	//標準機能で描画されるフォントクラス//
+	class DrawFontA :public DrawFont
+	{
+	public:
+
+#ifdef CRT
+		inline void Init(const LPDIRECT3DDEVICE9 _dv, const std::string& _fontType = "MS ゴシック")
+		{
+			fontType = _fontType;
+			Init(_dv, fontType.c_str());
+		}
+#endif
+	protected://Init And Release//
+
+		void Init(const LPDIRECT3DDEVICE9 _dv, const char* _fontTypeText);
+
+	protected://Create Functions//
+
+		inline void Create()override
+		{
+			Init(device, GetFontType());
+		}
+
+	public://Set Functions//
+
+#ifdef CRT
+		inline void SetFontType(const std::string& _fontType = "MS ゴシック")
+		{
+			fontType = _fontType;
+			Create();
+		}
+#endif
+
+	protected://Get Functions//
+
+		const char* GetFontType();
+
+
+	public://Draw Functions//
+
+#ifdef CRT
+		//フォントの描画//
+		inline void Draw(
+			const std::string& _drawStr,
+			const long _x,
+			const long _y,
+			ChVec4 _col = ChVec4(1.0f, 1.0f, 1.0f, 1.0f))
+		{
+			Draw(_drawStr.c_str(), _drawStr.length(), _x, _y, _col);
+		}
+#endif
+	protected://Draw Functions//
+
+		//フォントの描画//
+		void Draw(
+			const char* _drawStr,
+			const unsigned long _drawStrLen,
+			const long _x,
+			const long _y,
+			ChVec4 _col = ChVec4(1.0f, 1.0f, 1.0f, 1.0f));
+
+	protected://Constructer Destructer//
+
+		virtual ~DrawFontA()
+		{
+			Release();
+		}
+
+	private://Member Value//
+
+#ifdef CRT
+		std::string fontType = "";
+#endif
 
 	public:
 
-		static DrawFont& GetIns()
+		static DrawFontA& GetIns()
 		{
-			static DrawFont ins;
+			static DrawFontA ins;
 			return ins;
 		}
 	};
 
-	static const std::function<DrawFont&()>Font = DrawFont::GetIns;
+	//標準機能で描画されるフォントクラス//
+	class DrawFontW :public DrawFont
+	{
+	public:
+
+#ifdef CRT
+		inline void Init(const LPDIRECT3DDEVICE9 _dv, const std::wstring& _fontType = L"MS ゴシック")
+		{
+			fontType = _fontType;
+			Init(_dv, fontType.c_str());
+	}
+#endif
+	protected://Init And Release//
+
+		void Init(const LPDIRECT3DDEVICE9 _dv, const wchar_t* _fontTypeText);
+
+	protected://Create Functions//
+
+		inline void Create()override
+		{
+			Init(device, GetFontType());
+		}
+
+	public://Set Functions//
+
+#ifdef CRT
+		inline void SetFontType(const std::wstring& _fontType = L"MS ゴシック")
+		{
+			fontType = _fontType;
+			Create();
+		}
+#endif
+
+	protected://Get Functions//
+
+		const wchar_t* GetFontType();
+
+	public://Draw Functions//
+
+#ifdef CRT
+		//フォントの描画//
+		inline void Draw(
+			const std::wstring& _drawStr,
+			const long _x,
+			const long _y,
+			ChVec4 _col = ChVec4(1.0f, 1.0f, 1.0f, 1.0f))
+		{
+			Draw(_drawStr.c_str(), _drawStr.length(), _x, _y, _col);
+		}
+#endif
+	protected://Draw Functions//
+
+		//フォントの描画//
+		void Draw(
+			const wchar_t* _drawStr,
+			const unsigned long _drawStrLen,
+			const long _x,
+			const long _y,
+			ChVec4 _col = ChVec4(1.0f, 1.0f, 1.0f, 1.0f));
+
+	protected://Constructer Destructer//
+
+		virtual ~DrawFontW()
+		{
+			Release();
+		}
+
+	private://Member Value//
+
+#ifdef CRT
+		std::wstring fontType = L"";
+#endif
+
+	public:
+
+		static DrawFontW& GetIns()
+		{
+			static DrawFontW ins;
+			return ins;
+		}
+	};
+
+	inline DrawFontA& FontA() { return DrawFontA::GetIns(); }
+
+	inline DrawFontW& FontW() { return DrawFontW::GetIns(); }
 
 }
+
+#ifdef CRT
+
+const char* ChD3D9::DrawFontA::GetFontType()
+{
+	return fontType.c_str();
+}
+
+const wchar_t* ChD3D9::DrawFontW::GetFontType()
+{
+	return fontType.c_str();
+}
+
+#endif
 
 #endif
