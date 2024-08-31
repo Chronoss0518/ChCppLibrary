@@ -37,23 +37,44 @@
 
 namespace ChStr
 {
+	template<typename T>
+	struct Bytes
+	{
+		Bytes(){}
+
+		union
+		{
+			unsigned char byte[sizeof(T)];
+			T val;
+		};
+	};
+
 	//文字列をバイナリデータにして//
 	//整数型に変換する//
-	template<typename T>
+	template<typename T,typename CharaType>
 	static inline T StrBinaryToNum(
-		const unsigned char* const _str
-		, const size_t& _sPos = 0)
+		const CharaType* const _str,
+		const unsigned long _strLen,
+		const size_t& _sPos = 0,
+		const bool _reverseFlg = false)
 	{
-		T _setData = static_cast<T>(0);
-		for (unsigned char i = 0; i < sizeof(T); i++)
-		{
-			if (_str[_sPos + i] == 0)break;
+		Bytes<T> res;
 
-			unsigned char test = _str[_sPos + i];
-			if (test <= 0)continue;
-			_setData += static_cast<T>(test << 8 * ((sizeof(T) - 1) - i));
+		unsigned long readCharaCount = sizeof(T) / sizeof(CharaType);
+
+		if (_strLen < readCharaCount - _sPos)return res.val;
+
+		for (unsigned long i = 0; i < readCharaCount; i++)
+		{
+			void* tmp = const_cast<CharaType*>(&_str[_sPos + i]);
+
+			for (unsigned char j = 0; j < sizeof(CharaType); j++)
+			{
+				unsigned long tmpLen = j + (i * sizeof(CharaType));
+				res.byte[tmpLen] = *(reinterpret_cast<unsigned char*>(tmp) + j);
+			}
 		}
-		return _setData;
+		return res.val;
 	}
 
 #ifdef CRT
