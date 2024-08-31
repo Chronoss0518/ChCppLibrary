@@ -107,11 +107,7 @@ namespace ChCpp
 
 		virtual ~File() { Release(); }
 
-#ifdef CRT
-
-		inline virtual void Release() { FileClose(); }
-
-#endif
+		virtual void Release();
 
 
 	public://Set Functions//
@@ -208,7 +204,7 @@ namespace ChCpp
 
 			_binary.resize(GetLength());
 
-			std::locale tmpLocale = std::locale::classic;
+			std::locale tmpLocale = std::locale::classic();
 
 			if (localeName != "") { tmpLocale = stream.imbue(std::locale(localeName.c_str())); }
 
@@ -328,6 +324,13 @@ namespace ChCpp
 
 template<typename CharaType>
 void ChCpp::File<CharaType>::SetLocaleName(const char* _localeName) { localeName = _localeName; }
+
+
+template<typename CharaType>
+void ChCpp::File<CharaType>::Release()
+{
+	FileClose();
+}
 
 #endif
 
