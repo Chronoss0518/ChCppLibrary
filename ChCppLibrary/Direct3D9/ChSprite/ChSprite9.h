@@ -10,34 +10,28 @@ namespace ChTex
 	//スプライト描画を行うクラス//
 	class Sprite9 :public ChCp::Initializer
 	{
-	public:
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//InitAndRelease//
+	public://Init And Release//
 
 		void Init(const LPDIRECT3DDEVICE9 _d);
 
 		virtual void Release();
 
-		///////////////////////////////////////////////////////////////////////////////////
+	public:
 
 		//第三引数がNULL又はnullptrだった場合,画面サイズと同じになる。//
 		virtual void DrawSprite(
-			const ChPtr::Shared<Texture9> _tex
-			, const ChMat_9& _mat
-			, const ChVec3_9& _centerPos
-			, const RECT& _animationRect = { 0,0,0,0 });
-
-		///////////////////////////////////////////////////////////////////////////////////
+			const Texture9& _tex,
+			const ChMat_9& _mat,
+			const ChVec3_9& _centerPos,
+			const RECT& _animationRect = { 0,0,0,0 });
 
 	protected:
 
 
 		LPD3DXSPRITE sp;
 		LPDIRECT3DDEVICE9 device;
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//ConstructerDestructer//
+	
+	protected://Constructer Destructer//
 
 		Sprite9() {};
 
@@ -53,7 +47,7 @@ namespace ChTex
 
 	};
 
-	static const std::function<Sprite9&()>DrawSp9 = Sprite9::GetIns;
+	inline Sprite9& DrawSp9() { return Sprite9::GetIns(); };
 
 }
 
