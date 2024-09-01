@@ -36,13 +36,16 @@ namespace ChTex
 
 		void SetBaseColor(const D3DCOLOR& _col) { col = D3DColorToColor255(_col); }
 
+		void SetSclXSize(const float _scl) { scal.x = _scl; }
+
+		void SetSclYSize(const float _scl) { scal.y = _scl; }
+
 	public://Get Functions//
 
 		//ëIëÇµÇΩâ”èäÇÃêFéÊìæ//
 		template<class T>
 		T GetColor(
 			const unsigned int _width,
-			
 			const unsigned int _height);
 
 		inline const LPDIRECT3DTEXTURE9 GetTex()const { return tex; }
@@ -64,10 +67,10 @@ namespace ChTex
 		D3DCOLOR GetBaseColD3D()const 
 		{
 			return D3DCOLOR_ARGB(
-				static_cast<unsigned char>(col.a * 255)
-				, static_cast<unsigned char>(col.r * 255)
-				, static_cast<unsigned char>(col.g * 255)
-				, static_cast<unsigned char>(col.b * 255));
+				static_cast<unsigned char>(col.a * 255),
+				static_cast<unsigned char>(col.r * 255),
+				static_cast<unsigned char>(col.g * 255),
+				static_cast<unsigned char>(col.b * 255));
 		}
 
 		inline LPDIRECT3DTEXTURE9 GetTex() { return tex; }
@@ -75,16 +78,6 @@ namespace ChTex
 		inline LPDIRECT3DSURFACE9 GetSur() { return sur; }
 
 		inline LPDIRECT3DSURFACE9 GetZBu() { return zBu; }
-
-		float GetSclXSize() { return scal.x; }
-
-		float GetSclYSize() { return scal.y; }
-
-		unsigned int GetOriginalWidth() { return original.w; }
-
-		unsigned int GetOriginalHeight() { return original.h; }
-
-		ChVec4 GetBaseColor() { return col; }
 
 	public://To Functions//
 
@@ -172,7 +165,7 @@ namespace ChTex
 		template<typename T>
 		inline void SetTexColor(const T& _color);
 
-		virtual void OpenFile(const char* _fileName) = 0;
+		virtual void OpenFile(const char* _fileName) {};
 
 	}Texture9;
 }
