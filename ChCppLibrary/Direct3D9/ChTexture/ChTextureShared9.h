@@ -17,7 +17,7 @@ ChPtr::Shared<ChTex::BaseTexture9> ChTex::BaseTexture9::TextureType(const std::s
 
 	{
 		size_t tmpNum = _fileName.rfind(".");
-		if (tmpNum == _fileName.npos)return nullptr;
+		if (tmpNum == _fileName.npos)return ChPtr::Make_S<BaseTexture9>();
 		tmpStr = &_fileName[tmpNum];
 			}
 
@@ -32,7 +32,7 @@ ChPtr::Shared<ChTex::BaseTexture9> ChTex::BaseTexture9::TextureType(const std::s
 		return ChPtr::Make_S<JpegTex9>();
 	}
 
-	return nullptr;
+	return ChPtr::Make_S<BaseTexture9>();
 }
 
 #endif
