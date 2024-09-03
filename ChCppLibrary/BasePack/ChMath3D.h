@@ -94,8 +94,8 @@ inline float GetElementsLen()const{return val.GetElementsLen();}
 inline static float GetLen(const _InClass& _vec1,const _InClass& _vec2,const unsigned long _digit = 6){_InClass tmp = _vec1 - _vec2;return tmp.GetLen(_digit);}\
 inline static float GetElementsLen(const _InClass& _vec1,const _InClass& _vec2){_InClass tmp = _vec1 - _vec2;return tmp.GetElementsLen();}\
 inline static _InClass GetCross(const _InClass& _vec1,const _InClass& _vec2,const unsigned long _digit = 6){_InClass tmpVec;tmpVec.val.SetCross(_vec1.val, _vec2.val, _digit);return tmpVec;}\
-inline static _InClass GetCos(const _InClass& _vec1,const _InClass& _vec2,const unsigned long _digit = 6){return _vec1.val.GetCos(_vec2.val, _digit);}\
-inline static _InClass GetRadian(const _InClass& _vec1,const _InClass& _vec2,const unsigned long _digit = 6){return _vec1.val.GetRadian(_vec2.val, _digit);}\
+inline static float GetCos(const _InClass& _vec1,const _InClass& _vec2,const unsigned long _digit = 6){return _vec1.val.GetCos(_vec2.val, _digit);}\
+inline static float GetRadian(const _InClass& _vec1,const _InClass& _vec2,const unsigned long _digit = 6){return _vec1.val.GetRadian(_vec2.val, _digit);}\
 inline static float GetDot(const _InClass& _vec1,const _InClass& _vec2,const unsigned long _digit = 6){return _vec1.val.GetDot(_vec2.val, _digit);}\
 inline static _InClass GetLerp(const _InClass& _vec1,const _InClass& _vec2,const float _pow){_InClass tmpVec;tmpVec.val.SetLerp(_vec1.val, _vec2.val, _pow);return tmpVec;}\
 inline static _InClass GetSLerp(const _InClass& _vec1,const _InClass& _vec2,const float _pow){_InClass tmpVec;tmpVec.val.SetSLerp(_vec1.val, _vec2.val, _pow);return tmpVec;}
