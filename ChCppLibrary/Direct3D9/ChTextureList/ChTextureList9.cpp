@@ -16,7 +16,7 @@ void TextureList9::SetBlendColor(
 	const ChVec4& _color,
 	const unsigned short _dataNum)
 {
-	auto&& tex = GetTexBase(_dataNum);
+	auto&& tex = GetTexPtr(_dataNum);
 	if (tex == nullptr)return;
 
 	tex->SetBaseColor(_color);
@@ -24,7 +24,7 @@ void TextureList9::SetBlendColor(
 
 void TextureList9::SetBlendAlpha(const unsigned char _a, const unsigned short _dataNum) {
 
-	auto&& tex = GetTexBase(_dataNum);
+	auto&& tex = GetTexPtr(_dataNum);
 	if (tex == nullptr)return;
 
 	ChVec4 tmpCol = tex->GetBaseColor();

@@ -86,9 +86,9 @@ namespace ChTex
 		}
 #endif
 
-	protected://Get Functions//
+	public://Get Functions//
 
-		Texture9* GetTexBase(const unsigned short dataNum);
+		Texture9* GetTexPtr(const unsigned short dataNum);
 
 	private:
 
@@ -113,7 +113,7 @@ void ChTex::TextureList9::Release()
 	SetInitFlg(false);
 }
 
-ChTex::Texture9* ChTex::TextureList9::GetTexBase(const unsigned short dataNum)
+ChTex::Texture9* ChTex::TextureList9::GetTexPtr(const unsigned short dataNum)
 {
 	auto&& tex = texList.find(dataNum);
 	if (tex == texList.end())return nullptr;
@@ -197,6 +197,29 @@ void ChTex::TextureList9::SetColorTex(
 
 	texList[_dataNum] = tmpTex;
 
+	return;
+}
+
+void BaseMesh9::SetOffsetVertex()
+{
+	if (ChPtr::NullCheck(mesh))return;
+
+	MeshVertex9* tmpVer = nullptr;
+	mesh->LockVertexBuffer(NULL, (LPVOID*)&tmpVer);
+
+	if (ChPtr::NullCheck(tmpVer))return;
+
+	for (unsigned long ver = 0; ver < mesh->GetNumVertices(); ver++)
+	{
+		auto tmpPos = ChPtr::Make_S<ChVec3_9>();
+
+		*tmpPos = (tmpVer + ver)->pos;
+
+		offsetVertexList.push_back(tmpPos);
+	}
+
+
+	mesh->UnlockVertexBuffer();
 	return;
 }
 
