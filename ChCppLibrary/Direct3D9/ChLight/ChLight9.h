@@ -8,15 +8,11 @@ const enum{ L_POINT = 1,L_SPOT,L_DIRECTIONAL};
 //標準機能で利用するLightの設定(今後利用する可能性低)//
 class ChLight9
 {
-public:
-
-	///////////////////////////////////////////////////////////////////////////////////
-	//ConstructerDestRucter//
+public://Constructer DestRucter//
 
 	ChLight9(LPDIRECT3DDEVICE9 _dv);
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//SetFunction//
+public://Set Functions//
 
 	//Lightを使用するかしないかの設定//
 	void SetLight(bool _flg);
@@ -36,21 +32,17 @@ public:
 	//Lightの光沢効果のセット//
 	void SetLightAmb(bool _ambFlg, const float _r, const float _g, const float _b);
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//GetFunction//
+public://Get Functions//
 
 	const inline D3DLIGHT9* GetLight(void) { return &light; }
 
-	///////////////////////////////////////////////////////////////////////////////////
-
-private:
+private://Member Value//
 
 	LPDIRECT3DDEVICE9 device;
 
 	void RegisterLight();
 
 	D3DLIGHT9 light;
-
 };
 
 #endif
