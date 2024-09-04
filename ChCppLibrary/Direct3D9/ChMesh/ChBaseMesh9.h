@@ -33,6 +33,8 @@ namespace ChMesh
 	class MeshManager9;
 	class MeshList9;
 
+#ifndef _ChMesh9
+#define _ChMesh9
 
 	//メッシュの頂点データ//
 	struct MeshVertex9
@@ -48,6 +50,8 @@ namespace ChMesh
 		ChVec3_9 normal;
 		ChVec3_9 centerPos;
 	};
+
+#endif
 
 	//D3DXMeshを操る基底クラス//
 	typedef class BaseMesh9
@@ -138,30 +142,9 @@ namespace ChMesh
 
 	public://Create Functions//
 
+		void CreateEasyFaceList();
+
 #ifdef CRT
-
-		void CreateEasyFaceList()
-		{
-			MeshVertex9* meshData = nullptr;
-
-			WORD* p = nullptr;
-
-			mesh->LockIndexBuffer(0, (LPVOID*)&p);
-			mesh->LockVertexBuffer(0, (LPVOID*)&meshData);
-
-			for (unsigned long faceNum = 0; faceNum < mesh->GetNumFaces(); faceNum++)
-			{
-
-				auto meshFace = ChPtr::Make_S<MeshFace9>();
-
-				CreateEasyFace(*meshFace, faceNum, meshData, p);
-
-				easyFaceList.push_back(meshFace);
-			}
-
-			mesh->UnlockIndexBuffer();
-			mesh->UnlockVertexBuffer();
-		}
 
 		void CreateMesh(
 			const std::string& _fileName,
@@ -316,6 +299,28 @@ void ChMesh::BaseMesh9::Release() {
 
 }
 
+void ChMesh::BaseMesh9::CreateEasyFaceList()
+{
+	MeshVertex9* meshData = nullptr;
+
+	WORD* p = nullptr;
+
+	mesh->LockIndexBuffer(0, (LPVOID*)&p);
+	mesh->LockVertexBuffer(0, (LPVOID*)&meshData);
+
+	for (unsigned long faceNum = 0; faceNum < mesh->GetNumFaces(); faceNum++)
+	{
+
+		auto meshFace = ChPtr::Make_S<MeshFace9>();
+
+		CreateEasyFace(*meshFace, faceNum, meshData, p);
+
+		easyFaceList.push_back(meshFace);
+	}
+
+	mesh->UnlockIndexBuffer();
+	mesh->UnlockVertexBuffer();
+}
 #endif
 
 #include"ChMeshShared9.h"
