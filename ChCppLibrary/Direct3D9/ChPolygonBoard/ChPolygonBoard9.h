@@ -1,6 +1,11 @@
 #ifndef Ch_D3D9_PB_h
 #define Ch_D3D9_PB_h
 
+
+
+#include"../ChTexture/ChBaseTexture9.h"
+#include"../ChTexture/TexIncluder9.h"
+
 namespace ChTex
 {
 	typedef class BaseTexture9 Texture9;
@@ -18,6 +23,8 @@ namespace ChTex
 			D3DXVECTOR2 tex;
 		};
 
+	public:
+
 		ChVertex9& operator[](int _size)
 		{
 			return this->ver[_size];
@@ -28,13 +35,11 @@ namespace ChTex
 			return this->ver[_size];
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//InitAndRelease//
+	public://Init And Release//
 
 		void Init(const LPDIRECT3DDEVICE9& _dv);
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
+	public://Set Functions//
 
 		//透過させるかさせないかのフラグ//
 		void SetAlphaFlg(bool _flg) { alphaFlg = _flg; }
@@ -53,26 +58,29 @@ namespace ChTex
 		void SetZXPosition(const ChVec3_9& _leftTopPos, const float _w, const float _h);
 
 		//対象のVertexをオリジナルの位置へ持っていくことができる。//
-		void SetPositionVector(const D3DXVECTOR3* _pos, const char _posNo);
+		void SetPositionVector(const D3DXVECTOR3& _pos, const char _posNo);
 
 		//対象のVertexの色情報をセットできる//
-		void SetColor(const D3DCOLOR _col, const unsigned char _posNo);
+		void SetColor(const D3DCOLOR& _col, const unsigned char _posNo);
 
 		//対象のVertexのTexture描画地点(スクリーン座標系)の設定を行うことができる。//
-		void SetTex(const D3DXVECTOR2 _tex, const unsigned char _posNo);
+		void SetTex(const D3DXVECTOR2& _tex, const unsigned char _posNo);
+
+#ifdef CRT
 
 		//第二引数には、オリジナルサイズから見たピクセルサイズ。//
 		//第三引数には、画像の左上画像位置。//
 		void SetRectTex(
-			const ChPtr::Shared<BaseTexture9> _tex
-			, const RECT& _rect
-			, const unsigned char _sPosNo);
+			const ChPtr::Shared<BaseTexture9> _tex,
+			const RECT& _rect,
+			const unsigned char _sPosNo);
+
+#endif
 
 		//対象のVerTexの法線をセットできる。//
 		//void SetNormal(const D3DXVECTOR3 _Normal, const char _PosNo);
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//GetFunction//
+	public://Get Functions//
 
 		const inline ChVertex9* GetPosVertex(unsigned char _vertexCnt)
 		{
@@ -80,19 +88,21 @@ namespace ChTex
 			return &ver[_vertexCnt];
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////
+	public://Other Functions//
+
+#ifdef CRT
 
 		void Draw(
-			const ChPtr::Shared<BaseTexture9>& _Tex
-			, const LPD3DXMATRIX& _Mat);
+			const ChPtr::Shared<BaseTexture9>& _Tex,
+			const D3DXMATRIX& _Mat);
+
+#endif
 
 	protected:
 
-
-
 		bool alphaFlg;
 
-		static const unsigned char vertexMaxCnt = 4;
+		static constexpr unsigned char vertexMaxCnt = 4;
 
 		LPDIRECT3DDEVICE9 device;
 
@@ -104,11 +114,9 @@ namespace ChTex
 			};
 
 			ChVertex9 ver[vertexMaxCnt];
-
 		};
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//ConstructerDestructer//
+	protected://Constructer Destructer//
 
 		//※設定を行わない場合、Defolt値の左上を(1.0f,1.0f,0.0f)//
 		//を初期値とした2づつずれた向きがXY壁をセットする。//
@@ -125,9 +133,66 @@ namespace ChTex
 
 	};
 
-	static const std::function<PolygonBoard9&()> PoBo9 = PolygonBoard9::GetIns;
+	inline PolygonBoard9& PoBo9() { return PolygonBoard9::GetIns(); }
 
 }
+
+#ifdef CRT
+
+void ChTex::PolygonBoard9::SetRectTex(
+	const ChPtr::Shared<BaseTexture9> _tex,
+	const RECT& _rect,
+	const unsigned char _SPosNo)
+{
+	if (_tex == nullptr)return;
+	if (_SPosNo > vertexMaxCnt)return;
+	D3DXVECTOR2 tmpVec;
+	tmpVec = D3DXVECTOR2((float)(_rect.right / _tex->GetOriginalWidth()), (float)(_rect.top / _tex->GetOriginalHeight()));
+	ver[(_SPosNo + 0) % vertexMaxCnt].tex = tmpVec;
+	tmpVec = D3DXVECTOR2((float)((_rect.right + _rect.left) / _tex->GetOriginalWidth())
+		, (float)(_rect.top / _tex->GetOriginalHeight()));
+	ver[(_SPosNo + 1) % vertexMaxCnt].tex = tmpVec;
+	tmpVec = D3DXVECTOR2((float)((_rect.right + _rect.left) / _tex->GetOriginalWidth())
+		, (float)((_rect.top + _rect.bottom) / _tex->GetOriginalHeight()));
+	ver[(_SPosNo + 2) % vertexMaxCnt].tex = tmpVec;
+	tmpVec = D3DXVECTOR2((float)(_rect.right / _tex->GetOriginalWidth())
+		, (float)((_rect.top + _rect.bottom) / _tex->GetOriginalHeight()));
+	ver[(_SPosNo + 3) % vertexMaxCnt].tex = tmpVec;
+}
+
+void ChTex::PolygonBoard9::Draw(
+	const ChPtr::Shared<BaseTexture9>& _tex,
+	const D3DXMATRIX& _mat)
+{
+	if (!*this)return;
+	if (_tex == nullptr)return;
+
+	DWORD tmpData;
+	device->GetRenderState(D3DRS_CULLMODE, &tmpData);
+	device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+
+
+	if (alphaFlg)device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+
+	device->SetTexture(0, _tex->GetTex());
+
+	device->SetTransform(D3DTS_WORLD, &_mat);
+
+	device->SetFVF((D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1));
+
+	device->SetRenderState(D3DRS_LIGHTING, FALSE);
+	device->SetRenderState(D3DRS_NORMALIZENORMALS, FALSE);
+
+	device->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, ver, sizeof(ChVertex9));
+
+	device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
+
+	device->SetRenderState(D3DRS_NORMALIZENORMALS, true);
+	device->SetRenderState(D3DRS_CULLMODE, tmpData);
+}
+
+
+#endif
 
 #endif
 //CopyRight Chronoss0518 2018/08
