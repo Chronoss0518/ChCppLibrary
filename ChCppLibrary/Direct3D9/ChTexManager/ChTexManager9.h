@@ -1,6 +1,14 @@
 #ifndef Ch_D3D9_TexMa_h
 #define Ch_D3D9_TexMa_h
 
+#ifdef CRT
+
+#include<string>
+#include<vector>
+#include<map>
+
+#endif
+
 namespace ChTex
 {
 
