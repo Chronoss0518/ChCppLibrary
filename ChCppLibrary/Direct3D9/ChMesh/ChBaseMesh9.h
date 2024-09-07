@@ -115,6 +115,8 @@ namespace ChMesh
 
 		inline const LPD3DXMESH GetMesh() const { return mesh; }
 
+		const MeshFace9* GetFace(unsigned long _num) const;
+
 #ifdef CRT
 		inline std::vector<ChPtr::Shared<ChVec3_9>> GetVertexList()const
 		{ 
@@ -127,7 +129,7 @@ namespace ChMesh
 
 		inline std::vector<ChPtr::Shared<ChTex::BaseTexture9>> GetNormalTex() const { return normalTex; }
 
-		inline std::vector<ChPtr::Shared<MeshFace9>> GetFace() const { return easyFaceList; }
+		inline std::vector<ChPtr::Shared<MeshFace9>> GetFaceList() const { return easyFaceList; }
 		
 		virtual inline ChMat_9 GetBoneMat(const std::string& _str){ return ChMat_9(); }
 #endif
@@ -297,6 +299,11 @@ void ChMesh::BaseMesh9::Release() {
 
 	mesh = nullptr;
 
+}
+const ChMesh::MeshFace9* ChMesh::BaseMesh9::GetFace(unsigned long _num) const
+{
+	if (easyFaceList.size() >= _num)return nullptr;
+	return easyFaceList[_num].get(); 
 }
 
 void ChMesh::BaseMesh9::CreateEasyFaceList()
