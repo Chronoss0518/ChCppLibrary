@@ -40,6 +40,10 @@ namespace ChTex
 
 		void SetSclYSize(const float _scl) { scal.y = _scl; }
 
+		void SetOriginalWidth(const unsigned int _width) { original.x = _width; }
+
+		void SetOriginalHeight(const unsigned int _height) { original.y = _height; }
+
 	public://Get Functions//
 
 		//ëIëÇµÇΩâ”èäÇÃêFéÊìæ//
@@ -73,11 +77,11 @@ namespace ChTex
 				static_cast<unsigned char>(col.b * 255));
 		}
 
-		inline LPDIRECT3DTEXTURE9 GetTex() { return tex; }
+		inline LPDIRECT3DTEXTURE9& GetTex() { return tex; }
 
-		inline LPDIRECT3DSURFACE9 GetSur() { return sur; }
+		inline LPDIRECT3DSURFACE9& GetSur() { return sur; }
 
-		inline LPDIRECT3DSURFACE9 GetZBu() { return zBu; }
+		inline LPDIRECT3DSURFACE9& GetZBu() { return zBu; }
 
 	public://To Functions//
 
