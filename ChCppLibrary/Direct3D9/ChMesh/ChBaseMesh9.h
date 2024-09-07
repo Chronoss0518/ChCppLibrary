@@ -134,13 +134,19 @@ namespace ChMesh
 		virtual inline ChMat_9 GetBoneMat(const std::string& _str){ return ChMat_9(); }
 #endif
 
-		ChVec3_9 GetOffsetVertex(unsigned long _num);
+		ChVec3_9 GetOffsetVertex(unsigned long _num)const;
 
-		unsigned long GetMaterialCount();
+		unsigned long GetMaterialCount()const;
 
-		ChMaterialA_9 GetMaterial(unsigned long _num);
+		ChMaterialA_9 GetMaterial(unsigned long _num)const;
 
-		ChTex::BaseTexture9* GetTexture(unsigned long _num);
+		unsigned long GetTextureCount()const;
+
+		ChTex::BaseTexture9* GetTexture(unsigned long _num)const;
+
+		unsigned long GetNormalTextureCount()const;
+
+		ChTex::BaseTexture9* GetNormalTexture(unsigned long _num)const;
 
 	public://Create Functions//
 
@@ -262,27 +268,43 @@ void ChMesh::BaseMesh9::SetMaterialMatrix(
 	material[_Num]->mat = _Mat;
 }
 
-ChVec3_9 ChMesh::BaseMesh9::GetOffsetVertex(unsigned long _num)
+ChVec3_9 ChMesh::BaseMesh9::GetOffsetVertex(unsigned long _num)const
 {
 	if (offsetVertexList.size() <= _num)return ChVec3_9();
 	return (*offsetVertexList[_num]);
 }
 
-unsigned long ChMesh::BaseMesh9::GetMaterialCount()
+unsigned long ChMesh::BaseMesh9::GetMaterialCount()const
 {
 	return material.size();
 }
 
-ChMaterialA_9 ChMesh::BaseMesh9::GetMaterial(unsigned long _num)
+ChMaterialA_9 ChMesh::BaseMesh9::GetMaterial(unsigned long _num)const
 {
 	if (material.size() <= _num)return ChMaterialA_9();
 	return *material[_num];
 }
 
-ChTex::BaseTexture9* ChMesh::BaseMesh9::GetTexture(unsigned long _num)
+unsigned long ChMesh::BaseMesh9::GetTextureCount()const
+{
+	return texList.size();
+}
+
+ChTex::BaseTexture9* ChMesh::BaseMesh9::GetTexture(unsigned long _num)const
 {
 	if (texList.size() <= _num)return nullptr;
 	return texList[_num].get();
+}
+
+unsigned long ChMesh::BaseMesh9::GetNormalTextureCount()const
+{
+	return normalTex.size();
+}
+
+ChTex::BaseTexture9* ChMesh::BaseMesh9::GetNormalTexture(unsigned long _num)const
+{
+	if (texList.size() <= _num)return nullptr;
+	return normalTex[_num].get();
 }
 
 void ChMesh::BaseMesh9::Release() {
