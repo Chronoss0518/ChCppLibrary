@@ -25,7 +25,7 @@ namespace ChD3D9
 		const unsigned long NORMAL = D3DFVF_NORMAL;
 	}
 
-	enum class CULL { NONE = 1, CW, CCW };
+	enum class CULL : unsigned char{ NONE = 1, CW, CCW };
 
 	//Direct3D9‚ğ—˜—p‚·‚é‚½‚ß‚Éì‚ç‚ê‚½ƒNƒ‰ƒX//
 	//D3DX‚à“à‘ ‚³‚ê‚Ä‚¢‚é//
