@@ -125,6 +125,8 @@ namespace ChD3D9
 
 		inline void SetCamPos(const ChVec3_9& _pos) { camPos = _pos; }
 
+		inline void SetUseLightFlg(const bool _flg) { lightUseFlg = _flg; }
+
 	protected://Set Functions//
 
 		//レンダーターゲット用フラグ//
@@ -161,8 +163,6 @@ namespace ChD3D9
 		ChTex::BaseTexture9* GetMyLightTex();
 
 	public://Is Functions//
-
-		void IsLight(const bool _flg);
 
 		//描画可能確認関数//
 		inline bool IsDraw()

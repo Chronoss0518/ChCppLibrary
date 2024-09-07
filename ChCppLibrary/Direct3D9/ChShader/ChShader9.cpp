@@ -234,11 +234,6 @@ void ShaderController::SetDrawDatas(const D3DCOLOR&
 	device->SetPixelShaderConstantF(0, (const float*)&tmpPos, 1);
 }
 
-void ShaderController::IsLight(const bool _flg)
-{
-	lightUseFlg = _flg;
-}
-
 void ShaderController::DrawStart(const D3DCOLOR& _backColor)
 {
 	if (!*this)return;
