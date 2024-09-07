@@ -18,10 +18,11 @@ ChVec2 ShaderController::windSize = ChVec2(1280.0f, 720.0f);
 //ChShaderControllerメソッド
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ShaderController::Init(const LPDIRECT3DDEVICE9 _d
-	, const D3DPRESENT_PARAMETERS& _param
-	, const float& _windWidth
-	, const float& _windHeight) {
+void ShaderController::Init(
+	const LPDIRECT3DDEVICE9 _d,
+	const D3DPRESENT_PARAMETERS& _param,
+	const float& _windWidth,
+	const float& _windHeight) {
 	
 	if (ChPtr::NullCheck(_d))return;
 
@@ -66,9 +67,7 @@ void ShaderController::Init(const LPDIRECT3DDEVICE9 _d
 
 	MakeLightingPowTexture();
 
-	beforeTex = ChPtr::Make_S<ChTex::Texture9>();
-
-	beforeTex->CreateMinuColTexture<D3DCOLOR>(device, D3DCOLOR_ARGB(255, 255, 255, 255));
+	CreateBeforeTex();
 
 	SetInitFlg(true);
 }
@@ -166,10 +165,6 @@ void ShaderController::Release()
 		bPTex = nullptr;
 	}
 
-	whiteTex = nullptr;
-	normalTex = nullptr;
-	lightEffectTex = nullptr;
-
 	if (ChPtr::NotNullCheck(baseDec))
 	{
 		baseDec->Release();
@@ -186,12 +181,10 @@ void ShaderController::Release()
 		mVerDec = nullptr;
 	}
 
-	myLightTex = nullptr;
-
+	ReleaseTextures();
+	
 	SetInitFlg(false);
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void ShaderController::SetDrawDatas(const D3DCOLOR&
 	_backColor)
@@ -239,22 +232,14 @@ void ShaderController::SetDrawDatas(const D3DCOLOR&
 	device->SetPixelShader(bPModel);
 
 	device->SetPixelShaderConstantF(0, (const float*)&tmpPos, 1);
-
-
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void ShaderController::IsLight(const bool _flg)
 {
 	lightUseFlg = _flg;
-
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
-void ShaderController::DrawStart(const D3DCOLOR&
-	_backColor)
+void ShaderController::DrawStart(const D3DCOLOR& _backColor)
 {
 	if (!*this)return;
 	if (rtDrawFlg)return;
@@ -265,10 +250,7 @@ void ShaderController::DrawStart(const D3DCOLOR&
 	device->BeginScene();
 
 	drawFlg = true;
-
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void ShaderController::DrawEnd()
 {
@@ -277,7 +259,6 @@ void ShaderController::DrawEnd()
 	if (!drawFlg)return;
 
 	if (ChPtr::NullCheck(device))return;
-
 
 	device->EndScene();
 
@@ -291,85 +272,72 @@ void ShaderController::DrawEnd()
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
-void ShaderController::DrawMesh(
-	const ChPtr::Shared<ChMesh::Mesh9> _mesh
-	, const ChMat_9& _mat)
+void ShaderController::DrawMesh(const ChMesh::Mesh9& _mesh, const ChMat_9& _mat)
 {
-
 	if (!*this)return;
 	if (!drawFlg && !rtDrawFlg)return;
-	if (_mesh == nullptr)return;
-	if (ChPtr::NullCheck(_mesh->GetMesh()))return;
+	if (ChPtr::NullCheck(_mesh.GetMesh()))return;
 
 	device->SetVertexShader(bVModel);
 	device->SetPixelShader(bPModel);
 
 	SetLightFunction();
 
-
 	ChMat_9 tmpMat;
-
 
 	device->SetVertexDeclaration(mVerDec);
 
-	for (unsigned long i = 0; i < _mesh->GetMaterials().size(); i++) {
+	for (unsigned long i = 0; i < _mesh.GetMaterialCount(); i++) {
 
-		tmpMat = _mesh->GetMaterials()[i]->mat * _mat;
+		tmpMat = _mesh.GetMaterial(i).mat * _mat;
 
 		device->SetVertexShaderConstantF(8, (const float*)&_mat, 4);
 
-		auto tmpMate = SetMateData(*_mesh->GetMaterials()[i]);
+		auto tmpMate = SetMateData(_mesh.GetMaterial(i));
 
 		device->SetPixelShaderConstantF(1, (const float*)&tmpMate, 2);
 
-
 		{
+			auto tmpTex = _mesh.GetTexture(i)->GetTex();
 
-			auto tmpTex = _mesh->GetTex()[i]->GetTex();
-
-			if (ChPtr::NullCheck(tmpTex))tmpTex = whiteTex->GetTex();
+			if (ChPtr::NullCheck(tmpTex))tmpTex = GetWhiteTex()->GetTex();
 
 			device->SetTexture(0, tmpTex);
 
 		}
 
-		if (!_mesh->GetNormalTex().empty())
+		if (_mesh.GetNormalTextureCount() > 0)
 		{
-			auto pNormal = _mesh->GetNormalTex()[i]->GetTex();
+			auto pNormal = _mesh.GetNormalTexture(i)->GetTex();
 
-			if (ChPtr::NullCheck(pNormal))pNormal = normalTex->GetTex();
+			if (ChPtr::NullCheck(pNormal))pNormal = GetNormalTex()->GetTex();
 
 			device->SetTexture(2, pNormal);
 
 		}
 		else
 		{
-			device->SetTexture(2, normalTex->GetTex());
+			device->SetTexture(2, GetNormalTex()->GetTex());
 		}
 
-		_mesh->GetMesh()->DrawSubset(i);
+		_mesh.GetMesh()->DrawSubset(i);
 	}
 
 	device->SetVertexDeclaration(baseDec);
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 //Mesh描画用関数//
 void ShaderController::DrawMeshContour(
-	const ChPtr::Shared<ChMesh::Mesh9> _mesh
-	, const ChVec4& _color
-	, const ChMat_9& _mat
-	, const float _Size)
+	const ChMesh::Mesh9& _mesh,
+	const ChVec4& _color,
+	const ChMat_9& _mat,
+	const float _Size)
 {
 	if (!*this)return;
 	if (_Size < 0.0f)return;
 	if (!drawFlg && !rtDrawFlg)return;
-	if (_mesh == nullptr)return;
-	if (ChPtr::NullCheck(_mesh->GetMesh()))return;
+	if (ChPtr::NullCheck(_mesh.GetMesh()))return;
 
 	CULL tmpCull = GetCullMode();
 	SetCullMode(ChD3D9::CULL::CW);
@@ -381,9 +349,9 @@ void ShaderController::DrawMeshContour(
 
 	device->SetVertexDeclaration(mVerDec);
 
-	for (unsigned long i = 0; i < _mesh->GetMaterials().size(); i++) {
+	for (unsigned long i = 0; i < _mesh.GetMaterialCount(); i++) {
 
-		tmpMat = _mesh->GetMaterials()[i]->mat * _mat;
+		tmpMat = _mesh.GetMaterial(i).mat * _mat;
 
 		device->SetVertexShaderConstantF(8, (const float*)&_mat, 4);
 
@@ -393,7 +361,7 @@ void ShaderController::DrawMeshContour(
 
 		device->SetPixelShaderConstantF(0, (const float*)&_color, 1);
 
-		_mesh->GetMesh()->DrawSubset(i);
+		_mesh.GetMesh()->DrawSubset(i);
 	}
 
 	device->SetVertexDeclaration(baseDec);
@@ -401,20 +369,15 @@ void ShaderController::DrawMeshContour(
 	SetCullMode(tmpCull);
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 void ShaderController::DrawPolygonBoard(
-	const ChPtr::Shared<ChTex::Texture9>& _tex
-	, const VertexData& _vertex
-	, const ChMat_9& _mat
-	, const unsigned int _triangleCount
-)
+	const ChTex::Texture9& _tex,
+	const VertexData& _vertex,
+	const ChMat_9& _mat,
+	const unsigned int _triangleCount)
 {
-
 	if (!*this)return;
 	if (!drawFlg && !rtDrawFlg)return;
-	if (_tex == nullptr)return;
-	if (_tex->GetBaseColor().a <= 0.1f)return;
+	if (_tex.GetBaseColor().a <= 0.1f)return;
 
 	device->SetVertexShader(poVTex);
 	device->SetPixelShader(bPTex);
@@ -423,44 +386,40 @@ void ShaderController::DrawPolygonBoard(
 	device->SetVertexShaderConstantF(8, (const float*)&_mat, 4);
 
 	{
-
 		D3DXVECTOR4 tmpVec;
-		tmpVec.x = (_tex->GetBaseColor().r / 255.0f);
-		tmpVec.y = (_tex->GetBaseColor().g / 255.0f);
-		tmpVec.z = (_tex->GetBaseColor().b / 255.0f);
-		tmpVec.w = (_tex->GetBaseColor().a / 255.0f);
+		tmpVec.x = (_tex.GetBaseColor().r / 255.0f);
+		tmpVec.y = (_tex.GetBaseColor().g / 255.0f);
+		tmpVec.z = (_tex.GetBaseColor().b / 255.0f);
+		tmpVec.w = (_tex.GetBaseColor().a / 255.0f);
 		device->SetPixelShaderConstantF(0, (const float*)&tmpVec, 1);
 	}
 
 	//画像セット//
-	auto tex = _tex->GetTex();
+	auto tex = _tex.GetTex();
 
-	if (ChPtr::NullCheck(tex)) tex = whiteTex->GetTex();
+	if (ChPtr::NullCheck(tex)) tex = GetWhiteTex()->GetTex();
 
 	device->SetTexture(0, tex);
 
 	device->SetVertexDeclaration(tVerDec);
 
 	device->DrawPrimitiveUP(
-		D3DPT_TRIANGLEFAN, _triangleCount
-		, _vertex.ver, sizeof(VertexData::Vertex));
+		D3DPT_TRIANGLEFAN,
+		_triangleCount,
+		_vertex.ver,
+		sizeof(VertexData::Vertex));
 
 	device->SetVertexDeclaration(baseDec);
-
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 void ShaderController::DrawSprite(
-	const ChPtr::Shared<ChTex::Texture9>& _tex
-	, const ChMat_9& _mat
-	, const SpriteData& _spData)
+	const ChTex::Texture9& _tex,
+	const ChMat_9& _mat,
+	const SpriteData& _spData)
 {
-
 	if (!*this)return;
 	if (!drawFlg && !rtDrawFlg)return;
-	if (_tex == nullptr)return;
-	if (_tex->GetBaseColor().a <= 0.1f)return;
+	if (_tex.GetBaseColor().a <= 0.1f)return;
 
 	device->SetVertexShader(spVTex);
 	device->SetPixelShader(bPTex);
@@ -469,7 +428,6 @@ void ShaderController::DrawSprite(
 	device->SetVertexShaderConstantF(0, (const float*)&_mat, 4);
 
 	{
-
 		D3DXVECTOR4 tmpVec = D3DXVECTOR4(0.0f, 0.0f, 0.0f, 0.0f);
 
 		tmpVec.x = windSize.w;
@@ -477,27 +435,21 @@ void ShaderController::DrawSprite(
 
 		//WindSizeSet//
 		device->SetVertexShaderConstantF(4, (const float*)&tmpVec, 1);
-
 	}
 
-
 	{
-
 		ChVec4 tmpVec;
-		tmpVec = _tex->GetBaseColor();
-
+		tmpVec = _tex.GetBaseColor();
 		device->SetPixelShaderConstantF(0, (const float*)&tmpVec, 1);
 	}
 
 	{
-
 		//画像セット//
-		auto tex = _tex->GetTex();
+		auto tex = _tex.GetTex();
 
-		if (ChPtr::NullCheck(tex)) tex = whiteTex->GetTex();
+		if (ChPtr::NullCheck(tex)) tex = GetWhiteTex()->GetTex();
 
 		device->SetTexture(0, tex);
-
 	}
 
 	SpriteData tmpSprite = _spData;
@@ -507,8 +459,6 @@ void ShaderController::DrawSprite(
 		tmpSprite.spData[i].pos.z = 0.0f;
 	}
 
-
-
 	device->SetVertexDeclaration(tVerDec);
 
 	device->DrawPrimitiveUP(
@@ -516,93 +466,9 @@ void ShaderController::DrawSprite(
 		, tmpSprite.spData.ver, sizeof(VertexData::Vertex));
 
 	device->SetVertexDeclaration(baseDec);
-
-
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
-void ShaderController::CreateLightPowTex(const std::string& _lightPowTexName)
-{
-	if (_lightPowTexName.length())
-	{
-		//ChSystem::ErrerMessage("使用する画像のファイル名を入力してください", "警告");
-
-		return;
-	}
-
-	myLightTex = ChTex::BaseTexture9::TextureType(_lightPowTexName.c_str());
-
-	myLightTex->CreateTexture(_lightPowTexName.c_str(), device);
-
-	if (myLightTex->GetTex() == nullptr)
-	{
-
-		//ChSystem::ErrerMessage("画像の作成に失敗しました", "警告");
-
-		myLightTex = nullptr;
-
-		return;
-	}
-
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ShaderController::MakeWhiteTexture()
-{
-	whiteTex = ChPtr::Make_S<ChTex::BaseTexture9>();
-
-	whiteTex->CreateColTexture(device, D3DCOLOR_ARGB(255, 255, 255, 255));
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ShaderController::MakeLightingPowTexture()
-{
-
-	lightEffectTex = ChPtr::Make_S<ChTex::BaseTexture9>();
-
-	lightEffectTex->CreateColTexture(device, D3DCOLOR_ARGB(255, 255, 255, 255), 255, 1);
-
-	unsigned char Col = 0;
-
-	D3DLOCKED_RECT LockRect;
-	if (lightEffectTex->InsTex()->LockRect(0, &LockRect, nullptr, 0) != D3D_OK)
-	{
-		lightEffectTex = nullptr;
-		return;
-	}
-	UINT* pPitch = (UINT*)LockRect.pBits;
-
-	UINT Pitch = LockRect.Pitch / sizeof(UINT);
-	for (unsigned int h = 0; h < lightEffectTex->GetOriginalHeight(); h++)
-	{
-		for (unsigned int w = 0; w < lightEffectTex->GetOriginalWidth(); w++)
-		{
-			*(pPitch + w) = D3DCOLOR_ARGB(Col, Col, Col, Col);
-			Col++;
-		}
-		pPitch += Pitch;
-	}
-
-	lightEffectTex->InsTex()->UnlockRect(0);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ShaderController::MakeNormalMapTexture()
-{
-	normalTex = ChPtr::Make_S<ChTex::BaseTexture9>();
-
-	normalTex->CreateColTexture(device, D3DCOLOR_ARGB(255, 128, 128, 128));
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-ShaderController::Material ShaderController::SetMateData(D3DMATERIAL9& _mate)
+ShaderController::Material ShaderController::SetMateData(const D3DMATERIAL9& _mate)
 {
 	Material tmp;
 	tmp.dif.a = _mate.Diffuse.a;
@@ -619,8 +485,6 @@ ShaderController::Material ShaderController::SetMateData(D3DMATERIAL9& _mate)
 	return tmp;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 void ShaderController::SetLightFunction()
 {
 
@@ -629,18 +493,16 @@ void ShaderController::SetLightFunction()
 	device->SetPixelShader(bPModel);
 
 	{
-		auto lightTex = lightEffectTex->GetTex();
+		auto lightTex = GetLightEffectTex()->GetTex();
 
-		if (ChPtr::NullCheck(lightTex))lightTex = whiteTex->GetTex();
+		if (useMyLightTex)lightTex = GetMyLightTex()->GetTex();
 
-		if (useMyLightTex)lightTex = myLightTex->GetTex();
+		if (ChPtr::NullCheck(lightTex))lightTex = GetWhiteTex()->GetTex();
 
 		device->SetTexture(1, lightTex);
-
 	}
 
 	{
-
 		light.dir.Normalize();
 
 		TmpPLight pLight[7];
