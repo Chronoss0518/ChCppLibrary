@@ -82,7 +82,7 @@ namespace ChTex
 
 	public://Get Functions//
 
-		const inline ChVertex9* GetPosVertex(unsigned char _vertexCnt)
+		const inline ChVertex9* GetPosVertex(unsigned char _vertexCnt)const
 		{
 			if (vertexMaxCnt < _vertexCnt)return nullptr;
 			return &ver[_vertexCnt];
