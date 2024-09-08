@@ -21,22 +21,15 @@ namespace ChD3D11
 		{
 		public:
 
-			virtual ~CBLight11()
-			{
-				Release();
-			}
+			virtual ~CBLight11() { Release(); }
 
-		public:
-
-			///////////////////////////////////////////////////////////////////////////////////
-			//InitAndRelease//
+		public://Init And Release//
 
 			void Init(ID3D11Device* _device);
 
 			void Release()override;
 
-			///////////////////////////////////////////////////////////////////////////////////
-			//SetFunction//
+		public://Set Functions//
 
 			void SetLightDiffuse(const ChVec3& _dif);
 
@@ -76,10 +69,15 @@ namespace ChD3D11
 
 			void SetTexture(ID3D11DeviceContext* _dc);
 
-			void SetImportLightPowMap(ChPtr::Shared<TextureBase11>& _lightPowMap);
-
-			///////////////////////////////////////////////////////////////////////////////////
-			//GetFunction//
+#ifdef CRT
+			void SetImportLightPowMap(ChPtr::Shared<TextureBase11>& _lightPowMap)
+			{
+				if (!*this)return;
+				importLightPowMap = _lightPowMap;
+			}
+#endif
+		
+		public://Get Functions//
 
 			inline ChLightData GetLightData() { return lightDatas; }
 
@@ -95,7 +93,11 @@ namespace ChD3D11
 
 			inline UseColorType GetColorType() { return static_cast<UseColorType>(lightDatas.colorType); }
 
-			///////////////////////////////////////////////////////////////////////////////////
+		private://Get Functions//
+
+			TextureBase11* GetImportLightPowMap();
+
+		public:
 
 			void ClearImportLightPowMap();
 
@@ -103,12 +105,16 @@ namespace ChD3D11
 
 			void Update(ID3D11DeviceContext* _dc);
 
+		private:
+
 			ChLightData lightDatas;
 			ConstantBuffer11<ChLightData> buf;
 			bool updateFlg = true;
 
 			Texture11 lightPow;
-			ChPtr::Weak<TextureBase11>importLightPowMap;
+#ifdef CRT
+			ChPtr::Shared<TextureBase11>importLightPowMap;
+#endif
 
 		};
 
@@ -116,5 +122,19 @@ namespace ChD3D11
 
 }
 
+#ifdef CRT
+
+TextureBase11* ChD3D11::CB::CBLight11::GetImportLightPowMap()
+{
+	return importLightPowMap.get();
+}
+
+
+void ChD3D11::CB::CBLight11::ClearImportLightPowMap()
+{
+	importLightPowMap = nullptr;
+}
+
+#endif
 
 #endif
