@@ -8,17 +8,13 @@ namespace ChD3D11
 {
 	namespace CB
 	{
-
 		class CBBone11 final :public CBBase11
 		{
-		public:
+		public://Constructor Destructor//
 
-			virtual ~CBBone11()
-			{
-				Release();
-			}
+			virtual ~CBBone11() { Release(); }
 
-		public:
+		public://Init And Releas//
 
 			void Init(ID3D11Device* _device);
 
@@ -40,9 +36,11 @@ namespace ChD3D11
 
 
 
-		private:
+		private://Update Functions
 
 			void Update(ID3D11DeviceContext* _dc);
+
+		private://Member Values//
 
 			ChBoneData bone;
 			ConstantBuffer11<ChBoneData> buf;
