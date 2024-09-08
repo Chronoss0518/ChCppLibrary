@@ -111,53 +111,87 @@ namespace ChD3D11
 
 	class Texture11 :public TextureBase11
 	{
-	public:
-
-		///////////////////////////////////////////////////////////////////////////////////////
-		//ConstructerDestructer//
+	public://Constructer Destructer//
 
 		Texture11() {}
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//CreateFunction//
+	public://Create Functions//
+
+
+#ifdef CRT
+#ifndef CPP20
 
 		void CreateTexture(
-			const std::string& _texPath
-			, ID3D11Device* _device);
+			const std::string& _texPath,
+			ID3D11Device* _device)
+		{
+			CreateTexture(ChStr::UTF8ToWString(_texPath), _device);
+		}
 
-		void CreateTexture(const std::string& _texPath);
+		void CreateTexture(const std::string& _texPath)
+		{
+			if (!D3D11API().IsInit())return;
+			ID3D11Device* tmpDevice = D3D11Device();
+			CreateTexture(ChStr::UTF8ToWString(_texPath), tmpDevice);
+		}
 
+#endif
 		void CreateTexture(
-			const std::wstring& _texPath
-			, ID3D11Device* _device);
+			const std::wstring& _texPath,
+			ID3D11Device* _device)
+		{
+			if (ChPtr::NullCheck(_device))return;
+			Release();
 
-		void CreateTexture(const std::wstring& _texPath);
+			device = _device;
+
+			if (FAILED(DirectX::CreateWICTextureFromFile(
+				device,
+				_texPath.c_str(),
+				(ID3D11Resource**)&baseTex,
+				&texView)))
+			{
+				Release();
+				return;
+			}
+
+			Init(_device);
+		}
+
+		void CreateTexture(const std::wstring& _texPath)
+		{
+			if (!D3D11API().IsInit())return;
+			ID3D11Device* tmpDevice = (D3D11Device());
+			CreateTexture(_texPath, tmpDevice);
+		}
+
+#endif
 
 		void CreateColorTexture(
-			ID3D11Device* _device
-			, const ChVec4& _color
-			, const unsigned long _width
-			, const unsigned long _height
-			, const unsigned int _CPUFlg = 0);
+			ID3D11Device* _device,
+			const ChVec4& _color,
+			const unsigned long _width,
+			const unsigned long _height,
+			const unsigned int _CPUFlg = 0);
 
 		void CreateColorTexture(
-			const ChVec4& _color
-			, const unsigned long _width
-			, const unsigned long _height
-			, const unsigned int _CPUFlg = 0);
+			const ChVec4& _color,
+			const unsigned long _width,
+			const unsigned long _height,
+			const unsigned int _CPUFlg = 0);
 
 		void CreateColorTexture(
-			ID3D11Device* _device
-			, const ChVec4* _colorArray
-			, const unsigned long _width
-			, const unsigned long _height
-			, const unsigned int _CPUFlg = 0);
+			ID3D11Device* _device,
+			const ChVec4* _colorArray,
+			const unsigned long _width,
+			const unsigned long _height,
+			const unsigned int _CPUFlg = 0);
 
 		void CreateColorTexture(
-			const ChVec4* _colorArray
-			, const unsigned long _width
-			, const unsigned long _height
-			, const unsigned int _CPUFlg = 0);
+			const ChVec4* _colorArray,
+			const unsigned long _width,
+			const unsigned long _height,
+			const unsigned int _CPUFlg = 0);
 
 		void CreateColorTexture(
 			ID3D11Device* _device,
@@ -181,15 +215,15 @@ namespace ChD3D11
 	public://Create Functions//
 
 		void CreateRenderTarget(
-			ID3D11Device* _device
-			, const unsigned long _width
-			, const unsigned long _height
-			, const unsigned int _CPUFlg = 0);
+			ID3D11Device* _device,
+			const unsigned long _width,
+			const unsigned long _height,
+			const unsigned int _CPUFlg = 0);
 
 		void CreateRenderTarget(
-			const unsigned long _width
-			, const unsigned long _height
-			, const unsigned int _CPUFlg = 0);
+			const unsigned long _width,
+			const unsigned long _height,
+			const unsigned int _CPUFlg = 0);
 
 	public://Set Functions//
 
@@ -216,35 +250,31 @@ namespace ChD3D11
 	public://Create Functions//
 
 		void CreateDepthBuffer(
-			ID3D11Device* _device
-			, const float& _width
-			, const float& _height
-			, const unsigned int _CPUFlg = 0);
+			ID3D11Device* _device,
+			const float& _width,
+			const float& _height,
+			const unsigned int _CPUFlg = 0);
 
 		void CreateDepthBuffer(
-			const float& _width
-			, const float& _height
-			, const unsigned int _CPUFlg = 0);
+			const float& _width,
+			const float& _height,
+			const unsigned int _CPUFlg = 0);
 
 	public://Other Functions//
 
 		void ClearDepthBuffer(
-			ID3D11DeviceContext* _dc
-			, const UINT _flgment = D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL);
+			ID3D11DeviceContext* _dc,
+			const UINT _flgment = D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL);
 
 	public://Get Functions//
 
-		ID3D11DepthStencilView* GetDSView()
-		{
-			return dsView;
-		}
+		ID3D11DepthStencilView* GetDSView() { return dsView; }
 
 	private://Member Values//
 
 		ID3D11DepthStencilView* dsView = nullptr;
 
 	};
-
-
 }
+
 #endif

@@ -160,73 +160,9 @@ void TextureBase11::CreateSRV()
 
 void TextureBase11::Init(ID3D11Device* _device)
 {
-
 	InitSampler();
 
 	device = _device;
-}
-
-void Texture11::CreateTexture(const std::string& _texPath)
-{
-	if (!D3D11API().IsInit())return;
-
-	ID3D11Device* tmpDevice = D3D11Device();
-
-	CreateTexture(_texPath, tmpDevice);
-
-}
-
-void Texture11::CreateTexture(const std::string& _texPath, ID3D11Device* _device)
-{
-	if (ChPtr::NullCheck(_device))return;
-
-	Release();
-
-	device = _device;
-
-	if (FAILED(DirectX::CreateWICTextureFromFile(
-		device
-		, ChStr::UTF8ToWString(_texPath).c_str()
-		, (ID3D11Resource**)&baseTex
-		, &texView)))
-	{
-		Release();
-		return;
-	}
-
-	Init(_device);
-}
-
-void Texture11::CreateTexture(const std::wstring& _texPath)
-{
-
-	if (!D3D11API().IsInit())return;
-
-	ID3D11Device* tmpDevice = (D3D11Device());
-
-	CreateTexture(_texPath, tmpDevice);
-}
-
-void Texture11::CreateTexture(const std::wstring& _texPath, ID3D11Device* _device)
-{
-
-	if (ChPtr::NullCheck(_device))return;
-
-	Release();
-
-	device = _device;
-
-	if (FAILED(DirectX::CreateWICTextureFromFile(
-		device
-		, _texPath.c_str()
-		, (ID3D11Resource**)&baseTex
-		, &texView)))
-	{
-		Release();
-		return;
-	}
-
-	Init(_device);
 }
 
 void Texture11::CreateColorTexture(
