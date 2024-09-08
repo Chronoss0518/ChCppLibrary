@@ -23,6 +23,12 @@ CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFT
 OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+#ifdef CRT
+
+#include"../../External/DirectXTex/WICTextureLoader/WICTextureLoader11.h"
+
+#endif
+
 #ifndef Ch_D3D11_Tex_h
 #define Ch_D3D11_Tex_h
 
