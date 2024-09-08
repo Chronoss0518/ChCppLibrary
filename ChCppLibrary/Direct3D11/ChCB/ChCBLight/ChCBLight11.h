@@ -124,7 +124,7 @@ namespace ChD3D11
 
 #ifdef CRT
 
-TextureBase11* ChD3D11::CB::CBLight11::GetImportLightPowMap()
+ChD3D11::TextureBase11* ChD3D11::CB::CBLight11::GetImportLightPowMap()
 {
 	return importLightPowMap.get();
 }
