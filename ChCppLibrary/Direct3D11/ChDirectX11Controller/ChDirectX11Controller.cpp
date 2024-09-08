@@ -26,61 +26,42 @@ void DirectX3D11::Init(
 #endif
 
 void DirectX3D11::Init(
-	HWND _hWnd
-	, const bool _fullScreenFlg
-	, const unsigned long _scrW
-	, const unsigned long _scrH)
+	HWND _hWnd,
+	const bool _fullScreenFlg,
+	const unsigned long _scrW,
+	const unsigned long _scrH)
 {
 	if (ChPtr::NullCheck(_hWnd))return;
-
 	
 	CreateDevice(_hWnd, _scrW, _scrH);
-
 	if (!IsInstanse())
 	{
 		PostQuitMessage(0);
 		return;
 	}
-
 	window->SetFullscreenState(_fullScreenFlg, nullptr);
 
 	SetInitFlg(true);
-
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void DirectX3D11::Release()
 {
-
 	if (ChPtr::NotNullCheck(device)) { device->Release(); device = nullptr; }
-
-	if (ChPtr::NotNullCheck(dContext))
-	{
-		dContext->ClearState();  dContext->Release(); dContext = nullptr;
-	}
-
+	if (ChPtr::NotNullCheck(dContext)){dContext->ClearState();  dContext->Release(); dContext = nullptr;}
 	if (ChPtr::NotNullCheck(window)) { window->Release(); window = nullptr; }
-
 	if (ChPtr::NotNullCheck(surface)) { surface->Release(); surface = nullptr; }
-
 	if (ChPtr::NotNullCheck(renderTarget)) { renderTarget->Release(); renderTarget = nullptr; }
 
 	SetInitFlg(false);
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 void DirectX3D11::CreateDevice(
-	HWND _hWnd
-	, const unsigned long _scrW
-	, const unsigned long _scrH)
+	HWND _hWnd,
+	const unsigned long _scrW,
+	const unsigned long _scrH)
 {
-
 	DXGI_SWAP_CHAIN_DESC scd;
-
-	ZeroMemory(&scd, sizeof(DXGI_SWAP_CHAIN_DESC));
-
+	ChStd::MZero(&scd);
 	scd.BufferCount = 1;
 	scd.BufferDesc.Width = static_cast<unsigned int>(createDeviceWitdh = _scrW);
 	scd.BufferDesc.Height = static_cast<unsigned int>(createDeviceHeight = _scrH);
@@ -92,16 +73,13 @@ void DirectX3D11::CreateDevice(
 
 	//画面出力//
 	scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-
 	//ハンドル紐づけ//
 	scd.OutputWindow = _hWnd;
-
 	//1ピクセルに使う中間補完色の数//
 	scd.SampleDesc.Count = 1;
-
 	//画質レベル//
 	scd.SampleDesc.Quality = 0;
-
+	
 	scd.Windowed = true;
 
 	//DirectXの機能設定//
@@ -110,20 +88,19 @@ void DirectX3D11::CreateDevice(
 
 	if (FAILED(D3D11CreateDeviceAndSwapChain
 	(
-		NULL
-		, D3D_DRIVER_TYPE_HARDWARE
-		, NULL
-		, D3D11_CREATE_DEVICE_FLAG::D3D11_CREATE_DEVICE_BGRA_SUPPORT
-		//,0
-		, lv
-		, 1
-		, D3D11_SDK_VERSION
-		, &scd
-		, &window
-		, &device
-		, &rLv
-		, &dContext
-	)))
+		NULL,
+		D3D_DRIVER_TYPE_HARDWARE,
+		NULL,
+		D3D11_CREATE_DEVICE_FLAG::D3D11_CREATE_DEVICE_BGRA_SUPPORT,
+		//0, 
+		lv,
+		1,
+		D3D11_SDK_VERSION,
+		&scd,
+		&window,
+		&device,
+		&rLv,
+		&dContext)))
 	{
 		Release();
 		return;
@@ -138,10 +115,7 @@ void DirectX3D11::CreateDevice(
 	ID3D11Texture2D* pBackBuffer = nullptr;
 
 	window->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
-
 	device->CreateRenderTargetView(pBackBuffer, nullptr, &renderTarget);
 
 	pBackBuffer->Release();
-
-
 }
