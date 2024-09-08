@@ -10,25 +10,20 @@ namespace ChD3D11
 	{
 		class CBBlur11 final :public CBBase11
 		{
-		public:
+		public://Constructor Destructor//
 
 			virtual ~CBBlur11()
 			{
 				Release();
 			}
 
-		public:
+		public://Init And Release//
 
-			///////////////////////////////////////////////////////////////////////////////////
-			//InitAndRelease//
-
-			void Init(
-				ID3D11Device* _device);
+			void Init(ID3D11Device* _device);
 
 			void Release()override;
 
-			///////////////////////////////////////////////////////////////////////////////////
-			//SetFunction//
+		public://Set Functions//
 
 			void SetGameWindowSize(const ChVec2& _size);
 
@@ -44,8 +39,7 @@ namespace ChD3D11
 
 			void SetShaderSpriteData(ID3D11DeviceContext* _dc);
 
-			///////////////////////////////////////////////////////////////////////////////////
-			//GetFunction//
+		public://Get Functions//
 
 			inline ChS_Blur GetBlurData() { return blurData; }
 
@@ -55,9 +49,11 @@ namespace ChD3D11
 
 			inline bool GetLiteBlurFlg() { return blurData.liteBlurFlg == 1; }
 
-		private:
+		private://Update Functions//
 
 			void UpdateSD(ID3D11DeviceContext* _dc);
+
+		private://Member Values//
 
 			ChS_Blur blurData;
 			ConstantBuffer11<ChS_Blur> blurBuf;
