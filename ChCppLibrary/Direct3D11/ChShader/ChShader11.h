@@ -10,13 +10,11 @@ namespace ChD3D11
 {
 	class DirectX3D11;
 
-	class Mesh11;
 	class TextureBase11;
 	class Texture11;
 	class RenderTarget11;
 	class DepthStencilTexture11;
 	class Sprite11;
-	class PolygonBoard11;
 
 	//※LightはShader内のBaseLightとPointLightを利用してください//
 	//独自で構築しているShaderクラス//
