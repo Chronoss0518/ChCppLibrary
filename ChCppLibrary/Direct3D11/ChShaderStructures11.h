@@ -9,16 +9,17 @@ namespace ChD3D11
 
 	struct ShaderUseMaterial11 :public Ch3D::Material
 	{
-		ChMat_11 frameMatrix;
+		ChLMat frameMatrix;
 	};
 
 	struct Material11
 	{
 		ShaderUseMaterial11 material;
 
+#ifdef CRT
 		std::string materialName;
-
 		std::map<Ch3D::TextureType, ChPtr::Shared<TextureBase11>>textures;
+#endif
 	};
 
 	struct SkinMeshVertex11 : public Ch3D::MeshVertex
@@ -29,9 +30,9 @@ namespace ChD3D11
 	struct BaseDatas
 	{
 		//ビュー変換行列//
-		ChMat_11 viewMat;
+		ChLMat viewMat;
 		//射影変換行列//
-		ChMat_11 projMat;
+		ChLMat projMat;
 		//画面サイズ//
 		ChVec4 windSize;
 	};
@@ -39,15 +40,15 @@ namespace ChD3D11
 	struct CharaDatas
 	{
 		//モデル行列//
-		ChMat_11 modelMat;
+		ChLMat modelMat;
 
-		ChMat_11 frameMatrix;
+		ChLMat frameMatrix;
 	};
 
 	struct PolygonDatas
 	{
 		//モデル行列//
-		ChMat_11 modelMat;
+		ChLMat modelMat;
 		//スプライトベース色//
 		ChVec4 baseColor = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
 	};
@@ -56,15 +57,9 @@ namespace ChD3D11
 	{
 	public:
 
-		virtual ~ShaderObjectBase11()
-		{
-			Release();
-		}
+		virtual ~ShaderObjectBase11() { Release(); }
 
-	public:
-
-		///////////////////////////////////////////////////////////////////////////////////////
-		//InitAndRelease//
+	public://Init And Release//
 
 		inline void Init() { SetInitFlg(true); }
 
@@ -76,29 +71,18 @@ namespace ChD3D11
 			buf = nullptr;
 		};
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//AddFunction//
+	public://Add Functions//
 
 		//Flgメソッド//
-		inline void AddCPUAccessFlg(const D3D11_CPU_ACCESS_FLAG& _flg)
-		{
-			cpuAccessFlg |= _flg;
-		}
+		inline void AddCPUAccessFlg(const D3D11_CPU_ACCESS_FLAG& _flg) { cpuAccessFlg |= _flg; }
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
+	public://Set Functions//
 
 		//Flgメソッド//
-		inline void SetUsageFlg(const D3D11_USAGE& _flg)
-		{
-			usage = _flg;
-		}
+		inline void SetUsageFlg(const D3D11_USAGE& _flg) { usage = _flg; }
 
 		//Flgメソッド//
-		inline void SetCPUAccessFlg(const D3D11_CPU_ACCESS_FLAG& _flg)
-		{
-			cpuAccessFlg = _flg;
-		}
+		inline void SetCPUAccessFlg(const D3D11_CPU_ACCESS_FLAG& _flg) { cpuAccessFlg = _flg; }
 
 		template<class T>
 		inline void SetDynamicBuffer(ID3D11DeviceContext* _dc, const T* _buf, const unsigned long _bufSize)
@@ -116,8 +100,7 @@ namespace ChD3D11
 			_dc->Unmap(buf, 0);
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//UpdateFunction//
+	public://Update Functions//
 
 		template<class T>
 		inline void UpdateResouce(
@@ -132,32 +115,26 @@ namespace ChD3D11
 			_dc->UpdateSubresource(buf, 0, nullptr, _content, 0, 0);
 		}
 
-	protected:
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//CreateFunction//
+	protected://Create Functions//
 
 		template<class T>
 		inline D3D11_BUFFER_DESC CreateBufferDesc(const unsigned long _num)
 		{
-
 			D3D11_BUFFER_DESC desc;
-			ZeroMemory(&desc, sizeof(D3D11_BUFFER_DESC));
+			ChStd::MZero(&desc);
 			desc.ByteWidth = sizeof(T) * _num;
 			desc.Usage = usage;
 			desc.BindFlags = bindFlg;
 			desc.CPUAccessFlags = cpuAccessFlg;
 			desc.MiscFlags = 0;
 			desc.StructureByteStride = 0;
-
 			return desc;
 		}
-
 
 		inline D3D11_SUBRESOURCE_DATA CreateSubresourceData(void* _buf)
 		{
 			D3D11_SUBRESOURCE_DATA data;
-			ZeroMemory(&data, sizeof(D3D11_SUBRESOURCE_DATA));
+			ChStd::MZero(&data);
 			data.pSysMem = _buf;
 			data.SysMemPitch = 0;
 			data.SysMemSlicePitch = 0;
@@ -165,7 +142,7 @@ namespace ChD3D11
 			return data;
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////
+	protected:
 
 		ID3D11Buffer* buf = nullptr;
 
@@ -178,14 +155,9 @@ namespace ChD3D11
 	{
 	public:
 
-		virtual ~IndexBuffer11()
-		{
-			Release();
-		}
+		virtual ~IndexBuffer11() { Release(); }
 
-	public:
-		///////////////////////////////////////////////////////////////////////////////////////
-		//CreateFunction//
+	public://Create Functions//
 
 		//Createを呼ぶ前に必要な場合はフラグ関係を操作するメソッドを呼びます//
 		inline void CreateBuffer(
@@ -196,15 +168,10 @@ namespace ChD3D11
 			if (ChPtr::NullCheck(_device))return;
 
 			Release();
-
 			bindFlg = D3D11_BIND_INDEX_BUFFER;
-
 			D3D11_BUFFER_DESC desc = CreateBufferDesc<unsigned long>(_indexNum);
-
 			D3D11_SUBRESOURCE_DATA data = CreateSubresourceData(_indexBuffer);
-
 			format = DXGI_FORMAT_R32_UINT;
-
 			_device->CreateBuffer(&desc, &data, &buf);
 
 			Init();
@@ -219,32 +186,26 @@ namespace ChD3D11
 			if (ChPtr::NullCheck(_device))return;
 
 			Release();
-
 			bindFlg = D3D11_BIND_INDEX_BUFFER;
-
 			D3D11_BUFFER_DESC desc = CreateBufferDesc<unsigned char>(_indexNum);
-
 			D3D11_SUBRESOURCE_DATA data = CreateSubresourceData(_indexBuffer);
-
 			format = DXGI_FORMAT_R8_UINT;
-
 			_device->CreateBuffer(&desc, &data, &buf);
 
 			Init();
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
+	public://Set Functions//
 
 		inline void SetIndexBuffer(ID3D11DeviceContext* _dc)
 		{
 			if (!*this)return;
 			if (ChPtr::NullCheck(_dc))return;
-
 			_dc->IASetIndexBuffer(buf, format, 0);
 		}
 
 	private:
+
 		DXGI_FORMAT format = DXGI_FORMAT_R32_UINT;
 
 	};
@@ -259,10 +220,7 @@ namespace ChD3D11
 			Release();
 		}
 
-	public:
-
-		///////////////////////////////////////////////////////////////////////////////////////
-		//CreateFunction//
+	public://Create Functions//
 
 		//Createを呼ぶ前に必要な場合はフラグ関係を操作するメソッドを呼びます//
 		inline void CreateBuffer(
@@ -274,20 +232,15 @@ namespace ChD3D11
 			if (ChPtr::NullCheck(_vertexArray))return;
 
 			Release();
-
 			bindFlg = D3D11_BIND_VERTEX_BUFFER;
-
 			D3D11_BUFFER_DESC desc = CreateBufferDesc<vertex>(_vertexNum);
-
 			D3D11_SUBRESOURCE_DATA data = CreateSubresourceData(_vertexArray);
-
 			_device->CreateBuffer(&desc, &data, &buf);
 
 			Init();
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
+	public://Set Functions//
 
 		inline void SetVertexBuffer(
 			ID3D11DeviceContext* _dc,
@@ -298,7 +251,6 @@ namespace ChD3D11
 			if (ChPtr::NullCheck(_dc))return;
 
 			unsigned int strides = sizeof(vertex);
-
 			_dc->IASetVertexBuffers(0, 1, &buf, &strides, &_offset);
 		}
 
@@ -308,14 +260,12 @@ namespace ChD3D11
 			const unsigned int _bufferCount,
 			const unsigned int _offset)
 		{
-
 			if (!*this)return;
 			if (ChPtr::NullCheck(_dc))return;
 			unsigned int strides = sizeof(vertex);
 
 			_dc->IASetVertexBuffers(_startSlot, _bufferCount, &buf, &strides, &_offset);
 		}
-
 	};
 
 	template<class content>
@@ -323,10 +273,7 @@ namespace ChD3D11
 	{
 	public:
 
-		virtual ~ConstantBuffer11()
-		{
-			Release();
-		}
+		virtual ~ConstantBuffer11() { Release(); }
 
 	public://Create Functions//
 
@@ -338,17 +285,11 @@ namespace ChD3D11
 			if (ChPtr::NullCheck(_device))return;
 
 			Release();
-
 			bindFlg = D3D11_BIND_CONSTANT_BUFFER;
-
 			D3D11_BUFFER_DESC desc = CreateBufferDesc<content>(1);
-
 			unsigned long makeUpBuffer = desc.ByteWidth % 16;
-
 			desc.ByteWidth = makeUpBuffer == 0 ? desc.ByteWidth : desc.ByteWidth + (16 - makeUpBuffer);
-
 			_device->CreateBuffer(&desc, nullptr, &buf);
-
 			registerNo = _registerNo;
 
 			Init();
@@ -366,7 +307,6 @@ namespace ChD3D11
 			if (ChPtr::NullCheck(_dc))return;
 
 			_dc->VSSetConstantBuffers(registerNo, updateCount, &buf);
-
 		}
 
 		inline void SetToGeometryShader(
@@ -377,7 +317,6 @@ namespace ChD3D11
 			if (ChPtr::NullCheck(_dc))return;
 
 			_dc->GSSetConstantBuffers(registerNo, updateCount, &buf);
-
 		}
 
 		inline void SetToHullShader(
@@ -388,7 +327,6 @@ namespace ChD3D11
 			if (ChPtr::NullCheck(_dc))return;
 
 			_dc->HSSetConstantBuffers(registerNo, updateCount, &buf);
-
 		}
 
 		inline void SetToDomainShader(
@@ -399,7 +337,6 @@ namespace ChD3D11
 			if (ChPtr::NullCheck(_dc))return;
 
 			_dc->DSSetConstantBuffers(registerNo, updateCount, &buf);
-
 		}
 
 		inline void SetToPixelShader(
@@ -410,7 +347,6 @@ namespace ChD3D11
 			if (ChPtr::NullCheck(_dc))return;
 
 			_dc->PSSetConstantBuffers(registerNo, updateCount, &buf);
-
 		}
 
 		inline void SetToComputeShader(
@@ -421,7 +357,6 @@ namespace ChD3D11
 			if (ChPtr::NullCheck(_dc))return;
 
 			_dc->CSSetConstantBuffers(registerNo, updateCount, &buf);
-
 		}
 
 	public://Get Functions//
