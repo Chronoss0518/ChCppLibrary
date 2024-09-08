@@ -11,32 +11,11 @@ using namespace CB;
 void CBBase11::Init(ID3D11Device* _device)
 {
 	device = _device;
-
 	SetInitFlg(true);
-}
-
-void CBBase11::SetShaderTexture(ID3D11DeviceContext* _dc, ChPtr::Weak<TextureBase11> _tex, TextureBase11& _defaultTex, const unsigned long _registerNo)
-{
-
-	if (ChPtr::NullCheck(_dc))return;
-
-	TextureBase11* tmpTex = &_defaultTex;
-
-	if (!_tex.expired())
-	{
-		auto tex = _tex.lock();
-		if (tex->IsTex())
-		{
-			tmpTex = tex.get();
-		}
-	}
-
-	tmpTex->SetDrawData(_dc, _registerNo);
 }
 
 void CBBase11::SetShaderTexture(ID3D11DeviceContext* _dc, TextureBase11* _tex, TextureBase11& _defaultTex, const unsigned long _registerNo)
 {
-
 	if (ChPtr::NullCheck(_dc))return;
 
 	TextureBase11* tmpTex = &_defaultTex;

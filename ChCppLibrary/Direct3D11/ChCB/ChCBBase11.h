@@ -15,8 +15,12 @@ namespace ChD3D11
 
 		protected:
 
-			void SetShaderTexture(ID3D11DeviceContext* _dc, ChPtr::Weak<TextureBase11> _tex, TextureBase11& _defaultTex, const unsigned long _registerNo);
-
+#ifdef CRT
+			void SetShaderTexture(ID3D11DeviceContext* _dc, ChPtr::Weak<TextureBase11> _tex, TextureBase11& _defaultTex, const unsigned long _registerNo)
+			{
+				SetShaderTexture(_dc, _tex.lock().get(), _defaultTex, _registerNo);
+			}
+#endif
 			void SetShaderTexture(ID3D11DeviceContext* _dc, TextureBase11*  _tex, TextureBase11& _defaultTex, const unsigned long _registerNo);
 
 			inline ID3D11Device* GetDevice() { return device; };
