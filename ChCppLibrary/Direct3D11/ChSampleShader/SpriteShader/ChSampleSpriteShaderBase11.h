@@ -14,12 +14,9 @@ namespace ChD3D11
 
 		class SampleSpriteShaderBase11 :public SampleShaderBase11
 		{
-		public:
+		public://Constructor Destructor//
 
-			virtual ~SampleSpriteShaderBase11()
-			{
-				Release();
-			}
+			virtual ~SampleSpriteShaderBase11(){Release();}
 
 		public://Init And Release//
 

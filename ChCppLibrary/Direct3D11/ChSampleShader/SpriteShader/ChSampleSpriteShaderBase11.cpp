@@ -21,13 +21,11 @@ void SampleSpriteShaderBase11::Init(ID3D11Device* _device)
 
 	spriteData.Init(_device, &GetWhiteTexture());
 
-	std::array<Ch3D::Vertex, 4> vertexs;
+	Ch3D::Vertex vertexs[4];
+	vertexBuffer.CreateBuffer(_device, &vertexs[0], 4);
 
-	vertexBuffer.CreateBuffer(_device, &vertexs[0], vertexs.size());
-
-	std::array<unsigned long, 6> indexs = { 0,1,2,0,2,3 };
-
-	indexBuffer.CreateBuffer(_device, &indexs[0], indexs.size());
+	unsigned long indexs[] = {0,1,2,0,2,3};
+	indexBuffer.CreateBuffer(_device, &indexs[0], 6);
 
 	D3D11_RASTERIZER_DESC desc
 	{
@@ -51,7 +49,6 @@ void SampleSpriteShaderBase11::Release()
 	if (!IsInit())return;
 
 	SampleShaderBase11::Release();
-
 	spriteData.Release();
 }
 
@@ -75,5 +72,4 @@ void SampleSpriteShaderBase11::DrawStart(ID3D11DeviceContext* _dc)
 	if (IsDraw())return;
 
 	SampleShaderBase11::DrawStart(_dc);
-
 }
