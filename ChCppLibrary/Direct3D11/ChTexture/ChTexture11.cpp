@@ -78,7 +78,7 @@ void TextureBase11::Release()
 void TextureBase11::InitSampler()
 {
 
-	ZeroMemory(&sDesc, sizeof(D3D11_SAMPLER_DESC));
+	ChStd::MZero(&sDesc);
 	sDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 	sDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	sDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -95,9 +95,7 @@ void TextureBase11::UpdateSampler()
 		sampler->Release();
 		sampler = nullptr;
 	}
-
 	device->CreateSamplerState(&sDesc, &sampler);
-
 	sdUpdateFlg = false;
 }
 
@@ -109,9 +107,7 @@ void TextureBase11::SetDrawData(ID3D11DeviceContext* _dc, unsigned int _textureN
 
 	_dc->PSSetShaderResources(_textureNo, 1, &texView);
 	_dc->PSSetSamplers(_textureNo, 1, &sampler);
-
 }
-
 
 D3D11_TEXTURE2D_DESC TextureBase11::GetTextureDesc()
 {
@@ -119,9 +115,7 @@ D3D11_TEXTURE2D_DESC TextureBase11::GetTextureDesc()
 	ChStd::MZero(&res);
 
 	if (ChPtr::NullCheck(baseTex))return res;
-
 	baseTex->GetDesc(&res);
-
 	return res;
 }
 
@@ -138,15 +132,11 @@ ChMath::Vector2Base<unsigned int> TextureBase11::GetTextureSize()
 
 void TextureBase11::CreateSRV()
 {
-
-
 	if (ChPtr::NullCheck(baseTex))return;
 
 	D3D11_TEXTURE2D_DESC txDesc;
 
 	baseTex->GetDesc(&txDesc);
-
-
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC desc;
 	desc.Format = txDesc.Format;
@@ -155,37 +145,32 @@ void TextureBase11::CreateSRV()
 	desc.Texture2D.MostDetailedMip = 0;
 
 	device->CreateShaderResourceView(baseTex, &desc, &texView);
-
 }
 
 void TextureBase11::Init(ID3D11Device* _device)
 {
 	InitSampler();
-
 	device = _device;
 }
 
 void Texture11::CreateColorTexture(
-	const ChVec4& _color
-	, const unsigned long _width
-	, const unsigned long _height
-	, const unsigned int _CPUFlg)
+	const ChVec4& _color,
+	const unsigned long _width,
+	const unsigned long _height,
+	const unsigned int _CPUFlg)
 {
-
-
 	if (!D3D11API().IsInit())return;
 
 	ID3D11Device* tmpDevice = (D3D11Device());
-
 	CreateColorTexture(tmpDevice, _color,_width,_height, _CPUFlg);
 }
 
 void Texture11::CreateColorTexture(
-	ID3D11Device* _device
-	, const ChVec4& _color
-	, const unsigned long _width
-	, const unsigned long _height
-	, const unsigned int _CPUFlg)
+	ID3D11Device* _device,
+	const ChVec4& _color,
+	const unsigned long _width,
+	const unsigned long _height,
+	const unsigned int _CPUFlg)
 {
 
 	if (ChPtr::NullCheck(_device))return;
@@ -193,13 +178,12 @@ void Texture11::CreateColorTexture(
 	if (_width >= D3D11_REQ_TEXTURE2D_U_OR_V_DIMENSION
 		|| _height >= D3D11_REQ_TEXTURE2D_U_OR_V_DIMENSION)return;
 
-
 	Release();
 
 	device = _device;
 
 	D3D11_TEXTURE2D_DESC Desc;
-	ZeroMemory(&Desc, sizeof(Desc));
+	ChStd::MZero(&Desc);
 	Desc.Width = _width;
 	Desc.Height = _height;
 	Desc.MipLevels = 1;
@@ -231,31 +215,27 @@ void Texture11::CreateColorTexture(
 	device->CreateTexture2D(&Desc, &Data, &baseTex);
 
 	CreateSRV();
-
 	Init(_device);
 }
 
 void Texture11::CreateColorTexture(
-	const ChVec4* _colorArray
-	, const unsigned long _width
-	, const unsigned long _height
-	, const unsigned int _CPUFlg)
+	const ChVec4* _colorArray,
+	const unsigned long _width,
+	const unsigned long _height,
+	const unsigned int _CPUFlg)
 {
-
-
 	if (!D3D11API().IsInit())return;
 
 	ID3D11Device* tmpDevice = (D3D11Device());
-
 	CreateColorTexture(tmpDevice, _colorArray, _width, _height,_CPUFlg);
 }
 
 void Texture11::CreateColorTexture(
-	ID3D11Device* _device
-	, const ChVec4* _colorArray
-	, const unsigned long _width
-	, const unsigned long _height
-	, const unsigned int _CPUFlg)
+	ID3D11Device* _device,
+	const ChVec4* _colorArray,
+	const unsigned long _width,
+	const unsigned long _height,
+	const unsigned int _CPUFlg)
 {
 
 	if (ChPtr::NullCheck(_device))return;
@@ -263,13 +243,12 @@ void Texture11::CreateColorTexture(
 	if (_width >= D3D11_REQ_TEXTURE2D_U_OR_V_DIMENSION
 		|| _height >= D3D11_REQ_TEXTURE2D_U_OR_V_DIMENSION)return;
 
-
 	Release();
 
 	device = _device;
 
 	D3D11_TEXTURE2D_DESC Desc;
-	ZeroMemory(&Desc, sizeof(Desc));
+	ChStd::MZero(&Desc);
 	Desc.Width = _width;
 	Desc.Height = _height;
 	Desc.MipLevels = 1;
@@ -312,7 +291,6 @@ void Texture11::CreateColorTexture(
 	if (!D3D11API().IsInit())return;
 
 	ID3D11Device* tmpDevice = (D3D11Device());
-
 	CreateColorTexture(tmpDevice, _bitmap, _CPUFlg);
 }
 
@@ -338,7 +316,7 @@ void Texture11::CreateColorTexture(
 	device = _device;
 
 	D3D11_TEXTURE2D_DESC Desc;
-	ZeroMemory(&Desc, sizeof(Desc));
+	ChStd::MZero(&Desc);
 	Desc.Width = wicRect.Width;
 	Desc.Height = wicRect.Height;
 	Desc.MipLevels = 1;
@@ -388,16 +366,15 @@ void Texture11::CreateColorTexture(
 
 void RenderTarget11::Release()
 {
-
 	if (ChPtr::NotNullCheck(rtView)) { rtView->Release(); rtView = nullptr; }
 
 	TextureBase11::Release();
 }
 
 void RenderTarget11::CreateRenderTarget(
-	const unsigned long _width
-	, const unsigned long _height
-	, const unsigned int _CPUFlg)
+	const unsigned long _width,
+	const unsigned long _height,
+	const unsigned int _CPUFlg)
 {
 
 	if (!D3D11API().IsInit())return;
@@ -408,12 +385,11 @@ void RenderTarget11::CreateRenderTarget(
 }
 
 void RenderTarget11::CreateRenderTarget(
-	ID3D11Device* _device
-	, const unsigned long _width
-	, const unsigned long _height
-	, const unsigned int _CPUFlg)
+	ID3D11Device* _device,
+	const unsigned long _width,
+	const unsigned long _height,
+	const unsigned int _CPUFlg)
 {
-
 	if (ChPtr::NullCheck(_device))return;
 
 	Release();
@@ -421,7 +397,7 @@ void RenderTarget11::CreateRenderTarget(
 	device = _device;
 
 	D3D11_TEXTURE2D_DESC Desc;
-	ZeroMemory(&Desc, sizeof(Desc));
+	ChStd::MZero(&Desc);
 	Desc.Width = _width;
 	Desc.Height = _height;
 	Desc.MipLevels = 1;
@@ -452,24 +428,21 @@ void RenderTarget11::CreateRenderTarget(
 void RenderTarget11::SetBackColor(ID3D11DeviceContext* _dc, const ChVec4& _backColor)
 {
 	if (ChPtr::NullCheck(_dc))return;
-
 	_dc->ClearRenderTargetView(rtView, _backColor.val.GetVal());
 }
 
 void DepthStencilTexture11::Release()
 {
-
 	if (ChPtr::NotNullCheck(dsView)) { dsView->Release(); dsView = nullptr; }
 
 	TextureBase11::Release();
 }
 
 void DepthStencilTexture11::CreateDepthBuffer(
-	const float& _width
-	, const float& _height
-	, const unsigned int _CPUFlg)
+	const float& _width,
+	const float& _height,
+	const unsigned int _CPUFlg)
 {
-
 	if (!D3D11API().IsInit())return;
 
 	ID3D11Device* tmpDevice = (D3D11Device());
@@ -478,10 +451,10 @@ void DepthStencilTexture11::CreateDepthBuffer(
 }
 
 void DepthStencilTexture11::CreateDepthBuffer(
-	ID3D11Device* _device
-	, const float& _width
-	, const float& _height
-	, const unsigned int _CPUFlg)
+	ID3D11Device* _device,
+	const float& _width,
+	const float& _height,
+	const unsigned int _CPUFlg)
 {
 	if (ChPtr::NullCheck(_device))return;
 
@@ -490,7 +463,7 @@ void DepthStencilTexture11::CreateDepthBuffer(
 	device = _device;
 
 	D3D11_TEXTURE2D_DESC txDesc;
-	ZeroMemory(&txDesc, sizeof(txDesc));
+	ChStd::MZero(&txDesc);
 	txDesc.Width = static_cast<unsigned int>(_width);
 	txDesc.Height = static_cast<unsigned int>(_height);
 	txDesc.MipLevels = 1;
@@ -506,9 +479,8 @@ void DepthStencilTexture11::CreateDepthBuffer(
 
 	if (ChPtr::NullCheck(baseTex))return;
 
-
 	D3D11_DEPTH_STENCIL_VIEW_DESC dsDesc;
-	ZeroMemory(&dsDesc, sizeof(dsDesc));
+	ChStd::MZero(&dsDesc);
 	dsDesc.Format = txDesc.Format;
 	dsDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	dsDesc.Texture2D.MipSlice = 0;
@@ -521,10 +493,9 @@ void DepthStencilTexture11::CreateDepthBuffer(
 }
 
 void DepthStencilTexture11::ClearDepthBuffer(
-	ID3D11DeviceContext* _dc
-	, const UINT _flgment)
+	ID3D11DeviceContext* _dc,
+	const UINT _flgment)
 {
 	if (ChPtr::NullCheck(_dc))return;
-
 	_dc->ClearDepthStencilView(dsView, _flgment, 1.0f, 0);
 }
