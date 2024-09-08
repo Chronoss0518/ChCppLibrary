@@ -86,8 +86,7 @@ void DirectX3D11::CreateDevice(
 	D3D_FEATURE_LEVEL lv[] = { D3D_FEATURE_LEVEL_11_0 };
 	D3D_FEATURE_LEVEL rLv;
 
-	if (FAILED(D3D11CreateDeviceAndSwapChain
-	(
+	if (FAILED(D3D11CreateDeviceAndSwapChain(
 		NULL,
 		D3D_DRIVER_TYPE_HARDWARE,
 		NULL,
