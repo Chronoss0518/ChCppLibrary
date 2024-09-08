@@ -14,7 +14,7 @@ namespace ChD3D11
 
 			virtual ~CBBone11() { Release(); }
 
-		public://Init And Releas//
+		public://Init And Release//
 
 			void Init(ID3D11Device* _device);
 
