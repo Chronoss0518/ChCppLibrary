@@ -15,12 +15,12 @@ bool ChSystem::BaseSystem::IsPushKey(const int _Key)
 {
 	SetKeyCode();
 
-	if (buttonList->GetBitFlg(_Key))
+	if (buttonList.GetBitFlg(_Key))
 	{
-		isNowPush->SetBitTrue(_Key);
+		isNowPush.SetBitTrue(_Key);
 		return true;
 	}
-	isNowPush->SetBitFalse(_Key);
+	isNowPush.SetBitFalse(_Key);
 	return false;
 }
 
@@ -28,16 +28,16 @@ bool ChSystem::BaseSystem::IsPushKeyNoHold(const int _Key)
 {
 	SetKeyCode();
 
-	if (buttonList->GetBitFlg(_Key))
+	if (buttonList.GetBitFlg(_Key))
 	{
-		if (!isNowPush->GetBitFlg(_Key))
+		if (!isNowPush.GetBitFlg(_Key))
 		{
-			isNowPush->SetBitTrue(_Key);
+			isNowPush.SetBitTrue(_Key);
 			return true;
 		}
 		return false;
 	}
-	isNowPush->SetBitFalse(_Key);
+	isNowPush.SetBitFalse(_Key);
 	return false;
 }
 

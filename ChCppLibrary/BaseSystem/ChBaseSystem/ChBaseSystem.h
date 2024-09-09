@@ -11,22 +11,12 @@ namespace ChSystem
 
 	class BaseSystem : public ChCp::Initializer
 	{
-	public:
+	protected:
 
-		BaseSystem()
-		{
-#ifdef CRT
-			buttonList = new ChCpp::BitBool();
-			isNowPush = new ChCpp::BitBool();
-#endif
-		}
+		BaseSystem() {}
 
 		virtual ~BaseSystem()
 		{
-#ifdef CRT
-			delete buttonList;
-			delete isNowPush;
-#endif
 			Release();
 		}
 
@@ -116,8 +106,8 @@ namespace ChSystem
 		long double lastFPSPoint = 0;
 		unsigned long lastFPSTime = 0;
 
-		ChCpp::BitBool* buttonList = nullptr;
-		ChCpp::BitBool* isNowPush = nullptr;
+		ChCpp::BitBool buttonList;
+		ChCpp::BitBool isNowPush;
 
 	};
 
@@ -145,19 +135,10 @@ namespace ChSystem
 
 			return ChPtr::SafeCast<C>(baseSystems);
 		}
-
-		inline virtual void Release()
-		{
-			if (!*this)return;
-
-			if (ChPtr::NotNullCheck(baseSystems))
-			{
-				delete baseSystems;
-				baseSystems = nullptr;
-			}
-			SetInitFlg(false);
-		}
 #endif
+
+		virtual void Release();
+	
 	public://SetFunction//
 
 		//ëSëÃÇ≈óòópÇ∑ÇÈFPSÇä«óù//
@@ -239,12 +220,10 @@ namespace ChSystem
 
 		SystemManager() {}
 
-#ifdef CRT
 		~SystemManager()
 		{
 			Release();
 		}
-#endif
 	public:
 
 		static SystemManager& GetIns()
@@ -255,9 +234,23 @@ namespace ChSystem
 		}
 
 	};
-
 	inline SystemManager& SysManager() { return SystemManager::GetIns(); };
-
 }
+
+#ifdef CRT
+
+virtual void ChSystem::SystemManager::Release()
+{
+	if (!*this)return;
+
+	if (ChPtr::NotNullCheck(baseSystems))
+	{
+		delete baseSystems;
+		baseSystems = nullptr;
+	}
+	SetInitFlg(false);
+}
+
+#endif
 
 #endif
