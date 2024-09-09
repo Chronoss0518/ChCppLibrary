@@ -5,6 +5,7 @@
 
 namespace ChCpp
 {
+	//累積和を行うためのクラス//
 	template<typename CharaType>
 	class Cumulative:public Counter
 	{
@@ -66,7 +67,6 @@ namespace ChCpp
 
 #ifdef CRT
 
-//確認したい値を入れる//
 template<typename CharaType>
 long ChCpp::Cumulative<CharaType>::Update(CharaType _value)
 {
