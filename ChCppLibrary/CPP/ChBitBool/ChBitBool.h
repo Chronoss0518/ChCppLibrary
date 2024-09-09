@@ -14,6 +14,13 @@ namespace ChCpp
 
 		virtual ~BitBool();
 
+
+	private://Init And Release//
+
+		void CRTInit();
+
+		void CRTRelease();
+
 	public://Set Functions//
 
 		//第一引数はアドレス内の一番小さいビットから数えた数値を入力//
@@ -77,13 +84,20 @@ namespace ChCpp
 
 		unsigned char& GetFlgs(const unsigned char _argsNum);
 
+	private:
+
+		struct BitBoolCRT
+		{
+#ifdef CRT
+			std::vector<unsigned char> flgs = { 0 };
+#endif
+		};
+
+		BitBoolCRT* value = nullptr;
+
 	protected://Member Value//
 
-#ifdef CRT
-
-		std::vector<unsigned char> flgs = { 0 };
-
-#endif
+		BitBoolCRT& ValueIns() { return *value; }
 	};
 
 }
@@ -92,21 +106,34 @@ namespace ChCpp
 ChCpp::BitBool::BitBool()
 {
 	flgs.resize(1);
+	CRTInit();
 }
 
 ChCpp::BitBool::BitBool(const unsigned char _size)
 {
 	SetSize(_size);
+	CRTInit();
 }
 
 ChCpp::BitBool::~BitBool()
 {
 	flgs.clear();
+	CRTRelease();
+}
+
+void ChCpp::BitBool::CRTInit()
+{
+	value = new BitBoolCRT();
+}
+
+void ChCpp::BitBool::CRTRelease()
+{
+	delete value;
 }
 
 void ChCpp::BitBool::SetAllDownFlg()
 {
-	for (auto&& flg : flgs)
+	for (auto&& flg : ValueIns().flgs)
 	{
 		flg = 0;
 	}
@@ -115,23 +142,23 @@ void ChCpp::BitBool::SetAllDownFlg()
 void ChCpp::BitBool::SetSize(const unsigned char _byteCount)
 {
 	if (_byteCount <= 0)return;
-	flgs.resize(_byteCount);
+	ValueIns().flgs.resize(_byteCount);
 }
 
 unsigned long  ChCpp::BitBool::GetSize()
 {
-	return static_cast<unsigned long>(flgs.size() * 8);
+	return static_cast<unsigned long>(ValueIns().flgs.size() * 8);
 }
 
 unsigned char& ChCpp::BitBool::GetFlgs(const unsigned char _argsNum)
 {
-	return flgs[_argsNum];
+	return ValueIns().flgs[_argsNum];
 }
 
 unsigned char ChCpp::BitBool::GetValue(const unsigned char _num)
 {
-	if (flgs.size() < _num)return 0;
-	return flgs[_num];
+	if (ValueIns().flgs.size() < _num)return 0;
+	return ValueIns().flgs[_num];
 }
 
 #endif
