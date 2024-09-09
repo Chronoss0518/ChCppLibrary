@@ -60,10 +60,6 @@ namespace ChCpp
 
 	public:
 
-		virtual ~BasicObject() { Release(); }
-
-	public:
-
 		friend BaseComponent;
 
 	protected:
@@ -312,7 +308,9 @@ protected://Get Functions//
 
 	protected:
 
-		BaseObject(){}
+		BaseObject();
+
+		virtual ~BaseObject();
 
 	public:
 
@@ -489,7 +487,7 @@ void ChCpp::BaseComponent::DestroyObject()
 
 ChCpp::BasicObject::BasicObject()
 {
-	value = new BasicObject();
+	value = new BasicObjectCRT();
 }
 
 ChCpp::BasicObject::~BasicObject()
@@ -709,6 +707,18 @@ CH_OBJECT_FUNCTION(DrawBegin);
 CH_OBJECT_FUNCTION(Draw2D);
 CH_OBJECT_FUNCTION(Draw3D);
 CH_OBJECT_FUNCTION(DrawEnd);
+
+template<typename CharaType>
+ChCpp::BaseObject<CharaType>::BaseObject()
+{
+	value = new BaseObjectCRT();
+}
+
+template<typename CharaType>
+ChCpp::BaseObject<CharaType>::~BaseObject()
+{
+	delete value;
+}
 
 template<typename CharaType>
 void ChCpp::BaseObject<CharaType>::BaseRelease()
