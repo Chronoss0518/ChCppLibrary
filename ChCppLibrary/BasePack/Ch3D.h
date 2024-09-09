@@ -21,13 +21,12 @@ namespace Ch3D
 	{
 		ChVec3 pos;
 	};
-#ifdef CRT
+
 	void SetPosition(Position* _pos, const ChVec3& _val)
 	{
 		if (ChPtr::NullCheck(_pos))return;
 		_pos->pos = _val;
 	}
-#endif
 
 	//ç∂è„Ç™0.0,0.0ÇÃç¿ïWån//
 	struct UV
@@ -35,52 +34,44 @@ namespace Ch3D
 		ChVec2 uv;
 	};
 
-#ifdef CRT
 	void SetUV(UV* _uv, const ChVec2& _val)
 	{
 		if (ChPtr::NullCheck(_uv))return;
 		_uv->uv = _val;
 	}
-#endif
 
 	struct Color
 	{
 		ChVec4 color = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
 	};
 
-#ifdef CRT
 	void SetColor(Color* _color, const ChVec4& _val)
 	{
 		if (ChPtr::NullCheck(_color))return;
 		_color->color = _val;
 	}
-#endif
 
 	struct Normal
 	{
 		ChVec3 normal = ChVec3(0.0f,1.0f,0.0f);
 	};
 
-#ifdef CRT
 	void SetNormal(Normal* _normal, const ChVec3& _val)
 	{
 		if (ChPtr::NullCheck(_normal))return;
 		_normal->normal = _val;
 	}
-#endif
 
 	struct FaceNormal
 	{
 		ChVec3 faceNormal = ChVec3(0.0f, 1.0f, 0.0f);
 	};
 
-#ifdef CRT
 	void SetFaceNormal(FaceNormal* _faceNormal, const ChVec3& _val)
 	{
 		if (ChPtr::NullCheck(_faceNormal))return;
 		_faceNormal->faceNormal = _val;
 	}
-#endif
 
 	template<unsigned long Num>
 	struct Bone
@@ -97,12 +88,24 @@ namespace Ch3D
 
 	};
 
-
 	struct BoneData
 	{
+		BoneData();
+		
+		~BoneData();
+
+		struct BoneDataCRT
+		{
 #ifdef CRT
-		std::vector<float> blendPow;
+			std::vector<float> blendPow;
 #endif
+		};
+
+		BoneDataCRT& ValueIns() { return *value; }
+
+	private:
+
+		BoneDataCRT* value = nullptr;
 	};
 
 	struct Vertex:
@@ -156,14 +159,30 @@ namespace Ch3D
 		None
 	};
 
+
 	template<typename CharaType>
 	struct MaterialData
 	{
-		Material mate;
+		MaterialData();
+
+		~MaterialData();
+
+		struct MaterialDataCRT
+		{
 #ifdef CRT
-		std::basic_string<CharaType> mateName;
-		std::map<TextureType, std::basic_string<CharaType>>textures;
+			std::basic_string<CharaType> mateName;
+			std::map<TextureType, std::basic_string<CharaType>>textures;
 #endif
+		};
+
+	public:
+
+		MaterialDataCRT& valueIns() { return *value; }
+
+	private:
+
+		Material mate;
+		MaterialDataCRT* value = nullptr;
 	};
 
 	struct Transform
@@ -200,11 +219,60 @@ namespace Ch3D
 	//MaterialÇ…ëŒâûÇ∑ÇÈñ Çä«óùÇ∑ÇÈ//
 	struct Primitive:public FaceNormal
 	{
-		unsigned long mateNo;
+		Primitive();
+
+		~Primitive();
+
+		struct PrimitiveCRT
+		{
 #ifdef CRT
-		std::vector<ChPtr::Shared<SavePolyData>> vertexData;
+			std::vector<ChPtr::Shared<SavePolyData>> vertexData;
 #endif
+		};
+
+		PrimitiveCRT& ValueIns() { return *value; }
+
+	private:
+
+		unsigned long mateNo;
+		PrimitiveCRT* value = nullptr;
 	};
 }
+
+#ifdef CRT
+
+Ch3D::BoneData::BoneData()
+{
+	value = new BoneDataCRT();
+}
+
+Ch3D::BoneData::~BoneData()
+{
+	delete value;
+}
+
+template<typename CharaType>
+Ch3D::MaterialData<CharaType>::MaterialData()
+{
+	value = new MaterialDataCRT();
+}
+
+template<typename CharaType>
+Ch3D::MaterialData<CharaType>::~MaterialData()
+{
+	delete value;
+}
+
+Ch3D::Primitive::Primitive()
+{
+	value = new PrimitiveCRT();
+}
+
+Ch3D::Primitive::~Primitive()
+{
+	delete value;
+}
+
+#endif
 
 #endif
