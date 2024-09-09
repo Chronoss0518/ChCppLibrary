@@ -27,9 +27,9 @@ namespace ChCpp
 	{
 	public:
 
-		inline FrameList() {};
+		FrameList();
 
-		inline virtual ~FrameList() { Release(); }
+		virtual ~FrameList();
 
 	public:
 
@@ -58,7 +58,7 @@ namespace ChCpp
 			return ChPtr::SharedSafeCast<T>(GetNowFrame());
 		}
 
-		void SetSendData(ChPtr::Shared<SendDataClass> _sendData) { sendData = _sendData; }
+		void SetSendData(ChPtr::Shared<SendDataClass> _sendData) { ValueIns().sendData = _sendData; }
 
 #endif
 
@@ -79,18 +79,18 @@ namespace ChCpp
 #ifdef CRT
 		inline void SaveData(ChPtr::Shared<SaveDataClass> _save)
 		{
-			saveData = _save;
+			ValueIns().saveData = _save;
 		}
 
 		inline ChPtr::Shared<SaveDataClass> GetData()
 		{
-			return saveData;
+			return ValueIns().saveData;
 		}
 
 		template<class T>
 		typename std::enable_if<std::is_base_of<SaveDataClass, T>::value, ChPtr::Shared<T>>::type GetData()
 		{
-			return saveData;
+			return ValueIns().saveData;
 		}
 #endif
 
@@ -100,28 +100,42 @@ namespace ChCpp
 
 		void Changes();
 
+	protected://Static Functions//
+
+#ifdef CRT
+		static ChPtr::Shared<BaseFrame>& GetNowFrame()
+		{
+			static ChPtr::Shared<BaseFrame> ins = nullptr;
+			return ins;
+		}
+#endif
+
+	private:
+
+		struct FrameListCRT
+		{
+#ifdef CRT
+			ChPtr::Shared<SaveDataClass> saveData = nullptr;
+			ChPtr::Shared<SendDataClass> sendData = nullptr;
+
+			ChPtr::Shared<BaseFrame>nextFrame = nullptr;
+
+			std::vector<std::function<ChPtr::Shared<BaseFrame>()>>frameList;
+#endif
+
+		};
+
+		FrameListCRT* value = nullptr;
+
 	protected:// Member Value//
+
 
 		friend BaseFrame;
 
 		unsigned long nextFrameNo = -1;
 		unsigned long nowFrameNo = -1;
 
-#ifdef CRT
-		ChPtr::Shared<SaveDataClass> saveData = nullptr;
-		ChPtr::Shared<SendDataClass> sendData = nullptr;
-
-		ChPtr::Shared<BaseFrame>nextFrame = nullptr;
-		
-		static ChPtr::Shared<BaseFrame>& GetNowFrame() 
-		{
-			static ChPtr::Shared<BaseFrame> ins = nullptr;
-			return ins;
-		}
-
-		std::vector<std::function<ChPtr::Shared<BaseFrame>()>>frameList;
-#endif
-
+		FrameListCRT& ValueIns() { return *value; }
 	};
 
 
@@ -138,7 +152,7 @@ namespace ChCpp
 		void SetFrame(typename std::enable_if
 			<std::is_base_of<BaseFrame, T>::value, const std::basic_string<CharaType>&>::type _useFrameName)
 		{
-			if (frameNames.find(_useFrameName) != frameNames.end())
+			if (ValueIns().frameNames.find(_useFrameName) != frameNames.end())
 			{
 				//ChSystem::ErrerMessage("Ç±ÇÃÉtÉåÅ[ÉÄÇÕÇ∑Ç≈Ç…ìoò^Ç≥ÇÍÇƒÇ¢Ç‹Ç∑", "åxçê");
 
@@ -147,7 +161,7 @@ namespace ChCpp
 
 			unsigned long no = frameList.size();
 
-			frameNames[_useFrameName] = no;
+			ValueIns().frameNames[_useFrameName] = no;
 
 			FrameList::SetFrame<T>();
 		}
@@ -192,17 +206,22 @@ namespace ChCpp
 
 		friend BaseFrame;
 
+		struct FrameManagerCRT
+		{
 #ifdef CRT
-
-		std::map<std::basic_string<CharaType>, unsigned long>frameNames;
-
+			std::map<std::basic_string<CharaType>, unsigned long>frameNames;
 #endif
+		};
+
+		FrameManagerCRT* value = nullptr;
+
+		FrameManagerCRT& ValueIns() { return *value; }
 
 	private://ConstructerDestructer//
 
-		inline FrameManager() {}
+		FrameManager();
 
-		inline ~FrameManager() {}
+		~FrameManager();
 
 	public://Get Instance//
 
@@ -282,12 +301,25 @@ namespace ChCpp
 }
 #ifdef CRT
 
+
+ChCpp::FrameList::FrameList()
+{
+	value = new FrameListCRT();
+};
+
+ChCpp::FrameList::~FrameList()
+{
+	Release();
+
+	delete value;
+}
+
 void ChCpp::FrameList::Release()
 {
-	saveData = nullptr;
-	sendData = nullptr;
+	ValueIns().saveData = nullptr;
+	ValueIns().sendData = nullptr;
 
-	nextFrame = nullptr;
+	ValueIns().nextFrame = nullptr;
 	GetNowFrame() = nullptr;
 }
 
@@ -303,18 +335,18 @@ void ChCpp::FrameList::Update()
 
 void ChCpp::FrameList::ChangeFrame(const unsigned long _frameNo)
 {
-	if (frameList.size() <= _frameNo)return;
+	if (ValueIns().frameList.size() <= _frameNo)return;
 
-	nextFrame = frameList[_frameNo]();
+	ValueIns().nextFrame = ValueIns().frameList[_frameNo]();
 
 	nextFrameNo = _frameNo;
 
-	nextFrame->SetManager(this);
+	ValueIns().nextFrame->SetManager(this);
 }
 
 void ChCpp::FrameList::Changes()
 {
-	if (nextFrame == nullptr)return;
+	if (ValueIns().nextFrame == nullptr)return;
 
 	auto&& nowframe = GetNowFrame();
 	if (nowframe != nullptr)
@@ -323,23 +355,37 @@ void ChCpp::FrameList::Changes()
 	}
 
 	nowFrameNo = nextFrameNo;
-	nowframe = nextFrame;
+	nowframe = ValueIns().nextFrame;
 
-	nowframe->Init(sendData.get());
-	sendData = nullptr;
+	nowframe->Init(ValueIns().sendData.get());
+	ValueIns().sendData = nullptr;
 
-	nextFrame = nullptr;
+	ValueIns().nextFrame = nullptr;
 	nextFrameNo = -1;
 }
 
-unsigned long ChCpp::FrameList::GetRegisterFrameCount() { return frameList.size(); }
+unsigned long ChCpp::FrameList::GetRegisterFrameCount() { return ValueIns().frameList.size(); }
 
 template<typename CharaType>
 void ChCpp::FrameManager<CharaType>::ChangeFrame(const std::basic_string<CharaType>& _frameName)
 {
-	if (frameNames.find(_frameName) == frameNames.end())return;
+	auto&& frameName = ValueIns().frameNames.find(_frameName);
 
-	FrameList::ChangeFrame(frameNames[_frameName]);
+	if (frameName == ValueIns().frameNames.end())return;
+
+	FrameList::ChangeFrame(frameName.second);
+}
+
+template<typename CharaType>
+ChCpp::FrameManager<CharaType>::FrameManager()
+{
+	value = new FrameManagerCRT();
+}
+
+template<typename CharaType>
+ChCpp::FrameManager<CharaType>::~FrameManager()
+{
+	delete value;
 }
 
 template<typename CharaType>
