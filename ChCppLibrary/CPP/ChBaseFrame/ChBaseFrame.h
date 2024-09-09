@@ -39,13 +39,13 @@ namespace ChCpp
 		template<class T>
 		typename std::enable_if<std::is_base_of<BaseFrame, T>::value, void>::type SetFrame()
 		{
-			frameList.push_back(
+			value->frameList.push_back(
 				[]()-> ChPtr::Shared<BaseFrame>
 				{
 					return ChPtr::Make_S<T>();
 				});
 
-			if (frameList.size() > 1)return;
+			if (value->frameList.size() > 1)return;
 
 			ChangeFrame(0);
 
@@ -151,14 +151,14 @@ namespace ChCpp
 		void SetFrame(typename std::enable_if
 			<std::is_base_of<BaseFrame, T>::value, const std::basic_string<CharaType>&>::type _useFrameName)
 		{
-			if (value->frameNames.find(_useFrameName) != frameNames.end())
+			if (value->frameNames.find(_useFrameName) != value->frameNames.end())
 			{
 				//ChSystem::ErrerMessage("‚±‚ÌƒtƒŒ[ƒ€‚Í‚·‚Å‚É“o˜^‚³‚ê‚Ä‚¢‚Ü‚·", "Œx");
 
 				return;
 			}
 
-			unsigned long no = frameList.size();
+			unsigned long no = value->frameList.size();
 
 			value->frameNames[_useFrameName] = no;
 

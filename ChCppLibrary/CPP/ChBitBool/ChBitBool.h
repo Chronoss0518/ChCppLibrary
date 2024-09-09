@@ -95,9 +95,6 @@ namespace ChCpp
 
 		BitBoolCRT* value = nullptr;
 
-	protected://Member Value//
-
-		BitBoolCRT& ValueIns() { return *value; }
 	};
 
 }
@@ -105,19 +102,19 @@ namespace ChCpp
 #ifdef CRT
 ChCpp::BitBool::BitBool()
 {
-	flgs.resize(1);
 	CRTInit();
+	value->flgs.resize(1);
 }
 
 ChCpp::BitBool::BitBool(const unsigned char _size)
 {
-	SetSize(_size);
 	CRTInit();
+	SetSize(_size);
 }
 
 ChCpp::BitBool::~BitBool()
 {
-	flgs.clear();
+	value->flgs.clear();
 	CRTRelease();
 }
 
@@ -133,7 +130,7 @@ void ChCpp::BitBool::CRTRelease()
 
 void ChCpp::BitBool::SetAllDownFlg()
 {
-	for (auto&& flg : ValueIns().flgs)
+	for (auto&& flg : value->flgs)
 	{
 		flg = 0;
 	}
@@ -142,23 +139,23 @@ void ChCpp::BitBool::SetAllDownFlg()
 void ChCpp::BitBool::SetSize(const unsigned char _byteCount)
 {
 	if (_byteCount <= 0)return;
-	ValueIns().flgs.resize(_byteCount);
+	value->flgs.resize(_byteCount);
 }
 
 unsigned long  ChCpp::BitBool::GetSize()
 {
-	return static_cast<unsigned long>(ValueIns().flgs.size() * 8);
+	return static_cast<unsigned long>(value->flgs.size() * 8);
 }
 
 unsigned char& ChCpp::BitBool::GetFlgs(const unsigned char _argsNum)
 {
-	return ValueIns().flgs[_argsNum];
+	return value->flgs[_argsNum];
 }
 
 unsigned char ChCpp::BitBool::GetValue(const unsigned char _num)
 {
-	if (ValueIns().flgs.size() < _num)return 0;
-	return ValueIns().flgs[_num];
+	if (value->flgs.size() < _num)return 0;
+	return value->flgs[_num];
 }
 
 #endif
