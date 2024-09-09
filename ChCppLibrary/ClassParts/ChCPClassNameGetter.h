@@ -14,10 +14,7 @@ namespace ChCp
 	template<class T>
 	class ClassNameGetter
 	{
-	public:
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//GetFunction//
+	public://Get Functions//
 		inline char* GetName()
 		{
 			char* tmp = nullptr;
@@ -29,6 +26,7 @@ namespace ChCp
 #endif
 			return tmp;
 		}
+
 	protected:
 
 		ClassNameGetter() {}
