@@ -94,12 +94,12 @@ namespace ChCpp
 
 	public://Constructor Destructor//
 
-		inline File() {}
+		File() {}
 
 #ifdef CRT
 
-		File(
-			const std::basic_string<CharaType>& _fileName) {
+		File(const std::basic_string<CharaType>& _fileName) 
+		{
 			FileOpen(_fileName);
 		}
 
@@ -121,9 +121,9 @@ namespace ChCpp
 		{
 			unsigned long out = 0;
 
-			if (!stream.is_open())return out;
+			if (!value->stream.is_open())return out;
 
-			auto istream = dynamic_cast<std::basic_istream<CharaType>*>(&stream);
+			auto istream = dynamic_cast<std::basic_istream<CharaType>*>(&value->stream);
 			istream->seekg(0,std::ios::end);
 
 			out = static_cast<unsigned long>(istream->tellg());
@@ -139,56 +139,52 @@ namespace ChCpp
 
 		//File‚ğŠJ‚­//
 		inline void FileOpen(
-			const std::basic_string<CharaType>& _fileName
-			, unsigned int _openMode = std::ios::in | std::ios::out)
+			const std::basic_string<CharaType>& _fileName,
+			unsigned int _openMode = std::ios::in | std::ios::out)
 
 		{
 			if (_fileName.length() <= 0)return;
 
 			if (_openMode & std::ios::in)
 			{
-				stream.open(_fileName, std::ios::app);
-				stream.close();
+				value->stream.open(_fileName, std::ios::app);
+				value->stream.close();
 			}
 
-			flg = _openMode;
-			openFileName = _fileName;
-			stream.open(_fileName, flg);
+			value->flg = _openMode;
+			value->openFileName = _fileName;
+			value->stream.open(_fileName, value->flg);
 			
 		}
 
 		//File‚ğ•Â‚¶‚é(Destructer‚Å‚à‹N“®‚·‚é)//
 		inline void FileClose()
 		{
-			if (!stream.is_open())return;
-			stream.close();
+			if (!value->stream.is_open())return;
+			value->stream.close();
 		}
 
 		//File‚©‚ç“Ç‚İo‚·//
 		inline std::basic_string<CharaType> FileReadText()
 		{
-
 			std::basic_string<CharaType> res = ChStd::GetZeroChara<CharaType>();
 
-			if (!stream.is_open())return res;
-
-			if ((flg & std::ios::binary))return res;
+			if (!IsOpenModeTest(false, false))return res;
 
 			std::locale tmpLocale = std::locale::classic();
 
-			if (localeName != "") { tmpLocale = stream.imbue(std::locale(localeName.c_str())); }
+			if (value->localeName != "") { tmpLocale = value->stream.imbue(std::locale(value->localeName.c_str())); }
 
 			std::basic_ostringstream<CharaType> tmpSS;
 
-
-			tmpSS << stream.rdbuf();
+			tmpSS << value->stream.rdbuf();
 
 			res = tmpSS.str();
 
-			stream.clear();
-			stream.seekp(0, std::ios::beg);
+			value->stream.clear();
+			value->stream.seekp(0, std::ios::beg);
 
-			if (localeName != "") { stream.imbue(tmpLocale); }
+			if (value->localeName != "") { value->stream.imbue(tmpLocale); }
 
 			return res;
 
@@ -198,23 +194,21 @@ namespace ChCpp
 		inline void FileReadBinary(std::vector<char>& _binary)
 		{
 
-			if (!stream.is_open())return;
-
-			if (!(flg & std::ios::binary))return;
+			if (!IsOpenModeTest(false, true))return;
 
 			_binary.resize(GetLength());
 
 			std::locale tmpLocale = std::locale::classic();
 
-			if (localeName != "") { tmpLocale = stream.imbue(std::locale(localeName.c_str())); }
+			if (value->localeName != "") { tmpLocale = value->stream.imbue(std::locale(value->localeName.c_str())); }
 
-			auto istream = dynamic_cast<std::basic_istream<CharaType>*>(&stream);
+			auto istream = dynamic_cast<std::basic_istream<CharaType>*>(&value->stream);
 
 			istream->read(&_binary[0], GetLength());
 
 			istream->seekg(0, std::ios::beg);
 
-			if (localeName != "") { stream.imbue(tmpLocale); }
+			if (value->localeName != "") { value->stream.imbue(tmpLocale); }
 
 			return;
 
@@ -223,26 +217,14 @@ namespace ChCpp
 		//File‚É‘‚«‚Ş//
 		template<class... _Types>
 		inline std::basic_string<CharaType> FileWriteText(
-			const std::basic_string<CharaType>& _writeStr
-			, _Types&&... _args)
+			const std::basic_string<CharaType>& _writeStr,
+			_Types&&... _args)
 		{
-
-			if (!stream.is_open())return std::basic_string<CharaType>();
-
-			if (flg & std::ios::binary)return std::basic_string<CharaType>();
-
-			if (!(flg & std::ios::app))
-			{
-				stream.close();
-				stream.open(openFileName.c_str(), std::ios::out | std::ios::trunc);
-				
-				stream.close();
-				stream.open(openFileName.c_str(),flg);
-			}
+			if (!IsOpenModeTest(true, false))return std::basic_string<CharaType>();
 
 			return Writer(_writeStr);
 
-			//C++ˆÈ~‚Ì•¶š—ñŒ^‚ª‘Î‰‚µ‚Ä‚¢‚È‚¢‚½‚ßˆê’U•Û—¯//
+			//C++20ˆÈ~‚Ì•¶š—ñŒ^‚ª‘Î‰‚µ‚Ä‚¢‚È‚¢‚½‚ßˆê’U•Û—¯//
 
 			std::basic_string<CharaType> tmpStr = _writeStr;
 #ifdef _WINDOWS
@@ -256,22 +238,10 @@ namespace ChCpp
 		}
 
 		//File‚É‘‚«‚Ş//
-		inline std::basic_string<CharaType> FileWriteBinary(
-			const std::basic_string<CharaType>& _writeStr)
+		inline std::basic_string<CharaType> FileWriteBinary(const std::basic_string<CharaType>& _writeStr)
 		{
 
-			if (!stream.is_open())return std::basic_string<CharaType>();
-
-			if (flg & std::ios::binary)return std::basic_string<CharaType>();
-
-			if (!(flg & std::ios::app))
-			{
-				stream.close();
-				stream.open(openFileName.c_str(), std::ios::out | std::ios::trunc);
-
-				stream.close();
-				stream.open(openFileName.c_str(), flg);
-			}
+			if (!IsOpenModeTest(true,true))return std::basic_string<CharaType>();
 
 			std::basic_string<CharaType> tmpStr = _writeStr;
 
@@ -291,27 +261,35 @@ namespace ChCpp
 
 			std::locale tmpLocale = std::locale::classic();
 
-			if (localeName != "") { tmpLocale = stream.imbue(std::locale(localeName.c_str())); }
+			if (value->localeName != "") { tmpLocale = value->stream.imbue(std::locale(value->localeName.c_str())); }
 
-			tmpStream.set_rdbuf(stream.rdbuf());
+			tmpStream.set_rdbuf(value->stream.rdbuf());
 			
 
 			tmpStream << _str.c_str();
 
-			if (localeName != "") { stream.imbue(tmpLocale); }
+			if (value->localeName != "") { value->stream.imbue(tmpLocale); }
 
 			return _str;
 		}
 #endif
 
-	protected:
+	private:
 
+
+		bool IsOpenModeTest(bool _isReadFlg,bool _isBinaryFlg);
+
+		struct FileCRT
+		{
 #ifdef CRT
-		std::ios_base::openmode flg{ 0 };
-		std::basic_string<CharaType> openFileName = ChStd::GetZeroChara<CharaType>();
-		std::string localeName = "";
-		std::basic_fstream<CharaType> stream;
+			std::ios_base::openmode flg{ 0 };
+			std::basic_string<CharaType> openFileName = ChStd::GetZeroChara<CharaType>();
+			std::string localeName = "";
+			std::basic_fstream<CharaType> stream;
 #endif
+		};
+
+		FileCRT* value = nullptr;
 
 	};
 	
@@ -323,13 +301,59 @@ namespace ChCpp
 #ifdef CRT
 
 template<typename CharaType>
-void ChCpp::File<CharaType>::SetLocaleName(const char* _localeName) { localeName = _localeName; }
+ChCpp::File<CharaType>::File() 
+{
+	value = new FileCRT();
+}
 
+template<typename CharaType>
+ChCpp::File<CharaType>::File(const std::basic_string<CharaType>& _fileName)
+{
+	value = new FileCRT();
+	FileOpen(_fileName);
+}
+
+template<typename CharaType>
+virtual ChCpp::File<CharaType>::~File()
+{ 
+	Release();
+	delete value;
+}
 
 template<typename CharaType>
 void ChCpp::File<CharaType>::Release()
 {
 	FileClose();
+}
+
+template<typename CharaType>
+void ChCpp::File<CharaType>::SetLocaleName(const char* _localeName)
+{
+	value->localeName = _localeName;
+}
+
+template<typename CharaType>
+bool ChCpp::File<CharaType>::IsOpenModeTest(bool _isReadFlg, bool _isBinaryFlg)
+{
+
+	if (!value->stream.is_open())return false;
+
+	if ((value->flg & std::ios::in) == _isReadFlg)return false;
+	if ((value->flg & std::ios::out) != _isReadFlg)return false;
+
+	if ((value->flg & std::ios::binary) == _isBinaryFlg)return false;
+
+	if (!_isReadFlg)return true;
+
+	if ((value->flg & std::ios::app))return true;
+
+	value->stream.close();
+	value->stream.open(value->openFileName.c_str(), std::ios::out | std::ios::trunc);
+
+	value->stream.close();
+	value->stream.open(value->openFileName.c_str(), value->flg);
+
+	return true;
 }
 
 #endif
