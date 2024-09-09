@@ -17,16 +17,16 @@
 void ChCpp::BasicObject::##_FunctionNameBase##Function()\
 {\
 	##_FunctionNameBase##();\
-	for (auto com : comList)\
+	for (auto com : value->comList)\
 	{\
 		if (!com->useFlg)continue;\
 		com->##_FunctionNameBase##();\
-		if (comList.empty())break;}\
-	for (auto&& child : childList)\
+		if (value->comList.empty())break;}\
+	for (auto&& child : value->childList)\
 	{\
 		if (child->useFlg)continue;\
 		child->##_FunctionNameBase##Function();\
-		if (childList.empty())break;}\
+		if (value->childList.empty())break;}\
 }
 #endif
 
@@ -40,7 +40,9 @@ namespace ChCpp
 	{
 	protected:
 
-		BasicObject(){}
+		BasicObject();
+
+		virtual ~BasicObject();
 
 	public:
 
@@ -120,7 +122,7 @@ namespace ChCpp
 
 			if (tmpCom == nullptr)return nullptr;
 
-			comList.push_back(tmpCom);
+			value->comList.push_back(tmpCom);
 
 			tmpCom->BaseInit(this);
 
@@ -150,7 +152,7 @@ namespace ChCpp
 			ChPtr::Shared<T>>::type
 			GetComponent()
 		{
-			for (auto&& com : comList)
+			for (auto&& com : value->comList)
 			{
 				if (com->dFlg)continue;
 				auto testCom = ChPtr::SharedSafeCast<T>(com);
@@ -167,7 +169,7 @@ namespace ChCpp
 			GetComponents()
 		{
 			std::vector<ChPtr::Shared<T>>tmpComList;
-			for (auto&& com : comList)
+			for (auto&& com : value->comList)
 			{
 				if (com->dFlg)continue;
 
@@ -187,7 +189,7 @@ namespace ChCpp
 		{
 			std::vector<ChPtr::Weak<T>>tmpObjList;
 
-			for (auto&& obj : childList)
+			for (auto&& obj : value->childList)
 			{
 				auto test = ChPtr::SharedSafeCast<T>(obj);
 				if (test == nullptr)continue;
@@ -208,7 +210,7 @@ namespace ChCpp
 		{
 			std::vector<ChPtr::Weak<T>>res;
 
-			for (auto&& obj : childList)
+			for (auto&& obj : value->childList)
 			{
 				auto test = ChPtr::SharedSafeCast<T>(obj);
 
@@ -220,7 +222,7 @@ namespace ChCpp
 		}
 
 		//親の取得//
-		ChPtr::Weak<BasicObject>GetParent() { return parent; }
+		ChPtr::Weak<BasicObject>GetParent() { return value->parent; }
 
 #endif
 
@@ -228,7 +230,7 @@ protected://Get Functions//
 
 #ifdef CRT
 
-		std::vector<ChPtr::Shared<BasicObject>>& GetChildlen() { return childList; }
+		std::vector<ChPtr::Shared<BasicObject>>& GetChildlen() { return value->childList; }
 
 #endif
 
@@ -284,14 +286,18 @@ protected://Get Functions//
 
 		bool useFlg = true;
 
+		struct BasicObjectCRT
+		{
 #ifdef CRT
+			std::vector<ChPtr::Shared<BasicObject>>childList;
+			ChPtr::Weak<BasicObject>parent = ChPtr::Shared<BasicObject>();
 
-		std::vector<ChPtr::Shared<BasicObject>>childList;
-		ChPtr::Weak<BasicObject>parent = ChPtr::Shared<BasicObject>();
-
-		std::vector<ChPtr::Shared<BaseComponent>>comList;
-
+			std::vector<ChPtr::Shared<BaseComponent>>comList;
 #endif
+		};
+
+		BasicObjectCRT* value = nullptr;
+
 	};
 
 	template<typename CharaType>
@@ -329,7 +335,7 @@ protected://Get Functions//
 #ifdef CRT
 
 		//自身の名前のセット//
-		void SetMyName(const std::basic_string<CharaType>& _newName) { myName = _newName; }
+		void SetMyName(const std::basic_string<CharaType>& _newName) { value->myName = _newName; }
 
 #endif
 
@@ -396,7 +402,7 @@ protected://Get Functions//
 		{
 			std::vector<ChPtr::Weak<T>>res;
 
-			for (auto&& obj : childList)
+			for (auto&& obj : GetAllChildlen())
 			{
 				if (obj->GetMyName() == _name)
 				{
@@ -419,15 +425,17 @@ protected://Get Functions//
 		{
 			std::vector<ChPtr::Weak<T>>res;
 
-			for (auto&& obj : childList)
+			for (auto&& obj : GetChildlen())
 			{
-				if (obj->GetMyName().find(_name) != std::basic_string<CharaType>::npos)
+				auto&& baseObj = ChPtr::SharedSafeCast<BaseObject>(obj);
+
+				if (baseObj->GetMyName().find(_name) != std::basic_string<CharaType>::npos)
 				{
-					auto test = ChPtr::SharedSafeCast<T>(obj);
+					auto test = ChPtr::SharedSafeCast<T>(baseObj);
 					if (test != nullptr) { res.push_back(test); }
 				}
 
-				for (auto&& childObj : obj->GetAllChildlenConstainsName<T>(_name)) { res.push_back(childObj); }
+				for (auto&& childObj : baseObj->GetAllChildlenConstainsName<T>(_name)) { res.push_back(childObj); }
 			}
 			return res;
 		}
@@ -438,7 +446,7 @@ protected://Get Functions//
 
 #ifdef CRT
 
-		std::basic_string<CharaType> GetMyName() { return myName; }
+		std::basic_string<CharaType> GetMyName() { return value->myName; }
 
 #endif
 
@@ -459,9 +467,14 @@ protected://Get Functions//
 
 		ObjectList<CharaType>* objMaList = nullptr;
 
+		struct BaseObjectCRT
+		{
 #ifdef CRT
-		std::basic_string<CharaType> myName;
+			std::basic_string<CharaType> myName;
 #endif
+		};
+
+		BaseObjectCRT* value = nullptr;
 	};
 }
 
@@ -472,6 +485,16 @@ void ChCpp::BaseComponent::DestroyObject()
 	if (ChPtr::NullCheck(obj))return;
 	obj->Destroy();
 	obj = nullptr;
+}
+
+ChCpp::BasicObject::BasicObject()
+{
+	value = new BasicObject();
+}
+
+ChCpp::BasicObject::~BasicObject()
+{
+	delete value;
 }
 
 void ChCpp::BasicObject::BaseRelease()
@@ -492,33 +515,33 @@ void ChCpp::BasicObject::Destroy() { BaseRelease(); }
 
 void ChCpp::BasicObject::DestroyToChild(const ChPtr::Shared<BasicObject>& _child)
 {
-	auto it = std::find(childList.begin(), childList.end(), _child);
-	if (it == childList.end())return;
+	auto it = std::find(value->childList.begin(), value->childList.end(), _child);
+	if (it == value->childList.end())return;
 	(*it)->BaseRelease();
 }
 
 //自身が持つ子を削除する//
 void ChCpp::BasicObject::DestroyToChild()
 {
-	if (childList.empty())return;
-	for (auto&& childs : childList) { childs->BaseRelease(); }
-	childList.clear();
+	if (value->childList.empty())return;
+	for (auto&& childs : value->childList) { childs->BaseRelease(); }
+	value->childList.clear();
 }
 
 void ChCpp::BasicObject::DestroyComponent()
 {
-	if (comList.empty())return;
-	for (auto com : comList) { com->Release(); }
-	comList.clear();
+	if (value->comList.empty())return;
+	for (auto com : value->comList) { com->Release(); }
+	value->comList.clear();
 }
 
 void ChCpp::BasicObject::DestroyComponent(const char* _comName)
 {
 	std::string comName = _comName;
 	if (comName == "")return;
-	auto&& com = comList.begin();
+	auto&& com = value->comList.begin();
 
-	while (com != comList.end())
+	while (com != value->comList.end())
 	{
 		std::string tmpName = typeid((*com)).name();
 
@@ -527,17 +550,17 @@ void ChCpp::BasicObject::DestroyComponent(const char* _comName)
 			continue;
 		}
 		(*com)->Release();
-		com = comList.erase(com);
+		com = value->comList.erase(com);
 
-		if (comList.empty())break;
+		if (value->comList.empty())break;
 	}
 }
 
 void ChCpp::BasicObject::DestroyToChildTest()
 {
-	if (childList.empty())return;
-	auto child = childList.begin();
-	while (child != childList.end())
+	if (value->childList.empty())return;
+	auto child = value->childList.begin();
+	while (child != value->childList.end())
 	{
 		if (!(*child)->IsDethFlg())
 		{
@@ -545,17 +568,17 @@ void ChCpp::BasicObject::DestroyToChildTest()
 			continue;
 		}
 		(*child)->Release();
-		child = childList.erase(child);
+		child = value->childList.erase(child);
 
-		if (childList.empty())break;
+		if (value->childList.empty())break;
 	}
 }
 
 void ChCpp::BasicObject::DestroyComponentTest()
 {
-	if (comList.empty())return;
-	auto com = comList.begin();
-	while (com != comList.end())
+	if (value->comList.empty())return;
+	auto com = value->comList.begin();
+	while (com != value->comList.end())
 	{
 		if (!(*com)->IsDeth())
 		{
@@ -563,16 +586,16 @@ void ChCpp::BasicObject::DestroyComponentTest()
 			continue;
 		}
 		(*com)->Release();
-		com = comList.erase(com);
-		if (comList.empty())break;
+		com = value->comList.erase(com);
+		if (value->comList.empty())break;
 	}
 }
 
 std::vector<ChPtr::Shared<ChCpp::BasicObject>> ChCpp::BasicObject::GetAllChildlen()
 {
-	std::vector<ChPtr::Shared<BasicObject>>res = childList;
+	std::vector<ChPtr::Shared<BasicObject>>res = value->childList;
 
-	for (auto&& childObj : childList)
+	for (auto&& childObj : value->childList)
 	{
 		for (auto&& childChild : childObj->GetAllChildlen())
 		{
@@ -590,7 +613,7 @@ void ChCpp::BasicObject::SetComponent(ChPtr::Shared<BaseComponent> _component)
 
 	_component->BaseInit(this);
 
-	comList.push_back(_component);
+	value->comList.push_back(_component);
 }
 
 void ChCpp::BasicObject::SetChild(ChPtr::Shared<BasicObject> _childObject)
@@ -601,9 +624,9 @@ void ChCpp::BasicObject::SetChild(ChPtr::Shared<BasicObject> _childObject)
 
 	_childObject->WithdrawParent();
 
-	childList.push_back(_childObject);
+	value->childList.push_back(_childObject);
 
-	_childObject->parent = shared_from_this();
+	_childObject->value->parent = shared_from_this();
 }
 
 void ChCpp::BasicObject::SetParent(ChPtr::Shared<BasicObject> _parentObject)
@@ -612,23 +635,23 @@ void ChCpp::BasicObject::SetParent(ChPtr::Shared<BasicObject> _parentObject)
 
 	WithdrawParent();
 
-	parent = _parentObject;
+	value->parent = _parentObject;
 
 	_parentObject->SetChild(shared_from_this());
 }
 
 void ChCpp::BasicObject::WithdrawParent()
 {
-	auto parentObj = parent.lock();
+	auto parentObj = value->parent.lock();
 
 	if (parentObj == nullptr)return;
-	if (parentObj->childList.empty())return;
+	if (parentObj->value->childList.empty())return;
 
-	parent.reset();
+	value->parent.reset();
 
-	auto test = std::find(parentObj->childList.begin(), parentObj->childList.end(), shared_from_this());
+	auto test = std::find(parentObj->value->childList.begin(), parentObj->value->childList.end(), shared_from_this());
 
-	if (test != parentObj->childList.end()) { parentObj->childList.erase(test); }
+	if (test != parentObj->value->childList.end()) { parentObj->value->childList.erase(test); }
 }
 
 CH_OBJECT_FUNCTION(UpdateBegin);
@@ -637,40 +660,40 @@ void ChCpp::BasicObject::UpdateFunction()
 {
 	Update();
 
-	if (!comList.empty())
+	if (!value->comList.empty())
 	{
-		auto com = comList.begin();
-		while (com != comList.end())
+		auto com = value->comList.begin();
+		while (com != value->comList.end())
 		{
 			if ((*com)->IsDeth())
 			{
 				(*com)->Release();
-				com = comList.erase(com);
-				if (comList.empty())break;
+				com = value->comList.erase(com);
+				if (value->comList.empty())break;
 				continue;
 			}
 			if ((*com)->IsUseFlg())(*com)->Update();
 
-			if (comList.empty())break;
+			if (value->comList.empty())break;
 			com++;
 		}
 	}
 
-	if (!childList.empty())
+	if (!value->childList.empty())
 	{
-		auto child = childList.begin();
-		while (child != childList.end())
+		auto child = value->childList.begin();
+		while (child != value->childList.end())
 		{
 			if ((*child)->dFlg)
 			{
 				(*child)->Release();
-				child = childList.erase(child);
-				if (childList.empty())break;
+				child = value->childList.erase(child);
+				if (value->childList.empty())break;
 				continue;
 			}
 			if ((*child)->useFlg)(*child)->Update();
 
-			if (childList.empty())break;
+			if (value->childList.empty())break;
 			child++;
 		}
 	}

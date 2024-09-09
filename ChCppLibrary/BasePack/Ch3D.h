@@ -175,13 +175,11 @@ namespace Ch3D
 #endif
 		};
 
-	public:
-
+		Material mate;
 		MaterialDataCRT& valueIns() { return *value; }
 
 	private:
 
-		Material mate;
 		MaterialDataCRT* value = nullptr;
 	};
 
@@ -230,11 +228,11 @@ namespace Ch3D
 #endif
 		};
 
+		unsigned long mateNo;
 		PrimitiveCRT& ValueIns() { return *value; }
 
 	private:
 
-		unsigned long mateNo;
 		PrimitiveCRT* value = nullptr;
 	};
 }
