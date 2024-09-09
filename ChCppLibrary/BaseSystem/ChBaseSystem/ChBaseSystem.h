@@ -2,6 +2,10 @@
 #ifndef Ch_CPP_BaseSystem_h
 #define Ch_CPP_BaseSystem_h
 
+#include"../../BasePack/ChPtr.h"
+#include"../../BasePack/ChMath3D.h"
+
+
 #include"../../CPP/ChBitBool/ChBitBool.h"
 #include"../../ClassParts/ChCPInitializer.h"
 
@@ -239,7 +243,7 @@ namespace ChSystem
 
 #ifdef CRT
 
-virtual void ChSystem::SystemManager::Release()
+void ChSystem::SystemManager::Release()
 {
 	if (!*this)return;
 
