@@ -304,7 +304,7 @@ namespace ChStd
 	CH_TO_NUMBER_FUNCTION(CH_ASTERISK_CHARA_FUNCTION, "*");
 #endif
 
-	using ULongPtr =
+	using SizeType =
 #ifdef WIN32
 		unsigned long;
 #else
