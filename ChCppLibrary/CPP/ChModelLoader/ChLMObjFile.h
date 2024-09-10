@@ -203,7 +203,7 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::Set##_SetVecPascal##(const std::bas
 	NullModelTest();\
 	auto _SetVecCamel = ChPtr::Make_S<##_VectorStruct##>();\
 	_SetVecCamel##->Deserialize<CharaType>(_line, tag.length() + 1, ChStd::GetSpaceChara<CharaType>());\
-	makeObject->vertex##_SetVecPascal##List.push_back(_SetVecCamel);}
+	ValueIns().makeObject->ValueIns().vertex##_SetVecPascal##List.push_back(_SetVecCamel);}
 #endif
 
 #ifndef CH_LM_OBJ_SET_METHOD
@@ -284,6 +284,10 @@ namespace ChCpp
 
 			struct ObjFileMaterialData
 			{
+				ObjFileMaterialData();
+				
+				virtual ~ObjFileMaterialData();
+
 				ChVec3 ambient;
 				ChVec3 diffuse;
 				ChVec3 specular;
@@ -292,50 +296,92 @@ namespace ChCpp
 				float alpha = 1.0f;
 				float ODensity = 1.0f;
 
+				struct ObjFileMaterialDataCRT
+				{
 #ifdef CRT
-				std::basic_string<CharaType> ambientMap = ChStd::GetZeroChara<CharaType>();
-				std::basic_string<CharaType> diffuseMap = ChStd::GetZeroChara<CharaType>();
-				std::basic_string<CharaType> specularMap = ChStd::GetZeroChara<CharaType>();
-				std::basic_string<CharaType> specularHighLightMap = ChStd::GetZeroChara<CharaType>();
-				std::basic_string<CharaType> bumpMap = ChStd::GetZeroChara<CharaType>();
-				std::basic_string<CharaType> metallicMap = ChStd::GetZeroChara<CharaType>();
-				std::basic_string<CharaType> alphaMap = ChStd::GetZeroChara<CharaType>();
-				std::basic_string<CharaType> normalMap = ChStd::GetZeroChara<CharaType>();
+					std::basic_string<CharaType> ambientMap = ChStd::GetZeroChara<CharaType>();
+					std::basic_string<CharaType> diffuseMap = ChStd::GetZeroChara<CharaType>();
+					std::basic_string<CharaType> specularMap = ChStd::GetZeroChara<CharaType>();
+					std::basic_string<CharaType> specularHighLightMap = ChStd::GetZeroChara<CharaType>();
+					std::basic_string<CharaType> bumpMap = ChStd::GetZeroChara<CharaType>();
+					std::basic_string<CharaType> metallicMap = ChStd::GetZeroChara<CharaType>();
+					std::basic_string<CharaType> alphaMap = ChStd::GetZeroChara<CharaType>();
+					std::basic_string<CharaType> normalMap = ChStd::GetZeroChara<CharaType>();
 #endif
+				};
+
+				ObjFileMaterialDataCRT& ValueIns() { return *value; }
+
+			private:
+
+				ObjFileMaterialDataCRT* value = nullptr;
+
 			};
 
 			struct ObjFileModelData
 			{
 				struct MeshData
 				{
+					MeshData();
+
+					virtual ~MeshData();
+
 					struct Data
 					{
 						unsigned long vertexNum;
 						unsigned long normalNum;
 						unsigned long uvNum;
 					};
+
+					struct MeshDataCRT
+					{
 #ifdef CRT
-					std::basic_string<CharaType> targetMaterialName = ChStd::GetZeroChara<CharaType>();
-					std::vector<ChPtr::Shared<Data>> values;
+						std::basic_string<CharaType> targetMaterialName = ChStd::GetZeroChara<CharaType>();
+						std::vector<ChPtr::Shared<Data>> values;
 #endif
+					};
+
+					MeshDataCRT& ValueIns() { return *value; }
+
+				private:
+
+					MeshDataCRT* value = nullptr;
 
 				};
 
+				struct ObjFileModelDataCRT
+				{
 #ifdef CRT
-				std::vector<ChPtr::Shared<ChVec3>> vertexVertexList;
-				std::vector<ChPtr::Shared<ChVec2>> vertexUVList;
-				std::vector<ChPtr::Shared<ChVec3>> vertexNormalList;
+					std::vector<ChPtr::Shared<ChVec3>> vertexVertexList;
+					std::vector<ChPtr::Shared<ChVec2>> vertexUVList;
+					std::vector<ChPtr::Shared<ChVec3>> vertexNormalList;
+					std::vector<ChPtr::Shared<MeshData>> meshDatas;
+					std::basic_string<CharaType> objectName = ChStd::GetZeroChara<CharaType>();
+
 #endif
+				};
+
+				ObjFileModelData();
+				
+				virtual ~ObjFileModelData();
 
 				unsigned long sVertex = 0;
 				unsigned long sUV = 0;
 				unsigned long sNormal = 0;
 
-#ifdef CRT
-				std::vector<ChPtr::Shared<MeshData>> meshDatas;
-				std::basic_string<CharaType> objectName = ChStd::GetZeroChara<CharaType>();
-#endif
+				ObjFileModelDataCRT& ValueIns() { return *value; }
+
+			private:
+
+				ObjFileModelDataCRT* value = nullptr;
+
 			};
+
+		public:
+
+			ObjFile();
+
+			virtual ~ObjFile();
 
 		public:
 
@@ -418,19 +464,29 @@ namespace ChCpp
 
 		protected://Values//
 
+			struct ObjFileCRT
+			{
 #ifdef CRT
 
-			std::basic_string<CharaType> folderPath = ChStd::GetZeroChara<CharaType>();
+				std::basic_string<CharaType> folderPath = ChStd::GetZeroChara<CharaType>();
 
-			std::vector<ChPtr::Shared<ObjFileModelData>>objects;
+				std::vector<ChPtr::Shared<ObjFileModelData>>objects;
 
-			std::map<std::basic_string<CharaType>, ChPtr::Shared<ObjFileMaterialData>>materialMaps;
+				std::map<std::basic_string<CharaType>, ChPtr::Shared<ObjFileMaterialData>>materialMaps;
 
-			std::basic_string<CharaType> blockMaterial = ChStd::GetZeroChara<CharaType>();
+				std::basic_string<CharaType> blockMaterial = ChStd::GetZeroChara<CharaType>();
 
-			ChPtr::Shared<ObjFileModelData>makeObject = nullptr;
-			ChPtr::Shared<ObjFileMaterialData>targetMaterial = nullptr;
+				ChPtr::Shared<ObjFileModelData>makeObject = nullptr;
+				ChPtr::Shared<ObjFileMaterialData>targetMaterial = nullptr;
 #endif
+			};
+
+			ObjFileCRT& ValueIns() { return *value; }
+
+		private:
+
+			ObjFileCRT* value = nullptr;
+
 		};
 	}
 }
@@ -438,15 +494,65 @@ namespace ChCpp
 
 #ifdef CRT
 
+
+template<typename CharaType>
+ChCpp::ModelLoader::ObjFile<CharaType>::ObjFileMaterialData::ObjFileMaterialData()
+{
+	value = new ObjFileMaterialDataCRT();
+}
+
+template<typename CharaType>
+ChCpp::ModelLoader::ObjFile<CharaType>::ObjFileMaterialData::~ObjFileMaterialData()
+{
+	delete value;
+}
+
+
+template<typename CharaType>
+ChCpp::ModelLoader::ObjFile<CharaType>::ObjFileModelData::MeshData::MeshData()
+{
+	value = new MeshDataCRT();
+}
+
+template<typename CharaType>
+ChCpp::ModelLoader::ObjFile<CharaType>::ObjFileModelData::MeshData::~MeshData()
+{
+	delete value;
+}
+
+template<typename CharaType>
+ChCpp::ModelLoader::ObjFile<CharaType>::ObjFileModelData::ObjFileModelData()
+{
+	value = new ObjFileModelDataCRT();
+}
+
+template<typename CharaType>
+ChCpp::ModelLoader::ObjFile<CharaType>::ObjFileModelData::~ObjFileModelData()
+{
+	delete value;
+}
+
+template<typename CharaType>
+ChCpp::ModelLoader::ObjFile<CharaType>::ObjFile()
+{
+	value = new  ObjFileCRT();
+}
+
+template<typename CharaType>
+ChCpp::ModelLoader::ObjFile<CharaType>::~ObjFile()
+{
+	delete value;
+}
+
 template<typename CharaType>
 void ChCpp::ModelLoader::ObjFile<CharaType>::Release()
 {
-	objects.clear();
-	materialMaps.clear();
-	makeObject = nullptr;
-	targetMaterial = nullptr;
-	folderPath = ChStd::GetZeroChara<CharaType>();
-	blockMaterial = ChStd::GetZeroChara<CharaType>();
+	value->objects.clear();
+	value->materialMaps.clear();
+	value->makeObject = nullptr;
+	value->targetMaterial = nullptr;
+	value->folderPath = ChStd::GetZeroChara<CharaType>();
+	value->blockMaterial = ChStd::GetZeroChara<CharaType>();
 }
 
 template<typename CharaType>
@@ -474,7 +580,7 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::CreateModel(ChPtr::Shared<ModelObje
 		text.SetText(tmp.c_str());
 	}
 
-	folderPath = ModelLoaderBase<CharaType>::GetRoutePath(_filePath);
+	ValueIns().folderPath = ModelLoaderBase<CharaType>::GetRoutePath(_filePath);
 
 	Release();
 
@@ -493,7 +599,7 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::CreateModel(ChPtr::Shared<ModelObje
 		SetMateBlock(line);
 	}
 
-	if (objects.size() <= 0)return;
+	if (ValueIns().objects.size() <= 0)return;
 
 	ChCpp::ModelLoaderBase<CharaType>::Init();
 
@@ -523,16 +629,16 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::CreateObject(const std::basic_strin
 
 	auto obj = ChPtr::Make_S<ObjFileModelData>();
 
-	obj->sVertex = makeObject != nullptr ? makeObject->sVertex + makeObject->vertexVertexList.size() : 0;
-	obj->sUV = makeObject != nullptr ? makeObject->sUV + makeObject->vertexUVList.size() : 0;
-	obj->sNormal = makeObject != nullptr ? makeObject->sNormal + makeObject->vertexNormalList.size() : 0;
+	obj->sVertex = ValueIns().makeObject != nullptr ? ValueIns().makeObject->sVertex + ValueIns().makeObject->ValueIns().vertexVertexList.size() : 0;
+	obj->sUV = ValueIns().makeObject != nullptr ? ValueIns().makeObject->sUV + ValueIns().makeObject->ValueIns().vertexUVList.size() : 0;
+	obj->sNormal = ValueIns().makeObject != nullptr ? ValueIns().makeObject->sNormal + ValueIns().makeObject->ValueIns().vertexNormalList.size() : 0;
 
-	makeObject = nullptr;
+	ValueIns().makeObject = nullptr;
 
-	makeObject = obj;
+	ValueIns().makeObject = obj;
 	//ObjectMaps[Name] = MakeObject;
-	makeObject->objectName = name;
-	objects.push_back(makeObject);
+	ValueIns().makeObject->ValueIns().objectName = name;
+	ValueIns().objects.push_back(ValueIns().makeObject);
 }
 
 template<typename CharaType>
@@ -551,7 +657,7 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::CreateMaterials(const std::basic_st
 
 		ChCpp::File<CharaType> files;
 		files.SetLocaleName("Japanese");
-		files.FileOpen(folderPath + fileName);
+		files.FileOpen(ValueIns().folderPath + fileName);
 
 		tmp = files.FileReadText();
 
@@ -594,18 +700,18 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::CreateMaterial(const std::basic_str
 	std::basic_string<CharaType>tag = ObjTag::GetMatMaterialBlockTag<CharaType>();
 	if (!IsPrefix(_matName, tag, tag.length()))return;
 
-	targetMaterial = nullptr;
+	ValueIns().targetMaterial = nullptr;
 
-	targetMaterial = ChPtr::Make_S<ObjFileMaterialData>();
+	ValueIns().targetMaterial = ChPtr::Make_S<ObjFileMaterialData>();
 
-	materialMaps[&_matName[7]] = targetMaterial;
+	ValueIns().materialMaps[&_matName[7]] = ValueIns().targetMaterial;
 }
 
 template<typename CharaType>
 void ChCpp::ModelLoader::ObjFile<CharaType>::CreateChFrame(ChPtr::Shared<ChCpp::FrameObject<CharaType>> _frame)
 {
 	//for (auto&& Obj : ObjectMaps)
-	for (auto&& obj : objects)
+	for (auto&& obj : ValueIns().objects)
 	{
 		unsigned long materialNo = 0;
 
@@ -614,13 +720,13 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::CreateChFrame(ChPtr::Shared<ChCpp::
 		auto&& primitive = mesh->SetComponent<ChCpp::FrameComponent<CharaType>>();
 
 		//for (auto&& Vertexs : Obj.second->vertexPosList)
-		for (auto&& vertexs : obj->vertexVertexList)
+		for (auto&& vertexs : obj->ValueIns().vertexVertexList)
 		{
 			auto ver = ChPtr::Make_S<Ch3D::SavePolyVertex>();
 
 			ver->pos = *vertexs;
 
-			primitive->vertexList.push_back(ver);
+			primitive->ValueIns().vertexList.push_back(ver);
 
 			primitive->maxPos = ModelLoaderBase<CharaType>::TestMaxPos(primitive->maxPos, ver->pos);
 			primitive->minPos = ModelLoaderBase<CharaType>::TestMinPos(primitive->minPos, ver->pos);
@@ -630,15 +736,15 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::CreateChFrame(ChPtr::Shared<ChCpp::
 		primitive->boxSize = ModelLoaderBase<CharaType>::CreateBoxSize(primitive->minPos, primitive->maxPos);
 
 		//for (auto&& Face : Obj.second->MeshDatas)
-		for (auto&& face : obj->meshDatas)
+		for (auto&& face : obj->ValueIns().meshDatas)
 		{
-			if (materialMaps.empty())
+			if (ValueIns().materialMaps.empty())
 			{
-				primitive->mateNames[ChStd::GetZeroChara<CharaType>()] = materialNo;
+				primitive->ValueIns().mateNames[ChStd::GetZeroChara<CharaType>()] = materialNo;
 
 				auto mate = ChPtr::Make_S<Ch3D::MaterialData<CharaType>>();
 
-				mate->mateName = face->targetMaterialName;
+				mate->ValueIns().mateName = face->ValueIns().targetMaterialName;
 
 				mate->mate.diffuse = ChVec4(1.0f);
 
@@ -648,20 +754,20 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::CreateChFrame(ChPtr::Shared<ChCpp::
 
 				mate->mate.ambient = 0.3f;
 
-				primitive->materialList.push_back(mate);
+				primitive->ValueIns().materialList.push_back(mate);
 				materialNo++;
 
 				mate = nullptr;
 			}
-			else if (primitive->mateNames.find(face->targetMaterialName) == primitive->mateNames.end())
+			else if (primitive->ValueIns().mateNames.find(face->ValueIns().targetMaterialName) == primitive->ValueIns().mateNames.end())
 			{
 
-				primitive->mateNames[face->targetMaterialName] = materialNo;
+				primitive->ValueIns().mateNames[face->ValueIns().targetMaterialName] = materialNo;
 
 				auto mate = ChPtr::Make_S<Ch3D::MaterialData<CharaType>>();
 
-				mate->mateName = face->targetMaterialName;
-				auto& tmpMate = materialMaps[mate->mateName];
+				mate->ValueIns().mateName = face->ValueIns().targetMaterialName;
+				auto& tmpMate = ValueIns().materialMaps[mate->ValueIns().mateName];
 
 				mate->mate.diffuse = tmpMate->diffuse;
 				mate->mate.diffuse.a = tmpMate->alpha;
@@ -674,17 +780,17 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::CreateChFrame(ChPtr::Shared<ChCpp::
 
 				mate->mate.ambient /= 3;
 
-				mate->textures[Ch3D::TextureType::Diffuse] = (tmpMate->diffuseMap);
-				mate->textures[Ch3D::TextureType::Ambient] = (tmpMate->ambientMap);
-				mate->textures[Ch3D::TextureType::Specular] = (tmpMate->specularMap);
-				mate->textures[Ch3D::TextureType::SpecularHighLight] = (tmpMate->specularHighLightMap);
-				mate->textures[Ch3D::TextureType::Bump] = (tmpMate->bumpMap);
-				mate->textures[Ch3D::TextureType::Alpha] = (tmpMate->alphaMap);
-				mate->textures[Ch3D::TextureType::Normal] = (tmpMate->normalMap);
-				mate->textures[Ch3D::TextureType::Metallic] = (tmpMate->metallicMap);
+				mate->ValueIns().textures[Ch3D::TextureType::Diffuse] = (tmpMate->ValueIns().diffuseMap);
+				mate->ValueIns().textures[Ch3D::TextureType::Ambient] = (tmpMate->ValueIns().ambientMap);
+				mate->ValueIns().textures[Ch3D::TextureType::Specular] = (tmpMate->ValueIns().specularMap);
+				mate->ValueIns().textures[Ch3D::TextureType::SpecularHighLight] = (tmpMate->ValueIns().specularHighLightMap);
+				mate->ValueIns().textures[Ch3D::TextureType::Bump] = (tmpMate->ValueIns().bumpMap);
+				mate->ValueIns().textures[Ch3D::TextureType::Alpha] = (tmpMate->ValueIns().alphaMap);
+				mate->ValueIns().textures[Ch3D::TextureType::Normal] = (tmpMate->ValueIns().normalMap);
+				mate->ValueIns().textures[Ch3D::TextureType::Metallic] = (tmpMate->ValueIns().metallicMap);
 
 
-				primitive->materialList.push_back(mate);
+				primitive->ValueIns().materialList.push_back(mate);
 				materialNo++;
 
 				mate = nullptr;
@@ -692,9 +798,9 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::CreateChFrame(ChPtr::Shared<ChCpp::
 
 			auto fVList = ChPtr::Make_S<Ch3D::Primitive>();
 
-			fVList->mateNo = primitive->mateNames[face->targetMaterialName];
+			fVList->mateNo = primitive->ValueIns().mateNames[face->ValueIns().targetMaterialName];
 
-			for (auto&& values : face->values)
+			for (auto&& values : face->ValueIns().values)
 			{
 
 				//unsigned long NVertex = Values->VertexNum - Obj.second->SVertex - 1;
@@ -708,27 +814,27 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::CreateChFrame(ChPtr::Shared<ChCpp::
 
 				faceVertex->vertexNo = nVertex;
 				//if(Obj.second->UVDatas.size() > NUV)faceVertex->UVPos = *Obj.second->UVDatas[NUV];
-				if (obj->vertexUVList.size() > nUV)faceVertex->uv = *obj->vertexUVList[nUV];
+				if (obj->ValueIns().vertexUVList.size() > nUV)faceVertex->uv = *obj->ValueIns().vertexUVList[nUV];
 
-				fVList->vertexData.push_back(faceVertex);
+				fVList->ValueIns().vertexData.push_back(faceVertex);
 
 				//mesh->VertexList[NVertex]->Normal += *Obj.second->vertexNormalList[NNormal];
-				primitive->vertexList[nVertex]->normal += *obj->vertexNormalList[nNormal];
-				fVList->faceNormal += *obj->vertexNormalList[nNormal];
+				primitive->ValueIns().vertexList[nVertex]->normal += *obj->ValueIns().vertexNormalList[nNormal];
+				fVList->faceNormal += *obj->ValueIns().vertexNormalList[nNormal];
 
 			}
 
 			fVList->faceNormal.Normalize();
 
-			primitive->primitives.push_back(fVList);
+			primitive->ValueIns().primitives.push_back(fVList);
 		}
 
-		for (auto&& ver : primitive->vertexList)
+		for (auto&& ver : primitive->ValueIns().vertexList)
 		{
 			ver->normal.Normalize();
 		}
 
-		mesh->SetMyName(obj->objectName);
+		mesh->SetMyName(obj->ValueIns().objectName);
 
 		_frame->SetChild(mesh);
 
@@ -767,9 +873,9 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::SetFace(const std::basic_string<Cha
 
 	auto data = ChPtr::Make_S<ObjFile<CharaType>::ObjFileModelData::MeshData>();
 
-	data->targetMaterialName = blockMaterial;
+	data->ValueIns().targetMaterialName = ValueIns().blockMaterial;
 
-	makeObject->meshDatas.push_back(data);
+	ValueIns().makeObject->ValueIns().meshDatas.push_back(data);
 
 	bool endFlg = false;
 
@@ -819,44 +925,44 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::SetFace(const std::basic_string<Cha
 		mdata->uvNum = val[1];
 		mdata->normalNum = val[2];
 
-		data->values.push_back(mdata);
+		data->ValueIns().values.push_back(mdata);
 		if (endFlg)break;
 
 		end = 0;
 	}
 }
 
-CH_LM_OBJ_SET_METHOD(SetMateBlock, ObjTag::GetMaterialBlockTag<CharaType>(), (blockMaterial = &_line[tag.length() + 1]););
+CH_LM_OBJ_SET_METHOD(SetMateBlock, ObjTag::GetMaterialBlockTag<CharaType>(), (ValueIns().blockMaterial = &_line[tag.length() + 1]););
 
-CH_LM_OBJ_SET_METHOD(SetMatAmbient, ObjTag::GetMatAmbientTag<CharaType>(), (targetMaterial->ambient.Deserialize<CharaType>(&_line[tag.length() + 1], 0, ChStd::GetSpaceChara<CharaType>())););
+CH_LM_OBJ_SET_METHOD(SetMatAmbient, ObjTag::GetMatAmbientTag<CharaType>(), (ValueIns().targetMaterial->ambient.Deserialize<CharaType>(&_line[tag.length() + 1], 0, ChStd::GetSpaceChara<CharaType>())););
 
-CH_LM_OBJ_SET_METHOD(SetMatDiffuse, ObjTag::GetMatDiffuseTag<CharaType>(), (targetMaterial->diffuse.Deserialize<CharaType>(&_line[tag.length() + 1], 0, ChStd::GetSpaceChara<CharaType>())););
+CH_LM_OBJ_SET_METHOD(SetMatDiffuse, ObjTag::GetMatDiffuseTag<CharaType>(), (ValueIns().targetMaterial->diffuse.Deserialize<CharaType>(&_line[tag.length() + 1], 0, ChStd::GetSpaceChara<CharaType>())););
 
-CH_LM_OBJ_SET_METHOD(SetMatSpecular, ObjTag::GetMatSpecularTag<CharaType>(), (targetMaterial->specular.Deserialize<CharaType>(&_line[tag.length() + 1], 0, ChStd::GetSpaceChara<CharaType>())););
+CH_LM_OBJ_SET_METHOD(SetMatSpecular, ObjTag::GetMatSpecularTag<CharaType>(), (ValueIns().targetMaterial->specular.Deserialize<CharaType>(&_line[tag.length() + 1], 0, ChStd::GetSpaceChara<CharaType>())););
 
-CH_LM_OBJ_SET_METHOD(SetMatSpecularHighLight, ObjTag::GetMatSpecularHighLightTag<CharaType>(), (targetMaterial->spePow = ChStr::GetNumFromText<float, CharaType>(&_line[tag.length() + 1], 0)););
+CH_LM_OBJ_SET_METHOD(SetMatSpecularHighLight, ObjTag::GetMatSpecularHighLightTag<CharaType>(), (ValueIns().targetMaterial->spePow = ChStr::GetNumFromText<float, CharaType>(&_line[tag.length() + 1], 0)););
 
-CH_LM_OBJ_SET_METHOD(SetMatDissolve, ObjTag::GetMatDissolveTag<CharaType>(), (targetMaterial->alpha = ChStr::GetNumFromText<float, CharaType>(&_line[tag.length() + 1], 0)););
+CH_LM_OBJ_SET_METHOD(SetMatDissolve, ObjTag::GetMatDissolveTag<CharaType>(), (ValueIns().targetMaterial->alpha = ChStr::GetNumFromText<float, CharaType>(&_line[tag.length() + 1], 0)););
 
-CH_LM_OBJ_SET_METHOD(SetMatODensity, ObjTag::GetMatODensityTag<CharaType>(), (targetMaterial->ODensity = ChStr::GetNumFromText<float, CharaType>(&_line[tag.length() + 1], 0)););
+CH_LM_OBJ_SET_METHOD(SetMatODensity, ObjTag::GetMatODensityTag<CharaType>(), (ValueIns().targetMaterial->ODensity = ChStr::GetNumFromText<float, CharaType>(&_line[tag.length() + 1], 0)););
 
-CH_LM_OBJ_SET_METHOD(SetMatAmbientMap, ObjTag::GetMatAmbientMapTag<CharaType>(), (targetMaterial->ambientMap = LoadTextureName(&_line[tag.length() + 1])););
+CH_LM_OBJ_SET_METHOD(SetMatAmbientMap, ObjTag::GetMatAmbientMapTag<CharaType>(), (ValueIns().targetMaterial->ValueIns().ambientMap = LoadTextureName(&_line[tag.length() + 1])););
 
-CH_LM_OBJ_SET_METHOD(SetMatDiffuseMap, ObjTag::GetMatDiffuseMapTag<CharaType>(), (targetMaterial->diffuseMap = LoadTextureName(&_line[tag.length() + 1])););
+CH_LM_OBJ_SET_METHOD(SetMatDiffuseMap, ObjTag::GetMatDiffuseMapTag<CharaType>(), (ValueIns().targetMaterial->ValueIns().diffuseMap = LoadTextureName(&_line[tag.length() + 1])););
 
-CH_LM_OBJ_SET_METHOD(SetMatSpecularMap, ObjTag::GetMatSpecularMapTag<CharaType>(), (targetMaterial->specularMap = LoadTextureName(&_line[tag.length() + 1])););
+CH_LM_OBJ_SET_METHOD(SetMatSpecularMap, ObjTag::GetMatSpecularMapTag<CharaType>(), (ValueIns().targetMaterial->ValueIns().specularMap = LoadTextureName(&_line[tag.length() + 1])););
 
-CH_LM_OBJ_SET_METHOD(SetMatSpecularHighLightMap, ObjTag::GetMatSpecularHighLightMapTag<CharaType>(), (targetMaterial->specularHighLightMap = LoadTextureName(&_line[tag.length() + 1])););
+CH_LM_OBJ_SET_METHOD(SetMatSpecularHighLightMap, ObjTag::GetMatSpecularHighLightMapTag<CharaType>(), (ValueIns().targetMaterial->ValueIns().specularHighLightMap = LoadTextureName(&_line[tag.length() + 1])););
 
-CH_LM_OBJ_SET_METHOD(SetMatBumpMap, ObjTag::GetMatBumpMapTag<CharaType>(), (targetMaterial->bumpMap = LoadTextureName(&_line[tag.length() + 1])););
+CH_LM_OBJ_SET_METHOD(SetMatBumpMap, ObjTag::GetMatBumpMapTag<CharaType>(), (ValueIns().targetMaterial->ValueIns().bumpMap = LoadTextureName(&_line[tag.length() + 1])););
 
-CH_LM_OBJ_SET_METHOD(SetMatBumpMap2, ObjTag::GetMatBumpMapTag2<CharaType>(), (targetMaterial->bumpMap = LoadTextureName(&_line[tag.length() + 1])););
+CH_LM_OBJ_SET_METHOD(SetMatBumpMap2, ObjTag::GetMatBumpMapTag2<CharaType>(), (ValueIns().targetMaterial->ValueIns().bumpMap = LoadTextureName(&_line[tag.length() + 1])););
 
-CH_LM_OBJ_SET_METHOD(SetMatMetallicMap, ObjTag::GetMatMetallicMapTag<CharaType>(), (targetMaterial->metallicMap = LoadTextureName(&_line[tag.length() + 1])););
+CH_LM_OBJ_SET_METHOD(SetMatMetallicMap, ObjTag::GetMatMetallicMapTag<CharaType>(), (ValueIns().targetMaterial->ValueIns().metallicMap = LoadTextureName(&_line[tag.length() + 1])););
 
-CH_LM_OBJ_SET_METHOD(SetMatMetallicMap2, ObjTag::GetMatMetallicMapTag2<CharaType>(), (targetMaterial->metallicMap = LoadTextureName(&_line[tag.length() + 1])););
+CH_LM_OBJ_SET_METHOD(SetMatMetallicMap2, ObjTag::GetMatMetallicMapTag2<CharaType>(), (ValueIns().targetMaterial->ValueIns().metallicMap = LoadTextureName(&_line[tag.length() + 1])););
 
-CH_LM_OBJ_SET_METHOD(SetMatNormalMap, ObjTag::GetMatNormalMapTag<CharaType>(), (targetMaterial->normalMap = LoadTextureName(&_line[tag.length() + 1])););
+CH_LM_OBJ_SET_METHOD(SetMatNormalMap, ObjTag::GetMatNormalMapTag<CharaType>(), (ValueIns().targetMaterial->ValueIns().normalMap = LoadTextureName(&_line[tag.length() + 1])););
 
 template<typename CharaType>
 bool ChCpp::ModelLoader::ObjFile<CharaType>::IsPrefix(const std::basic_string<CharaType>& _str, const std::basic_string<CharaType>& _prefix, const unsigned long _prefixSize)
@@ -907,7 +1013,7 @@ std::basic_string<CharaType> ChCpp::ModelLoader::ObjFile<CharaType>::LoadTexture
 template<typename CharaType>
 void ChCpp::ModelLoader::ObjFile<CharaType>::NullModelTest()
 {
-	if (makeObject != nullptr)return;
+	if (ValueIns().makeObject != nullptr)return;
 
 	std::basic_string<CharaType> createText = ObjTag::GetObjectBlockTag<CharaType>();
 

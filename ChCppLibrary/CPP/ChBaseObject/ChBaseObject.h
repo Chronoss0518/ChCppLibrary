@@ -32,35 +32,25 @@ void ChCpp::BasicObject::##_FunctionNameBase##Function()\
 
 namespace ChCpp
 {
+	class ObjectList;
+
 	//オブジェクトを生成する場合、このクラスを継承して作成する。//
 	class BasicObject 
 #ifdef CRT
 		: public std::enable_shared_from_this<BasicObject>
 #endif
 	{
-	protected:
+	public:
+
+		friend ObjectList;
+
+		friend BaseComponent;
+
+	public:
 
 		BasicObject();
 
 		virtual ~BasicObject();
-
-	public:
-
-#ifdef CRT
-		template<class T>
-		static typename std::enable_if<
-			std::is_base_of<BasicObject, T>::value || std::is_same<BasicObject, T>::value,ChPtr::Shared<T>>::type
-			CreateObject()
-		{
-			ChPtr::Shared<BasicObject>res = nullptr;
-			res.reset(new T());
-			return res;
-		}
-#endif
-
-	public:
-
-		friend BaseComponent;
 
 	protected:
 
@@ -136,6 +126,14 @@ namespace ChCpp
 
 		//使用フラグ//
 		void SetUseFlg(const bool& _flg) { useFlg = _flg; }
+
+	private://Set Functions//
+
+#ifdef CRT
+
+		void SetObjectList(ObjectList* _objMa) { objMaList = _objMa; }
+
+#endif
 
 	public://Get Functions//
 
@@ -230,6 +228,12 @@ protected://Get Functions//
 
 #endif
 
+		ObjectList* LookObjectList();
+
+	private:
+
+		void WithdrawObjectList();
+
 	public://Is Functions//
 
 		//使用可否の確認//
@@ -282,6 +286,8 @@ protected://Get Functions//
 
 		bool useFlg = true;
 
+		ObjectList* objMaList = nullptr;
+
 		struct BasicObjectCRT
 		{
 #ifdef CRT
@@ -297,16 +303,9 @@ protected://Get Functions//
 	};
 
 	template<typename CharaType>
-	class ObjectList;
-
-	template<typename CharaType>
 	class BaseObject : public BasicObject
 	{
 	public:
-
-		friend ObjectList<CharaType>;
-
-	protected:
 
 		BaseObject();
 
@@ -316,32 +315,8 @@ protected://Get Functions//
 
 #ifdef CRT
 
-		template<class T = BaseObject<CharaType>>
-		static typename std::enable_if<
-			std::is_base_of<BaseObject<CharaType>, T>::value || 
-			std::is_same<BaseObject<CharaType>, T>::value, ChPtr::Shared<T>>::type
-			CreateObject() 
-		{
-			ChPtr::Shared<BaseObject<CharaType>>res = nullptr;
-			res.reset(new T());
-			return res;
-		}
-#endif
-
-	public:
-
-#ifdef CRT
-
 		//自身の名前のセット//
 		void SetMyName(const std::basic_string<CharaType>& _newName) { value->myName = _newName; }
-
-#endif
-
-	private://Set Functions//
-
-#ifdef CRT
-
-		void SetObjectList(ObjectList<CharaType>* _objMa) { objMaList = _objMa; }
 
 #endif
 
@@ -448,22 +423,7 @@ protected://Get Functions//
 
 #endif
 
-	public:
-
-		ObjectList<CharaType>* LookObjectList();
-
 	private:
-
-		void WithdrawObjectList();
-
-	protected:
-
-		//Release時に走る関数//
-		void BaseRelease()override final;
-
-	private:
-
-		ObjectList<CharaType>* objMaList = nullptr;
 
 		struct BaseObjectCRT
 		{
@@ -507,6 +467,11 @@ void ChCpp::BasicObject::BaseRelease()
 
 	dFlg = true;
 	useFlg = false;
+
+	if (ChPtr::NullCheck(objMaList))return;
+
+	WithdrawObjectList();
+
 }
 
 void ChCpp::BasicObject::Destroy() { BaseRelease(); }
@@ -718,14 +683,6 @@ template<typename CharaType>
 ChCpp::BaseObject<CharaType>::~BaseObject()
 {
 	delete value;
-}
-
-template<typename CharaType>
-void ChCpp::BaseObject<CharaType>::BaseRelease()
-{
-	BasicObject::BaseRelease();
-	if (ChPtr::NullCheck(objMaList))return;
-	WithdrawObjectList();
 }
 
 #endif

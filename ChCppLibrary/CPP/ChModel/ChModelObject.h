@@ -47,26 +47,56 @@ namespace ChCpp
 	template<typename CharaType>
 	struct TargetBoneData
 	{
+		struct TargetBoneDataCRT
+		{
 #ifdef CRT
-		std::basic_string<CharaType> boneObjectName = ChStd::GetZeroChara<CharaType>();
+			std::basic_string<CharaType> boneObjectName = ChStd::GetZeroChara<CharaType>();
 #endif	
+		};
+
+		TargetBoneData();
+
+		virtual ~TargetBoneData();
+
+		TargetBoneDataCRT& ValueIns() { return *value; }
+
 		ChLMat boneOffset;
+
+	private:
+
+		TargetBoneDataCRT* value = nullptr;
 	};
 
 	template<typename CharaType>
 	struct FrameComponent:public ChCpp::BaseComponent
 	{
+
+		struct FrameComponentCRT
+		{
 #ifdef CRT
-		std::vector<ChPtr::Shared<Ch3D::Primitive>> primitives;
-		std::vector<ChPtr::Shared<Ch3D::MaterialData<CharaType>>>materialList;
-		std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>> vertexList;
-		std::vector<ChPtr::Shared<TargetBoneData<CharaType>>>boneDatas;
-		std::map<std::basic_string<CharaType>, unsigned long>mateNames;
+			std::vector<ChPtr::Shared<Ch3D::Primitive>> primitives;
+			std::vector<ChPtr::Shared<Ch3D::MaterialData<CharaType>>>materialList;
+			std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>> vertexList;
+			std::vector<ChPtr::Shared<TargetBoneData<CharaType>>>boneDatas;
+			std::map<std::basic_string<CharaType>, unsigned long>mateNames;
 #endif
+		};
+
+		FrameComponent();
+
+		virtual ~FrameComponent();
+
+		FrameComponentCRT& ValueIns() { return *value; }
+
 		ChVec3 maxPos = ChVec3((10e+37f) * -1.0f);
 		ChVec3 minPos = ChVec3(10e+37f);
 		ChVec3 centerPos = ChVec3();
 		ChVec3 boxSize = ChVec3();
+
+	private:
+
+		FrameComponentCRT* value = nullptr;
+
 	};
 
 	template<typename CharaType>
@@ -79,11 +109,23 @@ namespace ChCpp
 			float animationTime = 0;
 		};
 
+		struct AnimationComponentCRT
+		{
 #ifdef CRT
-		std::vector<ChPtr::Shared<AnimationObject>>keyframeAnimation;
+			std::vector<ChPtr::Shared<AnimationObject>>keyframeAnimation;
 
-		std::basic_string<CharaType> animationName = ChStd::GetZeroChara<CharaType>();
+			std::basic_string<CharaType> animationName = ChStd::GetZeroChara<CharaType>();
 #endif
+		};
+
+		AnimationComponent();
+		
+		virtual ~AnimationComponent();
+
+		AnimationComponentCRT& ValueIns() { return *value; }
+
+	private:
+		AnimationComponentCRT* value = nullptr;
 
 	};
 
@@ -91,9 +133,24 @@ namespace ChCpp
 	struct NearPointData
 	{
 		ChVec3 toVector = ChVec3();
+
+		struct NearPointDataCRT
+		{
 #ifdef CRT
-		std::basic_string<CharaType> materialName = ChStd::GetZeroChara<CharaType>();
+			std::basic_string<CharaType> materialName = ChStd::GetZeroChara<CharaType>();
 #endif
+		};
+
+		NearPointData();
+		
+		virtual ~NearPointData();
+
+		NearPointDataCRT& ValueIns() { return *value; }
+
+	private:
+
+		NearPointDataCRT* value = nullptr;
+
 	};
 
 	template<typename CharaType>
@@ -101,10 +158,18 @@ namespace ChCpp
 	{
 	public:
 
-		virtual ~FrameObject()
+		struct FrameObjectCRT
 		{
-			void Release();
-		}
+#ifdef CRT
+			std::basic_string<CharaType> animationName = ChStd::GetZeroChara<CharaType>();
+#endif
+		};
+
+	public:
+
+		FrameObject();
+
+		virtual ~FrameObject();
 
 	public://Set Functions//
 
@@ -122,9 +187,9 @@ namespace ChCpp
 	public:
 
 #ifdef CRT
-		static bool GetLenIsPointToPolyBoard(ChVec3& _outVector, const ChVec3& _point, const Ch3D::Primitive& _prim, const std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>>& _vertexList, const float _maxLen = FLT_MAX, const ChLMat& _mat = ChLMat());
+		static bool GetLenIsPointToPolyBoard(ChVec3& _outVector, const ChVec3& _point, Ch3D::Primitive& _prim, const std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>>& _vertexList, const float _maxLen = FLT_MAX, const ChLMat& _mat = ChLMat());
 
-		static bool GetLenIsPointToPolyBoardFunction(ChVec3& _outVector, const ChVec3& _point, const Ch3D::Primitive& _prim, const std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>>& _vertexList, const float _maxLen = FLT_MAX);
+		static bool GetLenIsPointToPolyBoardFunction(ChVec3& _outVector, const ChVec3& _point, Ch3D::Primitive& _prim, const std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>>& _vertexList, const float _maxLen = FLT_MAX);
 
 		void GetLenIsPointToPrimitive(std::vector<ChPtr::Shared<NearPointData<CharaType>>>& _res, const ChVec3& _point, const float _maxLen = FLT_MAX, const ChLMat& _mat = ChLMat());
 
@@ -159,9 +224,7 @@ namespace ChCpp
 	private:
 
 		ChLMat drawMat;
-#ifdef CRT
-		std::basic_string<CharaType> animationName = ChStd::GetZeroChara<CharaType>();
-#endif
+		FrameObjectCRT* value = nullptr;
 	};
 
 	template<typename CharaType>
@@ -169,11 +232,23 @@ namespace ChCpp
 	{
 	public:
 
+		struct ModelObjectCRT
+		{
+#ifdef CRT
+			std::vector<std::basic_string<CharaType>>animationNames;
+			std::basic_string<CharaType> modelName = ChStd::GetZeroChara<CharaType>();
+#endif
+		};
+
+	public:
+
 		friend ModelLoaderBase<CharaType>;
 
 	public:
 
-		virtual ~ModelObject() { void Release(); }
+		ModelObject();
+
+		virtual ~ModelObject();
 
 	public:
 
@@ -186,7 +261,7 @@ namespace ChCpp
 		inline void SetShaderAxisType(const Ch3D::ShaderAxisType _type) { axisType = _type; }
 
 #ifdef CRT
-		void SetModelName(const std::basic_string<CharaType>& _name) { modelName = _name; }
+		void SetModelName(const std::basic_string<CharaType>& _name) { value->modelName = _name; }
 #endif
 
 	private:
@@ -203,7 +278,7 @@ namespace ChCpp
 
 
 #ifdef CRT
-		inline std::basic_string<CharaType> GetModelName() { return modelName; }
+		inline std::basic_string<CharaType> GetModelName() { return value->modelName; }
 #endif
 
 		//初期化時に作成した全フレームの最大地点//
@@ -222,7 +297,7 @@ namespace ChCpp
 	public:
 
 #ifdef CRT
-		void AddAnimationName(const std::basic_string<CharaType>& _name) { animationNames.push_back(_name); }
+		void AddAnimationName(const std::basic_string<CharaType>& _name) { value->animationNames.push_back(_name); }
 #endif
 	public:
 
@@ -237,11 +312,7 @@ namespace ChCpp
 
 		Ch3D::ShaderAxisType axisType = Ch3D::ShaderAxisType::LeftHand;
 
-#ifdef CRT
-		std::vector<std::basic_string<CharaType>>animationNames;
-		std::basic_string<CharaType> modelName = ChStd::GetZeroChara<CharaType>();
-#endif
-
+		ModelObjectCRT* value = nullptr;
 	};
 
 }
@@ -249,10 +320,70 @@ namespace ChCpp
 #ifdef CRT
 
 template<typename CharaType>
-bool ChCpp::FrameObject<CharaType>::GetLenIsPointToPolyBoard(ChVec3& _outVector, const ChVec3& _point, const Ch3D::Primitive& _prim, const std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>>& _vertexList, const float _maxLen, const ChLMat& _mat)
+ChCpp::TargetBoneData<CharaType>::TargetBoneData()
+{
+	value = new TargetBoneDataCRT();
+}
+
+template<typename CharaType>
+ChCpp::TargetBoneData<CharaType>::~TargetBoneData()
+{
+	delete value;
+}
+
+template<typename CharaType>
+ChCpp::FrameComponent<CharaType>::FrameComponent()
+{
+	value = new FrameComponentCRT();
+}
+
+template<typename CharaType>
+ChCpp::FrameComponent<CharaType>::~FrameComponent()
+{
+	delete value;
+}
+
+template<typename CharaType>
+ChCpp::AnimationComponent<CharaType>::AnimationComponent()
+{
+	value = new AnimationComponentCRT();
+}
+
+template<typename CharaType>
+ChCpp::AnimationComponent<CharaType>::~AnimationComponent()
+{
+	delete value;
+}
+
+template<typename CharaType>
+ChCpp::NearPointData<CharaType>::NearPointData()
+{
+	value = new NearPointData();
+}
+
+template<typename CharaType>
+ChCpp::NearPointData<CharaType>::~NearPointData()
+{
+	delete value;
+}
+
+template<typename CharaType>
+ChCpp::FrameObject<CharaType>::FrameObject()
+{
+	value = new FrameObjectCRT();
+}
+
+template<typename CharaType>
+ChCpp::FrameObject<CharaType>::~FrameObject()
+{
+	delete value;
+}
+
+template<typename CharaType>
+bool ChCpp::FrameObject<CharaType>::GetLenIsPointToPolyBoard(ChVec3& _outVector, const ChVec3& _point, Ch3D::Primitive& _prim, const std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>>& _vertexList, const float _maxLen, const ChLMat& _mat)
 {
 
-	if (_prim.vertexData.size() <= 2)return false;
+	if (_prim.ValueIns().vertexData.size() <= 2)return false;
 	std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>> vertexList;
 	for (auto&& vertex : _vertexList)
 	{
@@ -266,11 +397,11 @@ bool ChCpp::FrameObject<CharaType>::GetLenIsPointToPolyBoard(ChVec3& _outVector,
 }
 
 template<typename CharaType>
-bool ChCpp::FrameObject<CharaType>::GetLenIsPointToPolyBoardFunction(ChVec3& _outVector, const ChVec3& _point, const Ch3D::Primitive& _prim, const std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>>& _vertexList, const float _maxLen)
+bool ChCpp::FrameObject<CharaType>::GetLenIsPointToPolyBoardFunction(ChVec3& _outVector, const ChVec3& _point, Ch3D::Primitive& _prim, const std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>>& _vertexList, const float _maxLen)
 {
-	if (_prim.vertexData.size() <= 2)return false;
+	if (_prim.ValueIns().vertexData.size() <= 2)return false;
 
-	auto&& vertexDataList = _prim.vertexData;
+	auto&& vertexDataList = _prim.ValueIns().vertexData;
 
 	ChVec3 firstPos = _vertexList[vertexDataList[0]->vertexNo]->pos;
 
@@ -321,14 +452,14 @@ void ChCpp::FrameObject<CharaType>::GetLenIsPointToPrimitive(std::vector<ChPtr::
 	auto&& com = ChCpp::BasicObject::GetComponent<FrameComponent<CharaType>>();
 
 	if (com == nullptr)return;
-	if (com->vertexList.size() <= 2)return;
+	if (com->ValueIns().vertexList.size() <= 2)return;
 
 	std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>> vertexList;
 	{
 		ChLMat tmpMat = _mat;
 		tmpMat = GetDrawLHandMatrix() * tmpMat;
 
-		for (auto&& vertex : com->vertexList)
+		for (auto&& vertex : com->ValueIns().vertexList)
 		{
 			auto ver = ChPtr::Make_S<Ch3D::SavePolyVertex>();
 			*ver = *vertex;
@@ -337,7 +468,7 @@ void ChCpp::FrameObject<CharaType>::GetLenIsPointToPrimitive(std::vector<ChPtr::
 		}
 	}
 
-	for (auto&& prim : com->primitives)
+	for (auto&& prim : com->ValueIns().primitives)
 	{
 		auto primitive = *prim;
 		ChVec3 res;
@@ -345,7 +476,7 @@ void ChCpp::FrameObject<CharaType>::GetLenIsPointToPrimitive(std::vector<ChPtr::
 		auto data = ChPtr::Make_S<NearPointData<CharaType>>();
 
 		data->toVector = res;
-		data->materialName = com->materialList[primitive.mateNo]->mateName;
+		data->materialName = com->ValueIns().materialList[primitive.mateNo]->mateName;
 
 		_res.push_back(data);
 	}
@@ -411,6 +542,19 @@ void ChCpp::FrameObject<CharaType>::UpdateAllDrawTransform()
 		}
 	}
 	drawMat = outSideMat * frameMat * parentDrawMat;
+}
+
+template<typename CharaType>
+ChCpp::ModelObject<CharaType>::ModelObject()
+{
+	value = new ModelObjectCRT();
+}
+
+template<typename CharaType>
+ChCpp::ModelObject<CharaType>::~ModelObject()
+{ 
+	Release();
+	delete value;
 }
 
 

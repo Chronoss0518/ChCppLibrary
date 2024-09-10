@@ -6,18 +6,30 @@
 #ifndef Ch_CPP_Shared_BaseObject_ObjectList
 #define Ch_CPP_Shared_BaseObject_ObjectList
 
-template<typename CharaType>
-ChCpp::ObjectList<CharaType>* ChCpp::BaseObject<CharaType>::LookObjectList() { return objMaList; }
-
-template<typename CharaType>
-void ChCpp::BaseObject<CharaType>::WithdrawObjectList()
+void ChCpp::BasicObject::WithdrawObjectList()
 {
 	if (objMaList == nullptr)return;
-	if (objMaList->objectList.empty())return;
+	if (objMaList->ValueIns().objectList.empty())return;
 
-	auto&& test = std::find(objMaList->objectList.begin(), objMaList->objectList.end(), shared_from_this());
+	auto&& test = std::find(objMaList->ValueIns().objectList.begin(), objMaList->ValueIns().objectList.end(), shared_from_this());
 
-	if (test != objMaList->objectList.end()) { objMaList->objectList.erase(test); }
+	if (test != objMaList->ValueIns().objectList.end()) { objMaList->ValueIns().objectList.erase(test); }
+}
+
+ChCpp::ObjectList* ChCpp::BasicObject::LookObjectList() { return objMaList; }
+
+template<class T>
+typename std::enable_if<
+	std::is_base_of<ChCpp::BasicObject, T>::value ||
+	std::is_same<ChCpp::BasicObject, T>::value,
+	ChPtr::Shared<T>>::type
+	ChCpp::ObjectList::SetObject()
+{
+	ChPtr::Shared<ChCpp::BasicObject> res = ChPtr::Make_S<T>();
+	res->SetObjectList(this);
+	res->Init();
+	ValueIns().objectList.push_back(res);
+	return ChPtr::SharedSafeCast<T>(res);
 }
 
 #endif

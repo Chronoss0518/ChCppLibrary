@@ -53,17 +53,17 @@ namespace ChCpp
 		template<class T = BaseObject<CharaType>>
 		typename std::enable_if<std::is_base_of<BaseObject<CharaType>, T>::value ||
 			std::is_same<BaseObject<CharaType>, T>::value, ChPtr::Shared<T>>::type
-			SetObject(const std::basic_string<CharaType>& _objectName,const std::basic_string<CharaType>& _tag = ChStd::GetZeroChara<CharaType>())
+			SetObject(const std::basic_string<CharaType>& _tag = ChStd::GetZeroChara<CharaType>())
 		{
 
 			auto&& list = objectList.find(_tag);
 			if (list == objectList.end())
 			{
-				objectList[_tag] = ChPtr::Make_S<ObjectList<CharaType>>();
+				objectList[_tag] = ChPtr::Make_S<ObjectList>();
 				list = objectList.find(_tag);
 			}
 
-			return (*list).second->SetObject<T>(_objectName);
+			return (*list).second->SetObject<T>();
 		}
 
 		void SetObject(ChPtr::Shared<BaseObject<CharaType>> _obj, const std::basic_string<CharaType>& _tag = ChStd::GetZeroChara<CharaType>());
@@ -251,7 +251,7 @@ namespace ChCpp
 
 #ifdef CRT
 
-		std::map<std::basic_string<CharaType>, ChPtr::Shared<ObjectList<CharaType>>>objectList;
+		std::map<std::basic_string<CharaType>, ChPtr::Shared<ObjectList>>objectList;
 
 #endif
 

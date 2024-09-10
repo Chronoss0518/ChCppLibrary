@@ -14,33 +14,32 @@
 
 #ifndef CH_OBJECT_LIST_FUNCTION
 #define CH_OBJECT_LIST_FUNCTION(_FunctionNameBase) \
-template<typename CharaType>\
-void ChCpp::ObjectList<CharaType>::Object##_FunctionNameBase##()\
+void ChCpp::ObjectList::Object##_FunctionNameBase##()\
 {\
-	for (auto&& obj : objectList)\
+	for (auto&& obj : ValueIns().objectList)\
 	{\
 		if (!obj->IsUseFlg())continue;\
 		if (obj->GetParent().expired())continue;\
 		obj->##_FunctionNameBase##Function();\
-		if (objectList.empty())break;\
+		if (ValueIns().objectList.empty())break;\
 	}\
 }
 #endif
 
 namespace ChCpp
 {
-	template<typename CharaType>
+
 	class ObjectList
 	{
 	public:
 
-		friend BaseObject<CharaType>;
+		friend BasicObject;
 
 	public://Constructor Destructor//
 
-		ObjectList() {}
+		ObjectList();
 
-		virtual ~ObjectList() { Release(); }
+		virtual ~ObjectList();
 
 	public://Init And Release//
 
@@ -52,22 +51,14 @@ namespace ChCpp
 
 		//オブジェクトを登録する//
 		//BaseObjectを継承したオブジェクトのみ登録可能//
-		template<class T = BaseObject<CharaType>>
-		typename std::enable_if
-			<std::is_base_of<BaseObject<CharaType>, T>::value || 
-			std::is_same<BaseObject<CharaType>, T>::value, ChPtr::Shared<T>>::type
-			SetObject(const std::basic_string<CharaType>& _objectName)
-		{
-			ChPtr::Shared<BaseObject<CharaType>> res = nullptr;
-			res.reset(new T());
-			res->SetObjectList(this);
-			res->SetMyName(_objectName);
-			res->Init();
-			objectList.push_back(res);
-			return ChPtr::SharedSafeCast<T>(res);
-		}
+		template<class T = BasicObject>
+		typename std::enable_if<
+			std::is_base_of<BasicObject, T>::value ||
+			std::is_same<BasicObject, T>::value,
+			ChPtr::Shared<T>>::type
+			SetObject();
 		
-		void SetObject(ChPtr::Shared<BaseObject<CharaType>> _obj);
+		void SetObject(ChPtr::Shared<BasicObject> _obj);
 
 #endif
 
@@ -75,14 +66,14 @@ namespace ChCpp
 
 #ifdef CRT
 
-		template<class T = BaseObject<CharaType>>
+		template<class T = BasicObject>
 		inline std::vector<ChPtr::Weak<
-			typename std::enable_if<std::is_base_of<BaseObject<CharaType>, T>::value, T>::type>>
+			typename std::enable_if<std::is_base_of<BasicObject, T>::value, T>::type>>
 			GetObjectList()
 		{
 			std::vector<ChPtr::Weak<T>>tmpObjList;
 
-			for (auto&& obj : objectList)
+			for (auto&& obj : ValueIns().objectList)
 			{
 				if (obj->parent.lock() != nullptr)continue;
 				auto&& test = ChPtr::SharedSafeCast<T>(obj);
@@ -96,14 +87,14 @@ namespace ChCpp
 			return tmpObjList;
 		}
 
-		template<class T = BaseObject<CharaType>>
+		template<class T = BasicObject>
 		inline std::vector<ChPtr::Weak<
-			typename std::enable_if<std::is_base_of<BaseObject<CharaType>, T>::value, T>::type>>
+			typename std::enable_if<std::is_base_of<BasicObject, T>::value, T>::type>>
 			GetObjectListForName(const std::string& _name)
 		{
-			std::vector<ChPtr::Weak<BaseObject<CharaType>>>tmpObjList;
+			std::vector<ChPtr::Weak<BasicObject>>tmpObjList;
 
-			for (auto&& obj : objectList)
+			for (auto&& obj : ValueIns().objectList)
 			{
 				if (obj->parent.lock() != nullptr)continue;
 				auto&& test = ChPtr::SharedSafeCast<T>(obj);
@@ -118,7 +109,7 @@ namespace ChCpp
 			return tmpObjList;
 		}
 
-		inline unsigned long GetObjectCount(){ return objectList.size(); }
+		inline unsigned long GetObjectCount(){ return ValueIns().objectList.size(); }
 #endif
 
 	public://Life Cycle Functions//
@@ -187,6 +178,7 @@ namespace ChCpp
 #ifdef CRT
 
 		//選択された名前のオブジェクトをすべて消去する//
+		template<typename CharaType>
 		void ClearObjectForName(const std::basic_string<CharaType>& _name);
 
 #endif
@@ -196,11 +188,20 @@ namespace ChCpp
 
 	protected:
 
+		struct ObjectListCRT
+		{
 #ifdef CRT
 
-		std::vector<ChPtr::Shared<BaseObject<CharaType>>>objectList;
+			std::vector<ChPtr::Shared<BasicObject>>objectList;
 
 #endif
+		};
+
+		ObjectListCRT& ValueIns() { return *value; }
+
+	private:
+
+		ObjectListCRT* value = nullptr;
 
 	};
 
@@ -208,37 +209,46 @@ namespace ChCpp
 
 #ifdef CRT
 
-template<typename CharaType>
-void ChCpp::ObjectList<CharaType>::SetObject(ChPtr::Shared<BaseObject<CharaType>> _obj)
+ChCpp::ObjectList::ObjectList()
+{
+	value = new ObjectListCRT();
+}
+
+ChCpp::ObjectList::~ObjectList()
+{
+	Release();
+	delete value;
+}
+
+void ChCpp::ObjectList::SetObject(ChPtr::Shared<BasicObject> _obj)
 {
 	if (_obj == nullptr)return;
 
-	if (!objectList.empty())
+	if (!ValueIns().objectList.empty())
 	{
-		if (std::find(objectList.begin(), objectList.end(), _obj) != objectList.end())return;
+		if (std::find(ValueIns().objectList.begin(), ValueIns().objectList.end(), _obj) != ValueIns().objectList.end())return;
 	}
 
 	_obj->WithdrawObjectList();
-	_obj->SetObjList(this);
-	objectList.push_back(_obj);
+	_obj->SetObjectList(this);
+	ValueIns().objectList.push_back(_obj);
 
-	for (auto&& child : _obj->childList) { SetObject(child); }
+	for (auto&& child : _obj->value->childList) { SetObject(child); }
 }
 
 CH_OBJECT_LIST_FUNCTION(UpdateBegin);
 
-template<typename CharaType>
-void ChCpp::ObjectList<CharaType>::ObjectUpdate()
+void ChCpp::ObjectList::ObjectUpdate()
 {
-	auto&& obj = objectList.begin();
+	auto&& obj = ValueIns().objectList.begin();
 
-	while (obj != objectList.end())
+	while (obj != ValueIns().objectList.end())
 	{
 		if ((*obj)->IsDethFlg())
 		{
 			(*obj)->BaseRelease();
-			obj = objectList.erase(obj);
-			if (objectList.empty())break;
+			obj = ValueIns().objectList.erase(obj);
+			if (ValueIns().objectList.empty())break;
 			continue;
 		}
 
@@ -247,7 +257,7 @@ void ChCpp::ObjectList<CharaType>::ObjectUpdate()
 			if ((*obj)->GetParent().expired())
 			{
 				(*obj)->UpdateFunction();
-				if (objectList.empty())break;
+				if (ValueIns().objectList.empty())break;
 			}
 		}
 		obj++;
@@ -265,33 +275,33 @@ CH_OBJECT_LIST_FUNCTION(Draw2D);
 CH_OBJECT_LIST_FUNCTION(Draw3D);
 CH_OBJECT_LIST_FUNCTION(DrawEnd);
 
-template<typename CharaType>
-void ChCpp::ObjectList<CharaType>::ClearObject()
+void ChCpp::ObjectList::ClearObject()
 {
-	for (auto&& obj : objectList)
+	for (auto&& obj : ValueIns().objectList)
 	{
 		if (obj->GetParent().lock())continue;
 		obj->BaseRelease();
 	}
-	if (!objectList.empty())objectList.clear();
+	if (!ValueIns().objectList.empty())ValueIns().objectList.clear();
 }
 
 template<typename CharaType>
-void ChCpp::ObjectList<CharaType>::ClearObjectForName(const std::basic_string<CharaType>& _Name)
+void ChCpp::ObjectList::ClearObjectForName(const std::basic_string<CharaType>& _Name)
 {
-	for (auto&& obj : objectList)
+	for (auto&& obj : ValueIns().objectList)
 	{
-		if (obj->myName.find(_Name, 0) == std::basic_string<CharaType>::npos)continue;
-		obj->Destroy();
+		auto&& baseObj = ChPtr::SharedSafeCast<BaseObject<CharaType>>(obj);
+		if (baseObj == nullptr)continue;
+		if (baseObj->myName.find(_Name, 0) == std::basic_string<CharaType>::npos)continue;
+		baseObj->Destroy();
 	}
 }
 
-template<typename CharaType>
-void ChCpp::ObjectList<CharaType>::DestroyObjectTest()
+void ChCpp::ObjectList::DestroyObjectTest()
 {
-	auto&& obj = objectList.begin();
+	auto&& obj = ValueIns().objectList.begin();
 
-	while (obj != objectList.end())
+	while (obj != ValueIns().objectList.end())
 	{
 		if (!(*obj)->dFlg)
 		{
@@ -299,7 +309,7 @@ void ChCpp::ObjectList<CharaType>::DestroyObjectTest()
 			continue;
 		}
 		(*obj)->BaseRelease();
-		obj = objectList.erase(obj);
+		obj = ValueIns().objectList.erase(obj);
 	}
 }
 

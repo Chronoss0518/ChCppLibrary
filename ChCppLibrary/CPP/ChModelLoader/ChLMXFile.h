@@ -145,6 +145,17 @@ namespace ChCpp
 		template<typename CharaType>
 		class XFile :public ModelLoaderBase<CharaType>
 		{
+		public:
+
+			struct XFileCRT
+			{
+#ifdef CRT
+				std::basic_string<CharaType> loadFileName = ChStd::GetZeroChara<CharaType>();
+				std::basic_string<CharaType> loadFilePath = ChStd::GetZeroChara<CharaType>();
+#endif
+			};
+
+
 		protected:
 
 			struct XVertex :public Ch3D::PolyVertex
@@ -152,47 +163,120 @@ namespace ChCpp
 
 			struct XMaterial :public Ch3D::Material
 			{
+				struct XMaterialCRT
+				{
 #ifdef CRT
-				std::basic_string<CharaType> materialName = ChStd::GetZeroChara<CharaType>();
-				std::vector<std::basic_string<CharaType>>textureNameList;
+					std::basic_string<CharaType> materialName = ChStd::GetZeroChara<CharaType>();
+					std::vector<std::basic_string<CharaType>>textureNameList;
 #endif
+				};
+
+				XMaterial();
+
+				~XMaterial();
+
+				XMaterialCRT& ValueIns() { return *value; }
+
+			private:
+
+				XMaterialCRT* value = nullptr;
+
 			};
 
 			struct XFace
 			{
-				unsigned long mateNo = 0;
+				struct XFaceCRT
+				{
 #ifdef CRT
-				std::vector<unsigned long> vertexNos;
+					std::vector<unsigned long> vertexNos;
 #endif
+				};
+
+				XFace();
+
+				~XFace();
+
+				unsigned long mateNo = 0;
+
+				XFaceCRT& ValueIns() { return *value; }
+
+			private:
+
+				XFaceCRT* value = nullptr;
+
 			};
 
 			struct XSkinWeights
 			{
-				ChLMat boneOffset;
+				struct XSkinWeightsCRT
+				{
 #ifdef CRT
-				std::basic_string<CharaType> targetFrameName = ChStd::GetZeroChara<CharaType>();
-				std::map<unsigned long, float>weitPow;
+					std::basic_string<CharaType> targetFrameName = ChStd::GetZeroChara<CharaType>();
+					std::map<unsigned long, float>weitPow;
 #endif
+				};
+
+				XSkinWeights();
+
+				~XSkinWeights();
+
+				ChLMat boneOffset;
+
+				XSkinWeightsCRT& ValueIns() { return *value; }
+
+			private:
+
+				XSkinWeightsCRT* value = nullptr;
+
 			};
 
 			struct XMesh
 			{
+				struct XMeshCRT
+				{
 #ifdef CRT
-				std::vector<ChPtr::Shared<XVertex>>vertexList;
-				std::vector<ChPtr::Shared<XMaterial>>materialList;
-				std::vector<ChPtr::Shared<XFace>>faceList;
+					std::vector<ChPtr::Shared<XVertex>>vertexList;
+					std::vector<ChPtr::Shared<XMaterial>>materialList;
+					std::vector<ChPtr::Shared<XFace>>faceList;
 #endif
+				};
+
+				XMesh();
+
+				~XMesh();
+
+				XMeshCRT& ValueIns() { return *value; }
+
+			private:
+
+				XMeshCRT* value = nullptr;
+
 			};
 
 			struct XFrame
 			{
-				ChLMat frameMatrix;
+				struct XFrameCRT
+				{
 #ifdef CRT
-				std::basic_string<CharaType> fName = ChStd::GetZeroChara<CharaType>();
-				ChPtr::Shared<XMesh> mesh;
-				std::vector<ChPtr::Shared<XFrame>>next;
-				std::vector<ChPtr::Shared<XSkinWeights>>skinWeightDatas;
+					std::basic_string<CharaType> fName = ChStd::GetZeroChara<CharaType>();
+					ChPtr::Shared<XMesh> mesh;
+					std::vector<ChPtr::Shared<XFrame>>next;
+					std::vector<ChPtr::Shared<XSkinWeights>>skinWeightDatas;
 #endif
+				};
+
+				XFrame();
+
+				~XFrame();
+
+				ChLMat frameMatrix;
+
+				XFrameCRT& ValueIns() { return *value; }
+
+			private:
+
+				XFrameCRT* value = nullptr;
+
 			};
 
 			struct BaseType
@@ -209,21 +293,55 @@ namespace ChCpp
 
 			struct XFileModelFrame
 			{
-
+				struct XFileModelFrameCRT
+				{
 #ifdef CRT
-				ChPtr::Shared<XFrame> modelData = nullptr;
-				std::basic_string<CharaType> modelName = ChStd::GetZeroChara<CharaType>();
+					ChPtr::Shared<XFrame> modelData = nullptr;
+					std::basic_string<CharaType> modelName = ChStd::GetZeroChara<CharaType>();
 #endif
+				};
+
+				XFileModelFrame();
+				
+				~XFileModelFrame();
+
+				XFileModelFrameCRT& ValueIns() { return *value; }
+
+			private:
+
+				XFileModelFrameCRT* value = nullptr;
+
 			};
 
 			struct TemplateRange
 			{
+				struct TemplateRangeCRT
+				{
+#ifdef CRT
+					std::vector<ChPtr::Shared<TemplateRange>> nest;
+#endif
+				};
+
+				TemplateRange();
+
+				~TemplateRange();
+
 				size_t begin = 0;
 				size_t end = 0;
-#ifdef CRT
-				std::vector<ChPtr::Shared<TemplateRange>> nest;
-#endif
+
+				TemplateRangeCRT& ValueIns() { return *value; }
+
+			private:
+
+				TemplateRangeCRT* value = nullptr;
+
 			};
+
+		public:
+
+			XFile();
+
+			~XFile();
 
 		public:
 
@@ -511,20 +629,115 @@ namespace ChCpp
 			bool exceptionFlg = false;
 
 			unsigned long maxBoneNum = 16;
-#ifdef CRT
-			std::basic_string<CharaType> loadFileName  = ChStd::GetZeroChara<CharaType>();
-			std::basic_string<CharaType> loadFilePath = ChStd::GetZeroChara<CharaType>();
-#endif
 		
-		protected://XFileTemplateNames//
+
+			XFileCRT& ValueIns() { return *value; }
+
+		private:
+
+			XFileCRT* value = nullptr;
 
 		};
-
 	}
-
 }
 
 #ifdef CRT
+
+template<typename CharaType>
+ChCpp::ModelLoader::XFile<CharaType>::XMaterial::XMaterial()
+{
+	value = new XMaterialCRT();
+}
+
+template<typename CharaType>
+ChCpp::ModelLoader::XFile<CharaType>::XMaterial::~XMaterial()
+{
+	delete value;
+}
+
+template<typename CharaType>
+ChCpp::ModelLoader::XFile<CharaType>::XFace::XFace()
+{
+	value = new XFaceCRT();
+}
+
+template<typename CharaType>
+ChCpp::ModelLoader::XFile<CharaType>::XFace::~XFace()
+{
+	delete value;
+}
+
+template<typename CharaType>
+ChCpp::ModelLoader::XFile<CharaType>::XSkinWeights::XSkinWeights()
+{
+	value = new XSkinWeightsCRT();
+}
+
+template<typename CharaType>
+ChCpp::ModelLoader::XFile<CharaType>::XSkinWeights::~XSkinWeights()
+{
+	delete value;
+}
+
+template<typename CharaType>
+ChCpp::ModelLoader::XFile<CharaType>::XMesh::XMesh()
+{
+	value = new XMeshCRT();
+}
+
+template<typename CharaType>
+ChCpp::ModelLoader::XFile<CharaType>::XMesh::~XMesh()
+{
+	delete value;
+}
+
+template<typename CharaType>
+ChCpp::ModelLoader::XFile<CharaType>::XFrame::XFrame()
+{
+	value = new XFrameCRT();
+}
+
+template<typename CharaType>
+ChCpp::ModelLoader::XFile<CharaType>::XFrame::~XFrame()
+{
+	delete value;
+}
+
+template<typename CharaType>
+ChCpp::ModelLoader::XFile<CharaType>::XFileModelFrame::XFileModelFrame()
+{
+	value = new XFileModelFrameCRT();
+}
+
+template<typename CharaType>
+ChCpp::ModelLoader::XFile<CharaType>::XFileModelFrame::~XFileModelFrame()
+{
+	delete value;
+}
+
+template<typename CharaType>
+ChCpp::ModelLoader::XFile<CharaType>::TemplateRange::TemplateRange()
+{
+	value = new TemplateRangeCRT();
+}
+
+template<typename CharaType>
+ChCpp::ModelLoader::XFile<CharaType>::TemplateRange::~TemplateRange()
+{
+	delete value;
+}
+
+template<typename CharaType>
+ChCpp::ModelLoader::XFile<CharaType>::XFile()
+{
+	value = new XFileCRT();
+}
+
+template<typename CharaType>
+ChCpp::ModelLoader::XFile<CharaType>::~XFile()
+{
+	delete value;
+}
 
 template<typename CharaType>
 void ChCpp::ModelLoader::XFile<CharaType>::CreateModel(ChPtr::Shared<ModelObject<CharaType>> _model, const std::basic_string<CharaType>& _filePath)
@@ -533,7 +746,7 @@ void ChCpp::ModelLoader::XFile<CharaType>::CreateModel(ChPtr::Shared<ModelObject
 
 	std::basic_string<CharaType> text;
 	{
-		loadFileName = _filePath;
+		ValueIns().loadFileName = _filePath;
 
 		ChCpp::File<CharaType> files;
 
@@ -576,22 +789,22 @@ void ChCpp::ModelLoader::XFile<CharaType>::CreateModel(ChPtr::Shared<ModelObject
 
 	auto xModel = ChPtr::Make_S<XFileModelFrame>();
 
-	for (auto&& tmp : templates->nest)
+	for (auto&& tmp : templates->ValueIns().nest)
 	{
-		SetFrame(xModel->modelData, tmp, text);
+		SetFrame(xModel->ValueIns().modelData, tmp, text);
 
-		SetMesh(xModel->modelData, tmp, text);
+		SetMesh(xModel->ValueIns().modelData, tmp, text);
 	}
 
 	if (exceptionFlg)return;
 
 	ChCpp::ModelLoaderBase<CharaType>::Init();
 
-	loadFilePath = ChCpp::ModelLoaderBase<CharaType>::GetRoutePath(loadFileName);
+	ValueIns().loadFilePath = ChCpp::ModelLoaderBase<CharaType>::GetRoutePath(ValueIns().loadFileName);
 
 	_model->SetModelName(_filePath);
 
-	XFrameToChFrame(_model, xModel->modelData);
+	XFrameToChFrame(_model, xModel->ValueIns().modelData);
 
 	ChCpp::ModelLoaderBase<CharaType>::SetMaxPos(*_model, ChCpp::ModelLoaderBase<CharaType>::maxPos);
 	ChCpp::ModelLoaderBase<CharaType>::SetMinPos(*_model, ChCpp::ModelLoaderBase<CharaType>::minPos);
@@ -627,11 +840,11 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetFrame(
 
 	auto tmpFrame = ChPtr::Make_S<XFrame>();
 
-	tmpFrame->fName = _text.substr(framePos, _targetTemplate->begin - framePos);
+	tmpFrame->ValueIns().fName = _text.substr(framePos, _targetTemplate->begin - framePos);
 
-	tmpFrame->fName = ChStr::RemoveToWhiteSpaceChars(tmpFrame->fName);
+	tmpFrame->ValueIns().fName = ChStr::RemoveToWhiteSpaceChars(tmpFrame->ValueIns().fName);
 
-	for (auto&& tmp : _targetTemplate->nest)
+	for (auto&& tmp : _targetTemplate->ValueIns().nest)
 	{
 		if (SetFremeTransformMatrix(tmpFrame, tmp, _text)) continue;
 
@@ -641,7 +854,7 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetFrame(
 			if (SetFrame(obj, tmp, _text))
 			{
 
-				tmpFrame->next.push_back(obj);
+				tmpFrame->ValueIns().next.push_back(obj);
 
 				continue;
 			}
@@ -698,7 +911,7 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetMesh(
 	if (_frames == nullptr)
 	{
 		_frames = ChPtr::Make_S<XFrame>();
-		_frames->fName = XFileTag::GetRootObjectName<CharaType>();
+		_frames->ValueIns().fName = XFileTag::GetRootObjectName<CharaType>();
 	}
 
 	size_t tmpPos = _targetTemplate->begin;
@@ -716,7 +929,7 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetMesh(
 
 			vertex->pos = poss->value;
 
-			mesh->vertexList.push_back(vertex);
+			mesh->ValueIns().vertexList.push_back(vertex);
 		}
 	}
 
@@ -732,17 +945,17 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetMesh(
 
 			for (auto&& no : poss->value)
 			{
-				face->vertexNos.push_back(no);
+				face->ValueIns().vertexNos.push_back(no);
 			}
 
-			mesh->faceList.push_back(face);
+			mesh->ValueIns().faceList.push_back(face);
 
 		}
 	}
 
-	_frames->mesh = mesh;
+	_frames->ValueIns().mesh = mesh;
 
-	for (auto&& tmp : _targetTemplate->nest)
+	for (auto&& tmp : _targetTemplate->ValueIns().nest)
 	{
 
 		if (SetMeshNormal(_frames, tmp, _text)) continue;
@@ -788,18 +1001,18 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetMeshNormal(
 
 	for (unsigned long i = 0; i < faces.size(); i++)
 	{
-		auto Mesh = _frames->mesh->faceList[i];
+		auto mesh = _frames->ValueIns().mesh->ValueIns().faceList[i];
 
-		for (unsigned long j = 0; j < Mesh->vertexNos.size(); j++)
+		for (unsigned long j = 0; j < mesh->ValueIns().vertexNos.size(); j++)
 		{
 
-			_frames->mesh->vertexList[Mesh->vertexNos[j]]->normal +=
+			_frames->ValueIns().mesh->ValueIns().vertexList[mesh->ValueIns().vertexNos[j]]->normal +=
 				normals[faces[i]->value[j]]->value;
 
 		}
 	}
 
-	for (auto&& vertex : _frames->mesh->vertexList)
+	for (auto&& vertex : _frames->ValueIns().mesh->ValueIns().vertexList)
 	{
 		if (vertex->normal.GetLen() == 1.00000000f)continue;
 		vertex->normal.Normalize();
@@ -832,7 +1045,7 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetMeshTextureCoords(
 	tmpPos = _text.find(arraySeccondTag, tmpPos);
 	tmpPos += 2;
 
-	auto& vertexList = _frames->mesh->vertexList;
+	auto& vertexList = _frames->ValueIns().mesh->ValueIns().vertexList;
 
 	for (unsigned long i = 0; i < vertexList.size(); i++)
 	{
@@ -862,14 +1075,14 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetMeshMaterialList(
 
 	auto mateNo = GetArrayValues<XDWORD>(_text, tmpPos, ChStd::GetCommaChara<CharaType>(), ChStd::GetSemiColonChara<CharaType>());
 
-	auto& faces = _frames->mesh->faceList;
+	auto& faces = _frames->ValueIns().mesh->ValueIns().faceList;
 
 	for (unsigned long i = 0; i < faces.size(); i++)
 	{
 		faces[i]->mateNo = mateNo[i]->value;
 	}
 
-	for (auto&& tmp : _targetTemplate->nest)
+	for (auto&& tmp : _targetTemplate->ValueIns().nest)
 	{
 		SetMaterial(_frames, tmp, _text);
 	}
@@ -967,13 +1180,13 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetMaterial(
 
 	auto mate = ChPtr::Make_S<XMaterial>();
 
-	mate->materialName = materialName;
+	mate->ValueIns().materialName = materialName;
 	mate->diffuse = diffuse.value;
 	mate->specularPower = spePow.value;
 	mate->specularColor = specular.value;
 	mate->ambient = ambient.value;
 
-	for (auto&& tmp : _targetTemplate->nest)
+	for (auto&& tmp : _targetTemplate->ValueIns().nest)
 	{
 
 		if (!IsTags(XFileTag::GetTextureFileNameTag<CharaType>(), tmp, _text))continue;
@@ -988,11 +1201,11 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetMaterial(
 
 		std::basic_string<CharaType> texturePath = _text.substr(start + 1, end - start - 1);
 
-		mate->textureNameList.push_back(texturePath);
+		mate->ValueIns().textureNameList.push_back(texturePath);
 
 	}
 
-	_frames->mesh->materialList.push_back(mate);
+	_frames->ValueIns().mesh->ValueIns().materialList.push_back(mate);
 
 	return true;
 }
@@ -1056,7 +1269,7 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetSkinWeights(
 
 	skinWeight->boneOffset = tmpOffMat;
 
-	skinWeight->targetFrameName = boneName;
+	skinWeight->ValueIns().targetFrameName = boneName;
 
 	{
 		size_t weightingCount = vertexNo.size();
@@ -1065,11 +1278,11 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetSkinWeights(
 
 		for (unsigned long i = 0; i < weightingCount; i++)
 		{
-			skinWeight->weitPow[vertexNo[i]->value] = weightPow[i]->value;
+			skinWeight->ValueIns().weitPow[vertexNo[i]->value] = weightPow[i]->value;
 		}
 	}
 
-	_frames->skinWeightDatas.push_back(skinWeight);
+	_frames->ValueIns().skinWeightDatas.push_back(skinWeight);
 
 	return true;
 }
@@ -1188,7 +1401,7 @@ void ChCpp::ModelLoader::XFile<CharaType>::SetToTemplate(
 
 	tmp->begin = _sTemplateTags[_bCnt];
 
-	_tmp->nest.push_back(tmp);
+	_tmp->ValueIns().nest.push_back(tmp);
 
 	_bCnt++;
 
@@ -1229,13 +1442,13 @@ void ChCpp::ModelLoader::XFile<CharaType>::XFrameToChFrame(
 	const ChPtr::Shared<XFrame>& _xFrame)
 {
 
-	_chFrame->SetMyName(_xFrame->fName);
+	_chFrame->SetMyName(_xFrame->ValueIns().fName);
 
 	_chFrame->SetFrameTransform(_xFrame->frameMatrix);
 
 	_chFrame->GetDrawLHandMatrix();
 
-	for (auto&& frame : _xFrame->next)
+	for (auto&& frame : _xFrame->ValueIns().next)
 	{
 		auto chFrame = ChPtr::Make_S<FrameObject<CharaType>>();
 
@@ -1245,15 +1458,15 @@ void ChCpp::ModelLoader::XFile<CharaType>::XFrameToChFrame(
 
 	}
 
-	if (_xFrame->mesh == nullptr)return;
+	if (_xFrame->ValueIns().mesh == nullptr)return;
 
 	std::map<unsigned long, unsigned long>summarizeVertex;
 
 	auto mesh = _chFrame->SetComponent<FrameComponent<CharaType>>();
-	auto& chVertexList = mesh->vertexList;
+	auto& chVertexList = mesh->ValueIns().vertexList;
 	//SetVertexList//
 	{
-		auto& xVertexList = _xFrame->mesh->vertexList;
+		auto& xVertexList = _xFrame->ValueIns().mesh->ValueIns().vertexList;
 
 
 		for (unsigned long i = 0; i < xVertexList.size(); i++)
@@ -1298,20 +1511,20 @@ void ChCpp::ModelLoader::XFile<CharaType>::XFrameToChFrame(
 			chVertex->normal.Normalize();
 		}
 
-		for (unsigned long i = 0; i < _xFrame->skinWeightDatas.size() && i < maxBoneNum; i++)
+		for (unsigned long i = 0; i < _xFrame->ValueIns().skinWeightDatas.size() && i < maxBoneNum; i++)
 		{
-			auto&& skinWeight = _xFrame->skinWeightDatas[i];
+			auto&& skinWeight = _xFrame->ValueIns().skinWeightDatas[i];
 			for (unsigned long j = 0; j < chVertexList.size(); j++)
 			{
 				auto&& chVertex = *chVertexList[j];
-				auto weitPow = skinWeight->weitPow.find(j);
+				auto weitPow = skinWeight->ValueIns().weitPow.find(j);
 
-				chVertex.blendPow.push_back(weitPow == skinWeight->weitPow.end() ? 0.0f : (*weitPow).second);
+				chVertex.ValueIns().blendPow.push_back(weitPow == skinWeight->ValueIns().weitPow.end() ? 0.0f : (*weitPow).second);
 			}
 			auto boneData = ChPtr::Make_S<ChCpp::TargetBoneData<CharaType>>();
-			boneData->boneObjectName = skinWeight->targetFrameName;
+			boneData->ValueIns().boneObjectName = skinWeight->ValueIns().targetFrameName;
 			boneData->boneOffset = skinWeight->boneOffset;
-			mesh->boneDatas.push_back(boneData);
+			mesh->ValueIns().boneDatas.push_back(boneData);
 		};
 
 		mesh->centerPos = ChCpp::ModelLoaderBase<CharaType>::CreateCenterPos(mesh->minPos, mesh->maxPos);
@@ -1321,29 +1534,29 @@ void ChCpp::ModelLoader::XFile<CharaType>::XFrameToChFrame(
 
 	//SetFaceList//
 	{
-		auto& xVertexList = _xFrame->mesh->vertexList;
+		auto& xVertexList = _xFrame->ValueIns().mesh->ValueIns().vertexList;
 
-		auto& xFaceList = _xFrame->mesh->faceList;
+		auto& xFaceList = _xFrame->ValueIns().mesh->ValueIns().faceList;
 
-		auto& chFaceList = mesh->primitives;
+		auto& chFaceList = mesh->ValueIns().primitives;
 
 		for (auto&& xFace : xFaceList)
 		{
 
 			auto chFace = ChPtr::Make_S<Ch3D::Primitive>();
 
-			for (unsigned long i = 0; i < xFace->vertexNos.size(); i++)
+			for (unsigned long i = 0; i < xFace->ValueIns().vertexNos.size(); i++)
 			{
 
 				auto chVertexData = ChPtr::Make_S<Ch3D::SavePolyData>();
 
-				unsigned long VertexNo = summarizeVertex[xFace->vertexNos[i]];
+				unsigned long VertexNo = summarizeVertex[xFace->ValueIns().vertexNos[i]];
 
 				chVertexData->vertexNo = VertexNo;
-				chVertexData->uv = xVertexList[xFace->vertexNos[i]]->uv;
+				chVertexData->uv = xVertexList[xFace->ValueIns().vertexNos[i]]->uv;
 				chFace->faceNormal += chVertexList[VertexNo]->normal;
 
-				chFace->vertexData.push_back(chVertexData);
+				chFace->ValueIns().vertexData.push_back(chVertexData);
 			}
 			chFace->faceNormal.Normalize();
 			chFace->mateNo = xFace->mateNo;
@@ -1356,30 +1569,30 @@ void ChCpp::ModelLoader::XFile<CharaType>::XFrameToChFrame(
 	//SetMaterial//
 
 	{
-		auto& chMateList = mesh->materialList;
-		auto& chMateNos = mesh->mateNames;
+		auto& chMateList = mesh->ValueIns().materialList;
+		auto& chMateNos = mesh->ValueIns().mateNames;
 
 		unsigned long i = 0;
 
-		for (auto&& xMate : _xFrame->mesh->materialList)
+		for (auto&& xMate : _xFrame->ValueIns().mesh->ValueIns().materialList)
 		{
 			auto chMate = ChPtr::Make_S<Ch3D::MaterialData<CharaType>>();
 
 			chMate->mate.diffuse = xMate->diffuse;
-			chMate->mateName = xMate->materialName;
+			chMate->ValueIns().mateName = xMate->ValueIns().materialName;
 			chMate->mate.specularColor = xMate->specularColor;
 			chMate->mate.specularPower = xMate->specularPower;
 			chMate->mate.ambient = xMate->ambient.GetLen() / 4.0f;
 
-			for (unsigned long j = 0; j < xMate->textureNameList.size(); j++)
+			for (unsigned long j = 0; j < xMate->ValueIns().textureNameList.size(); j++)
 			{
 				if (j > ChStd::EnumCast(Ch3D::TextureType::Metallic))break;
-				chMate->textures[static_cast<Ch3D::TextureType>(j)] =
-					loadFilePath + xMate->textureNameList[j];
+				chMate->ValueIns().textures[static_cast<Ch3D::TextureType>(j)] =
+					ValueIns().loadFilePath + xMate->ValueIns().textureNameList[j];
 
 			}
 
-			chMateNos[chMate->mateName] = i;
+			chMateNos[chMate->ValueIns().mateName] = i;
 
 			chMateList.push_back(chMate);
 
@@ -1393,12 +1606,12 @@ void ChCpp::ModelLoader::XFile<CharaType>::XFrameToChFrame(
 			auto chMate = ChPtr::Make_S<Ch3D::MaterialData<CharaType>>();
 
 			chMate->mate.diffuse = ChVec4(1.0f);
-			chMate->mateName = XFileTag::GetTmpMaterialName<CharaType>();
+			chMate->ValueIns().mateName = XFileTag::GetTmpMaterialName<CharaType>();
 			chMate->mate.specularColor = ChVec3(1.0f);
 			chMate->mate.specularPower = 0.3f;
 			chMate->mate.ambient = ChVec4(0.3f);
 
-			chMateNos[chMate->mateName] = 0;
+			chMateNos[chMate->ValueIns().mateName] = 0;
 
 			chMateList.push_back(chMate);
 
