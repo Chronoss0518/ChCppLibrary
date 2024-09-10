@@ -15,6 +15,10 @@ namespace ChSystem
 
 	class BaseSystem : public ChCp::Initializer
 	{
+	public:
+
+		friend SystemManager;
+
 	protected:
 
 		BaseSystem() {}
