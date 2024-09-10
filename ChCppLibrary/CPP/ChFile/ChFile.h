@@ -94,21 +94,17 @@ namespace ChCpp
 
 	public://Constructor Destructor//
 
-		File() {}
+		File();
 
 #ifdef CRT
 
-		File(const std::basic_string<CharaType>& _fileName) 
-		{
-			FileOpen(_fileName);
-		}
+		File(const std::basic_string<CharaType>& _fileName);
 
 #endif
 
-		virtual ~File() { Release(); }
+		virtual ~File();
 
 		virtual void Release();
-
 
 	public://Set Functions//
 
@@ -314,7 +310,7 @@ ChCpp::File<CharaType>::File(const std::basic_string<CharaType>& _fileName)
 }
 
 template<typename CharaType>
-virtual ChCpp::File<CharaType>::~File()
+ChCpp::File<CharaType>::~File()
 { 
 	Release();
 	delete value;
