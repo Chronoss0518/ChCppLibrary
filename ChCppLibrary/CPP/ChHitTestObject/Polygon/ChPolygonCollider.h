@@ -22,6 +22,22 @@ namespace ChCpp
 	template<typename CharaType>
 	class PolygonCollider :public Collider
 	{
+	public:
+
+		struct PolygonColliderCRT
+		{
+#ifdef CRT
+			std::basic_string<CharaType> hitMaterialName = ChStd::GetZeroChara<CharaType>();
+			FrameObject<CharaType>* model = nullptr;
+#endif
+		};
+
+	public:
+
+		PolygonCollider();
+
+		virtual ~PolygonCollider();
+
 	public://SetFunction//
 
 		void SetModel(FrameObject<CharaType>& _model);
@@ -35,7 +51,7 @@ namespace ChCpp
 		FrameObject<CharaType>* GetModel()const;
 
 #ifdef CRT
-		std::basic_string<CharaType> GetHitMaterialName() { return hitMaterialName; }
+		std::basic_string<CharaType> GetHitMaterialName() { return value->hitMaterialName; }
 #endif
 
 	public://IsFunction//
@@ -63,16 +79,24 @@ namespace ChCpp
 		bool cullHitFlg = true;
 		bool lHandWorldFlg = true;
 		float minLen = 0.0f;
-#ifdef CRT
-		std::basic_string<CharaType> hitMaterialName = ChStd::GetZeroChara<CharaType>();
-#endif
-#ifdef CRT
-		FrameObject<CharaType>* model = nullptr;
-#endif
+
+		PolygonColliderCRT* value = nullptr;
 	};
 }
 
 #ifdef CRT
+
+template<typename CharaType>
+ChCpp::PolygonCollider<CharaType>::PolygonCollider()
+{
+	value = new PolygonColliderCRT();
+}
+
+template<typename CharaType>
+ChCpp::PolygonCollider<CharaType>::~PolygonCollider()
+{
+	delete value;
+}
 
 template<typename CharaType>
 bool ChCpp::PolygonCollider<CharaType>::IsHitRayToMesh(FrameObject<CharaType>& _object, const ChVec3& _rayPos, const ChVec3& _rayDir, const float _rayLen, const bool _nowHitFlg)
@@ -88,21 +112,21 @@ bool ChCpp::PolygonCollider<CharaType>::IsHitRayToMesh(FrameObject<CharaType>& _
 
 	if (frameCom != nullptr)
 	{
-		if (frameCom->vertexList.size() >= 3)
+		if (frameCom->ValueIns().vertexList.size() >= 3)
 		{
 			std::vector<ChPtr::Shared<ChVec3>>posList;
 
-			for (unsigned long i = 0; i < frameCom->vertexList.size(); i++)
-				posList.push_back(ChPtr::Make_S<ChVec3>(tmpMat.Transform(frameCom->vertexList[i]->pos)));
+			for (unsigned long i = 0; i < frameCom->ValueIns().vertexList.size(); i++)
+				posList.push_back(ChPtr::Make_S<ChVec3>(tmpMat.Transform(frameCom->ValueIns().vertexList[i]->pos)));
 
 			ChVec3 poss[3];
 			unsigned long nos[3]{ 0,1,2 };
-			for (auto&& primitive : frameCom->primitives)
+			for (auto&& primitive : frameCom->ValueIns().primitives)
 			{
 				for (unsigned char j = 0; j < 3; j++)
 				{
-					nos[j] = !leftHandFlg ? primitive->vertexData.size() - j - 1 : j;
-					poss[j] = *posList[primitive->vertexData[nos[j]]->vertexNo];
+					nos[j] = !leftHandFlg ? primitive->ValueIns().vertexData.size() - j - 1 : j;
+					poss[j] = *posList[primitive->ValueIns().vertexData[nos[j]]->vertexNo];
 				}
 
 				{
@@ -115,14 +139,14 @@ bool ChCpp::PolygonCollider<CharaType>::IsHitRayToMesh(FrameObject<CharaType>& _
 					if (faceLen > minLen)continue;
 				}
 
-				for (unsigned long i = 1; i < primitive->vertexData.size() - 1; i++)
+				for (unsigned long i = 1; i < primitive->ValueIns().vertexData.size() - 1; i++)
 				{
 					ChVec3 tmpVec;
 
 					for (unsigned char j = 1; j < 3; j++)
 					{
-						nos[j] = !leftHandFlg ? primitive->vertexData.size() - j - i : i + j - 1;
-						poss[j] = *posList[primitive->vertexData[nos[j]]->vertexNo];
+						nos[j] = !leftHandFlg ? primitive->ValueIns().vertexData.size() - j - i : i + j - 1;
+						poss[j] = *posList[primitive->ValueIns().vertexData[nos[j]]->vertexNo];
 					}
 
 					if (!HitTestTri(
@@ -138,7 +162,7 @@ bool ChCpp::PolygonCollider<CharaType>::IsHitRayToMesh(FrameObject<CharaType>& _
 					hitFlg = true;
 					if (minLen < tmpLen)continue;
 					minLen = tmpLen;
-					hitMaterialName = frameCom->materialList[primitive->mateNo]->mateName;
+					value->hitMaterialName = frameCom->ValueIns().materialList[primitive->mateNo]->ValueIns().mateName;
 					SetHitVector(tmpVec);
 					break;
 				}
@@ -159,13 +183,13 @@ bool ChCpp::PolygonCollider<CharaType>::IsHitRayToMesh(FrameObject<CharaType>& _
 template<typename CharaType>
 void ChCpp::PolygonCollider<CharaType>::SetModel(FrameObject<CharaType>& _model)
 {
-	model = &_model;
+	value->model = &_model;
 }
 
 template<typename CharaType>
 ChCpp::FrameObject<CharaType>* ChCpp::PolygonCollider<CharaType>::GetModel()const
 {
-	return model;
+	return value->model;
 }
 
 
