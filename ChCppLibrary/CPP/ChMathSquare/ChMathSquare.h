@@ -29,10 +29,7 @@ namespace ChCpp
 
 	public://Operatore Functions//
 
-		MathSquare()
-		{
-			CRTInit();
-		}
+		MathSquare() { CRTInit(); }
 
 		MathSquare(const MathSquare& _mathSquare)
 		{
@@ -66,10 +63,7 @@ namespace ChCpp
 			SetSquare(_leftTop, _rightTop, _rightBottom, _leftBottom, _cutCount);
 		}
 
-		~MathSquare()
-		{
-			CRTRelease();
-		}
+		~MathSquare() { CRTRelease(); }
 
 	public:
 
