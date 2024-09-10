@@ -388,11 +388,11 @@ ChCpp::FrameManager<CharaType>::~FrameManager()
 template<typename CharaType>
 std::basic_string<CharaType> ChCpp::FrameManager<CharaType>::GetNowFrameName()
 {
-	if (frameNames.empty())return ChStd::GetZeroChara<CharaType>();
+	if (value->frameNames.empty())return ChStd::GetZeroChara<CharaType>();
 
-	if (frameNames.size() <= nowFrameNo)return ChStd::GetZeroChara<CharaType>();
+	if (value->frameNames.size() <= nowFrameNo)return ChStd::GetZeroChara<CharaType>();
 
-	for (auto&& name : frameNames)
+	for (auto&& name : value->frameNames)
 	{
 		if (name.second != nowFrameNo)continue;
 
