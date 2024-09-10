@@ -12,15 +12,30 @@ namespace ChCpp
 	//void(void)の関数用マルチスレッドを実行するクラス//
 	class MultiThread :public ChCp::Initializer
 	{
+	public:
+
+		struct MultiThreadCRT
+		{
+#ifdef CRT
+			std::thread thread;
+			std::function<void(void)> func = nullptr;
+#endif
+		};
+
 	public://ConstructerDestructer//
 
-		MultiThread() {}
+		MultiThread() { CRTInit(); }
 
 #ifdef CRT
 		MultiThread(const std::function<void(void)> _func);
 #endif
 
-		~MultiThread() { Release(); }
+		~MultiThread()
+		{
+			Release();
+			CRTRelease();
+		}
+
 	public://InitAndRelease//
 
 #ifdef CRT
@@ -29,6 +44,12 @@ namespace ChCpp
 #endif
 
 		void Release();
+
+	private:
+
+		void CRTInit();
+
+		void CRTRelease();
 
 	public://IsFunction//
 
@@ -50,25 +71,42 @@ namespace ChCpp
 	protected://Member Value//
 
 		bool endFlg = true;
-#ifdef CRT
-		std::thread thread;
-		std::function<void(void)> func = nullptr;
-#endif
+
+		MultiThreadCRT& ValueIns() { return *value; }
+
+	private:
+
+		MultiThreadCRT* value = nullptr;
+
 	};
 }
 
 #ifdef CRT
 
-ChCpp::MultiThread::MultiThread(const std::function<void(void)> _func) { Init(_func); }
+void ChCpp::MultiThread::CRTInit()
+{
+	value = new MultiThreadCRT();
+}
+
+void ChCpp::MultiThread::CRTRelease()
+{
+	delete value;
+}
+
+ChCpp::MultiThread::MultiThread(const std::function<void(void)> _func)
+{
+	CRTInit();
+	Init(_func);
+}
 
 void ChCpp::MultiThread::Init(const std::function<void(void)> _func)
 {
 	if (!endFlg)return;
 
-	if (thread.joinable())
-		thread.detach();
+	if (ValueIns().thread.joinable())
+		ValueIns().thread.detach();
 
-	func = _func;
+	ValueIns().func = _func;
 
 	ReRun();
 
@@ -81,7 +119,7 @@ void ChCpp::MultiThread::ReRun()
 
 	endFlg = false;
 
-	thread = std::thread([&] {Function(); });
+	ValueIns().thread = std::thread([&] {Function(); });
 
 }
 
@@ -89,18 +127,18 @@ void ChCpp::MultiThread::Release()
 {
 	if (!IsInit())return;
 
-	if (!thread.joinable())return;
+	if (!ValueIns().thread.joinable())return;
 
-	thread.join();
+	ValueIns().thread.join();
 
 	SetInitFlg(false);
 }
 
-void ChCpp::MultiThread::Join() { thread.join(); }
+void ChCpp::MultiThread::Join() { ValueIns().thread.join(); }
 
 void ChCpp::MultiThread::Function()
 {
-	func();
+	ValueIns().func();
 
 	endFlg = true;
 }
