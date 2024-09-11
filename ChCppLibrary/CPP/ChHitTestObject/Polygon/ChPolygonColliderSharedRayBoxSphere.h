@@ -50,6 +50,7 @@ bool ChCpp::PolygonCollider<CharaType>::IsInnerHit(HitTestSphere* _target)
 
 #ifndef Ch_CPP_HT_Shared_HTM_Ray
 #define Ch_CPP_HT_Shared_HTM_Ray
+
 template<typename CharaType>
 bool  ChCpp::PolygonCollider<CharaType>::IsHit(HitTestRay* _target)
 {

@@ -8,8 +8,7 @@ using namespace ChCpp;
 //HitTestBox Method//
 ///////////////////////////////////////////////////////////////////////////////////////
 
-bool BoxCollider::IsHit(
-	HitTestBox* _target)
+bool BoxCollider::IsHit(HitTestBox* _target)
 {
 	//ˆÊ’uî•ñ‚¾‚¯‚Ì“–‚½‚è”»’è//
 

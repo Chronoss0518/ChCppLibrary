@@ -9,10 +9,7 @@ namespace ChCpp
 	class HitTestObject
 	{
 
-	public:
-
-		///////////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
+	public://Set Functions//
 
 		inline void SetPosition(const ChVec3& _pos) { mat.SetPosition(_pos); }
 
@@ -24,14 +21,12 @@ namespace ChCpp
 
 		inline void SetHitVector(const ChVec3& _vec) { hitVector = _vec; }
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//GetFunction//
+	public://Get Functions//
 
 		//Õ“Ë‚µ‚Ä‚¢‚½ê‡‚É’†S‚©‚çŒ©‚Ä‚Ç‚ÌˆÊ’u‚Ü‚Å‚ß‚è‚ñ‚Å‚¢‚½‚©‚Ì”’l//
 		inline ChVec3 GetHitVectol() { return hitVector; }
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//GetFunction//
+	public://Get Functions//
 
 		inline ChVec3 GetPos() const { return mat.GetPosition(); }
 

@@ -54,7 +54,6 @@ namespace ChCpp
 		Cube CreateCube(const ChLMat& _mat);
 
 	};
-
 }
 
 #include"../Polygon/ChPolygonColliderSharedRayBoxSphere.h"

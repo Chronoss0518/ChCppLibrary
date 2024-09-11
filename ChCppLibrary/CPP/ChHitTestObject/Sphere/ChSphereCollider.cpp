@@ -5,18 +5,12 @@
 
 using namespace ChCpp;
 
-///////////////////////////////////////////////////////////////////////////////////////
-
-bool SphereCollider::IsHit(
-	HitTestBox* _target)
+bool SphereCollider::IsHit(HitTestBox* _target)
 {
 	return _target->IsHit(this);
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
-bool  SphereCollider::IsHit(
-	HitTestSphere* _target)
+bool  SphereCollider::IsHit(HitTestSphere* _target)
 {
 	//ˆÊ’uî•ñ‚¾‚¯‚Ì“–‚½‚è”»’è//
 
@@ -78,10 +72,7 @@ bool  SphereCollider::IsHit(
 	return true;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
-bool  SphereCollider::IsHit(
-	HitTestRay* _target)
+bool  SphereCollider::IsHit(HitTestRay* _target)
 {
 	auto&& pos = _target->GetPos();
 	auto&& dir = _target->GetRayDir();
@@ -105,20 +96,13 @@ bool  SphereCollider::IsHit(
 	return true;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
-bool  SphereCollider::IsInnerHit(
-	HitTestBox* _target)
+bool  SphereCollider::IsInnerHit(HitTestBox* _target)
 {
 	return false;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
-bool  SphereCollider::IsInnerHit(
-	HitTestSphere* _target)
+bool  SphereCollider::IsInnerHit(HitTestSphere* _target)
 {
-
 	//ˆÊ’uî•ñ‚¾‚¯‚Ì“–‚½‚è”»’è//
 
 	ChVec3 tPos = _target->GetPos();

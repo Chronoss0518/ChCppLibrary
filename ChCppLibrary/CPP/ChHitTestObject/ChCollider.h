@@ -23,7 +23,7 @@ namespace ChCpp
 	//対象のHitTestObjectから衝突したかを判断するクラス//
 	class Collider :public HitTestObject
 	{
-	public://IsFunction//
+	public://Is Functions//
 
 		//対象のオブジェクトの外から衝突しているかの判定//
 		virtual bool IsHit(HitTestBox* _target) = 0;
