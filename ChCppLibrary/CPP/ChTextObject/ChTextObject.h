@@ -18,11 +18,27 @@ namespace ChCpp
 	{
 	public:
 
+		struct TextObjectCRT
+		{
+#ifdef CRT
+			std::basic_string<CharaType> cutChar = ChStd::GetCRLFChara<CharaType>();
+			std::vector<std::basic_string<CharaType>> textLines;
+#endif
+		};
+
+	public:
+
+		TextObject();
+
+		virtual ~TextObject();
+
+	public:
+
 #ifdef CRT
 		std::basic_string<CharaType> operator[](unsigned long _index)const
 		{
-			if (textLines.size() <= _index)return ChStd::GetZeroChara<CharaType>();
-			return textLines[_index];
+			if (value->textLines.size() <= _index)return ChStd::GetZeroChara<CharaType>();
+			return value->textLines[_index];
 		}
 #endif
 	public://GetFunction//
@@ -76,11 +92,11 @@ namespace ChCpp
 		unsigned long Count()const { return GetText().length(); }
 
 #ifdef CRT
-		unsigned long LineCount()const { return textLines.size(); }
+		unsigned long LineCount()const { return value->textLines.size(); }
 
-		typename std::vector<std::basic_string<CharaType>>::iterator begin() { return textLines.begin(); }
+		typename std::vector<std::basic_string<CharaType>>::iterator begin() { return value->textLines.begin(); }
 
-		typename std::vector<std::basic_string<CharaType>>::iterator end() { return textLines.end(); }
+		typename std::vector<std::basic_string<CharaType>>::iterator end() { return value->textLines.end(); }
 #endif
 
 		//TextÇÃíÜÇ…éwíËÇµÇΩï∂éöóÒÇêÊì™ÇÊÇËíTÇµ//
@@ -100,22 +116,33 @@ namespace ChCpp
 
 	private:
 
-#ifdef CRT
-		std::basic_string<CharaType> cutChar = ChStd::GetCRLFChara<CharaType>();
-		std::vector<std::basic_string<CharaType>> textLines;
-#endif
+
+		TextObjectCRT* value = nullptr;
+
 	};
 }
 
 #ifdef CRT
 
 template<typename CharaType>
+ChCpp::TextObject<CharaType>::TextObject()
+{
+	value = new TextObjectCRT();
+}
+
+template<typename CharaType>
+ChCpp::TextObject<CharaType>::~TextObject()
+{
+	delete value;
+}
+
+template<typename CharaType>
 std::basic_string<CharaType> ChCpp::TextObject<CharaType>::GetText()const
 {
-	if (textLines.empty())return ChStd::GetZeroChara<CharaType>();
+	if (value->textLines.empty())return ChStd::GetZeroChara<CharaType>();
 	std::basic_string<CharaType> res = ChStd::GetZeroChara<CharaType>();
 
-	for (auto&& text : textLines) { res += text + cutChar; }
+	for (auto&& text : value->textLines) { res += text + value->cutChar; }
 
 	res.pop_back();
 	return res;
@@ -125,17 +152,17 @@ template<typename CharaType>
 std::basic_string<CharaType> ChCpp::TextObject<CharaType>::GetTextLine(const unsigned long _index)const
 {
 	unsigned long tmp = _index;
-	if (tmp >= textLines.size())return ChStd::GetZeroChara<CharaType>();
+	if (tmp >= value->textLines.size())return ChStd::GetZeroChara<CharaType>();
 
-	return textLines[tmp];
+	return value->textLines[tmp];
 }
 
 template<typename CharaType>
 void ChCpp::TextObject<CharaType>::SetCutChar(const CharaType* _cutChar)
 {
-	if (cutChar == _cutChar)return;
+	if (value->cutChar == _cutChar)return;
 	std::basic_string<CharaType> val = GetText();
-	cutChar = _cutChar;
+	value->cutChar = _cutChar;
 	SetText(val.c_str());
 }
 
@@ -143,10 +170,10 @@ template<typename CharaType>
 void ChCpp::TextObject<CharaType>::SetText(const CharaType* _str)
 {
 	std::basic_string<CharaType> testText = _str;
-	textLines.clear();
-	if (testText.find(cutChar) == std::basic_string<CharaType>::npos)
+	value->textLines.clear();
+	if (testText.find(value->cutChar) == std::basic_string<CharaType>::npos)
 	{
-		textLines.push_back(testText);
+		value->textLines.push_back(testText);
 		return;
 	}
 
@@ -155,14 +182,14 @@ void ChCpp::TextObject<CharaType>::SetText(const CharaType* _str)
 
 	while (true)
 	{
-		testPos = testText.find(cutChar, tmpPos);
+		testPos = testText.find(value->cutChar, tmpPos);
 
 		if (testPos == testText.npos)break;
 
-		textLines.push_back(testText.substr(tmpPos, testPos - tmpPos));
+		value->textLines.push_back(testText.substr(tmpPos, testPos - tmpPos));
 		tmpPos = testPos + 1;
 	}
-	textLines.push_back(testText.substr(tmpPos));
+	value->textLines.push_back(testText.substr(tmpPos));
 }
 
 template<typename CharaType>
@@ -170,23 +197,23 @@ void ChCpp::TextObject<CharaType>::SetTextLine(
 	const CharaType* _str,
 	const unsigned int _setIndex)
 {
-	if (_setIndex > textLines.size())return;
+	if (_setIndex > value->textLines.size())return;
 
 	TextObject<CharaType> tmp;
 	tmp.SetText(_str);
 
-	if (_setIndex == textLines.size())
+	if (_setIndex == value->textLines.size())
 	{
 		for (unsigned long i = 0; i < tmp.Count(); i++)
 		{
-			textLines.push_back(tmp.GetTextLine(i));
+			value->textLines.push_back(tmp.GetTextLine(i));
 		}
 		return;
 	}
 
 	for (unsigned long i = 0; i < tmp.Count(); i++)
 	{
-		textLines.insert(textLines.begin() + (textLines.size() - _setIndex - 1 + i), tmp.GetTextLine(i));
+		value->textLines.insert(value->textLines.begin() + (value->textLines.size() - _setIndex - 1 + i), tmp.GetTextLine(i));
 	}
 }
 
@@ -204,7 +231,7 @@ unsigned long ChCpp::TextObject<CharaType>::FindLine(
 	unsigned long count = 1;
 	while (true)
 	{
-		tmp = str.find(cutChar, tmp);
+		tmp = str.find(value->cutChar, tmp);
 		if (tmp >= base)return count;
 
 		count++;
