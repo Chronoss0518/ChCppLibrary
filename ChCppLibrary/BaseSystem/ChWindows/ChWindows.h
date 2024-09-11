@@ -21,8 +21,8 @@ void ChSystem::Windows##_AorW##::Init(\
 	if(ChPtr::NullCheck(wndObject->hWnd))return;\
 	wndObject->CreateEnd(_nCmdShow);\
 	inst = _hInst;\
-	buttonList->SetSize((256 / 8) + 1);\
-	isNowPush->SetSize((256 / 8) + 1);\
+	buttonList.SetSize((256 / 8) + 1);\
+	isNowPush.SetSize((256 / 8) + 1);\
 	SetInitFlg(true);}\
 \
 void ChSystem::Windows##_AorW##::Init(\
