@@ -87,7 +87,6 @@ namespace ChSystem
 	class WindowsW;
 }
 
-
 namespace ChWin
 {
 	LRESULT CALLBACK BaseWndProc(
@@ -117,6 +116,30 @@ namespace ChWin
 	{
 	public:
 
+		struct WindProcedureCRT
+		{
+#ifdef CRT
+			std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)> defaultWindProc = [](
+				HWND _hWnd,
+				UINT _uMsg,
+				WPARAM _wParam,
+				LPARAM _lParam)->LRESULT
+				{return DefWindowProc(_hWnd, _uMsg, _wParam, _lParam); };
+
+			std::map<unsigned int, std::function<void(HWND, UINT)>> childWindProc;
+
+			std::map<unsigned int, std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>> wndProc;
+#endif
+		};
+
+	public:
+
+		WindProcedure();
+		
+		virtual ~WindProcedure();
+
+	public:
+
 		void Init();
 
 	public:
@@ -124,15 +147,15 @@ namespace ChWin
 #ifdef CRT
 		//このウィンドウが子ウィンドウ以外の場合のみ実行される//
 		//_messageにはWM_やメッセージプロシージャ―が受け取れる方にしてください//
-		inline virtual void SetWindProcedure(const unsigned long _message, const std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>& _proc) { (wndProc)[_message] = _proc; }
+		inline virtual void SetWindProcedure(const unsigned long _message, const std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>& _proc) { (value->wndProc)[_message] = _proc; }
 
 		//登録されたどのメッセージも受け取らなかった場合に呼ばれる関数//
-		inline void SetDefaultWindProcedure(const std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>& _proc) { defaultWindProc = _proc; }
+		inline void SetDefaultWindProcedure(const std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>& _proc) { value->defaultWindProc = _proc; }
 
 		//子ウィンドウが動作して呼ばれたときに実行される関数//
 		//このウィンドウが子ウィンドウの場合のみ実行される//
 		//_messageにはWM_やメッセージプロシージャ―が受け取れる方にしてください//
-		inline void SetChildWindProcedure(const unsigned long _message, const std::function<void(HWND, UINT)>& _proc) { (childWindProc)[_message] = _proc; }
+		inline void SetChildWindProcedure(const unsigned long _message, const std::function<void(HWND, UINT)>& _proc) { (value->childWindProc)[_message] = _proc; }
 #endif
 	public:
 
@@ -144,18 +167,8 @@ namespace ChWin
 
 	private:
 
-#ifdef CRT
-		std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)> defaultWindProc = [](
-			HWND _hWnd,
-			UINT _uMsg,
-			WPARAM _wParam,
-			LPARAM _lParam)->LRESULT
-			{return DefWindowProc(_hWnd, _uMsg, _wParam, _lParam); };
+		WindProcedureCRT* value;
 
-		std::map<unsigned int, std::function<void(HWND, UINT)>> childWindProc;
-
-		std::map<unsigned int, std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>> wndProc;
-#endif
 	};
 
 	//WindowsAPIの内、Windowの管理するクラス//
@@ -424,10 +437,19 @@ namespace ChWin
 
 #ifdef CRT
 
+ChWin::WindProcedure::WindProcedure()
+{
+	value = new WindProcedureCRT();
+}
+
+ChWin::WindProcedure::~WindProcedure()
+{
+	delete value;
+}
 
 void ChWin::WindProcedure::Init()
 {
-	wndProc[WM_DESTROY] = [&](
+	value->wndProc[WM_DESTROY] = [&](
 		HWND _hWnd,
 		UINT _uMsg,
 		WPARAM _wParam,
@@ -441,8 +463,8 @@ void ChWin::WindProcedure::Init()
 LRESULT ChWin::WindProcedure::UpdateProcedure(HWND _hWnd, UINT _uMsg, WPARAM _wParam, LPARAM _lParam, LONG_PTR(WINAPI* GetWindowLongPtrFunction)(_In_ HWND, _In_ int))
 {
 
-	auto it = wndProc.find(_uMsg);
-	if (it != (wndProc).end())
+	auto it = value->wndProc.find(_uMsg);
+	if (it != (value->wndProc).end())
 	{
 		LRESULT res;
 		res = (it)->second(_hWnd, _uMsg, _wParam, _lParam);
@@ -455,8 +477,8 @@ LRESULT ChWin::WindProcedure::UpdateProcedure(HWND _hWnd, UINT _uMsg, WPARAM _wP
 	{
 		auto param = LOWORD(_wParam);
 
-		auto it = wndProc.find(param);
-		if (it != (wndProc).end())
+		auto it = value->wndProc.find(param);
+		if (it != (value->wndProc).end())
 		{
 			(it)->second(_hWnd, _uMsg, _wParam, _lParam);
 			return 0;
@@ -469,10 +491,10 @@ LRESULT ChWin::WindProcedure::UpdateProcedure(HWND _hWnd, UINT _uMsg, WPARAM _wP
 
 		if (ChPtr::NotNullCheck(child))
 		{
-			if (!child->childWindProc.empty())
+			if (!child->value->childWindProc.empty())
 			{
-				auto cit = child->childWindProc.find(HIWORD(_wParam));
-				if (cit != (child->childWindProc).end())
+				auto cit = child->value->childWindProc.find(HIWORD(_wParam));
+				if (cit != (child->value->childWindProc).end())
 				{
 					(cit)->second((HWND)LOWORD(_wParam), HIWORD(_wParam));
 				}
@@ -488,7 +510,7 @@ LRESULT ChWin::WindProcedure::UpdateProcedure(HWND _hWnd, UINT _uMsg, WPARAM _wP
 
 LRESULT ChWin::WindProcedure::DefaultWindProc(HWND _hWnd, UINT _uMsg, WPARAM _wParam, LPARAM _lParam)
 {
-	return defaultWindProc(_hWnd, _uMsg, _wParam, _lParam);
+	return value->defaultWindProc(_hWnd, _uMsg, _wParam, _lParam);
 }
 
 void ChWin::WindObjectBase::CreateEnd(const int _nCmdShow)

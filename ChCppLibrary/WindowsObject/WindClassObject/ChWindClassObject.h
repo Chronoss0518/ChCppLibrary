@@ -9,9 +9,39 @@ namespace ChWin
 {
 	class WindClassStyle;
 
-	//WindowsAPIの内WindowClassを用いたオブジェクトを司るクラス//
-	class WindClassObjectA:public ChCp::Initializer
+	template<typename CharaType>
+	class WindClassObjectBase
 	{
+	public:
+
+		struct WindClassObjectCRT
+		{
+#ifdef CRT
+			std::basic_string<CharaType> className = ChStd::GetZeroChara<CharaType>();
+#endif
+		};
+
+	public:
+
+		WindClassObjectBase();
+		
+		virtual~WindClassObjectBase();
+
+	public:
+
+		WindClassObjectCRT& ValueIns() { return *value; }
+
+	private:
+
+		WindClassObjectCRT* value = nullptr;
+
+	};
+
+	//WindowsAPIの内WindowClassを用いたオブジェクトを司るクラス//
+	class WindClassObjectA:public ChCp::Initializer,public WindClassObjectBase<char>
+	{
+	public:
+
 	public://ConstructorDestructor//
 
 		inline WindClassObjectA() { Init(); }
@@ -70,13 +100,10 @@ namespace ChWin
 	protected:
 
 		WNDCLASSA cls;
-#ifdef CRT
-		std::string className = "";
-#endif
 	};
 
 	//WindowsAPIの内WindowClassを用いたオブジェクトを司るクラス//
-	class WindClassObjectW :public ChCp::Initializer
+	class WindClassObjectW :public ChCp::Initializer, public WindClassObjectBase<wchar_t>
 	{
 	public://ConstructorDestructor//
 
@@ -136,9 +163,6 @@ namespace ChWin
 	protected:
 
 		WNDCLASSW cls;
-#ifdef CRT
-		std::wstring className = L"";
-#endif
 };
 
 
@@ -153,8 +177,20 @@ namespace ChWin
 
 #ifdef CRT
 
+template<typename CharaType>
+ChWin::WindClassObjectBase<CharaType>::WindClassObjectBase()
+{
+	value = new WindClassObjectCRT();
+}
 
-const char* ChWin::WindClassObjectA::GetWindClassName() { return className.c_str(); }
+template<typename CharaType>
+ChWin::WindClassObjectBase<CharaType>::~WindClassObjectBase()
+{
+	delete value;
+}
+
+
+const char* ChWin::WindClassObjectA::GetWindClassName() { return ValueIns().className.c_str(); }
 
 bool ChWin::WindClassObjectA::IsSystemRegistClassName(const char* _className)
 {
@@ -279,16 +315,16 @@ void ChWin::WindClassObjectA::RegistClass(const char* _className)
 	if (ChPtr::NullCheck(cls.lpfnWndProc))return;
 	std::string tmpClassName = _className;
 	if (tmpClassName == "")return;
-	className = tmpClassName;
-	if (IsSystemRegistClassName(className.c_str()))return;
+	ValueIns().className = tmpClassName;
+	if (IsSystemRegistClassName(ValueIns().className.c_str()))return;
 
-	cls.lpszClassName = className.c_str();
+	cls.lpszClassName = ValueIns().className.c_str();
 	RegisterClassA(&cls);
 
 	SetInitFlg(true);
 }
 
-const wchar_t* ChWin::WindClassObjectW::GetWindClassName() { return className.c_str(); }
+const wchar_t* ChWin::WindClassObjectW::GetWindClassName() { return ValueIns().className.c_str(); }
 
 bool ChWin::WindClassObjectW::IsSystemRegistClassName(const wchar_t* _className)
 {
@@ -413,10 +449,10 @@ void ChWin::WindClassObjectW::RegistClass(const wchar_t* _className)
 	if (ChPtr::NullCheck(cls.lpfnWndProc))return;
 	std::wstring tmpClassName = _className;
 	if (tmpClassName == L"")return;
-	className = tmpClassName;
-	if (IsSystemRegistClassName(className.c_str()))return;
+	ValueIns().className = tmpClassName;
+	if (IsSystemRegistClassName(ValueIns().className.c_str()))return;
 
-	cls.lpszClassName = className.c_str();
+	cls.lpszClassName = ValueIns().className.c_str();
 	RegisterClassW(&cls);
 
 	SetInitFlg(true);

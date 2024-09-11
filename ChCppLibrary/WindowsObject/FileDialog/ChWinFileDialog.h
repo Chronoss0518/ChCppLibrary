@@ -22,6 +22,24 @@ namespace ChWin
 	{
 	public:
 
+		struct FileDialogBaseCRT
+		{
+#ifdef CRT
+
+			std::basic_string<CharaType> title = ChStd::GetZeroChara<CharaType>();
+
+			std::basic_string<CharaType> fileName = ChStd::GetZeroChara<CharaType>();
+
+			std::basic_string<CharaType> startDir = ChStd::GetZeroChara<CharaType>();
+
+			std::basic_string<CharaType> baseDir = ChStd::GetZeroChara<CharaType>();
+
+			std::map<std::basic_string<CharaType>, std::basic_string<CharaType>> filters;
+
+			std::basic_string<CharaType> filterText = ChStd::GetZeroChara<CharaType>();
+#endif
+		};
+
 		struct Filter
 		{
 #ifdef CRT
@@ -30,12 +48,13 @@ namespace ChWin
 #endif
 		};
 
+
+
 	public:
 
-		virtual ~FileDialogBase()
-		{
-			Release();
-		}
+		FileDialogBase();
+
+		virtual ~FileDialogBase();
 
 	public://Init And Release//
 
@@ -61,7 +80,7 @@ namespace ChWin
 		{
 			if (!openFlg)return ChStd::GetZeroChara<CharaType>();
 			openFlg = false;
-			return fileName;
+			return ValueIns().fileName;
 		}
 #endif
 
@@ -109,6 +128,13 @@ namespace ChWin
 
 		void CreateFilterStr();
 
+#ifdef CRT
+
+		std::basic_string<CharaType> PathToRerative();
+
+#endif
+
+	protected:
 
 		bool openFlg = true;
 
@@ -119,21 +145,11 @@ namespace ChWin
 
 		HWND hOwn = nullptr;
 
-#ifdef CRT
-		std::basic_string<CharaType> PathToRerative();
+		FileDialogBaseCRT& ValueIns() { return *value; }
 
-		std::basic_string<CharaType> title = ChStd::GetZeroChara<CharaType>();
+	private:
 
-		std::basic_string<CharaType> fileName = ChStd::GetZeroChara<CharaType>();
-
-		std::basic_string<CharaType> startDir = ChStd::GetZeroChara<CharaType>();
-
-		std::basic_string<CharaType> baseDir = ChStd::GetZeroChara<CharaType>();
-
-		std::map<std::basic_string<CharaType>, std::basic_string<CharaType>> filters;
-
-		std::basic_string<CharaType> filterText = ChStd::GetZeroChara<CharaType>();
-#endif
+		FileDialogBaseCRT* value = nullptr;
 
 	};
 
@@ -177,17 +193,30 @@ namespace ChWin
 #ifdef CRT
 
 template<typename CharaType>
-void ChWin::FileDialogBase<CharaType>::Init(const CharaType* _currentDirectory)
+ChWin::FileDialogBase<CharaType>::FileDialogBase()
 {
-	startDir += _currentDirectory;
-	baseDir = _currentDirectory;
+	value = new FileDialogBaseCRT();
 }
 
 template<typename CharaType>
-void ChWin::FileDialogBase<CharaType>::SetTitle(const CharaType* _title) { title = _title; }
+ChWin::FileDialogBase<CharaType>::~FileDialogBase()
+{
+	Release();
+	delete value;
+}
 
 template<typename CharaType>
-void ChWin::FileDialogBase<CharaType>::SetStartDir(const CharaType* _dir) { startDir = _dir; }
+void ChWin::FileDialogBase<CharaType>::Init(const CharaType* _currentDirectory)
+{
+	ValueIns().startDir += _currentDirectory;
+	ValueIns().baseDir = _currentDirectory;
+}
+
+template<typename CharaType>
+void ChWin::FileDialogBase<CharaType>::SetTitle(const CharaType* _title) { ValueIns().title = _title; }
+
+template<typename CharaType>
+void ChWin::FileDialogBase<CharaType>::SetStartDir(const CharaType* _dir) { ValueIns().startDir = _dir; }
 
 template<typename CharaType>
 void ChWin::FileDialogBase<CharaType>::AddFilter(const Filter& _fil)
@@ -200,38 +229,38 @@ void ChWin::FileDialogBase<CharaType>::AddFilter(
 	const CharaType* _name,
 	const CharaType* _type)
 {
-	if (filters.find(_name) != filters.end())return;
-	filters[_name] = _type;
+	if (ValueIns().filters.find(_name) != ValueIns().filters.end())return;
+	ValueIns().filters[_name] = _type;
 }
 
 template<typename CharaType>
 void ChWin::FileDialogBase<CharaType>::DelFilter(const CharaType* _name)
 {
-	if (filters.empty())return;
-	if (filters.find(_name) == filters.end())return;
+	if (ValueIns().filters.empty())return;
+	if (ValueIns().filters.find(_name) == ValueIns().filters.end())return;
 
-	filters.erase(_name);
+	ValueIns().filters.erase(_name);
 }
 
 template<typename CharaType>
 void ChWin::FileDialogBase<CharaType>::CreateFilterStr()
 {
-	filterText = ChStd::GetZeroChara<CharaType>();
+	ValueIns().filterText = ChStd::GetZeroChara<CharaType>();
 
-	for (auto&& fil : filters)
+	for (auto&& fil : ValueIns().filters)
 	{
-		filterText += fil.first + ChStd::GetStartParenthesesChara<CharaType>() + ChStd::GetAsterisk<CharaType>() + fil.second + ChStd::GetEndParenthesesChara<CharaType>() + cutChar + ChStd::GetAsterisk<CharaType>() + fil.second + cutChar;
+		ValueIns().filterText += fil.first + ChStd::GetStartParenthesesChara<CharaType>() + ChStd::GetAsterisk<CharaType>() + fil.second + ChStd::GetEndParenthesesChara<CharaType>() + cutChar + ChStd::GetAsterisk<CharaType>() + fil.second + cutChar;
 	}
 }
 
 template<typename CharaType>
 std::basic_string<CharaType> ChWin::FileDialogBase<CharaType>::PathToRerative()
 {
-	size_t tmp = fileName.find_last_of(ChStd::GetYenChara<CharaType>(), fileName.size());
+	size_t tmp = ValueIns().fileName.find_last_of(ChStd::GetYenChara<CharaType>(), ValueIns().fileName.size());
 
 	std::basic_string<CharaType> baseStr;
 
-	baseStr = fileName;
+	baseStr = ValueIns().fileName;
 
 	baseStr.replace(0, tmp + 1, ChStd::GetZeroChara<CharaType>());
 
@@ -242,31 +271,31 @@ template<typename CharaType>
 void ChWin::FileDialogBase<CharaType>::SetFileName(const CharaType* _fileName)
 {
 	if (ChPtr::NullCheck(_fileName))return;
-	fileName = _fileName;
+	ValueIns().fileName = _fileName;
 }
 
 template<typename CharaType>
 const CharaType* ChWin::FileDialogBase<CharaType>::GetTitleText()
 {
-	return title.size() <= 0 ? nullptr : title.c_str();
+	return ValueIns().title.size() <= 0 ? nullptr : ValueIns().title.c_str();
 }
 
 template<typename CharaType>
 const CharaType* ChWin::FileDialogBase<CharaType>::GetStartDir()
 {
-	return startDir.size() <= 0 ? nullptr : startDir.c_str();
+	return ValueIns().startDir.size() <= 0 ? nullptr : ValueIns().startDir.c_str();
 }
 
 template<typename CharaType>
 const CharaType* ChWin::FileDialogBase<CharaType>::GetFilterText()
 {
-	return filterText.c_str();
+	return ValueIns().filterText.c_str();
 }
 
 template<typename CharaType>
 const CharaType* ChWin::FileDialogBase<CharaType>::GetBaseDir()
 {
-	return baseDir.c_str();
+	return ValueIns().baseDir.c_str();
 }
 
 void ChWin::FileDialogA::Init(const HWND& _hWnd)

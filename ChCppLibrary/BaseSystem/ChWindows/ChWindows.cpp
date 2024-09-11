@@ -40,13 +40,13 @@ void ChSystem::WindowsBase<CharaType>::SetKeyCode()
 	if (isKeyUpdate)return;
 	unsigned char keyCode[256];
 	int tmp = GetKeyboardState(keyCode);
-	buttonList->SetAllDownFlg();
+	buttonList.SetAllDownFlg();
 
 	for (unsigned short i = 0; i < 256; i++)
 	{
 		if (!(keyCode[i] & ChStd::MAX_CHAR_BIT))continue;
 
-		buttonList->SetBitTrue((unsigned char)i);
+		buttonList.SetBitTrue((unsigned char)i);
 	}
 
 	isKeyUpdate = true;

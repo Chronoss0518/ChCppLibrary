@@ -122,8 +122,6 @@ namespace ChWin
 	};
 
 	inline WindDrawer& DrawWindow() { return WindDrawer::GetIns(); }
-
-
 }
 
 #endif
