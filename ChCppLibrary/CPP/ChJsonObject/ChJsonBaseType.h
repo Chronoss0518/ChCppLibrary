@@ -48,14 +48,19 @@ namespace ChCpp
 
 	template<typename CharaType>
 	class JsonArray;
+	
 	template<typename CharaType>
 	class JsonNumber;
+	
 	template<typename CharaType>
 	class JsonString;
+	
 	template<typename CharaType>
 	class JsonBoolean;
+	
 	template<typename CharaType>
 	class JsonNull;
+
 	template<typename CharaType>
 	class JsonObject;
 	
@@ -213,57 +218,6 @@ std::basic_string<CharaType> ChCpp::JsonBaseType<CharaType>::FormatDocument(cons
 			res += ChStd::GetLFChara<CharaType>()[0] + GetTabText(objectCount.GetCount() + arrayCount.GetCount());
 		}
 	}
-
-	return res;
-}
-
-template<typename CharaType>
-ChPtr::Shared<ChCpp::JsonObject<CharaType>> ChCpp::JsonBaseType<CharaType>::GetParameterToObject(const std::basic_string<CharaType>& _json)
-{
-	auto&& res = ChPtr::Make_S<JsonObject<CharaType>>();
-	if (!res->SetRawData(_json))return nullptr;
-
-	return res;
-}
-
-template<typename CharaType>
-ChPtr::Shared<ChCpp::JsonArray<CharaType>> ChCpp::JsonBaseType<CharaType>::GetParameterToArray(const std::basic_string<CharaType>& _json)
-{
-	auto&& res = ChPtr::Make_S<JsonArray<CharaType>>();
-	if (!res->SetRawData(_json))return nullptr;
-
-	return res;
-}
-
-template<typename CharaType>
-ChPtr::Shared<ChCpp::JsonString<CharaType>> ChCpp::JsonBaseType<CharaType>::GetParameterToString(const std::basic_string<CharaType>& _json)
-{
-	auto&& res = ChPtr::Make_S<JsonString<CharaType>>();
-	if (!res->SetRawData(_json))return nullptr;
-
-	return res;
-}
-
-template<typename CharaType>
-ChPtr::Shared<ChCpp::JsonBoolean<CharaType>> ChCpp::JsonBaseType<CharaType>::GetParameterToBoolean(const std::basic_string<CharaType>& _json)
-{
-	auto&& res = ChPtr::Make_S<JsonBoolean<CharaType>>();
-	if (!res->SetRawData(_json))return nullptr;
-
-	return res;
-}
-
-template<typename CharaType>
-ChPtr::Shared<ChCpp::JsonNumber<CharaType>> ChCpp::JsonBaseType<CharaType>::GetParameterToNumber(const std::basic_string<CharaType>& _json)
-{
-	if (_json.size() <= 0)return nullptr;
-	if (_json.size() <= 1 && (_json[0] > 57 || _json[0] < 48))return nullptr;
-
-	bool floatingPointFlg = false;
-
-	auto&& res = ChPtr::Make_S<JsonNumber<CharaType>>();
-
-	*res = ChStr::GetNumFromText<long double,CharaType>(_json);
 
 	return res;
 }

@@ -27,8 +27,9 @@ namespace ChCpp
 	{
 	public://static Create Function//
 
+#ifdef CRT
 		static ChPtr::Shared<JsonBoolean> CreateObject(const bool& _flg);
-
+#endif
 	public://Operator Functions//
 
 		JsonBoolean& operator = (const JsonBoolean& _val);
@@ -41,8 +42,9 @@ namespace ChCpp
 
 	public://To String Operator Functions//
 
+#ifdef CRT
 		operator std::basic_string<CharaType>()const;
-
+#endif
 	public://Constructor Destructor//
 
 		JsonBoolean();
@@ -53,14 +55,16 @@ namespace ChCpp
 
 	public:
 
+#ifdef CRT
 		bool SetRawData(const std::basic_string<CharaType>& _jsonText)override;
-
+#endif
 		inline void SetFlg(bool _flg) { value = _flg; }
 
 	public:
 
+#ifdef CRT
 		std::basic_string<CharaType> GetRawData()const override;
-
+#endif
 	public:
 
 		bool IsFlg() { return value; }
@@ -74,6 +78,14 @@ namespace ChCpp
 
 #ifdef CRT
 
+template<typename CharaType>
+ChPtr::Shared<ChCpp::JsonBoolean<CharaType>> ChCpp::JsonBaseType<CharaType>::GetParameterToBoolean(const std::basic_string<CharaType>& _json)
+{
+	auto&& res = ChPtr::Make_S<JsonBoolean<CharaType>>();
+	if (!res->SetRawData(_json))return nullptr;
+
+	return res;
+}
 
 template<typename CharaType>
 ChPtr::Shared<ChCpp::JsonBoolean<CharaType>> ChCpp::JsonBoolean<CharaType>::CreateObject(const bool& _flg)

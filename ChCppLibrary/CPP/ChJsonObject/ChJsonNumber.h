@@ -158,6 +158,26 @@ namespace ChCpp
 
 }
 
+#ifdef CRT
+
+template<typename CharaType>
+ChPtr::Shared<ChCpp::JsonNumber<CharaType>> ChCpp::JsonBaseType<CharaType>::GetParameterToNumber(const std::basic_string<CharaType>& _json)
+{
+	if (_json.size() <= 0)return nullptr;
+	if (_json.size() <= 1 && (_json[0] > 57 || _json[0] < 48))return nullptr;
+
+	bool floatingPointFlg = false;
+
+	auto&& res = ChPtr::Make_S<JsonNumber<CharaType>>();
+
+	*res = ChStr::GetNumFromText<long double, CharaType>(_json);
+
+	return res;
+}
+
+
+#endif
+
 #include"SharedFunctions/ChJsonSharedArrayBooleanNumberString.h"
 
 #endif

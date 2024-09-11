@@ -11,7 +11,7 @@ template<typename CharaType>
 std::vector<std::basic_string<CharaType>> ChCpp::JsonObject<CharaType>::GetKeys()const
 {
 	std::vector<std::basic_string<CharaType>> res;
-	for (auto&& obj : values)
+	for (auto&& obj : value->values)
 	{
 		res.push_back(obj.first);
 	}
@@ -22,7 +22,7 @@ template<typename CharaType>
 ChPtr::Shared<ChCpp::JsonArray<CharaType>> ChCpp::JsonObject<CharaType>::GetKeysToArray()const
 {
 	auto&& res = ChPtr::Make_S<JsonArray<CharaType>>();
-	for (auto&& obj : values)
+	for (auto&& obj : value->values)
 	{
 		res->Add(obj.first);
 	}
@@ -33,7 +33,7 @@ template<typename CharaType>
 std::vector<ChPtr::Shared<ChCpp::JsonBaseType<CharaType>>> ChCpp::JsonObject<CharaType>::GetValues()const
 {
 	std::vector<ChPtr::Shared<ChCpp::JsonBaseType<CharaType>>> res;
-	for (auto&& obj : values)
+	for (auto&& obj : value->values)
 	{
 		res.push_back(obj.second);
 	}
@@ -44,7 +44,7 @@ template<typename CharaType>
 ChPtr::Shared<ChCpp::JsonArray<CharaType>> ChCpp::JsonObject<CharaType>::GetValuesToArray()const
 {
 	auto&& res = ChPtr::Make_S<JsonArray>();
-	for (auto&& obj : values)
+	for (auto&& obj : value->values)
 	{
 		res->Add(obj.second);
 	}

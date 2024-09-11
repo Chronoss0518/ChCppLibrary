@@ -14,8 +14,8 @@
 #define CH_JSON_OBJECT_GET_SHARED_METHOD(_CastClass)\
 template<typename CharaType>\
 ChPtr::Shared<ChCpp::##_CastClass##<CharaType>> ChCpp::JsonObject<CharaType>::Get##_CastClass##(const std::basic_string<CharaType>& _parameterName){\
-	auto findObject = values.find(_parameterName);\
-	if (findObject == values.end())return nullptr;\
+	auto findObject = value->values.find(_parameterName);\
+	if (findObject == value->values.end())return nullptr;\
 	return ChPtr::SharedSafeCast<##_CastClass##<CharaType>>(findObject->second);}
 #endif
 
@@ -23,8 +23,8 @@ ChPtr::Shared<ChCpp::##_CastClass##<CharaType>> ChCpp::JsonObject<CharaType>::Ge
 #define CH_JSON_OBJECT_GET_RAW_METHOD(_CastClass)\
 template<typename CharaType>\
 const ChCpp::##_CastClass##<CharaType>* const ChCpp::JsonObject<CharaType>::Get##_CastClass##(const std::basic_string<CharaType>& _parameterName)const{\
-	auto findObject = values.find(_parameterName);\
-	if (findObject == values.end())return nullptr;\
+	auto findObject = value->values.find(_parameterName);\
+	if (findObject == value->values.end())return nullptr;\
 	return ChPtr::SafeCast<##_CastClass##<CharaType>>(findObject->second.get());}
 #endif
 
@@ -33,14 +33,32 @@ namespace ChCpp
 	template<typename CharaType>
 	class JsonObject :public JsonBaseType<CharaType>
 	{
+	public:
+
+		struct JsonObjectCRT
+		{
+#ifdef CRT
+			std::map<std::basic_string<CharaType>, ChPtr::Shared<JsonBaseType<CharaType>>> values;
+#endif
+		};
+
+	public:
+
+		JsonObject();
+
+		virtual ~JsonObject();
+
 	public://Set Function//
 
+#ifdef CRT
 		bool SetRawData(const std::basic_string<CharaType>& _jsonText)override;
 
 		void Set(const std::basic_string<CharaType>& _parameterName,const ChPtr::Shared<JsonBaseType<CharaType>> _value);
+#endif
 
 	public: //Get Function//
 
+#ifdef CRT
 		std::basic_string<CharaType> GetRawData()const override;
 
 		//パラメーター名を取得する機能を追加//
@@ -73,35 +91,59 @@ namespace ChCpp
 		std::vector<ChPtr::Shared<JsonBaseType<CharaType>>>GetValues()const;
 
 		ChPtr::Shared<JsonArray<CharaType>> GetValuesToArray()const;
+#endif
 
 	public:
 
+#ifdef CRT
 		void Remove(const std::basic_string<CharaType>& _parameterName);
 
 		void RemoveHard(const std::basic_string<CharaType>& _parameterName);
-
+#endif
 		void Clear();
 
 	public:
 
-		typename std::map<std::basic_string<CharaType>, ChPtr::Shared<JsonBaseType<CharaType>>>::iterator begin() { return values.begin(); }
+#ifdef CRT
+		typename std::map<std::basic_string<CharaType>, ChPtr::Shared<JsonBaseType<CharaType>>>::iterator begin() { return value->values.begin(); }
 
-		typename std::map<std::basic_string<CharaType>, ChPtr::Shared<JsonBaseType<CharaType>>>::iterator end() { return values.end(); }
-
+		typename std::map<std::basic_string<CharaType>, ChPtr::Shared<JsonBaseType<CharaType>>>::iterator end() { return value->values.end(); }
+#endif
 	private:
 
+#ifdef CRT
 		bool IsCutCharInParameterName(const std::basic_string<CharaType>& _parameterName);
+#endif
 
 	private:
 
-		std::map<std::basic_string<CharaType>, ChPtr::Shared<JsonBaseType<CharaType>>> values;
+		JsonObjectCRT* value = nullptr;
 
 	};
-
-
 }
 
 #ifdef CRT
+
+template<typename CharaType>
+ChCpp::JsonObject<CharaType>::JsonObject()
+{
+	value = new JsonObjectCRT();
+}
+
+template<typename CharaType>
+ChCpp::JsonObject<CharaType>::~JsonObject()
+{
+	delete value;
+}
+
+template<typename CharaType>
+ChPtr::Shared<ChCpp::JsonObject<CharaType>> ChCpp::JsonBaseType<CharaType>::GetParameterToObject(const std::basic_string<CharaType>& _json)
+{
+	auto&& res = ChPtr::Make_S<JsonObject<CharaType>>();
+	if (!res->SetRawData(_json))return nullptr;
+
+	return res;
+}
 
 template<typename CharaType>
 bool ChCpp::JsonObject<CharaType>::SetRawData(const std::basic_string<CharaType>& _jsonText)
@@ -135,7 +177,7 @@ bool ChCpp::JsonObject<CharaType>::SetRawData(const std::basic_string<CharaType>
 		if (nameAndValue[1].empty())return false;
 		auto obj = JsonBaseType<CharaType>::GetParameter(nameAndValue[1]);
 		if (obj == nullptr)continue;
-		values[nameAndValue[0]] = obj;
+		value->values[nameAndValue[0]] = obj;
 	}
 
 	return true;
@@ -150,11 +192,11 @@ void ChCpp::JsonObject<CharaType>::Set(const std::basic_string<CharaType>& _para
 
 	if (_value == nullptr)
 	{
-		values[_parameterName] = ChPtr::Make_S<JsonNull<CharaType>>();
+		value->values[_parameterName] = ChPtr::Make_S<JsonNull<CharaType>>();
 		return;
 	}
 
-	values[_parameterName] = _value;
+	value->values[_parameterName] = _value;
 }
 
 
@@ -165,7 +207,7 @@ std::basic_string<CharaType> ChCpp::JsonObject<CharaType>::GetRawData()const
 
 	bool initFlg = false;
 
-	for (auto&& val : values)
+	for (auto&& val : value->values)
 	{
 		if (initFlg)res += ChStd::GetCommaChara<CharaType>();
 		res += ChStd::GetDBQuotation<CharaType>() + val.first + ChStd::GetDBQuotation<CharaType>() + ChStd::GetDoubleColonChara<CharaType>() + val.second->GetRawData();
@@ -182,7 +224,7 @@ std::vector<std::basic_string<CharaType>> ChCpp::JsonObject<CharaType>::GetParam
 {
 	std::vector<std::string> res;
 
-	for (auto&& value : values)
+	for (auto&& value : value->values)
 	{
 		res.push_back(value.first);
 	}
@@ -206,8 +248,8 @@ CH_JSON_OBJECT_GET_RAW_METHOD(JsonBoolean);
 template<typename CharaType>
 void ChCpp::JsonObject<CharaType>::Remove(const std::basic_string<CharaType>& _parameterName)
 {
-	auto&& obj = values.find(_parameterName);
-	if (obj == values.end())return;
+	auto&& obj = value->values.find(_parameterName);
+	if (obj == value->values.end())return;
 
 	(*obj).second = ChPtr::Make_S<JsonNull<CharaType>>();
 }
@@ -215,16 +257,16 @@ void ChCpp::JsonObject<CharaType>::Remove(const std::basic_string<CharaType>& _p
 template<typename CharaType>
 void ChCpp::JsonObject<CharaType>::RemoveHard(const std::basic_string<CharaType>& _parameterName)
 {
-	auto&& obj = values.find(_parameterName);
-	if (obj == values.end())return;
-	values.erase(obj);
+	auto&& obj = value->values.find(_parameterName);
+	if (obj == value->values.end())return;
+	value->values.erase(obj);
 }
 
 template<typename CharaType>
 void ChCpp::JsonObject<CharaType>::Clear()
 {
-	if (values.empty())return;
-	values.clear();
+	if (value->values.empty())return;
+	value->values.clear();
 }
 
 template<typename CharaType>

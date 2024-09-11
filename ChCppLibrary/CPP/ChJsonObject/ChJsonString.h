@@ -30,132 +30,151 @@ namespace ChCpp
 	template<typename CharaType>
 	class JsonString :public JsonBaseType<CharaType>
 	{
+	public:
+
+		struct JsonStringCRT
+		{
+#ifdef CRT
+			std::basic_string<CharaType> value = ChStd::GetZeroChara<CharaType>();
+#endif
+		};
+
 	public://static Create Function//
 
+#ifdef CRT
 		static ChPtr::Shared<JsonString> CreateObject(const std::basic_string<CharaType>& _text)
 		{
 			auto&& res = ChPtr::Make_S<JsonString>();
 			*res = _text;
 			return res;
 		}
-
+#endif
 	public://Operator Functions//
 
+#ifdef CRT
 		JsonString& operator =(const JsonString& _value)
 		{
 			if (this == &_value)return *this;
-			value = _value.value;
+			value->value = _value.value->value;
 			return *this;
 		}
 
 		JsonString& operator +=(const JsonString& _value)
 		{
-			value += _value.value;
+			value->value += _value.value->value;
 			return *this;
 		}
 
 		JsonString operator +(const JsonString& _value)const
 		{
-			JsonString res = value;
+			JsonString res = value->value;
 			res += _value;
 			return res;
 		}
 
 		JsonString& operator =(const std::basic_string<CharaType>& _value)
 		{
-			if (&value == &_value)return *this;
-			value = _value;
+			if (&value->value == &_value)return *this;
+			value->value = _value;
 			return *this;
 		}
 
 		JsonString& operator +=(const std::basic_string<CharaType>& _value)
 		{
-			value += value;
+			value->value += value->value;
 			return *this;
 		}
 
 		JsonString operator +(const std::basic_string<CharaType>& _value)const
 		{
-			JsonString res = value;
+			JsonString res = value->value;
 			res += _value;
 			return res;
 		}
-
+#endif
 	public://To BaseClass Operator Functions//
 
+#ifdef CRT
 		template<typename BaseType>
 		JsonString& operator =(const BaseType& _value)
 		{
-			value = ChStr::GetTextFromNum<BaseType, CharaType>(_value);
+			value->value = ChStr::GetTextFromNum<BaseType, CharaType>(_value);
 			return *this;
 		}
-
+#endif
 	public://To String Operator Functions//
 
+#ifdef CRT
 		operator std::basic_string<CharaType>()const
 		{
 			return GetString();
 		}
-
+#endif
 	public://Constructor Destructor//
 
-		JsonString()
-		{
-			value = ChStd::GetZeroChara<CharaType>();
-		}
+#ifdef CRT
+		JsonString();
 
-		JsonString(const JsonString& _str)
-		{
-			value = _str.value;
-		}
+		JsonString(const JsonString& _str);
 
-		JsonString(const std::basic_string<CharaType>& _str)
-		{
-			auto&& res = ChPtr::Make_S<JsonString>();
-			*res = _str;
-			return res;
-		}
+		JsonString(const std::basic_string<CharaType>& _str);
 
 		template<typename BaseType>
 		JsonString(const BaseType& _value)
 		{
+			CRTInit();
 			*this = ChStr::GetTextFromNum<BaseType,CharaType>(_value);
 		}
-
-	public:
-
-		bool SetRawData(const std::basic_string<CharaType>& _jsonText)override;
-
-		void SetString(const std::basic_string<CharaType>& _text)
+#endif
+		virtual ~JsonString()
 		{
-			value = _text;
-		}
-
-	public:
-
-		std::basic_string<CharaType> GetRawData()const override;
-
-		std::basic_string<CharaType> GetString()const
-		{
-			return value;
+			CRTRelease();
 		}
 
 	private:
 
+		void CRTInit();
+
+		void CRTRelease();
+
+	public:
+
+#ifdef CRT
+		bool SetRawData(const std::basic_string<CharaType>& _jsonText)override;
+
+		void SetString(const std::basic_string<CharaType>& _text)
+		{
+			value->value = _text;
+		}
+#endif
+
+	public:
+
+#ifdef CRT
+		std::basic_string<CharaType> GetRawData()const override;
+
+		std::basic_string<CharaType> GetString()const
+		{
+			return value->value;
+		}
+#endif
+	private:
+
+#ifdef CRT
 		bool IsCutChar(CharaType _char)const
 		{
 			return _char == ChStd::GetSGQuotation<CharaType>()[0] ||
 				_char == ChStd::GetDBQuotation<CharaType>()[0];
 		}
-
+#endif
 	private:
 
+#ifdef CRT
 		bool AddDecimal(std::basic_string<CharaType>& _outText,const std::basic_string<CharaType>& _inText, const std::basic_string<CharaType>& _baseDecimal);
-
+#endif
 	private:
 
-		std::basic_string<CharaType> value = ChStd::GetZeroChara<CharaType>();
-
+		JsonStringCRT* value = nullptr;
 	};
 
 }
@@ -217,6 +236,49 @@ namespace ChCpp
 	}
 }
 
+template<typename CharaType>
+ChPtr::Shared<ChCpp::JsonString<CharaType>> ChCpp::JsonBaseType<CharaType>::GetParameterToString(const std::basic_string<CharaType>& _json)
+{
+	auto&& res = ChPtr::Make_S<JsonString<CharaType>>();
+	if (!res->SetRawData(_json))return nullptr;
+
+	return res;
+}
+
+template<typename CharaType>
+ChCpp::JsonString<CharaType>::JsonString()
+{
+	CRTInit();
+	value->value = ChStd::GetZeroChara<CharaType>();
+}
+
+template<typename CharaType>
+ChCpp::JsonString<CharaType>::JsonString(const JsonString& _str)
+{
+	CRTInit();
+	value->value = _str.value->value;
+}
+
+template<typename CharaType>
+ChCpp::JsonString<CharaType>::JsonString(const std::basic_string<CharaType>& _str)
+{
+	CRTInit();
+	auto&& res = ChPtr::Make_S<JsonString>();
+	*res = _str;
+	return res;
+}
+
+template<typename CharaType>
+void ChCpp::JsonString<CharaType>::CRTInit()
+{
+	value = new JsonStringCRT();
+}
+
+template<typename CharaType>
+void ChCpp::JsonString<CharaType>::CRTRelease()
+{
+	delete value;
+}
 
 template<typename CharaType>
 bool ChCpp::JsonString<CharaType>::SetRawData(const std::basic_string<CharaType>& _jsonText)
@@ -261,7 +323,7 @@ bool ChCpp::JsonString<CharaType>::SetRawData(const std::basic_string<CharaType>
 		setTestText += testText[i];
 	}
 
-	value = setTestText;
+	value->value = setTestText;
 
 	return true;
 }
@@ -276,13 +338,13 @@ std::basic_string<CharaType> ChCpp::JsonString<CharaType>::GetRawData()const
 	auto&& escapeSequenceTextCharaList = Json::EscapeSequenceTextCharaList<CharaType>();
 	auto&& escapeSequenceBaseCharaList = Json::EscapeSequenceBaseCharaList<CharaType>();
 
-	for (unsigned long i = 0; i < value.size(); i++)
+	for (unsigned long i = 0; i < value->value.size(); i++)
 	{
 		isEscapeSequence = false;
 
 		for (unsigned char j = 0; j < Json::ESCAPE_SEQUENCE_COUNT; j++)
 		{
-			if (escapeSequenceBaseCharaList[j] != value[i])continue;
+			if (escapeSequenceBaseCharaList[j] != value->value[i])continue;
 			outText += ChStd::GetYenChara<CharaType>();
 			outText += escapeSequenceTextCharaList[j];
 			isEscapeSequence = true;
@@ -290,7 +352,7 @@ std::basic_string<CharaType> ChCpp::JsonString<CharaType>::GetRawData()const
 		}
 		if (isEscapeSequence)continue;
 
-		outText += value[i];
+		outText += value->value[i];
 	}
 
 	return ChStd::GetDBQuotation<CharaType>() + outText + ChStd::GetDBQuotation<CharaType>();
