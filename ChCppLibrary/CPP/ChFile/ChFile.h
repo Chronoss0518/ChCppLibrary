@@ -334,8 +334,8 @@ bool ChCpp::File<CharaType>::IsOpenModeTest(bool _isReadFlg, bool _isBinaryFlg)
 
 	if (!value->stream.is_open())return false;
 
-	if ((value->flg & std::ios::in) == _isReadFlg)return false;
-	if ((value->flg & std::ios::out) != _isReadFlg)return false;
+	if (((value->flg & std::ios::in) > 0) == _isReadFlg)return false;
+	if (((value->flg & std::ios::out) <= 0) != _isReadFlg)return false;
 
 	if ((value->flg & std::ios::binary) == _isBinaryFlg)return false;
 
