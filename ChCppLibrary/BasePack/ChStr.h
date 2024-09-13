@@ -182,12 +182,20 @@ namespace ChStr
 
 		std::basic_string<CharaType> out = ChStd::GetZeroChara<CharaType>();
 
+		const CharaType mChara = static_cast<CharaType>('-');
+
 		const CharaType startNum = static_cast<CharaType>('0');
 		const CharaType endNum = static_cast<CharaType>('9');
 
+		bool conFlg = false;
 		for (unsigned long i = 0; i < _str.length(); i++)
 		{
-			if (_str[i] < startNum || _str[i] > endNum)continue;
+			conFlg = false;
+			if (_str[i] < startNum)conFlg = true;
+			if (_str[i] > endNum)conFlg = true;
+			if (out.size() == 0 && _str[i] == mChara)conFlg = false;
+
+			if (conFlg)continue;
 
 			out = out + _str[i];
 		}
@@ -226,7 +234,7 @@ namespace ChStr
 
 			if (_str[i] < startNum)conFlg = true;
 			if (_str[i] > endNum)conFlg = true;
-			if (i == 0 && _str[i] > mChara)conFlg = false;
+			if (out.size() == 0 && _str[i] == mChara)conFlg = false;
 
 			if (!colonFlg && _str[i] == colonChara)
 			{
