@@ -7,50 +7,9 @@ namespace ChD3D11
 {
 	class TextureBase11;
 
-	struct ShaderUseMaterial11 :public Ch3D::Material
-	{
-		ChLMat frameMatrix;
-	};
-
-	struct Material11
-	{
-		ShaderUseMaterial11 material;
-
-#ifdef CRT
-		std::string materialName;
-		std::map<Ch3D::TextureType, ChPtr::Shared<TextureBase11>>textures;
-#endif
-	};
-
 	struct SkinMeshVertex11 : public Ch3D::MeshVertex
 	{
 		float blendPow[96];
-	};
-
-	struct BaseDatas
-	{
-		//ビュー変換行列//
-		ChLMat viewMat;
-		//射影変換行列//
-		ChLMat projMat;
-		//画面サイズ//
-		ChVec4 windSize;
-	};
-
-	struct CharaDatas
-	{
-		//モデル行列//
-		ChLMat modelMat;
-
-		ChLMat frameMatrix;
-	};
-
-	struct PolygonDatas
-	{
-		//モデル行列//
-		ChLMat modelMat;
-		//スプライトベース色//
-		ChVec4 baseColor = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
 	};
 
 	class ShaderObjectBase11 :public ChCp::Initializer
