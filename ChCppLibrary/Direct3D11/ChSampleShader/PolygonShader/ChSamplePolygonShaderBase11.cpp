@@ -15,15 +15,12 @@ using namespace Shader;
 
 #define DEBUG 0
 
-
 void SamplePolygonShaderBase11::Init(ID3D11Device* _device)
 {
 	if (IsInit())return;
 
 	SampleShaderBase11::Init(_device);
-
 	polyData.Init(_device, &GetWhiteTexture(), &GetNormalTexture());
-
 }
 
 void SamplePolygonShaderBase11::Release()
@@ -31,9 +28,7 @@ void SamplePolygonShaderBase11::Release()
 	if (!IsInit())return;
 
 	SampleShaderBase11::Release();
-
 	polyData.Release();
-
 }
 
 void SamplePolygonShaderBase11::SetProjectionMatrix(const ChLMat& _mat)
@@ -54,28 +49,24 @@ void SamplePolygonShaderBase11::SetMoveUV(const ChVec2& _move)
 void SamplePolygonShaderBase11::SetFillMode(const D3D11_FILL_MODE _fill)
 {
 	fill = _fill;
-
 	updateFlg = true;
 }
 
 void SamplePolygonShaderBase11::SetCullMode(const D3D11_CULL_MODE _cull)
 {
 	cull = _cull;
-
 	updateFlg = true;
 }
 
 void SamplePolygonShaderBase11::SetShaderDrawData(ID3D11DeviceContext* _dc)
 {
 	if (!IsInit())return;
-
 	polyData.SetVSDrawData(_dc);
 }
 
 void SamplePolygonShaderBase11::SetShaderCharaData(ID3D11DeviceContext* _dc)
 {
 	if (!IsInit())return;
-
 	polyData.SetVSCharaData(_dc);
 }
 
@@ -86,9 +77,7 @@ void SamplePolygonShaderBase11::DrawStart(ID3D11DeviceContext* _dc)
 	if (IsDraw())return;
 
 	SampleShaderBase11::DrawStart(_dc);
-
 	SetShaderDrawData(_dc);
-
 }
 
 void SamplePolygonShaderBase11::Update(ID3D11DeviceContext* _dc)
@@ -110,8 +99,6 @@ void SamplePolygonShaderBase11::Update(ID3D11DeviceContext* _dc)
 		true
 	};
 
-
 	SampleShaderBase11::CreateRasteriser(desc);
-
 	updateFlg = false;
 }
