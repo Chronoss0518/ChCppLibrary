@@ -9,8 +9,12 @@
 #include <cmath>
 #endif
 
-#ifndef CH_FLOAT_ZERO_TEST
-#define CH_FLOAT_ZERO_TEST(val, testSize) val >= -testSize && val <= testSize
+#ifndef Ch_FLOAT_TEST_VALUE
+#define Ch_FLOAT_TEST_VALUE 0.0001f
+#endif
+
+#ifndef CH_FLOAT_TEST
+#define CH_FLOAT_TEST(val, testSize) ChMath::GetAbs(##val##) <= testSize
 #endif
 
 #ifndef CH_MATH_FUNCTION
@@ -41,22 +45,6 @@ inline _OutClass operator _MethodType(const _InClass& _val)const\
 	return res;\
 }
 #endif
-
-#ifndef	CH_MATH_METHOD_VECTOR_EQUALS
-#define	CH_MATH_METHOD_VECTOR_EQUALS(_InClass,_Flg,_Operator,_Array)\
-inline bool operator _Operator(const _InClass& _val)const\
-{\
-	T testVal = static_cast<T>(0.0f);\
-	for (unsigned long i = 0; i < _Array; i++)\
-	{\
-		testVal = val[i] - _val.val[i];\
-		if ((CH_FLOAT_ZERO_TEST(testVal,0.0001f))  == _Flg)continue;\
-		return !(_Flg);\
-	}\
-	return (_Flg);\
-}
-#endif
-
 #ifndef	CH_MATH_METHOD_MATRIX_EQUALS
 #define	CH_MATH_METHOD_MATRIX_EQUALS(_InClass,_Flg,_Operator,_Array)\
 inline bool operator _Operator(const _InClass& _val)const\
@@ -130,7 +118,7 @@ inline ChEular##_AxisOrder##<T> GetEulerRotation##_AxisOrder(const unsigned long
 	ChEular##_AxisOrder##<T> res;\
 	res.##_ZeroTestAxis = ChMath::GetSin##_ZeroTestAxisFunction;\
 	T ww = w * w * static_cast<T>(2.0f);\
-	if (CH_FLOAT_ZERO_TEST(ChMath::GetCos(res.##_ZeroTestAxis), 0.000001f)){\
+	if (CH_FLOAT_TEST(ChMath::GetCos(res.##_ZeroTestAxis), Ch_FLOAT_TEST_VALUE)){\
 		res.##_Axiz1 = _ZeroAxiz1Function;\
 		res.##_Axiz2 =_ZeroAxiz2Function;\
 	}else{\
@@ -286,8 +274,26 @@ namespace ChMath
 		CH_MATH_METHOD_CONST(VectorBase, VectorBase, / , Div);
 		CH_MATH_METHOD_CONST(VectorBase, T, / , Div);
 
-		CH_MATH_METHOD_VECTOR_EQUALS(VectorBase, true, == , Array);
-		CH_MATH_METHOD_VECTOR_EQUALS(VectorBase, false, != , Array);
+		inline bool operator ==(const VectorBase& _val)const
+		{
+			for (unsigned long i = 0; i < Array; i++)
+			{
+				if (!(CH_FLOAT_TEST(val[i] - _val.val[i], static_cast<T>(Ch_FLOAT_TEST_VALUE))))
+					return false;
+			}
+			return true;
+		}
+
+		inline bool operator !=(const VectorBase& _val)const
+		{
+			bool flg = true;
+			for (unsigned long i = 0; i < Array; i++)
+			{
+				if (!(CH_FLOAT_TEST(val[i] - _val.val[i], static_cast<T>(Ch_FLOAT_TEST_VALUE))))
+					return true;
+			}
+			return false;
+		}
 
 	public://Constructor Destructor//
 

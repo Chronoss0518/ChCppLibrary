@@ -53,7 +53,7 @@ ChMath::ChEular##_AxisOrder##<float> _MatrixType##::GetEulerRotation##_AxisOrder
 	outM.m[1].Normalize(_digit);\
 	outM.m[2].Normalize(_digit);\
 	res.##_ZeroTestAxis = _ZeroTestAxisFunction;\
-	if(CH_FLOAT_ZERO_TEST(res.##_ZeroTestAxis,0.00001f)){\
+	if(CH_FLOAT_TEST(res.##_ZeroTestAxis,Ch_FLOAT_TEST_VALUE)){\
 	res.##_Axiz1 = _ZeroAxiz1Function; \
 	res.##_Axiz2 = _ZeroAxiz2Function; \
 	}else{\
@@ -192,9 +192,9 @@ void ChQuaternion::SetRotation(const ChVector3& _axis, const float _angle)
 
 	w = ChMath::GetCos(tmpAngle);
 
-	x = CH_FLOAT_ZERO_TEST(tmp.x, 0.00001f) ? 0.0f : tmp.x * ChMath::GetSin(tmpAngle);
-	y = CH_FLOAT_ZERO_TEST(tmp.y, 0.00001f) ? 0.0f : tmp.y * ChMath::GetSin(tmpAngle);
-	z = CH_FLOAT_ZERO_TEST(tmp.z, 0.00001f) ? 0.0f : tmp.z * ChMath::GetSin(tmpAngle);
+	x = CH_FLOAT_TEST(tmp.x, Ch_FLOAT_TEST_VALUE) ? 0.0f : tmp.x * ChMath::GetSin(tmpAngle);
+	y = CH_FLOAT_TEST(tmp.y, Ch_FLOAT_TEST_VALUE) ? 0.0f : tmp.y * ChMath::GetSin(tmpAngle);
+	z = CH_FLOAT_TEST(tmp.z, Ch_FLOAT_TEST_VALUE) ? 0.0f : tmp.z * ChMath::GetSin(tmpAngle);
 }
 
 void ChQuaternion::SetRotation(const ChVector3& _from, const ChVector3& _to)
