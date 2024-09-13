@@ -63,27 +63,52 @@ namespace ChD3D11
 	template<typename CharaType>
 	struct  DrawPrimitiveData11
 	{
-		virtual ~DrawPrimitiveData11()
+		struct DrawPrimitiveData11CRT
 		{
-			vertexBuffer.Release();
-			indexBuffer.Release();
-		}
+#ifdef CRT
+			std::vector<Ch3D::SkinMeshVertex<BONE_MAX_NUM>> vertexArray;
+			std::vector<unsigned long> indexArray;
+
+			ChPtr::Shared<Ch3D::MaterialData<CharaType>> mate;
+			std::map<Ch3D::TextureType, ChPtr::Shared<Texture11>>textures;
+#endif
+		};
+
+		DrawPrimitiveData11();
+
+		virtual ~DrawPrimitiveData11();
 
 		ChLMat drawMat;
 		IndexBuffer11 indexBuffer;
 		VertexBuffer11<Ch3D::SkinMeshVertex<BONE_MAX_NUM>> vertexBuffer;
-#ifdef CRT
-		std::vector<Ch3D::SkinMeshVertex<BONE_MAX_NUM>> vertexArray;
-		std::vector<unsigned long> indexArray;
 
-		ChPtr::Shared<Ch3D::MaterialData<CharaType>> mate;
-		std::map<Ch3D::TextureType, ChPtr::Shared<Texture11>>textures;
-#endif
+		DrawPrimitiveData11CRT& ValueIns() { return *value; }
+
+	private:
+
+		DrawPrimitiveData11CRT* value = nullptr;
+
 	};
 
 	template<typename CharaType>
 	class FrameComponent11 :public ChCpp::BaseComponent
 	{
+	public:
+
+		struct FrameComponent11CRT
+		{
+#ifdef CRT
+			std::vector<ChPtr::Shared<DrawPrimitiveData11<CharaType>>>primitives;
+			std::vector<ChPtr::Shared<TargetBoneData11<CharaType>>>boneList;
+#endif
+		};
+
+	public:
+
+		FrameComponent11();
+
+		virtual ~FrameComponent11();
+
 	public://Create Functions//
 
 		//子オブジェクトすべてを作成する。//
@@ -96,12 +121,12 @@ namespace ChD3D11
 #ifdef CRT
 		void SetPrimitives(ChPtr::Shared<DrawPrimitiveData11<CharaType>> _primitive)
 		{
-			primitives.push_back(_primitive);
+			value->primitives.push_back(_primitive);
 		}
 
 		std::vector<ChPtr::Shared<DrawPrimitiveData11<CharaType>>>& GetPrimitives()
 		{
-			return primitives;
+			return value->primitives;
 		}
 #endif
 
@@ -110,14 +135,39 @@ namespace ChD3D11
 	private:
 		ChCpp::FrameComponent<CharaType>* frameCom = nullptr;
 		ChLMat boneLMats[16];
-#ifdef CRT
-		std::vector<ChPtr::Shared<DrawPrimitiveData11<CharaType>>>primitives;
-		std::vector<ChPtr::Shared<TargetBoneData11<CharaType>>>boneList;
-#endif
+
+		FrameComponent11CRT* value = nullptr;
 	};
 }
 
 #ifdef CRT
+
+template<typename CharaType>
+ChD3D11::DrawPrimitiveData11<CharaType>::DrawPrimitiveData11()
+{
+	value = new DrawPrimitiveData11CRT();
+}
+
+template<typename CharaType>
+ChD3D11::DrawPrimitiveData11<CharaType>::~DrawPrimitiveData11()
+{
+	vertexBuffer.Release();
+	indexBuffer.Release();
+
+	delete value;
+}
+
+template<typename CharaType>
+ChD3D11::FrameComponent11<CharaType>::FrameComponent11()
+{
+	value = new FrameComponent11CRT();
+}
+
+template<typename CharaType>
+ChD3D11::FrameComponent11<CharaType>::~FrameComponent11()
+{
+	delete value;
+}
 
 template<typename CharaType>
 void ChD3D11::FrameComponent11<CharaType>::CreateAll(ID3D11Device* _device, Mesh11<CharaType>& _rootObject)
@@ -130,17 +180,17 @@ void ChD3D11::FrameComponent11<CharaType>::CreateAll(ID3D11Device* _device, Mesh
 	{
 		frameCom = frameBase.get();
 
-		for (auto&& material : frameBase->materialList)
+		for (auto&& material : frameBase->ValueIns().materialList)
 		{
 			auto&& primitive11 = ChPtr::Make_S<DrawPrimitiveData11<CharaType>>();
-			primitive11->mate = material;
+			primitive11->ValueIns().mate = material;
 
 			for (unsigned char i = 0; i < ChStd::EnumCast(Ch3D::TextureType::None); i++)
 			{
 				Ch3D::TextureType type = static_cast<Ch3D::TextureType>(i);
 
-				auto&& texPath = material->textures.find(type);
-				if (texPath == material->textures.end())continue;
+				auto&& texPath = material->ValueIns().textures.find(type);
+				if (texPath == material->ValueIns().textures.end())continue;
 				if ((*texPath).second.empty())continue;
 
 				auto texture = ChPtr::Make_S<Texture11>();
@@ -148,24 +198,24 @@ void ChD3D11::FrameComponent11<CharaType>::CreateAll(ID3D11Device* _device, Mesh
 
 				if (!texture->IsTex())texture = nullptr;
 
-				primitive11->textures[type] = texture;
+				primitive11->ValueIns().textures[type] = texture;
 			}
 
-			primitives.push_back(primitive11);
+			value->primitives.push_back(primitive11);
 		}
 
-		for (auto&& primitive : frameBase->primitives)
+		for (auto&& primitive : frameBase->ValueIns().primitives)
 		{
-			auto&& primitive11 = primitives[primitive->mateNo];
+			auto&& primitive11 = value->primitives[primitive->mateNo];
 
-			unsigned long firstIndex = primitive11->vertexArray.size();
+			unsigned long firstIndex = primitive11->ValueIns().vertexArray.size();
 			unsigned long indexCount = 0;
 
-			for (auto&& vertex : primitive->vertexData)
+			for (auto&& vertex : primitive->ValueIns().vertexData)
 			{
 				unsigned long vertexNo = vertex->vertexNo;
 
-				auto&& tmpVertex = *frameBase->vertexList[vertexNo];
+				auto&& tmpVertex = *frameBase->ValueIns().vertexList[vertexNo];
 
 				Ch3D::SkinMeshVertex<16> mVertex;
 				Ch3D::SetPosition(&mVertex, tmpVertex.pos);
@@ -173,55 +223,53 @@ void ChD3D11::FrameComponent11<CharaType>::CreateAll(ID3D11Device* _device, Mesh
 				Ch3D::SetColor(&mVertex, tmpVertex.color);
 				Ch3D::SetNormal(&mVertex, tmpVertex.normal);
 				Ch3D::SetFaceNormal(&mVertex, primitive->faceNormal);
-				mVertex.boneNum = tmpVertex.blendPow.size();
+				mVertex.boneNum = tmpVertex.ValueIns().blendPow.size();
 				for (unsigned long i = 0; i < mVertex.boneNum; i++)
 				{
-					mVertex.blendPows[i] = tmpVertex.blendPow[i];
+					mVertex.blendPows[i] = tmpVertex.ValueIns().blendPow[i];
 				}
 
-				primitive11->vertexArray.push_back(mVertex);
+				primitive11->ValueIns().vertexArray.push_back(mVertex);
 
 				indexCount++;
 			}
 
 			for (unsigned long i = 1; i < indexCount - 1; i++)
 			{
-				primitive11->indexArray.push_back(firstIndex);
-				primitive11->indexArray.push_back(firstIndex + i);
-				primitive11->indexArray.push_back(firstIndex + i + 1);
+				primitive11->ValueIns().indexArray.push_back(firstIndex);
+				primitive11->ValueIns().indexArray.push_back(firstIndex + i);
+				primitive11->ValueIns().indexArray.push_back(firstIndex + i + 1);
 			}
-
 		}
 
-		for (auto&& prim : primitives)
+		for (auto&& prim : value->primitives)
 		{
 
-			if (prim->indexArray.empty())continue;
-			if (prim->vertexArray.empty())continue;
+			if (prim->ValueIns().indexArray.empty())continue;
+			if (prim->ValueIns().vertexArray.empty())continue;
 
 			prim->indexBuffer.CreateBuffer(
 				_device,
-				&prim->indexArray[0],
-				prim->indexArray.size());
+				&prim->ValueIns().indexArray[0],
+				prim->ValueIns().indexArray.size());
 
 			prim->vertexBuffer.CreateBuffer(
 				_device,
-				&prim->vertexArray[0],
-				prim->vertexArray.size());
+				&prim->ValueIns().vertexArray[0],
+				prim->ValueIns().vertexArray.size());
 		}
 
-		for (auto boneData : frameBase->boneDatas)
+		for (auto boneData : frameBase->ValueIns().boneDatas)
 		{
 			auto bone = ChPtr::Make_S<TargetBoneData11<CharaType>>();
 			bone->boneData = boneData;
-			auto&& objectList = _rootObject.GetAllChildlenConstainsName<ChCpp::FrameObject<CharaType>>(boneData->boneObjectName);
+			auto&& objectList = _rootObject.GetAllChildlenConstainsName<ChCpp::FrameObject<CharaType>>(boneData->ValueIns().boneObjectName);
 			bone->targetObject = objectList.empty() ? nullptr : objectList[0].lock();
-			boneList.push_back(bone);
+			value->boneList.push_back(bone);
 		}
-
 	}
 
-	for (auto&& cbildObj : LookObj()->GetChildlen())
+	for (auto&& cbildObj : LookObj()->GetAllChildlen())
 	{
 		auto child = ChPtr::SharedSafeCast<ChCpp::FrameObject<CharaType>>(cbildObj);
 
@@ -231,22 +279,41 @@ void ChD3D11::FrameComponent11<CharaType>::CreateAll(ID3D11Device* _device, Mesh
 
 		com->CreateAll(_device, _rootObject);
 	}
-
 }
 
 template<typename CharaType>
 void ChD3D11::FrameComponent11<CharaType>::SetBoneData(CB::CBBone11& _bone)
 {
-	if (boneList.empty())return;
+	if (value->boneList.empty())return;
 
-	boneList[boneList.size() - 1]->targetObject->UpdateAllDrawTransform();
-	for (unsigned long i = 0; i < boneList.size(); i++)
+	value->boneList[value->boneList.size() - 1]->targetObject->UpdateAllDrawTransform();
+	for (unsigned long i = 0; i < value->boneList.size(); i++)
 	{
-		unsigned long useNum = boneList.size() - 1 - i;
+		unsigned long useNum = value->boneList.size() - 1 - i;
 
-		_bone.SetBoneObjectDrawMatrix(boneList[useNum]->targetObject->GetDrawLHandMatrix(), i);
-		_bone.SetBoneOffsetMatrix(boneList[useNum]->boneData->boneOffset, i);
+		_bone.SetBoneObjectDrawMatrix(value->boneList[useNum]->targetObject->GetDrawLHandMatrix(), i);
+		_bone.SetBoneOffsetMatrix(value->boneList[useNum]->boneData->boneOffset, i);
 	}
+}
+
+template<typename CharaType>
+void ChD3D11::Mesh11<CharaType>::Init(ID3D11Device* _device)
+{
+	if (_device == nullptr)return;
+
+	Release();
+
+	device = _device;
+
+	ChCpp::ModelObject<CharaType>::Init();
+
+}
+
+template<typename CharaType>
+void ChD3D11::Mesh11<CharaType>::Init()
+{
+	if (!D3D11API().IsInit())return;
+	Init(D3D11Device());
 }
 
 template<typename CharaType>
@@ -261,6 +328,18 @@ void ChD3D11::Mesh11<CharaType>::CreateFrames()
 	frame->CreateAll(device, *this);
 }
 
+template<typename CharaType>
+void ChD3D11::Mesh11<CharaType>::Release()
+{
+	ChCpp::ModelObject<CharaType>::Release();
+}
+
+template<typename CharaType>
+void ChD3D11::Mesh11<CharaType>::Create()
+{
+	if (!ChCpp::ModelObject<CharaType>::IsInit())return;
+	CreateFrames();
+}
 
 #endif
 
