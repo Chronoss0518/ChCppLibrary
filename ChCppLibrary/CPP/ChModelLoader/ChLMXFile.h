@@ -970,8 +970,6 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetMesh(
 	return true;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
 template<typename CharaType>
 bool ChCpp::ModelLoader::XFile<CharaType>::SetMeshNormal(
 	ChPtr::Shared<XFrame>& _frames,
@@ -1057,9 +1055,9 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetMeshTextureCoords(
 
 template<typename CharaType>
 bool ChCpp::ModelLoader::XFile<CharaType>::SetMeshMaterialList(
-	ChPtr::Shared<XFrame>& _frames
-	, const ChPtr::Shared<TemplateRange>& _targetTemplate
-	, const std::basic_string<CharaType>& _text)
+	ChPtr::Shared<XFrame>& _frames,
+	const ChPtr::Shared<TemplateRange>& _targetTemplate,
+	const std::basic_string<CharaType>& _text)
 {
 	if (exceptionFlg)return false;
 
@@ -1092,9 +1090,9 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetMeshMaterialList(
 
 template<typename CharaType>
 bool ChCpp::ModelLoader::XFile<CharaType>::SetMaterial(
-	ChPtr::Shared<XFrame>& _frames
-	, const ChPtr::Shared<TemplateRange>& _targetTemplate
-	, const std::basic_string<CharaType>& _text)
+	ChPtr::Shared<XFrame>& _frames,
+	const ChPtr::Shared<TemplateRange>& _targetTemplate,
+	const std::basic_string<CharaType>& _text)
 {
 	if (exceptionFlg)return false;
 
@@ -1462,8 +1460,8 @@ void ChCpp::ModelLoader::XFile<CharaType>::XFrameToChFrame(
 
 	std::map<unsigned long, unsigned long>summarizeVertex;
 
-	auto mesh = _chFrame->SetComponent<FrameComponent<CharaType>>();
-	auto& chVertexList = mesh->ValueIns().vertexList;
+	auto&& mesh = _chFrame->SetComponent<FrameComponent<CharaType>>();
+	auto&& chVertexList = mesh->ValueIns().vertexList;
 	//SetVertexList//
 	{
 		auto& xVertexList = _xFrame->ValueIns().mesh->ValueIns().vertexList;
