@@ -113,8 +113,8 @@ namespace ChD3D11
 			return res;
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////
-		
+	public:
+
 		inline void Move(const ChVec2& _vec) { Move(_vec.x, _vec.y); }
 
 		void Move(const float _x,const float _y);
