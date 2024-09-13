@@ -117,8 +117,8 @@ namespace ChD3D11
 		void UpdateSampler();
 
 		ChVec4 GetBitColor(
-			const unsigned int _width
-			, const unsigned int _height);
+			const unsigned int _width,
+			const unsigned int _height);
 
 		D3D11_SAMPLER_DESC sDesc;
 		bool sdUpdateFlg = true;
