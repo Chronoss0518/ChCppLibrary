@@ -99,7 +99,6 @@ void ShaderController11::DrawEnd(ChD3D11::TextureBase11& _tex)
 	if (!*this)return;
 	if (ChPtr::NullCheck(device))return;
 
-	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	window.SetDrawData(dc, dsBuffer.GetDSView());
 	spriteShader.DrawStart(dc);
 	spriteShader.Draw(_tex, outSprite);
