@@ -63,18 +63,18 @@ void CircleCullingSprite11::SetDrawValue(const float& _dir)
 
 
 void CircleCullingSprite11::Draw(
-	TextureBase11& _tex
-	, Sprite11& _sprite
-	, const ChMat_11& _mat)
+	TextureBase11& _tex,
+	Sprite11& _sprite,
+	const ChLMat& _mat)
 {
 	Draw(_tex, _sprite, ChVec4(1.0f), _mat);
 }
 
 void CircleCullingSprite11::Draw(
-	TextureBase11& _tex
-	, Sprite11& _sprite
-	, const ChVec4& _baseColor
-	, const ChMat_11& _mat)
+	TextureBase11& _tex,
+	Sprite11& _sprite,
+	const ChVec4& _baseColor,
+	const ChLMat& _mat)
 {
 	if (!IsInit())return;
 	if (!IsDraw())return;
@@ -102,7 +102,7 @@ void CircleCullingSprite11::Draw(
 
 	auto&& vertexs = _sprite.GetVertexs();
 
-	vertexBuffer.UpdateResouce(GetDC(), &vertexs[0]);
+	vertexBuffer.UpdateResouce(GetDC(), &vertexs.vertex[0]);
 
 	vertexBuffer.SetVertexBuffer(GetDC(), offsets);
 
