@@ -84,18 +84,18 @@ void BasicHighlightShader11::DrawStart(ID3D11DeviceContext* _dc)
 }
 
 void BasicHighlightShader11::Draw(
-	TextureBase11& _tex
-	, Sprite11& _sprite
-	, const ChMat_11& _mat)
+	TextureBase11& _tex,
+	Sprite11& _sprite,
+	const ChLMat& _mat)
 {
 	Draw(_tex, _sprite, ChVec4(1.0f), _mat);
 }
 
 void BasicHighlightShader11::Draw(
-	TextureBase11& _tex
-	, Sprite11& _sprite
-	, const ChVec4& _baseColor
-	, const ChMat_11& _mat)
+	TextureBase11& _tex,
+	Sprite11& _sprite,
+	const ChVec4& _baseColor,
+	const ChLMat& _mat)
 {
 	if (!IsInit())return;
 	if (!IsDraw())return;
@@ -119,7 +119,7 @@ void BasicHighlightShader11::Draw(
 
 	auto&& vertexs = _sprite.GetVertexs();
 
-	vertexBuffer.UpdateResouce(GetDC(), &vertexs[0]);
+	vertexBuffer.UpdateResouce(GetDC(), &vertexs.vertex[0]);
 
 	vertexBuffer.SetVertexBuffer(GetDC(), offsets);
 
