@@ -3,24 +3,18 @@
 
 #include"ChSamplePolygonShaderBase11.h"
 
-
 namespace ChD3D11
 {
-
 	class PolygonBoard11;
-
 
 	namespace Shader
 	{
 
 		class BaseDrawPolygonBoard11 final :public SamplePolygonShaderBase11
 		{
-		public:
+		public://Constructor Destructor//
 
-			virtual ~BaseDrawPolygonBoard11()
-			{
-				Release();
-			}
+			virtual ~BaseDrawPolygonBoard11() { Release(); }
 
 		public://Init And Release//
 
@@ -41,20 +35,17 @@ namespace ChD3D11
 			void Draw(
 				TextureBase11& _tex,
 				PolygonBoard11& _polygon,
-				const ChMat_11& _mat = ChMat_11());
+				const ChLMat& _mat = ChLMat());
 
-		private:
+		private://Update Functions//
 
 			void Update(ID3D11DeviceContext* _dc)override;
 
 		private://Member Value//
 
-			Ch3D::PolyVertex drawVertexs[3];
-
 			VertexBuffer11<Ch3D::PolyVertex> vertexBuffer;
 			IndexBuffer11 indexBuffer;
-
-
+			Ch3D::PolyVertex drawVertexs[3];
 		};
 	}
 }
