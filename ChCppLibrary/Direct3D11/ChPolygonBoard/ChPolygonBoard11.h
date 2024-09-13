@@ -16,6 +16,21 @@ namespace ChD3D11
 {
 	class PolygonBoard11
 	{
+	public:
+
+		struct PolygonBoard11CRT
+		{
+#ifdef CRT
+			std::vector<ChPtr::Shared<Ch3D::PolyVertex>> vertexs;
+#endif
+		};
+
+	public:
+
+		PolygonBoard11();
+		
+		virtual ~PolygonBoard11();
+
 	public://InitAndRelease//
 
 		void Init();
@@ -29,11 +44,11 @@ namespace ChD3D11
 #ifdef CRT
 		void SetVertexList(const std::vector<ChPtr::Shared<Ch3D::PolyVertex>>& _vertexList)
 		{
-			if (!vertexs.empty())vertexs.clear();
+			if (!ValueIns().vertexs.empty())ValueIns().vertexs.clear();
 
 			for (auto ver : _vertexList)
 			{
-				vertexs.push_back(ver);
+				ValueIns().vertexs.push_back(ver);
 			}
 		}
 #endif
@@ -51,7 +66,7 @@ namespace ChD3D11
 #ifdef CRT
 		inline const std::vector<ChPtr::Shared<Ch3D::PolyVertex>>& GetVertexs()
 		{
-			return vertexs;
+			return ValueIns().vertexs;
 		}
 #endif
 
@@ -79,43 +94,53 @@ namespace ChD3D11
 
 		Ch3D::Material material;
 
-#ifdef CRT
+		PolygonBoard11CRT& ValueIns() { return *value; }
 
-		std::vector<ChPtr::Shared<Ch3D::PolyVertex>> vertexs;
+	private:
 
-#endif
+		PolygonBoard11CRT* value = nullptr;
 
 	};
 }
 
 #ifdef CRT
 
+ChD3D11::PolygonBoard11::PolygonBoard11()
+{
+	value = new PolygonBoard11CRT();
+}
+
+ChD3D11::PolygonBoard11::~PolygonBoard11()
+{
+	delete value;
+}
+
 void ChD3D11::PolygonBoard11::Release()
 {
-	if (!vertexs.empty())vertexs.clear();
+	if (!ValueIns().vertexs.empty())ValueIns().vertexs.clear();
 }
 
 void ChD3D11::PolygonBoard11::SetInitTri()
 {
 	SetInitSquare();
-	vertexs.pop_back();
+	ValueIns().vertexs.pop_back();
 }
 
 void ChD3D11::PolygonBoard11::SetPos(const unsigned char _posNames, const  ChVec3& _posData)
 {
-	if (_posNames >= vertexs.size())return;
-	vertexs[_posNames]->pos = _posData;
+	if (_posNames >= ValueIns().vertexs.size())return;
+	ValueIns().vertexs[_posNames]->pos = _posData;
 }
 
 void ChD3D11::PolygonBoard11::SetUV(const unsigned char _posNames, const ChVec2& _posData)
 {
-	if (_posNames >= vertexs.size())return;
-	vertexs[_posNames]->uv = _posData;
+	if (_posNames >= ValueIns().vertexs.size())return;
+	ValueIns().vertexs[_posNames]->uv = _posData;
 }
 
 void ChD3D11::PolygonBoard11::SetInitSquare()
 {
-	if (!vertexs.empty())vertexs.clear();
+	if (!ValueIns().vertexs.empty())ValueIns().vertexs.clear();
 
 	{
 		auto vertex = ChPtr::Make_S<Ch3D::PolyVertex>();
@@ -124,7 +149,7 @@ void ChD3D11::PolygonBoard11::SetInitSquare()
 		vertex->uv = ChVec2(0.0f, 0.0f);
 		vertex->color = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
 
-		vertexs.push_back(vertex);
+		ValueIns().vertexs.push_back(vertex);
 	}
 
 	{
@@ -134,7 +159,7 @@ void ChD3D11::PolygonBoard11::SetInitSquare()
 		vertex->uv = ChVec2(1.0f, 0.0f);
 		vertex->color = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
 
-		vertexs.push_back(vertex);
+		ValueIns().vertexs.push_back(vertex);
 	}
 
 	{
@@ -144,7 +169,7 @@ void ChD3D11::PolygonBoard11::SetInitSquare()
 		vertex->uv = ChVec2(1.0f, 1.0f);
 		vertex->color = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
 
-		vertexs.push_back(vertex);
+		ValueIns().vertexs.push_back(vertex);
 	}
 
 	{
@@ -155,32 +180,32 @@ void ChD3D11::PolygonBoard11::SetInitSquare()
 		vertex->uv = ChVec2(0.0f, 1.0f);
 		vertex->color = ChVec4(1.0f, 1.0f, 1.0f, 1.0f);
 
-		vertexs.push_back(vertex);
+		ValueIns().vertexs.push_back(vertex);
 	}
 
 }
 
 Ch3D::PolyVertex ChD3D11::PolygonBoard11::GetVertex(unsigned long _num)const
 {
-	if (vertexs.size() <= _num)return Ch3D::PolyVertex();
-	return *vertexs[_num];
+	if (ValueIns().vertexs.size() <= _num)return Ch3D::PolyVertex();
+	return *ValueIns().vertexs[_num];
 }
 
 unsigned long ChD3D11::PolygonBoard11::GetVertexSize()const
 {
-	return vertexs.size();
+	return ValueIns().vertexs.size();
 }
 
 ChVec3 ChD3D11::PolygonBoard11::GetPos(const unsigned char _num)
 {
-	if (_num >= vertexs.size())return ChVec3();
-	return vertexs[_num]->pos;
+	if (_num >= ValueIns().vertexs.size())return ChVec3();
+	return ValueIns().vertexs[_num]->pos;
 }
 
 ChVec2 ChD3D11::PolygonBoard11::GetUVPos(const unsigned char _num)
 {
-	if (_num >= vertexs.size())return ChVec2();
-	return vertexs[_num]->uv;
+	if (_num >= ValueIns().vertexs.size())return ChVec2();
+	return ValueIns().vertexs[_num]->uv;
 }
 
 void ChD3D11::PolygonBoard11::AddVertex(const Ch3D::PolyVertex& _vertexs)
@@ -190,7 +215,7 @@ void ChD3D11::PolygonBoard11::AddVertex(const Ch3D::PolyVertex& _vertexs)
 	vertex->uv = _vertexs.uv;
 	vertex->color = _vertexs.color;
 	vertex->normal = _vertexs.normal;
-	vertexs.push_back(vertex);
+	ValueIns().vertexs.push_back(vertex);
 }
 
 #endif
