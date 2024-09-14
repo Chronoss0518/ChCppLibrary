@@ -16,18 +16,6 @@
 
 using namespace ChD3D;
 
-void WICBitmapObject::Release()
-{
-
-	auto&& list = WICBitmapCreatorObj().bitmapList;
-
-	auto&& bitmapIterator = std::find(list.begin(), list.end(), bitmap);
-
-	list.erase(bitmapIterator);
-
-	D3DOBJECT_RELEASE(bitmap);
-}
-
 void WICBitmapCreator::Init()
 {
 	HRESULT result = CoInitialize(nullptr);
@@ -37,18 +25,23 @@ void WICBitmapCreator::Init()
 	result = CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER, IID_IWICImagingFactory, (LPVOID*)&factory);
 
 	if (FAILED(result))
-	{
 		Release();
-	}
 }
 
 void WICBitmapCreator::Release()
 {
-	for (auto&& bitmap : bitmapList)
+
+	ChStd::SizeType count = GetBitmapCount();
+
+	if (count <= 0)return;
+
+	for (ChStd::SizeType i = 0; i < count; i++)
 	{
+		auto&& bitmap = GetBitmap(i);
 		D3DOBJECT_RELEASE(bitmap);
 	}
-	bitmapList.clear();
+
+	ClearBitmapList();
 
 	D3DOBJECT_RELEASE(factory);
 }
@@ -61,7 +54,7 @@ WICBitmapObject WICBitmapCreator::CreateBitmapObject(unsigned long _width, unsig
 
 	factory->CreateBitmap(_width, _height, GUID_WICPixelFormat128bppPRGBAFloat, WICBitmapCacheOnLoad, &res.bitmap);
 
-	bitmapList.push_back(res.bitmap);
+	AddBitmap(res.bitmap);
 
 	return res;
 }

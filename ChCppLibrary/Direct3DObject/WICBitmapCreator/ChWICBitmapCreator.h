@@ -31,7 +31,22 @@ namespace ChD3D
 	{
 	public:
 
+		struct WICBitmapCreatorCRT
+		{
+#ifdef CRT
+			std::vector<IWICBitmap*>bitmapList;
+#endif
+		};
+
+	public:
+
 		friend WICBitmapObject;
+
+	public:
+
+		WICBitmapCreator();
+
+		virtual ~WICBitmapCreator();
 
 	public:
 
@@ -45,10 +60,13 @@ namespace ChD3D
 
 	private:
 
-		inline virtual ~WICBitmapCreator()
-		{
-			Release();
-		}
+		IWICBitmap* GetBitmap(ChStd::SizeType _num);
+
+		ChStd::SizeType GetBitmapCount();
+
+		void AddBitmap(IWICBitmap*);
+
+		void ClearBitmapList();
 
 	public:
 
@@ -61,7 +79,8 @@ namespace ChD3D
 	private:
 
 		IWICImagingFactory* factory = nullptr;
-		std::vector<IWICBitmap*>bitmapList;
+
+		WICBitmapCreatorCRT* value = nullptr;
 	};
 
 	inline WICBitmapCreator& WICBitmapCreatorObj()
@@ -70,5 +89,58 @@ namespace ChD3D
 	}
 
 }
+
+#ifdef CRT
+
+void ChD3D::WICBitmapObject::Release()
+{
+
+	auto&& list = WICBitmapCreatorObj().value->bitmapList;
+
+	auto&& bitmapIterator = std::find(list.begin(), list.end(), bitmap);
+
+	list.erase(bitmapIterator);
+
+	if (ChPtr::NotNullCheck(bitmap))
+	{
+		bitmap->Release();
+		bitmap = nullptr;
+	}
+
+}
+
+ChD3D::WICBitmapCreator::WICBitmapCreator()
+{
+	value = new WICBitmapCreatorCRT();
+}
+
+ChD3D::WICBitmapCreator::~WICBitmapCreator()
+{
+	Release();
+	delete value;
+}
+
+IWICBitmap* ChD3D::WICBitmapCreator::GetBitmap(ChStd::SizeType _num)
+{
+	return value->bitmapList[_num];
+}
+
+ChStd::SizeType ChD3D::WICBitmapCreator::GetBitmapCount()
+{
+	return value->bitmapList.size();
+}
+
+void ChD3D::WICBitmapCreator::AddBitmap(IWICBitmap* _bmp)
+{
+	return value->bitmapList.push_back(_bmp);
+}
+
+void ChD3D::WICBitmapCreator::ClearBitmapList()
+{
+	if (value->bitmapList.empty())return;
+	value->bitmapList.clear();
+}
+
+#endif
 
 #endif
