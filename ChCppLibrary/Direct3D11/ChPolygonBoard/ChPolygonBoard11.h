@@ -187,13 +187,13 @@ void ChD3D11::PolygonBoard11::SetInitSquare()
 
 Ch3D::PolyVertex ChD3D11::PolygonBoard11::GetVertex(unsigned long _num)const
 {
-	if (ValueIns().vertexs.size() <= _num)return Ch3D::PolyVertex();
-	return *ValueIns().vertexs[_num];
+	if (value->vertexs.size() <= _num)return Ch3D::PolyVertex();
+	return *value->vertexs[_num];
 }
 
 unsigned long ChD3D11::PolygonBoard11::GetVertexSize()const
 {
-	return ValueIns().vertexs.size();
+	return value->vertexs.size();
 }
 
 ChVec3 ChD3D11::PolygonBoard11::GetPos(const unsigned char _num)
