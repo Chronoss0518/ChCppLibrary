@@ -33,16 +33,20 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #ifdef _DLL
 #pragma comment(lib, "DirectXTex_MDd.lib")
+#pragma comment(lib, "WICTextureLoader_MDd.lib")
 #else
 #pragma comment(lib, "DirectXTex_MTd.lib")
+#pragma comment(lib, "WICTextureLoader_MTd.lib")
 #endif
 
 #else
 
 #ifdef _DLL
 #pragma comment(lib, "DirectXTex_MD.lib")
+#pragma comment(lib, "WICTextureLoader_MD.lib")
 #else
 #pragma comment(lib, "DirectXTex_MT.lib")
+#pragma comment(lib, "WICTextureLoader_MT.lib")
 #endif
 
 #endif
