@@ -1,5 +1,6 @@
 #include<Windows.h>
 #include<wincodec.h>
+#include<roapi.h>
 
 #include"../../BaseIncluder/ChBase.h"
 
@@ -18,7 +19,7 @@ using namespace ChD3D;
 
 void WICBitmapCreator::Init()
 {
-	HRESULT result = CoInitialize(nullptr);
+	HRESULT result = CoInitializeEx(nullptr,COINITBASE_MULTITHREADED);
 
 	if (FAILED(result))return;
 
