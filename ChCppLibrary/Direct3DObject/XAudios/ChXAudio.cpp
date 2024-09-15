@@ -1,8 +1,6 @@
 #include<Windows.h>
 
-#include<xaudio2.h>
 #include<x3daudio.h>
-#include<DirectXMath.h>
 #include<mfapi.h>
 #include <windows.h>
 #include <mfapi.h>
@@ -23,24 +21,13 @@
 
 using namespace ChD3D;
 
-#define USE_SUBMIX_VOICE_FLG 1
-
 #define BASE_LENGTH 1000.0f
-
-struct ChXAUDIO2_BUFFER :public XAUDIO2_BUFFER
-{
-	std::vector<unsigned char> audioDataVector;
-};
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void AudioObject::SetVolume(const float _Volume)
 {
 	if (!*this)return;
 	voice->SetVolume(_Volume);
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 float AudioObject::GetVolume()
 {
@@ -53,28 +40,19 @@ float AudioObject::GetVolume()
 	return outVol;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 void AudioObject::Play()
 {
 	if (!*this)return;
 
 	voice->Start(0);
-
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void AudioObject::Pause()
 {
-
 	if (!*this)return;
 
 	voice->Stop();
-	
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void AudioObject::Stop()
 {
@@ -84,24 +62,17 @@ void AudioObject::Stop()
 
 	voice->FlushSourceBuffers();
 
-	voice->SubmitSourceBuffer(XAudioManager().audioDataMap[fileName][0]);
-	voice->SubmitSourceBuffer(XAudioManager().audioDataMap[fileName][1]);
+	manager->SubmitSourceBuffer(voice, GetFileName(), 0);
+	manager->SubmitSourceBuffer(voice, GetFileName(), 1);
 
 	nowPos = 1;
-
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void AudioObject::Release()
 {
 	if (!*this)return;
 
-	auto&& audios = XAudioManager().audios;
-
-	auto&& thiss = std::find(audios.begin(), audios.end(), this);
-
-	audios.erase(thiss);
+	manager->RemoveAudios(this);
 
 	voice->Stop();
 
@@ -110,6 +81,30 @@ void AudioObject::Release()
 	voice = nullptr;
 
 	SetInitFlg(false);
+}
+
+void AudioObject::Update()
+{
+
+	loopEndPos = loopEndPos >= manager->GetAudioDataCount(GetFileName()) ? manager->GetAudioDataCount(GetFileName()) : loopEndPos;
+
+	loopStartPos = loopStartPos >= loopEndPos ? 0 : loopStartPos;
+
+	XAUDIO2_VOICE_STATE state;
+	voice->GetState(&state);
+
+	if (state.BuffersQueued >= 2)return;
+	bool loopFlg = false;
+	unsigned long testNowPos = nowPos;
+	testNowPos = testNowPos + 1 >= loopEndPos ? loopStartPos : testNowPos + 1;
+
+	if (testNowPos <= 0)loopFlg = true;
+
+	if (!loopFlg && loopFlg)return;
+
+	nowPos = testNowPos;
+
+	manager->SubmitSourceBuffer(voice, GetFileName(), nowPos);
 }
 
 void X3DAudioObject::Init()
@@ -154,6 +149,46 @@ X3DAUDIO_EMITTER* X3DAudioObject::GetEmitter()
 	return emitter;
 }
 
+void X3DAudioObject::Update()
+{
+	X3DAUDIO_DSP_SETTINGS dspSettings;
+
+	dspSettings.SrcChannelCount = 1;
+	dspSettings.DstChannelCount = manager->details->InputChannels;
+	dspSettings.pMatrixCoefficients = manager->GetMatrix();
+
+	auto&& emitter = GetEmitter();
+
+	auto ePos = emitter->Position;
+	emitter->Position.x *= BASE_LENGTH;
+	emitter->Position.y *= BASE_LENGTH;
+	emitter->Position.z *= BASE_LENGTH;
+	auto lPos = manager->listener->Position;
+	manager->listener->Position.x *= BASE_LENGTH;
+	manager->listener->Position.y *= BASE_LENGTH;
+	manager->listener->Position.z *= BASE_LENGTH;
+
+	X3DAudioCalculate(manager->X3DInstance, manager->listener, emitter,
+		X3DAUDIO_CALCULATE_MATRIX |
+		X3DAUDIO_CALCULATE_DOPPLER |
+		X3DAUDIO_CALCULATE_LPF_DIRECT |
+		X3DAUDIO_CALCULATE_REVERB |
+		X3DAUDIO_CALCULATE_EMITTER_ANGLE |
+		X3DAUDIO_CALCULATE_DOPPLER,
+		&dspSettings);
+
+	emitter->Position = ePos;
+	manager->listener->Position = lPos;
+
+	voice->SetOutputMatrix(manager->audioMV, 1, manager->details->InputChannels, dspSettings.pMatrixCoefficients);
+	voice->SetFrequencyRatio(dspSettings.DopplerFactor);
+
+	voice->SetOutputMatrix(manager->audioMV, 1, 1, &dspSettings.ReverbLevel);
+
+	XAUDIO2_FILTER_PARAMETERS FilterParameters = { LowPassFilter, 2.0f * sinf(X3DAUDIO_PI / 6.0f * dspSettings.LPFDirectCoefficient), 1.0f };
+	voice->SetFilterParameters(&FilterParameters);
+}
+
 void XAudio2Manager::Init()
 {
 	if (*this)return;
@@ -182,11 +217,9 @@ void XAudio2Manager::Init()
 
 	audioMV->GetVoiceDetails(details);
 
-	matrix.resize(details->InputChannels);
+	ResizeMatrix(details->InputChannels);
 
 	listener = new X3DAUDIO_LISTENER();
-
-#if USE_SUBMIX_VOICE_FLG
 
 	audio->CreateSubmixVoice(&subMixAudio, 1, 44100, 0, 0, 0, 0);
 	sender = new XAUDIO2_SEND_DESCRIPTOR();
@@ -196,12 +229,17 @@ void XAudio2Manager::Init()
 	sendList->SendCount = 1;
 	sendList->pSends = sender;
 
-#endif
 	SetInitFlg(true);
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+bool XAudio2Manager::MFObjectInit(const wchar_t* _key,MFObject& _target)
+{
+	return MFCreateSourceReaderFromURL(
+		_key,
+		nullptr,
+		&_target.reader) == S_OK;
+}
 
 void XAudio2Manager::Release()
 {
@@ -210,48 +248,26 @@ void XAudio2Manager::Release()
 
 	LoadEnd();
 
-	for (auto&& aObject : audios)
-	{
-		aObject->Release();
-	}
-
-	for (auto&& waveFormat : mfObjectMap)
-	{
-		CoTaskMemFree(waveFormat.second->waveFormat);
-
-		waveFormat.second->reader->Release();
-	}
-
-	for (auto&& audioDatas : audioDataMap)
-	{
-		for (auto&& audioData : audioDatas.second)
-		{
-			delete audioData;
-		}
-	}
-
-	audioDataMap.clear();
-
-	mfObjectMap.clear();
-
-	audios.clear();
+	CRTRelease();
 
 	if (ChPtr::NotNullCheck(listener)) { delete listener; listener = nullptr; }
 	if (ChPtr::NotNullCheck(details)) { delete details; details = nullptr; }
-
-#if USE_SUBMIX_VOICE_FLG
 
 	if (ChPtr::NotNullCheck(subMixAudio)) { subMixAudio->DestroyVoice(); subMixAudio = nullptr; }
 	if (ChPtr::NotNullCheck(sender)) { delete sender; sender = nullptr; }
 	if (ChPtr::NotNullCheck(sendList)) { delete sendList; sendList = nullptr; }
 
-#endif
-
 	if (ChPtr::NotNullCheck(audioMV)) { audioMV->DestroyVoice(); audioMV = nullptr; };
 	if (ChPtr::NotNullCheck(audio)) { audio->Release(); audio = nullptr; };
 
 	SetInitFlg(false);
+}
 
+void XAudio2Manager::MFObjectRelease(MFObject& _target)
+{
+	CoTaskMemFree(_target.waveFormat);
+
+	_target.reader->Release();
 }
 
 void XAudio2Manager::LoadStart()
@@ -274,56 +290,38 @@ void XAudio2Manager::LoadEnd()
 	loadFlg = false;
 }
 
-void XAudio2Manager::LoadSound(AudioObject& _object, const std::string& _fileName)
+void XAudio2Manager::LoadSoundBase(AudioObject& _object, const wchar_t* _fileName)
 {
 	if (ChPtr::NullCheck(&_object))return;
 
-	if(!CreateMFObject(_fileName))return;
-	if(!CreateFileData(_fileName))return;
+	if (!CreateMFObject(_fileName))return;
+	if (!CreateFileData(_fileName))return;
+
+	auto&& mfObject = GetMFObject(_fileName);
 
 	_object.Init();
 
-	auto mfObject = mfObjectMap[_fileName];
-	auto fileDatas = audioDataMap[_fileName];
-
-#if USE_SUBMIX_VOICE_FLG
-
 	audio->CreateSourceVoice(&_object.voice, mfObject->waveFormat, 0, 2.0f, 0, sendList);
 
-#else
+	SubmitSourceBuffer(_object.voice, _fileName, 0);
+	SubmitSourceBuffer(_object.voice, _fileName, 1);
 
-	audio->CreateSourceVoice(&_object.voice, mfObject->waveFormat);
-
-#endif
-
-	_object.voice->SubmitSourceBuffer(fileDatas[0]);
-	_object.voice->SubmitSourceBuffer(fileDatas[1]);
-
-	_object.fileName = _fileName;
+	_object.SetFileName(_fileName);
 
 	_object.SetInitFlg(true);
 
-	audios.push_back(&_object);
+	_object.manager = this;
+
+	AddAudios(&_object);
 }
 
-bool XAudio2Manager::CreateMFObject(const std::string& _fileName)
+bool XAudio2Manager::CreateMFObject(const wchar_t* _fileName)
 {
-
-	if (mfObjectMap.find(_fileName) != mfObjectMap.end())return true;
+	if (ContainMFObject(_fileName))return true;
 
 	if (!loadFlg)return false;
 
-	auto mfObject = ChPtr::Make_S<MFObject>();
-	MFCreateSourceReaderFromURL(
-		ChStr::UTF8ToWString(_fileName).c_str(),
-		nullptr,
-		&mfObject->reader);
-
-	if (ChPtr::NullCheck(mfObject->reader))
-	{
-		return false;
-	}
-
+	auto mfObject = CreateMFObjectPtr(_fileName);
 
 	IMFMediaType* mType = nullptr;
 	MFCreateMediaType(&mType);
@@ -341,70 +339,45 @@ bool XAudio2Manager::CreateMFObject(const std::string& _fileName)
 
 	MFCreateWaveFormatExFromMFMediaType(mType, &mfObject->waveFormat, &size);
 
-
 	mType->Release();
-	mfObjectMap[_fileName] = mfObject;
 
 	return true;
 }
 
-bool XAudio2Manager::CreateFileData(const std::string& _fileName)
+XAUDIO2_BUFFER* ChD3D::XAudio2Manager::LoadBuffers(MFObject* _MFObj)
 {
-	if (audioDataMap.find(_fileName) != audioDataMap.end())return true;
-
-	if (!loadFlg)return false;
-
 	DWORD streamFlg = 0;
 	LONGLONG streamLen = 0;
 
-	auto mfObject = mfObjectMap[_fileName];
-	std::vector<XAUDIO2_BUFFER*> fileDatas;
+	IMFSample* sample;
 
-	while (true)
-	{
-		IMFSample* sample;
+	_MFObj->reader->ReadSample(MF_SOURCE_READER_FIRST_AUDIO_STREAM, 0, nullptr, &streamFlg, &streamLen, &sample);
 
-		mfObject->reader->ReadSample(MF_SOURCE_READER_FIRST_AUDIO_STREAM, 0, nullptr, &streamFlg, &streamLen, &sample);
+	if (ChPtr::NullCheck(sample))return nullptr;
 
+	IMFMediaBuffer* mediaBuffer;
 
-		if (ChPtr::NullCheck(sample))break;
+	sample->ConvertToContiguousBuffer(&mediaBuffer);
 
-		IMFMediaBuffer* mediaBuffer;
+	BYTE* data;
 
-		sample->ConvertToContiguousBuffer(&mediaBuffer);
+	DWORD maxStreamLen;
+	DWORD currentLen;
 
-		BYTE* Data;
+	mediaBuffer->GetMaxLength(&maxStreamLen);
+	mediaBuffer->GetCurrentLength(&currentLen);
 
-		DWORD maxStreamLen;
-		DWORD currentLen;
+	mediaBuffer->Lock(&data, &maxStreamLen, &currentLen);
 
-		mediaBuffer->GetMaxLength(&maxStreamLen);
-		mediaBuffer->GetCurrentLength(&currentLen);
+	auto&& fileData = SetBuffer(data,maxStreamLen);
 
-		mediaBuffer->Lock(&Data, &maxStreamLen, &currentLen);
+	mediaBuffer->Unlock();
 
-		auto fileData = new ChXAUDIO2_BUFFER();
+	mediaBuffer->Release();
 
-		for (DWORD i = 0; i < maxStreamLen; i++)
-		{
-			fileData->audioDataVector.push_back(Data[i]);
-		}
+	sample->Release();
 
-		fileData->AudioBytes = maxStreamLen;
-		fileData->pAudioData = &fileData->audioDataVector[0];
-		fileData->Flags = XAUDIO2_END_OF_STREAM;
-
-		fileDatas.push_back(fileData);
-
-		mediaBuffer->Unlock();
-
-		mediaBuffer->Release();
-
-		sample->Release();
-	}
-
-	audioDataMap[_fileName] = fileDatas;
-	return true;
+	return fileData;
 }
 
 void XAudio2Manager::Update()
@@ -422,92 +395,7 @@ void XAudio2Manager::Update()
 	listener->OrientTop = yDirection;
 	listener->Position = pos;
 	listener->Velocity = pos - beforePos;
-
-	for (auto&& audio = audios.begin() ; audio != audios.end();audio)
-	{
-
-		if (ChPtr::NullCheck(*audio))
-		{
-			audio = audios.erase(audio);
-			continue;
-		}
-		Update3DAudios(*audio);
-		UpdateBGMAudios(*audio);
-		audio++;
-	}
-
-}
-
-void XAudio2Manager::Update3DAudios(AudioObject* _audio)
-{
-	auto audio = ChPtr::SafeCast<X3DAudioObject>(_audio);
-	if (ChPtr::NullCheck(audio))return;
-
-	X3DAUDIO_DSP_SETTINGS dspSettings;
-
-	dspSettings.SrcChannelCount = 1;
-	dspSettings.DstChannelCount = details->InputChannels;
-	dspSettings.pMatrixCoefficients = &matrix[0];
-
-	auto&& emitter = audio->GetEmitter();
-
-	auto ePos = emitter->Position;
-	emitter->Position.x *= BASE_LENGTH;
-	emitter->Position.y *= BASE_LENGTH;
-	emitter->Position.z *= BASE_LENGTH;
-	auto lPos = listener->Position;
-	listener->Position.x *= BASE_LENGTH;
-	listener->Position.y *= BASE_LENGTH;
-	listener->Position.z *= BASE_LENGTH;
-
-	X3DAudioCalculate(X3DInstance, listener, emitter,
-		X3DAUDIO_CALCULATE_MATRIX | 
-		X3DAUDIO_CALCULATE_DOPPLER | 
-		X3DAUDIO_CALCULATE_LPF_DIRECT | 
-		X3DAUDIO_CALCULATE_REVERB | 
-		X3DAUDIO_CALCULATE_EMITTER_ANGLE |
-		X3DAUDIO_CALCULATE_DOPPLER,
-		&dspSettings);
-
-	emitter->Position = ePos;
-	listener->Position = lPos;
-
-	audio->voice->SetOutputMatrix(audioMV, 1, details->InputChannels, dspSettings.pMatrixCoefficients);
-	audio->voice->SetFrequencyRatio(dspSettings.DopplerFactor);
-
-#if USE_SUBMIX_VOICE_FLG
-
-	audio->voice->SetOutputMatrix(audioMV, 1, 1, &dspSettings.ReverbLevel);
-
-#endif
-
-	XAUDIO2_FILTER_PARAMETERS FilterParameters = { LowPassFilter, 2.0f * sinf(X3DAUDIO_PI / 6.0f * dspSettings.LPFDirectCoefficient), 1.0f };
-	audio->voice->SetFilterParameters(&FilterParameters);
-
-}
-
-void XAudio2Manager::UpdateBGMAudios(AudioObject* _audio)
-{
-	auto audio = _audio;
-
-	audio->loopEndPos = audio->loopEndPos >= audioDataMap[audio->fileName].size() ? audioDataMap[audio->fileName].size() : audio->loopEndPos;
-
-	audio->loopStartPos = audio->loopStartPos >= audio->loopEndPos ? 0 : audio->loopStartPos;
-
-	XAUDIO2_VOICE_STATE state;
-	audio->voice->GetState(&state);
-
-	if (state.BuffersQueued >= 2)return;
-	bool loopFlg = false;
-	unsigned long nowPos = 0;
-	nowPos = audio->nowPos + 1 >= audio->loopEndPos ? audio->loopStartPos : audio->nowPos + 1;
-
-	if (nowPos <= 0)loopFlg = true;
-
-	if (!audio->loopFlg && loopFlg)return;
-
-	audio->nowPos = nowPos;
-
-	audio->voice->SubmitSourceBuffer(audioDataMap[audio->fileName][nowPos]);
-
+	
+	UpdateAudios();
+	
 }
