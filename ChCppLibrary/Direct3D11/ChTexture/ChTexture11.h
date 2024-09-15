@@ -357,7 +357,7 @@ void ChD3D11::Texture11::CreateColorTexture(
 	tmpPixelData.resize(wicRect.Height* wicRect.Width);
 
 	pixelData = new ChVec4[wicRect.Height * wicRect.Width];
-	memcpy(&tmpPixelData[0], &testVector[0], testVector.size());
+	std::memcpy(&tmpPixelData[0], &testVector[0], testVector.size());
 
 	for (unsigned long i = 0; i < tmpPixelData.size(); i++)
 	{
