@@ -6,10 +6,7 @@ namespace ChD3D
 
 	class XInputController:public ChCp::Initializer
 	{
-	public:
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//ConstructorDestructor//
+	public://Constructor Destructor//
 
 		XInputController();
 
@@ -18,15 +15,13 @@ namespace ChD3D
 			Release();
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//InitAndRelease//
+	public://Init And Release//
 
 		void Init();
 
 		virtual void Release();
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
+	public://Set Function//
 
 		inline void SetLMoterSpeed(const unsigned short _Speed)
 		{
@@ -38,8 +33,7 @@ namespace ChD3D
 			vibFlgs.wRightMotorSpeed = _Speed;
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//GetFunction//
+	public://Get Function//
 
 		inline unsigned char GetNo()
 		{
@@ -151,12 +145,11 @@ namespace ChD3D
 			return RDeadZoneTest(state.Gamepad.sThumbRY);
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//UpdateFunction//
+	public://Update Function//
 
 		void Update();
 
-		///////////////////////////////////////////////////////////////////////////////////
+	public://Other Functions//
 
 		float RDeadZoneTest(const float _sThumb);
 
@@ -164,9 +157,7 @@ namespace ChD3D
 
 		float RL2DeadZoneTest(const unsigned char _sButton);
 
-		///////////////////////////////////////////////////////////////////////////////////
-
-	private:
+	private://Member Value//
 
 		static ChCpp::BitBool controllerFlgs;
 		unsigned char myNo = 5;
