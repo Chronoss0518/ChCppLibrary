@@ -3,6 +3,10 @@
 #ifndef Ch_Win_Inc_h
 #define Ch_Win_Inc_h
 
+#ifndef CRT
+#define CRT
+#endif
+
 #include <mmsystem.h>
 #include <mmreg.h>
 
@@ -10,10 +14,6 @@
 #pragma comment(lib, "Msimg32.lib")
 #pragma comment(lib,"Gdi32.lib")
 #pragma comment(lib,"user32.lib")
-
-#ifndef CRT
-#define CRT
-#endif
 
 //PackingClass//
 #include"WindowsObject/PackData/ChPoint.h"
@@ -41,7 +41,9 @@
 #include"WindowsObject/FileDialog/ChWinFileDialog.h"
 #include"WindowsObject/MsgBox/ChMsgBox.h"
 
+#ifdef _WINDOWS_
 #pragma comment(lib,"ChWinLibrary.lib")
+#endif
 
 #endif
 

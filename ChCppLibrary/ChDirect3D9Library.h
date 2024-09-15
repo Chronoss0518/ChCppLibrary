@@ -3,6 +3,10 @@
 #ifndef Ch_D3D9_Inc_h
 #define Ch_D3D9_Inc_h
 
+#ifndef CRT
+#define CRT
+#endif
+
 ///////////////////////////////////////////////////////////////////////////////////////
 //DirectXä÷òA
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -56,26 +60,7 @@ struct PNTVertex
 #include"Direct3D9/ChComponent/ChTextureComponent9.h"
 #include"Direct3D9/ChComponent/ChModelComponents9.h"
 
-//ñ¢äÆê¨ä÷êî//
-
-#ifndef Ch_Library_Create
-#ifdef _MT
-#ifdef _DLL
-#ifdef _DEBUG
-#pragma comment(lib,"ChD3D9_MDd.lib")
-#else
-#pragma comment(lib,"ChD3D9_MD.lib")
-#endif//_DEBUG
-#else//_DLL
-#ifdef _DEBUG
-#pragma comment(lib,"ChD3D9_MTd.lib")
-#else
-#pragma comment(lib,"ChD3D9_MT.lib")
-#endif//_DEBUG
-#endif//else
-#endif//_MT
-#endif//Ch_Library_Create
-
+#pragma comment(lib,"ChD3D9Library.lib")
 
 //CopyRight Chronoss0518 2018/08//
 #endif
