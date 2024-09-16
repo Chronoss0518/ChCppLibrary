@@ -95,7 +95,7 @@ void AudioObject::Update()
 
 	if (state.BuffersQueued >= 2)return;
 	bool loopFlg = false;
-	unsigned long testNowPos = nowPos;
+	size_t testNowPos = nowPos;
 	testNowPos = testNowPos + 1 >= loopEndPos ? loopStartPos : testNowPos + 1;
 
 	if (testNowPos <= 0)loopFlg = true;

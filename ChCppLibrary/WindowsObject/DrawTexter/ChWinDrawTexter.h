@@ -117,7 +117,7 @@ namespace ChWin
 			const long& _x,
 			const long& _y)
 		{
-			Draw(_drawText.c_str(), _drawText.length(), _x, _y);
+			Draw(_drawText.c_str(), static_cast<int>(_drawText.length()), _x, _y);
 		}
 
 		void Draw(
@@ -126,7 +126,7 @@ namespace ChWin
 			const long& _x,
 			const long& _y)
 		{
-			Draw(_hdc, _drawText.c_str(), _drawText.length(), _x, _y);
+			Draw(_hdc, _drawText.c_str(), static_cast<int>(_drawText.length()), _x, _y);
 		}
 
 #endif
@@ -135,14 +135,14 @@ namespace ChWin
 
 		void Draw(
 			const char* _drawText,
-			const unsigned long _drawTextLength,
+			const int _drawTextLength,
 			const long& _x,
 			const long& _y);
 
 		void Draw(
 			HDC _hdc,
 			const char* _drawText,
-			const unsigned long _drawTextLength,
+			const int _drawTextLength,
 			const long& _x,
 			const long& _y);
 
@@ -182,7 +182,7 @@ namespace ChWin
 			const long& _x,
 			const long& _y)
 		{
-			Draw(_drawText.c_str(), _drawText.length(), _x, _y);
+			Draw(_drawText.c_str(), static_cast<int>(_drawText.length()), _x, _y);
 		}
 
 		void Draw(
@@ -191,7 +191,7 @@ namespace ChWin
 			const long& _x,
 			const long& _y)
 		{
-			Draw(_hdc, _drawText.c_str(), _drawText.length(), _x, _y);
+			Draw(_hdc, _drawText.c_str(), static_cast<int>(_drawText.length()), _x, _y);
 		}
 
 #endif
@@ -200,14 +200,14 @@ namespace ChWin
 
 		void Draw(
 			const wchar_t* _drawText,
-			const unsigned long _drawTextLength,
+			const int _drawTextLength,
 			const long& _x,
 			const long& _y);
 
 		void Draw(
 			HDC _hdc,
 			const wchar_t* _drawText,
-			const unsigned long _drawTextLength,
+			const int _drawTextLength,
 			const long& _x,
 			const long& _y);
 

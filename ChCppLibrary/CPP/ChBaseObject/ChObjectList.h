@@ -109,7 +109,7 @@ namespace ChCpp
 			return tmpObjList;
 		}
 
-		inline unsigned long GetObjectCount(){ return ValueIns().objectList.size(); }
+		inline size_t GetObjectCount(){ return ValueIns().objectList.size(); }
 #endif
 
 	public://Life Cycle Functions//

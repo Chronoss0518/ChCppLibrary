@@ -39,11 +39,11 @@ void TextBox##_AorW##::Create(\
 	const WindObject##_AorW##& _parentWind){\
 	Create(_parentWind.GetInstance(), _startText, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), _parentWind.GethWnd());}\
 \
-void ChWin::TextBox##_AorW##::SetText(const _CharaType##* _text, const unsigned long _textLen){\
+void ChWin::TextBox##_AorW##::SetText(const _CharaType##* _text, const unsigned int _textLen){\
 	if (selectFlg)return;\
 	Send(WM_SETTEXT, (WPARAM)_textLen, (LPARAM)_text);}\
 \
-void ChWin::TextBox##_AorW##::SetCharLimit(const unsigned long _size){\
+void ChWin::TextBox##_AorW##::SetCharLimit(const unsigned int _size){\
 	if (selectFlg)return;\
 	Send(EM_SETLIMITTEXT, (WPARAM)_size, (LPARAM)NULL);\
 	charLimit = _size;}\

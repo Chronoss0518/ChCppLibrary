@@ -97,13 +97,13 @@ namespace ChCpp
 		std::vector<ChPtr::Shared<ChVec4>> GetSquare() const { return value->squareList; }
 #endif
 
-		ChVec4 GetSquare(unsigned long _num)const;
+		ChVec4 GetSquare(size_t _num)const;
 
 		ChVec4 GetFirstSquare() const;
 
 		ChVec4 GetLastSquare() const;
 
-		unsigned long GetCount() const;
+		size_t GetCount() const;
 
 	public://Add Function//
 
@@ -190,12 +190,12 @@ bool ChCpp::MathSquare::IsEmpty()const
 	return value->squareList.empty();
 }
 
-unsigned long ChCpp::MathSquare::GetCount() const
+size_t ChCpp::MathSquare::GetCount() const
 {
 	return value->squareList.size();
 }
 
-ChVec4 ChCpp::MathSquare::GetSquare(unsigned long _num)const
+ChVec4 ChCpp::MathSquare::GetSquare(size_t _num)const
 {
 	if (_num >= GetCount())return ChVec4();
 	return *value->squareList[_num];

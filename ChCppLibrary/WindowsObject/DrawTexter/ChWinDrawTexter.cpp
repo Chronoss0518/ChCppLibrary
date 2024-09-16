@@ -49,7 +49,7 @@ void ChWin::DrawTexter##_AorW##::SetFontData(\
 \
 void ChWin::DrawTexter##_AorW##::Draw(\
 	const _CharaType##* _drawText,\
-	const unsigned long _drawTextLength,\
+	const int _drawTextLength,\
 	const long& _x,\
 	const long& _y){\
 	HDC tmpDC;\
@@ -60,7 +60,7 @@ void ChWin::DrawTexter##_AorW##::Draw(\
 void ChWin::DrawTexter##_AorW##::Draw(\
 	HDC _hdc,\
 	const _CharaType##* _drawText,\
-	const unsigned long _drawTextLength,\
+	const int _drawTextLength,\
 	const long& _x,\
 	const long& _y){\
 	SelectObject(_hdc, fontData);\

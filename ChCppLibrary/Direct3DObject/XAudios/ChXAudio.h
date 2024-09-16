@@ -54,11 +54,11 @@ namespace ChD3D
 
 		void SetLoopFlg(const bool _Flg) { loopFlg = _Flg; }
 
-		void SetLoopStartPos(const unsigned long _pos) { loopStartPos = _pos; }
+		void SetLoopStartPos(const size_t _pos) { loopStartPos = _pos; }
 
-		void SetLoopEndPos(const unsigned long _pos) { loopEndPos = _pos; }
+		void SetLoopEndPos(const size_t _pos) { loopEndPos = _pos; }
 
-		void SetPlayTime(const unsigned long _Time) { nowPos = _Time; }
+		void SetPlayTime(const size_t _Time) { nowPos = _Time; }
 
 		void SetVolume(const float _Volume);
 
@@ -66,11 +66,11 @@ namespace ChD3D
 
 	public://Get Functions//
 
-		unsigned long GetLoopStartPos() { return loopStartPos; }
+		size_t GetLoopStartPos() { return loopStartPos; }
 
-		unsigned long GetLoopEndPos() { return loopEndPos; }
+		size_t GetLoopEndPos() { return loopEndPos; }
 
-		unsigned long GetPlayTime() { return nowPos; }
+		size_t GetPlayTime() { return nowPos; }
 
 		float GetVolume();
 
@@ -94,9 +94,9 @@ namespace ChD3D
 
 		IXAudio2SourceVoice* voice = nullptr;
 		bool loopFlg = false;
-		unsigned long nowPos = 1;
-		unsigned long loopStartPos = 0;
-		unsigned long loopEndPos = -1;
+		size_t nowPos = 1;
+		size_t loopStartPos = 0;
+		size_t loopEndPos = -1;
 
 		AudioObjectCRT& ValueIns() { return *value; }
 
@@ -305,7 +305,7 @@ namespace ChD3D
 
 		bool ContainAudioData(const wchar_t* _key);
 
-		ChStd::SizeType GetAudioDataCount(const wchar_t* _key);
+		size_t GetAudioDataCount(const wchar_t* _key);
 
 		MFObject* CreateMFObjectPtr(const wchar_t* _key);
 
@@ -313,7 +313,7 @@ namespace ChD3D
 
 		MFObject* GetMFObject(const wchar_t* _key);
 
-		void SubmitSourceBuffer(IXAudio2SourceVoice* _voice,const wchar_t* _filename, ChStd::SizeType _num);
+		void SubmitSourceBuffer(IXAudio2SourceVoice* _voice,const wchar_t* _filename, size_t _num);
 
 		void AddAudios(AudioObject* _obj);
 
@@ -323,7 +323,7 @@ namespace ChD3D
 
 		float* GetMatrix();
 
-		void ResizeMatrix(ChStd::SizeType _num);
+		void ResizeMatrix(size_t _num);
 
 	private:
 
@@ -392,7 +392,7 @@ ChD3D::XAudio2Manager::~XAudio2Manager()
 	delete value;
 }
 
-ChStd::SizeType ChD3D::XAudio2Manager::GetAudioDataCount(const wchar_t* _key)
+size_t ChD3D::XAudio2Manager::GetAudioDataCount(const wchar_t* _key)
 {
 	auto&& data = value->audioDataMap.find(_key);
 	if (data == value->audioDataMap.end())return 0;
@@ -470,7 +470,7 @@ bool ChD3D::XAudio2Manager::ContainMFObject(const wchar_t* _key)
 	return value->mfObjectMap.find(_key) != value->mfObjectMap.end();
 }
 
-void ChD3D::XAudio2Manager::SubmitSourceBuffer(IXAudio2SourceVoice* _voice, const wchar_t* _filename, ChStd::SizeType _num)
+void ChD3D::XAudio2Manager::SubmitSourceBuffer(IXAudio2SourceVoice* _voice, const wchar_t* _filename, size_t _num)
 {
 	if (ChPtr::NullCheck(_voice))return;
 	if (ChPtr::NullCheck(_filename))return;
@@ -515,7 +515,7 @@ float* ChD3D::XAudio2Manager::GetMatrix()
 	return &value->matrix[0];
 }
 
-void ChD3D::XAudio2Manager::ResizeMatrix(ChStd::SizeType _num)
+void ChD3D::XAudio2Manager::ResizeMatrix(size_t _num)
 {
 	value->matrix.resize(_num);
 }

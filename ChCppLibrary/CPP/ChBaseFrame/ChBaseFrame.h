@@ -62,9 +62,9 @@ namespace ChCpp
 
 #endif
 
-		unsigned long GetNowFrameNo() { return nowFrameNo; }
+		size_t GetNowFrameNo() { return nowFrameNo; }
 
-		unsigned long GetRegisterFrameCount();
+		size_t GetRegisterFrameCount();
 
 	public://UpdateFunction//
 
@@ -130,8 +130,8 @@ namespace ChCpp
 
 		friend BaseFrame;
 
-		unsigned long nextFrameNo = -1;
-		unsigned long nowFrameNo = -1;
+		size_t nextFrameNo = -1;
+		size_t nowFrameNo = -1;
 
 		FrameListCRT* value = nullptr;
 
@@ -361,7 +361,7 @@ void ChCpp::FrameList::Changes()
 	nextFrameNo = -1;
 }
 
-unsigned long ChCpp::FrameList::GetRegisterFrameCount() { return value->frameList.size(); }
+size_t ChCpp::FrameList::GetRegisterFrameCount() { return value->frameList.size(); }
 
 template<typename CharaType>
 void ChCpp::FrameManager<CharaType>::ChangeFrame(const std::basic_string<CharaType>& _frameName)

@@ -136,17 +136,17 @@ namespace ChMesh
 
 		ChVec3_9 GetOffsetVertex(unsigned long _num)const;
 
-		unsigned long GetMaterialCount()const;
+		size_t GetMaterialCount()const;
 
-		ChMaterialA_9 GetMaterial(unsigned long _num)const;
+		ChMaterialA_9 GetMaterial(size_t _num)const;
 
-		unsigned long GetTextureCount()const;
+		size_t GetTextureCount()const;
 
-		ChTex::BaseTexture9* GetTexture(unsigned long _num)const;
+		ChTex::BaseTexture9* GetTexture(size_t _num)const;
 
-		unsigned long GetNormalTextureCount()const;
+		size_t GetNormalTextureCount()const;
 
-		ChTex::BaseTexture9* GetNormalTexture(unsigned long _num)const;
+		ChTex::BaseTexture9* GetNormalTexture(size_t _num)const;
 
 	public://Create Functions//
 
@@ -175,7 +175,7 @@ namespace ChMesh
 		virtual void Draw(
 			const ChMat_9& _mat,
 			const LPDIRECT3DDEVICE9& _dev,
-			const long _subNum = -1);
+			const unsigned long _subNum = -1);
 
 	public://Static Functions//
 
@@ -274,34 +274,34 @@ ChVec3_9 ChMesh::BaseMesh9::GetOffsetVertex(unsigned long _num)const
 	return (*offsetVertexList[_num]);
 }
 
-unsigned long ChMesh::BaseMesh9::GetMaterialCount()const
+size_t ChMesh::BaseMesh9::GetMaterialCount()const
 {
 	return material.size();
 }
 
-ChMaterialA_9 ChMesh::BaseMesh9::GetMaterial(unsigned long _num)const
+ChMaterialA_9 ChMesh::BaseMesh9::GetMaterial(size_t _num)const
 {
 	if (material.size() <= _num)return ChMaterialA_9();
 	return *material[_num];
 }
 
-unsigned long ChMesh::BaseMesh9::GetTextureCount()const
+size_t ChMesh::BaseMesh9::GetTextureCount()const
 {
 	return texList.size();
 }
 
-ChTex::BaseTexture9* ChMesh::BaseMesh9::GetTexture(unsigned long _num)const
+ChTex::BaseTexture9* ChMesh::BaseMesh9::GetTexture(size_t _num)const
 {
 	if (texList.size() <= _num)return nullptr;
 	return texList[_num].get();
 }
 
-unsigned long ChMesh::BaseMesh9::GetNormalTextureCount()const
+size_t ChMesh::BaseMesh9::GetNormalTextureCount()const
 {
 	return normalTex.size();
 }
 
-ChTex::BaseTexture9* ChMesh::BaseMesh9::GetNormalTexture(unsigned long _num)const
+ChTex::BaseTexture9* ChMesh::BaseMesh9::GetNormalTexture(size_t _num)const
 {
 	if (texList.size() <= _num)return nullptr;
 	return normalTex[_num].get();

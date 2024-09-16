@@ -86,7 +86,7 @@ public://Set Functions//
 
 public://Get Functions//
 
-	unsigned long GetAniCnt();
+	size_t GetAniCnt();
 
 	//åªç›ÇÃèâä˙çsóÒ//
 	ChMat_9 GetNowStartMat()
@@ -114,7 +114,7 @@ public://Get Functions//
 
 protected:
 
-	AniObject GetAnimation(unsigned long _num);
+	AniObject GetAnimation(size_t _num);
 
 public://Update Functions//
 
@@ -277,9 +277,9 @@ void ChAniObj9::SetAniObject(const ChMat_9& _Mat)
 	aniList.push_back(ani);
 }
 
-unsigned long ChAnimationObject9::GetAniCnt() { return aniList.size(); }
+ChStd::SizeType ChAnimationObject9::GetAniCnt() { return aniList.size(); }
 
-ChAnimationObject9::AniObject ChAnimationObject9::GetAnimation(unsigned long _num)
+ChAnimationObject9::AniObject ChAnimationObject9::GetAnimation(ChStd::SizeType _num)
 {
 	if (aniList.size() <= _num)return AniObject();
 	return *aniList[_num];

@@ -70,9 +70,9 @@ namespace ChD3D11
 		}
 #endif
 
-		Ch3D::PolyVertex GetVertex(unsigned long _num)const;
+		Ch3D::PolyVertex GetVertex(size_t _num)const;
 
-		unsigned long GetVertexSize()const;
+		size_t GetVertexSize()const;
 
 		inline Ch3D::Material GetMaterial()const { return material; }
 
@@ -185,13 +185,13 @@ void ChD3D11::PolygonBoard11::SetInitSquare()
 
 }
 
-Ch3D::PolyVertex ChD3D11::PolygonBoard11::GetVertex(unsigned long _num)const
+Ch3D::PolyVertex ChD3D11::PolygonBoard11::GetVertex(size_t _num)const
 {
 	if (value->vertexs.size() <= _num)return Ch3D::PolyVertex();
 	return *value->vertexs[_num];
 }
 
-unsigned long ChD3D11::PolygonBoard11::GetVertexSize()const
+size_t ChD3D11::PolygonBoard11::GetVertexSize()const
 {
 	return value->vertexs.size();
 }

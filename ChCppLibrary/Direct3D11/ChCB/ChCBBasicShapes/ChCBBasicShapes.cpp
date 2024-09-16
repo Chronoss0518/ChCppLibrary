@@ -98,7 +98,7 @@ void CBBasicShapesPosition11::Release()
 }
 
 
-void CBBasicShapesPosition11::SetPosition(const ChVec2& _position, int _no)
+void CBBasicShapesPosition11::SetPosition(const ChVec2& _position, uint _no)
 {
 	if (_no >= positionData.positions.usePositionCount)return;
 

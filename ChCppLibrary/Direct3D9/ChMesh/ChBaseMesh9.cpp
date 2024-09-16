@@ -61,13 +61,13 @@ void BaseMesh9::CreateEasyFace(MeshFace9& _out, unsigned long _faceNum, MeshVert
 void BaseMesh9::Draw(
 	const ChMat_9& _mat,
 	const LPDIRECT3DDEVICE9& _dev,
-	const long _subNum)
+	const unsigned long _subNum)
 {
 
 	D3DMATERIAL9 tmpMate;
 	ChMat_9 tmpMat;
 
-	if (_subNum < 0 || _subNum >= GetMaterialCount())
+	if (_subNum >= GetMaterialCount())
 	{
 
 		for (unsigned short i = 0; i < GetMaterialCount(); i++) {

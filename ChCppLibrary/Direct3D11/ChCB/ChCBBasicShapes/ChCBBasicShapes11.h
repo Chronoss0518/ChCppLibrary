@@ -71,7 +71,7 @@ namespace ChD3D11
 
 		public://Set Functions//
 
-			void SetPosition(const ChVec2& _position,int _no);
+			void SetPosition(const ChVec2& _position,uint _no);
 
 			void SetPSBasicShapesPositionData(ID3D11DeviceContext* _dc);
 

@@ -85,10 +85,10 @@ namespace ChWin
 		void SetText(const std::string& _text);
 #endif
 		//TextBox‚ÖText‚Ì“ü—Í//
-		void SetText(const char* _text,const unsigned long _textLen);
+		void SetText(const char* _text,const unsigned int _textLen);
 
 		//TextBox‚Ö“ü—Í‚Å‚«‚é•¶š”‚Ì§ŒÀ//
-		void SetCharLimit(const unsigned long _size);
+		void SetCharLimit(const unsigned int _size);
 
 	public://Get Functions//
 
@@ -151,10 +151,10 @@ namespace ChWin
 #endif
 		
 		//TextBox‚ÖText‚Ì“ü—Í//
-		void SetText(const wchar_t* _text, const unsigned long _textLen);
+		void SetText(const wchar_t* _text, const unsigned int _textLen);
 
 		//TextBox‚Ö“ü—Í‚Å‚«‚é•¶š”‚Ì§ŒÀ//
-		void SetCharLimit(const unsigned long _size);
+		void SetCharLimit(const unsigned int _size);
 
 	public://Get Functions//
 
@@ -242,7 +242,7 @@ std::string ChWin::TextBoxA::GetText()
 
 void ChWin::TextBoxA::SetText(const std::string& _text)
 {
-	SetText(_text.c_str(), _text.size());
+	SetText(_text.c_str(), static_cast<unsigned int>(_text.size()));
 }
 
 void ChWin::TextBoxW::Create(
@@ -306,7 +306,7 @@ std::wstring ChWin::TextBoxW::GetText()
 
 void ChWin::TextBoxW::SetText(const std::wstring& _text)
 {
-	SetText(_text.c_str(), _text.size());
+	SetText(_text.c_str(), static_cast<unsigned int>(_text.size()));
 }
 
 #endif
