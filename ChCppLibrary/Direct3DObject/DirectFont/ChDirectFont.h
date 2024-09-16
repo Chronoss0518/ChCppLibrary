@@ -381,7 +381,7 @@ namespace ChD3D
 			const std::wstring& _text,
 			const TextFormatObject& _textFormat,
 			const BrushObject& _brushObject,
-			const D2D1_RECT_F& _drawRect = D2D1::RectF(-1.0f, 1.0f, 1.0f, -1.0f))
+			const D2D1_RECT_F& _drawRect)
 		{
 			DrawToProjection(_text, _textFormat.textFormat, _brushObject.brush, _drawRect);
 		}
@@ -401,7 +401,7 @@ namespace ChD3D
 			const std::wstring& _text,
 			IDWriteTextFormat* _textFormat,
 			ID2D1SolidColorBrush* _brushObject,
-			const D2D1_RECT_F& _drawRect = D2D1::RectF(-1.0f, 1.0f, 1.0f, -1.0f))
+			const D2D1_RECT_F& _drawRect)
 		{
 			if (!thisDrawerFlg)return;
 			if (_text.length() <= 0)return;
@@ -433,7 +433,7 @@ namespace ChD3D
 			const std::wstring& _text,
 			const TextFormatObject& _textFormat,
 			const BrushObject& _brushObject,
-			const D2D1_RECT_F& _drawRect = D2D1::RectF(-1.0f, 1.0f, 1.0f, -1.0f))
+			const D2D1_RECT_F& _drawRect)
 		{
 			DrawToScreen(_text, _textFormat.textFormat, _brushObject.brush, _drawRect);
 		}
@@ -453,7 +453,7 @@ namespace ChD3D
 			const std::wstring& _text,
 			IDWriteTextFormat* _textFormat,
 			ID2D1SolidColorBrush* _brushObject,
-			const D2D1_RECT_F& _drawRect = D2D1::RectF(-1.0f, 1.0f, 1.0f, -1.0f))
+			const D2D1_RECT_F& _drawRect)
 		{
 
 			if (!thisDrawerFlg)return;
