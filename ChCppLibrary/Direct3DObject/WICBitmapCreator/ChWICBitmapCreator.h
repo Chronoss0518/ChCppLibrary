@@ -60,9 +60,9 @@ namespace ChD3D
 
 	private:
 
-		IWICBitmap* GetBitmap(ChStd::SizeType _num);
+		IWICBitmap* GetBitmap(size_t _num);
 
-		ChStd::SizeType GetBitmapCount();
+		size_t GetBitmapCount();
 
 		void AddBitmap(IWICBitmap*);
 
@@ -94,7 +94,6 @@ namespace ChD3D
 
 void ChD3D::WICBitmapObject::Release()
 {
-
 	auto&& list = WICBitmapCreatorObj().value->bitmapList;
 
 	auto&& bitmapIterator = std::find(list.begin(), list.end(), bitmap);
@@ -106,7 +105,6 @@ void ChD3D::WICBitmapObject::Release()
 		bitmap->Release();
 		bitmap = nullptr;
 	}
-
 }
 
 ChD3D::WICBitmapCreator::WICBitmapCreator()
@@ -120,12 +118,12 @@ ChD3D::WICBitmapCreator::~WICBitmapCreator()
 	delete value;
 }
 
-IWICBitmap* ChD3D::WICBitmapCreator::GetBitmap(ChStd::SizeType _num)
+IWICBitmap* ChD3D::WICBitmapCreator::GetBitmap(size_t _num)
 {
 	return value->bitmapList[_num];
 }
 
-ChStd::SizeType ChD3D::WICBitmapCreator::GetBitmapCount()
+size_t ChD3D::WICBitmapCreator::GetBitmapCount()
 {
 	return value->bitmapList.size();
 }

@@ -6,6 +6,7 @@
 
 #include"ChWICBitmapCreator.h"
 
+#pragma comment(lib,"WindowsApp.lib")
 
 #ifndef D3DOBJECT_RELEASE
 #define D3DOBJECT_RELEASE(obj) if(ChPtr::NotNullCheck(obj)){obj->Release();obj = nullptr;}
@@ -19,7 +20,7 @@ using namespace ChD3D;
 
 void WICBitmapCreator::Init()
 {
-	HRESULT result = CoInitialize(nullptr);
+	HRESULT result = Windows::Foundation::Initialize(RO_INIT_MULTITHREADED);
 
 	if (FAILED(result))return;
 
@@ -32,11 +33,11 @@ void WICBitmapCreator::Init()
 void WICBitmapCreator::Release()
 {
 
-	ChStd::SizeType count = GetBitmapCount();
+	size_t count = GetBitmapCount();
 
 	if (count <= 0)return;
 
-	for (ChStd::SizeType i = 0; i < count; i++)
+	for (size_t i = 0; i < count; i++)
 	{
 		auto&& bitmap = GetBitmap(i);
 		D3DOBJECT_RELEASE(bitmap);
@@ -46,7 +47,7 @@ void WICBitmapCreator::Release()
 
 	D3DOBJECT_RELEASE(factory);
 
-	CoUninitialize();
+	Windows::Foundation::Uninitialize();
 }
 
 WICBitmapObject WICBitmapCreator::CreateBitmapObject(unsigned long _width, unsigned long _height)

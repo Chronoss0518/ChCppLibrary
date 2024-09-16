@@ -179,10 +179,10 @@ void DirectFontBase::ReleaseTextFormat()
 {
 	if (thisDrawerFlg)return;
 
-	ChStd::SizeType count = GetTextFormatCount();
+	size_t count = GetTextFormatCount();
 	if (count <= 0)return;
 
-	for (ChStd::SizeType i = 0; i < count; i++)
+	for (size_t i = 0; i < count; i++)
 	{
 		auto&& textFormat = GetTextFormat(i);
 		D3DOBJECT_RELEASE(textFormat);
@@ -194,10 +194,10 @@ void DirectFontBase::ReleaseBrush()
 {
 	if (thisDrawerFlg)return;
 
-	ChStd::SizeType count = GetBrushCount();
+	size_t count = GetBrushCount();
 	if (count <= 0)return;
 
-	for (ChStd::SizeType i = 0; i < count; i++)
+	for (size_t i = 0; i < count; i++)
 	{
 		auto&& textFormat = GetBrush(i);
 		D3DOBJECT_RELEASE(textFormat);
@@ -209,10 +209,10 @@ void DirectFontBase::ReleaseLayout()
 {
 	if (thisDrawerFlg)return;
 
-	ChStd::SizeType count = GetLayoutCount();
+	size_t count = GetLayoutCount();
 	if (count <= 0)return;
 
-	for (ChStd::SizeType i = 0; i < count; i++)
+	for (size_t i = 0; i < count; i++)
 	{
 		auto&& textFormat = GetLayout(i);
 		D3DOBJECT_RELEASE(textFormat->layout);
@@ -268,7 +268,7 @@ void DirectFontBase::EndInit(LocaleNameId _localeNameId)
 
 TextFormatObject DirectFontBase::CreateTextFormatBase(
 	const wchar_t* _familyName,
-	const unsigned long _familyNameLength,
+	const size_t _familyNameLength,
 	IDWriteFontCollection* _collection,
 	DWRITE_FONT_WEIGHT _weight,
 	DWRITE_FONT_STYLE _style,
@@ -378,7 +378,7 @@ void DirectFontBase::DrawStart()
 		float width = 0.0f;
 		float height = 0.0f;
 
-		for (ChStd::SizeType i = 0;i<GetLayoutCount();i++)
+		for (size_t i = 0;i<GetLayoutCount();i++)
 		{
 			auto&& layout = GetLayout(i);
 
@@ -396,16 +396,29 @@ void DirectFontBase::DrawStart()
 		displaySize = nowDisplaySize;
 	}
 
-
 	renderTarget->BeginDraw();
 
 	if (clearDisplayFlg)
-	{
 		renderTarget->Clear(clearDisplayColor);
-	}
 
 	thisDrawerFlg = true;
 	GetDrawFlg() = true;
+}
+
+void DirectFontBase::DrawTextMethod(
+	const wchar_t* _text,
+	const unsigned long _textLength,
+	IDWriteTextFormat* _textFormat,
+	ID2D1SolidColorBrush* brushObject,
+	const D2D1_RECT_F& _drawRect)
+{
+	renderTarget->DrawText(
+		_text,        // The string to render.
+		_textLength,    // The string's length.
+		_textFormat,    // The text format.
+		&_drawRect,       // The region of the window where the text will be rendered.
+		brushObject     // The brush used to draw the text.
+	);
 }
 
 void DirectFontBase::DrawLayout(
@@ -621,8 +634,8 @@ void DirectFontFromHDC::Init(
 	property = D2D1::RenderTargetProperties(
 		D2D1_RENDER_TARGET_TYPE_DEFAULT,
 		D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED),
-		_size.width,
-		_size.height);
+		static_cast<float>(_size.width),
+		static_cast<float>(_size.height));
 
 	if (FAILED(d2dFactory->CreateDCRenderTarget(
 		&property,
@@ -638,7 +651,7 @@ void DirectFontFromHDC::Init(
 
 }
 
-void DirectFontFromHDC::SetHDC(HDC _dc, const ChVec4& _subRect)
+void DirectFontFromHDC::SetHDC(HDC _dc, const ChRECT& _subRect)
 {
 	RECT rect;
 	rect.top = _subRect.top;
