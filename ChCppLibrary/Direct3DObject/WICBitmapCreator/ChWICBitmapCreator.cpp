@@ -19,7 +19,7 @@ using namespace ChD3D;
 
 void WICBitmapCreator::Init()
 {
-	HRESULT result = CoInitializeEx(nullptr,COINITBASE_MULTITHREADED);
+	HRESULT result = CoInitialize(nullptr);
 
 	if (FAILED(result))return;
 
@@ -45,6 +45,8 @@ void WICBitmapCreator::Release()
 	ClearBitmapList();
 
 	D3DOBJECT_RELEASE(factory);
+
+	CoUninitialize();
 }
 
 WICBitmapObject WICBitmapCreator::CreateBitmapObject(unsigned long _width, unsigned long _height)
