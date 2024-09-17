@@ -16,11 +16,18 @@
 #define D3DOBJECT_NULLCHECK(obj,method) if(ChPtr::NotNullCheck(obj))obj->method
 #endif
 
+#define USE_WINDOWS_FOUNDATION_FLG 1
+
 using namespace ChD3D;
 
 void WICBitmapCreator::Init()
 {
-	HRESULT result = Windows::Foundation::Initialize(RO_INIT_MULTITHREADED);
+	HRESULT result = 0;
+#if USE_WINDOWS_FOUNDATION_FLG
+	result = Windows::Foundation::Initialize(RO_INIT_MULTITHREADED);
+#else
+	result = CoInitializeEx(NULL,COINIT_MULTITHREADED);
+#endif
 
 	if (FAILED(result))return;
 
@@ -47,7 +54,11 @@ void WICBitmapCreator::Release()
 
 	D3DOBJECT_RELEASE(factory);
 
+#if USE_WINDOWS_FOUNDATION_FLG
 	Windows::Foundation::Uninitialize();
+#else
+	CoUninitialize();
+#endif
 }
 
 WICBitmapObject WICBitmapCreator::CreateBitmapObject(unsigned long _width, unsigned long _height)
