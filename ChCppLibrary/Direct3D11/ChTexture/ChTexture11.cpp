@@ -44,12 +44,7 @@ void TextureBase11::Release()
 	if (ChPtr::NotNullCheck(texView)) { texView->Release(); texView = nullptr; }
 	if (ChPtr::NotNullCheck(baseTex)) { baseTex->Release(); baseTex = nullptr; }
 
-	if (textureSize > 0)
-	{
-		textureSize < 2 ? delete pixelData : delete[] pixelData;
-		textureSize = 0;
-		pixelData = nullptr;
-	}
+	PixelDataRelease();
 }
 
 void TextureBase11::InitSampler()
@@ -159,37 +154,34 @@ void Texture11::CreateColorTexture(
 
 	device = _device;
 
-	D3D11_TEXTURE2D_DESC Desc;
-	ChStd::MZero(&Desc);
-	Desc.Width = _width;
-	Desc.Height = _height;
-	Desc.MipLevels = 1;
-	Desc.ArraySize = 1;
-	Desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	Desc.SampleDesc.Count = 1;
-	Desc.SampleDesc.Quality = 0;
-	Desc.Usage = D3D11_USAGE_DEFAULT;
-	Desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	Desc.CPUAccessFlags = _CPUFlg;
-	Desc.MiscFlags = 0;
+	D3D11_TEXTURE2D_DESC desc;
+	ChStd::MZero(&desc);
+	desc.Width = _width;
+	desc.Height = _height;
+	desc.MipLevels = 1;
+	desc.ArraySize = 1;
+	desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	desc.SampleDesc.Count = 1;
+	desc.SampleDesc.Quality = 0;
+	desc.Usage = D3D11_USAGE_DEFAULT;
+	desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	desc.CPUAccessFlags = _CPUFlg;
+	desc.MiscFlags = 0;
 
 	textureSize = _height * _width;
 	pixelData = new ChVec4[textureSize];
 
-	for (unsigned long h = 0; h < _height; h++)
+	for (unsigned long i = 0; i < textureSize; i++)
 	{
-		for (unsigned long w = 0; w < _width; w++)
-		{
-			pixelData[w + (h * w)] = (_color);
-		}
+		pixelData[i] = _color;
 	}
 
-	D3D11_SUBRESOURCE_DATA Data;
-	Data.pSysMem = pixelData;
-	Data.SysMemPitch = _width * sizeof(ChVec4);
-	Data.SysMemSlicePitch = _height * _width * sizeof(ChVec4);
+	D3D11_SUBRESOURCE_DATA data;
+	data.pSysMem = pixelData;
+	data.SysMemPitch = _width * sizeof(ChVec4);
+	data.SysMemSlicePitch = _height * _width * sizeof(ChVec4);
 
-	device->CreateTexture2D(&Desc, &Data, &baseTex);
+	device->CreateTexture2D(&desc, &data, &baseTex);
 
 	CreateSRV();
 	Init(_device);
@@ -224,37 +216,36 @@ void Texture11::CreateColorTexture(
 
 	device = _device;
 
-	D3D11_TEXTURE2D_DESC Desc;
-	ChStd::MZero(&Desc);
-	Desc.Width = _width;
-	Desc.Height = _height;
-	Desc.MipLevels = 1;
-	Desc.ArraySize = 1;
-	Desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	Desc.SampleDesc.Count = 1;
-	Desc.SampleDesc.Quality = 0;
-	Desc.Usage = D3D11_USAGE_DEFAULT;
-	Desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	Desc.CPUAccessFlags = _CPUFlg;
-	Desc.MiscFlags = 0;
+	D3D11_TEXTURE2D_DESC desc;
+	ChStd::MZero(&desc);
+	desc.Width = _width;
+	desc.Height = _height;
+	desc.MipLevels = 1;
+	desc.ArraySize = 1;
+	desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	desc.SampleDesc.Count = 1;
+	desc.SampleDesc.Quality = 0;
+	desc.Usage = D3D11_USAGE_DEFAULT;
+	desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	desc.CPUAccessFlags = _CPUFlg;
+	desc.MiscFlags = 0;
 
 	textureSize = _height * _width;
 	pixelData = new ChVec4[textureSize];
 
-	for (unsigned long h = 0; h < _height; h++)
+	ChVec4 test;
+
+	for (unsigned long i = 0; i < textureSize; i++)
 	{
-		for (unsigned long w = 0; w < _width; w++)
-		{
-			pixelData[w + (h * _width)] = (_colorArray[w + (h * _width)]);
-		}
+		test = pixelData[i] = _colorArray[i];
 	}
 
-	D3D11_SUBRESOURCE_DATA Data;
-	Data.pSysMem = pixelData;
-	Data.SysMemPitch = _width * sizeof(ChVec4);
-	Data.SysMemSlicePitch = 0;
+	D3D11_SUBRESOURCE_DATA data;
+	data.pSysMem = pixelData;
+	data.SysMemPitch = _width * sizeof(ChVec4);
+	data.SysMemSlicePitch = 0;
 
-	device->CreateTexture2D(&Desc, &Data, &baseTex);
+	device->CreateTexture2D(&desc, &data, &baseTex);
 
 	CreateSRV();
 
@@ -303,21 +294,21 @@ void RenderTarget11::CreateRenderTarget(
 
 	device = _device;
 
-	D3D11_TEXTURE2D_DESC Desc;
-	ChStd::MZero(&Desc);
-	Desc.Width = _width;
-	Desc.Height = _height;
-	Desc.MipLevels = 1;
-	Desc.ArraySize = 1;
-	Desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	Desc.SampleDesc.Count = 1;
-	Desc.SampleDesc.Quality = 0;
-	Desc.Usage = D3D11_USAGE_DEFAULT;
-	Desc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-	Desc.CPUAccessFlags = _CPUFlg;
-	Desc.MiscFlags = 0;
+	D3D11_TEXTURE2D_DESC desc;
+	ChStd::MZero(&desc);
+	desc.Width = _width;
+	desc.Height = _height;
+	desc.MipLevels = 1;
+	desc.ArraySize = 1;
+	desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	desc.SampleDesc.Count = 1;
+	desc.SampleDesc.Quality = 0;
+	desc.Usage = D3D11_USAGE_DEFAULT;
+	desc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+	desc.CPUAccessFlags = _CPUFlg;
+	desc.MiscFlags = 0;
 
-	_device->CreateTexture2D(&Desc, NULL, &baseTex);
+	_device->CreateTexture2D(&desc, NULL, &baseTex);
 
 	if (ChPtr::NullCheck(baseTex))return;
 

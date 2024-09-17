@@ -74,6 +74,10 @@ namespace ChD3D11
 
 		virtual void Release();
 
+	private:
+
+		void PixelDataRelease();
+
 	public://Set Functions//
 
 		inline void SetSampler(D3D11_SAMPLER_DESC& _sDesc)
@@ -329,20 +333,6 @@ void ChD3D11::Texture11::CreateColorTexture(
 	}
 	device = _device;
 
-	D3D11_TEXTURE2D_DESC Desc;
-	ChStd::MZero(&Desc);
-	Desc.Width = wicRect.Width;
-	Desc.Height = wicRect.Height;
-	Desc.MipLevels = 1;
-	Desc.ArraySize = 1;
-	Desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	Desc.SampleDesc.Count = 1;
-	Desc.SampleDesc.Quality = 0;
-	Desc.Usage = D3D11_USAGE_DEFAULT;
-	Desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	Desc.CPUAccessFlags = _CPUFlg;
-	Desc.MiscFlags = 0;
-
 	UINT stride = wicRect.Width * 4;
 
 	std::vector<unsigned char>testVector;
@@ -356,25 +346,23 @@ void ChD3D11::Texture11::CreateColorTexture(
 	std::vector<ChVec4>tmpPixelData;
 	tmpPixelData.resize(wicRect.Height* wicRect.Width);
 
-	pixelData = new ChVec4[wicRect.Height * wicRect.Width];
 	std::memcpy(&tmpPixelData[0], &testVector[0], testVector.size());
 
-	for (unsigned long i = 0; i < tmpPixelData.size(); i++)
-	{
-		pixelData[i] = tmpPixelData[i];
-	}
+	CreateColorTexture(_device, &tmpPixelData[0], wicRect.Width, wicRect.Height, _CPUFlg);
 
-	data.pSysMem = pixelData;
-	data.SysMemPitch = wicRect.Width * sizeof(ChVec4);
-	data.SysMemSlicePitch = 0;
-
-
-	device->CreateTexture2D(&Desc, &data, &baseTex);
-
-	CreateSRV();
-
-	Init(_device);
 }
+
+#ifdef CRT
+
+void ChD3D11::TextureBase11::PixelDataRelease()
+{
+	if (ChPtr::NullCheck(pixelData))return;
+	textureSize < 2 ? delete pixelData : delete[] pixelData;
+	textureSize = 0;
+	pixelData = nullptr;
+}
+
+#endif
 
 
 #endif
