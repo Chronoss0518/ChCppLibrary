@@ -412,12 +412,16 @@ void DirectFontBase::DrawTextMethod(
 	ID2D1SolidColorBrush* brushObject,
 	const D2D1_RECT_F& _drawRect)
 {
-	renderTarget->DrawText(
+	//renderTarget->FillRectangle(&_drawRect, brushObject);
+
+	//return;
+	renderTarget->DrawTextW(
 		_text,        // The string to render.
 		_textLength,    // The string's length.
 		_textFormat,    // The text format.
 		&_drawRect,       // The region of the window where the text will be rendered.
-		brushObject     // The brush used to draw the text.
+		brushObject,     // The brush used to draw the text.
+		D2D1_DRAW_TEXT_OPTIONS_CLIP
 	);
 }
 

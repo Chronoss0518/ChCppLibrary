@@ -97,6 +97,16 @@ const ChPOINT WindObjectBase::GetWindPos()const
 	return out;
 }
 
+HDC WindObjectBase::DrawStart()
+{
+	return GetDC(hWnd);
+}
+
+void WindObjectBase::DrawEnd(HDC _dc)
+{
+	ReleaseDC(hWnd, _dc);
+}
+
 bool WindObjectBase::IsCursorPosOnWindow()
 {
 	auto size = GetWindSize();

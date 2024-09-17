@@ -242,6 +242,12 @@ namespace ChWin
 
 		virtual const HINSTANCE GetInstance()const = 0;
 
+	public:
+
+		HDC DrawStart();
+
+		void DrawEnd(HDC _dc);
+
 	public://Is Functions//
 
 		//ウィンドウの範囲内でクリックされたかを確認//

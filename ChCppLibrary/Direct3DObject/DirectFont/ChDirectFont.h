@@ -189,7 +189,7 @@ namespace ChD3D
 			if (_familyName.length() <= 0)return res;
 			if (_fontSize <= 0.0f)return res;
 
-			auto localeName = GetLocaleName(localeNameId);
+			auto&& localeName = GetLocaleName(localeNameId);
 
 			if (localeName.length() <= 0)return res;
 			if (ChPtr::NullCheck(dwFactory))return res;
