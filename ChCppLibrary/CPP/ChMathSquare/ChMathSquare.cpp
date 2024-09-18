@@ -23,8 +23,9 @@ void MathSquare::SetSquare(const ChVec4& _square)
 
 void MathSquare::SetSquare(const MathSquare& _square)
 {
+	Clear();
 	for(unsigned long i = 0;i < _square.GetCount(); i++)
-		SetSquare(_square.GetSquare(i));
+		AddSquare(_square.GetSquare(i));
 }
 
 void MathSquare::SetSquare(const ChVec2& _leftTop, const ChVec2& _rightTop, const ChVec2& _rightBottom, const ChVec2& _leftBottom, const unsigned long _cutCount)
