@@ -12,17 +12,6 @@
 using namespace ChMesh;
 
 ///////////////////////////////////////////////////////////////////////////////////
-//ChPhysicalBase9メソッド
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChPhysicalBase9::SetMesh(const ChPtr::Shared<Mesh9> _smpX)
-{
-	if (_smpX == nullptr)return;
-	wpXList.push_back(_smpX);
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////
 //ChGravity9メソッド
 ///////////////////////////////////////////////////////////////////////////////////
 
@@ -31,8 +20,6 @@ void ChGravity9::Init(const float _FPS)
 	FPS = _FPS;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 bool ChGravity9::UpDate(
 	ChVec3_9* _pos
 	, const ChVec3_9* _moveDir)
@@ -40,15 +27,15 @@ bool ChGravity9::UpDate(
 	vec = ChVec3_9(0.0f, 0.0f, 0.0f);
 
 	
-	for (unsigned short i = 0; i < wpXList.size(); i++)
+	for (unsigned short i = 0; i < GetMeshCount(); i++)
 	{
-		if (wpXList.empty())return false;
+		if (GetMeshCount() <= 0)return false;
 
-		auto tmpX = wpXList[i].lock();
+		auto tmpX = GetMesh(i);
 
 		if (tmpX == nullptr)
 		{
-			wpXList.erase(wpXList.begin() + i);
+			RemoveMesh(i);
 			i--;
 			continue;
 		}
@@ -77,12 +64,12 @@ bool ChGravity9::UpDate(
 		DWORD tmpD;
 
 		if (!ChObjCon9().MeshHitRay(
-			tmpD
-			, tmpLen
-			,tmpX
-			, ChMat_9()
-			, tmpPos
-			, vec))continue;
+			tmpD,
+			tmpLen,
+			*tmpX,
+			ChMat_9(),
+			tmpPos,
+			vec))continue;
 
 		if (tmpLen - baseLen - virtualHeight < pow) {
 			vec *= (tmpLen - baseLen - virtualHeight);
@@ -110,8 +97,6 @@ void ChPushBack9::Init()
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 bool ChPushBack9::UpDate(ChVec3_9* _pos, const ChVec3_9* _dir)
 {
 	vec = ChVec3_9(0.0f, 0.0f, 0.0f);
@@ -119,18 +104,15 @@ bool ChPushBack9::UpDate(ChVec3_9* _pos, const ChVec3_9* _dir)
 	ChVec3_9 tmpPos;
 	float len;
 
-
-
-	for (unsigned short i = 0; i < wpXList.size(); i++)
+	for (unsigned short i = 0; i < GetMeshCount(); i++)
 	{
+		if (GetMeshCount() <= 0)return false;
 
-		if (wpXList.empty())return false;
-
-		auto tmpX = wpXList[i].lock();
+		auto tmpX = GetMesh(i);
 
 		if (tmpX == nullptr)
 		{
-			wpXList.erase(wpXList.begin() + i);
+			RemoveMesh(i);
 			i--;
 			continue;
 		}
@@ -146,16 +128,16 @@ bool ChPushBack9::UpDate(ChVec3_9* _pos, const ChVec3_9* _dir)
 		DWORD faceNum;
 
 		if (!objCon->MeshHitRay(
-			faceNum
-			, tmpLen
-			, tmpX
-			, ChMat_9()
-			, tmpPos
-			, tmpVec))continue;
+			faceNum,
+			tmpLen,
+			*tmpX,
+			ChMat_9(),
+			tmpPos,
+			tmpVec))continue;
 
 		ChVec3_9 tmpDir;
 
-		tmpDir = tmpX->GetFace()[faceNum]->normal;
+		tmpDir = tmpX->GetFace(faceNum)->normal;
 
 		tmpVec = -tmpVec;
 
@@ -176,9 +158,6 @@ bool ChPushBack9::UpDate(ChVec3_9* _pos, const ChVec3_9* _dir)
 		*_pos += tmpDir * (Limit - tmpLen + len) * tmpDot;
 
 		return true;
-
-
-
 	}
 
 	return false;

@@ -58,10 +58,9 @@ void Brush::CreatePatterBrush(const Texture* _tex)
 	createFlg = true;
 }
 
-void Brush::CreatePatterBrush(const ChPtr::Shared<Texture>& _tex)
+void Brush::CreatePatterBrush(const Texture& _tex)
 {
-	if (_tex == nullptr)return;
-	brush = _tex->CreateBrush();
+	brush = _tex.CreateBrush();
 	if (ChPtr::NullCheck(brush))return;
 	createFlg = true;
 }

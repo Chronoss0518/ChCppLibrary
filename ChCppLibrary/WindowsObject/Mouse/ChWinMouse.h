@@ -3,29 +3,22 @@
 #ifndef Ch_Win_Mou_h
 #define Ch_Win_Mou_h
 
-namespace ChSystem
-{
-	class Windows;
-}
-
-namespace ChWin
-{
-	class WindObject;
-}
+#include"../WindObject/ChWindObject.h"
 
 namespace ChWin
 {
 
 	class MouseController :public ChCp::Initializer
 	{
-	public:
+	public://Init And Release//
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//InitAndRelease//
+		void Init(WindObjectA& _windObject);
 
-		void Init(WindObject& _windObject);
+		void Init(WindObjectW& _windObject);
 
-		void Init(ChSystem::Windows& _win);
+		void Init(ChSystem::WindowsA& _win);
+
+		void Init(ChSystem::WindowsW& _win);
 
 		virtual void Release();
 
@@ -38,16 +31,15 @@ namespace ChWin
 			windSize.h = _windHeight;
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
+	public://Set Functions//
 
 		void SetCursolFromClient(unsigned long _x, unsigned long _y);
 		
-		void SetCursolFromClient(const POINT& _point);
+		void SetCursolFromClient(const ChPOINT& _point);
 		
 		void SetCursolFromScreen(unsigned long _x, unsigned long _y);
 
-		void SetCursolFromScreen(const POINT& _point);
+		void SetCursolFromScreen(const ChPOINT& _point);
 
 		inline void SetVisibleFlg(const bool _flg)
 		{
@@ -62,16 +54,15 @@ namespace ChWin
 			setCenterPosFlg = _flg;
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//GetFunction//
+	public://Get Functions//
 
-		inline POINT GetWheelMove()
+		inline ChPOINT GetWheelMove()
 		{
-			if (!*this)return POINT();
+			if (!*this)return ChPOINT();
 			return wheelMoveVal;
 		}
 
-		inline POINT GetNowPos() 
+		inline ChPOINT GetNowPos()
 		{
 			if (!*this)return { 0,0 };
 			return nowPos; 
@@ -81,27 +72,20 @@ namespace ChWin
 
 		ChVec2 GetNowProPosToChVec2();
 
-		POINT GetMoveValue();
+		ChPOINT GetMoveValue();
 
 		ChVec2 GetMoveValueToChVec2();
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//UpdateFunction//
+	
+	public://Update Functions//
 
 		void Update();
 
-		friend ChSystem::Windows;
-
-	protected:
-
-		///////////////////////////////////////////////////////////////////////////////////
-
 	private:
 		
-		POINT wheelMoveVal{ 0,0 };
-		POINT centerPos{ 0,0 };
-		POINT nowPos{ 0,0 };
-		POINT beforPos{ 0,0 };
+		ChPOINT wheelMoveVal{ 0,0 };
+		ChPOINT centerPos{ 0,0 };
+		ChPOINT nowPos{ 0,0 };
+		ChPOINT beforPos{ 0,0 };
 
 		bool wheelHMoveFlg = false;
 		bool wheelVMoveFlg = false;
@@ -129,9 +113,97 @@ namespace ChWin
 
 	};
 
-	static const std::function<MouseController&()>Mouse = MouseController::GetIns;
+	inline MouseController& Mouse() { return MouseController::GetIns(); };
 
 }
+
+#ifdef CRT
+
+void ChWin::MouseController::Init(WindObjectA& _windObject)
+{
+	hWnd = _windObject.GethWnd();
+
+	if (ChPtr::NullCheck(hWnd))return;
+
+	_windObject.SetWindProcedure(
+		WM_MOUSEWHEEL,
+		[&](
+			HWND _hWnd,
+			UINT _uMsg,
+			WPARAM _wParam,
+			LPARAM _lParam)->LRESULT
+		{
+			wheelMoveVal.y = GET_WHEEL_DELTA_WPARAM(_wParam);
+			wheelVMoveFlg = true;
+			return 0;
+		});
+
+	_windObject.SetWindProcedure(
+		WM_MOUSEHWHEEL,
+		[&](
+			HWND _hWnd,
+			UINT _uMsg,
+			WPARAM _wParam,
+			LPARAM _lParam)->LRESULT
+		{
+			wheelMoveVal.x = GET_WHEEL_DELTA_WPARAM(_wParam);
+			wheelHMoveFlg = true;
+			return 0;
+		});
+
+	windSize = _windObject.GetWindSize();
+
+	centerPos.x = windSize.w / 2;
+	centerPos.y = windSize.h / 2;
+
+	ScreenToClient(hWnd, &centerPos.pt);
+
+	SetInitFlg(true);
+}
+
+void ChWin::MouseController::Init(WindObjectW& _windObject)
+{
+	hWnd = _windObject.GethWnd();
+
+	if (ChPtr::NullCheck(hWnd))return;
+
+	_windObject.SetWindProcedure(
+		WM_MOUSEWHEEL,
+		[&](
+			HWND _hWnd,
+			UINT _uMsg,
+			WPARAM _wParam,
+			LPARAM _lParam)->LRESULT
+		{
+			wheelMoveVal.y = GET_WHEEL_DELTA_WPARAM(_wParam);
+			wheelVMoveFlg = true;
+			return 0;
+		});
+
+	_windObject.SetWindProcedure(
+		WM_MOUSEHWHEEL,
+		[&](
+			HWND _hWnd,
+			UINT _uMsg,
+			WPARAM _wParam,
+			LPARAM _lParam)->LRESULT
+		{
+			wheelMoveVal.x = GET_WHEEL_DELTA_WPARAM(_wParam);
+			wheelHMoveFlg = true;
+			return 0;
+		});
+
+	windSize = _windObject.GetWindSize();
+
+	centerPos.x = windSize.w / 2;
+	centerPos.y = windSize.h / 2;
+
+	ScreenToClient(hWnd, &centerPos.pt);
+
+	SetInitFlg(true);
+}
+
+#endif
 
 #endif
 

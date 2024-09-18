@@ -14,7 +14,6 @@ using namespace ChD3D11::ShaderParts;
 void ViewPort::SetDrawData(ID3D11DeviceContext* _dc)
 {
 	if (ChPtr::NullCheck(_dc))return;
-
 	_dc->RSSetViewports(1, &View);
 }
 
@@ -23,8 +22,8 @@ void ViewPort::SetDrawData(ID3D11DeviceContext* _dc)
 ///////////////////////////////////////////////////////////////////////////////////
 
 void DrawWindow::Init(
-	ID3D11Device* _device
-	, IDXGISwapChain* _sc)
+	ID3D11Device* _device,
+	IDXGISwapChain* _sc)
 {
 
 	if (ChPtr::NullCheck(_device))return;
@@ -33,31 +32,22 @@ void DrawWindow::Init(
 	Release();
 
 	window = _sc;
-
 	ID3D11Texture2D* pBackBuffer = nullptr;
-
 	window->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
-
 	_device->CreateRenderTargetView(pBackBuffer, nullptr, &bbTargetView);
-
 	pBackBuffer->Release();
-
 	SetInitFlg(true);
 }
 
 void DrawWindow::Init(ChD3D11::DirectX3D11& _app)
 {
 	if (!_app.IsInit())return;
-
 	Init(_app.GetDevice(), _app.GetSC());
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void DrawWindow::Release()
 {
 	if (!*this)return;
-
 
 	if (ChPtr::NotNullCheck(bbTargetView))
 	{
@@ -68,8 +58,6 @@ void DrawWindow::Release()
 	SetInitFlg(false);
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 void DrawWindow::SetDrawData(ID3D11DeviceContext* _dc,ID3D11DepthStencilView* _dsView)
 {
 	if (ChPtr::NullCheck(_dc))return;
@@ -77,8 +65,6 @@ void DrawWindow::SetDrawData(ID3D11DeviceContext* _dc,ID3D11DepthStencilView* _d
 
 	_dc->OMSetRenderTargets(1, &bbTargetView, _dsView);
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void DrawWindow::SetBackGroundColor(ID3D11DeviceContext* _dc,const ChVec4& _color)
 {
@@ -88,11 +74,8 @@ void DrawWindow::SetBackGroundColor(ID3D11DeviceContext* _dc,const ChVec4& _colo
 	_dc->ClearRenderTargetView(bbTargetView, _color.val.GetVal());
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 void DrawWindow::Draw()
 {
 	if (!*this)return;
-
 	window->Present(sEffect, 0);
 }

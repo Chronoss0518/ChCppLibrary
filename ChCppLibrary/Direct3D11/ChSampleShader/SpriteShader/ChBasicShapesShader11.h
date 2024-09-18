@@ -70,9 +70,9 @@ namespace ChD3D11
 
 			//ê}å`ÇÃí èÌï`âÊ//
 			void Draw(
-				Sprite11& _sprite
-				, const ChVec4& _baseColor
-				, const ChMat_11& _mat = ChMat_11());
+				Sprite11& _sprite,
+				const ChVec4& _baseColor,
+				const ChLMat& _mat = ChLMat());
 
 		private://Member Value//
 
@@ -144,9 +144,9 @@ namespace ChD3D11
 
 			//ê}å`ÇÃí èÌï`âÊ//
 			void Draw(
-				Sprite11& _sprite
-				, const ChVec4& _baseColor
-				, const ChMat_11& _mat = ChMat_11());
+				Sprite11& _sprite,
+				const ChVec4& _baseColor,
+				const ChLMat& _mat = ChLMat());
 
 		private://Member Value//
 

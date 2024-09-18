@@ -1,8 +1,7 @@
 #include<Windows.h>
-#include"../../BaseIncluder/ChBase.h"
+
 
 #include"../PackData/ChPoint.h"
-#include"../WindObject/ChWindStyle.h"
 #include"ChWinButton.h"
 
 using namespace ChWin;
@@ -11,194 +10,79 @@ using namespace ChWin;
 //ButtonÉÅÉ\ÉbÉh//
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void Button::CreateA(
+void ButtonA::Create(
 	HINSTANCE _hIns,
-	const std::string& _startText,
-	const ChINTPOINT& _pos,
-	const ChINTPOINT& _size,
-	const HWND _parentHandl)
-{
-
-	Release();
-
-	auto pos = _pos;
-	auto size = _size;
-	pos.val.Abs();
-	size.val.Abs();
-
-	WindCreater creater(_hIns);
-
-	creater.SetEXStyle(WS_EX_CLIENTEDGE);
-
-	CreateStyle();
-	creater.SetWindStyle(&style);
-
-
-	creater.SetInitPosition(pos.x, pos.y);
-	creater.SetInitSize(size.w, size.h);
-	creater.SetParentWind(_parentHandl);
-	
-	creater.Create(this, _startText.c_str(), "BUTTON");
-
-}
-
-void Button::CreateA(
-	HINSTANCE _hIns,
-	const std::string& _startText,
+	const char* _startText,
 	const int _x,
 	const int _y,
 	const int _w,
 	const int _h,
 	const HWND _parentHandl)
 {
-	CreateA(_hIns, _startText, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), _parentHandl);
+	Create(_hIns, _startText, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), _parentHandl);
 }
 
-void Button::CreateA(
-	const std::string& _startText,
+void ButtonA::Create(
+	const char* _startText,
 	const ChINTPOINT& _pos,
 	const ChINTPOINT& _size,
-	const WindObject& _parentWind)
+	const WindObjectA& _parentWind)
 {
 
 	if (!_parentWind.IsInit())return;
 
-	Release();
-
-	auto pos = _pos;
-	auto size = _size;
-	pos.val.Abs();
-	size.val.Abs();
-
-	WindCreater creater(_parentWind.GetInstanceA());
-
-	creater.SetEXStyle(WS_EX_CLIENTEDGE);
-
-	CreateStyle();
-	creater.SetWindStyle(&style);
-
-	creater.SetInitPosition(pos.x, pos.y);
-	creater.SetInitSize(size.w, size.h);
-	creater.SetParentWind(_parentWind.GethWnd());
-
-	creater.Create(this, _startText.c_str(), "BUTTON");
-
+	Create(_parentWind.GetInstance(), _startText, _pos, _size, _parentWind.GethWnd());
 }
 
-void Button::CreateA(
-	const std::string& _startText,
+void ButtonA::Create(
+	const char* _startText,
 	const int _x,
 	const int _y,
 	const int _w,
 	const int _h,
-	const WindObject& _parentWind)
+	const WindObjectA& _parentWind)
 {
-	CreateA(_startText, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), _parentWind);
+	Create(_startText, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), _parentWind);
 }
 
 //TextBoxÇÃçÏê¨//
-void Button::CreateW(
+void ButtonW::Create(
 	HINSTANCE _hIns,
-	const std::wstring& _startText,
-	const ChINTPOINT& _pos,
-	const ChINTPOINT& _size,
-	const HWND _parentHandl)
-{
-
-	Release();
-
-	auto pos = _pos;
-	auto size = _size;
-	pos.val.Abs();
-	size.val.Abs();
-
-	WindCreater creater(_hIns);
-
-	creater.SetEXStyle(WS_EX_CLIENTEDGE);
-
-	CreateStyle();
-	creater.SetWindStyle(&style);
-
-
-	creater.SetInitPosition(pos.x, pos.y);
-	creater.SetInitSize(size.w, size.h);
-	creater.SetParentWind(_parentHandl);
-
-	creater.Create(this, _startText.c_str(), L"BUTTON");
-}
-
-//TextBoxÇÃçÏê¨//
-void Button::CreateW(
-	HINSTANCE _hIns,
-	const std::wstring& _startText,
+	const wchar_t* _startText,
 	const int _x,
 	const int _y,
 	const int _w,
 	const int _h,
 	const HWND _parentHandl)
 {
-	CreateW(_hIns, _startText, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), _parentHandl);
+	Create(_hIns, _startText, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), _parentHandl);
 }
 
 //TextBoxÇÃçÏê¨//
-void Button::CreateW(
-	const std::wstring& _startText,
+void ButtonW::Create(
+	const wchar_t* _startText,
 	const ChINTPOINT& _pos,
 	const ChINTPOINT& _size,
-	const WindObject& _parentWind)
+	const WindObjectW& _parentWind)
 {
 	if (!_parentWind.IsInit())return;
 
-	Release();
-
-	auto pos = _pos;
-	auto size = _size;
-	pos.val.Abs();
-	size.val.Abs();
-
-	WindCreater creater(_parentWind.GetInstanceA());
-
-	creater.SetEXStyle(WS_EX_CLIENTEDGE);
-
-	CreateStyle();
-	creater.SetWindStyle(&style);
-
-	creater.SetInitPosition(pos.x, pos.y);
-	creater.SetInitSize(size.w, size.h);
-	creater.SetParentWind(_parentWind.GethWnd());
-
-	creater.Create(this, _startText.c_str(), L"BUTTON");
-	
+	Create(_parentWind.GetInstance(), _startText, _pos, _size, _parentWind.GethWnd());
 }
 
 //TextBoxÇÃçÏê¨//
-void Button::CreateW(
-	const std::wstring& _startText,
+void ButtonW::Create(
+	const wchar_t* _startText,
 	const int _x,
 	const int _y,
 	const int _w,
 	const int _h,
-	const WindObject& _parentWind)
+	const WindObjectW& _parentWind)
 {
-	CreateW(_startText, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), _parentWind);
+	Create(_startText, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), _parentWind);
 }
 
-void Button::SetClickFunction(const std::function<void(HWND, UINT)>& _callBack)
-{
-	SetChildWindProcedure(BN_CLICKED, _callBack);
-}
-
-void Button::SetDblClickFunction(const std::function<void(HWND, UINT)>& _callBack)
-{
-	SetChildWindProcedure(BN_DBLCLK, _callBack);
-}
-
-void Button::SetSelectFunction(const std::function<void(HWND, UINT)>& _callBack)
-{
-	SetChildWindProcedure(BN_HILITE, _callBack);
-}
-
-void Button::CreateStyle()
+void ButtonBase::CreateStyle()
 {
 	style.Clear();
 
@@ -206,6 +90,4 @@ void Button::CreateStyle()
 	style.AddChild();
 	style.AddClipChildren();
 	style.AddGroup();
-
-
 }

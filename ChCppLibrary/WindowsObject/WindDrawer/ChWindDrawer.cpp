@@ -7,6 +7,11 @@
 
 using namespace ChWin;
 
+void WindDrawer::Release()
+{
+	DrawEnd();
+}
+
 void WindDrawer::SetBrush(Brush& _brush)
 {
 	if (ChPtr::NullCheck(hDC))return;
@@ -58,11 +63,9 @@ void WindDrawer::DrawStart(HWND _hWind)
 
 	bb.CreateRenderTarget(hDC, rec.right - rec.left, rec.bottom - rec.top);
 
-	ReleaseDC(hWind, hDC);
-	hDC = nullptr;
 }
 
-void WindDrawer::DrawString(const std::string& _str, const ChINTPOINT& _pos)
+void WindDrawer::DrawString(const char* _str, const unsigned long _strLen, const ChINTPOINT& _pos)
 {
 
 	if (ChPtr::NullCheck(hDC))return;
@@ -71,15 +74,10 @@ void WindDrawer::DrawString(const std::string& _str, const ChINTPOINT& _pos)
 
 	pos.val.Abs();
 
-	TextOutA(hDC, pos.x, pos.y, _str.c_str(), _str.length());
+	TextOutA(hDC, pos.x, pos.y, _str, _strLen);
 }
 
-void WindDrawer::DrawString(const std::string& _str, const int _x, const int _y)
-{
-	DrawString(_str, ChINTPOINT(_x, _y));
-}
-
-void WindDrawer::DrawString(const std::wstring& _str, const ChINTPOINT& _pos)
+void WindDrawer::DrawString(const wchar_t* _str, const unsigned long _strLen, const ChINTPOINT& _pos)
 {
 	if (ChPtr::NullCheck(hDC))return;
 
@@ -87,12 +85,7 @@ void WindDrawer::DrawString(const std::wstring& _str, const ChINTPOINT& _pos)
 
 	pos.val.Abs();
 
-	TextOutW(hDC, pos.x, pos.y, _str.c_str(), _str.length());
-}
-
-void WindDrawer::DrawString(const std::wstring& _str, const int _x, const int _y)
-{
-	DrawString(_str, ChINTPOINT(_x, _y));
+	TextOutW(hDC, pos.x, pos.y, _str, _strLen);
 }
 
 void WindDrawer::DrawLine(const ChINTPOINT& _startPos, const ChINTPOINT& _endPos)

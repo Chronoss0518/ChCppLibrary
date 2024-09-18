@@ -1,7 +1,5 @@
 #include<Windows.h>
-#include"../../BaseIncluder/ChBase.h"
 
-#include"../WindObject/ChWindStyle.h"
 #include"ChWinDefaultPushButton.h"
 
 using namespace ChWin;
@@ -10,9 +8,17 @@ using namespace ChWin;
 //DefaultPushButtonÉÅÉ\ÉbÉh//
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void DefaultPushButton::CreateStyle()
+void DefaultPushButtonA::CreateStyle()
 {
-	Button::CreateStyle();
+	ButtonA::CreateStyle();
+
+	style.AddStyle(BS_DEFPUSHBUTTON);
+
+}
+
+void DefaultPushButtonW::CreateStyle()
+{
+	ButtonW::CreateStyle();
 
 	style.AddStyle(BS_DEFPUSHBUTTON);
 

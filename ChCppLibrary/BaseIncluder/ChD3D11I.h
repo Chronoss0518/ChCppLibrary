@@ -1,19 +1,13 @@
+#ifdef _WINDOWS_
+
 #ifndef Ch_BD11I_h
 #define Ch_BD11I_h
 
-#ifdef _WINDEF_
-
 #include<D3D11.h>
 #include<direct.h>
-#include<DirectXCollision.h>
 #include<d3dcompiler.h>
-#include<DirectXMath.h>
-#include<DirectXColors.h>
 #include<DXGI.h>
 
-#ifndef _XM_NO_INTRINSICS_
-#define _XM_NO_INTRINSICS_
-#endif
 
 #pragma comment(lib,"d3d11.lib")
 #pragma comment(lib,"d3dx11.lib")

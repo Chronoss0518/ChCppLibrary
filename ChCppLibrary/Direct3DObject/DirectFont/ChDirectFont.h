@@ -12,6 +12,9 @@ enum DWRITE_FONT_WEIGHT;
 enum DWRITE_FONT_STYLE;
 enum DWRITE_FONT_STRETCH;
 
+#include"../../WindowsObject/PackData/ChRect.h"
+#include"../../WindowsObject/PackData/ChPoint.h"
+
 namespace ChD3D
 {
 	class DirectFontBase;
@@ -83,7 +86,7 @@ namespace ChD3D
 		}
 
 		//_rangeのlengthが0の場合またはlength + startPositionがtextLengthより大きい場合は登録されているすべての文字に下線を設定する//
-		void SetFamilyName(const std::wstring& _familyName, const DWRITE_TEXT_RANGE& _range);
+		void SetFamilyName(const wchar_t* _familyName, const DWRITE_TEXT_RANGE& _range);
 
 		void SetFontCollection(IDWriteFontCollection* _collection, const DWRITE_TEXT_RANGE& _range);
 
@@ -93,7 +96,7 @@ namespace ChD3D
 
 		void SetFontStretch(DWRITE_FONT_STRETCH _stretch, const DWRITE_TEXT_RANGE& _range);
 
-		void SetLocaleName(const std::wstring& _localeName, const DWRITE_TEXT_RANGE& _range);
+		void SetLocaleName(const wchar_t* _localeName, const DWRITE_TEXT_RANGE& _range);
 
 	private:
 
@@ -127,7 +130,18 @@ namespace ChD3D
 	{
 	public:
 
-		enum class LocaleNameId
+		struct DirectFontBaseCRT
+		{
+#ifdef CRT
+			std::vector<IDWriteTextFormat*>textFormatList;
+			std::vector<ID2D1SolidColorBrush*>brushList;
+			std::vector<LayoutObject::LayoutStruct*>layoutList;
+#endif
+		};
+
+	public:
+
+		enum class LocaleNameId : int
 		{
 			English,
 			Japanese,
@@ -135,10 +149,9 @@ namespace ChD3D
 
 	public:
 
-		virtual ~DirectFontBase()
-		{
-			Release();
-		}
+		DirectFontBase();
+		
+		virtual ~DirectFontBase();
 
 	public:
 
@@ -161,13 +174,28 @@ namespace ChD3D
 
 	public:
 
+#ifdef CRT
+
 		TextFormatObject CreateTextFormat(
 			const std::wstring& _familyName,
 			IDWriteFontCollection* _collection,
 			DWRITE_FONT_WEIGHT _weight,
 			DWRITE_FONT_STYLE _style,
 			DWRITE_FONT_STRETCH _stretch,
-			float _fontSize);
+			float _fontSize)
+		{
+			TextFormatObject res;
+
+			if (_familyName.length() <= 0)return res;
+			if (_fontSize <= 0.0f)return res;
+
+			std::wstring localeName = GetLocaleName(localeNameId);
+
+			if (localeName.length() <= 0)return res;
+			if (ChPtr::NullCheck(dwFactory))return res;
+
+			return CreateTextFormatBase(_familyName.c_str(), _familyName.length(), _collection, _weight, _style, _stretch, _fontSize, localeName.c_str());
+		}
 
 		TextFormatObject CreateTextFormat(
 			const std::wstring& _familyName,
@@ -176,70 +204,140 @@ namespace ChD3D
 			DWRITE_FONT_STYLE _style,
 			DWRITE_FONT_STRETCH _stretch,
 			float _fontSize,
-			const std::wstring& _localeName);
+			const std::wstring& _localeName)
+		{
+			return CreateTextFormatBase(_familyName.c_str(), _familyName.length(), _collection, _weight, _style, _stretch, _fontSize, _localeName.c_str());
+		}
+
+#endif
 
 		BrushObject CreateBrush(const D2D_COLOR_F& _color);
 
 		BrushObject CreateBrush(const ChVec4& _color);
 
+#ifdef CRT
 
 		//射影座標系で利用するLayoutを作成する//
 		LayoutObject CreateLayoutToProjection(
 			const std::wstring& _drawText,
 			float _layoutBoxWidth,
 			float _layoutBoxHeight,
-			IDWriteTextFormat* _textFormat);
+			IDWriteTextFormat* _textFormat)
+		{
+			float width = (_layoutBoxWidth * 0.5f + 0.5f) * displaySize.width;
+			float height = (_layoutBoxHeight * 0.5f + 0.5f) * displaySize.height;
+
+			auto&& layout = CreateLayout(_drawText.c_str(), static_cast<unsigned long>(_drawText.length()), width, height, _textFormat);
+
+			layout.data->toProjectionFlg = true;
+
+			return layout;
+		}
 
 		//射影座標系で利用するLayoutを作成する//
 		LayoutObject CreateLayoutToProjection(
 			const std::wstring& _drawText,
 			const ChVec2& _layoutSize,
-			IDWriteTextFormat* _textFormat);
+			IDWriteTextFormat* _textFormat)
+		{
+			float width = (_layoutSize.w * 0.5f + 0.5f) * displaySize.width;
+			float height = (_layoutSize.h * 0.5f + 0.5f) * displaySize.height;
+
+			auto&& layout = CreateLayout(_drawText.c_str(), static_cast<unsigned long>(_drawText.length()), width, height, _textFormat);
+
+			layout.data->toProjectionFlg = true;
+
+			return layout;
+		}
 
 		//射影座標系で利用するLayoutを作成する//
 		LayoutObject CreateLayoutToProjection(
 			const std::wstring& _drawText,
 			float _layoutBoxWidth,
 			float _layoutBoxHeight,
-			const TextFormatObject& _textFormat);
+			const TextFormatObject& _textFormat)
+		{
+			float width = (_layoutBoxWidth * 0.5f + 0.5f) * displaySize.width;
+			float height = (_layoutBoxHeight * 0.5f + 0.5f) * displaySize.height;
+
+			auto&& layout = CreateLayout(_drawText.c_str(), static_cast<unsigned long>(_drawText.length()), width, height, _textFormat.textFormat);
+
+			layout.data->toProjectionFlg = true;
+
+			return layout;
+		}
 
 		//射影座標系で利用するLayoutを作成する//
 		LayoutObject CreateLayoutToProjection(
 			const std::wstring& _drawText,
 			const ChVec2& _layoutSize,
-			const TextFormatObject& _textFormat);
+			const TextFormatObject& _textFormat)
+		{
+			float width = (_layoutSize.w * 0.5f + 0.5f) * displaySize.width;
+			float height = (_layoutSize.h * 0.5f + 0.5f) * displaySize.height;
+
+			auto&& layout = CreateLayout(_drawText.c_str(), static_cast<unsigned long>(_drawText.length()), width, height, _textFormat.textFormat);
+
+			layout.data->toProjectionFlg = true;
+
+			return layout;
+		}
 
 		//スクリーン座標系で利用するLayoutを作成する//
 		LayoutObject CreateLayoutToScreen(
 			const std::wstring& _drawText,
 			float _layoutBoxWidth,
 			float _layoutBoxHeight,
-			IDWriteTextFormat* _textFormat);
+			IDWriteTextFormat* _textFormat)
+		{
+			return CreateLayout(_drawText.c_str(), static_cast<unsigned long>(_drawText.length()), _layoutBoxWidth, _layoutBoxHeight, _textFormat);
+		}
 
 		//スクリーン座標系で利用するLayoutを作成する//
 		LayoutObject CreateLayoutToScreen(
 			const std::wstring& _drawText,
 			const ChVec2& _layoutSize,
-			IDWriteTextFormat* _textFormat);
+			IDWriteTextFormat* _textFormat)
+		{
+			return CreateLayout(_drawText.c_str(), static_cast<unsigned long>(_drawText.length()), _layoutSize.w, _layoutSize.h, _textFormat);
+		}
 
 		//スクリーン座標系で利用するLayoutを作成する//
 		LayoutObject CreateLayoutToScreen(
 			const std::wstring& _drawText,
 			float _layoutBoxWidth,
 			float _layoutBoxHeight,
-			const TextFormatObject& _textFormat);
+			const TextFormatObject& _textFormat)
+		{
+			return CreateLayout(_drawText.c_str(), static_cast<unsigned long>(_drawText.length()), _layoutBoxWidth, _layoutBoxHeight, _textFormat.textFormat);
+		}
 
 		//スクリーン座標系で利用するLayoutを作成する//
 		LayoutObject CreateLayoutToScreen(
 			const std::wstring& _drawText,
 			const ChVec2& _layoutSize,
-			const TextFormatObject& _textFormat);
+			const TextFormatObject& _textFormat)
+		{
+			return CreateLayout(_drawText.c_str(), static_cast<unsigned long>(_drawText.length()), _layoutSize.w, _layoutSize.h, _textFormat.textFormat);
+		}
 
+#endif
 
 	private:
 
+		TextFormatObject CreateTextFormatBase(
+			const wchar_t* _familyName,
+			const size_t _familyNameLength,
+			IDWriteFontCollection* _collection,
+			DWRITE_FONT_WEIGHT _weight,
+			DWRITE_FONT_STYLE _style,
+			DWRITE_FONT_STRETCH _stretch,
+			float _fontSize,
+			const wchar_t* _localeName);
+
 		LayoutObject CreateLayout(
-			const std::wstring& _drawText,
+			const wchar_t* _drawText,
+			const unsigned long _drawTextLength,
 			float _layoutBoxWidth,
 			float _layoutBoxHeight,
 			IDWriteTextFormat* _textFormat);
@@ -255,7 +353,7 @@ namespace ChD3D
 
 	private:
 
-		std::wstring GetLocaleName(LocaleNameId _localeName);
+		const wchar_t* GetLocaleName(LocaleNameId _localeName);
 
 		static bool& GetDrawFlg() { static bool flg; return flg; }
 
@@ -267,12 +365,14 @@ namespace ChD3D
 
 		void DrawStart();
 
+#ifdef CRT
+
 		//射影座標系で計算するように修正//
 		inline void DrawToProjection(
 			const std::wstring& _text,
 			const TextFormatObject& _textFormat,
 			const BrushObject& _brushObject,
-			const D2D1_RECT_F& _drawRect = D2D1::RectF(-1.0f, 1.0f, 1.0f, -1.0f))
+			const D2D1_RECT_F& _drawRect)
 		{
 			DrawToProjection(_text, _textFormat.textFormat, _brushObject.brush, _drawRect);
 		}
@@ -284,29 +384,49 @@ namespace ChD3D
 			const BrushObject& _brushObject,
 			const ChVec4& _drawRect = ChVec4::FromRect(-1.0f, 1.0f, 1.0f, -1.0f))
 		{
-			DrawToProjection(_text, _textFormat.textFormat, _brushObject.brush, _drawRect);
+			D2D1_RECT_F layoutRect = ToD2DRECTF(_drawRect);
+
+			DrawToProjection(_text, _textFormat.textFormat, _brushObject.brush, layoutRect);
 		}
 
 		//射影座標系で計算するように修正//
-		void DrawToProjection(
+		inline void DrawToProjection(
 			const std::wstring& _text,
 			IDWriteTextFormat* _textFormat,
 			ID2D1SolidColorBrush* _brushObject,
-			const D2D1_RECT_F& _drawRect = D2D1::RectF(-1.0f, 1.0f, 1.0f, -1.0f));
+			const D2D1_RECT_F& _drawRect)
+		{
+			if (!thisDrawerFlg)return;
+			if (_text.length() <= 0)return;
+			if (ChPtr::NullCheck(_textFormat))return;
+			if (ChPtr::NullCheck(_brushObject))return;
+
+			DrawTextMethod(_text.c_str(), static_cast<unsigned long>(_text.length()), _textFormat, _brushObject, ToProjectionCoodinateSystem(_drawRect));
+		}
 
 		//射影座標系で計算するように修正//
-		void DrawToProjection(
+		inline void DrawToProjection(
 			const std::wstring& _text,
 			IDWriteTextFormat* _textFormat,
 			ID2D1SolidColorBrush* _brushObject,
-			const ChVec4& _drawRect = ChVec4::FromRect(-1.0f, 1.0f, 1.0f, -1.0f));
+			const ChVec4& _drawRect = ChVec4::FromRect(-1.0f, 1.0f, 1.0f, -1.0f))
+		{
+			if (!thisDrawerFlg)return;
+			if (_text.length() <= 0)return;
+			if (ChPtr::NullCheck(_textFormat))return;
+			if (ChPtr::NullCheck(_brushObject))return;
+
+			D2D1_RECT_F layoutRect = ToD2DRECTF(_drawRect);
+
+			DrawToProjection(_text, _textFormat, _brushObject, layoutRect);
+		}
 
 		//左上から0,0のスクリーン座標系で計算する//
 		inline void DrawToScreen(
 			const std::wstring& _text,
 			const TextFormatObject& _textFormat,
 			const BrushObject& _brushObject,
-			const D2D1_RECT_F& _drawRect = D2D1::RectF(-1.0f, 1.0f, 1.0f, -1.0f))
+			const D2D1_RECT_F& _drawRect)
 		{
 			DrawToScreen(_text, _textFormat.textFormat, _brushObject.brush, _drawRect);
 		}
@@ -318,7 +438,25 @@ namespace ChD3D
 			const BrushObject& _brushObject,
 			const ChVec4& _drawRect = ChVec4::FromRect(-1.0f, 1.0f, 1.0f, -1.0f))
 		{
-			DrawToScreen(_text, _textFormat.textFormat, _brushObject.brush, _drawRect);
+			D2D1_RECT_F layoutRect = ToD2DRECTF(_drawRect);
+
+			DrawToScreen(_text, _textFormat.textFormat, _brushObject.brush, layoutRect);
+		}
+
+		//左上から0,0のスクリーン座標系で計算する//
+		inline void DrawToScreen(
+			const std::wstring& _text,
+			IDWriteTextFormat* _textFormat,
+			ID2D1SolidColorBrush* _brushObject,
+			const D2D1_RECT_F& _drawRect)
+		{
+
+			if (!thisDrawerFlg)return;
+			if (_text.length() <= 0)return;
+			if (ChPtr::NullCheck(_textFormat))return;
+			if (ChPtr::NullCheck(_brushObject))return;
+
+			DrawTextMethod(_text.c_str(), static_cast<unsigned long>(_text.length()), _textFormat, _brushObject, _drawRect);
 		}
 
 		//左上から0,0のスクリーン座標系で計算する//
@@ -326,14 +464,19 @@ namespace ChD3D
 			const std::wstring& _text,
 			IDWriteTextFormat* _textFormat,
 			ID2D1SolidColorBrush* _brushObject,
-			const D2D1_RECT_F& _drawRect = D2D1::RectF(-1.0f, 1.0f, 1.0f, -1.0f));
+			const ChVec4& _drawRect = ChVec4::FromRect(-1.0f, 1.0f, 1.0f, -1.0f))
+		{
+			if (!thisDrawerFlg)return;
+			if (_text.length() <= 0)return;
+			if (ChPtr::NullCheck(_textFormat))return;
+			if (ChPtr::NullCheck(_brushObject))return;
 
-		//左上から0,0のスクリーン座標系で計算する//
-		void DrawToScreen(
-			const std::wstring& _text,
-			IDWriteTextFormat* _textFormat,
-			ID2D1SolidColorBrush* _brushObject,
-			const ChVec4& _drawRect = ChVec4::FromRect(-1.0f, 1.0f, 1.0f, -1.0f));
+			D2D1_RECT_F layoutRect = ToD2DRECTF(_drawRect);
+
+			DrawTextMethod(_text.c_str(), static_cast<unsigned long>(_text.length()), _textFormat, _brushObject, layoutRect);
+		}
+
+#endif
 
 		//_drawPositionの位置は左上を基準にする//
 		void DrawLayout(
@@ -368,19 +511,11 @@ namespace ChD3D
 	private:
 
 		void DrawTextMethod(
-			const std::wstring& _text,
+			const wchar_t* _text,
+			const unsigned long _textLength,
 			IDWriteTextFormat* _textFormat,
 			ID2D1SolidColorBrush* brushObject,
-			const D2D1_RECT_F& _drawRect)
-		{
-			renderTarget->DrawText(
-				_text.c_str(),        // The string to render.
-				_text.length(),    // The string's length.
-				_textFormat,    // The text format.
-				&_drawRect,       // The region of the window where the text will be rendered.
-				brushObject     // The brush used to draw the text.
-			);
-		}
+			const D2D1_RECT_F& _drawRect);
 
 	public:
 
@@ -445,6 +580,32 @@ namespace ChD3D
 
 		D2D1_RECT_F ToProjectionCoodinateSystem(const D2D1_RECT_F& _targetRect);
 
+	private:
+
+		IDWriteTextFormat* GetTextFormat(size_t _num);
+		
+		size_t GetTextFormatCount();
+
+		void AddTextFormat(IDWriteTextFormat*);
+		
+		void ClearTextFormatList();
+
+		ID2D1SolidColorBrush* GetBrush(size_t _num);
+
+		size_t GetBrushCount();
+
+		void AddBrush(ID2D1SolidColorBrush*);
+
+		void ClearBrushList();
+
+		LayoutObject::LayoutStruct* GetLayout(size_t _num);
+
+		size_t GetLayoutCount();
+
+		void AddLayout(LayoutObject::LayoutStruct*);
+
+		void ClearLayoutList();
+
 	protected:
 
 		IDWriteFactory* dwFactory = nullptr;
@@ -452,19 +613,15 @@ namespace ChD3D
 		ID2D1RenderTarget* renderTarget = nullptr;
 
 		D2D1_SIZE_F displaySize = D2D1::SizeF(0.0f,0.0f);
-
+		DirectFontBaseCRT& ValueIns() { return *value; }
 	private:
-
-		std::vector<IDWriteTextFormat*>textFormatList;
-		std::vector<ID2D1SolidColorBrush*>brushList;
-		std::vector<LayoutObject::LayoutStruct*>layoutList;
 
 		LocaleNameId localeNameId = LocaleNameId::English;
 		bool thisDrawerFlg = false;
 
 		bool clearDisplayFlg = false;
 		D2D_COLOR_F clearDisplayColor = D2D1::ColorF(0.0f, 0.0f, 0.0f, 1.0f);
-
+		DirectFontBaseCRT* value = nullptr;
 	};
 
 	class DirectFontFromHWND : public DirectFontBase
@@ -523,7 +680,7 @@ namespace ChD3D
 
 	public:
 
-		void SetHDC(HDC _dc, const ChVec4& _subRect);
+		void SetHDC(HDC _dc, const ChRECT& _subRect);
 
 		void SetHDC(HDC _dc, RECT _subRect);
 
@@ -594,5 +751,82 @@ namespace ChD3D
 	};
 
 }
+
+#ifdef CRT
+
+ChD3D::DirectFontBase::DirectFontBase()
+{
+	value = new DirectFontBaseCRT();
+}
+
+ChD3D::DirectFontBase::~DirectFontBase()
+{
+	delete value;
+}
+
+IDWriteTextFormat* ChD3D::DirectFontBase::GetTextFormat(size_t _num)
+{
+	return ValueIns().textFormatList[_num];
+}
+
+size_t ChD3D::DirectFontBase::GetTextFormatCount()
+{
+	return ValueIns().textFormatList.size();
+}
+
+void ChD3D::DirectFontBase::AddTextFormat(IDWriteTextFormat* _textFormat)
+{
+	ValueIns().textFormatList.push_back(_textFormat);
+}
+
+void ChD3D::DirectFontBase::ClearTextFormatList()
+{
+	if (ValueIns().textFormatList.empty())return;
+	ValueIns().textFormatList.clear();
+}
+
+ID2D1SolidColorBrush* ChD3D::DirectFontBase::GetBrush(size_t _num)
+{
+	return ValueIns().brushList[_num];
+}
+
+size_t ChD3D::DirectFontBase::GetBrushCount()
+{
+	return ValueIns().brushList.size();
+}
+
+void ChD3D::DirectFontBase::AddBrush(ID2D1SolidColorBrush* _brush)
+{
+	ValueIns().brushList.push_back(_brush);
+}
+
+void ChD3D::DirectFontBase::ClearBrushList()
+{
+	if (ValueIns().brushList.empty())return;
+	ValueIns().brushList.clear();
+}
+
+ChD3D::LayoutObject::LayoutStruct* ChD3D::DirectFontBase::GetLayout(size_t _num)
+{
+	return ValueIns().layoutList[_num];
+}
+
+size_t ChD3D::DirectFontBase::GetLayoutCount()
+{
+	return ValueIns().layoutList.size();
+}
+
+void ChD3D::DirectFontBase::AddLayout(LayoutObject::LayoutStruct* _layout)
+{
+	ValueIns().layoutList.push_back(_layout);
+}
+
+void ChD3D::DirectFontBase::ClearLayoutList()
+{
+	if (ValueIns().layoutList.empty())return;
+	ValueIns().layoutList.clear();
+}
+
+#endif
 
 #endif

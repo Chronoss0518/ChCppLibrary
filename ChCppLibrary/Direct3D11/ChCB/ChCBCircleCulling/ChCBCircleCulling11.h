@@ -11,14 +11,11 @@ namespace ChD3D11
 
 		class CBCircleCulling11 final :public CBBase11
 		{
-		public:
+		public://Constructor Destructor//
 
-			virtual ~CBCircleCulling11()
-			{
-				Release();
-			}
+			virtual ~CBCircleCulling11() { Release(); }
 
-		public:
+		public://Init And Release//
 
 			void Init(ID3D11Device* _device);
 
@@ -38,9 +35,11 @@ namespace ChD3D11
 
 			float GetDrawValue();
 
-		private:
+		private://Update Functions//
 
 			void Update(ID3D11DeviceContext* _dc);
+
+		private://Member Value//
 
 			ChCircleCullingData data;
 			ConstantBuffer11<ChCircleCullingData> buf;

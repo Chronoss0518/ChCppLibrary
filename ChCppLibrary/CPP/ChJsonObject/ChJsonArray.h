@@ -1,52 +1,138 @@
 #ifndef Ch_CPP_JsonArray_h
 #define Ch_CPP_JsonArray_h
 
+#ifdef CRT
+
+#include<vector>
+
+#endif
+
 #include"ChJsonBaseType.h"
+
+#include"../ChTextObject/ChTextObject.h"
 
 namespace ChCpp
 {
-
-	class JsonArray :public JsonBaseType
+	template<typename CharaType>
+	class JsonArray :public JsonBaseType<CharaType>
 	{
+	public:
+
+		struct JsonArrayCRT
+		{
+#ifdef CRT
+			std::vector<ChPtr::Shared<JsonBaseType<CharaType>>>values;
+#endif
+		};
+
+	public:
+
+		JsonArray();
+		
+		virtual ~JsonArray();
+
 	public://static Create Function//
 
+#ifdef CRT
 		template<typename BaseType>
 		static ChPtr::Shared<JsonArray> CreateObject(const std::vector<BaseType>& _array);
 
 		static ChPtr::Shared<JsonArray> CreateObject(const std::vector<bool>& _array);
 
-		static ChPtr::Shared<JsonArray> CreateObject(const std::vector<std::string>& _array);
+		static ChPtr::Shared<JsonArray> CreateObject(const std::vector<std::basic_string<CharaType>>& _array);
 
 		template<typename BaseType>
-		static ChPtr::Shared<JsonArray> CreateObject(const std::vector<std::vector<BaseType>>& _array);
+		static ChPtr::Shared<JsonArray> CreateObject(const std::vector<std::vector<BaseType>>& _array)
+		{
+			auto&& res = ChPtr::Make_S<JsonArray>();
+			for (auto&& val : _array)
+			{
+				res->Add(JsonArray::CreateObject(val));
+			}
+			return res;
+		}
+#endif
 
 	public:
 
-		bool SetRawData(const std::string& _jsonText)override;
+#ifdef CRT
+		bool SetRawData(const std::basic_string<CharaType>& _jsonText)override;
 
-		void Set(unsigned long _num, const ChPtr::Shared<JsonBaseType> _value);
+		void Set(unsigned long _num, const ChPtr::Shared<JsonBaseType<CharaType>> _value)
+		{
+			if (_value == nullptr)
+			{
+				Remove(_num);
+				return;
+			}
+			if (_num >= value->values.size())return;
+			value->values[_num] = nullptr;
+			value->values[_num] = _value;
+		}
+#endif
 
 	public:
 
-		std::string GetRawData()const override;
+#ifdef CRT
+		std::basic_string<CharaType> GetRawData()const override;
+#endif
 
 		unsigned long GetCount()const;
 
-		ChPtr::Shared<JsonBaseType> GetJsonValue(unsigned long _num)const;
+#ifdef CRT
+		ChPtr::Shared<JsonBaseType<CharaType>> GetJsonValue(unsigned long _num)const
+		{
+			if (_num >= value->values.size())return  nullptr;
+			return value->values[_num];
+		}
 
-		ChPtr::Shared<JsonObject> GetJsonObject(unsigned long _num)const;
+		ChPtr::Shared<JsonObject<CharaType>> GetJsonObject(unsigned long _num)const
+		{
+			if (_num >= value->values.size())return  nullptr;
+			return ChPtr::SharedSafeCast<JsonObject<CharaType>>(value->values[_num]);
+		}
 
-		ChPtr::Shared<JsonArray> GetJsonArray(unsigned long _num)const;
+		ChPtr::Shared<JsonArray> GetJsonArray(unsigned long _num)const
+		{
+			if (_num >= value->values.size())return  nullptr;
+			return ChPtr::SharedSafeCast<JsonArray>(value->values[_num]);
+		}
 
-		ChPtr::Shared<JsonString> GetJsonString(unsigned long _num)const;
+		ChPtr::Shared<JsonString<CharaType>> GetJsonString(unsigned long _num)const
+		{
+			if (_num >= value->values.size())return  nullptr;
+			return ChPtr::SharedSafeCast<JsonString>(value->values[_num]);
+		}
 
-		ChPtr::Shared<JsonBoolean> GetJsonBoolean(unsigned long _num)const;
+		ChPtr::Shared<JsonBoolean<CharaType>> GetJsonBoolean(unsigned long _num)const
+		{
+			if (_num >= value->values.size())return  nullptr;
+			return ChPtr::SharedSafeCast<JsonBoolean>(value->values[_num]);
+		}
 
-		ChPtr::Shared<JsonNumber> GetJsonNumber(unsigned long _num)const;
+		ChPtr::Shared<JsonNumber<CharaType>> GetJsonNumber(unsigned long _num)const
+		{
+			if (_num >= value->values.size())return  nullptr;
+			return ChPtr::SharedSafeCast<JsonNumber>(value->values[_num]);
+		}
+#endif
 
 	public:
 
-		void Add(ChPtr::Shared<JsonBaseType> _value);
+#ifdef CRT
+		void Add(ChPtr::Shared<JsonBaseType<CharaType>> _value)
+		{
+			if (_value == nullptr)return;
+			value->values.push_back(_value);
+		}
+
+		template<typename BaseType>
+		void Add(const BaseType _value);
+
+		void Add(const bool _value);
+
+		void Add(const std::basic_string<CharaType>& _value);
+#endif
 
 		void Remove(unsigned long _num);
 
@@ -54,43 +140,157 @@ namespace ChCpp
 
 	public:
 
-		inline std::vector<ChPtr::Shared<JsonBaseType>>::iterator begin() { return values.begin(); }
+#ifdef CRT
+		typename std::vector<ChPtr::Shared<JsonBaseType<CharaType>>>::iterator begin() { return value->values.begin(); }
 
-		inline std::vector<ChPtr::Shared<JsonBaseType>>::iterator end() { return values.end(); }
+		typename std::vector<ChPtr::Shared<JsonBaseType<CharaType>>>::iterator end() { return value->values.end(); }
+#endif
 
 	private:
 
-		std::vector<ChPtr::Shared<JsonBaseType>>values;
+		JsonArrayCRT* value = nullptr;
 
 	};
+}
 
+#ifdef CRT
 
-	template ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<char>& _array);
-	template ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<short>& _array);
-	template ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<int>& _array);
-	template ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<long>& _array);
-	template ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<long long>& _array);
-	template ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<unsigned char>& _array);
-	template ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<unsigned short>& _array);
-	template ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<unsigned int>& _array);
-	template ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<unsigned long>& _array);
-	template ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<unsigned long long>& _array);
-	template ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<float>& _array);
-	template ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<double>& _array);
-	template ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<long double>& _array);
+template<typename CharaType>
+ChCpp::JsonArray<CharaType>::JsonArray()
+{
+	value = new JsonArrayCRT();
+}
 
-	template<typename BaseType>
-	ChPtr::Shared<JsonArray> JsonArray::CreateObject(const std::vector<std::vector<BaseType>>& _array)
+template<typename CharaType>
+ChCpp::JsonArray<CharaType>::~JsonArray()
+{
+	delete value;
+}
+
+template<typename CharaType>
+ChPtr::Shared<ChCpp::JsonArray<CharaType>> ChCpp::JsonBaseType<CharaType>::GetParameterToArray(const std::basic_string<CharaType>& _json)
+{
+	auto&& res = ChPtr::Make_S<JsonArray<CharaType>>();
+	if (!res->SetRawData(_json))return nullptr;
+
+	return res;
+}
+
+template<typename CharaType>
+bool ChCpp::JsonArray<CharaType>::SetRawData(const std::basic_string<CharaType>& _jsonText)
+{
+	if (_jsonText.size() < 2)return false;
+	if (_jsonText[0] != ChStd::GetStartBracketChara<CharaType>()[0] ||
+		_jsonText[_jsonText.size() - 1] != ChStd::GetEndBracketChara<CharaType>()[0])return false;
+
+	std::basic_string<CharaType> parameter = _jsonText.substr(1, _jsonText.length() - 2);
+
+	parameter = JsonBaseType<CharaType>::GetExtractString(parameter);
+
+	TextObject<CharaType> parameterObject;
+
+	parameterObject.SetCutChar(ChStd::GetCommaChara<CharaType>());
+
+	parameterObject.SetText(parameter.c_str());
+
+	for (unsigned long i = 0; i < parameterObject.LineCount(); i++)
 	{
-		auto&& res = ChPtr::Make_S<JsonArray>();
-		for (auto&& val : _array)
-		{
-			res->Add(JsonArray::CreateObject(val));
-		}
-		return res;
+		std::basic_string<CharaType> val = parameterObject.GetTextLine(i);
+		val = JsonBaseType<CharaType>::GetRawText(i, val, parameterObject, false);
+		if (val.empty())continue;
+		auto&& obj = JsonBaseType<CharaType>::GetParameter(val);
+		if (obj == nullptr)continue;
+		value->values.push_back(obj);
 	}
 
+	return true;
 
 }
+
+template<typename CharaType>
+std::basic_string<CharaType> ChCpp::JsonArray<CharaType>::GetRawData()const
+{
+	std::basic_string<CharaType> res = ChStd::GetStartBracketChara<CharaType>();
+
+	bool initFlg = false;
+
+	for (auto&& val : value->values)
+	{
+		if (initFlg)res += ChStd::GetCommaChara<CharaType>();
+		res += val->GetRawData();
+		initFlg = true;
+	}
+
+	res += ChStd::GetEndBracketChara<CharaType>();
+
+	return res;
+}
+
+
+template<typename CharaType>
+unsigned long ChCpp::JsonArray<CharaType>::GetCount()const
+{
+	return value->values.size();
+}
+
+template<typename CharaType>
+void ChCpp::JsonArray<CharaType>::Remove(unsigned long _num)
+{
+	if (value->values.empty())return;
+	if (value->values.size() <= _num)return;
+
+	value->values.erase(value->values.begin() + _num);
+}
+
+template<typename CharaType>
+void ChCpp::JsonArray<CharaType>::Clear()
+{
+	if (value->values.empty())return;
+	value->values.clear();
+}
+
+
+template<typename CharaType>
+template<typename BaseType>
+ChPtr::Shared<ChCpp::JsonArray<CharaType>> ChCpp::JsonArray<CharaType>::CreateObject(const std::vector<BaseType>& _array)
+{
+	auto&& res = ChPtr::Make_S<JsonArray<CharaType>>();
+	for (auto&& val : _array)
+	{
+		res->Add(val);
+	}
+	return res;
+}
+
+
+template<typename CharaType>
+static ChPtr::Shared<ChCpp::JsonArray<CharaType>> ChCpp::JsonArray<CharaType>::CreateObject(const std::vector<std::basic_string<CharaType>>& _array)
+{
+	auto&& res = ChPtr::Make_S<JsonArray<CharaType>>();
+	for (auto&& val : _array)
+	{
+		res->Add(val);
+	}
+	return res;
+}
+
+template<typename CharaType>
+static ChPtr::Shared<ChCpp::JsonArray<CharaType>> ChCpp::JsonArray<CharaType>::CreateObject(const std::vector<bool>& _array)
+{
+	auto&& res = ChPtr::Make_S<JsonArray<CharaType>>();
+	for (auto&& val : _array)
+	{
+		res->Add(val);
+	}
+	return res;
+}
+
+
+
+#endif
+
+#include"SharedFunctions/ChJsonSharedArrayBooleanNumberString.h"
+
+#include"SharedFunctions/ChJsonSharedArrayObject.h"
 
 #endif

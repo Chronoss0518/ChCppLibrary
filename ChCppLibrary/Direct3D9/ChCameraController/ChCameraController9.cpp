@@ -9,9 +9,10 @@
 //CameraControllerメソッド
 ///////////////////////////////////////////////////////////////////////////////////////
 
-D3DXMATRIX ChD3D9::CameraController::MakeViewMatrix(
-	const ChD3D9::CamObj& _cal)
+D3DXMATRIX ChD3D9::CameraController::MakeViewMatrix(const ChD3D9::CamObj& _cal)
 {
+	if (!IsInit())return ChMat_9();
+
 	ChMat_9 tmpMat;
 
 	ChVec3_9 tmpHead = _cal.head;
@@ -34,13 +35,13 @@ D3DXMATRIX ChD3D9::CameraController::MakeViewMatrix(
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 D3DXMATRIX ChD3D9::CameraController::MakeViewMatrix(
-	const D3DXVECTOR3& _calPos
-	, const D3DXVECTOR3& _calLook
-	, const D3DXVECTOR3& _calHead)
+	const D3DXVECTOR3& _calPos,
+	const D3DXVECTOR3& _calLook,
+	const D3DXVECTOR3& _calHead)
 {
+
+	if (!IsInit())return ChMat_9();
 
 	ChMat_9 tmpMat;
 	ChVec3_9 tmpHead = _calLook - _calPos;
@@ -81,23 +82,22 @@ D3DXMATRIX ChD3D9::CameraController::MakeViewMatrix(
 	return tmpMat;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 D3DXMATRIX ChD3D9::CameraController::MakeProjectionMatrix(
-	const ChD3D9::CamObj& _cal
-	, const float _windWidth
-	, const float _windHeight
-	, const float _viewAngDeg)
+	const ChD3D9::CamObj& _cal,
+	const float _windWidth,
+	const float _windHeight,
+	const float _viewAngDeg)
 {
-	ChMat_9 tmpMat;
+	if (!IsInit())return ChMat_9();
 
+	ChMat_9 tmpMat;
 
 	// 投影行列の設定
 	D3DXMatrixPerspectiveFovLH(
-		&tmpMat
-		, D3DXToRadian(_viewAngDeg)
-		, _windWidth / _windHeight
-		, _cal.lMin, _cal.lMax);
+		&tmpMat,
+		D3DXToRadian(_viewAngDeg),
+		_windWidth / _windHeight,
+		_cal.lMin, _cal.lMax);
 
 	projectionMat = tmpMat;
 
@@ -107,24 +107,24 @@ D3DXMATRIX ChD3D9::CameraController::MakeProjectionMatrix(
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 D3DXMATRIX ChD3D9::CameraController::MakeProjectionMatrix(
-	const float _lookNear
-	, const float _lookDistant
-	, const float _windWidth
-	, const float _windHeight
-	, const float _viewAngDeg)
+	const float _lookNear,
+	const float _lookDistant,
+	const float _windWidth,
+	const float _windHeight,
+	const float _viewAngDeg)
 {
+
+	if (!IsInit())return ChMat_9();
 
 	ChMat_9 tmpMat;
 
 	// 投影行列の設定
 	D3DXMatrixPerspectiveFovLH(
-		&tmpMat
-		, D3DXToRadian(_viewAngDeg)
-		, _windWidth / _windHeight
-		, _lookNear, _lookDistant);
+		&tmpMat,
+		D3DXToRadian(_viewAngDeg),
+		_windWidth / _windHeight,
+		_lookNear, _lookDistant);
 
 	projectionMat = tmpMat;
 
@@ -133,5 +133,3 @@ D3DXMATRIX ChD3D9::CameraController::MakeProjectionMatrix(
 
 	return tmpMat;
 }
-
-///////////////////////////////////////////////////////////////////////////////////

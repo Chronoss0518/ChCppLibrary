@@ -15,15 +15,9 @@ namespace ChD3D11
 		{
 		public:
 
-			virtual ~CBPolygon11()
-			{
-				Release();
-			}
+			virtual ~CBPolygon11() { Release(); }
 
-		public:
-
-			///////////////////////////////////////////////////////////////////////////////////
-			//InitAndRelease//
+		public://InitAndRelease//
 
 			void Init(
 				ID3D11Device* _device,
@@ -32,8 +26,7 @@ namespace ChD3D11
 
 			void Release()override;
 
-			///////////////////////////////////////////////////////////////////////////////////
-			//SetFunction//
+		public://Set Functions//
 
 			void SetFrameMatrix(const ChLMat& _mat);
 
@@ -53,15 +46,9 @@ namespace ChD3D11
 
 			void SetMateAmbientColor(const ChVec3& _ambientCol);
 
-			void SetBaseTexture(TextureBase11*_tex)
-			{
-				baseTex = _tex;
-			}
+			inline void SetBaseTexture(TextureBase11* _tex) { baseTex = _tex; }
 
-			void SetNormalTexture(TextureBase11*_tex)
-			{
-				normalTex = _tex;
-			}
+			inline void SetNormalTexture(TextureBase11* _tex) { normalTex = _tex; }
 
 			void SetDrawData(const ChP_DrawData& _data);
 
@@ -89,8 +76,7 @@ namespace ChD3D11
 
 			void SetShaderTexture(ID3D11DeviceContext* _dc);
 
-			///////////////////////////////////////////////////////////////////////////////////
-			//GetFunction//
+		public://Get Functions//
 
 			inline ChP_DrawData GetDrawData() { return drawData; }
 
@@ -114,7 +100,7 @@ namespace ChD3D11
 
 			void UpdateMD(ID3D11DeviceContext* _dc);
 
-		private:
+		private://Member Value
 
 			ChP_DrawData drawData;
 			ConstantBuffer11<ChP_DrawData> drawBuf;

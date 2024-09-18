@@ -3,127 +3,181 @@
 
 #include"ChJsonBaseType.h"
 
+#include"../../BasePack/ChMath.h"
+#include"../../BasePack/ChStr.h"
+
+
+#ifndef CH_JSON_NUMBER_MATH_METHOD
+#define CH_JSON_NUMBER_MATH_METHOD(_Operator,_MathValue)\
+JsonNumber& operator _Operator (const JsonNumber& _val){\
+	value _Operator _MathValue;\
+	return *this;}
+#endif
+
+#ifndef CH_JSON_NUMBER_CONST_MATH_METHOD
+#define CH_JSON_NUMBER_CONST_MATH_METHOD(_Operator)\
+JsonNumber operator _Operator##(const JsonNumber& _val)const{\
+	JsonNumber res = *this;\
+	res _Operator##= _val;\
+	return res;}
+#endif
+
 namespace ChCpp
 {
-
-	class JsonNumber :public JsonBaseType
+	template<typename CharaType>
+	class JsonNumber :public JsonBaseType<CharaType>
 	{
 	public://static Create Function//
 
+#ifdef CRT
 		template<typename BaseType>
-		static ChPtr::Shared<JsonNumber> CreateObject(const BaseType& _value);
+		static ChPtr::Shared<JsonNumber> CreateObject(const BaseType& _value)
+		{
+			auto&& res = ChPtr::Make_S<JsonNumber>();
+			*res = _value;
+			return res;
+		}
+#endif
 
 	public://Operator Functions//
 
-		JsonNumber& operator = (const JsonNumber& _val);
-		JsonNumber& operator += (const JsonNumber& _val);
-		JsonNumber operator + (const JsonNumber& _val)const;
-		JsonNumber& operator -= (const JsonNumber& _val);
-		JsonNumber operator - (const JsonNumber& _val)const;
-		JsonNumber& operator *= (const JsonNumber& _val);
-		JsonNumber operator * (const JsonNumber& _val)const;
-		JsonNumber& operator /= (const JsonNumber& _val);
-		JsonNumber operator / (const JsonNumber& _val)const;
-		JsonNumber& operator %= (const JsonNumber& _val);
-		JsonNumber operator % (const JsonNumber& _val)const;
+		JsonNumber& operator = (const JsonNumber& _val)
+		{
+			if (this == &_val)return *this;
+			value = _val.value;
+			return *this;
+		}
+
+		CH_JSON_NUMBER_MATH_METHOD(+=, _val.value);
+		CH_JSON_NUMBER_MATH_METHOD(-=, _val.value);
+		CH_JSON_NUMBER_MATH_METHOD(*=, _val.value);
+		CH_JSON_NUMBER_MATH_METHOD(/=, _val.value != 0.0l ? _val.value : 1.0l);
+
+		JsonNumber& operator %= (const JsonNumber& _val)
+		{
+			value = ChMath::GetFMod(value, _val.value);
+			return *this;
+		}
+
+		CH_JSON_NUMBER_CONST_MATH_METHOD(+);
+		CH_JSON_NUMBER_CONST_MATH_METHOD(-);
+		CH_JSON_NUMBER_CONST_MATH_METHOD(*);
+		CH_JSON_NUMBER_CONST_MATH_METHOD(/);
+		CH_JSON_NUMBER_CONST_MATH_METHOD(%);
 
 	public://To BaseClass Operator Functions//
 
 		template<typename BaseType>
-		operator BaseType()const;
+		operator BaseType()const
+		{
+			return static_cast<BaseType>(value);
+		}
 
 		template<typename BaseType>
-		JsonNumber& operator = (const BaseType& _base);
+		JsonNumber& operator = (const BaseType& _base)
+		{
+			value = static_cast<const long double>(_base);
+			return *this;
+		}
 
 
 	public://To String Operator Functions//
 
-		operator JsonString()const;
-		operator std::string()const;
+#ifdef CRT
+		operator std::basic_string<CharaType>()const
+		{
+			return ToString();
+		}
+#endif
 
 	public://Constructor Destructor//
 
-		JsonNumber();
+		JsonNumber()
+		{
+			value = 0.0l;
+		}
 
-		JsonNumber(const JsonNumber& _val);
+		JsonNumber(const JsonNumber& _val)
+		{
+			value = _val.value;
+		}
 
 		template<typename BaseType>
-		JsonNumber(const BaseType& _val);
+		JsonNumber(const BaseType& _val)
+		{
+			value = static_cast<long double>(_val);
+		}
 
 	public:
 
-		bool SetRawData(const std::string& _jsonText)override;
+#ifdef CRT
+		bool SetRawData(const std::basic_string<CharaType>& _jsonText)override
+		{
+			if (!ChStd::IsBaseNumbers<CharaType>(_jsonText, ChStd::DECIMAL_NUMBUR<CharaType>()))return false;
+
+			value = ChStr::GetNumFromText<long double, CharaType>(_jsonText);
+			return true;
+		}
+#endif
 
 	public:
 
-		std::string GetRawData()const override;
+#ifdef CRT
+		std::basic_string<CharaType> GetRawData()const override
+		{
+			return ToString();
+		}
+#endif
 
 	public:
 
-		std::string ToString()const;
+#ifdef CRT
+		std::basic_string<CharaType> ToString()const
+		{
+			std::basic_string<CharaType> tmpStr = ChStr::GetTextFromNum<CharaType>(value);
+			unsigned long endPoint = tmpStr.find(ChStd::GetDotChara<CharaType>());
+			for (unsigned long i = endPoint + 1; i < tmpStr.size(); i++)
+			{
+				if (tmpStr[i] == ChStd::GetZeroChara<CharaType>()[0])continue;
+				endPoint = i + 1;
+			}
+
+			if (endPoint >= tmpStr.size())
+			{
+				return tmpStr;
+			}
+
+			return tmpStr.substr(0, endPoint);
+		}
+#endif
 
 	private:
 
 		long double value;
 	};
 
-	//テンプレートの明示化//
-	//(Template Explicit)//
-	template JsonNumber::operator char()const;
-	template JsonNumber::operator short()const;
-	template JsonNumber::operator int()const;
-	template JsonNumber::operator long()const;
-	template JsonNumber::operator long long()const;
-	template JsonNumber::operator unsigned char()const;
-	template JsonNumber::operator unsigned short()const;
-	template JsonNumber::operator unsigned int()const;
-	template JsonNumber::operator unsigned long()const;
-	template JsonNumber::operator unsigned long long()const;
-	template JsonNumber::operator float()const;
-	template JsonNumber::operator double()const;
-	template JsonNumber::operator long double()const;
-
-	template JsonNumber& JsonNumber::operator = (const char& _base);
-	template JsonNumber& JsonNumber::operator = (const short& _base);
-	template JsonNumber& JsonNumber::operator = (const int& _base);
-	template JsonNumber& JsonNumber::operator = (const long& _base);
-	template JsonNumber& JsonNumber::operator = (const long long& _base);
-	template JsonNumber& JsonNumber::operator = (const unsigned char& _base);
-	template JsonNumber& JsonNumber::operator = (const unsigned short& _base);
-	template JsonNumber& JsonNumber::operator = (const unsigned int& _base);
-	template JsonNumber& JsonNumber::operator = (const unsigned long& _base);
-	template JsonNumber& JsonNumber::operator = (const unsigned long long& _base);
-	template JsonNumber& JsonNumber::operator = (const float& _base);
-	template JsonNumber& JsonNumber::operator = (const double& _base);
-	template JsonNumber& JsonNumber::operator = (const long double& _base);
-
-	template JsonNumber::JsonNumber(const char& _base);
-	template JsonNumber::JsonNumber(const short& _base);
-	template JsonNumber::JsonNumber(const int& _base);
-	template JsonNumber::JsonNumber(const long& _base);
-	template JsonNumber::JsonNumber(const long long& _base);
-	template JsonNumber::JsonNumber(const unsigned char& _base);
-	template JsonNumber::JsonNumber(const unsigned short& _base);
-	template JsonNumber::JsonNumber(const unsigned int& _base);
-	template JsonNumber::JsonNumber(const unsigned long& _base);
-	template JsonNumber::JsonNumber(const unsigned long long& _base);
-	template JsonNumber::JsonNumber(const float& _base);
-	template JsonNumber::JsonNumber(const double& _base);
-	template JsonNumber::JsonNumber(const long double& _base);
-
-	template ChPtr::Shared<JsonNumber> JsonNumber::CreateObject(const char& _base);
-	template ChPtr::Shared<JsonNumber> JsonNumber::CreateObject(const short& _base);
-	template ChPtr::Shared<JsonNumber> JsonNumber::CreateObject(const int& _base);
-	template ChPtr::Shared<JsonNumber> JsonNumber::CreateObject(const long& _base);
-	template ChPtr::Shared<JsonNumber> JsonNumber::CreateObject(const long long& _base);
-	template ChPtr::Shared<JsonNumber> JsonNumber::CreateObject(const unsigned char& _base);
-	template ChPtr::Shared<JsonNumber> JsonNumber::CreateObject(const unsigned short& _base);
-	template ChPtr::Shared<JsonNumber> JsonNumber::CreateObject(const unsigned int& _base);
-	template ChPtr::Shared<JsonNumber> JsonNumber::CreateObject(const unsigned long& _base);
-	template ChPtr::Shared<JsonNumber> JsonNumber::CreateObject(const unsigned long long& _base);
-	template ChPtr::Shared<JsonNumber> JsonNumber::CreateObject(const float& _base);
-	template ChPtr::Shared<JsonNumber> JsonNumber::CreateObject(const double& _base);
-	template ChPtr::Shared<JsonNumber> JsonNumber::CreateObject(const long double& _base);
 }
+
+#ifdef CRT
+
+template<typename CharaType>
+ChPtr::Shared<ChCpp::JsonNumber<CharaType>> ChCpp::JsonBaseType<CharaType>::GetParameterToNumber(const std::basic_string<CharaType>& _json)
+{
+	if (_json.size() <= 0)return nullptr;
+	if (_json.size() <= 1 && (_json[0] > 57 || _json[0] < 48))return nullptr;
+
+	bool floatingPointFlg = false;
+
+	auto&& res = ChPtr::Make_S<JsonNumber<CharaType>>();
+
+	*res = ChStr::GetNumFromText<long double, CharaType>(_json);
+
+	return res;
+}
+
+
+#endif
+
+#include"SharedFunctions/ChJsonSharedArrayBooleanNumberString.h"
 
 #endif

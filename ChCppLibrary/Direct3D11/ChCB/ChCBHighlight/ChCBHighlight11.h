@@ -10,25 +10,17 @@ namespace ChD3D11
 	{
 		class CBHighlight11 final :public CBBase11
 		{
-		public:
+		public://Constructor Destructor//
 
-			virtual ~CBHighlight11()
-			{
-				Release();
-			}
+			virtual ~CBHighlight11(){Release();}
 
-		public:
+		public://Init And Release//
 
-			///////////////////////////////////////////////////////////////////////////////////
-			//InitAndRelease//
-
-			void Init(
-				ID3D11Device* _device);
+			void Init(ID3D11Device* _device);
 
 			void Release()override;
 
-			///////////////////////////////////////////////////////////////////////////////////
-			//SetFunction//
+		public://Set Functions//
 
 			void SetGameWindowSize(const ChVec2& _size);
 
@@ -46,8 +38,7 @@ namespace ChD3D11
 
 			void SetShaderSpriteData(ID3D11DeviceContext* _dc);
 
-			///////////////////////////////////////////////////////////////////////////////////
-			//GetFunction//
+		public://Get Functions//
 
 			inline ChS_HighLight GetBlurData() { return blurData; }
 
@@ -59,9 +50,11 @@ namespace ChD3D11
 
 			inline float GetBoostPower() { return blurData.boostPower; }
 
-		private:
+		private://Update Functions//
 
 			void UpdateSD(ID3D11DeviceContext* _dc);
+
+		private://Member Value//
 
 			ChS_HighLight blurData;
 			ConstantBuffer11<ChS_HighLight> blurBuf;

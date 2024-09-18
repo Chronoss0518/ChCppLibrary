@@ -1,12 +1,12 @@
 #ifndef Ch_D3D11_SS_SampleSpriteShaderBase_h
 #define Ch_D3D11_SS_SampleSpriteShaderBase_h
 
+#include"../../ChCB/ChCBSprite/ChCBSprite11.h"
 #include"../ChSampleShaderBase11.h"
 
 
 namespace ChD3D11
 {
-
 	class Sprite11;
 
 	namespace Shader
@@ -14,12 +14,9 @@ namespace ChD3D11
 
 		class SampleSpriteShaderBase11 :public SampleShaderBase11
 		{
-		public:
+		public://Constructor Destructor//
 
-			virtual ~SampleSpriteShaderBase11()
-			{
-				Release();
-			}
+			virtual ~SampleSpriteShaderBase11(){Release();}
 
 		public://Init And Release//
 

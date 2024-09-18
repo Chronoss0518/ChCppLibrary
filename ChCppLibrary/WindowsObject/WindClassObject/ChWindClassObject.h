@@ -3,13 +3,45 @@
 #ifndef Ch_Win_CWind_h
 #define Ch_Win_CWind_h
 
+#include"../../ClassParts/ChCPInitializer.h"
+
 namespace ChWin
 {
 	class WindClassStyle;
 
-	//WindowsAPIの内WindowClassを用いたオブジェクトを司るクラス//
-	class WindClassObjectA:public ChCp::Initializer
+	template<typename CharaType>
+	class WindClassObjectBase
 	{
+	public:
+
+		struct WindClassObjectCRT
+		{
+#ifdef CRT
+			std::basic_string<CharaType> className = ChStd::GetZeroChara<CharaType>();
+#endif
+		};
+
+	public:
+
+		WindClassObjectBase();
+		
+		virtual~WindClassObjectBase();
+
+	public:
+
+		WindClassObjectCRT& ValueIns() { return *value; }
+
+	private:
+
+		WindClassObjectCRT* value = nullptr;
+
+	};
+
+	//WindowsAPIの内WindowClassを用いたオブジェクトを司るクラス//
+	class WindClassObjectA:public ChCp::Initializer,public WindClassObjectBase<char>
+	{
+	public:
+
 	public://ConstructorDestructor//
 
 		inline WindClassObjectA() { Init(); }
@@ -48,31 +80,30 @@ namespace ChWin
 
 		void SetWindProcedure(WNDPROC _windProc);
 
-		void SetMenuName(const std::string& _name);
+		void SetMenuName(const char* _name);
 
 	public://GetFunction//
 
-		inline std::string GetWindClassName() { return className; }
+		const char* GetWindClassName();
 
 	public:
 
-		bool IsSystemRegistClassName(const std::string& _className);
+		bool IsSystemRegistClassName(const char* _className);
 
 	public://Other Fucntions//
 
 		//Set関数よりセットされた情報を元にクラスを登録する//
 		//クラス名が空文字の場合は登録されない//
-		void RegistClass(const std::string& _className);
+		void RegistClass(const char* _className);
 
 
 	protected:
 
 		WNDCLASSA cls;
-		std::string className = "";
 	};
 
 	//WindowsAPIの内WindowClassを用いたオブジェクトを司るクラス//
-	class WindClassObjectW :public ChCp::Initializer
+	class WindClassObjectW :public ChCp::Initializer, public WindClassObjectBase<wchar_t>
 	{
 	public://ConstructorDestructor//
 
@@ -112,27 +143,26 @@ namespace ChWin
 
 		void SetWindProcedure(WNDPROC _windProc);
 
-		void SetMenuName(const std::wstring& _name);
+		void SetMenuName(const wchar_t* _name);
 
 	public://GetFunction//
 
-		inline std::wstring GetWindClassName() { return className; }
+		const wchar_t* GetWindClassName();
 
 	public:
 
-		bool IsSystemRegistClassName(const std::wstring& _className);
+		bool IsSystemRegistClassName(const wchar_t* _className);
 
 	public://Other Fucntions//
 
 		//Set関数よりセットされた情報を元にクラスを登録する//
 		//クラス名が空文字の場合は登録されない//
-		void RegistClass(const std::wstring& _className);
+		void RegistClass(const wchar_t* _className);
 
 
 	protected:
 
 		WNDCLASSW cls;
-		std::wstring className = L"";
 };
 
 
@@ -144,6 +174,291 @@ namespace ChWin
 #endif
 
 }
+
+#ifdef CRT
+
+template<typename CharaType>
+ChWin::WindClassObjectBase<CharaType>::WindClassObjectBase()
+{
+	value = new WindClassObjectCRT();
+}
+
+template<typename CharaType>
+ChWin::WindClassObjectBase<CharaType>::~WindClassObjectBase()
+{
+	delete value;
+}
+
+
+const char* ChWin::WindClassObjectA::GetWindClassName() { return ValueIns().className.c_str(); }
+
+bool ChWin::WindClassObjectA::IsSystemRegistClassName(const char* _className)
+{
+	std::string tmpClassName = _className;
+	std::string systemRegistClassName[] =
+	{
+		"BUTTON",
+		"COMBOBOX",
+		"EDIT",
+		"LISTBOX",
+		"MDICLIENT",
+		"RichEdit",
+		"RICHEDIT_CLASS",
+		"SCROLLBAR",
+		"STATIC" };
+
+	switch (tmpClassName.length())
+	{
+	case 4:
+		for (char i = 3; i >= 0; i--)
+		{
+			if (tmpClassName[i] == systemRegistClassName[2][i])continue;
+			return false;
+		}
+		return true;
+	case 6:
+
+		if (tmpClassName[5] == systemRegistClassName[0][5])
+		{
+			for (char i = 4; i >= 0; i--)
+			{
+				if (tmpClassName[i] == systemRegistClassName[0][i])continue;
+				return false;
+			}
+			return true;
+		}
+		else if (tmpClassName[5] == systemRegistClassName[8][5])
+		{
+			for (char i = 4; i >= 0; i--)
+			{
+				if (tmpClassName[i] == systemRegistClassName[8][i])continue;
+				return false;
+			}
+			return true;
+		}
+
+		return false;
+
+	case 7:
+
+		for (char i = 6; i >= 0; i--)
+		{
+			if (tmpClassName[i] == systemRegistClassName[3][i])continue;
+			return false;
+		}
+
+		return true;
+
+	case 8:
+		if (tmpClassName[7] == systemRegistClassName[1][7])
+		{
+			for (char i = 6; i >= 0; i--)
+			{
+				if (tmpClassName[i] == systemRegistClassName[1][i])continue;
+				return false;
+			}
+			return true;
+		}
+		else if (tmpClassName[7] == systemRegistClassName[5][7])
+		{
+			for (char i = 6; i >= 0; i--)
+			{
+				if (tmpClassName[i] == systemRegistClassName[5][i])continue;
+				return false;
+			}
+			return true;
+		}
+
+		return false;
+
+	case 9:
+		if (tmpClassName[8] == systemRegistClassName[4][8])
+		{
+			for (char i = 7; i >= 0; i--)
+			{
+				if (tmpClassName[i] == systemRegistClassName[4][i])continue;
+				return false;
+			}
+			return true;
+		}
+		else if (tmpClassName[8] == systemRegistClassName[7][8])
+		{
+			for (char i = 7; i >= 0; i--)
+			{
+				if (tmpClassName[i] == systemRegistClassName[7][i])continue;
+				return false;
+			}
+			return true;
+		}
+
+		return false;
+	case 15:
+
+		for (char i = 14; i >= 0; i--)
+		{
+			if (tmpClassName[i] == systemRegistClassName[6][i])continue;
+			return false;
+		}
+
+		return true;
+
+	default:
+		return false;
+	}
+
+	return false;
+}
+
+void ChWin::WindClassObjectA::RegistClass(const char* _className)
+{
+	if (IsInit())return;
+	if (ChPtr::NullCheck(cls.lpfnWndProc))return;
+	std::string tmpClassName = _className;
+	if (tmpClassName == "")return;
+	ValueIns().className = tmpClassName;
+	if (IsSystemRegistClassName(ValueIns().className.c_str()))return;
+
+	cls.lpszClassName = ValueIns().className.c_str();
+	RegisterClassA(&cls);
+
+	SetInitFlg(true);
+}
+
+const wchar_t* ChWin::WindClassObjectW::GetWindClassName() { return ValueIns().className.c_str(); }
+
+bool ChWin::WindClassObjectW::IsSystemRegistClassName(const wchar_t* _className)
+{
+	std::wstring tmpClassName = _className;
+	std::wstring systemRegistClassName[] =
+	{
+		L"BUTTON",
+		L"COMBOBOX",
+		L"EDIT",
+		L"LISTBOX",
+		L"MDICLIENT",
+		L"RichEdit",
+		L"RICHEDIT_CLASS",
+		L"SCROLLBAR",
+		L"STATIC" };
+
+	switch (tmpClassName.length())
+	{
+	case 4:
+		for (char i = 3; i >= 0; i--)
+		{
+			if (tmpClassName[i] != systemRegistClassName[2][i])continue;
+			return false;
+		}
+		return true;
+	case 6:
+
+		if (tmpClassName[5] != systemRegistClassName[0][5])
+		{
+			for (char i = 4; i >= 0; i--)
+			{
+				if (tmpClassName[i] != systemRegistClassName[0][i])continue;
+				return false;
+			}
+			return true;
+		}
+		else if (tmpClassName[5] != systemRegistClassName[8][5])
+		{
+			for (char i = 4; i >= 0; i--)
+			{
+				if (tmpClassName[i] != systemRegistClassName[8][i])continue;
+				return false;
+			}
+			return true;
+		}
+
+		return false;
+
+	case 7:
+
+		for (char i = 6; i >= 0; i--)
+		{
+			if (tmpClassName[i] != systemRegistClassName[3][i])continue;
+			return false;
+		}
+
+		return true;
+
+	case 8:
+		if (tmpClassName[7] != systemRegistClassName[1][7])
+		{
+			for (char i = 6; i >= 0; i--)
+			{
+				if (tmpClassName[i] != systemRegistClassName[1][i])continue;
+				return false;
+			}
+			return true;
+		}
+		else if (tmpClassName[7] != systemRegistClassName[5][7])
+		{
+			for (char i = 6; i >= 0; i--)
+			{
+				if (tmpClassName[i] != systemRegistClassName[5][i])continue;
+				return false;
+			}
+			return true;
+		}
+
+		return false;
+
+	case 9:
+		if (tmpClassName[8] != systemRegistClassName[4][8])
+		{
+			for (char i = 7; i >= 0; i--)
+			{
+				if (tmpClassName[i] != systemRegistClassName[4][i])continue;
+				return false;
+			}
+			return true;
+		}
+		else if (tmpClassName[8] != systemRegistClassName[7][8])
+		{
+			for (char i = 7; i >= 0; i--)
+			{
+				if (tmpClassName[i] != systemRegistClassName[7][i])continue;
+				return false;
+			}
+			return true;
+		}
+
+		return false;
+	case 15:
+
+		for (char i = 14; i >= 0; i--)
+		{
+			if (tmpClassName[i] != systemRegistClassName[6][i])continue;
+			return false;
+		}
+
+		return true;
+
+	default:
+		return false;
+	}
+
+	return false;
+}
+
+void ChWin::WindClassObjectW::RegistClass(const wchar_t* _className)
+{
+	if (IsInit())return;
+	if (ChPtr::NullCheck(cls.lpfnWndProc))return;
+	std::wstring tmpClassName = _className;
+	if (tmpClassName == L"")return;
+	ValueIns().className = tmpClassName;
+	if (IsSystemRegistClassName(ValueIns().className.c_str()))return;
+
+	cls.lpszClassName = ValueIns().className.c_str();
+	RegisterClassW(&cls);
+
+	SetInitFlg(true);
+}
+#endif
+
 
 #endif
 

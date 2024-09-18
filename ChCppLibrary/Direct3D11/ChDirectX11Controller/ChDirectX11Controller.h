@@ -2,11 +2,6 @@
 #ifndef Ch_D3D11_DXCo_h
 #define Ch_D3D11_DXCo_h
 
-namespace ChWin
-{
-	class WindObject;
-};
-
 namespace ChD3D11
 {
 
@@ -15,10 +10,7 @@ namespace ChD3D11
 	{
 	public:
 
-		virtual ~DirectX3D11()
-		{
-			Release();
-		}
+		virtual ~DirectX3D11() { Release(); }
 
 	public://Init and Release//
 
@@ -40,36 +32,18 @@ namespace ChD3D11
 	public://Get Functions//
 
 		//Direct3D11をつかさどるデバイスの取得//
-		inline ID3D11Device* const GetDevice()
-		{
-			return device;
-		}
+		inline ID3D11Device* const GetDevice() { return device; }
 
 		//描画をつかさどるデバイスの取得//
-		inline ID3D11DeviceContext* const GetDC()
-		{
-			return dContext;
-		}
+		inline ID3D11DeviceContext* const GetDC() { return dContext; }
 
-		inline IDXGISwapChain* const GetSC()
-		{
-			return window;
-		}
+		inline IDXGISwapChain* const GetSC() { return window; }
 
-		inline IDXGISurface* const GetSurface()
-		{
-			return surface;
-		}
+		inline IDXGISurface* const GetSurface() { return surface; }
 
-		inline unsigned long GetCreateDeviceWitdh()
-		{
-			return createDeviceWitdh;
-		}
+		inline unsigned long GetCreateDeviceWitdh() { return createDeviceWitdh; }
 
-		inline unsigned long GetCreateDeviceHeight()
-		{
-			return createDeviceHeight;
-		}
+		inline unsigned long GetCreateDeviceHeight() { return createDeviceHeight; }
 
 		inline ChMath::Vector2Base<unsigned long>GetCreateDeviceSizeToChVector2()
 		{
@@ -93,9 +67,9 @@ namespace ChD3D11
 	protected://Create Fucntions// 
 
 		void CreateDevice(
-			HWND _hWnd
-			, const unsigned long _scrW
-			, const unsigned long _scrH);
+			HWND _hWnd,
+			const unsigned long _scrW,
+			const unsigned long _scrH);
 
 	protected://Member Value//
 
@@ -116,7 +90,6 @@ namespace ChD3D11
 
 		unsigned long createDeviceWitdh = 0;
 		unsigned long createDeviceHeight = 0;
-
 	};
 
 	inline DirectX3D11& D3D11API()
@@ -129,7 +102,6 @@ namespace ChD3D11
 	{
 		return D3D11API().GetDevice();
 	};
-
 
 	inline ID3D11DeviceContext* D3D11DC()
 	{

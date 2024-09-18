@@ -13,23 +13,15 @@ namespace ChD3D11
 		{
 		public:
 
-			virtual ~CBBasicShapes11()
-			{
-				Release();
-			}
+			virtual ~CBBasicShapes11() { Release(); }
 
-		public:
+		public://Init And Release//
 
-			///////////////////////////////////////////////////////////////////////////////////
-			//InitAndRelease//
-
-			void Init(
-				ID3D11Device* _device);
+			void Init(ID3D11Device* _device);
 
 			void Release()override;
 
-			///////////////////////////////////////////////////////////////////////////////////
-			//SetFunction//
+		public://Set Functions//
 
 			void SetSpriteMatrix(const ChLMat& _mat);
 
@@ -45,8 +37,7 @@ namespace ChD3D11
 
 			void SetShaderTexture(ID3D11DeviceContext* _dc);
 
-			///////////////////////////////////////////////////////////////////////////////////
-			//GetFunction//
+		public://Get Functions//
 
 			inline BasicShapesData GetSpriteData() { return bsData; }
 
@@ -54,9 +45,11 @@ namespace ChD3D11
 
 			inline ChVec4 GetColor() { return bsData.color; }
 
-		private:
+		private://Update Functions//
 
 			void UpdateSD(ID3D11DeviceContext* _dc);
+
+		private://Member Values//
 
 			BasicShapesData bsData;
 			ConstantBuffer11<BasicShapesData> bsBuf;
@@ -66,23 +59,19 @@ namespace ChD3D11
 
 		class CBBasicShapesPosition11 final :public CBBase11
 		{
-		public:
+		public://Constructor Destructor//
 
-			virtual ~CBBasicShapesPosition11()
-			{
-				Release();
-			}
+			virtual ~CBBasicShapesPosition11() { Release(); }
 
-		public:
+		public://Init And Release//
 
-			void Init(
-				ID3D11Device* _device);
+			void Init(ID3D11Device* _device);
 
 			void Release()override;
 
-		public:
+		public://Set Functions//
 
-			void SetPosition(const ChVec2& _position,int _no);
+			void SetPosition(const ChVec2& _position,uint _no);
 
 			void SetPSBasicShapesPositionData(ID3D11DeviceContext* _dc);
 
@@ -90,59 +79,50 @@ namespace ChD3D11
 
 			void SetShaderBasicShapesPositionData(ID3D11DeviceContext* _dc);
 		
-		public:
+		public://Get Functions//
 
 			inline BasicShapesPositionData GetBasicShapesPositionData() { return positionData; }
 
-			inline ChBasicShapesPositions GetPositions()
-			{
-				return positionData.positions;
-			}
+			inline ChBasicShapesPositions GetPositions() { return positionData.positions; }
 
-			inline int GetUsePositionCount()
-			{
-				return positionData.positions.usePositionCount;
-			}
+			inline int GetUsePositionCount() { return positionData.positions.usePositionCount; }
 
-		public:
+		public://Add Functions//
 
 			void AddPosition(const ChVec2& _position);
 
-		public:
+		public://Pop Functions//
 
 			void PopPosition();
 
-		public:
+		public://Clear Functions//
 
 			void ClearPosition();
 
-		private:
+		private://Update Functions//
 
 			void UpdateSD(ID3D11DeviceContext* _dc);
+
+		private://Member Values//
 
 			BasicShapesPositionData positionData;
 			ConstantBuffer11<BasicShapesPositionData> positionBuf;
 			bool updateFlg = true;
-
 		};
 
 		class CBBasicShapesCircle11 final :public CBBase11
 		{
-		public:
+		public://Constructor Destructor//
 
-			virtual ~CBBasicShapesCircle11()
-			{
-				Release();
-			}
+			virtual ~CBBasicShapesCircle11() { Release(); }
 
-		public:
+		public://Init And Release//
 
-			void Init(
-				ID3D11Device* _device);
+			void Init(ID3D11Device* _device);
 
 			void Release()override;
 
-		public:
+		public://Set Functions//
 
 			void SetCenterPosition(const ChVec2& _centerPos, int _no);
 
@@ -154,36 +134,36 @@ namespace ChD3D11
 
 			void SetShaderBasicShapesCircleData(ID3D11DeviceContext* _dc);
 
-		public:
+		public://Get Functions//
 
 			inline BasicShapesCircleData GetSpriteData() { return circleData; }
 
 			inline int GetUseCircleCount() { return circleData.circleDatas.usePositionCount; }
 
-		public:
+		public://Add Functions//
 
 			void AddCircleData(const ChVec2& _centerPos, float _size);
 
-		public:
+		public://Pop Functions//
 
 			void PopCircleData();
 
-		public:
+		public://Clear Functions//
 
 			void ClearCircleData();
 
-		private:
+		private://Update Functions//
 
 			void UpdateSD(ID3D11DeviceContext* _dc);
+
+		private://Member Values//
 
 			BasicShapesCircleData circleData;
 			ConstantBuffer11<BasicShapesCircleData> circleBuf;
 			bool updateFlg = true;
 
 		};
-
 	}
-
 }
 
 

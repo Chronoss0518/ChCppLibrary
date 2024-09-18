@@ -1,6 +1,11 @@
 #ifndef Ch_CPP_Counter_h
 #define Ch_CPP_Counter_h
 
+#ifdef CRT
+
+#include<functional>
+
+#endif
 
 namespace ChCpp
 {
@@ -12,8 +17,12 @@ namespace ChCpp
 
 	public://Update Function//
 
+#ifdef CRT
+
 		//Šm”F‚µ‚½‚¢’l‚ð“ü‚ê‚é//
 		virtual long Update(const std::function<bool()>& _addMethod, const std::function<bool()>& _subMethod);
+
+#endif
 
 	public://Other Function//
 
@@ -28,5 +37,15 @@ namespace ChCpp
 		long count = 0;
 	};
 }
+
+#ifdef CRT
+
+long ChCpp::Counter::Update(const std::function<bool()>& _addMethod, const std::function<bool()>& _subMethod)
+{
+	count = (_addMethod && _addMethod()) ? count + 1 : (_subMethod && _subMethod()) ? count - 1 : count;
+	return count;
+}
+
+#endif
 
 #endif

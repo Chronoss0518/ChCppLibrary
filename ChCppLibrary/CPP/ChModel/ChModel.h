@@ -1,15 +1,36 @@
 #ifndef Ch_CPP_Model_h
 #define Ch_CPP_Model_h
 
+
+#ifdef CRT
+
+#include<vector>
+#include<map>
+#include<string>
+
+#endif
+
+#include"../../BasePack/ChStd.h"
+#include"../../BasePack/Ch3D.h"
+
+#include"../ChBaseObject/ChBaseComponent.h"
+#include"../ChBaseObject/ChBaseObject.h"
+
 namespace ChCpp
 {
-	class ModelAnimator
+	class ModelAnimator :public BaseComponent
 	{
+	protected:
+
+		ModelAnimator();
+
+		virtual ~ModelAnimator();
+
 	protected:
 
 		float Speed = 0.1f;
 
-		unsigned long AllAnimationCount;
+		unsigned long AllAnimationCount = 0;
 
 		struct AniDatas
 		{
@@ -22,17 +43,34 @@ namespace ChCpp
 		{
 			AniDatas Start;
 			AniDatas End;
-			unsigned long AnimationFrameCount;
+			unsigned long AnimationFrameCount = 0;
 		};
 
-		std::vector<ChPtr::Shared<AnimationData>>Animation;
+	private:
+
+		struct ModelAnimatorCRT
+		{
+#ifdef CRT
+			std::vector<ChPtr::Shared<AnimationData>>Animation;
+#endif
+		};
+
+	public:
+
+		ModelAnimatorCRT& ValueIns() { return *value; }
+
+	private:
+
+		ModelAnimatorCRT* value = nullptr;
 
 	};
 
+	template<typename CharaType>
 	struct ModelFrame
 	{
-		///////////////////////////////////////////////////////////////////////////////////////
-		//MeshDataStruct//
+		ModelFrame();
+
+		virtual ~ModelFrame();
 
 		struct VertexData
 		{
@@ -44,11 +82,31 @@ namespace ChCpp
 
 		struct Material
 		{
-			std::string materialName = "";
+			Material();
+
+			virtual ~Material();
+
 			ChVec4 diffuse = 1.0f;
-			ChVec4 specular =1.0f;
+			ChVec4 specular = 1.0f;
 			ChVec4 ambient = 0.0f;
-			std::vector<std::string>textureNames = std::vector<std::string>(0);
+
+		private:
+
+			struct MaterialCRT
+			{
+#ifdef CRT
+				std::basic_string<CharaType> materialName = ChStd::GetZeroChara<CharaType>();
+				std::vector<std::basic_string<CharaType>>textureNames;
+#endif
+			};
+
+		public:
+
+			MaterialCRT& ValueIns() { return *value; }
+
+		private:
+
+			MaterialCRT* value = nullptr;
 
 		};
 
@@ -65,28 +123,34 @@ namespace ChCpp
 			SurFaceVertex vertexData[3];
 			unsigned long materialNo = 0;
 			ChVec3 normal;
-			
-			inline ~SurFace()
-			{
-
-			}
 		};
 
 		struct Mesh
 		{
-			std::vector<ChPtr::Shared<VertexData>>vertexList;
-			std::vector<ChPtr::Shared<Material>>materialList;
-			std::map<std::string, unsigned long> materialNo;
-			std::vector<ChPtr::Shared<SurFace>>faceList;
+			Mesh();
 
-			inline ~Mesh()
+			virtual ~Mesh();
+
+		private:
+
+			struct MeshCRT
 			{
-				faceList.clear();
+#ifdef CRT
+				std::vector<ChPtr::Shared<VertexData>>vertexList;
+				std::vector<ChPtr::Shared<Material>>materialList;
+				std::map<std::basic_string<CharaType>, unsigned long> materialNo;
+				std::vector<ChPtr::Shared<SurFace>>faceList;
+#endif
+			};
 
-				vertexList.clear();
+		public:
 
-				materialList.clear();
-			}
+			MeshCRT& ValueIns() { return *value; }
+
+		private:
+
+			MeshCRT* value = nullptr;
+
 		};
 
 		struct Frame
@@ -97,28 +161,115 @@ namespace ChCpp
 				ChRMatrix baseRMat;
 			};
 
-			std::string myName = "";
-			ChPtr::Shared<Mesh>mesh = nullptr;
-			ChPtr::Weak<Frame>parent;
-			std::vector<ChPtr::Shared<Frame>>childFrames;
+		private:
 
-			Frame()
+			struct FrameCRT
 			{
+#ifdef CRT
+				std::basic_string<CharaType> myName = ChStd::GetZeroChara<CharaType>();
+				ChPtr::Shared<Mesh>mesh = nullptr;
+				ChPtr::Weak<Frame>parent;
+				std::vector<ChPtr::Shared<Frame>>childFrames;
+#endif
+			};
 
-			}
+		public:
 
-			~Frame()
-			{
-				mesh = nullptr;
-				childFrames.clear();
-			}
+			Frame();
+
+			virtual ~Frame();
+
+			FrameCRT& ValueIns() { return *value; }
+
+		private:
+
+			FrameCRT* value = nullptr;
 
 		};
 
-		ChPtr::Shared<Frame>modelData = nullptr;
-		std::string modelName;
+	private:
+
+		struct ModelFrameCRT
+		{
+#ifdef CRT
+			ChPtr::Shared<Frame>modelData = nullptr;
+			std::basic_string<CharaType> modelName;
+#endif
+		};
+
+	public:
+
+		ModelFrameCRT& ValueIns() { return *value; }
+
+	private:
+
+		ModelFrameCRT* value = nullptr;
 
 	};
 
 }
+
+
+#ifdef CRT
+
+ChCpp::ModelAnimator::ModelAnimator()
+{
+	value = new ModelAnimatorCRT();
+}
+
+ChCpp::ModelAnimator::~ModelAnimator()
+{
+	delete value;
+}
+
+template<typename CharaType>
+ChCpp::ModelFrame<CharaType>::ModelFrame()
+{
+	value = new ModelFrameCRT();
+}
+
+template<typename CharaType>
+ChCpp::ModelFrame<CharaType>::~ModelFrame()
+{
+	delete value;
+}
+
+template<typename CharaType>
+ChCpp::ModelFrame<CharaType>::Material::Material()
+{
+	value = new MaterialCRT();
+}
+
+template<typename CharaType>
+ChCpp::ModelFrame<CharaType>::Material::~Material()
+{
+	delete value;
+}
+
+template<typename CharaType>
+ChCpp::ModelFrame<CharaType>::Mesh::Mesh()
+{
+	value = new MeshCRT();
+}
+
+template<typename CharaType>
+ChCpp::ModelFrame<CharaType>::Mesh::~Mesh()
+{
+	delete value;
+}
+
+template<typename CharaType>
+ChCpp::ModelFrame<CharaType>::Frame::Frame()
+{
+	value = new FrameCRT();
+}
+
+template<typename CharaType>
+ChCpp::ModelFrame<CharaType>::Frame::~Frame()
+{
+	delete value;
+}
+
+#endif
+
 #endif

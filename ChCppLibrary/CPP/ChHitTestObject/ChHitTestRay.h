@@ -5,14 +5,11 @@
 
 namespace ChCpp
 {
-	
 	class HitTestRay :public HitTestObject
 	{
-	public:
-		///////////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
+	public://SetFunction//
 
-		inline void SetMaxLength(const float _maxLen = FLT_MAX) { maxLen = _maxLen; }
+		void SetMaxLength(const float _maxLen = ChMath::GetMaxFloat()) { maxLen = _maxLen; }
 
 		inline void SetRayDir(const ChVec3& _dir) { rayDir = _dir; rayDir.Normalize(); }
 
@@ -41,10 +38,11 @@ namespace ChCpp
 	private:
 
 		ChVec3 rayDir = ChVec3(0.0f, 0.0f, 1.0f);
-		float maxLen = FLT_MAX;
 
+		float maxLen = ChMath::GetMaxFloat();
 	};
-
 }
+
+#include"Polygon/ChPolygonColliderSharedRayBoxSphere.h"
 
 #endif

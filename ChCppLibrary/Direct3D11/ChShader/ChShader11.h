@@ -1,20 +1,20 @@
 #ifndef Ch_D3D11_Shader_h
 #define Ch_D3D11_Shader_h
 
+
 #include"../ChShaderObject/ChShaderObject11.h"
 #include"../ChShaderParts/ChShaderParts11.h"
+#include"../ChSampleShader/SpriteShader/ChBaseDrawSprite11.h"
 
 namespace ChD3D11
 {
 	class DirectX3D11;
 
-	class Mesh11;
 	class TextureBase11;
 	class Texture11;
 	class RenderTarget11;
 	class DepthStencilTexture11;
 	class Sprite11;
-	class PolygonBoard11;
 
 	//※LightはShader内のBaseLightとPointLightを利用してください//
 	//独自で構築しているShaderクラス//
@@ -23,28 +23,30 @@ namespace ChD3D11
 	public://Init And Release//
 
 		void Init(
-			DirectX3D11& _chDevice
-			, const ChVec2& _windSize);
+			DirectX3D11& _chDevice,
+			const ChVec2& _windSize);
 
 		void Init(
-			DirectX3D11& _chDevice
-			, const float& _windWitdh
-			, const float& _windHeight);
+			DirectX3D11& _chDevice,
+			const float& _windWitdh,
+			const float& _windHeight);
 
-		void Init(ID3D11Device* _d
-			, ID3D11DeviceContext* _dc
-			, IDXGISwapChain* _sc
-			, const ChVec2& _windSize);
+		void Init(
+			ID3D11Device* _d,
+			ID3D11DeviceContext* _dc,
+			IDXGISwapChain* _sc,
+			const ChVec2& _windSize);
 
-		void Init(ID3D11Device* _d
-			, ID3D11DeviceContext* _dc
-			, IDXGISwapChain* _sc
-			, const float& _windWitdh
-			, const float& _windHeight);
+		void Init(
+			ID3D11Device* _d,
+			ID3D11DeviceContext* _dc,
+			IDXGISwapChain* _sc,
+			const float& _windWitdh,
+			const float& _windHeight);
 
 		virtual void Release();
 
-	public://SetFunction//
+	public://Set Functions//
 
 		//描画させるレンダーターゲットを登録する//
 		void SetRenderTarget(RenderTarget11& _tex);
@@ -52,21 +54,18 @@ namespace ChD3D11
 		inline void SetBackColor(const ChVec4& _color)
 		{
 			if (!*this)return;
-
 			backColor = _color;
 		}
 
 		inline void SetWindPos(const ChVec2& _pos)
 		{
 			if (!*this)return;
-
 			view.SetTopLeftPos(_pos);
 		}
 
 		inline void SetWindSize(const ChVec2& _size)
 		{
 			if (!*this)return;
-
 			view.SetSize(_size);
 		}
 
@@ -85,7 +84,7 @@ namespace ChD3D11
 
 		Sprite11 outSprite;
 
-		ChPtr::Unique<Shader::BaseDrawSprite11> spriteShader = nullptr;
+		Shader::BaseDrawSprite11 spriteShader;
 
 		ID3D11Device* device = nullptr;
 		ID3D11DeviceContext* dc = nullptr;
@@ -115,8 +114,7 @@ namespace ChD3D11
 
 	};
 
-	static const std::function<ShaderController11& ()>Shader11 = ShaderController11::GetIns;
-
+	inline ShaderController11& Shader11() { return ShaderController11::GetIns(); }
 }
 
 #endif

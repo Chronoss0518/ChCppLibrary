@@ -11,19 +11,50 @@ using namespace ChSystem;
 //ChBaseSystem ÉÅÉ\ÉbÉh
 ///////////////////////////////////////////////////////////////////////////////////////
 
-
-bool BaseSystem::IsPushKey(const int _Key)
+bool ChSystem::BaseSystem::IsPushKey(const int _Key)
 {
-	if (!useSystemButtonFlg)return 0;
-	return buttonList.GetBitFlg(_Key);
-}
+	SetKeyCode();
 
-bool BaseSystem::IsPushKeyNoHold(const int _Key)
-{
-	return buttonList.GetBitFlg(_Key);
-}
-
-bool BaseSystem::IsPause(const int _Key)
-{
+	if (buttonList.GetBitFlg(_Key))
+	{
+		isNowPush.SetBitTrue(_Key);
+		return true;
+	}
+	isNowPush.SetBitFalse(_Key);
 	return false;
+}
+
+bool ChSystem::BaseSystem::IsPushKeyNoHold(const int _Key)
+{
+	SetKeyCode();
+
+	if (buttonList.GetBitFlg(_Key))
+	{
+		if (!isNowPush.GetBitFlg(_Key))
+		{
+			isNowPush.SetBitTrue(_Key);
+			return true;
+		}
+		return false;
+	}
+	isNowPush.SetBitFalse(_Key);
+	return false;
+}
+
+bool ChSystem::BaseSystem::IsPause(const int _Key)
+{
+	SetKeyCode();
+
+	bool tmpFlg;
+	tmpFlg = IsPushKey(_Key);
+
+	if (tmpFlg && nowKey)return pauseFlg;
+	nowKey = false;
+
+	if (!tmpFlg)return pauseFlg;
+
+	pauseFlg = !pauseFlg;
+	nowKey = true;
+
+	return pauseFlg;
 }

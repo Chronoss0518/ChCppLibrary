@@ -3,6 +3,27 @@
 #ifndef Ch_Win_Rect_h
 #define Ch_Win_Rect_h
 
+#include"../../BasePack/ChMath.h"
+
+#ifndef	Ch_Win_RECT_MATH_METHOD
+#define	Ch_Win_RECT_MATH_METHOD(_Operator,_BaseClass,_ArgsClass,_MathFunction) \
+_BaseClass##& operator##_Operator##=(const _ArgsClass##& _cm){\
+	_MathFunction\
+	return *this;}\
+\
+_BaseClass operator##_Operator##(const _ArgsClass##& _cm)const{\
+	_BaseClass res = *this;\
+	res += _cm;\
+	return res;}
+#endif
+
+#ifndef	Ch_Win_RECT_CONSTRUCTOR_METHOD
+#define	Ch_Win_RECT_CONSTRUCTOR_METHOD(_BaseClass,_BaseType)\
+_BaseClass##(const ChMath::Vector2Base<##_BaseType##>& _cm) :ChMath::Vector2Base<##_BaseType##>(_cm) {}\
+_BaseClass##(const _BaseType _num) { val.Set(_num); }\
+_BaseClass##() { val.Identity(); }
+#endif
+
 class ChLONGPOINT;
 
 typedef class ChLONGRECT
@@ -12,68 +33,58 @@ public://Operator Functions//
 	ChLONGRECT& operator=(const ChLONGRECT& _cm)
 	{
 		if (this == &_cm)return *this;
-		x = _cm.x;
-		y = _cm.y;
+		vec.val.Set(_cm.val);
 		return *this;
 	}
 
-	ChLONGRECT& operator+=(const ChLONGRECT& _cm);
-	ChLONGRECT operator+(const ChLONGRECT& _cm)const;
-	ChLONGRECT& operator-=(const ChLONGRECT& _cm);
-	ChLONGRECT operator-(const ChLONGRECT& _cm)const;
-	ChLONGRECT& operator*=(const ChLONGRECT& _cm);
-	ChLONGRECT operator*(const ChLONGRECT& _cm)const;
-	ChLONGRECT& operator/=(const ChLONGRECT& _cm);
-	ChLONGRECT operator/(const ChLONGRECT& _cm)const;
+	Ch_Win_RECT_MATH_METHOD(+, ChLONGRECT, ChLONGRECT, vec.val.Add(_cm.vec.val););
+	Ch_Win_RECT_MATH_METHOD(-, ChLONGRECT, ChLONGRECT, vec.val.Sub(_cm.vec.val););
+	Ch_Win_RECT_MATH_METHOD(*, ChLONGRECT, ChLONGRECT, vec.val.Mul(_cm.vec.val););
+	Ch_Win_RECT_MATH_METHOD(/ , ChLONGRECT, ChLONGRECT, vec.val.Div(_cm.vec.val););
 
-	inline ChLONGRECT& operator=(const long& _cm)
-	{
-		vec.val.Set(_cm);
-		return *this;
-	}
-
-	ChLONGRECT& operator+=(const long& _cm);
-	ChLONGRECT operator+(const long& _cm)const;
-	ChLONGRECT& operator-=(const long& _cm);
-	ChLONGRECT operator-(const long& _cm)const;
-	ChLONGRECT& operator*=(const long& _cm);
-	ChLONGRECT operator*(const long& _cm)const;
-	ChLONGRECT& operator/=(const long& _cm);
-	ChLONGRECT operator/(const long& _cm)const;
-
-	inline ChLONGRECT& operator=(const ChMath::Vector4Base<long>& _cm)
+	ChLONGRECT& operator=(const ChMath::Vector4Base<long>& _cm)
 	{
 		if (&vec == &_cm)return *this;
 		vec.val.Set(_cm.val);
 		return *this;
 	}
 
-	inline ChLONGRECT& operator=(const RECT& _cm)
+	Ch_Win_RECT_MATH_METHOD(+, ChLONGRECT, ChMath::Vector4Base<long>, vec.val.Add(_cm.val););
+	Ch_Win_RECT_MATH_METHOD(-, ChLONGRECT, ChMath::Vector4Base<long>, vec.val.Sub(_cm.val););
+	Ch_Win_RECT_MATH_METHOD(*, ChLONGRECT, ChMath::Vector4Base<long>, vec.val.Mul(_cm.val););
+	Ch_Win_RECT_MATH_METHOD(/, ChLONGRECT, ChMath::Vector4Base<long>, vec.val.Div(_cm.val););
+
+	ChLONGRECT& operator=(const RECT& _cm)
 	{
 		if (&pt == &_cm)return *this;
 		pt = _cm;
 		return *this;
 	}
 
-	inline operator ChMath::Vector4Base<long>()const
+	Ch_Win_RECT_MATH_METHOD(+, ChLONGRECT, RECT, ChLONGRECT tmp = _cm;vec.val.Add(tmp.vec.val););
+	Ch_Win_RECT_MATH_METHOD(-, ChLONGRECT, RECT, ChLONGRECT tmp = _cm;vec.val.Sub(tmp.vec.val););
+	Ch_Win_RECT_MATH_METHOD(*, ChLONGRECT, RECT, ChLONGRECT tmp = _cm;vec.val.Mul(tmp.vec.val););
+	Ch_Win_RECT_MATH_METHOD(/, ChLONGRECT, RECT, ChLONGRECT tmp = _cm;vec.val.Div(tmp.vec.val););
+
+	ChLONGRECT& operator=(const long& _cm)
 	{
-		return vec;
+		vec.val.Set(_cm);
+		return *this;
 	}
 
-	inline operator ChMath::Vector4Base<long>* ()
-	{
-		return &vec;
-	}
+	Ch_Win_RECT_MATH_METHOD(+, ChLONGRECT, long, vec.val.Add(_cm););
+	Ch_Win_RECT_MATH_METHOD(-, ChLONGRECT, long, vec.val.Sub(_cm););
+	Ch_Win_RECT_MATH_METHOD(*, ChLONGRECT, long, vec.val.Mul(_cm););
+	Ch_Win_RECT_MATH_METHOD(/, ChLONGRECT, long, vec.val.Div(_cm););
 
-	inline operator RECT()const
-	{
-		return pt;
-	}
 
-	inline operator RECT* ()
-	{
-		return &pt;
-	}
+	operator ChMath::Vector4Base<long>()const { return vec; }
+
+	operator ChMath::Vector4Base<long>* (){return &vec;}
+
+	operator RECT()const { return pt; }
+
+	operator RECT* (){return &pt;}
 
 public://ConstructerDestructer//
 
@@ -83,7 +94,7 @@ public://ConstructerDestructer//
 		*this = _cm;
 	}
 
-	ChLONGRECT(const ChLONGPOINT& _pos, const ChLONGPOINT& _size);
+	ChLONGRECT(const ChMath::Vector2Base<long>& _pos, const ChMath::Vector2Base<long>& _size) { vec.SetScreenCoordinates(_pos, _size); }
 
 	ChLONGRECT(const RECT& _cm)
 	{
@@ -91,17 +102,9 @@ public://ConstructerDestructer//
 		pt = _cm;
 	}
 
-	ChLONGRECT(const ChMath::Vector4Base<long>& _cm)
-	{
-		if (&vec == &_cm)return;
-		vec.val.Set(_cm.val);
-	}
+	ChLONGRECT(const ChMath::Vector4Base<long>& _cm) { vec.val.Set(_cm.val); }
 
-	ChLONGRECT()
-	{
-		x = 0;
-		y = 0;
-	}
+	ChLONGRECT() { vec.val.Identity(); }
 
 	ChLONGRECT(const long _x, const long _y)
 	{
@@ -109,56 +112,39 @@ public://ConstructerDestructer//
 		y = _y;
 	}
 
-	ChLONGRECT(const long _num)
-	{
-		Set(_num);
-	}
+	ChLONGRECT(const long _num) { vec.val.Set(_num); }
 
 public://Set Functions//
 
-	inline void Set(const long _x, const long _y) { x = _x; y = _y; }
+	void Set(const long _x, const long _y) { x = _x; y = _y; }
 
-	inline void Set(const long _num) { x = _num; y = _num; }
+	void Set(const long _num) { vec.val.Set(_num); }
 
 public://Is Functions//
 
-	bool IsAll0()const;
-
-	inline bool IsOverlaps(const ChLONGRECT& _vec)
+	bool IsAll0()const
 	{
-		return vec.IsOverlaps(_vec.vec);
+		for (char i = 0; i < 2; i++)
+		{
+			if (val[i] == 0)continue;
+			return false;
+		}
+		return true;
 	}
 
+	bool IsOverlaps(const ChLONGRECT& _vec) { return vec.IsOverlaps(_vec.vec); }
 
-public://Serialize Deserialize//
-
-	inline std::string Serialize(
-		const std::string& _cutChar = ","
-		, const std::string& _endChar = ";")
-	{
-		return vec.val.Serialize(_cutChar, _endChar);
-	}
-
-	inline void Deserialize(
-		const std::string& _str
-		, const size_t _fPos = 0
-		, const std::string& _cutChar = ","
-		, const std::string& _endChar = ";"
-		, const unsigned int _digit = 6)
-	{
-		vec.val.Deserialize(_str, _fPos, _cutChar, _endChar, _digit);
-	}
 
 public://Other Functions//
 
-	inline void Abs() { vec.val.Abs(); }
+	void Abs() { vec.val.Abs(); }
 
-	inline void Identity() { vec.val.Identity(); }
+	void Identity() { vec.val.Identity(); }
 
-	inline ChLONGRECT OverlapsRect(const ChLONGRECT& _vec)
+	ChLONGRECT OverlapsRect(const ChLONGRECT& _vec)
 	{
 		ChLONGRECT out;
-		out.vec.val.Set(ChMath::Vector4Base<long>::OverlapsRect(vec,_vec).val);
+		out.vec.val.Set(ChMath::Vector4Base<long>::GetOverlapsRect(vec,_vec).val);
 		return out;
 	}
 

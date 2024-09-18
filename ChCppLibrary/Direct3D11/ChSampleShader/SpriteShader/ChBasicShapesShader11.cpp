@@ -24,14 +24,11 @@ void BasicShapesPositionShader11::Init(ID3D11Device* _device)
 	bsData.Init(_device);
 	positionData.Init(_device);
 
-	std::array<Ch3D::Vertex, 4> vertexs;
+	Ch3D::Vertex vertexs[4];
+	vertexBuffer.CreateBuffer(_device, &vertexs[0], 4);
 
-	vertexBuffer.CreateBuffer(_device, &vertexs[0], vertexs.size());
-
-	std::array<unsigned long, 6> indexs = { 0,1,2,0,2,3 };
-
-	indexBuffer.CreateBuffer(_device, &indexs[0], indexs.size());
-
+	unsigned long indexs[] = { 0,1,2,0,2,3 };
+	indexBuffer.CreateBuffer(_device, &indexs[0], 6);
 
 	D3D11_RASTERIZER_DESC desc
 	{
@@ -111,9 +108,9 @@ void BasicShapesPositionShader11::InitPixelShader()
 
 
 void BasicShapesPositionShader11::Draw(
-	Sprite11& _sprite
-	, const ChVec4& _baseColor
-	, const ChMat_11& _mat)
+	Sprite11& _sprite,
+	const ChVec4& _baseColor,
+	const ChLMat& _mat)
 {
 	if (!IsInit())return;
 	if (!IsDraw())return;
@@ -135,7 +132,7 @@ void BasicShapesPositionShader11::Draw(
 
 	auto&& vertexs = _sprite.GetVertexs();
 
-	vertexBuffer.UpdateResouce(GetDC(), &vertexs[0]);
+	vertexBuffer.UpdateResouce(GetDC(), &vertexs.vertex[0]);
 
 	vertexBuffer.SetVertexBuffer(GetDC(), offsets);
 
@@ -158,13 +155,11 @@ void BasicShapesCircleShader11::Init(ID3D11Device* _device)
 	bsData.Init(_device);
 	circleData.Init(_device);
 
-	std::array<Ch3D::Vertex, 4> vertexs;
+	Ch3D::Vertex vertexs[4];
+	vertexBuffer.CreateBuffer(_device, &vertexs[0], 4);
 
-	vertexBuffer.CreateBuffer(_device, &vertexs[0], vertexs.size());
-
-	std::array<unsigned long, 6> indexs = { 0,1,2,0,2,3 };
-
-	indexBuffer.CreateBuffer(_device, &indexs[0], indexs.size());
+	unsigned long indexs[] = { 0,1,2,0,2,3 };
+	indexBuffer.CreateBuffer(_device, &indexs[0], 6);
 
 
 	D3D11_RASTERIZER_DESC desc
@@ -225,9 +220,9 @@ void BasicShapesCircleShader11::InitPixelShader()
 
 
 void BasicShapesCircleShader11::Draw(
-	Sprite11& _sprite
-	, const ChVec4& _baseColor
-	, const ChMat_11& _mat)
+	Sprite11& _sprite,
+	const ChVec4& _baseColor,
+	const ChLMat& _mat)
 {
 	if (!IsInit())return;
 	if (!IsDraw())return;
@@ -249,7 +244,7 @@ void BasicShapesCircleShader11::Draw(
 
 	auto&& vertexs = _sprite.GetVertexs();
 
-	vertexBuffer.UpdateResouce(GetDC(), &vertexs[0]);
+	vertexBuffer.UpdateResouce(GetDC(), &vertexs.vertex[0]);
 
 	vertexBuffer.SetVertexBuffer(GetDC(), offsets);
 

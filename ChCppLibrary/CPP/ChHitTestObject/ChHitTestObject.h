@@ -1,18 +1,15 @@
 #ifndef Ch_CPP_HTO_h
 #define Ch_CPP_HTO_h
 
+#include"../../BasePack/ChMath3D.h"
+
 namespace ChCpp
 {
-
-
 	//当たり判定を行う手法//
 	class HitTestObject
 	{
 
-	public:
-
-		///////////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
+	public://Set Functions//
 
 		inline void SetPosition(const ChVec3& _pos) { mat.SetPosition(_pos); }
 
@@ -24,14 +21,12 @@ namespace ChCpp
 
 		inline void SetHitVector(const ChVec3& _vec) { hitVector = _vec; }
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//GetFunction//
+	public://Get Functions//
 
 		//衝突していた場合に中心から見てどの位置までめり込んでいたかの数値//
 		inline ChVec3 GetHitVectol() { return hitVector; }
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		//GetFunction//
+	public://Get Functions//
 
 		inline ChVec3 GetPos() const { return mat.GetPosition(); }
 

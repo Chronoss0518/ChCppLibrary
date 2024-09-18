@@ -5,11 +5,17 @@
 
 namespace ChD3D11
 {
-
 	enum class SpritePositionName : unsigned char
 	{
 		LeftTop,RightTop,RightBottom, LeftBottom
 	};
+
+	struct SpriteVertex
+	{
+		static constexpr unsigned char VERTEX_COUNT = 4;
+		Ch3D::Vertex vertex[VERTEX_COUNT];
+	};
+
 
 	class Sprite11
 	{
@@ -18,28 +24,26 @@ namespace ChD3D11
 
 		Sprite11& operator=(const Sprite11& _sp)
 		{
-			for (unsigned char i = 0; i < vertexs.size(); i++)
+			for (unsigned char i = 0; i < vertexs.VERTEX_COUNT; i++)
 			{
-				vertexs[i].pos = _sp.vertexs[i].pos;
-				vertexs[i].color = _sp.vertexs[i].color;
-				vertexs[i].uv = _sp.vertexs[i].uv;
+				vertexs.vertex[i].pos = _sp.vertexs.vertex[i].pos;
+				vertexs.vertex[i].color = _sp.vertexs.vertex[i].color;
+				vertexs.vertex[i].uv = _sp.vertexs.vertex[i].uv;
 			}
 
 			return *this;
 
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//InitAndRelease//
+	public://Init And Release//
 
 		void Init();
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//SetFunction//
+	public://Set Functions//
 
 		inline void SetPos(const SpritePositionName _posNames, const  ChVec2& _posData)
 		{
-			SetPos(ChStd::EnumCast(_posNames), _posData);
+			SetPos(static_cast<unsigned char>(_posNames), _posData);
 		}
 
 		void SetPos(const unsigned char _posNames, const  ChVec2& _posData);
@@ -48,7 +52,7 @@ namespace ChD3D11
 
 		inline void SetUVPos(const SpritePositionName _posNames, const ChVec2& _posData)
 		{
-			SetUVPos(ChStd::EnumCast(_posNames), _posData);
+			SetUVPos(static_cast<unsigned char>(_posNames), _posData);
 		}
 
 		//UVPosはスクリーン座標系で計算されます//
@@ -61,57 +65,56 @@ namespace ChD3D11
 
 		void SetInitUV();
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//GetFunction//
+	public://Get Functions//
 
-		inline const std::array<Ch3D::Vertex, 4>& GetVertexs() { return vertexs; }
+		inline const SpriteVertex& GetVertexs() { return vertexs; }
 
 		inline ChVec2 GetPos(const SpritePositionName _posNames)const
 		{
-			return GetPos(ChStd::EnumCast(_posNames));
+			return GetPos(static_cast<unsigned char>(_posNames));
 		}
 
 		inline ChVec2 GetPos(const unsigned char _num)const
 		{
-			if (_num >= vertexs.size())return ChVec2();
+			if (_num >= vertexs.VERTEX_COUNT)return ChVec2();
 
-			return vertexs[_num].pos;
+			return vertexs.vertex[_num].pos;
 		}
 
 		inline ChVec4 GetPosRect()const
 		{
 			ChVec4 res;
-			res.left = vertexs[ChStd::EnumCast(SpritePositionName::LeftTop)].pos.x;
-			res.top = vertexs[ChStd::EnumCast(SpritePositionName::LeftTop)].pos.y;
-			res.right = vertexs[ChStd::EnumCast(SpritePositionName::RightBottom)].pos.x;
-			res.bottom = vertexs[ChStd::EnumCast(SpritePositionName::RightBottom)].pos.y;
+			res.left = vertexs.vertex[static_cast<unsigned char>(SpritePositionName::LeftTop)].pos.x;
+			res.top = vertexs.vertex[static_cast<unsigned char>(SpritePositionName::LeftTop)].pos.y;
+			res.right = vertexs.vertex[static_cast<unsigned char>(SpritePositionName::RightBottom)].pos.x;
+			res.bottom = vertexs.vertex[static_cast<unsigned char>(SpritePositionName::RightBottom)].pos.y;
 			return res;
 		}
 
 		inline ChVec2 GetUV(const SpritePositionName _posNames)const
 		{
-			return GetUV(ChStd::EnumCast(_posNames));
+			return GetUV(static_cast<unsigned char>(_posNames));
 		}
 
 		ChVec2 GetUV(const unsigned char _num)const
 		{
-			if (_num >= vertexs.size())return ChVec2();
+			if (_num >= vertexs.VERTEX_COUNT)return ChVec2();
 
-			return vertexs[_num].uv;
+			return vertexs.vertex[_num].uv;
 		}
 
 		inline ChVec4 GetUVRect()const
 		{
 			ChVec4 res;
-			res.left = vertexs[ChStd::EnumCast(SpritePositionName::LeftTop)].uv.x;
-			res.top = vertexs[ChStd::EnumCast(SpritePositionName::LeftTop)].uv.y;
-			res.right = vertexs[ChStd::EnumCast(SpritePositionName::RightBottom)].uv.x;
-			res.bottom = vertexs[ChStd::EnumCast(SpritePositionName::RightBottom)].uv.y;
+			res.left = vertexs.vertex[static_cast<unsigned char>(SpritePositionName::LeftTop)].uv.x;
+			res.top = vertexs.vertex[static_cast<unsigned char>(SpritePositionName::LeftTop)].uv.y;
+			res.right = vertexs.vertex[static_cast<unsigned char>(SpritePositionName::RightBottom)].uv.x;
+			res.bottom = vertexs.vertex[static_cast<unsigned char>(SpritePositionName::RightBottom)].uv.y;
 			return res;
 		}
 
-		///////////////////////////////////////////////////////////////////////////////////
-		
+	public:
+
 		inline void Move(const ChVec2& _vec) { Move(_vec.x, _vec.y); }
 
 		void Move(const float _x,const float _y);
@@ -120,16 +123,9 @@ namespace ChD3D11
 
 		inline void MoveY(const float _y) { Move(0.0f, _y); }
 
-		///////////////////////////////////////////////////////////////////////////////////
-
-		///////////////////////////////////////////////////////////////////////////////////
-
 	protected:
 
-
-		///////////////////////////////////////////////////////////////////////////////////
-
-		std::array<Ch3D::Vertex, 4> vertexs;
+		SpriteVertex vertexs;
 
 	};
 

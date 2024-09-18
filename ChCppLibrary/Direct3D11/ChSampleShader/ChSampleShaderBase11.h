@@ -1,6 +1,7 @@
 #ifndef Ch_D3D11_SSBase_h
 #define Ch_D3D11_SSBase_h
 
+#include"../ChTexture/ChTexture11.h"
 #include"../ChShaderObject/ChShaderObject11.h"
 
 namespace ChD3D11
@@ -94,9 +95,9 @@ namespace ChD3D11
 
 		protected://Get Functions//
 
-			inline Texture11& GetWhiteTexture() { return *whiteTex; }
+			inline Texture11& GetWhiteTexture() { return whiteTex; }
 
-			inline Texture11& GetNormalTexture() { return *normalTex; }
+			inline Texture11& GetNormalTexture() { return normalTex; }
 
 			ID3D11Device* GetDevice() { return device; }
 
@@ -138,8 +139,8 @@ namespace ChD3D11
 			PixelShader11 ps;
 			ComputeShader11 cs;
 
-			ChPtr::Unique<Texture11> whiteTex;
-			ChPtr::Unique<Texture11> normalTex;
+			Texture11 whiteTex;
+			Texture11 normalTex;
 
 			D3D_PRIMITIVE_TOPOLOGY primitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 

@@ -1,11 +1,15 @@
+#ifdef _WINDOWS_
+
 #ifndef Ch_D3D11_Inc_h
 #define Ch_D3D11_Inc_h
 
+#ifndef CRT
+#define CRT
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////////////
 //DirectXŠÖ˜A
 ///////////////////////////////////////////////////////////////////////////////////////
-
 
 #include"BaseIncluder/ChD3D11I.h"
 
@@ -44,27 +48,12 @@
 //Component//
 
 //D3DObject//
-#include"BaseIncluder/ChD3DOI.h"
+//#include"BaseIncluder/ChD3DOI.h"
+
+#pragma comment(lib,"ChD3D11Library.lib")
 
 
-#ifndef Ch_Library_Create
-#ifdef _MT
-#ifdef _DLL
-#ifdef _DEBUG
-#pragma comment(lib,"ChD3D11_MDd.lib")
-#else
-#pragma comment(lib,"ChD3D11_MD.lib")
-#endif//_DEBUG
-#else//_DLL
-#ifdef _DEBUG
-#pragma comment(lib,"ChD3D11_MTd.lib")
-#else
-#pragma comment(lib,"ChD3D11_MT.lib")
-#endif//_DEBUG
-#endif//else
-#endif//_MT
-#endif//Ch_Library_Create
-
+#endif
 
 //CopyRight Chronoss0518 2018/08//
 #endif

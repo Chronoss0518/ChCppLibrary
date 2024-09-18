@@ -11,17 +11,16 @@ namespace ChTex
 	{
 	public:
 
-		///////////////////////////////////////////////////////////////////////////////////
+#ifdef CRT
 
-		void OpenFile(const std::string& _fileName)override {};
+		void OpenFile(const char* _fileName)override {};
 
-		///////////////////////////////////////////////////////////////////////////////////
-
+#endif 
 
 	};
 
 }
 
-
+#include"ChTextureShared9.h"
 
 #endif
