@@ -282,18 +282,18 @@ namespace ChStr
 	{
 		std::vector<std::basic_string<CharaType>> out;
 
-		unsigned long nowPos = 0;
-		unsigned long testPos = _str.find(_splitChar, nowPos);
+		size_t nowPos = 0;
+		size_t testPos = _str.find(_splitChar, nowPos);
 
 		if (testPos == std::string::npos)
 		{
 			out.push_back(_str);
 			return out;
-	}
+		}
 
 		while (testPos != std::basic_string<CharaType>::npos)
 		{
-			unsigned long tmp = testPos - nowPos;
+			size_t tmp = testPos - nowPos;
 			out.push_back(tmp != 0 ? _str.substr(nowPos, testPos - nowPos) : ChStd::GetZeroChara<CharaType>());
 			nowPos = testPos + _splitChar.size();
 			testPos = _str.find(_splitChar, nowPos);
