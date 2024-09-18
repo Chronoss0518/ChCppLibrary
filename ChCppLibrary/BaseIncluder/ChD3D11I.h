@@ -10,7 +10,7 @@
 
 
 #pragma comment(lib,"d3d11.lib")
-#pragma comment(lib,"d3dx11.lib")
+//#pragma comment(lib,"d3dx11.lib")
 #pragma comment(lib, "dxguid.lib")
 
 #include"../Direct3D11/ChPackDate/ChMatrix_11.h"
