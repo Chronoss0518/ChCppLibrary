@@ -35,6 +35,8 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //#include"../ChLight/ChLight11.h"
 #include"ChTexture11.h"
 
+#pragma comment(lib,"Windowscodecs.lib")
+
 using namespace ChD3D11;
 
 void TextureBase11::Release()
@@ -43,8 +45,6 @@ void TextureBase11::Release()
 	if (ChPtr::NotNullCheck(sampler)) { sampler->Release(); sampler = nullptr; }
 	if (ChPtr::NotNullCheck(texView)) { texView->Release(); texView = nullptr; }
 	if (ChPtr::NotNullCheck(baseTex)) { baseTex->Release(); baseTex = nullptr; }
-
-	PixelDataRelease();
 }
 
 void TextureBase11::InitSampler()
@@ -138,6 +138,50 @@ void Texture11::CreateColorTexture(
 }
 
 void Texture11::CreateColorTexture(
+	const ChVec4* _colorArray,
+	const unsigned long _width,
+	const unsigned long _height,
+	const unsigned int _CPUFlg)
+{
+	if (!D3D11API().IsInit())return;
+
+	ID3D11Device* tmpDevice = (D3D11Device());
+	CreateColorTexture(tmpDevice, _colorArray, _width, _height,_CPUFlg);
+}
+
+D3D11_TEXTURE2D_DESC Texture11::CreateDESC(
+	const unsigned long _width,
+	const unsigned long _height,
+	const unsigned int _CPUFlg)
+{
+	D3D11_TEXTURE2D_DESC desc;
+	ChStd::MZero(&desc);
+	desc.Width = _width;
+	desc.Height = _height;
+	desc.MipLevels = 1;
+	desc.ArraySize = 1;
+	desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	desc.SampleDesc.Count = 1;
+	desc.SampleDesc.Quality = 0;
+	desc.Usage = D3D11_USAGE_DEFAULT;
+	desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	desc.CPUAccessFlags = _CPUFlg;
+	desc.MiscFlags = 0;
+
+	return desc;
+}
+
+void Texture11::CreateColorTexture(
+	IWICBitmap* _bitmap,
+	const unsigned int _CPUFlg)
+{
+	if (!D3D11API().IsInit())return;
+
+	ID3D11Device* tmpDevice = (D3D11Device());
+	CreateColorTexture(tmpDevice, _bitmap, _CPUFlg);
+}
+
+void ChD3D11::Texture11::CreateColorTexture(
 	ID3D11Device* _device,
 	const ChVec4& _color,
 	const unsigned long _width,
@@ -154,30 +198,10 @@ void Texture11::CreateColorTexture(
 
 	device = _device;
 
-	D3D11_TEXTURE2D_DESC desc;
-	ChStd::MZero(&desc);
-	desc.Width = _width;
-	desc.Height = _height;
-	desc.MipLevels = 1;
-	desc.ArraySize = 1;
-	desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	desc.SampleDesc.Count = 1;
-	desc.SampleDesc.Quality = 0;
-	desc.Usage = D3D11_USAGE_DEFAULT;
-	desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	desc.CPUAccessFlags = _CPUFlg;
-	desc.MiscFlags = 0;
-
-	textureSize = _height * _width;
-	pixelData = new ChVec4[textureSize];
-
-	for (unsigned long i = 0; i < textureSize; i++)
-	{
-		pixelData[i] = _color;
-	}
+	D3D11_TEXTURE2D_DESC desc = CreateDESC(_width, _height, _CPUFlg);
 
 	D3D11_SUBRESOURCE_DATA data;
-	data.pSysMem = pixelData;
+	data.pSysMem = SetPixel(_color, _height * _width);
 	data.SysMemPitch = _width * sizeof(ChVec4);
 	data.SysMemSlicePitch = _height * _width * sizeof(ChVec4);
 
@@ -187,19 +211,7 @@ void Texture11::CreateColorTexture(
 	Init(_device);
 }
 
-void Texture11::CreateColorTexture(
-	const ChVec4* _colorArray,
-	const unsigned long _width,
-	const unsigned long _height,
-	const unsigned int _CPUFlg)
-{
-	if (!D3D11API().IsInit())return;
-
-	ID3D11Device* tmpDevice = (D3D11Device());
-	CreateColorTexture(tmpDevice, _colorArray, _width, _height,_CPUFlg);
-}
-
-void Texture11::CreateColorTexture(
+void ChD3D11::Texture11::CreateColorTexture(
 	ID3D11Device* _device,
 	const ChVec4* _colorArray,
 	const unsigned long _width,
@@ -216,50 +228,18 @@ void Texture11::CreateColorTexture(
 
 	device = _device;
 
-	D3D11_TEXTURE2D_DESC desc;
-	ChStd::MZero(&desc);
-	desc.Width = _width;
-	desc.Height = _height;
-	desc.MipLevels = 1;
-	desc.ArraySize = 1;
-	desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	desc.SampleDesc.Count = 1;
-	desc.SampleDesc.Quality = 0;
-	desc.Usage = D3D11_USAGE_DEFAULT;
-	desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	desc.CPUAccessFlags = _CPUFlg;
-	desc.MiscFlags = 0;
-
-	textureSize = _height * _width;
-	pixelData = new ChVec4[textureSize];
-
-	ChVec4 test;
-
-	for (unsigned long i = 0; i < textureSize; i++)
-	{
-		test = pixelData[i] = _colorArray[i];
-	}
+	D3D11_TEXTURE2D_DESC desc = CreateDESC(_width, _height, _CPUFlg);
 
 	D3D11_SUBRESOURCE_DATA data;
-	data.pSysMem = pixelData;
+	data.pSysMem = SetPixel(_colorArray, _height * _width);
 	data.SysMemPitch = _width * sizeof(ChVec4);
-	data.SysMemSlicePitch = 0;
+	data.SysMemSlicePitch = _height * _width * sizeof(ChVec4);
 
-	device->CreateTexture2D(&desc, &data, &baseTex);
+	auto&&hres = device->CreateTexture2D(&desc, &data, &baseTex);
 
 	CreateSRV();
 
 	Init(_device);
-}
-
-void Texture11::CreateColorTexture(
-	IWICBitmap* _bitmap,
-	const unsigned int _CPUFlg)
-{
-	if (!D3D11API().IsInit())return;
-
-	ID3D11Device* tmpDevice = (D3D11Device());
-	CreateColorTexture(tmpDevice, _bitmap, _CPUFlg);
 }
 
 void RenderTarget11::Release()

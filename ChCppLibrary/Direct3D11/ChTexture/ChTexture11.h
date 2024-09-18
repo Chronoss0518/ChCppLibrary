@@ -23,6 +23,9 @@ CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFT
 OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+#ifndef Ch_D3D11_Tex_h
+#define Ch_D3D11_Tex_h
+
 #ifdef CRT
 
 #include<wincodec.h>
@@ -52,8 +55,7 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endif
 #endif
 
-#ifndef Ch_D3D11_Tex_h
-#define Ch_D3D11_Tex_h
+#include"../../BasePack/ChStr.h"
 
 struct IWICBitmap;
 
@@ -64,19 +66,22 @@ namespace ChD3D11
 	{
 	public:
 
-		virtual ~TextureBase11()
+		struct TextureBase11CRT
 		{
-			Release();
-		}
+#ifdef CRT
+			std::vector<ChVec4> pixelData;
+#endif
+		};
 
+	public:
+
+		TextureBase11();
+
+		virtual ~TextureBase11();
 
 	public://Init And Release//
 
 		virtual void Release();
-
-	private:
-
-		void PixelDataRelease();
 
 	public://Set Functions//
 
@@ -135,10 +140,15 @@ namespace ChD3D11
 		ID3D11ShaderResourceView* texView = nullptr;
 
 		ID3D11Texture2D* baseTex = nullptr;
-		ChVec4* pixelData = nullptr;
 		unsigned long textureSize = 0;
 
 		ID3D11Device* device = nullptr;
+
+		TextureBase11CRT& ValueIns() { return *value; }
+
+	private:
+
+		TextureBase11CRT* value = nullptr;
 
 	};
 
@@ -237,6 +247,14 @@ namespace ChD3D11
 
 	protected:
 
+		D3D11_TEXTURE2D_DESC CreateDESC(
+			const unsigned long _width,
+			const unsigned long _height,
+			const unsigned int _CPUFlg);
+
+		ChVec4* SetPixel(const ChVec4* _colorArray, const unsigned long _textureSize);
+
+		ChVec4* SetPixel(const ChVec4& _colorArray, const unsigned long _textureSize);
 	};
 
 	class RenderTarget11 :public TextureBase11
@@ -312,6 +330,17 @@ namespace ChD3D11
 
 #ifdef CRT
 
+ChD3D11::TextureBase11::TextureBase11()
+{
+	value = new TextureBase11CRT();
+}
+
+ChD3D11::TextureBase11::~TextureBase11()
+{
+	Release();
+	delete value;
+}
+
 void ChD3D11::Texture11::CreateColorTexture(
 	ID3D11Device* _device,
 	IWICBitmap* _bitmap,
@@ -322,48 +351,74 @@ void ChD3D11::Texture11::CreateColorTexture(
 
 	Release();
 
-	WICRect wicRect;
-	wicRect.X = 0;
-	wicRect.Y = 0;
-	{
-		unsigned int w, h;
-		_bitmap->GetSize(&w, &h);
-		wicRect.Width = w;
-		wicRect.Height = h;
-	}
-	device = _device;
+	unsigned int w, h;
+	_bitmap->GetSize(&w, &h);
 
-	UINT stride = wicRect.Width * 4;
+	UINT stride = w * sizeof(ChVec4);
 
 	std::vector<unsigned char>testVector;
-	testVector.resize(stride* wicRect.Height * 4);
+	testVector.resize(stride * h);
 
-	_bitmap->CopyPixels(nullptr, stride * 4, stride* wicRect.Height * 4, &testVector[0]);
-
-	D3D11_SUBRESOURCE_DATA data;
-	ChStd::MZero(&data);
+	auto&&hresult = _bitmap->CopyPixels(nullptr, stride, stride * h, &testVector[0]);
 
 	std::vector<ChVec4>tmpPixelData;
-	tmpPixelData.resize(wicRect.Height* wicRect.Width);
+	tmpPixelData.resize(h * w);
 
-	std::memcpy(&tmpPixelData[0], &testVector[0], testVector.size());
+	ChStr::Bytes<ChVec4> byte;
 
-	CreateColorTexture(_device, &tmpPixelData[0], wicRect.Width, wicRect.Height, _CPUFlg);
-
+	ChVec4 test;
+	for (unsigned long i = 0; i < h * w; i++)
+	{
+		for (unsigned long j = 0; j < sizeof(ChVec4); j++)
+		{
+			byte.byte[j] = testVector[j + (i * sizeof(ChVec4))];
+		}
+		if (test != byte.val)
+		{
+			test = byte.val;
+		}
+		tmpPixelData[i] = byte.val;
+	}
+	CreateColorTexture(_device, &tmpPixelData[0], w, h, _CPUFlg);
 }
 
-#ifdef CRT
-
-void ChD3D11::TextureBase11::PixelDataRelease()
+ChVec4* ChD3D11::Texture11::SetPixel(const ChVec4* _colorArray, const unsigned long _textureSize)
 {
-	if (ChPtr::NullCheck(pixelData))return;
-	textureSize < 2 ? delete pixelData : delete[] pixelData;
-	textureSize = 0;
-	pixelData = nullptr;
+	textureSize = _textureSize;
+	ValueIns().pixelData.resize(textureSize);
+
+	ChVec4 test;
+
+	for (unsigned long i = 0; i < textureSize; i++)
+	{
+		ValueIns().pixelData[i] = _colorArray[i];
+
+		if (test != ValueIns().pixelData[i])
+		{
+			test = ValueIns().pixelData[i];
+		}
+	}
+	return &ValueIns().pixelData[0];
 }
 
-#endif
+ChVec4* ChD3D11::Texture11::SetPixel(const ChVec4& _color, const unsigned long _textureSize)
+{
+	textureSize = _textureSize;
+	ValueIns().pixelData.resize(textureSize);
 
+	ChVec4 test;
+
+	for (unsigned long i = 0; i < textureSize; i++)
+	{
+		ValueIns().pixelData[i] = _color;
+
+		if (test != ValueIns().pixelData[i])
+		{
+			test = ValueIns().pixelData[i];
+		}
+	}
+	return &ValueIns().pixelData[0];
+}
 
 #endif
 
