@@ -170,9 +170,9 @@ void DirectFontBase::Release()
 	ReleaseBrush();
 	ReleaseLayout();
 
+	D3DOBJECT_RELEASE(renderTarget);
 	D3DOBJECT_RELEASE(dwFactory);
 	D3DOBJECT_RELEASE(d2dFactory);
-	D3DOBJECT_RELEASE(renderTarget);
 }
 
 void DirectFontBase::ReleaseTextFormat()
@@ -364,6 +364,16 @@ LayoutObject DirectFontBase::CreateLayout(
 	return res;
 }
 
+const wchar_t* DirectFontBase::GetLocaleName(LocaleNameId _localeName)
+{
+	unsigned long localeNameNo = static_cast<int>(_localeName);
+	static const wchar_t* localeName[] = { L"en-us",L"ja-JP" };
+
+	if (localeNameNo >= (sizeof(localeName)))return L"";
+
+	return localeName[localeNameNo];
+}
+
 void DirectFontBase::DrawStart()
 {
 
@@ -412,16 +422,13 @@ void DirectFontBase::DrawTextMethod(
 	ID2D1SolidColorBrush* brushObject,
 	const D2D1_RECT_F& _drawRect)
 {
-	//renderTarget->FillRectangle(&_drawRect, brushObject);
 
-	//return;
 	renderTarget->DrawTextW(
 		_text,        // The string to render.
 		_textLength,    // The string's length.
 		_textFormat,    // The text format.
 		&_drawRect,       // The region of the window where the text will be rendered.
-		brushObject,     // The brush used to draw the text.
-		D2D1_DRAW_TEXT_OPTIONS_CLIP
+		brushObject     // The brush used to draw the text.
 	);
 }
 
@@ -509,7 +516,7 @@ void DirectFontBase::DrawEnd()
 {
 	if (!thisDrawerFlg)return;
 	
-	renderTarget->EndDraw();
+	auto&& hresult = renderTarget->EndDraw();
 
 	thisDrawerFlg = false;
 	GetDrawFlg() = false;

@@ -31,7 +31,12 @@ void WICBitmapCreator::Init()
 
 	if (FAILED(result))return;
 
-	result = CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER, IID_IWICImagingFactory, (LPVOID*)&factory);
+	result = CoCreateInstance(
+		CLSID_WICImagingFactory,
+		nullptr,
+		CLSCTX_INPROC_SERVER,
+		IID_IWICImagingFactory,
+		(LPVOID*)&factory);
 
 	if (FAILED(result))
 		Release();
@@ -67,7 +72,12 @@ WICBitmapObject WICBitmapCreator::CreateBitmapObject(unsigned long _width, unsig
 
 	if (ChPtr::NullCheck(factory))return res;
 
-	factory->CreateBitmap(_width, _height, GUID_WICPixelFormat128bppPRGBAFloat, WICBitmapCacheOnLoad, &res.bitmap);
+	auto&&hresult = factory->CreateBitmap(
+		_width,
+		_height,
+		GUID_WICPixelFormat128bppPRGBAFloat,
+		WICBitmapCreateCacheOption::WICBitmapCacheOnLoad,
+		&res.bitmap);
 
 	AddBitmap(res.bitmap);
 

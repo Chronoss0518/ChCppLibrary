@@ -141,7 +141,7 @@ namespace ChD3D
 
 	public:
 
-		enum class LocaleNameId
+		enum class LocaleNameId : int
 		{
 			English,
 			Japanese,
@@ -189,7 +189,7 @@ namespace ChD3D
 			if (_familyName.length() <= 0)return res;
 			if (_fontSize <= 0.0f)return res;
 
-			auto&& localeName = GetLocaleName(localeNameId);
+			std::wstring localeName = GetLocaleName(localeNameId);
 
 			if (localeName.length() <= 0)return res;
 			if (ChPtr::NullCheck(dwFactory))return res;
@@ -353,19 +353,7 @@ namespace ChD3D
 
 	private:
 
-#ifdef CRT
-
-		std::wstring GetLocaleName(LocaleNameId _localeName)
-		{
-			unsigned long localeNameNo = ChStd::EnumCast(_localeName);
-			static std::wstring localeName[] = { L"en-us",L"ja-JP" };
-
-			if (localeNameNo >= (sizeof(localeName) / sizeof(std::wstring)))return L"";
-
-			return localeName[localeNameNo];
-		}
-
-#endif
+		const wchar_t* GetLocaleName(LocaleNameId _localeName);
 
 		static bool& GetDrawFlg() { static bool flg; return flg; }
 
