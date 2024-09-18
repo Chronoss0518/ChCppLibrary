@@ -17,22 +17,12 @@
 #include"ChTextureComponent9.h"
 
 ///////////////////////////////////////////////////////////////////////////////////
-//ChTextureComponent9メソッド
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChTextureComponent9::SetTexture(const std::string& _textureName)
-{
-	texture = ChTex::BaseTexture9::TextureType(_textureName);
-	texture->CreateTexture(_textureName, ChD3D9::D3D9Device());
-}
-
-///////////////////////////////////////////////////////////////////////////////////
 //ChSpriteTextureComponent9メソッド
 ///////////////////////////////////////////////////////////////////////////////////
 
 void ChSpriteTextureComponent9::Draw2D()
 {
-	if (texture == nullptr)return;
+	if (ChPtr::NullCheck(GetTex()))return;
 
 	for (unsigned char i = 0; i < 4; i++)
 	{
@@ -42,19 +32,14 @@ void ChSpriteTextureComponent9::Draw2D()
 	ChMat_9 TmpMat;
 
 	//{
-
 	//	auto Trans = LookObj()->GetTransform<ChTransformCom9>();
-
 	//	if (nullptr != Trans)
 	//	{
-
 	//		TmpMat = Trans->GetMat();
 	//	}
-
 	//}
 
-	ChD3D9::Shader().DrawSprite(texture, TmpMat,ver);
-
+	ChD3D9::Shader().DrawSprite(*GetTex(), TmpMat,ver);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -63,12 +48,11 @@ void ChSpriteTextureComponent9::Draw2D()
 
 void ChPolygonTextureComponent9::Draw3D()
 {
-	if (texture == nullptr)return;
+	if (ChPtr::NullCheck(GetTex()))return;
 
 	ChMat_9 TmpMat;
 
 	{
-
 		//auto Trans = LookObj()->GetTransform<ChTransformCom9>();
 
 		//if (nullptr != Trans)
@@ -76,10 +60,7 @@ void ChPolygonTextureComponent9::Draw3D()
 
 		//	TmpMat = Trans->GetMat();
 		//}
-
 	}
 
-	ChD3D9::Shader().DrawPolygonBoard(texture, ver, TmpMat);
-
-
+	ChD3D9::Shader().DrawPolygonBoard(*GetTex(), ver, TmpMat);
 }

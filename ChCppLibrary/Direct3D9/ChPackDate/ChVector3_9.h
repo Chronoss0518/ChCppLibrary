@@ -4,7 +4,7 @@
 //ƒpƒbƒN‰»‚µ‚½D3DXVECTOR3Œ^//
 typedef class ChVector3_9 :public D3DXVECTOR3
 {
-public:
+public://Operator Functions//
 
 	ChVector3_9& operator=(const D3DXVECTOR3& _cm);
 
@@ -12,25 +12,15 @@ public:
 
 	ChVector3_9& operator =(const D3DXMATRIX& _mat);
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//ConstructerDestructer//
+public://ConstructerDestructer//
 
-	ChVector3_9(const D3DXVECTOR3& _cm) :D3DXVECTOR3(_cm){}
+	inline ChVector3_9(const D3DXVECTOR3& _cm) :D3DXVECTOR3(_cm){}
 
-	ChVector3_9()
-	{
-		Set0Param();
-	}
+	inline ChVector3_9() { Set0Param(); }
 
-	ChVector3_9(const D3DXMATRIX& _mat)
-	{
-		*this = _mat;
-	}
+	inline ChVector3_9(const D3DXMATRIX& _mat) { *this = _mat; }
 
-	ChVector3_9(const D3DXQUATERNION& _qua)
-	{
-		*this = _qua;
-	}
+	ChVector3_9(const D3DXQUATERNION& _qua) { *this = _qua; }
 
 	ChVector3_9(const float _x, const float _y, const float _z)
 	{
@@ -46,8 +36,7 @@ public:
 		z = _num;
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//GetFunction//
+public://GetFunction//
 
 	float GetLen(const D3DXVECTOR3& _vec = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
@@ -55,57 +44,34 @@ public:
 
 	float GetDegree(const D3DXVECTOR3& _vec);
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//SetFunction//
+public://SetFunction//
 
 	void Set0Param();
 
-	///////////////////////////////////////////////////////////////////////////////////
+public://Other Functions//
 
 	bool CheckNormals();
 
-	///////////////////////////////////////////////////////////////////////////////////
-
 	bool CheckAll0();
-
-	///////////////////////////////////////////////////////////////////////////////////
 
 	void Move(const float _x, const float _y, const float _z);
 
-	///////////////////////////////////////////////////////////////////////////////////
-
 	void Move2D(const D3DXVECTOR3* _vec);
-
-	///////////////////////////////////////////////////////////////////////////////////
-
 
 	void MatPos(const D3DXMATRIX& _mat, const D3DXVECTOR3& _vec);
 
-	///////////////////////////////////////////////////////////////////////////////////
-
 	void MatNormal(const D3DXMATRIX& _mat, const D3DXVECTOR3& _vec = D3DXVECTOR3(0.0f, 0.0f, 1.0f));
-
-	///////////////////////////////////////////////////////////////////////////////////
 
 	void Normalize();
 
-	///////////////////////////////////////////////////////////////////////////////////
-
 	void Lerp(
-		const D3DXVECTOR3& _sVec
-		, const D3DXVECTOR3& _eVec
-		, const float _nowTime);
-
-	///////////////////////////////////////////////////////////////////////////////////
+		const D3DXVECTOR3& _sVec,
+		const D3DXVECTOR3& _eVec,
+		const float _nowTime);
 
 	void CrossVec(const D3DXVECTOR3& _vec1, const D3DXVECTOR3& _vec2);
 
-	///////////////////////////////////////////////////////////////////////////////////
-
 	float DotVec(const D3DXVECTOR3& _vec);
-
-	///////////////////////////////////////////////////////////////////////////////////
-
 
 }ChVec3_9;
 

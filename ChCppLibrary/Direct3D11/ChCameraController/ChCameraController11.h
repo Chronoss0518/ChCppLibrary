@@ -5,35 +5,28 @@ namespace ChD3D11
 {
 	class CameraController11
 	{
-	public:
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//GetFunction//
+	public://Get Functions//
 
 		//ViewMatrixを作成する際に、自動で上方向を計算しない。//
-		ChMat_11 GetViewMat(
-			const ChVec3_11& _pos
-			, const ChVec3_11& _dir
-			, const ChVec3_11& _up);
+		ChLMat GetViewMat(
+			const ChVec3& _pos,
+			const ChVec3& _dir,
+			const ChVec3& _up = ChVec3(0.0f, 1.0f, 0.0f));
 
 		//ViewMatrixを作成する際に、自動で上方向を計算する。//
-		ChMat_11 GetViewMat(
-			const ChVec3_11& _pos
-			, const ChVec3_11& _dir);
+		ChLMat GetViewMat(
+			const ChVec3& _pos,
+			const ChVec3& _dir);
 
 		//ViewMatrixを作成する際に、自動で上方向を計算する。//
-		ChMat_11 GetViewMat(
-			const ChVec3_11& _pos
-			, const ChQua_11& _rot);
+		ChLMat GetViewMat(
+			const ChVec3& _pos,
+			const ChQua& _rot);
 
 		//前回使ったデータを使いまわす//
-		inline ChMat_11 GetViewMat()
-		{
-			return camMat;
-		}
+		inline ChLMat GetViewMat() { return camMat; }
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//Singleton//
+	public://Singleton//
 
 		static CameraController11& GetIns()
 		{
@@ -48,13 +41,56 @@ namespace ChD3D11
 		
 		~CameraController11(){}
 
-		ChMat_11 camMat;
+	protected://Member Value//
+
+		ChLMat camMat;
 
 	};
 
-	static const std::function< CameraController11& ()>CamCon
-		= CameraController11::GetIns;
+	inline CameraController11& CamCon() { return CameraController11::GetIns(); }
 
 }
+
+#ifdef CRT
+
+
+ChLMat ChD3D11::CameraController11::GetViewMat(
+	const ChVec3& _pos,
+	const ChVec3& _dir,
+	const ChVec3& _up)
+{
+	ChVec3_11 dir;
+	dir = _dir;
+	ChVec3_11 up;
+	up = _up;
+
+	dir.Normalize();
+	up.Normalize();
+
+	ChMat_11 tmpMat;
+	tmpMat.CreateViewMat(_pos, dir, up);
+	camMat = tmpMat;
+	return tmpMat;
+}
+
+ChLMat ChD3D11::CameraController11::GetViewMat(
+	const ChVec3& _pos,
+	const ChQua& _rot)
+{
+
+	ChMat_11 tmpMat;
+
+	tmpMat.RotQua(_rot);
+
+	ChVec3_11 dir;
+	ChVec3_11 head;
+
+	dir.MatNormal(tmpMat);
+	head.MatNormal(tmpMat, ChVec3_11(0.0f, 1.0f, 0.0f));
+
+	return GetViewMat(_pos, dir, head);
+}
+
+#endif
 
 #endif

@@ -17,23 +17,15 @@ MathSquare& MathSquare::operator = (const MathSquare& _mathSquare)
 void MathSquare::SetSquare(const ChVec4& _square)
 {
 	if ((_square.right - _square.left) < 0.0f || (_square.top - _square.bottom) < 0.0f)return;
-	if (!squareList.empty())squareList.clear();
+	Clear();
 	AddSquare(_square);
-}
-
-void MathSquare::SetSquare(const std::vector<ChPtr::Shared<ChVec4>>& _square)
-{
-	if (&_square == &squareList)return;
-	if (!squareList.empty())squareList.clear();
-	for (auto&& quare_it : _square)
-	{
-		AddSquare(*quare_it);
-	}
 }
 
 void MathSquare::SetSquare(const MathSquare& _square)
 {
-	SetSquare(_square.squareList);
+	Clear();
+	for(unsigned long i = 0;i < _square.GetCount(); i++)
+		AddSquare(_square.GetSquare(i));
 }
 
 void MathSquare::SetSquare(const ChVec2& _leftTop, const ChVec2& _rightTop, const ChVec2& _rightBottom, const ChVec2& _leftBottom, const unsigned long _cutCount)
@@ -42,141 +34,67 @@ void MathSquare::SetSquare(const ChVec2& _leftTop, const ChVec2& _rightTop, cons
 	if (_rightTop.y - _rightBottom.y <= 0.0f)return;
 	if (_rightBottom.x - _leftBottom.x <= 0.0f)return;
 	if (_leftBottom.y -_leftTop.y <= 0.0f)return;
-	if (!squareList.empty())squareList.clear();
+	Clear();
 	AddSquare(_leftTop, _rightTop, _rightBottom, _leftBottom, _cutCount);
 
 }
 
 ChVec4 MathSquare::GetFirstSquare() const
 {
-	if (squareList.empty())return ChVec4();
-	return *squareList[0];
+	return GetSquare(0);
 }
 
 ChVec4 MathSquare::GetLastSquare() const
 {
-	if (squareList.empty())return ChVec4();
-	return *squareList[squareList.size() - 1];
+	return GetSquare(GetCount() - 1);
 }
 
 void MathSquare::AddSquare(const ChVec4& _square)
 {
 	if ((_square.right - _square.left) < 0.0f || (_square.top - _square.bottom) < 0.0f)return;
-	auto square = ChPtr::Make_S<ChVec4>();
-	*square = _square;
-	squareList.push_back(square);
+	PushBack(_square);
 }
 
 void MathSquare::AddSquare(const MathSquare& _square)
 {
 	if (_square.GetCount() <= 0)return;
-	for (auto&& square : _square.GetSquare())
-	{
-		AddSquare(*square);
-	}
-}
-
-void MathSquare::AddSquare(const ChVec2& _leftTop, const ChVec2& _rightTop, const ChVec2& _rightBottom, const ChVec2& _leftBottom, const unsigned long _cutCount)
-{
-	if (_leftTop.x - _rightTop.x <= 0.0f)return;
-	if (_rightTop.y - _rightBottom.y <= 0.0f)return;
-	if (_rightBottom.x - _leftBottom.x <= 0.0f)return;
-	if (_leftBottom.y - _leftTop.y <= 0.0f)return;
-
-	std::vector<ChVec3>verticalDirectionList;
-	verticalDirectionList.resize(_cutCount + 2);
-
-	std::vector<ChVec3>horizontalDirectionList;
-	horizontalDirectionList.resize(verticalDirectionList.size());
-
-
-
-	{
-		ChVec2 direction[4];
-		float length[4];
-
-		direction[ChStd::EnumCast(DirectionName::LeftTopToRightTop)] =
-			_rightTop - _leftTop;
-		length[ChStd::EnumCast(DirectionName::LeftTopToRightTop)] = direction[ChStd::EnumCast(DirectionName::LeftTopToRightTop)].Len();
-
-
-		direction[ChStd::EnumCast(DirectionName::RightTopTopRightBottom)] =
-			_rightBottom - _rightTop;
-		length[ChStd::EnumCast(DirectionName::RightTopTopRightBottom)] = direction[ChStd::EnumCast(DirectionName::RightTopTopRightBottom)].Len();
-
-
-		direction[ChStd::EnumCast(DirectionName::LeftBottomToRightBottom)] =
-			_rightBottom - _leftBottom;
-		length[ChStd::EnumCast(DirectionName::LeftBottomToRightBottom)] = direction[ChStd::EnumCast(DirectionName::LeftBottomToRightBottom)].Len();
-
-
-		direction[ChStd::EnumCast(DirectionName::LeftTopToLeftBottom)] =
-			_leftBottom - _leftTop;
-		length[ChStd::EnumCast(DirectionName::LeftTopToLeftBottom)] = direction[ChStd::EnumCast(DirectionName::LeftTopToLeftBottom)].Len();
-
-		for (unsigned long i = 0; i < 4; i++)
-		{
-			direction[i].Normalize();
-		}
-
-		for (unsigned long i = 0; i < verticalDirectionList.size(); i++)
-		{
-
-		}
-
-	}
-
-
-	for (unsigned long w = 0; w < horizontalDirectionList.size() - 1; w++)
-	{
-		for (unsigned long h = 0; h < verticalDirectionList.size() - 1; h++)
-		{
-
-		}
-
-	}
-
+	for (unsigned long i = 0; i < GetCount();i++)
+		AddSquare(GetSquare(i));
 }
 
 void MathSquare::And(const MathSquare& _and)
 {
-	if (_and.squareList.empty())return;
-
+	if (_and.IsEmpty())return;
 	SetSquare(MathSquare::And(*this, _and));
 }
 
 void MathSquare::And(const ChVec4& _and)
 {
-	if (squareList.empty())return;
-
+	if (IsEmpty())return;
 	SetSquare(MathSquare::And(*this, _and));
 }
 
 void MathSquare::Or(const MathSquare& _or)
 {
-	if (_or.squareList.empty())return;
-
+	if (_or.IsEmpty())return;
 	SetSquare(MathSquare::Or(*this, _or));
 }
 
 void MathSquare::Or(const ChVec4& _or)
 {
-	if (squareList.empty())return;
-
+	if (IsEmpty())return;
 	SetSquare(MathSquare::Or(*this, _or));
 }
 
 void MathSquare::Sub(const MathSquare& _sub)
 {
-	if (_sub.squareList.empty())return;
-
+	if (_sub.IsEmpty())return;
 	SetSquare(MathSquare::Sub(*this, _sub));
 }
 
 void MathSquare::Sub(const ChVec4& _sub)
 {
-	if (squareList.empty())return;
-
+	if (IsEmpty())return;
 	SetSquare(MathSquare::Sub(*this, _sub));
 }
 
@@ -187,10 +105,8 @@ MathSquare MathSquare::And(const MathSquare& _base, const MathSquare& _and)
 	if (_base.GetCount() <= 0)return res;
 	if (_and.GetCount() <= 0)return res;
 
-	for (auto&& andSquare : _and.GetSquare())
-	{
-		res.AddSquare(MathSquare::And(_base, *andSquare));
-	}
+	for (unsigned long i = 0;i < _and.GetCount();i++)
+		res.AddSquare(MathSquare::And(_base, _and.GetSquare(i)));
 
 	return res;
 }
@@ -201,10 +117,8 @@ MathSquare MathSquare::And(const MathSquare& _base, const ChVec4& _and)
 
 	if (_base.GetCount() <= 0)return res;
 
-	for (auto&& square : _base.GetSquare())
-	{
-		res.AddSquare(MathSquare::And(*square, _and));
-	}
+	for (unsigned long i = 0;i < _base.GetCount() ; i++)
+		res.AddSquare(MathSquare::And(_base.GetSquare(i), _and));
 
 	return res;
 }
@@ -216,10 +130,8 @@ MathSquare MathSquare::Or(const MathSquare& _base, const MathSquare& _or)
 	if (_base.GetCount() <= 0)return res;
 	if (_or.GetCount() <= 0)return res;
 
-	for (auto&& andSquare : _or.GetSquare())
-	{
-		res.AddSquare(MathSquare::Or(_base, *andSquare));
-	}
+	for (unsigned long i = 0; i < _or.GetCount(); i++)
+		res.AddSquare(MathSquare::Or(_base, _or.GetSquare(i)));
 
 	return res;
 }
@@ -230,10 +142,8 @@ MathSquare MathSquare::Or(const MathSquare& _base, const ChVec4& _or)
 
 	if (_base.GetCount() <= 0)return res;
 
-	for (auto&& square : _base.GetSquare())
-	{
-		res.AddSquare(MathSquare::Or(*square, _or));
-	}
+	for (unsigned long i = 0; i < _base.GetCount(); i++)
+		res.AddSquare(MathSquare::Or(_base.GetSquare(i), _or));
 
 	return res;
 }
@@ -245,10 +155,8 @@ MathSquare MathSquare::Sub(const MathSquare& _base, const MathSquare& _sub)
 	if (_base.GetCount() <= 0)return res;
 	if (_sub.GetCount() <= 0)return res;
 
-	for (auto&& andSquare : _sub.GetSquare())
-	{
-		res.AddSquare(MathSquare::Sub(_base, *andSquare));
-	}
+	for (unsigned long i = 0; i < _sub.GetCount(); i++)
+		res.AddSquare(MathSquare::Sub(_base, _sub.GetSquare(i)));
 
 	return res;
 }
@@ -259,10 +167,8 @@ MathSquare MathSquare::Sub(const MathSquare& _base, const ChVec4& _sub)
 
 	if (_base.GetCount() <= 0)return res;
 
-	for (auto&& square : _base.GetSquare())
-	{
-		res.AddSquare(MathSquare::Sub(*square, _sub));
-	}
+	for (unsigned long i = 0; i < _base.GetCount(); i++)
+		res.AddSquare(MathSquare::Sub(_base.GetSquare(i), _sub));
 
 	return res;
 }
@@ -274,13 +180,10 @@ MathSquare MathSquare::And(const ChVec4& _base, const ChVec4& _and)
 	if ((_base.right - _base.left) <= 0|| (_base.top - _base.bottom) <= 0)return  res;
 	if ((_and.right - _and.left) <= 0 || (_and.top - _and.bottom) <= 0)return  res;
 
-	if (!_base.IsOverlaps(_and))
-	{
-		return res;
-	}
+	if (!_base.IsOverlaps(_and))return res;
 
 	ChVec4 square = _base;
-	square.OverlapsRect(_and);
+	square.SetOverlapsRect(_and);
 
 	res.AddSquare(square);
 
@@ -320,7 +223,7 @@ MathSquare MathSquare::Sub(const ChVec4& _base, const ChVec4& _sub)
 
 	ChVec4 onSquare = _base;
 
-	onSquare.OverlapsRect(_sub);
+	onSquare.SetOverlapsRect(_sub);
 
 	ChVec4 testSquareList[8]{
 		ChVec4(_base.left,_base.top,onSquare.left,onSquare.top),//¶ã//

@@ -1,10 +1,12 @@
 #include<Windows.h>
 #include<wincodec.h>
+#include<roapi.h>
 
 #include"../../BaseIncluder/ChBase.h"
 
 #include"ChWICBitmapCreator.h"
 
+#pragma comment(lib,"WindowsApp.lib")
 
 #ifndef D3DOBJECT_RELEASE
 #define D3DOBJECT_RELEASE(obj) if(ChPtr::NotNullCheck(obj)){obj->Release();obj = nullptr;}
@@ -14,43 +16,54 @@
 #define D3DOBJECT_NULLCHECK(obj,method) if(ChPtr::NotNullCheck(obj))obj->method
 #endif
 
+#define USE_WINDOWS_FOUNDATION_FLG 1
+
 using namespace ChD3D;
-
-void WICBitmapObject::Release()
-{
-
-	auto&& list = WICBitmapCreatorObj().bitmapList;
-
-	auto&& bitmapIterator = std::find(list.begin(), list.end(), bitmap);
-
-	list.erase(bitmapIterator);
-
-	D3DOBJECT_RELEASE(bitmap);
-}
 
 void WICBitmapCreator::Init()
 {
-	HRESULT result = CoInitialize(nullptr);
+	HRESULT result = 0;
+#if USE_WINDOWS_FOUNDATION_FLG
+	result = Windows::Foundation::Initialize(RO_INIT_MULTITHREADED);
+#else
+	result = CoInitializeEx(NULL,COINIT_MULTITHREADED);
+#endif
 
 	if (FAILED(result))return;
 
-	result = CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER, IID_IWICImagingFactory, (LPVOID*)&factory);
+	result = CoCreateInstance(
+		CLSID_WICImagingFactory,
+		nullptr,
+		CLSCTX_INPROC_SERVER,
+		IID_IWICImagingFactory,
+		(LPVOID*)&factory);
 
 	if (FAILED(result))
-	{
 		Release();
-	}
 }
 
 void WICBitmapCreator::Release()
 {
-	for (auto&& bitmap : bitmapList)
+
+	size_t count = GetBitmapCount();
+
+	if (count <= 0)return;
+
+	for (size_t i = 0; i < count; i++)
 	{
+		auto&& bitmap = GetBitmap(i);
 		D3DOBJECT_RELEASE(bitmap);
 	}
-	bitmapList.clear();
+
+	ClearBitmapList();
 
 	D3DOBJECT_RELEASE(factory);
+
+#if USE_WINDOWS_FOUNDATION_FLG
+	Windows::Foundation::Uninitialize();
+#else
+	CoUninitialize();
+#endif
 }
 
 WICBitmapObject WICBitmapCreator::CreateBitmapObject(unsigned long _width, unsigned long _height)
@@ -59,9 +72,14 @@ WICBitmapObject WICBitmapCreator::CreateBitmapObject(unsigned long _width, unsig
 
 	if (ChPtr::NullCheck(factory))return res;
 
-	factory->CreateBitmap(_width, _height, GUID_WICPixelFormat128bppPRGBAFloat, WICBitmapCacheOnLoad, &res.bitmap);
+	auto&&hresult = factory->CreateBitmap(
+		_width,
+		_height,
+		GUID_WICPixelFormat128bppPRGBAFloat,
+		WICBitmapCreateCacheOption::WICBitmapCacheOnLoad,
+		&res.bitmap);
 
-	bitmapList.push_back(res.bitmap);
+	AddBitmap(res.bitmap);
 
 	return res;
 }

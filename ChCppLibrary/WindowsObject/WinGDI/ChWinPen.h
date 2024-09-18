@@ -23,7 +23,12 @@ namespace ChWin
 
 		void Release();
 
-		void CreatePen(const unsigned char _r, const unsigned char _g, const unsigned char _b,unsigned short _width = 1,const PenStyle _style = PenStyle::Solid);
+		void CreatePen(
+			const unsigned char _r,
+			const unsigned char _g,
+			const unsigned char _b,
+			unsigned short _width = 1,
+			const PenStyle _style = PenStyle::Solid);
 
 		void CreateNullPen();
 

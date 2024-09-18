@@ -8,10 +8,7 @@ namespace ChD3D11
 		class ViewPort final
 		{
 
-		public:
-
-			///////////////////////////////////////////////////////////////////////////////////
-			//SetFunction//
+		public://Set Functions//
 
 			inline void SetTopLeftPos(const ChVec2& _Pos) { View.TopLeftX = _Pos.x; View.TopLeftY = _Pos.y; }
 
@@ -21,9 +18,7 @@ namespace ChD3D11
 
 			void SetDrawData(ID3D11DeviceContext* _DC);
 
-			///////////////////////////////////////////////////////////////////////////////////
-
-		private:
+		private://Member Value//
 
 			D3D11_VIEWPORT View = D3D11_VIEWPORT();
 
@@ -32,38 +27,29 @@ namespace ChD3D11
 		class DrawWindow final:public ChCp::Initializer
 		{
 
-		public:
-
-			///////////////////////////////////////////////////////////////////////////////////
-			//InitAndRelease//
+		public://Init And Release//
 
 			void Init(
-				ID3D11Device* _device
-				,IDXGISwapChain* _sc);
+				ID3D11Device* _device,
+				IDXGISwapChain* _sc);
 			
 			void Init(ChD3D11::DirectX3D11& _app);
 
 			void Release();
 
-			///////////////////////////////////////////////////////////////////////////////////
-			//SetFunction//
+		public://Set Functions//
 
 			void SetSwapEffect(const DXGI_SWAP_EFFECT& _effect) { sEffect = _effect; }
 
 			void SetDrawData(ID3D11DeviceContext* _dc, ID3D11DepthStencilView* _dsView = nullptr);
 
-			///////////////////////////////////////////////////////////////////////////////////
-
 			void SetBackGroundColor(ID3D11DeviceContext* _dc,const ChVec4& _color);
 
-			///////////////////////////////////////////////////////////////////////////////////
+		public://Other Functions//
 
 			void Draw();
 
-			///////////////////////////////////////////////////////////////////////////////////
-
-
-		private:
+		private://Member Value//
 
 			IDXGISwapChain* window = nullptr;
 

@@ -10,72 +10,52 @@ public:
 	MMCKINFO      m_ckIn;        // Multimedia RIFF chunk//
 	MMCKINFO      m_ckInRiff;    // Use in opening a WAVE file//
 
-	///////////////////////////////////////////////////////////////////////////////////
+public://WAVE Control Functions//
 
 	HRESULT static ReadMMIO(
-		HMMIO hmmioIn
-		, MMCKINFO* pckInRIFF
-		, WAVEFORMATEX** ppwfxInfo);
-
-	///////////////////////////////////////////////////////////////////////////////////
+		HMMIO hmmioIn,
+		MMCKINFO* pckInRIFF,
+		WAVEFORMATEX** ppwfxInfo);
 
 	HRESULT static WaveOpenFile(
-		const CHAR* strFileName
-		, HMMIO* phmmioIn
-		, WAVEFORMATEX** ppwfxInfo
-		, MMCKINFO* pckInRIFF);
-
-	///////////////////////////////////////////////////////////////////////////////////
+		const CHAR* strFileName,
+		HMMIO* phmmioIn,
+		WAVEFORMATEX** ppwfxInfo,
+		MMCKINFO* pckInRIFF);
 
 	HRESULT static WaveStartDataRead(
-		HMMIO* phmmioIn
-		, MMCKINFO* pckIn
-		, MMCKINFO* pckInRIFF);
-
-	///////////////////////////////////////////////////////////////////////////////////
+		HMMIO* phmmioIn,
+		MMCKINFO* pckIn,
+		MMCKINFO* pckInRIFF);
 
 	HRESULT static WaveReadFile(
-		HMMIO hmmioIn
-		, UINT cbRead
-		, BYTE* pbDest
-		, MMCKINFO* pckIn, UINT* cbActualRead);
+		HMMIO hmmioIn,
+		UINT cbRead,
+		BYTE* pbDest,
+		MMCKINFO* pckIn,
+		UINT* cbActualRead);
 
-	///////////////////////////////////////////////////////////////////////////////////
-
-public:
-	///////////////////////////////////////////////////////////////////////////////////
-	//ConstructerDestructer//
+public://Constructer Destructer//
 
 	CWaveSoundRead9();
 
 	virtual ~CWaveSoundRead9();
 
-	///////////////////////////////////////////////////////////////////////////////////
+public://Control Functions//
 
 	HRESULT Open(const CHAR* strFilename);
 
-	///////////////////////////////////////////////////////////////////////////////////
-
 	HRESULT Reset();
-
-	///////////////////////////////////////////////////////////////////////////////////
 
 	HRESULT Read(UINT nSizeToRead, BYTE* pbData, UINT* pnSizeRead);
 
-	///////////////////////////////////////////////////////////////////////////////////
-
 	HRESULT Close();
-
 };
 
 //BGMクラス//
 typedef struct ChMainSound9
 {
-
-	LPDIRECTSOUNDBUFFER8 sound;
-	LPDIRECTSOUND3DBUFFER8 dSound;
-	DWORD hz;
-	long vol;
+public://Operator Functions//
 
 	ChMainSound9& operator = (const ChMainSound9& _cm)
 	{
@@ -84,15 +64,14 @@ typedef struct ChMainSound9
 		return *this;
 	}
 
-public:
+public://Constructor Destructor//
 
 	virtual ~ChMainSound9()
 	{
 		Release();
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//InitAndRelease//
+public://Init And Release//
 
 	inline virtual void Release()
 	{
@@ -105,20 +84,18 @@ public:
 		dSound->Release();
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////
-
-}ChBGM9;
-
-///////////////////////////////////////////////////////////////////////////////////
-
-//SEクラス//
-typedef struct ChSubSound9
-{
+public://Member Functions//
 
 	LPDIRECTSOUNDBUFFER8 sound;
 	LPDIRECTSOUND3DBUFFER8 dSound;
 	DWORD hz;
 	long vol;
+
+}ChBGM9;
+
+//SEクラス//
+typedef struct ChSubSound9
+{
 
 	ChSubSound9& operator = (const ChSubSound9& _cm)
 	{
@@ -127,15 +104,14 @@ typedef struct ChSubSound9
 		return *this;
 	}
 
-public:
+public://Constructor Destructor//
 
 	virtual ~ChSubSound9()
 	{
 		Release();
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//InitAndRelease//
+public://Init And Release//
 
 	inline virtual void Release()
 	{
@@ -148,8 +124,12 @@ public:
 		dSound->Release();
 	}
 
+public://Member Value//
 
-	///////////////////////////////////////////////////////////////////////////////////
+	LPDIRECTSOUNDBUFFER8 sound;
+	LPDIRECTSOUND3DBUFFER8 dSound;
+	DWORD hz;
+	long vol;
 
 }ChSE9;
 

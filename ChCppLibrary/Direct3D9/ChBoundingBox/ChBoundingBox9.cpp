@@ -12,85 +12,13 @@
 
 using namespace ChMesh;
 
-
 ///////////////////////////////////////////////////////////////////////////////////
 //ChBoundingBoxÉÅÉ\ÉbÉh
 ///////////////////////////////////////////////////////////////////////////////////
 
-
-void BoundingBox9::SetBBox(const ChPtr::Shared<Mesh9>& _mesh)
-{
-	if (_mesh == nullptr)return;
-	if(ChPtr::NullCheck(_mesh->GetMesh()))return;
-	ChVec3_9 maxVec;
-	ChVec3_9 minVec;
-
-	DWORD vertexNum = _mesh->GetMesh()->GetNumVertices();
-	DWORD vSize = _mesh->GetMesh()->GetNumBytesPerVertex();
-	BYTE *p;
-
-	_mesh->GetMesh()->LockVertexBuffer(D3DLOCK_READONLY, (LPVOID*)&p);
-
-	D3DXComputeBoundingBox((D3DXVECTOR3*)p, vertexNum, vSize, &minVec, &maxVec);
-
-	_mesh->GetMesh()->UnlockVertexBuffer();
-
-	main = minVec;
-
-	depth = maxVec - minVec;
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void BoundingBox9::SetBSphere(const ChPtr::Shared<Mesh9>& _mesh)
-{
-	if (_mesh == nullptr)return;
-	if (ChPtr::NullCheck(_mesh->GetMesh()))return;
-
-	DWORD vertexNum = _mesh->GetMesh()->GetNumVertices();
-	DWORD vSize = _mesh->GetMesh()->GetNumBytesPerVertex();
-	BYTE *p;
-
-	_mesh->GetMesh()->LockVertexBuffer(D3DLOCK_READONLY, (LPVOID*)&p);
-
-	D3DXComputeBoundingSphere((D3DXVECTOR3*)p, vertexNum, vSize, &main, &radius);
-
-	_mesh->GetMesh()->UnlockVertexBuffer();
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-std::vector<ChPtr::Shared<ChVec3_9>> BoundingBox9::GetPosition()
-{
-	std::vector<ChPtr::Shared<ChVec3_9>> tmpPos;
-	if (main == depth)return tmpPos;
-
-	tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x, main.y, main.z));
-
-	tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x + depth.x, main.y, main.z));
-
-	tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x, main.y + depth.y, main.z));
-
-	tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x, main.y, main.z + depth.z));
-
-	tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x + depth.x, main.y + depth.y, main.z));
-
-	tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x + depth.x, main.y, main.z + depth.z));
-
-	tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x, main.y + depth.y, main.z + depth.z));
-
-	tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x + depth.x, main.y + depth.y, main.z + depth.z));
-
-	return tmpPos;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-
 bool BoundingBox9::IsHitToPos(
-	const ChMat_9* _mat
-	, const ChVec3_9* _pos)
+	const ChMat_9* _mat,
+	const ChVec3_9* _pos)
 {
 
 	ChVec3_9 pPos = *_pos;
@@ -113,11 +41,9 @@ bool BoundingBox9::IsHitToPos(
 	return true;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 bool BoundingBox9::IsHitToB_Box(
-	const ChMat_9* _mat
-	, const ChB_Box9* _pos)
+	const ChMat_9* _mat,
+	const ChB_Box9* _pos)
 {
 
 	const unsigned char boxVertex = 8;
@@ -152,8 +78,6 @@ bool BoundingBox9::IsHitToB_Box(
 	return false;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 bool BoundingBox9::IsHitToBull(
 	const ChMat_9* _mat
 	, const ChVec3_9* _pos
@@ -184,5 +108,3 @@ bool BoundingBox9::IsHitToBull(
 	return true;
 
 }
-
-///////////////////////////////////////////////////////////////////////////////////

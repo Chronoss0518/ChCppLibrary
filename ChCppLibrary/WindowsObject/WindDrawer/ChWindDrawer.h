@@ -3,6 +3,12 @@
 #ifndef Ch_Win_DWind_h
 #define Ch_Win_DWind_h
 
+#ifdef CRT
+
+#include<string>
+
+#endif
+
 #include"../Texture/ChWinTexture.h"
 #include"../WinGDI/ChWinBrush.h"
 #include"../WinGDI/ChWinPen.h"
@@ -35,13 +41,28 @@ namespace ChWin
 
 		void DrawStart(HWND _hWind);
 
-		void DrawString(const std::string& _str, const ChINTPOINT& _pos);
+#ifdef CRT
+		inline void DrawString(const std::string& _str, const ChINTPOINT& _pos)
+		{
+			DrawString(_str.c_str(), _str.length(), _pos);
+		}
 
-		void DrawString(const std::string& _str,const int _x, const int _y);
+		inline void DrawString(const std::string& _str, const int _x, const int _y)
+		{
+			DrawString(_str.c_str(), _str.length(), ChINTPOINT(_x, _y));
+		}
 
-		void DrawString(const std::wstring& _str, const ChINTPOINT& _pos);
+		inline void DrawString(const std::wstring& _str, const ChINTPOINT& _pos)
+		{
+			DrawString(_str.c_str(), _str.length(), _pos);
+		}
 
-		void DrawString(const std::wstring& _str, const int _x, const int _y);
+		inline void DrawString(const std::wstring& _str, const int _x, const int _y)
+		{
+			DrawString(_str.c_str(), _str.length(), ChINTPOINT(_x, _y));
+		}
+
+#endif
 
 		void DrawLine(const ChINTPOINT& _startPos, const ChINTPOINT& _endPos);
 
@@ -71,6 +92,12 @@ namespace ChWin
 		
 	private:
 
+		void DrawString(const char* _str, const unsigned long _strLen, const ChINTPOINT& _pos);
+
+		void DrawString(const wchar_t* _str, const unsigned long _strLen, const ChINTPOINT& _pos);
+
+	private:
+
 		Brush baseBrush;
 		Pen basePen;
 		
@@ -94,6 +121,7 @@ namespace ChWin
 
 	};
 
+	inline WindDrawer& DrawWindow() { return WindDrawer::GetIns(); }
 }
 
 #endif

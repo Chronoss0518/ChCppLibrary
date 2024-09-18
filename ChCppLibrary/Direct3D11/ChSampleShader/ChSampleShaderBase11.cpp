@@ -15,11 +15,8 @@ void SampleShaderBase11::Init(ID3D11Device* _device)
 
 	device = _device;
 
-	whiteTex = ChPtr::Make_U<Texture11>();
-	normalTex = ChPtr::Make_U<Texture11>();
-
-	whiteTex->CreateColorTexture(_device, ChVec4(1.0f, 1.0f, 1.0f, 1.0f), 1, 1);
-	normalTex->CreateColorTexture(_device, ChVec4(0.5f, 1.0f, 0.5f, 1.0f), 1, 1);
+	whiteTex.CreateColorTexture(_device, ChVec4(1.0f, 1.0f, 1.0f, 1.0f), 1, 1);
+	normalTex.CreateColorTexture(_device, ChVec4(0.5f, 1.0f, 0.5f, 1.0f), 1, 1);
 
 	InitVertexShader();
 	InitPixelShader();
@@ -41,12 +38,10 @@ void SampleShaderBase11::Init(ID3D11Device* _device)
 		desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
 		desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE::D3D11_COLOR_WRITE_ENABLE_ALL;
 
-
 		CreateBlender(desc);
 	}
 
 	{
-
 		D3D11_DEPTH_STENCIL_DESC desc = {
 			true,
 			D3D11_DEPTH_WRITE_MASK::D3D11_DEPTH_WRITE_MASK_ZERO ,
@@ -59,7 +54,6 @@ void SampleShaderBase11::Init(ID3D11Device* _device)
 		};
 
 		CreateDepthStencilTester(desc);
-
 	}
 
 	SetInitFlg(true);
@@ -72,7 +66,6 @@ void SampleShaderBase11::CreateVertexShader(
 	unsigned long _shaderByteNum)
 {
 	if (ChPtr::NullCheck(device))return;
-
 	vs.Init(device, _decl, _declNum, _shaderByte, _shaderByteNum);
 }
 
@@ -81,7 +74,6 @@ void SampleShaderBase11::CreatePixelShader(
 	unsigned long _shaderByteNum)
 {
 	if (ChPtr::NullCheck(device))return;
-
 	ps.Init(device, _shaderByte, _shaderByteNum);
 }
 
@@ -90,7 +82,6 @@ void SampleShaderBase11::CreateGeometryShader(
 	unsigned long _shaderByteNum)
 {
 	if (ChPtr::NullCheck(device))return;
-
 	gs.Init(device, _shaderByte, _shaderByteNum);
 }
 
@@ -99,7 +90,6 @@ void SampleShaderBase11::CreateHullShader(
 	unsigned long _shaderByteNum)
 {
 	if (ChPtr::NullCheck(device))return;
-
 	hs.Init(device, _shaderByte, _shaderByteNum);
 }
 
@@ -108,7 +98,6 @@ void SampleShaderBase11::CreateDomainShader(
 	unsigned long _shaderByteNum)
 {
 	if (ChPtr::NullCheck(device))return;
-
 	ds.Init(device, _shaderByte, _shaderByteNum);
 }
 
@@ -117,7 +106,6 @@ void SampleShaderBase11::CreateComputeShader(
 	unsigned long _shaderByteNum)
 {
 	if (ChPtr::NullCheck(device))return;
-
 	cs.Init(device, _shaderByte, _shaderByteNum);
 }
 
@@ -144,16 +132,14 @@ void SampleShaderBase11::Release()
 	vs.Release();
 	ps.Release();
 
-	whiteTex = nullptr;
-	normalTex = nullptr;
+	whiteTex.Release();
+	normalTex.Release();
 
 	SetInitFlg(false);
 }
 
-
 void SampleShaderBase11::SetShader(ID3D11DeviceContext* _dc)
 {
-
 	if (ChPtr::NullCheck(_dc))return;
 	vs.SetShader(_dc);
 	ps.SetShader(_dc);
@@ -182,14 +168,12 @@ void SampleShaderBase11::SetShaderBlender(ID3D11DeviceContext* _dc, float* _blen
 void SampleShaderBase11::SetShaderDefaultBlender(ID3D11DeviceContext* _dc)
 {
 	if (ChPtr::NullCheck(_dc))return;
-
 	_dc->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 }
 
 void SampleShaderBase11::SetShaderDepthStencilTester(ID3D11DeviceContext* _dc, unsigned int _stencilRef)
 {
 	if (ChPtr::NullCheck(_dc))return;
-
 	_dc->OMSetDepthStencilState(depthStencilTester, _stencilRef);
 }
 
@@ -206,9 +190,7 @@ void SampleShaderBase11::CreateRasteriser(const D3D11_RASTERIZER_DESC& _desc)
 		rasteriser->Release();
 		rasteriser = nullptr;
 	}
-
 	device->CreateRasterizerState(&_desc, &rasteriser);
-
 }
 
 void SampleShaderBase11::CreateBlender(const D3D11_BLEND_DESC& _desc)
@@ -219,14 +201,11 @@ void SampleShaderBase11::CreateBlender(const D3D11_BLEND_DESC& _desc)
 		blender->Release();
 		blender = nullptr;
 	}
-
 	device->CreateBlendState(&_desc, &blender);
-
 }
 
 void SampleShaderBase11::CreateDepthStencilTester(const D3D11_DEPTH_STENCIL_DESC& _desc)
 {
-
 	if (ChPtr::NullCheck(device))return;
 	if (ChPtr::NotNullCheck(depthStencilTester))
 	{
@@ -235,7 +214,6 @@ void SampleShaderBase11::CreateDepthStencilTester(const D3D11_DEPTH_STENCIL_DESC
 	}
 
 	device->CreateDepthStencilState(&_desc, &depthStencilTester);
-
 }
 
 void SampleShaderBase11::DrawStart(ID3D11DeviceContext* _dc)
@@ -244,19 +222,12 @@ void SampleShaderBase11::DrawStart(ID3D11DeviceContext* _dc)
 	if (GetShaderNowRunFlg())return;
 
 	_dc->IASetPrimitiveTopology(primitiveTopology);
-
 	SetShader(_dc);
-
 	Update(_dc);
-
 	SetShaderRasteriser(_dc);
-
 	dc = _dc;
-
 	drawFlg = true; 
-
 	GetShaderNowRunFlg() = true;
-
 }
 
 void SampleShaderBase11::DrawEnd()

@@ -39,6 +39,8 @@ namespace ChD3D11
 
 			inline void SetLiteBlurFlg(const bool _flg) { highlightMapData.SetLiteBlurFlg(_flg); }
 
+			inline void SetBoostPower(const float _boostPower) { highlightMapData.SetBoostPower(_boostPower); }
+
 		private:
 
 			inline void SetAlphaBlendFlg(const bool _flg) { alphaBlendFlg = true; }
@@ -51,24 +53,32 @@ namespace ChD3D11
 
 			inline bool GetLiteBlurFlg() { return highlightMapData.GetLiteBlurFlg(); }
 
+			inline float GetBoostPower() { return highlightMapData.GetBoostPower(); }
+
 		public://Other Functions//
 
-			//í èÌï`âÊ//
-			void Draw(
-				TextureBase11& _tex
-				, Sprite11& _sprite
-				, const ChMat_11& _mat = ChMat_11());
+			void DrawStart(ID3D11DeviceContext* _dc)override;
 
 			//í èÌï`âÊ//
 			void Draw(
-				TextureBase11& _tex
-				, Sprite11& _sprite
-				, const ChVec4& _baseColor
-				, const ChMat_11& _mat = ChMat_11());
+				TextureBase11& _tex,
+				Sprite11& _sprite,
+				const ChLMat& _mat = ChLMat());
+
+			//í èÌï`âÊ//
+			void Draw(
+				TextureBase11& _tex,
+				Sprite11& _sprite,
+				const ChVec4& _baseColor,
+				const ChLMat& _mat = ChLMat());
+
+			void DrawEnd()override;
 
 		private://Member Value//
 
 			CB::CBHighlight11 highlightMapData;
+
+			ID3D11SamplerState* sampler = nullptr;
 
 		};
 	}

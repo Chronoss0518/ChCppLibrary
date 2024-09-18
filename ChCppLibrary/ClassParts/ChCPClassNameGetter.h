@@ -3,30 +3,26 @@
 #ifndef Ch_CPP_CP_CNGet_h
 #define Ch_CPP_CP_CNGet_h
 
+#ifdef CRT
+#include<string>
+#endif
+
 namespace ChCp
 {
 	//継承して利用する//
 	//自身のクラスネーム及びクラス自身の型を取得できる//
+	template<class T>
 	class ClassNameGetter
 	{
-	public:
-
-		///////////////////////////////////////////////////////////////////////////////////
-		//GetFunction//
-
-		template<class T>
-		inline std::string GetName()
+	public://Get Functions//
+		inline char* GetName()
 		{
-			std::string tmp;
+			char* tmp = nullptr;
 
 #ifdef __GNUC__
-
 			tmp = typeid(T).name();
-
 #else
-
 			tmp = typeid(T).raw_name();
-
 #endif
 			return tmp;
 		}
@@ -37,7 +33,8 @@ namespace ChCp
 
 	};
 
-	using CNGetter = ClassNameGetter;
+	template<class T>
+	using CNGetter = ClassNameGetter<T>;
 
 }
 

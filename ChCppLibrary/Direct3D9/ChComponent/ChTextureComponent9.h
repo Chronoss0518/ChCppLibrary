@@ -14,26 +14,32 @@ typedef class ChTextureComponent9 :public ChCpp::BaseComponent
 {
 public:
 
+#ifdef CRT
+
 	//パスも記述//
 	//コンポーネントに画像データを作成する//
-	void SetTexture(const std::string& _textureName);
+	void SetTexture(const std::string& _textureName)
+	{
+		texture = ChTex::BaseTexture9::TextureType(_textureName);
+		texture->CreateTexture(_textureName, ChD3D9::D3D9Device());
+	}
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//InsFunction//
+#endif
+
+public://Get Functions//
 
 	//画像データを取得//
-	inline ChPtr::Shared<ChTex::BaseTexture9> InsTex() { return texture; }
+	ChTex::BaseTexture9* GetTex();
 
-	///////////////////////////////////////////////////////////////////////////////////
+protected://Member Values//
 
-protected:
-
+#ifdef CRT
+	
 	ChPtr::Shared<ChTex::BaseTexture9>texture = nullptr;
 
+#endif
+
 }ChTexCom9;
-
-
-///////////////////////////////////////////////////////////////////////////////////
 
 typedef class ChSpriteTextureComponent9 :public ChTexCom9
 {
@@ -41,10 +47,10 @@ public:
 
 	void Draw2D()override;
 
-	///////////////////////////////////////////////////////////////////////////////////
+public://Get Functions//
 
 	//スプライト配置データ//
-	ChD3D9::SpriteData& SpriteData() { return ver; }
+	ChD3D9::SpriteData& GetSpriteData() { return ver; }
 
 protected:
 
@@ -52,20 +58,16 @@ protected:
 
 }ChSpTexCom9;
 
-///////////////////////////////////////////////////////////////////////////////////
-
 typedef class ChPolygonTextureComponent9 :public ChTexCom9
 {
 public:
 
-	///////////////////////////////////////////////////////////////////////////////////
-
 	void Draw3D()override;
 
-	///////////////////////////////////////////////////////////////////////////////////
+public:
 
 	//板ポリゴン配置データ//
-	ChD3D9::VertexData& PolygonData() { return ver; }
+	ChD3D9::VertexData& GetPolygonData() { return ver; }
 
 protected:
 
@@ -73,6 +75,10 @@ protected:
 
 }ChPoTexCom9;
 
+#ifdef CRT
 
+ChTex::BaseTexture9* ChTextureComponent9::GetTex() { return texture.get(); }
+
+#endif
 
 #endif

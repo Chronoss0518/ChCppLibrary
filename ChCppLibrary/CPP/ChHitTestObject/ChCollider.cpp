@@ -1,7 +1,3 @@
-#include"../../BaseIncluder/ChBase.h"
-#include<cmath>
-#include"../ChModel/ChModel.h"
-
 #include"ChCollider.h"
 
 using namespace ChCpp;
@@ -12,7 +8,6 @@ using namespace ChCpp;
 
 float Collider::CreateDat(const ChVec3& _vec1, const ChVec3& _vec2, const ChVec3& _vec3)
 {
-
 	ChMath::BaseMatrix3x3<float> mat;
 
 	ChVec3 tmp[3] = { _vec1,_vec2,_vec3 };
@@ -24,11 +19,8 @@ float Collider::CreateDat(const ChVec3& _vec1, const ChVec3& _vec2, const ChVec3
 			mat.m[i][j] = tmp[j].val[i];
 		}
 	}
-
 	return mat.m.GetDeterminant();
 }
-
-///////////////////////////////////////////////////////////////////////////////////////
 
 bool Collider::HitTestTri(
 	ChVec3& _thisHitVectol, 
@@ -93,67 +85,6 @@ bool Collider::HitTestTri(
 	_thisHitVectol = _dir * len;
 
 	return true;
-}
-
-bool Collider::IsHitSphereToPanel(ChVec3& _thisHitVectol, const bool _leftHandFlg, const ChVec3& _spherePos, const ChVec3& _sphereSize, const std::vector<ChVec3*> _vertexs)
-{
-	if (_vertexs.empty())return false;
-
-	if (_vertexs.size() < 2)
-	{
-		return IsHitSphereToPos(_thisHitVectol, _spherePos, _sphereSize, *_vertexs[0]);
-	}
-
-	if (_vertexs.size() < 3) {
-		return IsHitSphereToLine(_thisHitVectol, _spherePos, _sphereSize, *_vertexs[0], *_vertexs[1]);
-	}
-
-	ChVec3 tmpPos = MovePosToPanelUp(*_vertexs[0], *_vertexs[_leftHandFlg ? 1 : _vertexs.size() - 1], *_vertexs[_leftHandFlg ? 1 : _vertexs.size() - 2] ,_spherePos);
-
-	ChVec3 posOnPanel = _spherePos - tmpPos;
-
-	ChVec3 testNormal = ChVec3();
-
-	bool hitTest = true;
-
-	for (unsigned long i = 0; i < _vertexs.size() - 1; i++)
-	{
-
-		ChVec3 vertex1;
-		ChVec3 vertex2;
-
-		{
-			unsigned long v1Num = i + 1;
-			unsigned long v2Num = i + 2;
-			vertex1 = *_vertexs[_leftHandFlg ? v1Num : _vertexs.size() - v1Num];
-			vertex2 = *_vertexs[_leftHandFlg ? v2Num : _vertexs.size() - v2Num];
-		}
-
-		ChVec3 test = ChVec3::GetCross(posOnPanel - vertex1, vertex2 - vertex1);
-
-		if (testNormal.Len() < 0.1f)
-		{
-			testNormal = test;
-		}
-
-		if (testNormal == test)continue;
-		
-		hitTest = false;
-
-		break;
-	}
-
-	if (hitTest)
-	{
-
-	}
-	
-
-
-
-
-	return hitTest;
-
 }
 
 ChVec3 Collider::MovePosToPanelUp(const ChVec3& _v1, const ChVec3& _v2, const ChVec3& _v3, const ChVec3& _pos)

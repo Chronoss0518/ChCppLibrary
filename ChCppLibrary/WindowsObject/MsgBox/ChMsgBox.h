@@ -3,10 +3,6 @@
 #ifndef Ch_Win_BMsg_h
 #define Ch_Win_BMsg_h
 
-#ifndef Ch_Win_WO_h
-#include"../WindObject/ChWindObject.h"
-#endif
-
 namespace ChWin
 {
 
@@ -84,7 +80,7 @@ namespace ChWin
 
 		inline void SetDefaultButtonType(const DefaultButtonType _type)
 		{
-			buttonType = ChStd::EnumCast(_type);
+			buttonType = static_cast<unsigned int>(_type);
 		}
 
 		inline void SetModalType(const ModalType _type)
@@ -111,7 +107,7 @@ namespace ChWin
 
 		inline void AddDisplayButtonType(const DisplayButtonType _type)
 		{
-			buttonType |= ChStd::EnumCast(_type);
+			buttonType |= static_cast<unsigned int>(_type);
 		}
 
 		inline void ClearDisplayButtonType()
@@ -183,6 +179,22 @@ namespace ChWin
 			MsgBoxType type = MsgBoxType::None;
 	};
 }
+
+#ifdef CRT
+
+unsigned int ChWin::MsgBox::CreateUType()
+{
+	unsigned int uType = buttonType;
+	uType |= ChStd::EnumCast(mType);
+	uType |= ChStd::EnumCast(diType);
+	uType |= ChStd::EnumCast(tType);
+	uType |= ChStd::EnumCast(type);
+	return uType;
+
+}
+
+#endif
+
 
 #endif
 

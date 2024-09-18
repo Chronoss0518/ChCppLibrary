@@ -12,15 +12,9 @@ namespace ChD3D11
 		{
 		public:
 
-			virtual ~CBSprite11()
-			{
-				Release();
-			}
+			virtual ~CBSprite11() { Release(); }
 
-		public:
-
-			///////////////////////////////////////////////////////////////////////////////////
-			//InitAndRelease//
+		public://Init And Release//
 
 			void Init(
 				ID3D11Device* _device,
@@ -28,17 +22,13 @@ namespace ChD3D11
 
 			void Release()override;
 
-			///////////////////////////////////////////////////////////////////////////////////
-			//SetFunction//
+		public://Set Functions//
 
 			void SetSpriteMatrix(const ChLMat& _mat);
 
 			void SetBaseColor(const ChVec4& _color);
 
-			inline void SetBaseTexture(TextureBase11* _tex)
-			{
-				baseTex = _tex;
-			}
+			inline void SetBaseTexture(TextureBase11* _tex) { baseTex = _tex; }
 
 			void SetSpriteData(const ChS_SpriteData& _data);
 
@@ -50,8 +40,7 @@ namespace ChD3D11
 
 			void SetShaderTexture(ID3D11DeviceContext* _dc);
 
-			///////////////////////////////////////////////////////////////////////////////////
-			//GetFunction//
+		public://Get Functions//
 
 			inline ChS_SpriteData GetSpriteData() { return spData; }
 
@@ -59,9 +48,11 @@ namespace ChD3D11
 
 			inline ChVec4 GetBaseColor() { return spData.baseColor; }
 
-		private:
+		private://Update Functions
 
 			void UpdateSD(ID3D11DeviceContext* _dc);
+
+		private://Member Value//
 
 			ChS_SpriteData spData;
 			ConstantBuffer11<ChS_SpriteData> spBuf;

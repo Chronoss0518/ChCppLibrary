@@ -1,7 +1,3 @@
-#include"../../../BaseIncluder/ChBase.h"
-#include<cmath>
-#include"../../ChModel/ChModel.h"
-
 #include"ChPanelCollider.h"
 
 #include"../Box/ChBoxCollider.h"
@@ -10,28 +6,17 @@
 
 using namespace ChCpp;
 
-///////////////////////////////////////////////////////////////////////////////////////
-//HitTestRay Method//
-///////////////////////////////////////////////////////////////////////////////////////
-
-bool PanelCollider::IsHit(
-	HitTestBox* _target)
+bool PanelCollider::IsHit(HitTestBox* _target)
 {
 	return false;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
-bool  PanelCollider::IsHit(
-	HitTestSphere* _target)
+bool  PanelCollider::IsHit(HitTestSphere* _target)
 {
 	return false;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
-bool  PanelCollider::IsHit(
-	HitTestRay* _target)
+bool  PanelCollider::IsHit(HitTestRay* _target)
 {
 	auto square = GetSquarePositions();
 
@@ -51,9 +36,7 @@ bool  PanelCollider::IsHit(
 		ChLMat tmpMat = GetMat();
 
 		for (auto&& pos : square.pos)
-		{
 			pos = tmpMat.Transform(pos);
-		}
 	}
 
 	unsigned long numbers[4]{ 0,1,2,3 };
@@ -68,11 +51,11 @@ bool  PanelCollider::IsHit(
 
 	bool hitFlg = HitTestTri(tmpVec, pos ,ray, square.pos[numbers[0]], square.pos[numbers[1]], square.pos[numbers[2]]);
 
-	if (tmpVec.Len() > maxLen)hitFlg = false;
+	if (tmpVec.GetLen() > maxLen)hitFlg = false;
 
 	if (!hitFlg)hitFlg = HitTestTri(tmpVec, pos, ray, square.pos[numbers[0]], square.pos[numbers[2]], square.pos[numbers[3]]);
 
-	if (tmpVec.Len() > maxLen)hitFlg = false;
+	if (tmpVec.GetLen() > maxLen)hitFlg = false;
 
 	if (hitFlg)
 	{
@@ -83,23 +66,15 @@ bool  PanelCollider::IsHit(
 	return hitFlg;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
-bool  PanelCollider::IsInnerHit(
-	HitTestBox* _target)
+bool  PanelCollider::IsInnerHit(HitTestBox* _target)
 {
 	return false;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
-bool PanelCollider::IsInnerHit(
-	HitTestSphere* _target)
+bool PanelCollider::IsInnerHit(HitTestSphere* _target)
 {
 	return false;
 }
-
-///////////////////////////////////////////////////////////////////////////////////////
 
 PanelCollider::Square PanelCollider::GetSquarePositions()
 {
@@ -118,9 +93,7 @@ PanelCollider::Square PanelCollider::GetSquarePositions()
 		{
 			out.pos[i] = tmpMat.Transform(tmpPos[i]);
 		}
-
 	}
 
 	return out;
-
 }

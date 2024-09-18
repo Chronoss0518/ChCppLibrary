@@ -29,7 +29,7 @@ namespace ChWin
 
 		inline void CreateHatchBrush(const unsigned char _r, const unsigned char _g, const unsigned char _b, const HatchType _type = HatchType::CROSS) 
 		{
-			CreateHatchBrush(_r, _g, _b, ChStd::EnumCast(_type));
+			CreateHatchBrush(_r, _g, _b, static_cast<int>(_type));
 		}
 
 		void CreateHatchBrush(const unsigned char _r, const unsigned char _g, const unsigned char _b, const int _type = HS_CROSS);
@@ -38,7 +38,7 @@ namespace ChWin
 
 		void CreatePatterBrush(const Texture* _tex);
 
-		void CreatePatterBrush(const ChPtr::Shared<Texture>& _tex);
+		void CreatePatterBrush(const Texture& _tex);
 
 		void CreatePatterBrush(const HBITMAP _tex);
 

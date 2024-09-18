@@ -5,21 +5,29 @@
 
 #include"ChWinButton.h"
 
-namespace ChSystem
-{
-	class Windows;
-}
-
 namespace ChWin
 {
-
-	class DefaultPushButton :public Button
+	class DefaultPushButtonA :public ButtonA
 	{
 	protected:
 
 		void CreateStyle()override;
-
 	};
+
+	class DefaultPushButtonW :public ButtonW
+	{
+	protected:
+
+		void CreateStyle()override;
+	};
+
+	using DefaultPushButton =
+#ifdef UNICODE
+		DefaultPushButtonW;
+#else
+		DefaultPushButtonA;
+#endif
+
 
 }
 

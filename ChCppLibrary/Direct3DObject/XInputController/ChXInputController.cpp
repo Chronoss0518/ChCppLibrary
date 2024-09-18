@@ -11,14 +11,10 @@ using namespace ChD3D;
 
 ChCpp::BitBool XInputController::controllerFlgs;
 
-///////////////////////////////////////////////////////////////////////////////////
-
 XInputController::XInputController()
 {
 	ChStd::MZero(&state);
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void XInputController::Init()
 {
@@ -43,8 +39,6 @@ void XInputController::Init()
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 void XInputController::Release()
 {
 	ChStd::MZero(&state);
@@ -54,8 +48,6 @@ void XInputController::Release()
 
 	SetInitFlg(false);
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void XInputController::Update()
 {
@@ -69,28 +61,24 @@ void XInputController::Update()
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 float XInputController::LDeadZoneTest(const float _sThumb)
 {
-	float Out = std::abs(_sThumb) < XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE ? 0.0f : _sThumb / 32767.0f;
+	float Out = ChMath::GetAbs(_sThumb) < XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE ? 0.0f : _sThumb / 32767.0f;
 	
 	return Out;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 float XInputController::RDeadZoneTest(const float _sThumb)
 {
 
-	float Out = std::abs(_sThumb) < XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE ? 0.0f : _sThumb / 32767.0f;
+	float Out = ChMath::GetAbs(_sThumb) < XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE ? 0.0f : _sThumb / 32767.0f;
 
 	return Out;
 }
 
 float XInputController::RL2DeadZoneTest(const unsigned char _sButton)
 {
-	float Out = std::abs(_sButton) < XINPUT_GAMEPAD_TRIGGER_THRESHOLD ? 0.0f : _sButton / 255.0f;
+	float Out = ChMath::GetAbs(_sButton) < XINPUT_GAMEPAD_TRIGGER_THRESHOLD ? 0.0f : _sButton / 255.0f;
 
 	return Out;
 }

@@ -16,21 +16,13 @@ public:
 
 	ChQuaternion_9& operator =(const D3DXVECTOR3& _cm);
 
-	///////////////////////////////////////////////////////////////////////////////////
-	//ConstructerDestructer
+public://ConstructerDestructer
 
 	ChQuaternion_9(const D3DXQUATERNION &_cm) :D3DXQUATERNION(_cm) {};
 
-	ChQuaternion_9()
-	{
-		Identity();
-	}
+	ChQuaternion_9() { Identity(); }
 
-	ChQuaternion_9(const D3DXMATRIX& _cm)
-	{
-		D3DXQuaternionRotationMatrix(this, &_cm);
-
-	}
+	ChQuaternion_9(const D3DXMATRIX& _cm) { D3DXQuaternionRotationMatrix(this, &_cm); }
 
 	ChQuaternion_9(const D3DXVECTOR3& _cm)
 	{
@@ -45,14 +37,13 @@ public:
 		D3DXVec3Cross(&tmpVec, &tmpVec, &tmpVec2);
 
 		D3DXQuaternionRotationAxis(this, &tmpVec, tmpDot);
-
 	}
 
 	ChQuaternion_9(
-		const float _x
-		, const float _y
-		, const float _z
-		, const float _w = 0.0f)
+		const float _x,
+		const float _y,
+		const float _z,
+		const float _w = 0.0f)
 	{
 		x = _x;
 		y = _y;
@@ -60,30 +51,20 @@ public:
 		w = _w;
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////
-	
-	void RotYPR(const float _x, const float _y, const float _z);
+public://Other Functions//
 
-	///////////////////////////////////////////////////////////////////////////////////
+	void RotYPR(const float _x, const float _y, const float _z);
 
 	void RotYPR(const D3DXVECTOR3& _vec);
 
-	///////////////////////////////////////////////////////////////////////////////////
-
 	void RotAxis(const D3DXVECTOR3* _vec, const float _ang);
-
-	///////////////////////////////////////////////////////////////////////////////////
 
 	void RotMat(const D3DXMATRIX* _mat);
 
-	///////////////////////////////////////////////////////////////////////////////////
-
 	void Lerp(
-		const D3DXQUATERNION& _sQua
-		, const D3DXQUATERNION& _eQua
-		, const float _nowTime);
-
-		///////////////////////////////////////////////////////////////////////////////////
+		const D3DXQUATERNION& _sQua,
+		const D3DXQUATERNION& _eQua,
+		const float _nowTime);
 
 	void Identity();
 

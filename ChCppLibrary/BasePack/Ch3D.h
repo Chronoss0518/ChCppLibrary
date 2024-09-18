@@ -1,10 +1,13 @@
 #ifndef Ch_CPP_3D_h
 #define Ch_CPP_3D_h
 
+#ifdef CRT
 #include<string>
 #include<vector>
-#include"ChMath.h"
+#endif
+
 #include"ChMath3D.h"
+#include"ChPtr.h"
 
 namespace Ch3D
 {
@@ -87,7 +90,22 @@ namespace Ch3D
 
 	struct BoneData
 	{
-		std::vector<float> blendPow;
+		BoneData();
+		
+		~BoneData();
+
+		struct BoneDataCRT
+		{
+#ifdef CRT
+			std::vector<float> blendPow;
+#endif
+		};
+
+		BoneDataCRT& ValueIns() { return *value; }
+
+	private:
+
+		BoneDataCRT* value = nullptr;
 	};
 
 	struct Vertex:
@@ -141,11 +159,29 @@ namespace Ch3D
 		None
 	};
 
+
+	template<typename CharaType>
 	struct MaterialData
 	{
+		MaterialData();
+
+		~MaterialData();
+
+		struct MaterialDataCRT
+		{
+#ifdef CRT
+			std::basic_string<CharaType> mateName;
+			std::map<TextureType, std::basic_string<CharaType>>textures;
+#endif
+		};
+
 		Material mate;
-		std::string mateName;
-		std::map<TextureType, std::string>textures;
+
+		MaterialDataCRT& ValueIns() { return *value; }
+
+	private:
+
+		MaterialDataCRT* value = nullptr;
 	};
 
 	struct Transform
@@ -156,20 +192,20 @@ namespace Ch3D
 
 		inline ChLMat& GetLeftHandMatrix()
 		{
-			static ChLMat out;
-			out.SetPosition(pos);
-			out.SetRotation(rot);
-			out.SetScalling(scl);
-			return out;
+			static ChLMat res;
+			res.SetPosition(pos);
+			res.SetRotation(rot);
+			res.SetScalling(scl);
+			return res;
 		}
 
 		inline ChRMat& GetRightHandMatrix()
 		{
-			static ChRMat out;
-			out.SetPosition(pos);
-			out.SetRotation(rot);
-			out.SetScalling(scl);
-			return out;
+			static ChRMat res;
+			res.SetPosition(pos);
+			res.SetRotation(rot);
+			res.SetScalling(scl);
+			return res;
 		}
 
 	};
@@ -182,13 +218,60 @@ namespace Ch3D
 	//MaterialÇ…ëŒâûÇ∑ÇÈñ Çä«óùÇ∑ÇÈ//
 	struct Primitive:public FaceNormal
 	{
-		std::vector<ChPtr::Shared<SavePolyData>> vertexData;
+		Primitive();
+
+		~Primitive();
+
+		struct PrimitiveCRT
+		{
+#ifdef CRT
+			std::vector<ChPtr::Shared<SavePolyData>> vertexData;
+#endif
+		};
+
 		unsigned long mateNo;
+		PrimitiveCRT& ValueIns() { return *value; }
+
+	private:
+
+		PrimitiveCRT* value = nullptr;
 	};
-
-
-	
-
 }
+
+#ifdef CRT
+
+Ch3D::BoneData::BoneData()
+{
+	value = new BoneDataCRT();
+}
+
+Ch3D::BoneData::~BoneData()
+{
+	delete value;
+}
+
+template<typename CharaType>
+Ch3D::MaterialData<CharaType>::MaterialData()
+{
+	value = new MaterialDataCRT();
+}
+
+template<typename CharaType>
+Ch3D::MaterialData<CharaType>::~MaterialData()
+{
+	delete value;
+}
+
+Ch3D::Primitive::Primitive()
+{
+	value = new PrimitiveCRT();
+}
+
+Ch3D::Primitive::~Primitive()
+{
+	delete value;
+}
+
+#endif
 
 #endif

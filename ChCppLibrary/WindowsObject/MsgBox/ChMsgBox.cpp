@@ -1,5 +1,4 @@
 #include<Windows.h>
-#include"../../BaseIncluder/ChBase.h"
 
 #include"../PackData/ChPoint.h"
 #include"ChMsgBox.h"
@@ -51,14 +50,3 @@ MsgBox::PushButtonType MsgBox::DisplayServiceNotificationA(
 	return static_cast<PushButtonType>(MessageBoxA(nullptr, _text, _title, uType));
 }
 
-
-unsigned int MsgBox::CreateUType()
-{
-	unsigned int uType = buttonType;
-	uType |= ChStd::EnumCast(mType);
-	uType |= ChStd::EnumCast(diType);
-	uType |= ChStd::EnumCast(tType);
-	uType |= ChStd::EnumCast(type);
-	return uType;
-
-}

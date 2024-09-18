@@ -20,7 +20,7 @@ void ChDirectSound9::CreatePrimaryBuffer(HWND _hWnd)
 	// プライマリ・バッファの作成
 	// DSBUFFERDESC構造体を設定
 	DSBUFFERDESC dsbdesc;
-	ZeroMemory(&dsbdesc, sizeof(DSBUFFERDESC));
+	ChStd::MZero(&dsbdesc);
 	dsbdesc.dwSize = sizeof(DSBUFFERDESC);
 	// プライマリ・バッファを指定
 	dsbdesc.dwFlags = DSBCAPS_CTRLVOLUME | DSBCAPS_CTRL3D | DSBCAPS_PRIMARYBUFFER;
@@ -35,7 +35,7 @@ void ChDirectSound9::CreatePrimaryBuffer(HWND _hWnd)
 	// プライマリ・バッファのWaveフォーマットを設定
 	// 　　　優先協調レベル以上の協調レベルが設定されている必要があります．
 	WAVEFORMATEX pcmwf;
-	ZeroMemory(&pcmwf, sizeof(WAVEFORMATEX));
+	ChStd::MZero(&pcmwf);
 	pcmwf.wFormatTag = WAVE_FORMAT_PCM;
 	pcmwf.nChannels = 2;		// ２チャンネル（ステレオ）
 	pcmwf.nSamplesPerSec = 88200;	// サンプリング・レート　44.1kHz
@@ -47,27 +47,28 @@ void ChDirectSound9::CreatePrimaryBuffer(HWND _hWnd)
 	CoInitialize(NULL);
 
 
-	primary->QueryInterface(IID_IDirectSound3DListener8
-		, (LPVOID *)&lpSListener);
+	primary->QueryInterface(IID_IDirectSound3DListener8, (LPVOID *)&lpSListener);
 
 	lpSListener->SetRolloffFactor(listenerBaseLen, DS3D_IMMEDIATE);
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChDirectSound9::LoadSound(LPDIRECTSOUNDBUFFER8 &_LpSound, LPDIRECTSOUND3DBUFFER8 &_Lp3DSound, std::string _soundFileName)
+void ChDirectSound9::LoadSound(
+	LPDIRECTSOUNDBUFFER8 &_LpSound,
+	LPDIRECTSOUND3DBUFFER8 &_Lp3DSound,
+	const char* _soundFileName,
+	unsigned long _soundFileNameLength)
 {
 	HRESULT hr;
 
 	CWaveSoundRead9 waveFile;
 	// WAVEファイルを開く
-	waveFile.Open(_soundFileName.c_str());
+	waveFile.Open(_soundFileName);
 
 	// セカンダリ・バッファを作成する
 	// DSBUFFERDESC構造体を設定
 	DSBUFFERDESC dsbdesc;
-	ZeroMemory(&dsbdesc, sizeof(DSBUFFERDESC));
+	ChStd::MZero(&dsbdesc);
 	dsbdesc.dwSize = sizeof(DSBUFFERDESC);
 
 	//(DSBCAPS_CTRL3D=３Ｄサウンドを使用)
@@ -121,8 +122,6 @@ void ChDirectSound9::LoadSound(LPDIRECTSOUNDBUFFER8 &_LpSound, LPDIRECTSOUND3DBU
 	_LpSound->QueryInterface(IID_IDirectSound3DBuffer8, (LPVOID*)&_Lp3DSound);
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
 void ChDirectSound9::Init(HWND _hWnd)
 {
 	//COM(コンポーネントオブジェクトモデル)の初期化
@@ -143,42 +142,16 @@ void ChDirectSound9::Init(HWND _hWnd)
 	SetInitFlg(true);
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChDirectSound9::Release()
-{
-	if (!mainSoundList.empty())mainSoundList.clear();
-	if (!subSoundList.empty())subSoundList.clear();
-
-	if (primary != nullptr)
-	{
-		primary->Release();
-		primary = nullptr;
-	}
-
-	if (lpDS != nullptr)
-	{
-		lpDS->Release();
-		lpDS = nullptr;
-	}
-
-	CoUninitialize();
-
-	SetInitFlg(false);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
 void ChDirectSound9::Update()
 {
 	DWORD Flg;
-	if (playSubSoundList.empty())return;
-	auto Obj = playSubSoundList[0];
-	for(unsigned char i = 0;i< playSubSoundList.size();i++)
+	if (GetPlaySubSoundListCount() <= 0)return;
+	auto Obj = GetPlaySubSound(0);
+	for(unsigned char i = 0;i< GetPlaySubSoundListCount();i++)
 	{
-		playSubSoundList[i]->sound->GetStatus(&Flg);
+		GetPlaySubSound(i)->sound->GetStatus(&Flg);
 		if ((Flg & DSBSTATUS_PLAYING) == 0) {
-			playSubSoundList.erase(playSubSoundList.begin() + i);
+			RemovePlaySubSound(i);
 			i -= 1;
 			continue;
 		}
@@ -198,284 +171,57 @@ void ChDirectSound9::Update()
 		, listenerPos->z
 		, DS3D_IMMEDIATE);
 
-
-
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChDirectSound9::SetUseDirectory(
-	const std::string _soundDirectoryName
-	, const std::string _useSoundDirectory)
+void ChDirectSound9::SetHzForSE(const unsigned short _soundNo, const DWORD _hz)
 {
-
-	if (directoryPathList.find(_useSoundDirectory) != directoryPathList.end())return;
-	
-	directoryPathList.insert
-	(std::pair < std::string, std::string>(_useSoundDirectory, _soundDirectoryName));
-
+	auto&& subSound = GetSubSound(_soundNo);
+	if (ChPtr::NullCheck(subSound))return;
+	subSound->sound->SetFrequency(_hz);
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChDirectSound9::SetBGMSound(
-	const std::string _soundName
-	, const std::string _soundFilePath
-	, const std::string _useSoundDirectory)
+void ChDirectSound9::SetVolumeForSE(const unsigned short _soundNo, const long _volume)
 {
-	if (mainSoundList.find(_soundName) != mainSoundList.end())return;
-
-	std::string tmpString = _soundFilePath;
-
-	if (tmpString.length() <= 0)return;
-
-	if (directoryPathList.find(_useSoundDirectory)
-		!= directoryPathList.end())
-	{
-		tmpString = directoryPathList[_useSoundDirectory] + '/' + tmpString;
-	}
-
-	auto bgm = ChPtr::Make_S<ChMainSound9>();
-
-	if (bgm == nullptr)return;
-
-	LoadSound(bgm->sound, bgm->dSound, tmpString);
-
-	bgm->dSound->SetMode(DS3DMODE_DISABLE, DS3D_IMMEDIATE);
-
-	bgm->sound->GetFrequency(&bgm->hz);
-
-	bgm->sound->GetVolume(&bgm->vol);
-
-	mainSoundList.insert(std::pair<std::string, ChPtr::Shared<ChBGM9>>(_soundName, bgm));
-
+	auto&& subSound = GetSubSound(_soundNo);
+	if (ChPtr::NullCheck(subSound))return;
+	subSound->sound->SetVolume(_volume);
 }
-
-///////////////////////////////////////////////////////////////////////////////////
-
-unsigned short ChDirectSound9::SetSESound(
-	const std::string _soundFilePath
-	, const std::string _useSoundDirectory)
-{
-	if (subSoundList.size() >= maxSE)return 0;
-
-	std::string tmpString = _soundFilePath;
-
-	if (tmpString.length() <= 0)return 0;
-
-	unsigned short tmpData = 0;
-	while(1)
-	{
-		if (subSoundList.find(seNo) == subSoundList.end())break;
-		++seNo %= maxSE;
-		if (seNo == 0)seNo = 1;
-	}
-
-	tmpData = seNo;
-
-	if (directoryPathList.find(_useSoundDirectory)
-		!= directoryPathList.end())
-	{
-		tmpString = directoryPathList[_useSoundDirectory] + '/' + tmpString;
-	}
-	ChPtr::Shared<ChSubSound9> se = nullptr;
-	se = ChPtr::Make_S<ChSubSound9>();
-	LoadSound(se->sound, se->dSound, tmpString);
-
-	se->sound->GetFrequency(&se->hz);
-
-	se->sound->GetVolume(&se->vol);
-
-	subSoundList.insert(std::pair<unsigned short, ChPtr::Shared<ChSE9>>(tmpData, se));
-
-	return tmpData;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChDirectSound9::SetHzForBGM(const std::string _soundName
-	, const DWORD _hz)
-{
-	if (mainSoundList.find(_soundName) == mainSoundList.end())return;
-	mainSoundList[_soundName]->sound->SetFrequency(_hz);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChDirectSound9::SetVolumeForBGM(const std::string _soundName
-	, const long _volume)
-{
-	if (mainSoundList.find(_soundName) == mainSoundList.end())return;
-	mainSoundList[_soundName]->sound->SetVolume(_volume);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChDirectSound9::SetBaseHzForBGM(const std::string _soundName)
-{
-	if (mainSoundList.find(_soundName) == mainSoundList.end())return;
-	mainSoundList[_soundName]->sound->SetFrequency(mainSoundList[_soundName]->hz);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChDirectSound9::SetBaseVolumeForBGM(const std::string _soundName)
-{
-	if (mainSoundList.find(_soundName) == mainSoundList.end())return;
-	mainSoundList[_soundName]->sound->SetVolume(mainSoundList[_soundName]->vol);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChDirectSound9::SetHzForSE(const unsigned short _soundNo
-	, const DWORD _hz)
-{
-	if (subSoundList.find(_soundNo) == subSoundList.end())return;
-	subSoundList[_soundNo]->sound->SetFrequency(_hz);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChDirectSound9::SetVolumeForSE(const unsigned short _soundNo
-	, const long _volume)
-{
-	if (subSoundList.find(_soundNo) == subSoundList.end())return;
-	subSoundList[_soundNo]->sound->SetVolume(_volume);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void ChDirectSound9::SetBaseHzForSE(const unsigned short _soundNo)
 {
-	if (subSoundList.find(_soundNo) == subSoundList.end())return;
-	subSoundList[_soundNo]->sound->SetFrequency(subSoundList[_soundNo]->hz);
+	auto&& subSound = GetSubSound(_soundNo);
+	if (ChPtr::NullCheck(subSound))return;
+	subSound->sound->SetFrequency(subSound->hz);
 }
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void ChDirectSound9::SetBaseVolumeForSE(const unsigned short _soundNo)
 {
-	if (subSoundList.find(_soundNo) == subSoundList.end())return;
-	subSoundList[_soundNo]->sound->SetVolume(subSoundList[_soundNo]->vol);
+	auto&& subSound = GetSubSound(_soundNo);
+	if (ChPtr::NullCheck(subSound))return;
+	subSound->sound->SetVolume(subSound->vol);
 }
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChDirectSound9::ClearBGM()
-{
-	if (mainSoundList.empty())return;
-	StopBGM();
-	mainSoundList.clear();
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChDirectSound9::ClearSE(const unsigned short _soundNo)
-{
-	if (subSoundList.empty())return;
-	if (subSoundList.find(_soundNo) == subSoundList.end())return;
-	subSoundList.erase(_soundNo);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChDirectSound9::ClearSE()
-{
-	if (subSoundList.empty())return;
-	subSoundList.clear();
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChDirectSound9::PlayBGM(const std::string _soundName)
-{
-	if (mainSoundList.find(_soundName) == mainSoundList.end())return;
-	StopBGM();
-	mainSoundName = _soundName;
-
-	mainSoundList[_soundName]->sound->SetCurrentPosition(0);
-	mainSoundList[_soundName]->sound->Play(0, 0, DSBPLAY_LOOPING);
-
-	return;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void ChDirectSound9::PlaySE(const unsigned short _soundNo)
 {
-	if (subSoundList.find(_soundNo) != subSoundList.end())return;
+	auto tmpBGM = GetSubSound(_soundNo);
 
-	auto tmpBGM = subSoundList[_soundNo];
+	if (ChPtr::NullCheck(tmpBGM))return;
 
 	tmpBGM->sound->SetCurrentPosition(0);
 	tmpBGM->sound->Play(0, 0, 0);
-
-	return;
 }
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChDirectSound9::PlaySE(
-	const std::string _soundName
-	, const std::string _useSoundDirectory
-	, const ChVec3_9* _soundPos)
-{
-	std::string tmpString = _soundName;
-
-	if (tmpString.length() <= 0)return;
-
-	if (directoryPathList.find(_useSoundDirectory)
-		!= directoryPathList.end())
-	{
-		tmpString = directoryPathList[_useSoundDirectory] + '/' + tmpString;
-	}
-
-	auto se = ChPtr::Make_S<ChSubSound9>();
-	LoadSound(se->sound, se->dSound, tmpString);
-
-	if (ChPtr::NotNullCheck(_soundPos))
-	{
-		se->dSound->SetPosition(_soundPos->x
-			, _soundPos->y
-			, _soundPos->z
-			, DS3D_IMMEDIATE);
-	}
-
-	se->sound->SetCurrentPosition(0);
-	se->sound->Play(0, 0, 0);
-
-	playSubSoundList.push_back(se);
-
-	return;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void ChDirectSound9::StopBGM()
-{
-	if (mainSoundName.length() <= 0)return;
-
-	DWORD Flg;
-	mainSoundList[mainSoundName]->sound->GetStatus(&Flg);
-	if ((Flg & DSBSTATUS_PLAYING) != 0)
-	{
-		mainSoundList[mainSoundName]->sound->Stop();
-	}
-	mainSoundName = "";
-}
-
-///////////////////////////////////////////////////////////////////////////////////
 
 void ChDirectSound9::StopSE(const unsigned short _soundNo)
 {
-	auto tmpBuffer = subSoundList[_soundNo];
+	auto tmpBuffer = GetSubSound(_soundNo);
+
+	if (ChPtr::NullCheck(tmpBuffer))return;
 
 	DWORD Flg;
 	tmpBuffer->sound->GetStatus(&Flg);
 
-	if ((Flg & DSBSTATUS_PLAYING) == 0) {
+	if ((Flg & DSBSTATUS_PLAYING) == 0)
 		return;
-	}
 
 	tmpBuffer->sound->Stop();
 }
@@ -604,7 +350,7 @@ HRESULT CWaveSoundRead9::WaveOpenFile(
 	HRESULT hr;
 	HMMIO   hmmioIn = NULL;
 
-	if (NULL == (hmmioIn = mmioOpen((char *)strFileName, NULL, MMIO_ALLOCBUF | MMIO_READ)))
+	if (NULL == (hmmioIn = mmioOpenA((char *)strFileName, NULL, MMIO_ALLOCBUF | MMIO_READ)))
 		return E_FAIL;
 
 	if (FAILED(hr = ReadMMIO(hmmioIn, pckInRIFF, ppwfxInfo)))

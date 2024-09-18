@@ -32,39 +32,30 @@ namespace ChCpp
 
 	class BoxCollider :public Collider
 	{
-	public:
-		///////////////////////////////////////////////////////////////////////////////////////
-		//IsFunction//
+	public://IsFunction//
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
-		bool IsHit(
-			HitTestBox* _target)override;
+		bool IsHit(HitTestBox* _target)override;
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
-		bool IsHit(
-			HitTestSphere* _target)override;
+		bool IsHit(HitTestSphere* _target)override;
 
 		//対象のオブジェクトがオブジェクト外から衝突しているかの判定//
-		bool IsHit(
-			HitTestRay* _target)override;
+		bool IsHit(HitTestRay* _target)override;
 
 		//対象のオブジェクトがオブジェクト内から衝突しているかの判定//
-		bool IsInnerHit(
-			HitTestBox* _target)override;
+		bool IsInnerHit(HitTestBox* _target)override;
 
 		//対象のオブジェクトがオブジェクト内から衝突しているかの判定//
-		bool IsInnerHit(
-			HitTestSphere* _target)override;
+		bool IsInnerHit(HitTestSphere* _target)override;
 
+	public://Create Functions//
 
-		///////////////////////////////////////////////////////////////////////////////////////
-		
 		Cube CreateCube(const ChLMat& _mat);
 
-
-
 	};
-
 }
+
+#include"../Polygon/ChPolygonColliderSharedRayBoxSphere.h"
 
 #endif

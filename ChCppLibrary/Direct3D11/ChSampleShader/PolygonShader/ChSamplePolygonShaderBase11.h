@@ -1,8 +1,8 @@
 #ifndef Ch_D3D11_SS_SamplePolygonShaderBase_h
 #define Ch_D3D11_SS_SamplePolygonShaderBase_h
 
+#include"../../ChCB/ChCBPolygon/ChCBPolygon11.h"
 #include"../ChSampleShaderBase11.h"
-
 
 namespace ChD3D11
 {
@@ -15,20 +15,15 @@ namespace ChD3D11
 
 		class SamplePolygonShaderBase11 :public SampleShaderBase11
 		{
-		public:
+		public://Constructor Destructor//
 
-			virtual ~SamplePolygonShaderBase11()
-			{
-				Release();
-			}
+			virtual ~SamplePolygonShaderBase11() { Release(); }
 
 		public://Init And Release//
 
 			virtual void Init(ID3D11Device* _device)override;
 
 			virtual void Release()override;
-
-		protected://Init And Release//
 
 		public://Set Functions//
 
@@ -64,7 +59,7 @@ namespace ChD3D11
 
 			virtual void DrawStart(ID3D11DeviceContext* _dc)override;
 
-		protected:
+		protected://Update Functions
 
 			virtual void Update(ID3D11DeviceContext* _dc)override;
 
@@ -78,8 +73,7 @@ namespace ChD3D11
 
 			bool alphaBlendFlg = false;
 
-			ChPtr::Shared<RenderTarget11>setHighLightMapRT = nullptr;
-
+			RenderTarget11* setHighLightMapRT = nullptr;
 		};
 	}
 }
