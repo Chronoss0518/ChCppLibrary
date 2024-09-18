@@ -48,7 +48,7 @@
 //Component//
 
 //D3DObject//
-//#include"BaseIncluder/ChD3DOI.h"
+#include"BaseIncluder/ChD3DOI.h"
 
 #pragma comment(lib,"ChD3D11Library.lib")
 
