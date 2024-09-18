@@ -177,8 +177,8 @@ void ChCpp::TextObject<CharaType>::SetText(const CharaType* _str)
 		return;
 	}
 
-	unsigned long tmpPos = 0;
-	unsigned long testPos = 0;
+	size_t tmpPos = 0;
+	size_t testPos = 0;
 
 	while (true)
 	{
