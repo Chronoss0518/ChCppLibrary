@@ -36,6 +36,22 @@ ChCpp::Cumulative<CharaType> arrayCount = ChCpp::Cumulative<CharaType>(\
 	ChStd::GetEndBracketChara<CharaType>()[0])
 #endif
 
+#ifndef Ch_Json_BaseTypeMethods
+#define Ch_Json_BaseTypeMethods(_functionDefine)\
+_functionDefine(signed char)\
+_functionDefine(signed short)\
+_functionDefine(signed int)\
+_functionDefine(signed long)\
+_functionDefine(signed long long)\
+_functionDefine(unsigned char)\
+_functionDefine(unsigned short)\
+_functionDefine(unsigned int)\
+_functionDefine(unsigned long)\
+_functionDefine(unsigned long long)\
+_functionDefine(float)\
+_functionDefine(double)\
+_functionDefine(long double)
+#endif
 
 namespace ChCpp
 {

@@ -25,6 +25,20 @@
 #define CH_JSON_STRING_t_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(Get_t_Chara,type)
 #endif
 
+#ifndef	CH_Json_String_Operator_Functions
+#define	CH_Json_String_Operator_Functions(_type)\
+JsonString& operator =(const _type##& _value){\
+	value->value = ChStr::GetTextFromNum<##_type##, CharaType>(_value);\
+	return *this;}
+#endif
+
+#ifndef	CH_Json_String_Constructor_Functions
+#define	CH_Json_String_Constructor_Functions(_type)\
+JsonString(const _type##& _value){\
+	CRTInit();\
+	*this = ChStr::GetTextFromNum<##_type##, CharaType>(_value);}
+#endif
+
 namespace ChCpp
 {
 	template<typename CharaType>
@@ -95,12 +109,8 @@ namespace ChCpp
 	public://To BaseClass Operator Functions//
 
 #ifdef CRT
-		template<typename BaseType>
-		JsonString& operator =(const BaseType& _value)
-		{
-			value->value = ChStr::GetTextFromNum<BaseType, CharaType>(_value);
-			return *this;
-		}
+		Ch_Json_BaseTypeMethods(CH_Json_String_Operator_Functions);
+
 #endif
 	public://To String Operator Functions//
 
@@ -119,12 +129,7 @@ namespace ChCpp
 
 		JsonString(const std::basic_string<CharaType>& _str);
 
-		template<typename BaseType>
-		JsonString(const BaseType& _value)
-		{
-			CRTInit();
-			*this = ChStr::GetTextFromNum<BaseType,CharaType>(_value);
-		}
+		Ch_Json_BaseTypeMethods(CH_Json_String_Constructor_Functions);
 #endif
 		virtual ~JsonString()
 		{

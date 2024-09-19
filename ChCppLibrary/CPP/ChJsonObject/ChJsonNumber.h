@@ -22,6 +22,28 @@ JsonNumber operator _Operator##(const JsonNumber& _val)const{\
 	return res;}
 #endif
 
+#ifndef	CH_Json_Number_Create_Functions
+#define	CH_Json_Number_Create_Functions(_type)\
+static ChPtr::Shared<JsonNumber> CreateObject(const _type& _value){\
+	auto&& res = ChPtr::Make_S<JsonNumber>();\
+	*res = _value;\
+	return res;}
+#endif
+
+#ifndef	CH_Json_Number_Constructor_Functions
+#define	CH_Json_Number_Constructor_Functions(_type) JsonNumber(const _type##& _val){value = static_cast<long double>(_val);}
+#endif
+
+#ifndef	CH_Json_Number_Operator_Functions
+#define	CH_Json_Number_Operator_Functions(_type)\
+operator _type##()const{return static_cast<##_type##>(value);}\
+\
+JsonNumber& operator = (const _type##& _base){\
+	value = static_cast<const long double>(_base);\
+	return *this;}
+#endif
+
+
 namespace ChCpp
 {
 	template<typename CharaType>
@@ -30,13 +52,10 @@ namespace ChCpp
 	public://static Create Function//
 
 #ifdef CRT
-		template<typename BaseType>
-		static ChPtr::Shared<JsonNumber> CreateObject(const BaseType& _value)
-		{
-			auto&& res = ChPtr::Make_S<JsonNumber>();
-			*res = _value;
-			return res;
-		}
+
+		Ch_Json_BaseTypeMethods(CH_Json_Number_Create_Functions);
+
+
 #endif
 
 	public://Operator Functions//
@@ -67,19 +86,7 @@ namespace ChCpp
 
 	public://To BaseClass Operator Functions//
 
-		template<typename BaseType>
-		operator BaseType()const
-		{
-			return static_cast<BaseType>(value);
-		}
-
-		template<typename BaseType>
-		JsonNumber& operator = (const BaseType& _base)
-		{
-			value = static_cast<const long double>(_base);
-			return *this;
-		}
-
+		Ch_Json_BaseTypeMethods(CH_Json_Number_Operator_Functions);
 
 	public://To String Operator Functions//
 
@@ -102,11 +109,8 @@ namespace ChCpp
 			value = _val.value;
 		}
 
-		template<typename BaseType>
-		JsonNumber(const BaseType& _val)
-		{
-			value = static_cast<long double>(_val);
-		}
+
+		Ch_Json_BaseTypeMethods(CH_Json_Number_Constructor_Functions);
 
 	public:
 

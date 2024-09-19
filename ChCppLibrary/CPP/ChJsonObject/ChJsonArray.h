@@ -11,6 +11,24 @@
 
 #include"../ChTextObject/ChTextObject.h"
 
+#ifndef	CH_Json_Array_Create_FunctionsDeclaration
+#define	CH_Json_Array_Create_FunctionsDeclaration(_type) static ChPtr::Shared<JsonArray> CreateObject(const std::vector<_type>& _array);
+#endif
+
+#ifndef	CH_Json_Array_Create_Functions
+#define	CH_Json_Array_Create_Functions(_type)\
+template<typename CharaType>\
+ChPtr::Shared<ChCpp::JsonArray<CharaType>> ChCpp::JsonArray<CharaType>::CreateObject(const std::vector<_type>& _array){\
+	auto&& res = ChPtr::Make_S<JsonArray<CharaType>>();\
+	for (auto&& val : _array)\
+		res->Add(val);\
+	return res;}
+#endif
+
+#ifndef	CH_Json_Array_Add_FunctionsDeclaration
+#define	CH_Json_Array_Add_FunctionsDeclaration(_type) void Add(const _type _value);
+#endif
+
 namespace ChCpp
 {
 	template<typename CharaType>
@@ -34,8 +52,7 @@ namespace ChCpp
 	public://static Create Function//
 
 #ifdef CRT
-		template<typename BaseType>
-		static ChPtr::Shared<JsonArray> CreateObject(const std::vector<BaseType>& _array);
+		Ch_Json_BaseTypeMethods(CH_Json_Array_Create_FunctionsDeclaration);
 
 		static ChPtr::Shared<JsonArray> CreateObject(const std::vector<bool>& _array);
 
@@ -126,8 +143,7 @@ namespace ChCpp
 			value->values.push_back(_value);
 		}
 
-		template<typename BaseType>
-		void Add(const BaseType _value);
+		Ch_Json_BaseTypeMethods(CH_Json_Array_Add_FunctionsDeclaration);
 
 		void Add(const bool _value);
 
@@ -250,18 +266,7 @@ void ChCpp::JsonArray<CharaType>::Clear()
 }
 
 
-template<typename CharaType>
-template<typename BaseType>
-ChPtr::Shared<ChCpp::JsonArray<CharaType>> ChCpp::JsonArray<CharaType>::CreateObject(const std::vector<BaseType>& _array)
-{
-	auto&& res = ChPtr::Make_S<JsonArray<CharaType>>();
-	for (auto&& val : _array)
-	{
-		res->Add(val);
-	}
-	return res;
-}
-
+Ch_Json_BaseTypeMethods(CH_Json_Array_Create_Functions);
 
 template<typename CharaType>
 static ChPtr::Shared<ChCpp::JsonArray<CharaType>> ChCpp::JsonArray<CharaType>::CreateObject(const std::vector<std::basic_string<CharaType>>& _array)

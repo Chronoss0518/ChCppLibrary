@@ -8,13 +8,16 @@
 #ifndef Ch_CPP_Shared_Json_Array_Number
 #define Ch_CPP_Shared_Json_Array_Number
 
-template<typename CharaType>
-template<typename BaseType>
-void ChCpp::JsonArray<CharaType>::Add(const BaseType _value)
-{
-	if (_value == nullptr)return;
-	value->values.push_back(JsonNumber<CharaType>::CreateObject(_value));
-}
+
+#ifndef	CH_Json_Array_Add_Functions
+#define	CH_Json_Array_Add_Functions(_type)\
+template<typename CharaType>\
+void ChCpp::JsonArray<CharaType>::Add(const _type _value){\
+	if (_value == nullptr)return;\
+	value->values.push_back(JsonNumber<CharaType>::CreateObject(_value));}
+#endif
+
+Ch_Json_BaseTypeMethods(CH_Json_Array_Add_Functions);
 #endif
 
 #endif
