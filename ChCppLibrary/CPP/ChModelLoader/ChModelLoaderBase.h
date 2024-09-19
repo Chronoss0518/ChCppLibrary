@@ -119,7 +119,7 @@ std::basic_string<CharaType> ChCpp::ModelLoaderBase<CharaType>::GetRoutePath(con
 
 	std::basic_string<CharaType> tmpPath = ChStr::StrReplase<CharaType>(_filePath, ChStd::GetYenChara<CharaType>(), ChStd::GetSlashChara<CharaType>());
 
-	unsigned long tmp = tmpPath.rfind(ChStd::GetSlashChara<CharaType>());
+	size_t tmp = tmpPath.rfind(ChStd::GetSlashChara<CharaType>());
 
 	return tmpPath.substr(0, tmp + 1);
 

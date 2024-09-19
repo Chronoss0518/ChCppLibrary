@@ -78,7 +78,7 @@ namespace ChCpp
 			std::vector<ChPtr::Shared<Ch3D::MaterialData<CharaType>>>materialList;
 			std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>> vertexList;
 			std::vector<ChPtr::Shared<TargetBoneData<CharaType>>>boneDatas;
-			std::map<std::basic_string<CharaType>, unsigned long>mateNames;
+			std::map<std::basic_string<CharaType>, size_t>mateNames;
 #endif
 		};
 

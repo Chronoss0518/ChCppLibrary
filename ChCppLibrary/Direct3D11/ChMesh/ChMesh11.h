@@ -208,12 +208,12 @@ void ChD3D11::FrameComponent11<CharaType>::CreateAll(ID3D11Device* _device, Mesh
 		{
 			auto&& primitive11 = value->primitives[primitive->mateNo];
 
-			unsigned long firstIndex = primitive11->ValueIns().vertexArray.size();
-			unsigned long indexCount = 0;
+			size_t firstIndex = primitive11->ValueIns().vertexArray.size();
+			size_t indexCount = 0;
 
 			for (auto&& vertex : primitive->ValueIns().vertexData)
 			{
-				unsigned long vertexNo = vertex->vertexNo;
+				size_t vertexNo = vertex->vertexNo;
 
 				auto&& tmpVertex = *frameBase->ValueIns().vertexList[vertexNo];
 
@@ -223,8 +223,8 @@ void ChD3D11::FrameComponent11<CharaType>::CreateAll(ID3D11Device* _device, Mesh
 				Ch3D::SetColor(&mVertex, tmpVertex.color);
 				Ch3D::SetNormal(&mVertex, tmpVertex.normal);
 				Ch3D::SetFaceNormal(&mVertex, primitive->faceNormal);
-				mVertex.boneNum = tmpVertex.ValueIns().blendPow.size();
-				for (unsigned long i = 0; i < mVertex.boneNum; i++)
+				mVertex.boneNum = static_cast<unsigned long>(tmpVertex.ValueIns().blendPow.size());
+				for (size_t i = 0; i < mVertex.boneNum; i++)
 				{
 					mVertex.blendPows[i] = tmpVertex.ValueIns().blendPow[i];
 				}
@@ -236,9 +236,9 @@ void ChD3D11::FrameComponent11<CharaType>::CreateAll(ID3D11Device* _device, Mesh
 
 			for (unsigned long i = 1; i < indexCount - 1; i++)
 			{
-				primitive11->ValueIns().indexArray.push_back(firstIndex);
-				primitive11->ValueIns().indexArray.push_back(firstIndex + i);
-				primitive11->ValueIns().indexArray.push_back(firstIndex + i + 1);
+				primitive11->ValueIns().indexArray.push_back(static_cast<unsigned long>(firstIndex));
+				primitive11->ValueIns().indexArray.push_back(static_cast<unsigned long>(firstIndex + i));
+				primitive11->ValueIns().indexArray.push_back(static_cast<unsigned long>(firstIndex + i + 1));
 			}
 		}
 
@@ -251,12 +251,12 @@ void ChD3D11::FrameComponent11<CharaType>::CreateAll(ID3D11Device* _device, Mesh
 			prim->indexBuffer.CreateBuffer(
 				_device,
 				&prim->ValueIns().indexArray[0],
-				prim->ValueIns().indexArray.size());
+				static_cast<unsigned long>(prim->ValueIns().indexArray.size()));
 
 			prim->vertexBuffer.CreateBuffer(
 				_device,
 				&prim->ValueIns().vertexArray[0],
-				prim->ValueIns().vertexArray.size());
+				static_cast<unsigned long>(prim->ValueIns().vertexArray.size()));
 		}
 
 		for (auto boneData : frameBase->ValueIns().boneDatas)
@@ -287,12 +287,12 @@ void ChD3D11::FrameComponent11<CharaType>::SetBoneData(CB::CBBone11& _bone)
 	if (value->boneList.empty())return;
 
 	value->boneList[value->boneList.size() - 1]->targetObject->UpdateAllDrawTransform();
-	for (unsigned long i = 0; i < value->boneList.size(); i++)
+	for (size_t i = 0; i < value->boneList.size(); i++)
 	{
-		unsigned long useNum = value->boneList.size() - 1 - i;
+		size_t useNum = value->boneList.size() - 1 - i;
 
-		_bone.SetBoneObjectDrawMatrix(value->boneList[useNum]->targetObject->GetDrawLHandMatrix(), i);
-		_bone.SetBoneOffsetMatrix(value->boneList[useNum]->boneData->boneOffset, i);
+		_bone.SetBoneObjectDrawMatrix(value->boneList[useNum]->targetObject->GetDrawLHandMatrix(), static_cast<unsigned long>(i));
+		_bone.SetBoneOffsetMatrix(value->boneList[useNum]->boneData->boneOffset, static_cast<unsigned long>(i));
 	}
 }
 

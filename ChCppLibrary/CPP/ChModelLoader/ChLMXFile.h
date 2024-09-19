@@ -1458,7 +1458,7 @@ void ChCpp::ModelLoader::XFile<CharaType>::XFrameToChFrame(
 
 	if (_xFrame->ValueIns().mesh == nullptr)return;
 
-	std::map<unsigned long, unsigned long>summarizeVertex;
+	std::map<size_t, size_t>summarizeVertex;
 
 	auto&& mesh = _chFrame->SetComponent<FrameComponent<CharaType>>();
 	auto&& chVertexList = mesh->ValueIns().vertexList;
@@ -1467,12 +1467,12 @@ void ChCpp::ModelLoader::XFile<CharaType>::XFrameToChFrame(
 		auto& xVertexList = _xFrame->ValueIns().mesh->ValueIns().vertexList;
 
 
-		for (unsigned long i = 0; i < xVertexList.size(); i++)
+		for (size_t i = 0; i < xVertexList.size(); i++)
 		{
 			bool lookFlg = false;
 			ChPtr::Shared<Ch3D::SavePolyVertex> chVertex = nullptr;
 
-			for (unsigned long j = 0; j < chVertexList.size(); j++)
+			for (size_t j = 0; j < chVertexList.size(); j++)
 			{
 
 				if (chVertexList[j]->pos != xVertexList[i]->pos)continue;
@@ -1543,14 +1543,14 @@ void ChCpp::ModelLoader::XFile<CharaType>::XFrameToChFrame(
 
 			auto chFace = ChPtr::Make_S<Ch3D::Primitive>();
 
-			for (unsigned long i = 0; i < xFace->ValueIns().vertexNos.size(); i++)
+			for (size_t i = 0; i < xFace->ValueIns().vertexNos.size(); i++)
 			{
 
 				auto chVertexData = ChPtr::Make_S<Ch3D::SavePolyData>();
 
-				unsigned long VertexNo = summarizeVertex[xFace->ValueIns().vertexNos[i]];
+				size_t VertexNo = summarizeVertex[xFace->ValueIns().vertexNos[i]];
 
-				chVertexData->vertexNo = VertexNo;
+				chVertexData->vertexNo = static_cast<unsigned long>(VertexNo);
 				chVertexData->uv = xVertexList[xFace->ValueIns().vertexNos[i]]->uv;
 				chFace->faceNormal += chVertexList[VertexNo]->normal;
 
@@ -1570,7 +1570,7 @@ void ChCpp::ModelLoader::XFile<CharaType>::XFrameToChFrame(
 		auto& chMateList = mesh->ValueIns().materialList;
 		auto& chMateNos = mesh->ValueIns().mateNames;
 
-		unsigned long i = 0;
+		size_t i = 0;
 
 		for (auto&& xMate : _xFrame->ValueIns().mesh->ValueIns().materialList)
 		{
@@ -1582,7 +1582,7 @@ void ChCpp::ModelLoader::XFile<CharaType>::XFrameToChFrame(
 			chMate->mate.specularPower = xMate->specularPower;
 			chMate->mate.ambient = xMate->ambient.GetLen() / 4.0f;
 
-			for (unsigned long j = 0; j < xMate->ValueIns().textureNameList.size(); j++)
+			for (size_t j = 0; j < xMate->ValueIns().textureNameList.size(); j++)
 			{
 				if (j > ChStd::EnumCast(Ch3D::TextureType::Metallic))break;
 				chMate->ValueIns().textures[static_cast<Ch3D::TextureType>(j)] =

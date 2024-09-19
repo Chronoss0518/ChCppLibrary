@@ -328,9 +328,9 @@ namespace ChCpp
 
 					struct Data
 					{
-						unsigned long vertexNum;
-						unsigned long normalNum;
-						unsigned long uvNum;
+						size_t vertexNum;
+						size_t normalNum;
+						size_t uvNum;
 					};
 
 					struct MeshDataCRT
@@ -365,9 +365,9 @@ namespace ChCpp
 				
 				virtual ~ObjFileModelData();
 
-				unsigned long sVertex = 0;
-				unsigned long sUV = 0;
-				unsigned long sNormal = 0;
+				size_t sVertex = 0;
+				size_t sUV = 0;
+				size_t sNormal = 0;
 
 				ObjFileModelDataCRT& ValueIns() { return *value; }
 
@@ -453,7 +453,7 @@ namespace ChCpp
 		protected://Is Functions//
 
 #ifdef CRT
-			bool IsPrefix(const std::basic_string<CharaType>& _str, const std::basic_string<CharaType>& _prefix, const unsigned long _prefixSize);
+			bool IsPrefix(const std::basic_string<CharaType>& _str, const std::basic_string<CharaType>& _prefix, const size_t _prefixSize);
 #endif
 		protected://Other Functions//
 
@@ -798,7 +798,7 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::CreateChFrame(ChPtr::Shared<ChCpp::
 
 			auto fVList = ChPtr::Make_S<Ch3D::Primitive>();
 
-			fVList->mateNo = primitive->ValueIns().mateNames[face->ValueIns().targetMaterialName];
+			fVList->mateNo = static_cast<unsigned long>(primitive->ValueIns().mateNames[face->ValueIns().targetMaterialName]);
 
 			for (auto&& values : face->ValueIns().values)
 			{
@@ -806,13 +806,13 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::CreateChFrame(ChPtr::Shared<ChCpp::
 				//unsigned long NVertex = Values->VertexNum - Obj.second->SVertex - 1;
 				//unsigned long NUV = Values->UVNum - Obj.second->SUV - 1;
 				//unsigned long NNormal = Values->NormalNum - Obj.second->SNormal - 1;
-				unsigned long nVertex = values->vertexNum - 1 - obj->sVertex;
-				unsigned long nUV = values->uvNum - 1 - obj->sUV;
-				unsigned long nNormal = values->normalNum - 1 - obj->sNormal;
+				size_t nVertex = values->vertexNum - 1 - obj->sVertex;
+				size_t nUV = values->uvNum - 1 - obj->sUV;
+				size_t nNormal = values->normalNum - 1 - obj->sNormal;
 
 				auto faceVertex = ChPtr::Make_S<Ch3D::SavePolyData>();
 
-				faceVertex->vertexNo = nVertex;
+				faceVertex->vertexNo = static_cast<unsigned long>(nVertex);
 				//if(Obj.second->UVDatas.size() > NUV)faceVertex->UVPos = *Obj.second->UVDatas[NUV];
 				if (obj->ValueIns().vertexUVList.size() > nUV)faceVertex->uv = *obj->ValueIns().vertexUVList[nUV];
 
@@ -865,11 +865,11 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::SetFace(const std::basic_string<Cha
 
 	NullModelTest();
 
-	unsigned long pos = _line.find(ChStd::GetSpaceChara<CharaType>());
+	size_t pos = _line.find(ChStd::GetSpaceChara<CharaType>());
 
-	unsigned long tmpPos = pos;
+	size_t tmpPos = pos;
 
-	unsigned long end = 0;
+	size_t end = 0;
 
 	auto data = ChPtr::Make_S<ObjFile<CharaType>::ObjFileModelData::MeshData>();
 
@@ -898,9 +898,9 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::SetFace(const std::basic_string<Cha
 		unsigned long val[3] = { 0xffffffff,0xffffffff ,0xffffffff };
 
 		//SrashCount//
-		unsigned long sCount = 0;
+		size_t sCount = 0;
 
-		unsigned long start = 0;
+		size_t start = 0;
 
 		while (1)
 		{
@@ -965,7 +965,7 @@ CH_LM_OBJ_SET_METHOD(SetMatMetallicMap2, ObjTag::GetMatMetallicMapTag2<CharaType
 CH_LM_OBJ_SET_METHOD(SetMatNormalMap, ObjTag::GetMatNormalMapTag<CharaType>(), (ValueIns().targetMaterial->ValueIns().normalMap = LoadTextureName(&_line[tag.length() + 1])););
 
 template<typename CharaType>
-bool ChCpp::ModelLoader::ObjFile<CharaType>::IsPrefix(const std::basic_string<CharaType>& _str, const std::basic_string<CharaType>& _prefix, const unsigned long _prefixSize)
+bool ChCpp::ModelLoader::ObjFile<CharaType>::IsPrefix(const std::basic_string<CharaType>& _str, const std::basic_string<CharaType>& _prefix, const size_t _prefixSize)
 {
 	if (_str.size() <= (_prefixSize + 1))return false;
 
