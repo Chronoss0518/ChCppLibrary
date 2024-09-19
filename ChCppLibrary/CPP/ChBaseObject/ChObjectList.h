@@ -75,7 +75,7 @@ namespace ChCpp
 
 			for (auto&& obj : ValueIns().objectList)
 			{
-				if (obj->parent.lock() != nullptr)continue;
+				if (obj->GetParent().lock() != nullptr)continue;
 				auto&& test = ChPtr::SharedSafeCast<T>(obj);
 				if (test == nullptr)continue;
 				tmpObjList.push_back(test);
@@ -96,7 +96,7 @@ namespace ChCpp
 
 			for (auto&& obj : ValueIns().objectList)
 			{
-				if (obj->parent.lock() != nullptr)continue;
+				if (obj->GetParent().lock() != nullptr)continue;
 				auto&& test = ChPtr::SharedSafeCast<T>(obj);
 				if (test == nullptr)continue;
 				if (test->GetMyName() != _name)continue;
