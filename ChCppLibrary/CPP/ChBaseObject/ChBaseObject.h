@@ -335,9 +335,10 @@ protected://Get Functions//
 
 			for (auto&& obj : GetAllChildlen())
 			{
-				if (obj->GetMyName() != _name)continue;
+				auto&& baseObj = ChPtr::SharedSafeCast<BaseObject>(obj);
+				if (baseObj->GetMyName() != _name)continue;
 
-				auto test = ChPtr::SharedSafeCast<T>(obj);
+				auto test = ChPtr::SharedSafeCast<T>(baseObj);
 				if (test == nullptr)continue;
 				tmpObjList.push_back(test);
 			}
@@ -356,9 +357,10 @@ protected://Get Functions//
 
 			for (auto&& obj : GetAllChildlen())
 			{
-				if (obj->GetMyName().find(_name) == std::basic_string<CharaType>::npos)continue;
+				auto&& baseObj = ChPtr::SharedSafeCast<BaseObject>(obj);
+				if (baseObj->GetMyName().find(_name) == std::basic_string<CharaType>::npos)continue;
 
-				auto test = ChPtr::SharedSafeCast<T>(obj);
+				auto test = ChPtr::SharedSafeCast<T>(baseObj);
 				if (test == nullptr)continue;
 				tmpObjList.push_back(test);
 			}
@@ -377,13 +379,15 @@ protected://Get Functions//
 
 			for (auto&& obj : GetAllChildlen())
 			{
-				if (obj->GetMyName() == _name)
+				auto&& baseObj = ChPtr::SharedSafeCast<BaseObject>(obj);
+
+				if (baseObj->GetMyName() == _name)
 				{
-					auto test = ChPtr::SharedSafeCast<T>(obj);
+					auto test = ChPtr::SharedSafeCast<T>(baseObj);
 					if (test != nullptr) { res.push_back(test); }
 				}
 
-				for (auto&& childObj : obj->GetAllChildlenForName<T>(_name)) { res.push_back(childObj); }
+				for (auto&& childObj : baseObj->GetAllChildlenForName<T>(_name)) { res.push_back(childObj); }
 			}
 
 			return res;
