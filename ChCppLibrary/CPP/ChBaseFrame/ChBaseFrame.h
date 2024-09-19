@@ -241,8 +241,9 @@ namespace ChCpp
 
 	public://InitAndRelease//
 
-		virtual inline void Init(SendDataClass* _sendData) {};
-
+#ifdef CRT
+		virtual inline void Init(ChPtr::Shared<SendDataClass> _sendData) {};
+#endif
 		virtual inline void Release(){};
 
 	public://Update Function//
@@ -354,7 +355,7 @@ void ChCpp::FrameList::Changes()
 	nowFrameNo = nextFrameNo;
 	nowframe = value->nextFrame;
 
-	nowframe->Init(value->sendData.get());
+	nowframe->Init(value->sendData);
 	value->sendData = nullptr;
 
 	value->nextFrame = nullptr;
