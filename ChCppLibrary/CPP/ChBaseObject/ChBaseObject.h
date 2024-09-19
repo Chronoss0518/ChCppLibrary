@@ -325,9 +325,9 @@ protected://Get Functions//
 #ifdef CRT
 
 		//子オブジェクト群の取得//
-		template<class T = BasicObject>
+		template<class T = BaseObject>
 		typename std::enable_if<
-			std::is_base_of<BasicObject, T>::value,
+			std::is_base_of<BaseObject, T>::value,
 			std::vector<ChPtr::Weak<T>>>::type
 			GetChildlenForName(const std::basic_string<CharaType>& _name)
 		{
@@ -367,9 +367,9 @@ protected://Get Functions//
 		}
 
 		//子オブジェクト群の取得//
-		template<class T = BasicObject>
+		template<class T = BaseObject>
 		typename std::enable_if<
-			std::is_base_of<BasicObject, T>::value,
+			std::is_base_of<BaseObject, T>::value,
 			std::vector<ChPtr::Weak<T>>>::type
 			GetAllChildlenForName(const std::basic_string<CharaType>& _name)
 		{
