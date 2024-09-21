@@ -21,7 +21,12 @@ namespace ChCRT
 
 	public:
 
-		Ch_CRT_Operator_Functions(VectorPack, std::vector<T>);
+		Ch_CRT_Operator_Functions_To_Base(VectorPack);
+		Ch_CRT_Operator_Functions_To_Pack(VectorPack, std::vector<T>);
+
+		T& operator[](const size_t _num);
+
+		const T& operator [](const size_t _num) const;
 
 	public:
 
@@ -32,14 +37,8 @@ namespace ChCRT
 		~VectorPack();
 
 	public:
-		
-		operator T*();
 
-		operator const T* () const;
-
-	public:
-
-		size_t GetSize();
+		size_t GetSize()const;
 
 #ifdef CRT
 		std::vector<T>& GetPackVector() { return value->pack; }
@@ -47,11 +46,11 @@ namespace ChCRT
 
 	public:
 
-		bool IsEmpty();
+		bool IsEmpty()const;
 
 	public:
 
-		void Push(T& _val);
+		void Push(const T& _val);
 
 		void Pop();
 
