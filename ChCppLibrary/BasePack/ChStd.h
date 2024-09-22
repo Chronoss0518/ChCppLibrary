@@ -43,32 +43,16 @@
 #endif
 #endif
 
-#ifndef CH_DECIMAL_NUM_TEXT
-#define CH_DECIMAL_NUM_TEXT(Text) Text##"01234456789"
-#endif
-
-#ifndef CH_HEXA_NUM_TEXT
-#define CH_HEXA_NUM_TEXT(Text) Text##"01234456789ABCDE"
-#endif
-
-#ifndef CH_OCTAL_NUM_TEXT
-#define CH_OCTAL_NUM_TEXT(Text) Text##"012344567"
-#endif
-
-#ifndef CH_BINARY_NUM_TEXT
-#define CH_BINARY_NUM_TEXT(Text) Text##"01"
-#endif
-
-#ifndef CH_BASE_64_NUM_TEXT
-#define CH_BASE_64_NUM_TEXT(Text) Text##"ABCDEFGHIJKLMNOPQRSTUVWXYZ" Text##"abcdefghijklmnopqrstuvwxyz" Text##"0123456789+/"
-#endif
-
 #ifndef CH_NUMBER_FUNCTION_BASE
-#define CH_NUMBER_FUNCTION_BASE(Function,Type)template<typename CharaType>\
-constexpr static typename std::enable_if<std::is_same<Type ,CharaType>::value , const CharaType*>::type Function()
+#define CH_NUMBER_FUNCTION_BASE(Function)template<typename CharaType>\
+static const CharaType* Function()
 #endif
 
-#ifdef CRT
+#ifndef CH_NUMBER_FUNCTION
+#define CH_NUMBER_FUNCTION(Function,Type)\
+template<> constexpr static inline const Type* Function()
+#endif
+
 #ifndef CPP20
 #ifndef CH_TO_NUMBER_TEXT_FUNCTION
 #define CH_TO_NUMBER_TEXT_FUNCTION(FunctionDefine,ToDefine)\
@@ -87,9 +71,7 @@ FunctionDefine(char32_t) { return ToDefine(U); }\
 FunctionDefine(char8_t) { return ToDefine(u8); }
 #endif //TO_NUMBER_TEXT_FUNCTION//
 #endif //CPP20//
-#endif //CRT//
 
-#ifdef CRT
 #ifndef CPP20
 #ifndef CH_TO_NUMBER_FUNCTION
 #define CH_TO_NUMBER_FUNCTION(FunctionDefine,Chara)\
@@ -109,200 +91,75 @@ FunctionDefine(char32_t) { return CH_TO_CHAR32(Chara); }\
 FunctionDefine(char8_t) { return CH_TO_CHAR8(Chara); }
 #endif
 #endif
-#endif
 
-#ifndef CH_DECIMAL_NUMBUR_FUNCTION
-#define CH_DECIMAL_NUMBUR_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(DECIMAL_NUMBUR,type)
-#endif
 
-#ifndef CH_HEXA_DECIMAL_FUNCTION
-#define CH_HEXA_DECIMAL_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(HEXA_DECIMAL,type)
-#endif
-
-#ifndef CH_OCTAL_FUNCTION
-#define CH_OCTAL_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(OCTAL,type)
-#endif
-
-#ifndef CH_BINARY_FUNCTION
-#define CH_BINARY_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(BINARY_NUMBER,type)
-#endif
-
-#ifndef CH_BASE_64_FUNCTION
-#define CH_BASE_64_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(BASE_NUMBER_64,type)
-#endif
-
-#ifndef CH_ZERO_CHARA_FUNCTION
-#define CH_ZERO_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetZeroChara,type)
-#endif
-
-#ifndef CH_0_CHARA_FUNCTION
-#define CH_0_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(Get0Chara,type)
-#endif
-
-#ifndef CH_HYPHEN_CHARA_FUNCTION
-#define CH_HYPHEN_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetHyphenChara,type)
-#endif
-
-#ifndef CH_CRLF_CHARA_FUNCTION
-#define CH_CRLF_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetCRLFChara,type)
-#endif
-
-#ifndef CH_CR_CHARA_FUNCTION
-#define CH_CR_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetCRChara,type)
-#endif
-
-#ifndef CH_LF_CHARA_FUNCTION
-#define CH_LF_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetLFChara,type)
-#endif
-
-#ifndef CH_BACK_CHARA_FUNCTION
-#define CH_BACK_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetBackChara,type)
-#endif
-
-#ifndef CH_NEXT_PAGE_CHARA_FUNCTION
-#define CH_NEXT_PAGE_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetNextPageChara,type)
-#endif
-
-#ifndef CH_TAB_CHARA_FUNCTION
-#define CH_TAB_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetTabChara,type)
-#endif
-
-#ifndef CH_COMMA_CHARA_FUNCTION
-#define CH_COMMA_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetCommaChara,type)
-#endif
-
-#ifndef CH_DOT_CHARA_FUNCTION
-#define CH_DOT_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetDotChara,type)
-#endif
-
-#ifndef CH_SEMICOLON_CHARA_FUNCTION
-#define CH_SEMICOLON_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetSemiColonChara,type)
-#endif
-
-#ifndef CH_DOUBLECOLON_CHARA_FUNCTION
-#define CH_DOUBLECOLON_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetDoubleColonChara,type)
-#endif
-
-#ifndef CH_SPACE_CHARA_FUNCTION
-#define CH_SPACE_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetSpaceChara,type)
-#endif
-
-#ifndef CH_SLASH_CHARA_FUNCTION
-#define CH_SLASH_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetSlashChara,type)
-#endif
-
-#ifndef CH_YEN_CHARA_FUNCTION
-#define CH_YEN_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetYenChara,type)
-#endif
-
-#ifndef CH_START_PARENTHESES_CHARA_FUNCTION
-#define CH_START_PARENTHESES_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetStartParenthesesChara,type)
-#endif
-
-#ifndef CH_END_PARENTHESES_CHARA_FUNCTION
-#define CH_END_PARENTHESES_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetEndParenthesesChara,type)
-#endif
-
-#ifndef CH_START_BRACE_CHARA_FUNCTION
-#define CH_START_BRACE_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetStartBraceChara,type)
-#endif
-
-#ifndef CH_END_BRACE_CHARA_FUNCTION
-#define CH_END_BRACE_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetEndBraceChara,type)
-#endif
-
-#ifndef CH_START_BRACKET_CHARA_FUNCTION
-#define CH_START_BRACKET_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetStartBracketChara,type)
-#endif
-
-#ifndef CH_END_BRACKET_CHARA_FUNCTION
-#define CH_END_BRACKET_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetEndBracketChara,type)
-#endif
-
-#ifndef CH_SINGLE_QUOTATION_CHARA_FUNCTION
-#define CH_SINGLE_QUOTATION_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetSGQuotation,type)
-#endif
-
-#ifndef CH_DOUBLE_QUOTATION_CHARA_FUNCTION
-#define CH_DOUBLE_QUOTATION_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetDBQuotation,type)
-#endif
-
-#ifndef CH_ASTERISK_CHARA_FUNCTION
-#define CH_ASTERISK_CHARA_FUNCTION(type) CH_NUMBER_FUNCTION_BASE(GetAsterisk,type)
-#endif
-
-#ifdef CRT
-#include<vector>
-#include<map>
-#include<cmath>
-#include<string>
-#endif
+#include"../CRTPack/ChVectorPack/ChVectorPack.h"
+#include"../CRTPack/ChMapPack/ChMapPack.h"
+#include"../CRTPack/ChStringPack/ChStringPack.h"
 
 //ChLibraryのベースとなる関数、変数群のまとまり//
 namespace ChStd
 {
-#ifdef CRT
 	//10進数//
-	CH_TO_NUMBER_TEXT_FUNCTION(CH_DECIMAL_NUMBUR_FUNCTION, CH_DECIMAL_NUM_TEXT);
+	CH_NUMBER_FUNCTION_BASE(DECIMAL_NUMBUR);
 	//16進数//
-	CH_TO_NUMBER_TEXT_FUNCTION(CH_HEXA_DECIMAL_FUNCTION, CH_HEXA_NUM_TEXT);
+	CH_NUMBER_FUNCTION_BASE(HEXA_DECIMAL);
 	//8進数//
-	CH_TO_NUMBER_TEXT_FUNCTION(CH_OCTAL_FUNCTION, CH_OCTAL_NUM_TEXT);
+	CH_NUMBER_FUNCTION_BASE(OCTAL);
 	//2進数//
-	CH_TO_NUMBER_TEXT_FUNCTION(CH_BINARY_FUNCTION, CH_BINARY_NUM_TEXT);
+	CH_NUMBER_FUNCTION_BASE(BINARY_NUMBER);
 	//64進数//
-	CH_TO_NUMBER_TEXT_FUNCTION(CH_BASE_64_FUNCTION, CH_BASE_64_NUM_TEXT);
-
-	CH_TO_NUMBER_FUNCTION(CH_ZERO_CHARA_FUNCTION, "\0");
-
-	CH_TO_NUMBER_FUNCTION(CH_0_CHARA_FUNCTION, "0");
-
-	CH_TO_NUMBER_FUNCTION(CH_HYPHEN_CHARA_FUNCTION, "-");
-
-	CH_TO_NUMBER_FUNCTION(CH_CRLF_CHARA_FUNCTION, "\r\n");
-
-	CH_TO_NUMBER_FUNCTION(CH_LF_CHARA_FUNCTION, "\n");
-
-	CH_TO_NUMBER_FUNCTION(CH_CR_CHARA_FUNCTION, "\r");
-
-	CH_TO_NUMBER_FUNCTION(CH_BACK_CHARA_FUNCTION, "\b");
-	
-	CH_TO_NUMBER_FUNCTION(CH_NEXT_PAGE_CHARA_FUNCTION, "\f");
-
-	CH_TO_NUMBER_FUNCTION(CH_TAB_CHARA_FUNCTION, "\t");
-
-	CH_TO_NUMBER_FUNCTION(CH_COMMA_CHARA_FUNCTION, ",");
-
-	CH_TO_NUMBER_FUNCTION(CH_DOT_CHARA_FUNCTION, ".");
-
-	CH_TO_NUMBER_FUNCTION(CH_SEMICOLON_CHARA_FUNCTION, ";");
-
-	CH_TO_NUMBER_FUNCTION(CH_DOUBLECOLON_CHARA_FUNCTION, ":");
-
-	CH_TO_NUMBER_FUNCTION(CH_SPACE_CHARA_FUNCTION, " ");
-
-	CH_TO_NUMBER_FUNCTION(CH_SLASH_CHARA_FUNCTION, "/");
-
-	CH_TO_NUMBER_FUNCTION(CH_YEN_CHARA_FUNCTION, "\\");
-
-	CH_TO_NUMBER_FUNCTION(CH_START_PARENTHESES_CHARA_FUNCTION, "(");
-	
-	CH_TO_NUMBER_FUNCTION(CH_END_PARENTHESES_CHARA_FUNCTION, ")");
-
-	CH_TO_NUMBER_FUNCTION(CH_START_BRACE_CHARA_FUNCTION, "{");
-
-	CH_TO_NUMBER_FUNCTION(CH_END_BRACE_CHARA_FUNCTION, "}");
-
-	CH_TO_NUMBER_FUNCTION(CH_START_BRACKET_CHARA_FUNCTION, "[");
-
-	CH_TO_NUMBER_FUNCTION(CH_END_BRACKET_CHARA_FUNCTION, "]");
-
-	CH_TO_NUMBER_FUNCTION(CH_SINGLE_QUOTATION_CHARA_FUNCTION, "\'");
-
-	CH_TO_NUMBER_FUNCTION(CH_DOUBLE_QUOTATION_CHARA_FUNCTION, "\"");
-	
-	CH_TO_NUMBER_FUNCTION(CH_ASTERISK_CHARA_FUNCTION, "*");
-#endif
+	CH_NUMBER_FUNCTION_BASE(BASE_NUMBER_64);
+	//"\0"//
+	CH_NUMBER_FUNCTION_BASE(GetZeroChara);
+	//"0"//
+	CH_NUMBER_FUNCTION_BASE(Get0Chara);
+	//"-"//
+	CH_NUMBER_FUNCTION_BASE(GetHyphenChara);
+	//"\r\n"//
+	CH_NUMBER_FUNCTION_BASE(GetCRLFChara);
+	//"\r//
+	CH_NUMBER_FUNCTION_BASE(GetCRChara);
+	//"\n"//
+	CH_NUMBER_FUNCTION_BASE(GetLFChara);
+	//"\b"//
+	CH_NUMBER_FUNCTION_BASE(GetBackChara);
+	//"\f"//
+	CH_NUMBER_FUNCTION_BASE(GetNextPageChara);
+	//"\t"//
+	CH_NUMBER_FUNCTION_BASE(GetTabChara);
+	//","//
+	CH_NUMBER_FUNCTION_BASE(GetCommaChara);
+	//"."//
+	CH_NUMBER_FUNCTION_BASE(GetDotChara);
+	//";"//
+	CH_NUMBER_FUNCTION_BASE(GetSemiColonChara);
+	//":"//
+	CH_NUMBER_FUNCTION_BASE(GetDoubleColonChara);
+	//" "//
+	CH_NUMBER_FUNCTION_BASE(GetSpaceChara);
+	//"/"//
+	CH_NUMBER_FUNCTION_BASE(GetSlashChara);
+	//"\\"//
+	CH_NUMBER_FUNCTION_BASE(GetYenChara);
+	//"("//
+	CH_NUMBER_FUNCTION_BASE(GetStartParenthesesChara);
+	//")"//
+	CH_NUMBER_FUNCTION_BASE(GetEndParenthesesChara);
+	//"{"//
+	CH_NUMBER_FUNCTION_BASE(GetStartBraceChara);
+	//"}"//
+	CH_NUMBER_FUNCTION_BASE(GetEndBraceChara);
+	//"["//
+	CH_NUMBER_FUNCTION_BASE(GetStartBracketChara);
+	//"]"//
+	CH_NUMBER_FUNCTION_BASE(GetEndBracketChara);
+	//"\'"//
+	CH_NUMBER_FUNCTION_BASE(GetSGQuotation);
+	//"\""//
+	CH_NUMBER_FUNCTION_BASE(GetDBQuotation);
+	//"*"//
+	CH_NUMBER_FUNCTION_BASE(GetAsterisk);
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	//StanderdFunction
@@ -319,10 +176,11 @@ namespace ChStd
 	constexpr static unsigned int W_MAX_INT_BIT = MAX_LONG_BIT;
 #endif
 
+
 #ifdef CRT
 	//EnumClassを基底型へキャストするためのクラス//
 	template<typename Enum>
-	constexpr static inline decltype(auto) EnumCast(const Enum _enum)
+	constexpr static inline typename std::underlying_type<Enum>::type EnumCast(const Enum _enum)
 	{
 		return static_cast<typename std::underlying_type<Enum>::type>(_enum);
 	}
@@ -354,9 +212,9 @@ namespace ChStd
 	}
 
 	template<typename Type>
-	static inline Type BinaryToNumWithLittleEndian(const unsigned char* _binary, unsigned long _pos = 0)
+	static inline Type BinaryToNumWithLittleEndian(const ChCRT::VectorPack<unsigned char>& _binary, unsigned long _pos = 0)
 	{
-		if (_pos + sizeof(Type) >= _binary.size())return 0;
+		if (_pos + sizeof(Type) >= _binary.GetSize())return 0;
 
 		Type num = 0;
 
@@ -374,10 +232,9 @@ namespace ChStd
 	}
 
 	template<typename Type>
-	static inline Type BinaryToNumWithBigEndian(const unsigned char* _binary, unsigned long _pos = 0)
+	static inline Type BinaryToNumWithBigEndian(const ChCRT::VectorPack<unsigned char>& _binary, unsigned long _pos = 0)
 	{
-
-		if (_pos + sizeof(Type) >= _binary.size())return 0;
+		if (_pos + sizeof(Type) >= _binary.GetSize())return 0;
 
 		Type num = 0;
 
@@ -391,25 +248,20 @@ namespace ChStd
 
 			if (i == 0)break;
 		}
-
-
-
 		return num;
-
 	}
 
-#ifdef CRT
 	template<typename CharaType>
 	//10進数の数値を入れると指定した配列によって生成された進数表記で出力される//
-	std::basic_string<CharaType> DecimalNumberToBaseNumber(
+	static inline ChCRT::StringPack<CharaType> DecimalNumberToBaseNumber(
 		const long _decimal,
-		const std::basic_string<CharaType>& _baseNumber = HEXA_DECIMAL<CharaType>())
+		const ChCRT::StringPack<CharaType>& _baseNumber = HEXA_DECIMAL<CharaType>())
 	{
 		long decimal = 0;
 
-		unsigned long size = _baseNumber.size();
+		unsigned long size = _baseNumber.GetSize();
 
-		std::basic_string<CharaType> testRes = GetZeroChara<CharaType>();
+		ChCRT::StringPack<CharaType> testRes = GetZeroChara<CharaType>();
 
 		if (_decimal < 0)
 		{
@@ -426,24 +278,22 @@ namespace ChStd
 			return testRes;
 		}
 
-		std::basic_string<CharaType> out = DecimalNumberToBaseNumber(base, _baseNumber);
+		ChCRT::StringPack<CharaType> out = DecimalNumberToBaseNumber(base, _baseNumber);
 
 		out = out + testRes[0];
 
 		return out;
 	}
-#endif
 
-#ifdef CRT
 	//指定した進数の配列を入れると10進数の数値が出力される//
 	template<typename CharaType>
-	long BaseNumberToDecimalNumber(
-		const std::basic_string<CharaType>& _decimal,
-		const std::basic_string<CharaType>& _baseNumber = HEXA_DECIMAL<CharaType>())
+	static inline long BaseNumberToDecimalNumber(
+		const ChCRT::StringPack<CharaType>& _decimal,
+		const ChCRT::StringPack<CharaType>& _baseNumber = HEXA_DECIMAL<CharaType>())
 	{
 		long out = 0;
 
-		std::map<CharaType, long>numMap;
+		ChCRT::MapPack<CharaType, long>numMap;
 
 		long size = _baseNumber.size();
 
@@ -472,26 +322,22 @@ namespace ChStd
 
 		return out;
 	}
-#endif
 
-#ifdef CRT
 	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
 	template<typename CharaType>
-	std::basic_string<CharaType> ToBaseNumber(
-		const std::basic_string<CharaType>& _baseNum,
-		const std::basic_string<CharaType>& _beforeBaseNumber = DECIMAL_NUMBUR<CharaType>(),
-		const std::basic_string<CharaType>& _afterBaseNumber = HEXA_DECIMAL<CharaType>())
+	static inline ChCRT::StringPack<CharaType> ToBaseNumber(
+		const ChCRT::StringPack<CharaType>& _baseNum,
+		const ChCRT::StringPack<CharaType>& _beforeBaseNumber = DECIMAL_NUMBUR<CharaType>(),
+		const ChCRT::StringPack<CharaType>& _afterBaseNumber = HEXA_DECIMAL<CharaType>())
 	{
 		return DecimalNumberToBaseNumber(ChStd::BaseNumberToDecimalNumber(_baseNum, _beforeBaseNumber), _afterBaseNumber);
 	}
-#endif
 
-#ifdef CRT
 	//指定した新数の配列を入れるとその配列によって数値を置換できるかのテストを行う//
 	template<typename CharaType>
-	bool IsBaseNumbers(
-		const std::basic_string<CharaType>& _baseNum,
-		const std::basic_string<CharaType>& _beforeBaseNumber = DECIMAL_NUMBUR<CharaType>())
+	static inline bool IsBaseNumbers(
+		const ChCRT::StringPack<CharaType>& _baseNum,
+		const ChCRT::StringPack<CharaType>& _beforeBaseNumber = DECIMAL_NUMBUR<CharaType>())
 	{
 
 		bool isSuccessFlg = false;
@@ -537,7 +383,6 @@ namespace ChStd
 
 		return true;
 	}
-#endif
 
 #ifdef CRT
 	template<typename Type>
@@ -548,7 +393,6 @@ namespace ChStd
 		return out;
 	}
 #endif
-
 }
 
 #endif

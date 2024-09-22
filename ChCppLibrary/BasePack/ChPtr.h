@@ -101,23 +101,21 @@ namespace ChPtr
 	{
 		return (_class != NULL && _class != nullptr);
 	}
-
 #else
 
 	//クラスがNULLまたはnullptrかをチェックする関数//
 	template<class C>
-	inline bool NullCheck(const C* _class)
+	static inline bool NullCheck(const C& _class)
 	{
 		return (_class == 0 || _class == nullptr);
 	}
 
 	//クラスがNULLとnullptrのどちらでもないかをチェックする関数//
 	template<class C>
-	inline bool NotNullCheck(const C* _class)
+	static inline bool NotNullCheck(const C& _class)
 	{
 		return (_class != 0 && _class != nullptr);
 	}
-
 
 #endif
 }
