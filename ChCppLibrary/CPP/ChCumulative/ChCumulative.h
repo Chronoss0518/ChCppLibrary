@@ -42,7 +42,10 @@ namespace ChCpp
 #ifdef CRT
 
 		//Šm”F‚µ‚½‚¢’l‚ð“ü‚ê‚é//
-		long Update(CharaType _value);
+		long Update(CharaType _value)
+		{
+			return Update([&]()->bool {return _value == add; }, [&]()->bool {return _value == sub; });
+	}
 
 #endif
 
@@ -50,7 +53,10 @@ namespace ChCpp
 
 #ifdef CRT
 
-		long Update(const std::function<bool()>& _addMethod, const std::function<bool()>& _subMethod)override;
+		long Update(const std::function<bool()>& _addMethod, const std::function<bool()>& _subMethod)override
+		{
+			return Counter::Update(_addMethod, _subMethod);
+		}
 
 #endif
 
@@ -64,21 +70,5 @@ namespace ChCpp
 
 	};
 }
-
-#ifdef CRT
-
-template<typename CharaType>
-long ChCpp::Cumulative<CharaType>::Update(CharaType _value)
-{
-	return Update([&]()->bool {return _value == add; }, [&]()->bool {return _value == sub; });
-}
-
-template<typename CharaType>
-long ChCpp::Cumulative<CharaType>::Update(const std::function<bool()>& _addMethod, const std::function<bool()>& _subMethod)
-{
-	return Counter::Update(_addMethod, _subMethod);
-}
-
-#endif
 
 #endif
