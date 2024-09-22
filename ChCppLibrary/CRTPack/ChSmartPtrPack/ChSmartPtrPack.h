@@ -26,7 +26,17 @@ namespace ChCRT
 		Ch_CRT_Operator_Functions_To_Pack(SharedPtrPack, std::shared_ptr<T>);
 
 #ifdef CRT
+
+		inline bool operator ==(const std::shared_ptr<T>& _val)const{ return reinterpret_cast<size_t>(value->pack.get()) == reinterpret_cast<size_t>(_val.get()); }
+		
+		inline bool operator !=(const std::shared_ptr<T>& _val)const{ return reinterpret_cast<size_t>(value->pack.get()) != reinterpret_cast<size_t>(_val.get()); }
+
+#endif
+
+#ifdef CRT
+
 		operator std::weak_ptr<T> () { return value->pack; }
+
 #endif
 		
 		SharedPtrPack& operator =(const SharedPtrPack& _val);
@@ -34,9 +44,7 @@ namespace ChCRT
 		bool operator !=(const SharedPtrPack& _val)const;
 
 		SharedPtrPack& operator =(const NullPtr& _val);
-
 		bool operator ==(const NullPtr& _val)const;
-
 		bool operator !=(const NullPtr& _val)const;
 
 		T*  operator->()const;
