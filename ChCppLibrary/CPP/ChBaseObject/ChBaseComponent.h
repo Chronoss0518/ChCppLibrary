@@ -7,7 +7,7 @@ namespace ChCpp
 	class BasicObject;
 
 	//ChBaseObjectに対するコンポーネントシステム//
-	 class BaseComponent
+	class BaseComponent
 	{
 	public:
 
@@ -56,25 +56,24 @@ namespace ChCpp
 			Class*>::type _out)
 		{
 			auto&& testObj = ChPtr::SafeCast<Class>(obj);
-
 			if (ChPtr::NullCheck(testObj))return false;
-
 			_out = testObj;
 
 			return true;
-
 		}
 
 		//直接本体に触りたいときに呼ぶ関数//
 		template<class Class = BasicObject>
-		auto LookObj()->typename std::enable_if<
+		typename std::enable_if<
 			std::is_base_of<BasicObject, Class>::value,
-			Class*>::type
+			Class*>::type LookObj()
 		{
 			return ChPtr::SafeCast<Class>(obj);
 		}
 
 #endif
+
+		inline BasicObject* LookObj() { return obj; }
 
 	protected:
 
@@ -106,10 +105,7 @@ namespace ChCpp
 		BasicObject* obj = nullptr;
 
 		bool dFlg = false;
-
-
 	};
-
 }
 
 #endif
