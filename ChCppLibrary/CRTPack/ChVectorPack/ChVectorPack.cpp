@@ -57,6 +57,7 @@ void VectorPack<T>::Clear() { value->pack.clear(); }
 
 #include"../ChStringPack/ChStringPack.h"
 #include"../ChSmartPtrPack/ChSmartPtrPack.h"
+#include"../../BasePack/ChMath3D.h"
 #include"../../BasePack/Ch3D.h"
 #include"../../CPP/ChBaseFrame/ChBaseFrame.h"
 #include"../../CPP/ChBaseObject/ChBaseComponent.h"
@@ -64,6 +65,7 @@ void VectorPack<T>::Clear() { value->pack.clear(); }
 
 template ChCRT::VectorPack<float>;
 template ChCRT::VectorPack<unsigned char>;
+template ChCRT::VectorPack<ChVec3*>;
 
 template ChCRT::VectorPack<ChCRT::SharedPtrPack<Ch3D::SavePolyData>>;
 template ChCRT::VectorPack<ChCRT::SharedPtrPack<ChCpp::FrameList::FrameCreateMethodBase>>;
