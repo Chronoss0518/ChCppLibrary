@@ -9,6 +9,8 @@
 
 namespace ChCRT
 {
+	class NullPtr final { public: NullPtr() {} };
+
 	template<class T>
 	class SharedPtrPack final
 	{
@@ -21,42 +23,69 @@ namespace ChCRT
 
 	public:
 
-		Ch_CRT_Operator_Functions_To_Base(SharedPtrPack);
 		Ch_CRT_Operator_Functions_To_Pack(SharedPtrPack, std::shared_ptr<T>);
 
-		operator T*();
+#ifdef CRT
+		operator std::weak_ptr<T> () { return value->pack; }
+#endif
+		
+		SharedPtrPack& operator =(const SharedPtrPack& _val);
+		bool operator ==(const SharedPtrPack& _val)const;
+		bool operator !=(const SharedPtrPack& _val)const;
 
-		operator const T*()const;
+		SharedPtrPack& operator =(const NullPtr& _val);
+
+		bool operator ==(const NullPtr& _val)const;
+
+		bool operator !=(const NullPtr& _val)const;
+
+		T*  operator->()const;
+
+		T& operator * ()const;
 
 	public:
 
 		Ch_CRT_ConstructorDestructor_Functions(SharedPtrPack, std::shared_ptr<T>);
 
-		SharedPtrPack(T* _val);
+#ifdef CRT
+		template<class Y>
+		SharedPtrPack(Y* _val) { value = new SharedPtrPackCRT(); value->pack.reset(_val); }
+#endif
+		SharedPtrPack(const SharedPtrPack& _val);
 
+		SharedPtrPack(SharedPtrPack&& _val);
+
+		SharedPtrPack(const NullPtr& _val);
+		
 		SharedPtrPack();
 
 		~SharedPtrPack();
 
 	public:
 
-		void Set(T* _val);
-
 #ifdef CRT
-		void SetPack(const std::shared_ptr<T>& _val) { value->pack = _val; }
+		template<class Y>
+		void Set(Y* _val) { value->pack = nullptr; value->pack.reset(_val); }
+
+		inline void SetPack(const std::shared_ptr<T>& _val) { value->pack = _val; }
 #endif
 
 	public:
 
-		const T* Get()const;
+		T* Get()const;
+
+		long GetUseCount()const;
 
 #ifdef CRT
-		std::shared_ptr<T> GetPack()const { return value->pack; }
+		inline std::shared_ptr<T> GetPack()const { return value->pack; }
 #endif
 
 	public:
 
-		void Make();
+#ifdef CRT
+		template<class Y>
+		void Make() { value->pack = std::make_shared<Y>(); }
+#endif
 
 	private:
 
@@ -64,9 +93,11 @@ namespace ChCRT
 	};
 
 
+
 	template<class T>
 	class WeakPtrPack final
 	{
+
 		struct WeakPtrPackCRT
 		{
 #ifdef CRT
@@ -76,16 +107,18 @@ namespace ChCRT
 
 	public:
 
-		Ch_CRT_Operator_Functions_To_Base(WeakPtrPack);
 		Ch_CRT_Operator_Functions_To_Pack(WeakPtrPack, std::weak_ptr<T>);
 
+		WeakPtrPack& operator =(const WeakPtrPack& _val);
+
+		WeakPtrPack& operator =(const SharedPtrPack<T>& _val);
 	public:
 
 		Ch_CRT_ConstructorDestructor_Functions(WeakPtrPack, std::weak_ptr<T>);
 
 		Ch_CRT_ConstructorDestructor_Functions(WeakPtrPack, std::shared_ptr<T>);
 
-		WeakPtrPack(const SharedPtrPack<T> _pack);
+		WeakPtrPack(const SharedPtrPack<T>& _pack);
 
 		WeakPtrPack();
 

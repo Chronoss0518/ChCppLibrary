@@ -48,13 +48,19 @@ namespace ChCRT
 
 		bool IsEmpty()const;
 
+		bool IsFind(T& _val)const;
+
 	public:
 
 		void Push(const T& _val);
 
 		void Pop();
 
+		void Resize(const size_t _num);
+
 		void Remove(const size_t& _num);
+
+		bool RemoveObj(const T& _val);
 
 		void Clear();
 

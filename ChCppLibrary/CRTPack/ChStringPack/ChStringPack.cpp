@@ -60,12 +60,6 @@ template StringPack<##_type##> StringPack<##_type##>::GetSubStr(const size_t _po
 template size_t StringPack<##_type##>::GetNPos();\
 template bool StringPack<##_type##>::IsString(const _type##* _str);
 
-EXPLICIT_DECLARATION(char);
-EXPLICIT_DECLARATION(wchar_t);
-EXPLICIT_DECLARATION(char8_t);
-EXPLICIT_DECLARATION(char16_t);
-EXPLICIT_DECLARATION(char32_t);
-
 template<> const char* StringPack<char>::InitString() { return "\0"; }
 template<> const wchar_t* StringPack<wchar_t>::InitString() { return L"\0"; }
 template<> const char8_t* StringPack<char8_t>::InitString() { return u8"\0"; }
@@ -180,3 +174,9 @@ size_t StringPack<CharaType>::GetNPos() { return std::basic_string<CharaType>::n
 
 template<typename CharaType>
 bool StringPack<CharaType>::IsString(const CharaType* _str) { return value->pack == _str; }
+
+template ChCRT::StringPack<char>;
+template ChCRT::StringPack<wchar_t>;
+template ChCRT::StringPack<char8_t>;
+template ChCRT::StringPack<char16_t>;
+template ChCRT::StringPack<char32_t>;

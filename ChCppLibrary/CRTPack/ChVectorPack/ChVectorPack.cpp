@@ -4,34 +4,6 @@
 
 using namespace ChCRT;
 
-//templateÇÃñæé¶ìIêÈåæ//
-
-#define EXPLICIT_DECLARATION(_type)\
-template VectorPack<##_type##>::VectorPack();\
-template VectorPack<##_type##>::~VectorPack();\
-template _type##& VectorPack<##_type##>::operator[] (const size_t _num);\
-template const _type##& VectorPack<##_type##>::operator [](const size_t _num)const;\
-template size_t VectorPack<##_type##>::GetSize()const;\
-template bool VectorPack<##_type##>::IsEmpty()const;\
-template void VectorPack<##_type##>::Push(const _type##& _val);\
-template void VectorPack<##_type##>::Pop();\
-template void VectorPack<##_type##>::Remove(const size_t& _num);\
-template void VectorPack<##_type##>::Clear();\
-
-#include"../ChStringPack/ChStringPack.h"
-#include"../ChSmartPtrPack/ChSmartPtrPack.h"
-#include"../../BasePack/Ch3D.h"
-
-EXPLICIT_DECLARATION(float);
-
-EXPLICIT_DECLARATION(ChCRT::SharedPtrPack<Ch3D::SavePolyData>);
-
-EXPLICIT_DECLARATION(ChCRT::StringPack<char>);
-EXPLICIT_DECLARATION(ChCRT::StringPack<wchar_t>);
-EXPLICIT_DECLARATION(ChCRT::StringPack<char8_t>);
-EXPLICIT_DECLARATION(ChCRT::StringPack<char16_t>);
-EXPLICIT_DECLARATION(ChCRT::StringPack<char32_t>);
-
 template<class T>
 VectorPack<T>::VectorPack() { value = new VectorPackCRT(); }
 
@@ -51,10 +23,16 @@ template<class T>
 bool VectorPack<T>::IsEmpty()const { return value->pack.empty(); }
 
 template<class T>
+bool VectorPack<T>::IsFind(T& _val)const { return !value->pack.empty() ? std::find(value->pack.begin(), value->pack.end(), _val) != value->pack.end() : false; }
+
+template<class T>
 void VectorPack<T>::Push(const T& _val) { value->pack.push_back(_val); }
 
 template<class T>
 void VectorPack<T>::Pop() { value->pack.pop_back(); }
+
+template<class T>
+void VectorPack<T>::Resize(const size_t _num) { value->pack.resize(_num); }
 
 template<class T>
 void VectorPack<T>::Remove(const size_t& _num)
@@ -64,4 +42,36 @@ void VectorPack<T>::Remove(const size_t& _num)
 }
 
 template<class T>
+bool VectorPack<T>::RemoveObj(const T& _val)
+{
+	auto&& it = std::find(value->pack.begin(), value->pack.end(), _val);
+	if (it == value->pack.end())return false;
+	value->pack.erase(it);
+	return true;
+}
+
+template<class T>
 void VectorPack<T>::Clear() { value->pack.clear(); }
+
+//templateÇÃñæé¶ìIêÈåæ//
+
+#include"../ChStringPack/ChStringPack.h"
+#include"../ChSmartPtrPack/ChSmartPtrPack.h"
+#include"../../BasePack/Ch3D.h"
+#include"../../CPP/ChBaseFrame/ChBaseFrame.h"
+#include"../../CPP/ChBaseObject/ChBaseComponent.h"
+#include"../../CPP/ChBaseObject/ChBaseObject.h"
+
+template ChCRT::VectorPack<float>;
+template ChCRT::VectorPack<unsigned char>;
+
+template ChCRT::VectorPack<ChCRT::SharedPtrPack<Ch3D::SavePolyData>>;
+template ChCRT::VectorPack<ChCRT::SharedPtrPack<ChCpp::FrameList::FrameCreateMethodBase>>;
+template ChCRT::VectorPack<ChCRT::SharedPtrPack<ChCpp::BaseComponent>>;
+template ChCRT::VectorPack<ChCRT::SharedPtrPack<ChCpp::BasicObject>>;
+
+template ChCRT::VectorPack<ChCRT::StringPack<char>>;
+template ChCRT::VectorPack < ChCRT::StringPack<wchar_t>>;
+template ChCRT::VectorPack<ChCRT::StringPack<char8_t>>;
+template ChCRT::VectorPack<ChCRT::StringPack<char16_t>>;
+template ChCRT::VectorPack<ChCRT::StringPack<char32_t>>;
