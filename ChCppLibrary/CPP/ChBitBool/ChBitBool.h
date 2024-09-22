@@ -1,10 +1,11 @@
 #ifndef Ch_CPP_BiBo_h
 #define Ch_CPP_BiBo_h
 
+#include"../../CRTPack/ChVectorPack/ChVectorPack.h"
+
 namespace ChCpp
 {
-
-	class BitBool
+	class BitBool final
 	{
 	public://Constructor Destructor//
 
@@ -13,13 +14,6 @@ namespace ChCpp
 		BitBool(const unsigned char _size);
 
 		virtual ~BitBool();
-
-
-	private://Init And Release//
-
-		void CRTInit();
-
-		void CRTRelease();
 
 	public://Set Functions//
 
@@ -86,78 +80,8 @@ namespace ChCpp
 
 	private:
 
-		struct BitBoolCRT
-		{
-#ifdef CRT
-			std::vector<unsigned char> flgs = { 0 };
-#endif
-		};
-
-		BitBoolCRT* value = nullptr;
-
+		ChCRT::VectorPack<unsigned char> flgs;
 	};
 
 }
-
-#ifdef CRT
-ChCpp::BitBool::BitBool()
-{
-	CRTInit();
-	value->flgs.resize(1);
-}
-
-ChCpp::BitBool::BitBool(const unsigned char _size)
-{
-	CRTInit();
-	SetSize(_size);
-}
-
-ChCpp::BitBool::~BitBool()
-{
-	value->flgs.clear();
-	CRTRelease();
-}
-
-void ChCpp::BitBool::CRTInit()
-{
-	value = new BitBoolCRT();
-}
-
-void ChCpp::BitBool::CRTRelease()
-{
-	delete value;
-}
-
-void ChCpp::BitBool::SetAllDownFlg()
-{
-	for (auto&& flg : value->flgs)
-	{
-		flg = 0;
-	}
-}
-
-void ChCpp::BitBool::SetSize(const unsigned char _byteCount)
-{
-	if (_byteCount <= 0)return;
-	value->flgs.resize(_byteCount);
-}
-
-unsigned long  ChCpp::BitBool::GetSize()
-{
-	return static_cast<unsigned long>(value->flgs.size() * 8);
-}
-
-unsigned char& ChCpp::BitBool::GetFlgs(const unsigned char _argsNum)
-{
-	return value->flgs[_argsNum];
-}
-
-unsigned char ChCpp::BitBool::GetValue(const unsigned char _num)
-{
-	if (value->flgs.size() < _num)return 0;
-	return value->flgs[_num];
-}
-
-#endif
-
 #endif
