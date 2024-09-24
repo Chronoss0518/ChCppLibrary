@@ -1,6 +1,9 @@
 #ifndef Ch_CPP_Std_h
 #define Ch_CPP_Std_h
 
+#include<string>
+#include<vector>
+
 #ifdef __cplusplus
 #if __cplusplus > 200000L
 
@@ -212,14 +215,12 @@ namespace ChStd
 #endif
 
 
-#ifdef CRT
 	//EnumClassを基底型へキャストするためのクラス//
 	template<typename Enum>
 	constexpr static inline typename std::underlying_type<Enum>::type EnumCast(const Enum _enum)
 	{
 		return static_cast<typename std::underlying_type<Enum>::type>(_enum);
 	}
-#endif
 
 	//指定したアドレス先を値0で初期化する//
 	template<class T>
@@ -247,7 +248,7 @@ namespace ChStd
 	}
 
 	template<typename Type>
-	static inline Type BinaryToNumWithLittleEndian(const ChCRT::VectorPack<unsigned char>& _binary, unsigned long _pos = 0)
+	static inline Type BinaryToNumWithLittleEndian(const std::vector<unsigned char>& _binary, unsigned long _pos = 0)
 	{
 		if (_pos + sizeof(Type) >= _binary.GetSize())return 0;
 
@@ -267,7 +268,7 @@ namespace ChStd
 	}
 
 	template<typename Type>
-	static inline Type BinaryToNumWithBigEndian(const ChCRT::VectorPack<unsigned char>& _binary, unsigned long _pos = 0)
+	static inline Type BinaryToNumWithBigEndian(const std::vector<unsigned char>& _binary, unsigned long _pos = 0)
 	{
 		if (_pos + sizeof(Type) >= _binary.GetSize())return 0;
 

@@ -12,41 +12,41 @@ using namespace ChStr;
 
 //文字の置き換え//
 template<typename CharaType>
-ChCRT::StringPack<CharaType> ChStr::StrReplaseBase(
-	const ChCRT::StringPack<CharaType>& _base,
-	const ChCRT::StringPack<CharaType>& _before,
-	const ChCRT::StringPack<CharaType>& _after)
+std::basic_string<CharaType> ChStr::StrReplase(
+	const std::basic_string<CharaType>& _base,
+	const std::basic_string<CharaType>& _before,
+	const std::basic_string<CharaType>& _after)
 {
-	if (_base.GetFindPosition(_before) == ChCRT::StringPack<CharaType>::GetNPos())return _base;
+	if (_base.find(_before) == std::basic_string<CharaType>::npos)return _base;
 
-	ChCRT::StringPack<CharaType> out = ChStd::GetZeroChara<CharaType>();
+	std::basic_string<CharaType> out = ChStd::GetZeroChara<CharaType>();
 
 	size_t tmpPos = 0;
 	size_t testPos = 0;
 
 	while (true)
 	{
-		testPos = _base.GetFindPosition(_before, tmpPos);
+		testPos = _base.find(_before, tmpPos);
 
-		if (testPos == _base.GetNPos())break;
+		if (testPos == _base.npos)break;
 
-		out += _base.GetSubStr(tmpPos, testPos - tmpPos);
+		out += _base.substr(tmpPos, testPos - tmpPos);
 		out += _after;
-		tmpPos = testPos + _before.GetLength();
+		tmpPos = testPos + _before.length();
 	}
 	return out;
 }
 
 //空文字を取り除く//
 template<typename CharaType>
-ChCRT::StringPack<CharaType> ChStr::RemoveToWhiteSpaceCharsBase(const ChCRT::StringPack<CharaType>& _str)
+std::basic_string<CharaType> ChStr::RemoveToWhiteSpaceChars(const std::basic_string<CharaType>& _str)
 {
-	ChCRT::StringPack<CharaType> out = ChStd::GetZeroChara<CharaType>();
+	std::basic_string<CharaType> out = ChStd::GetZeroChara<CharaType>();
 
 	const char whiteSpaceInterfaceChar = 32;
 	const char delCharNum = 127;
 
-	for (unsigned long i = 0; i < _str.GetLength(); i++)
+	for (unsigned long i = 0; i < _str.length(); i++)
 	{
 		if (_str[i] <= whiteSpaceInterfaceChar)continue;
 		if (_str[i] == delCharNum)continue;
@@ -59,13 +59,13 @@ ChCRT::StringPack<CharaType> ChStr::RemoveToWhiteSpaceCharsBase(const ChCRT::Str
 
 //指定した文字を取り除く//
 template<typename CharaType>
-ChCRT::StringPack<CharaType> ChStr::RemoveToCharsBase(
-	const ChCRT::StringPack<CharaType>& _str,
-	const ChCRT::StringPack<CharaType>& _removeChars)
+std::basic_string<CharaType> ChStr::RemoveToChars(
+	const std::basic_string<CharaType>& _str,
+	const std::basic_string<CharaType>& _removeChars)
 {
-	ChCRT::StringPack<CharaType> out = ChStd::GetZeroChara<CharaType>();
+	std::basic_string<CharaType> out = ChStd::GetZeroChara<CharaType>();
 
-	for (unsigned long i = 0; i < _str.GetLength(); i++)
+	for (unsigned long i = 0; i < _str.length(); i++)
 	{
 		if (_str[i] != _removeChars)out += _str[i];
 	}
@@ -75,11 +75,11 @@ ChCRT::StringPack<CharaType> ChStr::RemoveToCharsBase(
 
 //数値に変換可能な文字以外の文字を取り除く//
 template<typename CharaType>
-ChCRT::StringPack<CharaType> ChStr::RemoveToUnNumCharasBase(const ChCRT::StringPack<CharaType>& _str)
+std::basic_string<CharaType> ChStr::RemoveToUnNumCharas(const std::basic_string<CharaType>& _str)
 {
-	if (_str.GetLength() <= 0)return  _str;
+	if (_str.length() <= 0)return  _str;
 
-	ChCRT::StringPack<CharaType> out = ChStd::GetZeroChara<CharaType>();
+	std::basic_string<CharaType> out = ChStd::GetZeroChara<CharaType>();
 
 	const CharaType mChara = static_cast<CharaType>('-');
 
@@ -87,7 +87,7 @@ ChCRT::StringPack<CharaType> ChStr::RemoveToUnNumCharasBase(const ChCRT::StringP
 	const CharaType endNum = static_cast<CharaType>('9');
 
 	bool conFlg = false;
-	for (unsigned long i = 0; i < _str.GetLength(); i++)
+	for (unsigned long i = 0; i < _str.length(); i++)
 	{
 		conFlg = false;
 		if (_str[i] < startNum)conFlg = true;
@@ -101,16 +101,16 @@ ChCRT::StringPack<CharaType> ChStr::RemoveToUnNumCharasBase(const ChCRT::StringP
 
 //数値に変換可能な文字以外の文字を取り除く//
 template<typename CharaType>
-ChCRT::StringPack<CharaType> ChStr::RemoveToUnFloatingNumCharasBase(
-	const ChCRT::StringPack<CharaType>& _str,
+std::basic_string<CharaType> ChStr::RemoveToUnFloatingNumCharas(
+	const std::basic_string<CharaType>& _str,
 	unsigned long* _ePosition,
 	unsigned long* _colonPoint)
 {
 	if (ChPtr::NotNullCheck(_ePosition))*_ePosition = -1;
 	if (ChPtr::NotNullCheck(_colonPoint))*_colonPoint = -1;
-	if (_str.GetLength() <= 0)return  _str;
+	if (_str.length() <= 0)return  _str;
 
-	ChCRT::StringPack<CharaType> out = ChStd::GetZeroChara<CharaType>();
+	std::basic_string<CharaType> out = ChStd::GetZeroChara<CharaType>();
 
 	const CharaType startNum = static_cast<CharaType>('0');
 	const CharaType endNum = static_cast<CharaType>('9');
@@ -124,7 +124,7 @@ ChCRT::StringPack<CharaType> ChStr::RemoveToUnFloatingNumCharasBase(
 	CharaType EChara = static_cast<CharaType>('E');
 	unsigned long ePosition = -1;
 	bool conFlg = false;
-	for (unsigned long i = 0; i < _str.GetLength(); i++)
+	for (unsigned long i = 0; i < _str.length(); i++)
 	{
 		conFlg = false;
 
@@ -158,7 +158,7 @@ ChCRT::StringPack<CharaType> ChStr::RemoveToUnFloatingNumCharasBase(
 		out = out + _str[i];
 	}
 
-	if (ePosition < _str.GetLength())
+	if (ePosition < _str.length())
 	{
 		if (ChPtr::NotNullCheck(_ePosition))*_ePosition = ePosition;
 		out += ChStr::RemoveToUnNumCharasBase<CharaType>(&_str[ePosition]);
@@ -169,38 +169,38 @@ ChCRT::StringPack<CharaType> ChStr::RemoveToUnFloatingNumCharasBase(
 
 //対象の文字で区切り配列にする//
 template<typename CharaType>
-ChCRT::VectorPack<ChCRT::StringPack<CharaType>> ChStr::SplitBase(
-	const ChCRT::StringPack<CharaType>& _str,
-	const ChCRT::StringPack<CharaType>& _splitChar)
+ChCRT::VectorPack<std::basic_string<CharaType>> ChStr::Split(
+	const std::basic_string<CharaType>& _str,
+	const std::basic_string<CharaType>& _splitChar)
 {
-	ChCRT::VectorPack<ChCRT::StringPack<CharaType>> out;
+	ChCRT::VectorPack<std::basic_string<CharaType>> out;
 
 	size_t nowPos = 0;
-	size_t testPos = _str.GetFindPosition(_splitChar, nowPos);
+	size_t testPos = _str.find(_splitChar, nowPos);
 
-	while (testPos != ChCRT::StringPack<CharaType>::GetNPos())
+	while (testPos != std::basic_string<CharaType>::GetNPos())
 	{
 		size_t tmp = testPos - nowPos;
-		out.Push(tmp != 0 ? _str.GetSubStr(nowPos, testPos - nowPos).GetString() : ChStd::GetZeroChara<CharaType>());
+		out.Push(tmp != 0 ? _str.substr(nowPos, testPos - nowPos).GetString() : ChStd::GetZeroChara<CharaType>());
 		nowPos = testPos + _splitChar.GetSize();
-		testPos = _str.GetFindPosition(_splitChar, nowPos);
+		testPos = _str.find(_splitChar, nowPos);
 	}
 
-	out.Push(_str.GetSubStr(nowPos));
+	out.Push(_str.substr(nowPos));
 
 	return out;
 }
 
 //指定されたコード値の範囲の文字のみを返す//
 template<typename CharaType>
-ChCRT::StringPack<CharaType> ChStr::GetCharsToRangeCodeBase(
-	const ChCRT::StringPack<CharaType>& _str,
+std::basic_string<CharaType> ChStr::GetCharsToRangeCode(
+	const std::basic_string<CharaType>& _str,
 	const CharaType _min,
 	const CharaType _max)
 {
-	ChCRT::StringPack<CharaType> out = ChStd::GetZeroChara<CharaType>();
+	std::basic_string<CharaType> out = ChStd::GetZeroChara<CharaType>();
 
-	for (unsigned long i = 0; i < _str.GetLength(); i++)
+	for (unsigned long i = 0; i < _str.length(); i++)
 	{
 		if (_str[i] <= _max && _str[i] >= _min)out = out + _str[i];
 	}
@@ -208,24 +208,24 @@ ChCRT::StringPack<CharaType> ChStr::GetCharsToRangeCodeBase(
 }
 
 #define EXPLICIT_DECLARATION(_CharaType)\
-template ChCRT::StringPack<##_CharaType##> ChStr::StrReplaseBase(\
-	const ChCRT::StringPack<##_CharaType##>& _base,\
-	const ChCRT::StringPack<##_CharaType##>& _before,\
-	const ChCRT::StringPack<##_CharaType##>& _after);\
-template ChCRT::StringPack<##_CharaType##> ChStr::RemoveToWhiteSpaceCharsBase(const ChCRT::StringPack<##_CharaType##>& _str);\
-template ChCRT::StringPack<##_CharaType##> ChStr::RemoveToCharsBase(\
-	const ChCRT::StringPack<##_CharaType##>& _str,\
-	const ChCRT::StringPack<##_CharaType##>& _removeChars);\
-template ChCRT::StringPack<##_CharaType##> ChStr::RemoveToUnNumCharasBase(const ChCRT::StringPack<##_CharaType##>& _str);\
-template ChCRT::StringPack<##_CharaType##> ChStr::RemoveToUnFloatingNumCharasBase(\
-	const ChCRT::StringPack<##_CharaType##>& _str,\
+template std::basic_string<##_CharaType##> ChStr::StrReplase(\
+	const std::basic_string<##_CharaType##>& _base,\
+	const std::basic_string<##_CharaType##>& _before,\
+	const std::basic_string<##_CharaType##>& _after);\
+template std::basic_string<##_CharaType##> ChStr::RemoveToWhiteSpaceChars(const std::basic_string<##_CharaType##>& _str);\
+template std::basic_string<##_CharaType##> ChStr::RemoveToChars(\
+	const std::basic_string<##_CharaType##>& _str,\
+	const std::basic_string<##_CharaType##>& _removeChars);\
+template std::basic_string<##_CharaType##> ChStr::RemoveToUnNumCharas(const std::basic_string<##_CharaType##>& _str);\
+template std::basic_string<##_CharaType##> ChStr::RemoveToUnFloatingNumCharas(\
+	const std::basic_string<##_CharaType##>& _str,\
 	unsigned long* _ePosition,\
 	unsigned long* _colonPoint);\
-template ChCRT::VectorPack<ChCRT::StringPack<##_CharaType##>> ChStr::SplitBase(\
-	const ChCRT::StringPack<##_CharaType##>& _str,\
-	const ChCRT::StringPack<##_CharaType##>& _splitChar);\
-template ChCRT::StringPack<##_CharaType##> ChStr::GetCharsToRangeCodeBase(\
-	const ChCRT::StringPack<##_CharaType##>& _str,\
+template ChCRT::VectorPack<std::basic_string<##_CharaType##>> ChStr::Split(\
+	const std::basic_string<##_CharaType##>& _str,\
+	const std::basic_string<##_CharaType##>& _splitChar);\
+template std::basic_string<##_CharaType##> ChStr::GetCharsToRangeCode(\
+	const std::basic_string<##_CharaType##>& _str,\
 	const _CharaType _min,\
 	const _CharaType _max);
 
