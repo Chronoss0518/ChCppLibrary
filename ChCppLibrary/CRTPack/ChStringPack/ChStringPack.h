@@ -34,7 +34,10 @@ namespace ChCRT
 
 	public:
 
-		Ch_CRT_Operator_Functions_To_Pack(StringPack, std::basic_string<CharaType>);
+
+#ifdef CRT
+		inline StringPack& operator =(const std::basic_string<CharaType>& _val) { if (reinterpret_cast<size_t>(&value->pack) != reinterpret_cast<size_t>(&_val))value->pack = _val; return *this; }
+#endif
 
 		Ch_CRT_String_Operators(CharaType*);
 		Ch_CRT_String_Operators(StringPack<CharaType>&);
@@ -45,6 +48,8 @@ namespace ChCRT
 		
 		CharaType& operator[](const size_t _num);
 		const CharaType& operator [](const size_t _num) const;
+
+		operator const CharaType* ()const;
 
 #ifdef CRT
 
@@ -92,13 +97,13 @@ namespace ChCRT
 
 		size_t GetLength()const;
 
-		size_t GetFindPosition(const CharaType* _findStr)const;
+		size_t GetFindPosition(const CharaType* _findStr,const size_t _start = 0)const;
 
-		size_t GetFindPositionFromEnd(const CharaType* _findStr)const;
+		size_t GetFindPositionFromEnd(const CharaType* _findStr, const size_t _start = 0)const;
 
 		StringPack GetSubStr(const size_t _pos, const size_t _n = GetNPos())const;
 
-		const CharaType* GetString();
+		const CharaType* GetString()const;
 
 #ifdef CRT
 		std::basic_string<CharaType>& GetPackString() { return value->pack; }
@@ -111,6 +116,10 @@ namespace ChCRT
 	public:
 
 		bool IsString(const CharaType* _str);
+
+	public:
+
+		void Pop();
 
 	private:
 
@@ -125,6 +134,30 @@ namespace ChCRT
 #endif
 	using U16String = StringPack<char16_t>;
 	using U32String = StringPack<char32_t>;
+
+
+	//当分の間ToStringとToNumはこちらを利用する//
+	template<typename _BaseType>
+	String ToString(const _BaseType _type);
+
+	//当分の間ToStringとToNumはこちらを利用する//
+	template<typename _BaseType>
+	WString ToWString(const _BaseType _type);
+
+	template<typename _CharaType,typename _BaseType>
+	StringPack<_CharaType> ToStringPack(const _BaseType _type);
+
+
+	//当分の間ToStringとToNumはこちらを利用する//
+	template<typename _BaseType>
+	_BaseType ToNum(const String& _str);
+
+	//当分の間ToStringとToNumはこちらを利用する//
+	template<typename _BaseType>
+	_BaseType ToNum(const WString& _str);
+
+	template<typename _CharaType, typename _BaseType>
+	_BaseType ToNumPack(const StringPack<_CharaType>& _type);
 
 }
 

@@ -5,6 +5,7 @@
 
 #ifdef CRT
 #include<vector>
+#include<iterator>
 #endif
 
 namespace ChCRT
@@ -54,6 +55,8 @@ namespace ChCRT
 
 		void Push(const T& _val);
 
+		void Insert(const size_t& _num,const T& _val);
+
 		void Pop();
 
 		void Resize(const size_t _num);
@@ -63,6 +66,16 @@ namespace ChCRT
 		bool RemoveObj(const T& _val);
 
 		void Clear();
+
+	public:
+
+#ifdef CRT
+
+		typename std::vector<T>::iterator begin()const { return value->pack.begin(); }
+
+		typename std::vector<T>::iterator end()const { return value->pack.end(); }
+
+#endif
 
 	protected:
 

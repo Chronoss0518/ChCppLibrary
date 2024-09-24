@@ -5,7 +5,10 @@
 
 #ifdef CRT
 #include<map>
+#include<iterator>
 #endif
+
+#include"../ChVectorPack/ChVectorPack.h"
 
 #ifndef Ch_MapPack_PackClass
 #define Ch_MapPack_PackClass std::map<_Key, _Value>
@@ -46,10 +49,18 @@ namespace ChCRT
 #ifdef CRT
 		Ch_MapPack_PackClass& GetPackMap() { return value->pack; }
 #endif
+		
+#ifdef CRT
+
+		typename std::map<_Key, _Value>::iterator begin()const { return value->pack.begin(); }
+
+		typename std::map<_Key, _Value>::iterator end()const { return value->pack.end(); }
+
+#endif
 
 	public:
 
-		_Value* Find(const _Key& _key);
+		_Value* Find(const _Key& _key)const;
 
 		_Value& Insert(const _Key& _key);
 
@@ -62,6 +73,41 @@ namespace ChCRT
 		MapPackCRT* value = nullptr;
 
 	};
+
+	template<class _Key,class _Value>
+	VectorPack<_Key>GetKeyListCRT(const MapPack<_Key, _Value>& _map);
+
+	template<class _Key, class _Value>
+	VectorPack<_Value>GetValueListCRT(const MapPack<_Key, _Value>& _map);
+
+#ifdef CRT
+	template<class _Key, class _Value>
+	std::vector<_Key>GetKeyList(const MapPack<_Key, _Value>& _map)
+	{
+		std::vector<_Key> res;
+
+		for (auto&& it : _map)
+		{
+			res.push_back(it.first);
+		}
+
+		return res;
+	}
+
+	template<class _Key, class _Value>
+	std::vector<_Value>GetValueList(const MapPack<_Key, _Value>& _map)
+	{
+		std::vector<_Key> res;
+
+		for (auto&& it : _map)
+		{
+			res.push_back(it.second);
+		}
+
+		return res;
+	}
+
+#endif
 }
 
 #endif

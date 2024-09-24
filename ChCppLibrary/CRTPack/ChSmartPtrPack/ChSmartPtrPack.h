@@ -10,6 +10,24 @@
 namespace ChCRT
 {
 	class NullPtr final { public: NullPtr() {} };
+	
+	template<class T>
+	class SharedPtrPack;
+
+	template<class T>
+	class WeakPtrPack;
+
+	template<class T, class Y>
+	SharedPtrPack<Y> UpCast(const SharedPtrPack<T>& _castBase);
+
+	template<class T, class Y>
+	void UpCast(SharedPtrPack<Y>& _out,const SharedPtrPack<T>& _castBase);
+
+	template<class T, class Y>
+	WeakPtrPack<Y> CreateWeak(const SharedPtrPack<T>& _castBase);
+
+	template<class T, class Y>
+	void CreateWeak(WeakPtrPack<Y>& _out,const SharedPtrPack<T>& _castBase);
 
 	template<class T>
 	class SharedPtrPack final
@@ -27,15 +45,18 @@ namespace ChCRT
 
 #ifdef CRT
 
-		inline bool operator ==(const std::shared_ptr<T>& _val)const{ return reinterpret_cast<size_t>(value->pack.get()) == reinterpret_cast<size_t>(_val.get()); }
-		
-		inline bool operator !=(const std::shared_ptr<T>& _val)const{ return reinterpret_cast<size_t>(value->pack.get()) != reinterpret_cast<size_t>(_val.get()); }
+		template<class Y>
+		inline bool operator ==(const std::shared_ptr<Y>& _val)const{ return reinterpret_cast<size_t>(value->pack.get()) == reinterpret_cast<size_t>(_val.get()); }
+
+		template<class Y>
+		inline bool operator !=(const std::shared_ptr<Y>& _val)const{ return reinterpret_cast<size_t>(value->pack.get()) != reinterpret_cast<size_t>(_val.get()); }
 
 #endif
 
 #ifdef CRT
 
-		operator std::weak_ptr<T> () { return value->pack; }
+		template<class Y>
+		operator std::weak_ptr<Y> () { return value->pack; }
 
 #endif
 		
@@ -55,10 +76,15 @@ namespace ChCRT
 
 		Ch_CRT_ConstructorDestructor_Functions(SharedPtrPack, std::shared_ptr<T>);
 
-#ifdef CRT
+		SharedPtrPack(T* _val);
+
 		template<class Y>
-		SharedPtrPack(Y* _val) { value = new SharedPtrPackCRT(); value->pack.reset(_val); }
-#endif
+		inline SharedPtrPack(typename std::enable_if<std::is_base_of<Y, T>::value, const SharedPtrPack<Y>&>::type _val)
+		{
+			CRTInit();
+			ChCRT::UpCast<T,Y>(*this,_val);
+		}
+
 		SharedPtrPack(const SharedPtrPack& _val);
 
 		SharedPtrPack(SharedPtrPack&& _val);
@@ -69,12 +95,15 @@ namespace ChCRT
 
 		~SharedPtrPack();
 
+	private:
+
+		void CRTInit();
+
 	public:
 
-#ifdef CRT
-		template<class Y>
-		void Set(Y* _val) { value->pack = nullptr; value->pack.reset(_val); }
+		void Set(T* _val);
 
+#ifdef CRT
 		inline void SetPack(const std::shared_ptr<T>& _val) { value->pack = _val; }
 #endif
 
@@ -90,16 +119,23 @@ namespace ChCRT
 
 	public:
 
-#ifdef CRT
-		template<class Y>
-		void Make() { value->pack = std::make_shared<Y>(); }
-#endif
-
 	private:
 
 		SharedPtrPackCRT* value = nullptr;
 	};
 
+
+	template<class T>
+	SharedPtrPack<T> Make();
+
+	template<class T, class Y>
+	SharedPtrPack<Y> Cast(const SharedPtrPack<T>& _castBase);
+
+	template<class T, class Y>
+	SharedPtrPack<Y> DownCast(const SharedPtrPack<T>& _castBase)
+	{
+		return ChCRT::Cast<T, Y>(_castBase);
+	}
 
 
 	template<class T>
@@ -120,21 +156,35 @@ namespace ChCRT
 		WeakPtrPack& operator =(const WeakPtrPack& _val);
 
 		WeakPtrPack& operator =(const SharedPtrPack<T>& _val);
+
+		template<class Y>
+		WeakPtrPack& operator =(const SharedPtrPack<Y>& _val);
 	public:
 
 		Ch_CRT_ConstructorDestructor_Functions(WeakPtrPack, std::weak_ptr<T>);
 
 		Ch_CRT_ConstructorDestructor_Functions(WeakPtrPack, std::shared_ptr<T>);
 
-		WeakPtrPack(const SharedPtrPack<T>& _pack);
+		WeakPtrPack(const ChCRT::SharedPtrPack<T>& _pack);
+
+		template<class Y>
+		WeakPtrPack(const ChCRT::SharedPtrPack<Y>& _val)
+		{
+			CRTInit();
+			ChCRT::CreateWeak<Y, Y>(*this, _val);
+		}
 
 		WeakPtrPack();
 
 		~WeakPtrPack();
 
+	private:
+
+		void CRTInit();
+
 	public:
 
-		void Set(const SharedPtrPack<T>& _val);
+		void Set(const ChCRT::SharedPtrPack<T>& _val);
 
 #ifdef CRT
 		void SetPack(const std::weak_ptr<T>& _val) { value->pack = _val; }
@@ -160,6 +210,10 @@ namespace ChCRT
 
 		WeakPtrPackCRT* value = nullptr;
 	};
+
+
+
+
 }
 
 #endif
