@@ -3,6 +3,7 @@
 
 #include<string>
 #include<vector>
+#include<map>
 
 #ifdef __cplusplus
 #if __cplusplus > 200000L
@@ -250,7 +251,7 @@ namespace ChStd
 	template<typename Type>
 	static inline Type BinaryToNumWithLittleEndian(const std::vector<unsigned char>& _binary, unsigned long _pos = 0)
 	{
-		if (_pos + sizeof(Type) >= _binary.GetSize())return 0;
+		if (_pos + sizeof(Type) >= _binary.size())return 0;
 
 		Type num = 0;
 
@@ -270,7 +271,7 @@ namespace ChStd
 	template<typename Type>
 	static inline Type BinaryToNumWithBigEndian(const std::vector<unsigned char>& _binary, unsigned long _pos = 0)
 	{
-		if (_pos + sizeof(Type) >= _binary.GetSize())return 0;
+		if (_pos + sizeof(Type) >= _binary.size())return 0;
 
 		Type num = 0;
 
@@ -289,15 +290,15 @@ namespace ChStd
 
 	template<typename CharaType>
 	//10進数の数値を入れると指定した配列によって生成された進数表記で出力される//
-	static inline ChCRT::StringPack<CharaType> DecimalNumberToBaseNumber(
+	static inline std::basic_string<CharaType> DecimalNumberToBaseNumber(
 		const long long _decimal,
-		const ChCRT::StringPack<CharaType>& _baseNumber = HEXA_DECIMAL<CharaType>())
+		const std::basic_string<CharaType>& _baseNumber = HEXA_DECIMAL<CharaType>())
 	{
 		long long decimal = 0;
 
-		size_t size = _baseNumber.GetSize();
+		size_t size = _baseNumber.size();
 
-		ChCRT::StringPack<CharaType> testRes = GetZeroChara<CharaType>();
+		std::basic_string<CharaType> testRes = GetZeroChara<CharaType>();
 
 		if (_decimal < 0)
 		{
@@ -314,7 +315,7 @@ namespace ChStd
 			return testRes;
 		}
 
-		ChCRT::StringPack<CharaType> out = DecimalNumberToBaseNumber(base, _baseNumber);
+		std::basic_string<CharaType> out = DecimalNumberToBaseNumber(base, _baseNumber);
 
 		out = out + testRes[0];
 
@@ -324,14 +325,14 @@ namespace ChStd
 	//指定した進数の配列を入れると10進数の数値が出力される//
 	template<typename CharaType>
 	static inline long long BaseNumberToDecimalNumber(
-		const ChCRT::StringPack<CharaType>& _decimal,
-		const ChCRT::StringPack<CharaType>& _baseNumber = HEXA_DECIMAL<CharaType>())
+		const std::basic_string<CharaType>& _decimal,
+		const std::basic_string<CharaType>& _baseNumber = HEXA_DECIMAL<CharaType>())
 	{
 		long long out = 0;
 
 		ChCRT::MapPack<CharaType, size_t>numMap;
 
-		size_t size = _baseNumber.GetSize();
+		size_t size = _baseNumber.size();
 
 		numMap[static_cast<CharaType>('-')] = size;
 
@@ -342,9 +343,9 @@ namespace ChStd
 
 		bool mFlg = numMap[_decimal[0]] == size;
 
-		for (long long i = 0; static_cast<size_t>(i) < (mFlg ? _decimal.GetSize() - 1 : _decimal.GetSize()); i++)
+		for (long long i = 0; static_cast<size_t>(i) < (mFlg ? _decimal.size() - 1 : _decimal.size()); i++)
 		{
-			long long sum = numMap[_decimal[_decimal.GetSize() - i - 1]];
+			long long sum = numMap[_decimal[_decimal.size() - i - 1]];
 
 			for (long long j = 0; j < (!mFlg ? i : i - 1); j++)
 			{
@@ -361,10 +362,10 @@ namespace ChStd
 
 	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
 	template<typename CharaType>
-	static inline ChCRT::StringPack<CharaType> ToBaseNumber(
-		const ChCRT::StringPack<CharaType>& _baseNum,
-		const ChCRT::StringPack<CharaType>& _beforeBaseNumber = DECIMAL_NUMBUR<CharaType>(),
-		const ChCRT::StringPack<CharaType>& _afterBaseNumber = HEXA_DECIMAL<CharaType>())
+	static inline std::basic_string<CharaType> ToBaseNumber(
+		const std::basic_string<CharaType>& _baseNum,
+		const std::basic_string<CharaType>& _beforeBaseNumber = DECIMAL_NUMBUR<CharaType>(),
+		const std::basic_string<CharaType>& _afterBaseNumber = HEXA_DECIMAL<CharaType>())
 	{
 		return DecimalNumberToBaseNumber(ChStd::BaseNumberToDecimalNumber(_baseNum, _beforeBaseNumber), _afterBaseNumber);
 	}
@@ -372,8 +373,8 @@ namespace ChStd
 	//指定した新数の配列を入れるとその配列によって数値を置換できるかのテストを行う//
 	template<typename CharaType>
 	static inline bool IsBaseNumbers(
-		const ChCRT::StringPack<CharaType>& _baseNum,
-		const ChCRT::StringPack<CharaType>& _beforeBaseNumber = DECIMAL_NUMBUR<CharaType>())
+		const std::basic_string<CharaType>& _baseNum,
+		const std::basic_string<CharaType>& _beforeBaseNumber = DECIMAL_NUMBUR<CharaType>())
 	{
 
 		bool isSuccessFlg = false;
@@ -381,11 +382,11 @@ namespace ChStd
 		bool indexSuccessFlg = false;
 		bool pointFlg = false;
 
-		for (unsigned char i = 0; i < _baseNum.GetSize(); i++)
+		for (unsigned char i = 0; i < _baseNum.size(); i++)
 		{
 			isSuccessFlg = false;
 
-			for (size_t i = 0; i < _beforeBaseNumber.GetSize(); i++)
+			for (size_t i = 0; i < _beforeBaseNumber.size(); i++)
 			{
 				if (_baseNum[i] != _beforeBaseNumber[i])continue;
 				if (indexFlg)indexSuccessFlg = true;
@@ -422,7 +423,6 @@ namespace ChStd
 		return true;
 	}
 
-#ifdef CRT
 	template<typename Type>
 	static inline std::map<Type, unsigned long> CreateHuffmanTree(const std::vector<Type>& _binary)
 	{
@@ -430,7 +430,6 @@ namespace ChStd
 
 		return out;
 	}
-#endif
 }
 
 #endif
