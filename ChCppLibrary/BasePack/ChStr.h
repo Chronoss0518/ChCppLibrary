@@ -1,14 +1,13 @@
 #ifndef Ch_CPP_Str_h
 #define Ch_CPP_Str_h
 
-#include"../CRTPack/ChVectorPack/ChVectorPack.h"
-#include"../CRTPack/ChStringPack/ChStringPack.h"
+#include<vector>
+#include<string>
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS 4996
 #endif
 
-#ifdef CRT
 #include<cstdlib>
 #include<wchar.h>
 #include<stddef.h>
@@ -17,7 +16,6 @@
 #include <codecvt>
 #include <cassert>
 #include <locale>
-#endif
 #endif
 
 #include"ChStd.h"
@@ -78,12 +76,12 @@ namespace ChStr
 
 	//クラス名を取得する関数//
 	template<typename CharaType, class T = int>
-	static inline ChCRT::StringPack<CharaType> GetTypeName()
+	static inline std::basic_string<CharaType> GetTypeName()
 	{
-		ChCRT::StringPack<CharaType> tmpStr = typeid(T).name();
+		std::basic_string<CharaType> tmpStr = typeid(T).name();
 
 		size_t tmp = tmpStr.GetFindPosition(static_cast<CharaType>(' '));
-		if (tmp == ChCRT::StringPack<CharaType>::NPos())tmp = 0;
+		if (tmp == std::basic_string<CharaType>::NPos())tmp = 0;
 		else tmp += 1;
 
 		return &tmpStr[tmp];
@@ -91,115 +89,49 @@ namespace ChStr
 
 	//文字の置き換え//
 	template<typename CharaType>
-	ChCRT::StringPack<CharaType> StrReplaseBase(
-		const ChCRT::StringPack<CharaType>& _base,
-		const ChCRT::StringPack<CharaType>& _before,
-		const ChCRT::StringPack<CharaType>& _after = ChStd::GetZeroChara<CharaType>());
-
-	//空文字を取り除く//
-	template<typename CharaType>
-	ChCRT::StringPack<CharaType> RemoveToWhiteSpaceCharsBase(const ChCRT::StringPack<CharaType>& _str);
-
-	//指定した文字を取り除く//
-	template<typename CharaType>
-	ChCRT::StringPack<CharaType> RemoveToCharsBase(
-		const ChCRT::StringPack<CharaType>& _str,
-		const ChCRT::StringPack<CharaType>& _removeChars);
-
-	//数値に変換可能な文字以外の文字を取り除く//
-	template<typename CharaType>
-	ChCRT::StringPack<CharaType> RemoveToUnNumCharasBase(const ChCRT::StringPack<CharaType>& _str);
-
-	//数値に変換可能な文字以外の文字を取り除く//
-	template<typename CharaType>
-	ChCRT::StringPack<CharaType> RemoveToUnFloatingNumCharasBase(
-		const ChCRT::StringPack<CharaType>& _str,
-		unsigned long* _ePosition = nullptr,
-		unsigned long* _colonPoint = nullptr);
-
-	//対象の文字で区切り配列にする//
-	template<typename CharaType>
-	static inline ChCRT::VectorPack<ChCRT::StringPack<CharaType>> SplitBase(
-		const ChCRT::StringPack<CharaType>& _str,
-		const ChCRT::StringPack<CharaType>& _splitChar);
-
-	//指定されたコード値の範囲の文字のみを返す//
-	template<typename CharaType>
-	static inline ChCRT::StringPack<CharaType> GetCharsToRangeCodeBase(
-		const ChCRT::StringPack<CharaType>& _str,
-		const CharaType _min,
-		const CharaType _max);
-
-#ifdef CRT
-
-	//文字の置き換え//
-	template<typename CharaType>
 	static inline std::basic_string<CharaType> StrReplase(
 		const std::basic_string<CharaType>& _base,
 		const std::basic_string<CharaType>& _before,
-		const std::basic_string<CharaType>& _after = ChStd::GetZeroChara<CharaType>())
-	{
-		return StrReplaseBase<CharaType>(_base, _before, _after);
-	}
+		const std::basic_string<CharaType>& _after = ChStd::GetZeroChara<CharaType>());
 
 	//空文字を取り除く//
 	template<typename CharaType>
-	static inline std::basic_string<CharaType> RemoveToWhiteSpaceChars(const std::basic_string<CharaType>& _str)
-	{
-		return RemoveToWhiteSpaceCharsBase(_str);
-	}
+	static inline std::basic_string<CharaType> RemoveToWhiteSpaceChars(const std::basic_string<CharaType>& _str);
 
 	//指定した文字を取り除く//
 	template<typename CharaType>
 	static inline std::basic_string<CharaType> RemoveToChars(
 		const std::basic_string<CharaType>& _str,
-		const std::basic_string<CharaType>& _removeChars)
-	{
-		return RemoveToCharsBase(_str, _removeChars);
-	}
+		const std::basic_string<CharaType>& _removeChars);
 
 	//数値に変換可能な文字以外の文字を取り除く//
 	template<typename CharaType>
-	std::basic_string<CharaType> RemoveToUnNumCharasBase(const std::basic_string<CharaType>& _str)
-	{
-		return RemoveToUnNumCharas(_str);
-	}
+	std::basic_string<CharaType> RemoveToUnNumCharas(const std::basic_string<CharaType>& _str);
 
 	//数値に変換可能な文字以外の文字を取り除く//
 	template<typename CharaType>
 	std::basic_string<CharaType> RemoveToUnFloatingNumCharas(
 		const std::basic_string<CharaType>& _str,
 		unsigned long* _ePosition = nullptr,
-		unsigned long* _colonPoint = nullptr)
-	{
-		return RemoveToUnFloatingNumCharasBase(_str, _ePosition, _colonPoint);
-	}
+		unsigned long* _colonPoint = nullptr);
 
 	//対象の文字で区切り配列にする//
 	template<typename CharaType>
 	static inline ChCRT::VectorPack<std::basic_string<CharaType>> Split(
 		const std::basic_string<CharaType>& _str,
-		const std::basic_string<CharaType>& _splitChar)
-	{
-		return SplitBase(_str, _splitChar);
-	}
+		const std::basic_string<CharaType>& _splitChar);
 
 	//指定されたコード値の範囲の文字のみを返す//
 	template<typename CharaType>
 	static inline std::basic_string<CharaType> GetCharsToRangeCode(
 		const std::basic_string<CharaType>& _str,
 		const CharaType _min,
-		const CharaType _max)
-	{
-		return GetCharsToRangeCodeBase(_str, _min, _max);
-	}
-
-#endif
+		const CharaType _max);
 
 	namespace BaseFunctions
 	{
 		template<typename CharaType>
-		static long double GetExponentialFromTextBase(const ChCRT::StringPack<CharaType>& _text)
+		static long double GetExponentialFromTextBase(const std::basic_string<CharaType>& _text)
 		{
 			if (_text.GetSize() <= 0)return 0.0f;
 
@@ -220,7 +152,7 @@ namespace ChStr
 			return res;
 		}
 	}
-#ifdef CRT
+
 #if true
 
 	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
@@ -331,9 +263,8 @@ namespace ChStr
 	}
 
 #endif
-#endif
 
-#ifdef CRT
+
 #if true
 
 	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
@@ -360,9 +291,7 @@ namespace ChStr
 	}
 
 #endif
-#endif
 
-#ifdef CRT
 #ifndef CPP20
 
 	using ConvertUTF8 = std::codecvt_utf8<wchar_t>;
@@ -408,7 +337,6 @@ namespace ChStr
 	{
 		return GetU16Converter().to_bytes(_str.c_str());
 	}
-#endif
 #endif
 
 }

@@ -10,34 +10,6 @@
 
 using namespace ChStr;
 
-#define EXPLICIT_DECLARATION(_CharaType)\
-template ChCRT::StringPack<##_CharaType##> ChStr::StrReplaseBase(\
-	const ChCRT::StringPack<##_CharaType##>& _base,\
-	const ChCRT::StringPack<##_CharaType##>& _before,\
-	const ChCRT::StringPack<##_CharaType##>& _after);\
-template ChCRT::StringPack<##_CharaType##> ChStr::RemoveToWhiteSpaceCharsBase(const ChCRT::StringPack<##_CharaType##>& _str);\
-template ChCRT::StringPack<##_CharaType##> ChStr::RemoveToCharsBase(\
-	const ChCRT::StringPack<##_CharaType##>& _str,\
-	const ChCRT::StringPack<##_CharaType##>& _removeChars);\
-template ChCRT::StringPack<##_CharaType##> ChStr::RemoveToUnNumCharasBase(const ChCRT::StringPack<##_CharaType##>& _str);\
-template ChCRT::StringPack<##_CharaType##> ChStr::RemoveToUnFloatingNumCharasBase(\
-	const ChCRT::StringPack<##_CharaType##>& _str,\
-	unsigned long* _ePosition,\
-	unsigned long* _colonPoint);\
-template ChCRT::VectorPack<ChCRT::StringPack<##_CharaType##>> ChStr::SplitBase(\
-	const ChCRT::StringPack<##_CharaType##>& _str,\
-	const ChCRT::StringPack<##_CharaType##>& _splitChar);\
-template ChCRT::StringPack<##_CharaType##> ChStr::GetCharsToRangeCodeBase(\
-	const ChCRT::StringPack<##_CharaType##>& _str,\
-	const _CharaType _min,\
-	const _CharaType _max);
-
-EXPLICIT_DECLARATION(char);
-EXPLICIT_DECLARATION(wchar_t);
-EXPLICIT_DECLARATION(char8_t);
-EXPLICIT_DECLARATION(char16_t);
-EXPLICIT_DECLARATION(char32_t);
-
 //•¶Žš‚Ì’u‚«Š·‚¦//
 template<typename CharaType>
 ChCRT::StringPack<CharaType> ChStr::StrReplaseBase(
@@ -45,7 +17,7 @@ ChCRT::StringPack<CharaType> ChStr::StrReplaseBase(
 	const ChCRT::StringPack<CharaType>& _before,
 	const ChCRT::StringPack<CharaType>& _after)
 {
-	if (_base.GetFindPosition(_before) == _base.NPos())return _base;
+	if (_base.GetFindPosition(_before) == ChCRT::StringPack<CharaType>::GetNPos())return _base;
 
 	ChCRT::StringPack<CharaType> out = ChStd::GetZeroChara<CharaType>();
 
@@ -56,7 +28,7 @@ ChCRT::StringPack<CharaType> ChStr::StrReplaseBase(
 	{
 		testPos = _base.GetFindPosition(_before, tmpPos);
 
-		if (testPos == _base.NPos())break;
+		if (testPos == _base.GetNPos())break;
 
 		out += _base.GetSubStr(tmpPos, testPos - tmpPos);
 		out += _after;
@@ -74,7 +46,7 @@ ChCRT::StringPack<CharaType> ChStr::RemoveToWhiteSpaceCharsBase(const ChCRT::Str
 	const char whiteSpaceInterfaceChar = 32;
 	const char delCharNum = 127;
 
-	for (unsigned long i = 0; i < _str.GetLength()(); i++)
+	for (unsigned long i = 0; i < _str.GetLength(); i++)
 	{
 		if (_str[i] <= whiteSpaceInterfaceChar)continue;
 		if (_str[i] == delCharNum)continue;
@@ -91,9 +63,9 @@ ChCRT::StringPack<CharaType> ChStr::RemoveToCharsBase(
 	const ChCRT::StringPack<CharaType>& _str,
 	const ChCRT::StringPack<CharaType>& _removeChars)
 {
-	ChCRT::StringPack<CharaType> out = ChStd::GetZeroChara();
+	ChCRT::StringPack<CharaType> out = ChStd::GetZeroChara<CharaType>();
 
-	for (unsigned long i = 0; i < _str.GetLength()(); i++)
+	for (unsigned long i = 0; i < _str.GetLength(); i++)
 	{
 		if (_str[i] != _removeChars)out += _str[i];
 	}
@@ -115,7 +87,7 @@ ChCRT::StringPack<CharaType> ChStr::RemoveToUnNumCharasBase(const ChCRT::StringP
 	const CharaType endNum = static_cast<CharaType>('9');
 
 	bool conFlg = false;
-	for (unsigned long i = 0; i < _str.length(); i++)
+	for (unsigned long i = 0; i < _str.GetLength(); i++)
 	{
 		conFlg = false;
 		if (_str[i] < startNum)conFlg = true;
@@ -152,7 +124,7 @@ ChCRT::StringPack<CharaType> ChStr::RemoveToUnFloatingNumCharasBase(
 	CharaType EChara = static_cast<CharaType>('E');
 	unsigned long ePosition = -1;
 	bool conFlg = false;
-	for (unsigned long i = 0; i < _str.length(); i++)
+	for (unsigned long i = 0; i < _str.GetLength(); i++)
 	{
 		conFlg = false;
 
@@ -189,7 +161,7 @@ ChCRT::StringPack<CharaType> ChStr::RemoveToUnFloatingNumCharasBase(
 	if (ePosition < _str.GetLength())
 	{
 		if (ChPtr::NotNullCheck(_ePosition))*_ePosition = ePosition;
-		out += RemoveToUnNumCharas<CharaType>(&_str[ePosition]);
+		out += ChStr::RemoveToUnNumCharasBase<CharaType>(&_str[ePosition]);
 	}
 
 	return out;
@@ -206,10 +178,10 @@ ChCRT::VectorPack<ChCRT::StringPack<CharaType>> ChStr::SplitBase(
 	size_t nowPos = 0;
 	size_t testPos = _str.GetFindPosition(_splitChar, nowPos);
 
-	while (testPos != ChCRT::StringPack<CharaType>::NPos())
+	while (testPos != ChCRT::StringPack<CharaType>::GetNPos())
 	{
 		size_t tmp = testPos - nowPos;
-		out.Push(tmp != 0 ? _str.GetSubStr(nowPos, testPos - nowPos) : ChStd::GetZeroChara<CharaType>());
+		out.Push(tmp != 0 ? _str.GetSubStr(nowPos, testPos - nowPos).GetString() : ChStd::GetZeroChara<CharaType>());
 		nowPos = testPos + _splitChar.GetSize();
 		testPos = _str.GetFindPosition(_splitChar, nowPos);
 	}
@@ -226,7 +198,7 @@ ChCRT::StringPack<CharaType> ChStr::GetCharsToRangeCodeBase(
 	const CharaType _min,
 	const CharaType _max)
 {
-	ChCRT::StringPack<CharaType> out = ChStd::GetZeroChara();
+	ChCRT::StringPack<CharaType> out = ChStd::GetZeroChara<CharaType>();
 
 	for (unsigned long i = 0; i < _str.GetLength(); i++)
 	{
@@ -235,3 +207,30 @@ ChCRT::StringPack<CharaType> ChStr::GetCharsToRangeCodeBase(
 	return out;
 }
 
+#define EXPLICIT_DECLARATION(_CharaType)\
+template ChCRT::StringPack<##_CharaType##> ChStr::StrReplaseBase(\
+	const ChCRT::StringPack<##_CharaType##>& _base,\
+	const ChCRT::StringPack<##_CharaType##>& _before,\
+	const ChCRT::StringPack<##_CharaType##>& _after);\
+template ChCRT::StringPack<##_CharaType##> ChStr::RemoveToWhiteSpaceCharsBase(const ChCRT::StringPack<##_CharaType##>& _str);\
+template ChCRT::StringPack<##_CharaType##> ChStr::RemoveToCharsBase(\
+	const ChCRT::StringPack<##_CharaType##>& _str,\
+	const ChCRT::StringPack<##_CharaType##>& _removeChars);\
+template ChCRT::StringPack<##_CharaType##> ChStr::RemoveToUnNumCharasBase(const ChCRT::StringPack<##_CharaType##>& _str);\
+template ChCRT::StringPack<##_CharaType##> ChStr::RemoveToUnFloatingNumCharasBase(\
+	const ChCRT::StringPack<##_CharaType##>& _str,\
+	unsigned long* _ePosition,\
+	unsigned long* _colonPoint);\
+template ChCRT::VectorPack<ChCRT::StringPack<##_CharaType##>> ChStr::SplitBase(\
+	const ChCRT::StringPack<##_CharaType##>& _str,\
+	const ChCRT::StringPack<##_CharaType##>& _splitChar);\
+template ChCRT::StringPack<##_CharaType##> ChStr::GetCharsToRangeCodeBase(\
+	const ChCRT::StringPack<##_CharaType##>& _str,\
+	const _CharaType _min,\
+	const _CharaType _max);
+
+EXPLICIT_DECLARATION(char);
+EXPLICIT_DECLARATION(wchar_t);
+EXPLICIT_DECLARATION(char8_t);
+EXPLICIT_DECLARATION(char16_t);
+EXPLICIT_DECLARATION(char32_t);
