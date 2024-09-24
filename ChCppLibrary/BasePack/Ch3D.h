@@ -3,6 +3,7 @@
 
 #include<vector>
 #include<string>
+#include<map>
 #include<memory>
 
 #include"ChMath3D.h"
@@ -89,7 +90,7 @@ namespace Ch3D
 
 	struct BoneData
 	{
-		ChCRT::VectorPack<float> blendPow;
+		std::vector<float> blendPow;
 	};
 
 	struct Vertex:
@@ -148,8 +149,8 @@ namespace Ch3D
 	struct MaterialData
 	{
 		Material mate;
-		ChCRT::StringPack<CharaType> mateName;
-		ChCRT::MapPack<TextureType, ChCRT::StringPack<CharaType>>textures;
+		std::basic_string<CharaType> mateName;
+		std::map<TextureType, std::basic_string<CharaType>>textures;
 	};
 
 	struct Transform
