@@ -1,9 +1,7 @@
 #ifndef Ch_CPP_Ptr_h
 #define Ch_CPP_Ptr_h
 
-#ifdef CRT
 #include<memory>
-#endif
 
 #ifndef CH_SAFE_CAST_TRUE
 #define CH_SAFE_CAST_TRUE(BaseClass,TargetClass)\
@@ -24,7 +22,6 @@
 //ChLibraryで利用するポインタに対して利用する関数、変数群のまとまり//
 namespace ChPtr
 {
-#ifdef CRT
 	//SharedPtrの簡略版//
 	template<class T>
 	using Shared = std::shared_ptr<T>;
@@ -101,22 +98,5 @@ namespace ChPtr
 	{
 		return (_class != NULL && _class != nullptr);
 	}
-#else
-
-	//クラスがNULLまたはnullptrかをチェックする関数//
-	template<class C>
-	static inline bool NullCheck(const C& _class)
-	{
-		return (_class == 0 || _class == nullptr);
-	}
-
-	//クラスがNULLとnullptrのどちらでもないかをチェックする関数//
-	template<class C>
-	static inline bool NotNullCheck(const C& _class)
-	{
-		return (_class != 0 && _class != nullptr);
-	}
-
-#endif
 }
 #endif
