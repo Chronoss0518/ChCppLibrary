@@ -1,9 +1,9 @@
 #ifndef Ch_CPP_3D_h
 #define Ch_CPP_3D_h
 
-#include"../CRTPack/ChVectorPack/ChVectorPack.h"
-#include"../CRTPack/ChStringPack/ChStringPack.h"
-#include"../CRTPack/ChSmartPtrPack/ChSmartPtrPack.h"
+#include<vector>
+#include<string>
+#include<memory>
 
 #include"ChMath3D.h"
 #include"ChPtr.h"
@@ -187,7 +187,7 @@ namespace Ch3D
 	struct Primitive:public FaceNormal
 	{
 		unsigned long mateNo;
-		ChCRT::VectorPack<ChCRT::SharedPtrPack<SavePolyData>> vertexData;
+		std::vector<ChPtr::Shared<SavePolyData>> vertexData;
 	};
 }
 
