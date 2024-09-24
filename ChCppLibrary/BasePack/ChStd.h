@@ -44,13 +44,14 @@
 #endif
 
 #ifndef CH_NUMBER_FUNCTION_BASE
-#define CH_NUMBER_FUNCTION_BASE(Function)template<typename CharaType>\
-static const CharaType* Function()
+#define CH_NUMBER_FUNCTION_BASE(Function)\
+template<typename CharaType>\
+constexpr static const CharaType* Function()
 #endif
 
 #ifndef CH_NUMBER_FUNCTION
 #define CH_NUMBER_FUNCTION(Function,Type)\
-template<> constexpr static inline const Type* Function()
+template<> constexpr const Type* Function<##Type##>()
 #endif
 
 #ifndef CPP20
@@ -92,6 +93,40 @@ FunctionDefine(char8_t) { return CH_TO_CHAR8(Chara); }
 #endif
 #endif
 
+#ifndef CH_STRING_TYPE_EXPLICIT_DECLARATION
+#define CH_STRING_TYPE_EXPLICIT_DECLARATION(_Class)\
+template _Class##<char>;\
+template _Class##<wchar_t>;\
+template _Class##<char8_t>;\
+template _Class##<char16_t>;\
+template _Class##<char32_t>
+#endif
+
+#ifndef CH_BASE_TYPE_EXPLICIT_DECLARATION
+#define CH_BASE_TYPE_EXPLICIT_DECLARATION(_functionDefine)\
+_functionDefine(signed char)\
+_functionDefine(signed short)\
+_functionDefine(signed int)\
+_functionDefine(signed long)\
+_functionDefine(signed long long)\
+_functionDefine(unsigned char)\
+_functionDefine(unsigned short)\
+_functionDefine(unsigned int)\
+_functionDefine(unsigned long)\
+_functionDefine(unsigned long long)\
+_functionDefine(float)\
+_functionDefine(double)\
+_functionDefine(long double)
+#endif
+
+#ifndef CH_SINGLE_TONE_BASE
+#define	CH_SINGLE_TONE_BASE(_ClassNmae)\
+private:\
+ _ClassName##(){}\
+ ~##_ClassName##(){}\
+public:\
+static inline _ClassName##& GetIns(){ static _ClassName ins; return ins; }
+#endif
 
 #include"../CRTPack/ChVectorPack/ChVectorPack.h"
 #include"../CRTPack/ChMapPack/ChMapPack.h"
@@ -254,12 +289,12 @@ namespace ChStd
 	template<typename CharaType>
 	//10進数の数値を入れると指定した配列によって生成された進数表記で出力される//
 	static inline ChCRT::StringPack<CharaType> DecimalNumberToBaseNumber(
-		const long _decimal,
+		const long long _decimal,
 		const ChCRT::StringPack<CharaType>& _baseNumber = HEXA_DECIMAL<CharaType>())
 	{
-		long decimal = 0;
+		long long decimal = 0;
 
-		unsigned long size = _baseNumber.GetSize();
+		size_t size = _baseNumber.GetSize();
 
 		ChCRT::StringPack<CharaType> testRes = GetZeroChara<CharaType>();
 
@@ -269,7 +304,7 @@ namespace ChStd
 			testRes += GetHyphenChara<CharaType>();
 		}
 
-		unsigned long base = decimal / size;
+		long long base = static_cast<long long>(decimal / size);
 
 		testRes += _baseNumber[decimal % size];
 
@@ -287,32 +322,32 @@ namespace ChStd
 
 	//指定した進数の配列を入れると10進数の数値が出力される//
 	template<typename CharaType>
-	static inline long BaseNumberToDecimalNumber(
+	static inline long long BaseNumberToDecimalNumber(
 		const ChCRT::StringPack<CharaType>& _decimal,
 		const ChCRT::StringPack<CharaType>& _baseNumber = HEXA_DECIMAL<CharaType>())
 	{
-		long out = 0;
+		long long out = 0;
 
-		ChCRT::MapPack<CharaType, long>numMap;
+		ChCRT::MapPack<CharaType, size_t>numMap;
 
-		long size = _baseNumber.size();
+		size_t size = _baseNumber.GetSize();
 
 		numMap[static_cast<CharaType>('-')] = size;
 
-		for (long i = 0; i < size; i++)
+		for (size_t i = 0; i < size; i++)
 		{
 			numMap[_baseNumber[i]] = i;
 		}
 
 		bool mFlg = numMap[_decimal[0]] == size;
 
-		for (long i = 0; static_cast<unsigned long>(i) < (mFlg ? _decimal.size() - 1 : _decimal.size()); i++)
+		for (long long i = 0; static_cast<size_t>(i) < (mFlg ? _decimal.GetSize() - 1 : _decimal.GetSize()); i++)
 		{
-			long sum = numMap[_decimal[_decimal.size() - i - 1]];
+			long long sum = numMap[_decimal[_decimal.GetSize() - i - 1]];
 
-			for (long j = 0; j < (!mFlg ? i : i - 1); j++)
+			for (long long j = 0; j < (!mFlg ? i : i - 1); j++)
 			{
-				sum *= size;
+				sum *= static_cast<long long>(size);
 			}
 
 			out += sum;
@@ -345,16 +380,18 @@ namespace ChStd
 		bool indexSuccessFlg = false;
 		bool pointFlg = false;
 
-		for (unsigned char i = 0; i < _baseNum.size(); i++)
+		for (unsigned char i = 0; i < _baseNum.GetSize(); i++)
 		{
 			isSuccessFlg = false;
 
-			for (auto&& numChar : _beforeBaseNumber)
+			for (size_t i = 0; i < _beforeBaseNumber.GetSize(); i++)
 			{
-				if (_baseNum[i] != numChar)continue;
+				if (_baseNum[i] != _beforeBaseNumber[i])continue;
 				if (indexFlg)indexSuccessFlg = true;
 				isSuccessFlg = true;
 			}
+
+
 			if (isSuccessFlg)continue;
 			if (_baseNum[i] == static_cast<CharaType>('.'))
 			{
