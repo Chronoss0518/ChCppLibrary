@@ -161,7 +161,7 @@ std::basic_string<CharaType> ChStr::RemoveToUnFloatingNumCharas(
 	if (ePosition < _str.length())
 	{
 		if (ChPtr::NotNullCheck(_ePosition))*_ePosition = ePosition;
-		out += ChStr::RemoveToUnNumCharasBase<CharaType>(&_str[ePosition]);
+		out += ChStr::RemoveToUnNumCharas<CharaType>(&_str[ePosition]);
 	}
 
 	return out;

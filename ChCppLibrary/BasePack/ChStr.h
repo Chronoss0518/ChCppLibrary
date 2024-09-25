@@ -163,7 +163,7 @@ namespace ChStr
 		const size_t& _endPos = std::basic_string<CharaType>::npos)
 	{
 		std::basic_string<CharaType> text = RemoveToUnFloatingNumCharas<CharaType>(_text.substr(_startPos, _endPos - _startPos));
-		return static_cast<BaseType>(std::atoll(text.c_str()));
+		return static_cast<BaseType>(atoll(text.c_str()));
 	}
 
 	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
@@ -174,7 +174,7 @@ namespace ChStr
 		const size_t& _endPos = std::basic_string<CharaType>::npos)
 	{
 		std::basic_string<CharaType> text = RemoveToUnFloatingNumCharas<CharaType>(_text.substr(_startPos, _endPos - _startPos));
-		return static_cast<BaseType>(std::atof(text.c_str()));
+		return static_cast<BaseType>(atof(text.c_str()));
 	}
 
 	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
