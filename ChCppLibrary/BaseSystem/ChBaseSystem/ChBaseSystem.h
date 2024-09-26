@@ -128,7 +128,7 @@ namespace ChSystem
 		friend BaseSystem;
 	
 	public://Init And Release//
-#ifdef CRT
+
 		//初期化を行う(戻り値は、マネージャーが扱うシステムのPointer)//
 		template<class C>
 		typename std::enable_if
@@ -137,43 +137,40 @@ namespace ChSystem
 		{
 			if (*this)return nullptr;
 
-			baseSystems = ChCRT::NullPtr();
+			baseSystems = nullptr;
 
 			baseSystems = ChPtr::Make_S<C>();
 			SetInitFlg(true);
 
-			return ChPtr::SafeCast<C>(baseSystems.Get());
+			return ChPtr::SafeCast<C>(baseSystems.get());
 		}
-#endif
 
 		virtual void Release();
 	
 	public://SetFunction//
 
 		//全体で利用するFPSを管理//
-		inline void SetFPS(const unsigned long _FPS) { if (baseSystems != ChCRT::NullPtr())baseSystems->SetFPS(_FPS); }
+		inline void SetFPS(const unsigned long _FPS) { if (baseSystems != nullptr)baseSystems->SetFPS(_FPS); }
 
-		inline void SetNowTime(const unsigned long _time) { if (baseSystems != ChCRT::NullPtr())baseSystems->SetNowTime(_time); }
+		inline void SetNowTime(const unsigned long _time) { if (baseSystems != nullptr)baseSystems->SetNowTime(_time); }
 
-		inline void SetUseSystemButtons(const bool _button) { if(baseSystems != ChCRT::NullPtr()) baseSystems->SetUseSystemButtons(_button); }
+		inline void SetUseSystemButtons(const bool _button) { if(baseSystems != nullptr) baseSystems->SetUseSystemButtons(_button); }
 
 	public://GetFunction//
 
 		//FPSカウントの取得//
-		const inline unsigned long GetFPS() const { return baseSystems != ChCRT::NullPtr() ? baseSystems->GetFPS() : 0; }
+		const inline unsigned long GetFPS() const { return baseSystems != nullptr ? baseSystems->GetFPS() : 0; }
 
-		const inline long double GetNowFPSPoint()const { return baseSystems != ChCRT::NullPtr() ? baseSystems->GetNowFPSPoint() : 0; }
+		const inline long double GetNowFPSPoint()const { return baseSystems != nullptr ? baseSystems->GetNowFPSPoint() : 0; }
 
-#ifdef CRT
 		//ウィンドシステム(BaseSystem継承)を取得する//
 		template<class T>
-		auto GetSystem()->
+		auto GetSystem() ->
 			typename std::enable_if
 			<std::is_base_of<BaseSystem, T>::value, T* const>::type
 		{
 			return ChPtr::SafeCast<T>(baseSystems);
 		}
-#endif
 
 	public://Is Functions//
 
@@ -181,7 +178,7 @@ namespace ChSystem
 		inline bool IsPushKey(const int _key)
 		{
 			if (!*this)return false;
-			if (baseSystems == ChCRT::NullPtr())return false;
+			if (baseSystems == nullptr)return false;
 			return baseSystems->IsPushKey(_key);
 		}
 
@@ -189,7 +186,7 @@ namespace ChSystem
 		inline bool IsPushKeyNoHold(const int _key)
 		{
 			if (!*this)return false;
-			if (baseSystems == ChCRT::NullPtr())return false;
+			if (baseSystems == nullptr)return false;
 			return baseSystems->IsPushKeyNoHold(_key);
 		}
 
@@ -197,7 +194,7 @@ namespace ChSystem
 		inline bool IsPause(const int _key)
 		{
 			if (!*this)return false;
-			if (baseSystems == ChCRT::NullPtr())return false;
+			if (baseSystems == nullptr)return false;
 			return baseSystems->IsPause(_key);
 
 		}
@@ -205,12 +202,12 @@ namespace ChSystem
 		//システムを継続するか//
 		inline bool IsUpdate()
 		{
-			if (baseSystems == ChCRT::NullPtr())return false;
+			if (baseSystems == nullptr)return false;
 			return baseSystems->IsUpdate();
 		}
 
 		//システムで提供されているボタンを利用するか//
-		bool IsUseSystemButtons() { return baseSystems != ChCRT::NullPtr() ? baseSystems->IsUseSystemButtons() : false; }
+		bool IsUseSystemButtons() { return baseSystems != nullptr ? baseSystems->IsUseSystemButtons() : false; }
 
 	public://Other Functions//
 
@@ -218,14 +215,14 @@ namespace ChSystem
 		inline bool FPSProcess()
 		{
 			if (!*this)return false;
-			if (baseSystems == ChCRT::NullPtr())return false;
+			if (baseSystems == nullptr)return false;
 
 			return baseSystems->FPSProcess();
 		}
 
 	private:
 
-		ChCRT::SharedPtrPack<BaseSystem> baseSystems = ChCRT::NullPtr();
+		ChPtr::Shared<BaseSystem> baseSystems = nullptr;
 
 		SystemManager() {}
 

@@ -63,7 +63,7 @@ void ChSystem::SystemManager::Release()
 {
 	if (!*this)return;
 
-	baseSystems = ChCRT::NullPtr();
+	baseSystems = nullptr;
 
 	SetInitFlg(false);
 }
