@@ -1,7 +1,7 @@
 #ifndef Ch_CPP_BiBo_h
 #define Ch_CPP_BiBo_h
 
-#include"../../CRTPack/ChVectorPack/ChVectorPack.h"
+#include<vector>
 
 namespace ChCpp
 {
@@ -12,8 +12,6 @@ namespace ChCpp
 		BitBool();
 
 		BitBool(const unsigned char _size);
-
-		virtual ~BitBool();
 
 	public://Set Functions//
 
@@ -80,7 +78,7 @@ namespace ChCpp
 
 	private:
 
-		ChCRT::VectorPack<unsigned char> flgs;
+		std::vector<unsigned char> flgs;
 	};
 
 }
