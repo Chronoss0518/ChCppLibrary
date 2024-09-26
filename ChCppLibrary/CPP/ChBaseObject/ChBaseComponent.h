@@ -47,8 +47,6 @@ namespace ChCpp
 
 	protected:
 
-#ifdef CRT
-
 		//’¼Ú–{‘Ì‚ÉG‚è‚½‚¢‚Æ‚«‚ÉŒÄ‚ÔŠÖ”//
 		template<class Class = BasicObject>
 		bool LookObj(typename std::enable_if<
@@ -70,8 +68,6 @@ namespace ChCpp
 		{
 			return ChPtr::SafeCast<Class>(obj);
 		}
-
-#endif
 
 		inline BasicObject* LookObj() { return obj; }
 
