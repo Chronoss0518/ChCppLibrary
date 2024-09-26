@@ -1,9 +1,9 @@
 #ifndef Ch_CPP_BaFr_h
 #define Ch_CPP_BaFr_h
 
-#include"../../CRTPack/ChMapPack/ChMapPack.h"
-#include"../../CRTPack/ChVectorPack/ChVectorPack.h"
-#include"../../CRTPack/ChSmartPtrPack/ChSmartPtrPack.h"
+#include<memory>
+#include<vector>
+#include<map>
 
 #include"../../BaseIncluder/ChBase.h"
 
@@ -27,22 +27,18 @@ namespace ChCpp
 		class FrameCreateMethodBase
 		{
 		public:
-			virtual ChCRT::SharedPtrPack<BaseFrame> CreateMethod() { return ChCRT::NullPtr(); };
+			virtual ChPtr::Shared<BaseFrame> CreateMethod() { return nullptr; };
 		};
 
-#ifdef CRT
 		template<class Frame>
 		class FrameCreateMethod : public FrameCreateMethodBase
 		{
 		public:
-			ChCRT::SharedPtrPack<BaseFrame> CreateMethod()override
+			ChPtr::Shared<BaseFrame> CreateMethod()override
 			{
 				return ChPtr::Make_S<Frame>();
 			}
 		};
-
-#endif
-
 
 	public:
 
@@ -54,15 +50,14 @@ namespace ChCpp
 
 	public:
 
-#ifdef CRT
 		//自作フレームをセット//
 		//BaseFrameを継承しているもののみセットできる//
 		template<class T>
 		typename std::enable_if<std::is_base_of<BaseFrame, T>::value, void>::type SetFrame()
 		{
-			frameList.Push(ChPtr::Make_S<FrameCreateMethod<T>>());
+			frameList.push_back(ChPtr::Make_S<FrameCreateMethod<T>>());
 
-			if (frameList.GetSize() > 1)return;
+			if (frameList.size() > 1)return;
 
 			ChangeFrame(0);
 
@@ -71,20 +66,17 @@ namespace ChCpp
 
 		void SetSendData(ChPtr::Shared<SendDataClass> _sendData) { sendData = _sendData; }
 
-#endif
-
 	public:
 
 		size_t GetNowFrameNo()const { return nowFrameNo; }
 
-#ifdef CRT
 		template<class T>
 		static typename std::enable_if<std::is_base_of<BaseFrame, T>::value, ChPtr::Weak<T>>::type GetNowFrame()
 		{
 			return ChPtr::SharedSafeCast<T>(GetNowFrame());
 		}
-#endif
-		inline size_t GetRegisterFrameCount()const { return frameList.GetSize(); }
+
+		inline size_t GetRegisterFrameCount()const { return frameList.size(); }
 
 	public://UpdateFunction//
 
@@ -95,7 +87,7 @@ namespace ChCpp
 		void Release();
 
 	public://Other Function
-#ifdef CRT
+
 		inline void SaveData(ChPtr::Shared<SaveDataClass> _save)
 		{
 			saveData = _save;
@@ -111,7 +103,6 @@ namespace ChCpp
 		{
 			return ChPtr::SharedSafeCast<T>(saveData);
 		}
-#endif
 
 	protected://Other Function
 
@@ -121,9 +112,9 @@ namespace ChCpp
 
 	protected://Static Functions//
 
-		static ChCRT::SharedPtrPack<BaseFrame>& GetNowFrame()
+		static ChPtr::Shared<BaseFrame>& GetNowFrame()
 		{
-			static ChCRT::SharedPtrPack<BaseFrame> ins = ChCRT::NullPtr();
+			static ChPtr::Shared<BaseFrame> ins = nullptr;
 			return ins;
 		}
 
@@ -135,12 +126,12 @@ namespace ChCpp
 		size_t nextFrameNo = -1;
 		size_t nowFrameNo = -1;
 
-		ChCRT::SharedPtrPack<SaveDataClass> saveData = ChCRT::NullPtr();
-		ChCRT::SharedPtrPack<SendDataClass> sendData = ChCRT::NullPtr();
+		ChPtr::Shared<SaveDataClass> saveData = nullptr;
+		ChPtr::Shared<SendDataClass> sendData = nullptr;
 
-		ChCRT::SharedPtrPack<BaseFrame>nextFrame = ChCRT::NullPtr();
+		ChPtr::Shared<BaseFrame>nextFrame = nullptr;
 
-		ChCRT::VectorPack<ChCRT::SharedPtrPack<FrameCreateMethodBase>>frameList;
+		std::vector<ChPtr::Shared<FrameCreateMethodBase>>frameList;
 
 	};
 
@@ -150,41 +141,39 @@ namespace ChCpp
 	class FrameManager :protected FrameList
 	{
 	public://Set Function//
-#ifdef CRT
+
 		//自作フレームをセット//
 		//BaseFrameを継承しているもののみセットできる//
 		template<class T>
 		void SetFrame(typename std::enable_if
 			<std::is_base_of<BaseFrame, T>::value, const std::basic_string<CharaType>&>::type _useFrameName)
 		{
-			std::map<ChCRT::StringPack<CharaType>>tmpFrameNames = frameNames;
-			if (tmpFrameNames.find(_useFrameName) != tmpFrameNames.end())
+			auto&& frame = frameNames.find(_useFrameName);
+			if (frame != frameNames.end())
 			{
 				//ChSystem::ErrerMessage("このフレームはすでに登録されています", "警告");
 				return;
 			}
 
-			unsigned long no = frameList.GetSize();
+			unsigned long no = frameList.size();
 
-			tmpFrameNames[_useFrameName] = no;
+			frame->second = no;
 
 			FrameList::SetFrame<T>();
 		}
-#endif
+
 	public://Get Function//
 
-#ifdef CRT
 		template<class T>
 		typename std::enable_if
 			<std::is_base_of<BaseFrame, T>::value, ChPtr::Weak<T>>::type GetNowFrame()
 		{
-			return FrameList::GetNowFrame<T>();
+			return ChPtr::SharedSafeCast<T, BaseFrame>(FrameList::GetNowFrame());
 		}
 
 		std::basic_string<CharaType> GetNowFrameName();
 
 		inline unsigned long GetRegisterFrameCount() { return FrameList::GetRegisterFrameCount(); }
-#endif
 
 	public://Update Function//
 
@@ -192,7 +181,6 @@ namespace ChCpp
 
 	public://Other Functions//
 
-#ifdef CRT
 		inline void SaveData(ChPtr::Shared<SaveDataClass> _save)
 		{
 			FrameList::SaveData(_save);
@@ -206,17 +194,17 @@ namespace ChCpp
 		template<typename CharaType>
 		inline void ChangeFrame(const std::basic_string<CharaType>& _frameName)
 		{
-			auto&& frameName = frameNames.Find(_frameName);
+			auto&& frameName = frameNames.find(_frameName);
 
-			if (ChPtr::NullCheck(frameName))return;
+			if (frameName == frameNames.end())return;
 
-			FrameList::ChangeFrame(*frameName);
+			FrameList::ChangeFrame(frameName->second);
 		}
 
 		template<typename CharaType>
 		inline std::basic_string<CharaType> GetNowFrameName()
 		{
-			std::map<ChCRT::StringPack<CharaType>, unsigned long>tmpFrameNames = frameNames;
+			std::map<std::basic_string<CharaType>, unsigned long>tmpFrameNames = frameNames;
 			if (tmpFrameNames.empty())return ChStd::GetZeroChara<CharaType>();
 			if (tmpFrameNames.size() <= nowFrameNo)return ChStd::GetZeroChara<CharaType>();
 
@@ -229,13 +217,11 @@ namespace ChCpp
 			return ChStd::GetZeroChara<CharaType>();
 		}
 
-#endif
-
 	private:// Member Value//
 
 		friend BaseFrame;
 
-		ChCRT::MapPack<ChCRT::StringPack<CharaType>, unsigned long>frameNames;
+		std::map<std::basic_string<CharaType>, unsigned long>frameNames;
 
 	private://ConstructerDestructer//
 
@@ -263,7 +249,7 @@ namespace ChCpp
 
 	public://InitAndRelease//
 
-		virtual inline void Init(SendDataClass* _sendData) {};
+		virtual inline void Init(ChPtr::Shared<SendDataClass> _sendData) {};
 
 		virtual inline void Release() {};
 
@@ -276,7 +262,7 @@ namespace ChCpp
 		friend FrameList;
 
 	protected://Other Functions//
-#ifdef CRT
+
 		inline void SaveData(ChPtr::Shared<SaveDataClass> _save)
 		{
 			if (ChPtr::NullCheck(mgr))return;
@@ -295,7 +281,6 @@ namespace ChCpp
 			mgr->SetSendData(_send);
 		}
 
-#endif
 		//登録されているフレームに移動する//
 		inline void ChangeFrame(const unsigned long _frameNo)
 		{

@@ -12,17 +12,17 @@ using namespace ChCpp;
 
 void ChCpp::FrameList::Release()
 {
-	saveData = ChCRT::NullPtr();
-	sendData = ChCRT::NullPtr();
+	saveData = nullptr;
+	sendData = nullptr;
 
-	nextFrame = ChCRT::NullPtr();
-	GetNowFrame() = ChCRT::NullPtr();
+	nextFrame = nullptr;
+	GetNowFrame() = nullptr;
 }
 
 void ChCpp::FrameList::Update()
 {
 	auto&& nowframe = GetNowFrame();
-	if (nowframe == ChCRT::NullPtr())return;
+	if (nowframe == nullptr)return;
 	nowframe->Update();
 
 	Changes();
@@ -30,7 +30,7 @@ void ChCpp::FrameList::Update()
 
 void ChCpp::FrameList::ChangeFrame(const unsigned long _frameNo)
 {
-	if (frameList.GetSize() <= _frameNo)return;
+	if (frameList.size() <= _frameNo)return;
 	nextFrame = frameList[_frameNo]->CreateMethod();
 	nextFrameNo = _frameNo;
 	nextFrame->SetManager(this);
@@ -38,10 +38,10 @@ void ChCpp::FrameList::ChangeFrame(const unsigned long _frameNo)
 
 void ChCpp::FrameList::Changes()
 {
-	if (nextFrame == ChCRT::NullPtr())return;
+	if (nextFrame == nullptr)return;
 
 	auto&& nowframe = GetNowFrame();
-	if (nowframe != ChCRT::NullPtr())
+	if (nowframe != nullptr)
 	{
 		nowframe->Release();
 	}
@@ -49,9 +49,12 @@ void ChCpp::FrameList::Changes()
 	nowFrameNo = nextFrameNo;
 	nowframe = nextFrame;
 
-	nowframe->Init(sendData.Get());
-	sendData = ChCRT::NullPtr();
+	nowframe->Init(sendData);
+	sendData = nullptr;
 
-	nextFrame = ChCRT::NullPtr();
+	nextFrame = nullptr;
 	nextFrameNo = -1;
 }
+
+
+CH_STRING_TYPE_EXPLICIT_DECLARATION(ChCpp::FrameManager);
