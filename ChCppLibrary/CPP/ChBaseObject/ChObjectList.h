@@ -2,9 +2,8 @@
 #ifndef Ch_CPP_ObjList_h
 #define Ch_CPP_ObjList_h
 
-#include"../../CRTPack/ChSmartPtrPack/ChSmartPtrPack.h"
-#include"../../CRTPack/ChVectorPack/ChVectorPack.h"
-#include"../../CRTPack/ChStringPack/ChStringPack.h"
+#include<vector>
+#include<string>
 
 #include"../../BasePack/ChPtr.h"
 
@@ -20,19 +19,11 @@ namespace ChCpp
 
 		friend BasicObject;
 
-	public://Constructor Destructor//
-
-		ObjectList();
-
-		virtual ~ObjectList();
-
 	public://Init And Release//
 
 		virtual void Release() { ClearObject(); }
 
 	public://Set Function//
-
-#ifdef CRT
 
 		//オブジェクトを登録する//
 		//BaseObjectを継承したオブジェクトのみ登録可能//
@@ -50,18 +41,9 @@ namespace ChCpp
 			return ChPtr::SharedSafeCast<T>(res);
 		}
 
-		void SetObject(ChPtr::Shared<BasicObject> _obj)
-		{
-			SetObjectCRT(_obj);
-		}
-
-#endif
-
-		void SetObjectCRT(ChCRT::SharedPtrPack<BasicObject> _obj);
+		void SetObject(ChPtr::Shared<BasicObject> _obj);
 
 	public://Get Functions//
-
-#ifdef CRT
 
 		template<class T = BasicObject>
 		inline std::vector<ChPtr::Weak<
@@ -107,9 +89,7 @@ namespace ChCpp
 			return tmpObjList;
 		}
 
-#endif
-
-		inline size_t GetObjectCount() { return objectList.GetSize(); }
+		inline size_t GetObjectCount() { return objectList.size(); }
 
 	public://Life Cycle Functions//
 
@@ -174,13 +154,9 @@ namespace ChCpp
 		//保持しているすべてのオブジェクトを削除する。
 		void ClearObject();
 
-#ifdef CRT
-
 		//選択された名前のオブジェクトをすべて消去する//
 		template<typename CharaType>
 		void ClearObjectForName(const std::basic_string<CharaType>& _name);
-
-#endif
 
 		//削除されるオブジェクトを確認して削除する//
 		void DestroyObjectTest();
@@ -193,16 +169,10 @@ namespace ChCpp
 
 	protected:
 
-		ChCRT::VectorPack<ChCRT::SharedPtrPack<BasicObject>>objectList;
+		std::vector<ChPtr::Shared<BasicObject>>objectList;
 
 	};
 
 }
-
-#ifdef CRT
-
-#endif
-
-#include"SharedFunctions/ChObjectSharedObjectList.h"
 
 #endif

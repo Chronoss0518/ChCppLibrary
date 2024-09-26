@@ -1,16 +1,19 @@
 
+
+#include<iterator>
+
 #include"ChBaseObject.h"
 #include"ChObjectList.h"
 
 #define CH_OBJECT_LIST_FUNCTION(_FunctionNameBase) \
 void ChCpp::ObjectList::Object##_FunctionNameBase##()\
 {\
-	for (size_t i = 0;i < objectList.GetSize();i++){\
+	for (size_t i = 0;i < objectList.size();i++){\
 		auto&& obj = objectList[i];\
 		if (!obj->IsUseFlg())continue;\
-		if (ChPtr::NotNullCheck(obj->GetParent()))continue;\
+		if (obj->GetParent() != nullptr)continue;\
 		obj->##_FunctionNameBase##Function();\
-		if (objectList.IsEmpty())break;\
+		if (objectList.empty())break;\
 	}\
 }
 
@@ -18,44 +21,41 @@ void ChCpp::ObjectList::Object##_FunctionNameBase##()\
 template void ChCpp::ObjectList::ClearObjectForNameBase<##_type##>(const ChCRT::StringPack<##_type##>& _Name);
 
 
-void ChCpp::ObjectList::SetObjectCRT(ChCRT::SharedPtrPack<BasicObject> _obj)
+void ChCpp::ObjectList::SetObject(ChPtr::Shared<BasicObject> _obj)
 {
-	if (_obj == ChCRT::NullPtr())return;
-
-	if (objectList.IsFind(_obj))return;
+	if (_obj == nullptr)return;
+	
+	auto&& it = std::find(objectList.begin(), objectList.end(), _obj);
+	if (it != objectList.end())return;
 
 	_obj->WithdrawObjectList();
 	_obj->objMaList = this;
-	objectList.Push(_obj);
+	objectList.push_back(_obj);
 
 
-	for (size_t i = 0; i < _obj->childList.GetSize(); i++)
-		SetObjectCRT(_obj->childList[i]);
+	for (size_t i = 0; i < _obj->childList.size(); i++)
+		SetObject(_obj->childList[i]);
 }
 
 CH_OBJECT_LIST_FUNCTION(UpdateBegin);
 
 void ChCpp::ObjectList::ObjectUpdate()
 {
-	for (size_t i = 0; i < objectList.GetSize(); i)
+	for (auto&& it = objectList.begin() ; it != objectList.end();it)
 	{
-		if (objectList[i]->IsDethFlg())
+		if ((*it)->IsDethFlg())
 		{
-			objectList[i]->BaseRelease();
-			objectList.Remove(i);
-			if (objectList.IsEmpty())break;
-			continue;
+			(*it)->BaseRelease();
+			it = objectList.erase(it);
+			if (objectList.empty())break;
 		}
 
-		if (objectList[i]->IsUseFlg())
+		if ((*it)->IsUseFlg() && (*it)->parent.expired())
 		{
-			if (ChPtr::NullCheck(objectList[i]->GetParent()))
-			{
-				objectList[i]->UpdateFunction();
-				if (objectList.IsEmpty())break;
-			}
+			(*it)->UpdateFunction();
+			if (objectList.empty())break;
 		}
-		i++;
+		it++;
 	}
 }
 
@@ -72,37 +72,37 @@ CH_OBJECT_LIST_FUNCTION(DrawEnd);
 
 void ChCpp::ObjectList::ClearObject()
 {
-	for (size_t i = 0; i < objectList.GetSize(); i++)
+	for (size_t i = 0; i < objectList.size(); i++)
 	{
-		if (ChPtr::NotNullCheck(objectList[i]->GetParent()))continue;
+		if (objectList[i]->GetParent() != nullptr)continue;
 		objectList[i]->BaseRelease();
 	}
-	objectList.Clear();
+	objectList.clear();
 }
 
 template<typename CharaType>
 void ChCpp::ObjectList::ClearObjectForNameBase(const ChCRT::StringPack<CharaType>& _Name)
 {
-	for (size_t i = 0; i < objectList.GetSize(); i++)
+	for (size_t i = 0; i < objectList.size(); i++)
 	{
 		auto&& baseObj = dynamic_cast<BaseObject<CharaType>*>(objectList[i].Get());
 		if (ChPtr::NullCheck(baseObj))continue;
-		if (baseObj->myName.GetFindPosition(_Name) == ChCRT::StringPack<CharaType>::NPos)continue;
+		if (baseObj->GetMyNameCRT().GetFindPosition(_Name) == ChCRT::StringPack<CharaType>::GetNPos())continue;
 		baseObj->Destroy();
 	}
 }
 
 void ChCpp::ObjectList::DestroyObjectTest()
 {
-	for (size_t i = 0; i < objectList.GetSize(); i++)
+	for (auto&& it = objectList.begin();it != objectList.end();it)
 	{
-		if (!objectList[i]->dFlg)
+		if (!(*it)->dFlg)
 		{
-			i++;
+			it++;
 			continue;
 		}
-		objectList[i]->BaseRelease();
-		objectList.Remove(i);
+		(*it)->BaseRelease();
+		it = objectList.erase(it);
 	}
 }
 
