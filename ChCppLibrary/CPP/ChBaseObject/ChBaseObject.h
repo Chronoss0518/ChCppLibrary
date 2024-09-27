@@ -70,10 +70,6 @@ namespace ChCpp
 		//削除されるコンポーネントがあるかどうかを確認しつつ削除する//
 		void DestroyComponentTest();
 
-	protected:
-
-		virtual void DestroyToChildBase(ChPtr::Shared<BasicObject>& _child);
-
 	public:
 
 		//コンポーネントのセット//
