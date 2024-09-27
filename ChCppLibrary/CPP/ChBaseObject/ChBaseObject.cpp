@@ -12,11 +12,11 @@ void ChCpp::BasicObject::##_FunctionNameBase##Function()\
 	for(size_t i = 0; i < comList.size(); i++){\
 		if (!comList[i]->useFlg)continue; \
 		comList[i]->##_FunctionNameBase##(); \
-		if (comList.IsEmpty())break;}\
+		if (comList.empty())break;}\
 	for (size_t i = 0; i < childList.size(); i++) {\
 		if (!childList[i]->useFlg)continue; \
 		childList[i]->##_FunctionNameBase##Function(); \
-		if (childList.IsEmpty())break;}\
+		if (childList.empty())break;}\
 }
 
 using namespace ChCpp;
@@ -135,12 +135,12 @@ void ChCpp::BasicObject::WithdrawParent()
 void ChCpp::BasicObject::WithdrawObjectList()
 {
 	if (objMaList == nullptr)return;
-	if (objMaList->objectList.IsEmpty())return;
+	if (objMaList->objectList.empty())return;
 
 	for (size_t i = 0; i < objMaList->objectList.size(); i++)
 	{
-		if (this != objMaList->objectList[i].Get())continue;
-		objMaList->objectList.Remove(i);
+		if (this != objMaList->objectList[i].get())continue;
+		objMaList->objectList.erase(objMaList->objectList.begin() + i);
 		break;
 	}
 }
@@ -153,7 +153,7 @@ void ChCpp::BasicObject::UpdateFunction()
 {
 	Update();
 
-	if (!comList.IsEmpty())
+	if (!comList.empty())
 	{
 		for (size_t i = 0; i < comList.size(); i)
 		{
@@ -161,29 +161,29 @@ void ChCpp::BasicObject::UpdateFunction()
 			{
 				comList[i]->Release();
 				comList.erase(comList.begin() + i);
-				if (comList.IsEmpty())break;
+				if (comList.empty())break;
 				continue;
 			}
 			if (comList[i]->IsUseFlg())comList[i]->Update();
-			if (comList.IsEmpty())break;
+			if (comList.empty())break;
 			i++;
 		}
 	}
 
-	if (!childList.IsEmpty())
+	if (!childList.empty())
 	{
 		for (size_t i = 0; i < childList.size(); i++)
 		{
 			if (childList[i]->dFlg)
 			{
 				childList[i]->Release();
-				childList.Remove(i);
-				if (childList.IsEmpty())break;
+				childList.erase(childList.begin() + i);
+				if (childList.empty())break;
 				continue;
 			}
 			if (childList[i]->useFlg)childList[i]->Update();
 
-			if (childList.IsEmpty())break;
+			if (childList.empty())break;
 			i++;
 		}
 	}

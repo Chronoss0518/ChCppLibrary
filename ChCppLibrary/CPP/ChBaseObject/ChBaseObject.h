@@ -389,7 +389,7 @@ namespace ChCpp
 
 	private:
 
-		ChCRT::StringPack<CharaType> myName;
+		std::basic_string<CharaType> myName;
 	};
 }
 
