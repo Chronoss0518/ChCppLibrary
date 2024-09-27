@@ -13,7 +13,7 @@ namespace ChCpp
 
 		friend BasicObject;
 
-	public://Constructor Destructor//
+	protected://Constructor Destructor//
 
 		virtual ~BaseComponent() { Release(); }
 
