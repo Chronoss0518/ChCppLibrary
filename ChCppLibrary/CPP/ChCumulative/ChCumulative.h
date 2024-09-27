@@ -39,26 +39,14 @@ namespace ChCpp
 
 	public://Update Function//
 
-#ifdef CRT
-
 		//Šm”F‚µ‚½‚¢’l‚ð“ü‚ê‚é//
-		long Update(CharaType _value)
+		long long Update(CharaType _value)
 		{
-			return Update([&]()->bool {return _value == add; }, [&]()->bool {return _value == sub; });
-	}
+			if (add == _value)Add();
+			else if (sub == _value)Sub();
 
-#endif
-
-	private://Base Update Function//
-
-#ifdef CRT
-
-		long Update(const std::function<bool()>& _addMethod, const std::function<bool()>& _subMethod)override
-		{
-			return Counter::Update(_addMethod, _subMethod);
+			return GetCount();
 		}
-
-#endif
 
 	private://Values//
 
