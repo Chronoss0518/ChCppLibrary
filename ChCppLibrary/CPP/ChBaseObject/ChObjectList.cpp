@@ -18,7 +18,7 @@ void ChCpp::ObjectList::Object##_FunctionNameBase##()\
 }
 
 #define EXPLICIT_DECLARATION(_type)\
-template void ChCpp::ObjectList::ClearObjectForNameBase<##_type##>(const ChCRT::StringPack<##_type##>& _Name);
+template void ChCpp::ObjectList::ClearObjectForNameBase<##_type##>(const std::basic_string<##_type##>& _Name);
 
 
 void ChCpp::ObjectList::SetObject(ChPtr::Shared<BasicObject> _obj)
@@ -81,13 +81,13 @@ void ChCpp::ObjectList::ClearObject()
 }
 
 template<typename CharaType>
-void ChCpp::ObjectList::ClearObjectForNameBase(const ChCRT::StringPack<CharaType>& _Name)
+void ChCpp::ObjectList::ClearObjectForNameBase(const std::basic_string<CharaType>& _Name)
 {
 	for (size_t i = 0; i < objectList.size(); i++)
 	{
-		auto&& baseObj = dynamic_cast<BaseObject<CharaType>*>(objectList[i].Get());
+		auto&& baseObj = dynamic_cast<BaseObject<CharaType>*>(objectList[i].get());
 		if (ChPtr::NullCheck(baseObj))continue;
-		if (baseObj->GetMyNameCRT().GetFindPosition(_Name) == ChCRT::StringPack<CharaType>::GetNPos())continue;
+		if (baseObj->GetMyName().find(_Name) == std::basic_string<CharaType>::npos)continue;
 		baseObj->Destroy();
 	}
 }

@@ -27,6 +27,10 @@ namespace ChCpp
 	{
 	public:
 
+		File() {};
+
+	public:
+
 		const enum class OTEAddType :unsigned char
 		{
 			None, 
@@ -43,7 +47,7 @@ namespace ChCpp
 			const std::basic_string<CharaType>& _errorDitails,
 			const OTEAddType _addFlg = OTEAddType::None)
 		{
-			OutToErrorText(_errorName, _errorDitails, ChStd::GetZeroChara<CharaType>(), _addFlg);
+			OutToErrorText(_errorName, _errorDitails, "", _addFlg);
 		}
 
 
@@ -54,7 +58,7 @@ namespace ChCpp
 			const char* _localeName,
 			const OTEAddType _addFlg = OTEAddType::None)
 		{
-			File outFiles;
+			File<CharaType> outFiles;
 			std::basic_string<CharaType> outData = ChStd::GetZeroChara<CharaType>();
 			std::basic_string<CharaType> outFileName = ChStd::GetZeroChara<CharaType>();
 			outFileName = _errorName + ChStd::GetErrorTextType<CharaType>();
@@ -126,13 +130,13 @@ namespace ChCpp
 
 			if (_openMode & std::ios::in)
 			{
-				stream.open(_fileName, std::ios::app);
+				stream.open(_fileName.c_str(), std::ios::app);
 				stream.close();
 			}
 
 			flg = _openMode;
 			openFileName = _fileName;
-			stream.open(_fileName, flg);
+			stream.open(_fileName.c_str(), flg);
 		}
 
 		//FileÇï¬Ç∂ÇÈ(DestructerÇ≈Ç‡ãNìÆÇ∑ÇÈ)//
@@ -151,7 +155,7 @@ namespace ChCpp
 
 			std::locale tmpLocale = std::locale::classic();
 
-			if (localeName != "") { tmpLocale = stream.imbue(std::locale(localeName.GetString())); }
+			if (localeName != "") { tmpLocale = stream.imbue(std::locale(localeName.c_str())); }
 
 			std::basic_ostringstream<CharaType> tmpSS;
 
@@ -167,20 +171,35 @@ namespace ChCpp
 			return res;
 		}
 
+
 		//FileÇ©ÇÁì«Ç›èoÇ∑//
 		inline void FileReadBinary(std::vector<char>& _binary)
 		{
 			if (!IsOpenModeTest(false, true))return;
 
-			_binary.resize(GetLength());
-
 			std::locale tmpLocale = std::locale::classic();
 
-			if (localeName != "") { tmpLocale = stream.imbue(std::locale(localeName.GetString())); }
+			if (localeName != "") { tmpLocale = stream.imbue(std::locale(localeName.c_str())); }
 
-			auto istream = dynamic_cast<std::basic_istream<CharaType>*>(&stream);
+			std::basic_string<CharaType>tmp;
+			tmp.resize(GetLength());
 
-			istream->read(&_binary[0], GetLength());
+			auto&& istream = dynamic_cast<std::basic_istream<CharaType>*>(&stream);
+
+			istream->read(&tmp[0], GetLength());
+
+			ChStr::Bytes<CharaType> tmpByte;
+
+			_binary.resize(GetLength() * sizeof(CharaType));
+
+			for (size_t i = 0; i < tmp.length(); i++)
+			{
+				tmpByte.val = tmp[i];
+				for (size_t j = 0; j < sizeof(CharaType); j++)
+				{
+					_binary[j + (i * sizeof(CharaType))] = tmpByte.byte[j];
+				}
+			}
 
 			istream->seekg(0, std::ios::beg);
 
@@ -198,7 +217,7 @@ namespace ChCpp
 			if (!IsOpenModeTest(true, false))return std::basic_string<CharaType>();
 
 			return Writer(_writeStr);
-
+#if 0
 			//C++20à»ç~ÇÃï∂éöóÒå^Ç™ëŒâûÇµÇƒÇ¢Ç»Ç¢ÇΩÇﬂàÍíUï€óØ//
 
 			std::basic_string<CharaType> tmpStr = _writeStr;
@@ -208,6 +227,7 @@ namespace ChCpp
 			std::swscanf(&tmpStr[0], &tmpStr[0], _args...);
 #endif
 			return Writer(tmpStr);
+#endif
 		}
 
 		//FileÇ…èëÇ´çûÇﬁ//
@@ -230,7 +250,7 @@ namespace ChCpp
 
 			std::locale tmpLocale = std::locale::classic();
 
-			if (localeName != "") { tmpLocale = stream.imbue(std::locale(localeName.GetString())); }
+			if (localeName != "") { tmpLocale = stream.imbue(std::locale(localeName.c_str())); }
 
 			tmpStream.set_rdbuf(stream.rdbuf());
 
@@ -254,8 +274,9 @@ namespace ChCpp
 	};
 	
 	using CharFile =  File<char>;
-	using WCharFile = File<wchar_t>;
-
+#ifdef CPP17
+	using WCharFile = File<std::filesystem::path::value_type>;
+#endif
 }
 
 #endif

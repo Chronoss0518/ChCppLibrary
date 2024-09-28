@@ -347,11 +347,9 @@ namespace ChCpp
 			{
 				auto&& baseObj = ChPtr::SharedSafeCast<BaseObject>(obj);
 
-				if (baseObj->GetMyName() == _name)
-				{
-					auto test = ChPtr::SharedSafeCast<T>(baseObj);
-					if (test != nullptr) { res.push_back(test); }
-				}
+				if (baseObj->GetMyName() != _name)continue;
+				auto test = ChPtr::SharedSafeCast<T>(baseObj);
+				if (test != nullptr) { res.push_back(test); }
 
 				for (auto&& childObj : baseObj->GetAllChildlenForName<T>(_name)) { res.push_back(childObj); }
 			}

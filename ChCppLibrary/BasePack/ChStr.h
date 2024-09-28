@@ -50,7 +50,7 @@ namespace ChStr
 	//文字列をバイナリデータにして//
 	//整数型に変換する//
 	template<typename T,typename CharaType>
-	static inline T StrBinaryToNum(
+	inline T StrBinaryToNum(
 		const CharaType* const _str,
 		const unsigned long _strLen,
 		const size_t& _sPos = 0,
@@ -76,7 +76,7 @@ namespace ChStr
 
 	//クラス名を取得する関数//
 	template<typename CharaType, class T = int>
-	static inline std::basic_string<CharaType> GetTypeName()
+	inline std::basic_string<CharaType> GetTypeName()
 	{
 		std::basic_string<CharaType> tmpStr = typeid(T).name();
 
@@ -89,18 +89,18 @@ namespace ChStr
 
 	//文字の置き換え//
 	template<typename CharaType>
-	static inline std::basic_string<CharaType> StrReplase(
+	std::basic_string<CharaType> StrReplase(
 		const std::basic_string<CharaType>& _base,
 		const std::basic_string<CharaType>& _before,
 		const std::basic_string<CharaType>& _after = ChStd::GetZeroChara<CharaType>());
 
 	//空文字を取り除く//
 	template<typename CharaType>
-	static inline std::basic_string<CharaType> RemoveToWhiteSpaceChars(const std::basic_string<CharaType>& _str);
+	std::basic_string<CharaType> RemoveToWhiteSpaceChars(const std::basic_string<CharaType>& _str);
 
 	//指定した文字を取り除く//
 	template<typename CharaType>
-	static inline std::basic_string<CharaType> RemoveToChars(
+	std::basic_string<CharaType> RemoveToChars(
 		const std::basic_string<CharaType>& _str,
 		const std::basic_string<CharaType>& _removeChars);
 
@@ -117,13 +117,13 @@ namespace ChStr
 
 	//対象の文字で区切り配列にする//
 	template<typename CharaType>
-	static inline ChCRT::VectorPack<std::basic_string<CharaType>> Split(
+	std::vector<std::basic_string<CharaType>> Split(
 		const std::basic_string<CharaType>& _str,
 		const std::basic_string<CharaType>& _splitChar);
 
 	//指定されたコード値の範囲の文字のみを返す//
 	template<typename CharaType>
-	static inline std::basic_string<CharaType> GetCharsToRangeCode(
+	std::basic_string<CharaType> GetCharsToRangeCode(
 		const std::basic_string<CharaType>& _str,
 		const CharaType _min,
 		const CharaType _max);
@@ -156,49 +156,123 @@ namespace ChStr
 #if true
 
 	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
-	template<typename BaseType, typename CharaType>
-	static inline typename std::enable_if<std::is_same<char, CharaType>::value&& std::is_integral<BaseType>::value, BaseType>::type GetNumFromText(
-		const std::basic_string<CharaType>& _text,
+	template<typename BaseType>
+	static inline typename std::enable_if<std::is_integral<BaseType>::value, BaseType>::type GetNumFromText(
+		const std::basic_string<char>& _text,
 		const size_t& _startPos = 0,
-		const size_t& _endPos = std::basic_string<CharaType>::npos)
+		const size_t& _endPos = std::basic_string<char>::npos)
 	{
-		std::basic_string<CharaType> text = RemoveToUnFloatingNumCharas<CharaType>(_text.substr(_startPos, _endPos - _startPos));
+		std::basic_string<char> text = RemoveToUnFloatingNumCharas<char>(_text.substr(_startPos, _endPos - _startPos));
 		return static_cast<BaseType>(atoll(text.c_str()));
 	}
 
 	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
-	template<typename BaseType, typename CharaType>
-	static inline typename std::enable_if<std::is_same<char, CharaType>::value&& std::is_floating_point<BaseType>::value, BaseType>::type GetNumFromText(
-		const std::basic_string<CharaType>& _text,
-		const size_t& _startPos = 0,
-		const size_t& _endPos = std::basic_string<CharaType>::npos)
+	template<typename BaseType>
+	static inline typename std::enable_if<std::is_integral<BaseType>::value, BaseType>::type
+		GetNumFromText(
+			const std::basic_string<wchar_t>& _text,
+			const size_t& _startPos = 0,
+			const size_t& _endPos = std::basic_string<wchar_t>::npos)
 	{
-		std::basic_string<CharaType> text = RemoveToUnFloatingNumCharas<CharaType>(_text.substr(_startPos, _endPos - _startPos));
+		std::basic_string<wchar_t> text = RemoveToUnFloatingNumCharas<wchar_t>(_text.substr(_startPos, _endPos - _startPos));
+		return static_cast<BaseType>(_wtoll(text.c_str()));
+	}
+
+#ifdef CPP17
+
+	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
+	template<typename BaseType>
+	static inline typename std::enable_if<std::is_integral<BaseType>::value, BaseType>::type
+		GetNumFromText(
+			const std::basic_string<char8_t>& _text,
+			const size_t& _startPos = 0,
+			const size_t& _endPos = std::basic_string<char8_t>::npos)
+	{
+		return 0;
+	}
+
+#endif
+
+	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
+	template<typename BaseType>
+	static inline typename std::enable_if<std::is_integral<BaseType>::value, BaseType>::type
+		GetNumFromText(
+			const std::basic_string<char16_t>& _text,
+			const size_t& _startPos = 0,
+			const size_t& _endPos = std::basic_string<char16_t>::npos)
+	{
+		return 0;
+	}
+
+	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
+	template<typename BaseType>
+	static inline typename std::enable_if<std::is_integral<BaseType>::value, BaseType>::type
+		GetNumFromText(
+			const std::basic_string<char32_t>& _text,
+			const size_t& _startPos = 0,
+			const size_t& _endPos = std::basic_string<char32_t>::npos)
+	{
+		return 0;
+	}
+
+	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
+	template<typename BaseType>
+	static inline typename std::enable_if<std::is_floating_point<BaseType>::value, BaseType>::type GetNumFromText(
+		const std::basic_string<char>& _text,
+		const size_t& _startPos = 0,
+		const size_t& _endPos = std::basic_string<char>::npos)
+	{
+		std::basic_string<char> text = RemoveToUnFloatingNumCharas<char>(_text.substr(_startPos, _endPos - _startPos));
 		return static_cast<BaseType>(atof(text.c_str()));
 	}
 
 	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
-	template<typename BaseType, typename CharaType>
-	static inline typename std::enable_if<std::is_same<wchar_t, CharaType>::value&& std::is_integral<BaseType>::value, BaseType>::type
+	template<typename BaseType>
+	static inline typename std::enable_if<std::is_floating_point<BaseType>::value, BaseType>::type
 		GetNumFromText(
-			const std::basic_string<CharaType>& _text,
+			const std::basic_string<wchar_t>& _text,
 			const size_t& _startPos = 0,
-			const size_t& _endPos = std::basic_string<CharaType>::npos)
+			const size_t& _endPos = std::basic_string<wchar_t>::npos)
 	{
-		std::basic_string<CharaType> text = RemoveToUnFloatingNumCharas<CharaType>(_text.substr(_startPos, _endPos - _startPos));
-		return static_cast<BaseType>(_wtoll(text.c_str()));
+		std::basic_string<wchar_t> text = RemoveToUnFloatingNumCharas<wchar_t>(_text.substr(_startPos, _endPos - _startPos));
+		return static_cast<wchar_t>(_wtof(text.c_str()));
+	}
+
+#ifdef CPP17
+
+	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
+	template<typename BaseType>
+	static inline typename std::enable_if<std::is_floating_point<BaseType>::value, BaseType>::type
+		GetNumFromText(
+			const std::basic_string<char8_t>& _text,
+			const size_t& _startPos = 0,
+			const size_t& _endPos = std::basic_string<char8_t>::npos)
+	{
+		return 0.0f;
+	}
+
+#endif
+
+	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
+	template<typename BaseType>
+	static inline typename std::enable_if<std::is_floating_point<BaseType>::value, BaseType>::type
+		GetNumFromText(
+			const std::basic_string<char16_t>& _text,
+			const size_t& _startPos = 0,
+			const size_t& _endPos = std::basic_string<char16_t>::npos)
+	{
+		return 0.0f;
 	}
 
 	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
-	template<typename BaseType, typename CharaType>
-	static inline typename std::enable_if<std::is_same<wchar_t, CharaType>::value&& std::is_floating_point<BaseType>::value, BaseType>::type
+	template<typename BaseType>
+	static inline typename std::enable_if<std::is_floating_point<BaseType>::value, BaseType>::type
 		GetNumFromText(
-			const std::basic_string<CharaType>& _text,
+			const std::basic_string<char32_t>& _text,
 			const size_t& _startPos = 0,
-			const size_t& _endPos = std::basic_string<CharaType>::npos)
+			const size_t& _endPos = std::basic_string<char32_t>::npos)
 	{
-		std::basic_string<CharaType> text = RemoveToUnFloatingNumCharas<CharaType>(_text.substr(_startPos, _endPos - _startPos));
-		return static_cast<BaseType>(_wtof(text.c_str()));
+		return 0.0f;
 	}
 
 #else
@@ -269,16 +343,42 @@ namespace ChStr
 
 	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
 	template<typename CharaType, typename InType>
-	static inline auto GetTextFromNum(const InType& _baseNum)-> typename std::enable_if<std::is_same<char,CharaType>::value, std::basic_string<CharaType>>::type
+	static inline typename std::enable_if<std::is_same<char, CharaType>::value, std::basic_string<CharaType>>::type GetTextFromNum(const InType& _baseNum)
 	{
 		return std::to_string(_baseNum);
 	}
 
 	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
 	template<typename CharaType, typename InType>
-	static inline auto GetTextFromNum(const InType& _baseNum) -> typename std::enable_if<std::is_same<wchar_t, CharaType>::value, std::basic_string<CharaType>>::type
+	static inline typename std::enable_if<std::is_same<wchar_t, CharaType>::value, std::basic_string<CharaType>>::type GetTextFromNum(const InType& _baseNum)
 	{
 		return std::to_wstring(_baseNum);
+	}
+
+
+#ifdef CPP17
+
+	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
+	template<typename CharaType, typename InType>
+	static inline typename std::enable_if<std::is_same<char8_t, CharaType>::value, std::basic_string<CharaType>>::type GetTextFromNum(const InType& _baseNum)
+	{
+		return u8"";
+	}
+
+#endif
+
+	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
+	template<typename CharaType, typename InType>
+	static inline typename std::enable_if<std::is_same<char16_t, CharaType>::value, std::basic_string<CharaType>>::type GetTextFromNum(const InType& _baseNum)
+	{
+		return u"";
+	}
+
+	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
+	template<typename CharaType, typename InType>
+	static inline typename std::enable_if<std::is_same<char32_t, CharaType>::value, std::basic_string<CharaType>>::type GetTextFromNum(const InType& _baseNum)
+	{
+		return U"";
 	}
 
 #else

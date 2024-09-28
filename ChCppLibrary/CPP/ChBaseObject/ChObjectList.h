@@ -37,7 +37,7 @@ namespace ChCpp
 			ChPtr::Shared<ChCpp::BasicObject> res = ChPtr::Make_S<T>();
 			res->SetObjectList(this);
 			res->Init();
-			objectList.Push(res);
+			objectList.push_back(res);
 			return ChPtr::SharedSafeCast<T>(res);
 		}
 
@@ -52,13 +52,13 @@ namespace ChCpp
 		{
 			std::vector<ChPtr::Weak<T>>tmpObjList;
 
-			for (size_t i = 0; i < objectList.GetSize(); i++)
+			for (size_t i = 0; i < objectList.size(); i++)
 			{
 				if (ChPtr::NotNullCheck(objectList[i]->GetParent()))continue;
 				auto&& test = ChPtr::SharedSafeCast<T>(objectList[i]);
 				if (test == nullptr)continue;
 				tmpObjList.push_back(test);
-				for (auto&& childObj : obj->GetChildlen<T>())
+				for (auto&& childObj : test[i]->GetChildlen<T>())
 				{
 					tmpObjList.push_back(childObj);
 				}
@@ -74,14 +74,14 @@ namespace ChCpp
 		{
 			std::vector<ChPtr::Weak<BasicObject>>tmpObjList;
 
-			for (size_t i = 0; i < objectList.GetSize(); i++)
+			for (size_t i = 0; i < objectList.size(); i++)
 			{
 				if (ChPtr::NotNullCheck(objectList[i]->GetParent()))continue;
 				auto&& test = ChPtr::SharedSafeCast<T>(objectList[i]);
 				if (test == nullptr)continue;
 				if (test->GetMyName() != _name)continue;
 				tmpObjList.push_back(test);
-				for (auto&& childObj : obj->GetChildlenForName<T>(_name))
+				for (auto&& childObj : test->GetChildlenForName<T>(_name))
 				{
 					tmpObjList.push_back(childObj);
 				}
@@ -165,7 +165,7 @@ namespace ChCpp
 	private:
 
 		template<typename CharaType>
-		void ClearObjectForNameBase(const ChCRT::StringPack<CharaType>& _name);
+		void ClearObjectForNameBase(const std::basic_string<CharaType>& _name);
 
 	protected:
 

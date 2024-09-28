@@ -63,12 +63,24 @@ std::basic_string<CharaType> ChStr::RemoveToChars(
 	const std::basic_string<CharaType>& _str,
 	const std::basic_string<CharaType>& _removeChars)
 {
+	if (_removeChars.size() <= 0)return _str;
+
 	std::basic_string<CharaType> out = ChStd::GetZeroChara<CharaType>();
 
-	for (unsigned long i = 0; i < _str.length(); i++)
+
+	size_t endPos = _str.find(_removeChars);
+	size_t startPos = 0;
+
+	while(endPos < _str.length())
 	{
-		if (_str[i] != _removeChars)out += _str[i];
+		out += _str.substr(startPos,endPos - startPos - 1);
+
+
+		startPos = endPos + _removeChars.size();
+		startPos = _str.find(_removeChars, endPos);
 	}
+
+	out += _str.substr(startPos);
 
 	return out;
 }
@@ -92,7 +104,7 @@ std::basic_string<CharaType> ChStr::RemoveToUnNumCharas(const std::basic_string<
 		conFlg = false;
 		if (_str[i] < startNum)conFlg = true;
 		if (_str[i] > endNum)conFlg = true;
-		if (out.GetSize() == 0 && _str[i] == mChara)conFlg = false;
+		if (out.size() == 0 && _str[i] == mChara)conFlg = false;
 
 		if (!conFlg)out = out + _str[i];
 	}
@@ -130,7 +142,7 @@ std::basic_string<CharaType> ChStr::RemoveToUnFloatingNumCharas(
 
 		if (_str[i] < startNum)conFlg = true;
 		if (_str[i] > endNum)conFlg = true;
-		if (out.GetSize() == 0 && _str[i] == mChara)conFlg = false;
+		if (out.size() == 0 && _str[i] == mChara)conFlg = false;
 
 		if (!colonFlg && _str[i] == colonChara)
 		{
@@ -169,24 +181,24 @@ std::basic_string<CharaType> ChStr::RemoveToUnFloatingNumCharas(
 
 //ëŒè€ÇÃï∂éöÇ≈ãÊêÿÇËîzóÒÇ…Ç∑ÇÈ//
 template<typename CharaType>
-ChCRT::VectorPack<std::basic_string<CharaType>> ChStr::Split(
+std::vector<std::basic_string<CharaType>> ChStr::Split(
 	const std::basic_string<CharaType>& _str,
 	const std::basic_string<CharaType>& _splitChar)
 {
-	ChCRT::VectorPack<std::basic_string<CharaType>> out;
+	std::vector<std::basic_string<CharaType>> out;
 
 	size_t nowPos = 0;
 	size_t testPos = _str.find(_splitChar, nowPos);
 
-	while (testPos != std::basic_string<CharaType>::GetNPos())
+	while (testPos != std::basic_string<CharaType>::npos)
 	{
 		size_t tmp = testPos - nowPos;
-		out.Push(tmp != 0 ? _str.substr(nowPos, testPos - nowPos).GetString() : ChStd::GetZeroChara<CharaType>());
-		nowPos = testPos + _splitChar.GetSize();
+		out.push_back(tmp != 0 ? _str.substr(nowPos, testPos - nowPos) : ChStd::GetZeroChara<CharaType>());
+		nowPos = testPos + _splitChar.size();
 		testPos = _str.find(_splitChar, nowPos);
 	}
 
-	out.Push(_str.substr(nowPos));
+	out.push_back(_str.substr(nowPos));
 
 	return out;
 }
@@ -221,7 +233,7 @@ template std::basic_string<##_CharaType##> ChStr::RemoveToUnFloatingNumCharas(\
 	const std::basic_string<##_CharaType##>& _str,\
 	unsigned long* _ePosition,\
 	unsigned long* _colonPoint);\
-template ChCRT::VectorPack<std::basic_string<##_CharaType##>> ChStr::Split(\
+template std::vector<std::basic_string<##_CharaType##>> ChStr::Split(\
 	const std::basic_string<##_CharaType##>& _str,\
 	const std::basic_string<##_CharaType##>& _splitChar);\
 template std::basic_string<##_CharaType##> ChStr::GetCharsToRangeCode(\

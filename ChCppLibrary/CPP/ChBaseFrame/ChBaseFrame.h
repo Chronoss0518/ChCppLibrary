@@ -171,7 +171,21 @@ namespace ChCpp
 			return ChPtr::SharedSafeCast<T, BaseFrame>(FrameList::GetNowFrame());
 		}
 
-		std::basic_string<CharaType> GetNowFrameName();
+		template<typename CharaType>
+		inline std::basic_string<CharaType> GetNowFrameName()
+		{
+			std::map<std::basic_string<CharaType>, unsigned long>tmpFrameNames = frameNames;
+			if (tmpFrameNames.empty())return ChStd::GetZeroChara<CharaType>();
+			if (tmpFrameNames.size() <= nowFrameNo)return ChStd::GetZeroChara<CharaType>();
+
+			for (auto&& name : tmpFrameNames)
+			{
+				if (name.second != nowFrameNo)continue;
+				return name.first;
+			}
+
+			return ChStd::GetZeroChara<CharaType>();
+		}
 
 		inline unsigned long GetRegisterFrameCount() { return FrameList::GetRegisterFrameCount(); }
 
@@ -199,22 +213,6 @@ namespace ChCpp
 			if (frameName == frameNames.end())return;
 
 			FrameList::ChangeFrame(frameName->second);
-		}
-
-		template<typename CharaType>
-		inline std::basic_string<CharaType> GetNowFrameName()
-		{
-			std::map<std::basic_string<CharaType>, unsigned long>tmpFrameNames = frameNames;
-			if (tmpFrameNames.empty())return ChStd::GetZeroChara<CharaType>();
-			if (tmpFrameNames.size() <= nowFrameNo)return ChStd::GetZeroChara<CharaType>();
-
-			for (auto&& name : tmpFrameNames)
-			{
-				if (name.second != nowFrameNo)continue;
-				return name.first;
-			}
-
-			return ChStd::GetZeroChara<CharaType>();
 		}
 
 	private:// Member Value//

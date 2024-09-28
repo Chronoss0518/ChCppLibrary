@@ -38,12 +38,12 @@ bool ChCpp::File<CharaType>::IsOpenModeTest(bool _isReadFlg, bool _isBinaryFlg)
 	if ((flg & std::ios::app))return true;
 
 	stream.close();
-	stream.open(openFileName.GetString(), std::ios::out | std::ios::trunc);
+	stream.open(openFileName.c_str(), std::ios::out | std::ios::trunc);
 
 	stream.close();
-	stream.open(openFileName.GetString(), flg);
+	stream.open(openFileName.c_str(), flg);
 
 	return true;
 }
 
-CH_STRING_TYPE_EXPLICIT_DECLARATION(ChCpp::File);
+CH_STRING_TYPE_USE_FILE_EXPLICIT_DECLARATION(ChCpp::File);
