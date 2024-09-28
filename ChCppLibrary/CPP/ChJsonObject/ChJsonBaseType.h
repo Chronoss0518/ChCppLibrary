@@ -13,11 +13,6 @@
 #include"../ChTextObject/ChTextObject.h"
 #include"../ChCumulative/ChCumulative.h"
 
-#ifndef CH_JSON_NULL_TEXT_FUNCTION
-#define CH_JSON_NULL_TEXT_FUNCTION(type) CH_NUMBER_FUNCTION(GetNullText, type)
-#endif
-
-
 #ifndef	CH_JSON_OBJECT_COUNT
 #define	CH_JSON_OBJECT_COUNT \
 ChCpp::Cumulative<CharaType> objectCount = ChCpp::Cumulative<CharaType>(\
