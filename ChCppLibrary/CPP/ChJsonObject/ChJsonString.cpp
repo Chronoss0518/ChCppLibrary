@@ -90,10 +90,8 @@ ChCpp::JsonString<CharaType>::JsonString(const JsonString& _str)
 template<typename CharaType>
 ChCpp::JsonString<CharaType>::JsonString(const std::basic_string<CharaType>& _str)
 {
-	CRTInit();
 	auto&& res = ChPtr::Make_S<JsonString>();
 	*res = _str;
-	return res;
 }
 
 template<typename CharaType>
@@ -179,7 +177,7 @@ bool ChCpp::JsonString<CharaType>::AddDecimal(std::basic_string<CharaType>& _out
 {
 	if (!ChStd::IsBaseNumbers(_inText, _baseDecimal))return false;
 
-	_outText += ChStd::ToBaseNumber(_inText, _baseDecimal, ChStd::DECIMAL_NUMBUR<CharaType>());
+	_outText += ChStd::ToBaseNumber<CharaType>(_inText, _baseDecimal, ChStd::DECIMAL_NUMBUR<CharaType>());
 
 	return true;
 }

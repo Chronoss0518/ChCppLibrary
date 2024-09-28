@@ -103,10 +103,4 @@ namespace ChCpp
 	};
 }
 
-#ifdef CRT
-
-#endif
-
-#include"SharedFunctions/ChJsonSharedArrayObject.h"
-
 #endif
