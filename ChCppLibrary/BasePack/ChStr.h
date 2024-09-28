@@ -343,14 +343,14 @@ namespace ChStr
 
 	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
 	template<typename CharaType, typename InType>
-	static inline typename std::enable_if<std::is_same<char, CharaType>::value, std::basic_string<CharaType>>::type GetTextFromNum(const InType& _baseNum)
+	inline typename std::enable_if<std::is_same<char, CharaType>::value, std::basic_string<CharaType>>::type GetTextFromNum(const InType& _baseNum)
 	{
 		return std::to_string(_baseNum);
 	}
 
 	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
 	template<typename CharaType, typename InType>
-	static inline typename std::enable_if<std::is_same<wchar_t, CharaType>::value, std::basic_string<CharaType>>::type GetTextFromNum(const InType& _baseNum)
+	inline typename std::enable_if<std::is_same<wchar_t, CharaType>::value, std::basic_string<CharaType>>::type GetTextFromNum(const InType& _baseNum)
 	{
 		return std::to_wstring(_baseNum);
 	}
