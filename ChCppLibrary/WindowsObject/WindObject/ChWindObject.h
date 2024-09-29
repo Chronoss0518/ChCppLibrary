@@ -3,13 +3,9 @@
 #ifndef Ch_Win_WO_h
 #define Ch_Win_WO_h
 
-#ifdef CRT
-
 #include<map>
 #include<string>
 #include<functional>
-
-#endif
 
 #ifndef CH_WIND_OBJECT_INHERITANCE_FUNCTIONS
 #define CH_WIND_OBJECT_INHERITANCE_FUNCTIONS(_AorW,_CharaType) \
@@ -118,7 +114,6 @@ namespace ChWin
 
 		struct WindProcedureCRT
 		{
-#ifdef CRT
 			std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)> defaultWindProc = [](
 				HWND _hWnd,
 				UINT _uMsg,
@@ -129,22 +124,42 @@ namespace ChWin
 			std::map<unsigned int, std::function<void(HWND, UINT)>> childWindProc;
 
 			std::map<unsigned int, std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>> wndProc;
-#endif
 		};
 
 	public:
 
-		WindProcedure();
+		WindProcedure() { CRTInit(); }
 		
-		virtual ~WindProcedure();
+		WindProcedure(const WindProcedure& _procedure)
+		{
+			CRTInit();
+			value->defaultWindProc = _procedure.value->defaultWindProc;
+			value->childWindProc = _procedure.value->childWindProc;
+			value->wndProc = _procedure.value->wndProc;
+		}
+
+		WindProcedure(WindProcedure&& _procedure)
+		{
+			CRTInit();
+			value->defaultWindProc = _procedure.value->defaultWindProc;
+			value->childWindProc = _procedure.value->childWindProc;
+			value->wndProc = _procedure.value->wndProc;
+		}
+		
+		virtual ~WindProcedure() { CRTRelease(); }
 
 	public:
 
 		void Init();
 
+	private:
+
+		void CRTInit();
+
+		void CRTRelease();
+
 	public:
 
-#ifdef CRT
 		//このウィンドウが子ウィンドウ以外の場合のみ実行される//
 		//_messageにはWM_やメッセージプロシージャ―が受け取れる方にしてください//
 		inline virtual void SetWindProcedure(const unsigned long _message, const std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>& _proc) { (value->wndProc)[_message] = _proc; }
@@ -156,7 +171,7 @@ namespace ChWin
 		//このウィンドウが子ウィンドウの場合のみ実行される//
 		//_messageにはWM_やメッセージプロシージャ―が受け取れる方にしてください//
 		inline void SetChildWindProcedure(const unsigned long _message, const std::function<void(HWND, UINT)>& _proc) { (value->childWindProc)[_message] = _proc; }
-#endif
+
 	public:
 
 		LRESULT UpdateProcedure(HWND _hWnd, UINT _uMsg, WPARAM _wParam, LPARAM _lParam, LONG_PTR(WINAPI* GetWindowLongPtrFunction)(_In_ HWND, _In_ int));
@@ -182,7 +197,6 @@ namespace ChWin
 
 	public://SetFunction//
 
-#ifdef CRT
 		//このウィンドウが子ウィンドウ以外の場合のみ実行される//
 		//_messageにはWM_やメッセージプロシージャ―が受け取れる方にしてください//
 		inline virtual void SetWindProcedure(const unsigned long _message, const std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>& _proc)
@@ -206,7 +220,7 @@ namespace ChWin
 			if (ChPtr::NullCheck(windProcedures))return;
 			windProcedures->SetChildWindProcedure(_message, _proc);
 		}
-#endif
+
 		void SetWindPos(const unsigned int _x, const unsigned int _y, const unsigned int _flgs = SWP_NOSIZE | SWP_NOZORDER);
 
 		inline void SetWindPos(const ChPOINT& _pos, const unsigned int _flgs = SWP_NOSIZE | SWP_NOZORDER) { SetWindPos(_pos.x, _pos.y, _flgs); }
@@ -442,98 +456,6 @@ namespace ChWin
 }
 
 #ifdef CRT
-
-ChWin::WindProcedure::WindProcedure()
-{
-	value = new WindProcedureCRT();
-}
-
-ChWin::WindProcedure::~WindProcedure()
-{
-	delete value;
-}
-
-void ChWin::WindProcedure::Init()
-{
-	value->wndProc[WM_DESTROY] = [&](
-		HWND _hWnd,
-		UINT _uMsg,
-		WPARAM _wParam,
-		LPARAM _lParam)->LRESULT
-		{
-			PostQuitMessage(0);
-			return 0;
-		};
-}
-
-LRESULT ChWin::WindProcedure::UpdateProcedure(HWND _hWnd, UINT _uMsg, WPARAM _wParam, LPARAM _lParam, LONG_PTR(WINAPI* GetWindowLongPtrFunction)(_In_ HWND, _In_ int))
-{
-
-	auto it = value->wndProc.find(_uMsg);
-	if (it != (value->wndProc).end())
-	{
-		LRESULT res;
-		res = (it)->second(_hWnd, _uMsg, _wParam, _lParam);
-		if (_uMsg != WM_COMMAND && _uMsg != WM_SYSCOMMAND)return res;
-	}
-
-	if (_uMsg != WM_COMMAND && _uMsg != WM_SYSCOMMAND)return DefaultWindProc(_hWnd, _uMsg, _wParam, _lParam);
-
-	if (_lParam <= 0)
-	{
-		auto param = LOWORD(_wParam);
-
-		auto it = value->wndProc.find(param);
-		if (it != (value->wndProc).end())
-		{
-			(it)->second(_hWnd, _uMsg, _wParam, _lParam);
-			return 0;
-		}
-
-	}
-	else
-	{
-		auto child = ((ChWin::WindProcedure*)GetWindowLongPtrFunction((HWND)LOWORD(_wParam), GWLP_USERDATA));
-
-		if (ChPtr::NotNullCheck(child))
-		{
-			if (!child->value->childWindProc.empty())
-			{
-				auto cit = child->value->childWindProc.find(HIWORD(_wParam));
-				if (cit != (child->value->childWindProc).end())
-				{
-					(cit)->second((HWND)LOWORD(_wParam), HIWORD(_wParam));
-				}
-			}
-			child->DefaultWindProc(_hWnd, _uMsg, _wParam, _lParam);
-
-			return 0;
-		}
-	}
-
-	return DefaultWindProc(_hWnd, _uMsg, _wParam, _lParam);
-}
-
-LRESULT ChWin::WindProcedure::DefaultWindProc(HWND _hWnd, UINT _uMsg, WPARAM _wParam, LPARAM _lParam)
-{
-	return value->defaultWindProc(_hWnd, _uMsg, _wParam, _lParam);
-}
-
-void ChWin::WindObjectBase::CreateEnd(const int _nCmdShow)
-{
-	windProcedures = new WindProcedure();
-	windProcedures->Init();
-
-	SetInitFlg(true);
-	SetWindID(reinterpret_cast<LONG_PTR>(hWnd));
-
-	ShowWindow(hWnd, _nCmdShow);
-	UpdateWindow(hWnd);
-}
-
-CH_WIND_OBJECT_INHERITANCE_FUNCTIONS(A, char);
-
-CH_WIND_OBJECT_INHERITANCE_FUNCTIONS(W, wchar_t);
 
 #endif
 
