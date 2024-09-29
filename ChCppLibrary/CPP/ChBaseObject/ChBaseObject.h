@@ -2,10 +2,6 @@
 #ifndef Ch_CPP_BaObj_h
 #define Ch_CPP_BaObj_h
 
-#include"../../CRTPack/ChSmartPtrPack/ChSmartPtrPack.h"
-#include"../../CRTPack/ChVectorPack/ChVectorPack.h"
-#include"../../CRTPack/ChStringPack/ChStringPack.h"
-
 #include<memory>
 #include<vector>
 #include<string>
