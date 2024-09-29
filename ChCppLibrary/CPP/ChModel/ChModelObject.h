@@ -174,14 +174,14 @@ namespace ChCpp
 			auto&& com = ChCpp::BasicObject::GetComponent<FrameComponent<CharaType>>();
 
 			if (com == nullptr)return;
-			if (com->ValueIns().vertexList.size() <= 2)return;
+			if (com->vertexList.size() <= 2)return;
 
 			std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>> vertexList;
 			{
 				ChLMat tmpMat = _mat;
 				tmpMat = GetDrawLHandMatrix() * tmpMat;
 
-				for (auto&& vertex : com->ValueIns().vertexList)
+				for (auto&& vertex : com->vertexList)
 				{
 					auto ver = ChPtr::Make_S<Ch3D::SavePolyVertex>();
 					*ver = *vertex;
@@ -190,7 +190,7 @@ namespace ChCpp
 				}
 			}
 
-			for (auto&& prim : com->ValueIns().primitives)
+			for (auto&& prim : com->primitives)
 			{
 				auto primitive = *prim;
 				ChVec3 res;
@@ -198,7 +198,7 @@ namespace ChCpp
 				auto data = ChPtr::Make_S<NearPointData<CharaType>>();
 
 				data->toVector = res;
-				data->materialName = com->ValueIns().materialList[primitive.mateNo]->mateName;
+				data->materialName = com->materialList[primitive.mateNo]->mateName;
 
 				_res.push_back(data);
 			}
