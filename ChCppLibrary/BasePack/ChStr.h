@@ -12,7 +12,7 @@
 #include<wchar.h>
 #include<stddef.h>
 
-#ifndef CPP20
+#ifndef CPP17
 #include <codecvt>
 #include <cassert>
 #include <locale>
@@ -392,7 +392,7 @@ namespace ChStr
 
 #endif
 
-#ifndef CPP20
+#ifndef CPP17
 
 	using ConvertUTF8 = std::codecvt_utf8<wchar_t>;
 	using ConvertUTF16 = std::codecvt_utf16<wchar_t>;

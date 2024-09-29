@@ -414,7 +414,7 @@ namespace ChMath
 
 					std::basic_string<CharaType> Num = tmpStr.substr(tmp, tmpFPos - tmp);
 
-					val[i] = ChStr::GetNumFromText<T, CharaType>(Num);
+					val[i] = ChStr::GetNumFromText<T>(Num);
 
 					//val[i] = ChMath::Round(val[i], _digit);
 
@@ -924,7 +924,7 @@ namespace ChMath
 
 					std::basic_string<CharaType> Num = tmpStr.substr(tmp, tmpFPos - tmp);
 
-					m[i][j] = ChStr::GetNumFromText<T, CharaType>(Num);
+					m[i][j] = ChStr::GetNumFromText<T>(Num);
 
 					tmp = test + 1;
 

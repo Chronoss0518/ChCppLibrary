@@ -2,13 +2,9 @@
 #define Ch_CPP_Model_h
 
 
-#ifdef CRT
-
 #include<vector>
 #include<map>
 #include<string>
-
-#endif
 
 #include"../../BasePack/ChStd.h"
 #include"../../BasePack/Ch3D.h"
@@ -20,14 +16,6 @@ namespace ChCpp
 {
 	class ModelAnimator :public BaseComponent
 	{
-	protected:
-
-		ModelAnimator();
-
-		virtual ~ModelAnimator();
-
-	protected:
-
 		float Speed = 0.1f;
 
 		unsigned long AllAnimationCount = 0;
@@ -46,32 +34,12 @@ namespace ChCpp
 			unsigned long AnimationFrameCount = 0;
 		};
 
-	private:
-
-		struct ModelAnimatorCRT
-		{
-#ifdef CRT
-			std::vector<ChPtr::Shared<AnimationData>>Animation;
-#endif
-		};
-
-	public:
-
-		ModelAnimatorCRT& ValueIns() { return *value; }
-
-	private:
-
-		ModelAnimatorCRT* value = nullptr;
-
+		std::vector<ChPtr::Shared<AnimationData>>animation;
 	};
 
 	template<typename CharaType>
 	struct ModelFrame
 	{
-		ModelFrame();
-
-		virtual ~ModelFrame();
-
 		struct VertexData
 		{
 			ChVec3 pos;
@@ -82,32 +50,12 @@ namespace ChCpp
 
 		struct Material
 		{
-			Material();
-
-			virtual ~Material();
-
 			ChVec4 diffuse = 1.0f;
 			ChVec4 specular = 1.0f;
 			ChVec4 ambient = 0.0f;
 
-		private:
-
-			struct MaterialCRT
-			{
-#ifdef CRT
-				std::basic_string<CharaType> materialName = ChStd::GetZeroChara<CharaType>();
-				std::vector<std::basic_string<CharaType>>textureNames;
-#endif
-			};
-
-		public:
-
-			MaterialCRT& ValueIns() { return *value; }
-
-		private:
-
-			MaterialCRT* value = nullptr;
-
+			std::basic_string<CharaType> materialName = ChStd::GetZeroChara<CharaType>();
+			std::vector<std::basic_string<CharaType>>textureNames;
 		};
 
 		struct SurFace
@@ -119,7 +67,6 @@ namespace ChCpp
 				ChVec2 uvPos;
 			};
 
-
 			SurFaceVertex vertexData[3];
 			unsigned long materialNo = 0;
 			ChVec3 normal;
@@ -127,30 +74,10 @@ namespace ChCpp
 
 		struct Mesh
 		{
-			Mesh();
-
-			virtual ~Mesh();
-
-		private:
-
-			struct MeshCRT
-			{
-#ifdef CRT
-				std::vector<ChPtr::Shared<VertexData>>vertexList;
-				std::vector<ChPtr::Shared<Material>>materialList;
-				std::map<std::basic_string<CharaType>, unsigned long> materialNo;
-				std::vector<ChPtr::Shared<SurFace>>faceList;
-#endif
-			};
-
-		public:
-
-			MeshCRT& ValueIns() { return *value; }
-
-		private:
-
-			MeshCRT* value = nullptr;
-
+			std::vector<ChPtr::Shared<VertexData>>vertexList;
+			std::vector<ChPtr::Shared<Material>>materialList;
+			std::map<std::basic_string<CharaType>, unsigned long> materialNo;
+			std::vector<ChPtr::Shared<SurFace>>faceList;
 		};
 
 		struct Frame
@@ -161,115 +88,15 @@ namespace ChCpp
 				ChRMatrix baseRMat;
 			};
 
-		private:
-
-			struct FrameCRT
-			{
-#ifdef CRT
-				std::basic_string<CharaType> myName = ChStd::GetZeroChara<CharaType>();
-				ChPtr::Shared<Mesh>mesh = nullptr;
-				ChPtr::Weak<Frame>parent;
-				std::vector<ChPtr::Shared<Frame>>childFrames;
-#endif
-			};
-
-		public:
-
-			Frame();
-
-			virtual ~Frame();
-
-			FrameCRT& ValueIns() { return *value; }
-
-		private:
-
-			FrameCRT* value = nullptr;
-
+			std::basic_string<CharaType> myName = ChStd::GetZeroChara<CharaType>();
+			ChPtr::Shared<Mesh>mesh = nullptr;
+			ChPtr::Weak<Frame>parent;
+			std::vector<ChPtr::Shared<Frame>>childFrames;
 		};
 
-	private:
-
-		struct ModelFrameCRT
-		{
-#ifdef CRT
-			ChPtr::Shared<Frame>modelData = nullptr;
-			std::basic_string<CharaType> modelName;
-#endif
-		};
-
-	public:
-
-		ModelFrameCRT& ValueIns() { return *value; }
-
-	private:
-
-		ModelFrameCRT* value = nullptr;
-
+		ChPtr::Shared<Frame>modelData = nullptr;
+		std::basic_string<CharaType> modelName;
 	};
-
 }
-
-
-#ifdef CRT
-
-ChCpp::ModelAnimator::ModelAnimator()
-{
-	value = new ModelAnimatorCRT();
-}
-
-ChCpp::ModelAnimator::~ModelAnimator()
-{
-	delete value;
-}
-
-template<typename CharaType>
-ChCpp::ModelFrame<CharaType>::ModelFrame()
-{
-	value = new ModelFrameCRT();
-}
-
-template<typename CharaType>
-ChCpp::ModelFrame<CharaType>::~ModelFrame()
-{
-	delete value;
-}
-
-template<typename CharaType>
-ChCpp::ModelFrame<CharaType>::Material::Material()
-{
-	value = new MaterialCRT();
-}
-
-template<typename CharaType>
-ChCpp::ModelFrame<CharaType>::Material::~Material()
-{
-	delete value;
-}
-
-template<typename CharaType>
-ChCpp::ModelFrame<CharaType>::Mesh::Mesh()
-{
-	value = new MeshCRT();
-}
-
-template<typename CharaType>
-ChCpp::ModelFrame<CharaType>::Mesh::~Mesh()
-{
-	delete value;
-}
-
-template<typename CharaType>
-ChCpp::ModelFrame<CharaType>::Frame::Frame()
-{
-	value = new FrameCRT();
-}
-
-template<typename CharaType>
-ChCpp::ModelFrame<CharaType>::Frame::~Frame()
-{
-	delete value;
-}
-
-#endif
 
 #endif
