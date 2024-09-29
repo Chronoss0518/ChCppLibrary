@@ -176,18 +176,17 @@ namespace Ch3D
 			res.SetScalling(scl);
 			return res;
 		}
-
 	};
 
 	struct SavePolyData :public UV
 	{
-		unsigned long vertexNo;
+		unsigned long vertexNo = 0;
 	};
 
 	//Material‚É‘Î‰‚·‚é–Ê‚ğŠÇ—‚·‚é//
 	struct Primitive:public FaceNormal
 	{
-		unsigned long mateNo;
+		unsigned long mateNo = 0;
 		std::vector<ChPtr::Shared<SavePolyData>> vertexData;
 	};
 }
