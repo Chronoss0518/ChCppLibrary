@@ -3,12 +3,7 @@
 #ifndef Ch_Win_DTexter_h
 #define Ch_Win_DTexter_h
 
-#ifdef CRT
-
 #include<string>
-
-#endif
-
 
 namespace ChWin
 {
@@ -111,7 +106,6 @@ namespace ChWin
 
 	public://Other Functions//
 
-#ifdef CRT
 		void Draw(
 			const std::string& _drawText,
 			const long& _x,
@@ -128,8 +122,6 @@ namespace ChWin
 		{
 			Draw(_hdc, _drawText.c_str(), static_cast<int>(_drawText.length()), _x, _y);
 		}
-
-#endif
 
 	protected:
 
@@ -176,7 +168,6 @@ namespace ChWin
 
 	public://Other Functions//
 
-#ifdef CRT
 		void Draw(
 			const std::wstring& _drawText,
 			const long& _x,
@@ -193,8 +184,6 @@ namespace ChWin
 		{
 			Draw(_hdc, _drawText.c_str(), static_cast<int>(_drawText.length()), _x, _y);
 		}
-
-#endif
 
 	protected:
 
