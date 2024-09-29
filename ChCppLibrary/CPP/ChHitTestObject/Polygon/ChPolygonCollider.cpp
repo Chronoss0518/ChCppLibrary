@@ -1,88 +1,89 @@
 
+#include"../../ChBaseObject/ChBaseObject.h"
 #include"../../ChModel/ChModelObject.h"
 
+#include"../ChHitTestRay.h"
 #include"ChPolygonCollider.h"
 #include"../Sphere/ChSphereCollider.h"
 #include"../Box/ChBoxCollider.h"
+
 
 template<typename CharaType>
 bool ChCpp::PolygonCollider<CharaType>::IsHitRayToMesh(FrameObject<CharaType>& _object, const ChVec3& _rayPos, const ChVec3& _rayDir, const float _rayLen, const bool _nowHitFlg)
 {
 	_object.UpdateDrawTransform();
 
-	bool hitFlg = _nowHitFlg;
-
-	auto frameCom = _object.GetComponent<FrameComponent<CharaType>>();
-	float minLen = _rayLen;
-
 	ChLMat tmpMat = _object.GetDrawLHandMatrix() * GetMat();
 
-	if (frameCom != nullptr)
+	bool hitFlg = _nowHitFlg;
+
+	float minLen = _rayLen;
+
+	auto&& frameCom = GetFrameComponent(_object);
+
+	if (frameCom == nullptr)return false;
+
+	if (frameCom->vertexList.size() < 3)return false;
+
+
+	std::vector<ChPtr::Shared<ChVec3>>posList;
+
+	for (unsigned long i = 0; i < frameCom->vertexList.size(); i++)
+		posList.push_back(ChPtr::Make_S<ChVec3>(tmpMat.Transform(frameCom->vertexList[i]->pos)));
+
+	ChVec3 poss[3];
+	unsigned long nos[3]{ 0,1,2 };
+	for (auto&& primitive : frameCom->primitives)
 	{
-		if (frameCom->vertexList.size() >= 3)
+		for (unsigned char j = 0; j < 3; j++)
 		{
-			std::vector<ChPtr::Shared<ChVec3>>posList;
+			nos[j] = !leftHandFlg ? primitive->vertexData.size() - j - 1 : j;
+			poss[j] = *posList[primitive->vertexData[nos[j]]->vertexNo];
+		}
 
-			for (unsigned long i = 0; i < frameCom->vertexList.size(); i++)
-				posList.push_back(ChPtr::Make_S<ChVec3>(tmpMat.Transform(frameCom->vertexList[i]->pos)));
+		{
+			ChVec3 faceNormal = ChVec3::GetCross((poss[1] - poss[0]), (poss[2] - poss[0]));
+			faceNormal.Normalize();
+			ChVec3 pos0ToRay = _rayPos - poss[0];
 
-			ChVec3 poss[3];
-			unsigned long nos[3]{ 0,1,2 };
-			for (auto&& primitive : frameCom->primitives)
+			float faceLen = ChVec3::GetDot(faceNormal, pos0ToRay);
+
+			if (faceLen > minLen)continue;
+		}
+
+		for (unsigned long i = 1; i < primitive->vertexData.size() - 1; i++)
+		{
+			ChVec3 tmpVec;
+
+			for (unsigned char j = 1; j < 3; j++)
 			{
-				for (unsigned char j = 0; j < 3; j++)
-				{
-					nos[j] = !leftHandFlg ? primitive->vertexData.size() - j - 1 : j;
-					poss[j] = *posList[primitive->vertexData[nos[j]]->vertexNo];
-				}
-
-				{
-					ChVec3 faceNormal = ChVec3::GetCross((poss[1] - poss[0]), (poss[2] - poss[0]));
-					faceNormal.Normalize();
-					ChVec3 pos0ToRay = _rayPos - poss[0];
-
-					float faceLen = ChVec3::GetDot(faceNormal, pos0ToRay);
-
-					if (faceLen > minLen)continue;
-				}
-
-				for (unsigned long i = 1; i < primitive->vertexData.size() - 1; i++)
-				{
-					ChVec3 tmpVec;
-
-					for (unsigned char j = 1; j < 3; j++)
-					{
-						nos[j] = !leftHandFlg ? primitive->vertexData.size() - j - i : i + j - 1;
-						poss[j] = *posList[primitive->vertexData[nos[j]]->vertexNo];
-					}
-
-					if (!HitTestTri(
-						tmpVec,
-						_rayPos,
-						_rayDir,
-						poss[0],
-						poss[1],
-						poss[2]))continue;
-
-					float tmpLen = tmpVec.GetLen();
-					if (tmpLen > _rayLen)continue;
-					hitFlg = true;
-					if (minLen < tmpLen)continue;
-					minLen = tmpLen;
-					value->hitMaterialName = frameCom->materialList[primitive->mateNo]->mateName;
-					SetHitVector(tmpVec);
-					break;
-				}
-
+				nos[j] = !leftHandFlg ? primitive->vertexData.size() - j - i : i + j - 1;
+				poss[j] = *posList[primitive->vertexData[nos[j]]->vertexNo];
 			}
+
+			if (!HitTestTri(
+				tmpVec,
+				_rayPos,
+				_rayDir,
+				poss[0],
+				poss[1],
+				poss[2]))continue;
+
+			float tmpLen = tmpVec.GetLen();
+			if (tmpLen > _rayLen)continue;
+			hitFlg = true;
+			if (minLen < tmpLen)continue;
+			minLen = tmpLen;
+			hitMaterialName = frameCom->materialList[primitive->mateNo]->mateName;
+			SetHitVector(tmpVec);
+			break;
 		}
 	}
 
 	for (auto&& child : _object.GetChildlen<FrameObject<CharaType>>())
 	{
-		hitFlg = IsHitRayToMesh(*child.lock(), _rayPos, _rayDir, minLen, hitFlg);
+		hitFlg = IsHitRayToMesh(*child.lock(), _rayPos, _rayDir, minLen, hitFlg) || hitFlg;
 	}
-
 
 	return hitFlg;
 }
@@ -130,7 +131,6 @@ bool ChCpp::PolygonCollider<CharaType>::IsInnerHit(HitTestSphere* _target)
 template<typename CharaType>
 bool  ChCpp::PolygonCollider<CharaType>::IsHit(HitTestRay* _target)
 {
-
 	auto model = GetModel();
 
 	if (ChPtr::NullCheck(model))return false;
@@ -152,5 +152,6 @@ bool  ChCpp::PolygonCollider<CharaType>::IsHit(HitTestRay* _target)
 		_target->SetHitVector(GetHitVectol() * -1.0f);
 
 	return hitFlg;
-
 }
+
+CH_STRING_TYPE_USE_FILE_EXPLICIT_DECLARATION(ChCpp::PolygonCollider);

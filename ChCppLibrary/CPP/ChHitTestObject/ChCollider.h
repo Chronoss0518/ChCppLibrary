@@ -1,20 +1,18 @@
 #ifndef Ch_CPP_Collider_h
 #define Ch_CPP_Collider_h
 
-#include"../../CRTPack/ChVectorPack/ChVectorPack.h"
+#include<vector>
 
 #include"ChHitTestObject.h"
 
 namespace ChCpp
 {
-
 	class HitTestRay;
 	class BoxCollider;
 	class SphereCollider;
 
 	using HitTestSphere = SphereCollider;
 	using HitTestBox = BoxCollider;
-
 
 	//‘ÎÛ‚ÌHitTestObject‚©‚çÕ“Ë‚µ‚½‚©‚ğ”»’f‚·‚éƒNƒ‰ƒX//
 	class Collider :public HitTestObject

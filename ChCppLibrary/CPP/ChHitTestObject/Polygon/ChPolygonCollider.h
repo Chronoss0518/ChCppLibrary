@@ -18,12 +18,6 @@ namespace ChCpp
 	template<typename CharaType>
 	class PolygonCollider :public Collider
 	{
-	public:
-
-		PolygonCollider();
-
-		virtual ~PolygonCollider();
-
 	public://SetFunction//
 
 		void SetModel(FrameObject<CharaType>& _model);
@@ -36,7 +30,7 @@ namespace ChCpp
 
 		FrameObject<CharaType>* GetModel()const;
 
-		std::basic_string<CharaType> GetHitMaterialName() { return value->hitMaterialName; }
+		std::basic_string<CharaType> GetHitMaterialName() { return hitMaterialName; }
 
 	public://IsFunction//
 
@@ -58,6 +52,14 @@ namespace ChCpp
 	private:
 
 		bool IsHitRayToMesh(FrameObject<CharaType>& _object, const ChVec3& _rayPos,const ChVec3& _rayDir,const float rayLen,const bool _nowHitFlg = false);
+
+		ChPtr::Shared<FrameComponent<CharaType>> GetFrameComponent(FrameObject<CharaType>& _object)
+		{
+			auto&& frameCom = _object.GetComponent<FrameComponent<CharaType>>();
+			return frameCom;
+		}
+
+	private:
 
 		bool leftHandFlg = true;
 		bool cullHitFlg = true;
