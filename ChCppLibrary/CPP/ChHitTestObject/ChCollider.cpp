@@ -6,17 +6,17 @@ using namespace ChCpp;
 //HitTestObject Method
 ///////////////////////////////////////////////////////////////////////////////////////
 
-bool Collider::IsHitSphereToPanel(ChVec3& _thisHitVectol, const bool _leftHandFlg, const ChVec3& _spherePos, const ChVec3& _sphereSize, const ChCRT::VectorPack<ChVec3*>& _vertexs)
+bool Collider::IsHitSphereToPanel(ChVec3& _thisHitVectol, const bool _leftHandFlg, const ChVec3& _spherePos, const ChVec3& _sphereSize, const std::vector<ChVec3*>& _vertexs)
 {
-	if (_vertexs.GetSize())return false;
+	if (_vertexs.size())return false;
 
-	if (_vertexs.GetSize() < 2)
+	if (_vertexs.size() < 2)
 		return IsHitSphereToPos(_thisHitVectol, _spherePos, _sphereSize, *_vertexs[0]);
 
-	if (_vertexs.GetSize() < 3)
+	if (_vertexs.size() < 3)
 		return IsHitSphereToLine(_thisHitVectol, _spherePos, _sphereSize, *_vertexs[0], *_vertexs[1]);
 
-	ChVec3 tmpPos = MovePosToPanelUp(*_vertexs[0], *_vertexs[_leftHandFlg ? 1 : _vertexs.GetSize() - 1], *_vertexs[_leftHandFlg ? 1 : _vertexs.GetSize() - 2], _spherePos);
+	ChVec3 tmpPos = MovePosToPanelUp(*_vertexs[0], *_vertexs[_leftHandFlg ? 1 : _vertexs.size() - 1], *_vertexs[_leftHandFlg ? 1 : _vertexs.size() - 2], _spherePos);
 
 	ChVec3 posOnPanel = _spherePos - tmpPos;
 
@@ -24,7 +24,7 @@ bool Collider::IsHitSphereToPanel(ChVec3& _thisHitVectol, const bool _leftHandFl
 
 	bool hitTest = true;
 
-	for (unsigned long i = 0; i < _vertexs.GetSize() - 1; i++)
+	for (unsigned long i = 0; i < _vertexs.size() - 1; i++)
 	{
 		ChVec3 vertex1;
 		ChVec3 vertex2;
@@ -32,8 +32,8 @@ bool Collider::IsHitSphereToPanel(ChVec3& _thisHitVectol, const bool _leftHandFl
 		{
 			unsigned long v1Num = i + 1;
 			unsigned long v2Num = i + 2;
-			vertex1 = *_vertexs[_leftHandFlg ? v1Num : _vertexs.GetSize() - v1Num];
-			vertex2 = *_vertexs[_leftHandFlg ? v2Num : _vertexs.GetSize() - v2Num];
+			vertex1 = *_vertexs[_leftHandFlg ? v1Num : _vertexs.size() - v1Num];
+			vertex2 = *_vertexs[_leftHandFlg ? v2Num : _vertexs.size() - v2Num];
 		}
 
 		ChVec3 test = ChVec3::GetCross(posOnPanel - vertex1, vertex2 - vertex1);

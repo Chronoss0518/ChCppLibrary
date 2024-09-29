@@ -2,11 +2,8 @@
 #ifndef Ch_CPP_BaseSystem_h
 #define Ch_CPP_BaseSystem_h
 
-#include"../../CRTPack/ChSmartPtrPack/ChSmartPtrPack.h"
-
 #include"../../BasePack/ChPtr.h"
 #include"../../BasePack/ChMath3D.h"
-
 
 #include"../../CPP/ChBitBool/ChBitBool.h"
 #include"../../ClassParts/ChCPInitializer.h"

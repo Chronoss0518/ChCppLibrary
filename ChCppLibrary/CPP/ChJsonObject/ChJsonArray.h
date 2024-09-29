@@ -1,11 +1,7 @@
 #ifndef Ch_CPP_JsonArray_h
 #define Ch_CPP_JsonArray_h
 
-#ifdef CRT
-
 #include<vector>
-
-#endif
 
 #include"ChJsonBaseType.h"
 

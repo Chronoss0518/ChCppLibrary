@@ -1,12 +1,8 @@
 #ifndef Ch_CPP_JsonObject_h
 #define Ch_CPP_JsonObject_h
 
-#ifdef CRT
-
 #include<vector>
 #include<map>
-
-#endif
 
 #include"ChJsonBaseType.h"
 

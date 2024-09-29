@@ -133,10 +133,10 @@ namespace ChStr
 		template<typename CharaType>
 		static long double GetExponentialFromTextBase(const std::basic_string<CharaType>& _text)
 		{
-			if (_text.GetSize() <= 0)return 0.0f;
+			if (_text.size() <= 0)return 0.0f;
 
 			unsigned long tmp = 0.0;
-			for (unsigned long i = 0; i < _text.GetSize(); i++)
+			for (unsigned long i = 0; i < _text.size(); i++)
 			{
 				tmp *= 10;
 				tmp += static_cast<unsigned long>(_text[i] - static_cast<CharaType>('0'));

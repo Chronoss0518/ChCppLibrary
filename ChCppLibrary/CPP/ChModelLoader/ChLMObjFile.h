@@ -1,11 +1,7 @@
 #ifndef Ch_CPP_ObjMesh_h
 #define Ch_CPP_ObjMesh_h
 
-#ifdef CRT
-
 #include<string>
-
-#endif
 
 #include"../../BasePack/ChStd.h"
 #include"../../BasePack/ChPtr.h"

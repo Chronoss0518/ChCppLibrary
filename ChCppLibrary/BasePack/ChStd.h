@@ -140,10 +140,6 @@ public:\
 static inline _ClassName##& GetIns(){ static _ClassName ins; return ins; }
 #endif
 
-#include"../CRTPack/ChVectorPack/ChVectorPack.h"
-#include"../CRTPack/ChMapPack/ChMapPack.h"
-#include"../CRTPack/ChStringPack/ChStringPack.h"
-
 //ChLibraryのベースとなる関数、変数群のまとまり//
 namespace ChStd
 {
@@ -338,7 +334,7 @@ namespace ChStd
 	{
 		long long out = 0;
 
-		ChCRT::MapPack<CharaType, size_t>numMap;
+		std::map<CharaType, size_t>numMap;
 
 		size_t size = _baseNumber.size();
 

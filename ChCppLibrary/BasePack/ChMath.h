@@ -176,7 +176,7 @@ namespace ChMath
 	double GetFMod(double _valx, double _valy);
 	long double GetFMod(long double _valx, long double _valy);
 
-	static constexpr float GetMaxFloat();
+	float GetMaxFloat();
 
 	CH_MATH_METHOD_SIGNED_ABS(CH_MATH_SIGNED_TYPE(char));
 	CH_MATH_METHOD_SIGNED_ABS(CH_MATH_SIGNED_TYPE(short));

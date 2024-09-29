@@ -18,7 +18,7 @@ void ChCpp::ObjectList::Object##_FunctionNameBase##()\
 }
 
 #define EXPLICIT_DECLARATION(_type)\
-template void ChCpp::ObjectList::ClearObjectForNameBase<##_type##>(const std::basic_string<##_type##>& _Name);
+template void ChCpp::ObjectList::ClearObjectForName<##_type##>(const std::basic_string<##_type##>& _Name);
 
 
 void ChCpp::ObjectList::SetObject(ChPtr::Shared<BasicObject> _obj)
@@ -81,7 +81,7 @@ void ChCpp::ObjectList::ClearObject()
 }
 
 template<typename CharaType>
-void ChCpp::ObjectList::ClearObjectForNameBase(const std::basic_string<CharaType>& _Name)
+void ChCpp::ObjectList::ClearObjectForName(const std::basic_string<CharaType>& _Name)
 {
 	for (size_t i = 0; i < objectList.size(); i++)
 	{

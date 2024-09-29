@@ -96,7 +96,7 @@ CH_MATH_FUNCTION(double, GetFMod, (double _valx, double _valy), fmod, (_valx, _v
 CH_MATH_FUNCTION(long double, GetFMod, (long double _valx, long double _valy), fmod, (_valx, _valy));
 
 
-static constexpr float ChMath::GetMaxFloat()
+float ChMath::GetMaxFloat()
 {
 	return FLT_MAX;
 }

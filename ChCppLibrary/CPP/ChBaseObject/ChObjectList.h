@@ -161,12 +161,6 @@ namespace ChCpp
 		//削除されるオブジェクトを確認して削除する//
 		void DestroyObjectTest();
 
-
-	private:
-
-		template<typename CharaType>
-		void ClearObjectForNameBase(const std::basic_string<CharaType>& _name);
-
 	protected:
 
 		std::vector<ChPtr::Shared<BasicObject>>objectList;
