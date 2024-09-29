@@ -4,6 +4,15 @@
 #include"../PackData/ChPoint.h"
 #include"ChWinButton.h"
 
+#ifndef Ch_Win_Button_Set_Functions
+#define Ch_Win_Button_Set_Functions(_AorW) \
+inline void ChWin::Button##_AorW##::SetClickFunction(const std::function<void(HWND, UINT)>& _callBack){ SetChildWindProcedure(BN_CLICKED, _callBack);}\
+\
+inline void ChWin::Button##_AorW##::SetDblClickFunction(const std::function<void(HWND, UINT)>& _callBack){SetChildWindProcedure(BN_DBLCLK, _callBack);}\
+\
+inline void ChWin::Button##_AorW##::SetSelectFunction(const std::function<void(HWND, UINT)>& _callBack){SetChildWindProcedure(BN_HILITE, _callBack);}
+#endif
+
 using namespace ChWin;
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -90,4 +99,71 @@ void ButtonBase::CreateStyle()
 	style.AddChild();
 	style.AddClipChildren();
 	style.AddGroup();
+}
+
+Ch_Win_Button_Set_Functions(A);
+
+void ChWin::ButtonA::Create(
+	HINSTANCE _hIns,
+	const char* _startText,
+	const ChINTPOINT& _pos,
+	const ChINTPOINT& _size,
+	const HWND _parentHandl)
+{
+
+	Release();
+
+	auto pos = _pos;
+	auto size = _size;
+	pos.val.Abs();
+	size.val.Abs();
+
+	WindCreater creater(_hIns);
+
+	creater.SetEXStyle(WS_EX_CLIENTEDGE);
+
+	CreateStyle();
+	creater.SetWindStyle(&style);
+
+
+	creater.SetInitPosition(pos.x, pos.y);
+	creater.SetInitSize(size.w, size.h);
+	creater.SetParentWind(_parentHandl);
+
+	hWnd = creater.Create(_startText, "BUTTON");
+	CreateEnd(true);
+}
+
+Ch_Win_Button_Set_Functions(W);
+
+//TextBox�̍쐬//
+void ChWin::ButtonW::Create(
+	HINSTANCE _hIns,
+	const wchar_t* _startText,
+	const ChINTPOINT& _pos,
+	const ChINTPOINT& _size,
+	const HWND _parentHandl)
+{
+
+	Release();
+
+	auto pos = _pos;
+	auto size = _size;
+	pos.val.Abs();
+	size.val.Abs();
+
+	WindCreater creater(_hIns);
+
+	creater.SetEXStyle(WS_EX_CLIENTEDGE);
+
+	CreateStyle();
+	creater.SetWindStyle(&style);
+
+
+	creater.SetInitPosition(pos.x, pos.y);
+	creater.SetInitSize(size.w, size.h);
+	creater.SetParentWind(_parentHandl);
+
+	hWnd = creater.Create(_startText, L"BUTTON");
+	CreateEnd(true);
 }
