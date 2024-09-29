@@ -246,3 +246,89 @@ MathSquare MathSquare::Sub(const ChVec4& _base, const ChVec4& _sub)
 
 	return res;
 }
+
+bool ChCpp::MathSquare::IsEmpty()const
+{
+	return squareList.empty();
+}
+
+size_t ChCpp::MathSquare::GetCount() const
+{
+	return squareList.size();
+}
+
+ChVec4 ChCpp::MathSquare::GetSquare(size_t _num)const
+{
+	if (_num >= GetCount())return ChVec4();
+	return *squareList[_num];
+}
+
+
+void ChCpp::MathSquare::AddSquare(const ChVec2& _leftTop, const ChVec2& _rightTop, const ChVec2& _rightBottom, const ChVec2& _leftBottom, const unsigned long _cutCount)
+{
+	if (_leftTop.x - _rightTop.x <= 0.0f)return;
+	if (_rightTop.y - _rightBottom.y <= 0.0f)return;
+	if (_rightBottom.x - _leftBottom.x <= 0.0f)return;
+	if (_leftBottom.y - _leftTop.y <= 0.0f)return;
+
+	std::vector<ChVec3>verticalDirectionList;
+	verticalDirectionList.resize(_cutCount + 2);
+
+	std::vector<ChVec3>horizontalDirectionList;
+	horizontalDirectionList.resize(verticalDirectionList.size());
+
+	{
+		ChVec2 direction[4];
+		float length[4];
+
+		direction[static_cast<unsigned char>(DirectionName::LeftTopToRightTop)] =
+			_rightTop - _leftTop;
+		length[static_cast<unsigned char>(DirectionName::LeftTopToRightTop)] = direction[static_cast<unsigned char>(DirectionName::LeftTopToRightTop)].GetLen();
+
+
+		direction[static_cast<unsigned char>(DirectionName::RightTopTopRightBottom)] =
+			_rightBottom - _rightTop;
+		length[static_cast<unsigned char>(DirectionName::RightTopTopRightBottom)] = direction[static_cast<unsigned char>(DirectionName::RightTopTopRightBottom)].GetLen();
+
+
+		direction[static_cast<unsigned char>(DirectionName::LeftBottomToRightBottom)] =
+			_rightBottom - _leftBottom;
+		length[static_cast<unsigned char>(DirectionName::LeftBottomToRightBottom)] = direction[static_cast<unsigned char>(DirectionName::LeftBottomToRightBottom)].GetLen();
+
+
+		direction[static_cast<unsigned char>(DirectionName::LeftTopToLeftBottom)] =
+			_leftBottom - _leftTop;
+		length[static_cast<unsigned char>(DirectionName::LeftTopToLeftBottom)] = direction[static_cast<unsigned char>(DirectionName::LeftTopToLeftBottom)].GetLen();
+
+		for (unsigned long i = 0; i < 4; i++)
+		{
+			direction[i].Normalize();
+		}
+
+		for (unsigned long i = 0; i < verticalDirectionList.size(); i++)
+		{
+
+		}
+	}
+
+	for (unsigned long w = 0; w < horizontalDirectionList.size() - 1; w++)
+	{
+		for (unsigned long h = 0; h < verticalDirectionList.size() - 1; h++)
+		{
+
+		}
+	}
+}
+
+void ChCpp::MathSquare::Clear()
+{
+	squareList.clear();
+}
+
+void ChCpp::MathSquare::PushBack(const ChVec4& _pushSquare)
+{
+	ChPtr::Shared<ChVec4> square = ChPtr::Make_S<ChVec4>();
+
+	*square = _pushSquare;
+	squareList.push_back(square);
+}
