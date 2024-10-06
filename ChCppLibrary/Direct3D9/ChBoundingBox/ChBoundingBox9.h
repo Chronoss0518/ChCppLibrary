@@ -1,9 +1,12 @@
 #ifndef Ch_D3D9_BBox_h
 #define Ch_D3D9_BBox_h
 
+#include"../../BasePack/ChPtr.h"
+
 namespace ChMesh
 {
-	typedef class BaseMesh9 Mesh9;
+	template<typename CharaType>
+	class BaseMesh9;
 
 
 	//(改良中)//
@@ -28,9 +31,9 @@ namespace ChMesh
 		
 	public://Set Functions//
 
-#ifdef CRT
 		//XFileより生成されるバウンディングボックス//
-		void SetBBox(const ChPtr::Shared<ChMesh::Mesh9>& _mesh)
+		template<typename CharaType>
+		void SetBBox(const ChPtr::Shared<ChMesh::BaseMesh9<CharaType>>& _mesh)
 		{
 			if (_mesh == nullptr)return;
 			if (ChPtr::NullCheck(_mesh->GetMesh()))return;
@@ -53,7 +56,8 @@ namespace ChMesh
 		}
 
 		//XFileより生成されるバウンディングスフィア//
-		void SetBSphere(const ChPtr::Shared<ChMesh::Mesh9>& _mesh)
+		template<typename CharaType>
+		void SetBSphere(const ChPtr::Shared<ChMesh::BaseMesh9<CharaType>>& _mesh)
 		{
 			if (_mesh == nullptr)return;
 			if (ChPtr::NullCheck(_mesh->GetMesh()))return;
@@ -68,7 +72,6 @@ namespace ChMesh
 
 			_mesh->GetMesh()->UnlockVertexBuffer();
 		}
-#endif
 
 	public://Get Functions//
 
@@ -78,31 +81,8 @@ namespace ChMesh
 		//最大単位-最小単位で計算された位置
 		inline const ChVec3_9* GetDepth() { return &depth; }
 
-#ifdef CRT
-		std::vector<ChPtr::Shared<ChVec3_9>> GetPosition()
-		{
-			std::vector<ChPtr::Shared<ChVec3_9>> tmpPos;
-			if (main == depth)return tmpPos;
+		std::vector<ChPtr::Shared<ChVec3_9>> GetPosition();
 
-			tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x, main.y, main.z));
-
-			tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x + depth.x, main.y, main.z));
-
-			tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x, main.y + depth.y, main.z));
-
-			tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x, main.y, main.z + depth.z));
-
-			tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x + depth.x, main.y + depth.y, main.z));
-
-			tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x + depth.x, main.y, main.z + depth.z));
-
-			tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x, main.y + depth.y, main.z + depth.z));
-
-			tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x + depth.x, main.y + depth.y, main.z + depth.z));
-
-			return tmpPos;
-		}
-#endif
 	public://Is Function//
 
 		//点と箱の当たり判定//
