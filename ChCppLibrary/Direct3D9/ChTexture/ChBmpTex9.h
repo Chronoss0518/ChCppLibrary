@@ -11,11 +11,9 @@ namespace ChTex
 	{
 	public:
 
-#ifdef CRT
-
 		void OpenFile(const char* _fileName)override {};
 
-#endif 
+		void OpenFile(const wchar_t* _fileName)override {};
 
 	};
 
