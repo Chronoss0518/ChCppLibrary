@@ -10,7 +10,149 @@
 //ChDirectSound9メソッド
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void ChDirectSound9::CreatePrimaryBuffer(HWND _hWnd)
+template<typename CharaType>
+void ChDirectSound9<CharaType>::Release()
+{
+	if (!mainSoundList.empty())mainSoundList.clear();
+	if (!subSoundList.empty())subSoundList.clear();
+
+	if (primary != nullptr)
+	{
+		primary->Release();
+		primary = nullptr;
+	}
+
+	if (lpDS != nullptr)
+	{
+		lpDS->Release();
+		lpDS = nullptr;
+	}
+
+	CoUninitialize();
+
+	SetInitFlg(false);
+}
+
+template<typename CharaType>
+ChSubSound9* ChDirectSound9<CharaType>::GetSubSound(const unsigned short _soundNo)
+{
+	auto&& it = subSoundList.find(_soundNo);
+	if (it == subSoundList.end())return nullptr;
+	return it->second.get();
+}
+
+template<typename CharaType>
+unsigned short ChDirectSound9<CharaType>::GetSubSoundListCount()
+{
+	return subSoundList.size();
+}
+
+template<typename CharaType>
+ChSubSound9* ChDirectSound9<CharaType>::GetPlaySubSound(const unsigned short _soundNo)
+{
+	if (playSubSoundList.size() <= _soundNo)return nullptr;
+	return playSubSoundList[_soundNo].get();
+}
+
+template<typename CharaType>
+unsigned short ChDirectSound9<CharaType>::GetPlaySubSoundListCount()
+{
+	return static_cast<unsigned short>(playSubSoundList.size());
+}
+
+template<typename CharaType>
+void ChDirectSound9<CharaType>::RemovePlaySubSound(const unsigned short _soundNo)
+{
+	if (playSubSoundList.size() <= _soundNo)return;
+	playSubSoundList.erase(playSubSoundList.begin() + _soundNo);
+}
+
+template<typename CharaType>
+void ChDirectSound9<CharaType>::ClearBGM()
+{
+	if (mainSoundList.empty())return;
+	StopBGM();
+	mainSoundList.clear();
+}
+
+template<typename CharaType>
+void ChDirectSound9<CharaType>::ClearSE(const unsigned short _soundNo)
+{
+	if (subSoundList.empty())return;
+	if (subSoundList.find(_soundNo) == subSoundList.end())return;
+	subSoundList.erase(_soundNo);
+}
+
+template<typename CharaType>
+void ChDirectSound9<CharaType>::ClearSE()
+{
+	if (subSoundList.empty())return;
+	subSoundList.clear();
+}
+
+template<typename CharaType>
+void ChDirectSound9<CharaType>::PlayBGM(const std::basic_string<CharaType>& _soundName)
+{
+	if (mainSoundList.find(_soundName) == mainSoundList.end())return;
+	StopBGM();
+	mainSoundName = _soundName;
+
+	mainSoundList[_soundName]->sound->SetCurrentPosition(0);
+	mainSoundList[_soundName]->sound->Play(0, 0, DSBPLAY_LOOPING);
+
+	return;
+}
+
+template<typename CharaType>
+void ChDirectSound9<CharaType>::PlaySE(
+	const std::basic_string<CharaType>& _soundName,
+	const std::basic_string<CharaType>& _useSoundDirectory,
+	const ChVec3_9* _soundPos)
+{
+	std::basic_string<CharaType>& tmpString = _soundName;
+
+	if (tmpString.length() <= 0)return;
+
+	if (directoryPathList.find(_useSoundDirectory)
+		!= directoryPathList.end())
+	{
+		tmpString = directoryPathList[_useSoundDirectory] + ChStd::GetSlashChara<CharaType>() + tmpString;
+	}
+
+	auto se = ChPtr::Make_S<ChSubSound9>();
+	LoadSound(se->sound, se->dSound, tmpString.c_str(), tmpString.length());
+
+	if (ChPtr::NotNullCheck(_soundPos))
+	{
+		se->dSound->SetPosition(_soundPos->x,
+			_soundPos->y,
+			_soundPos->z,
+			DS3D_IMMEDIATE);
+	}
+
+	se->sound->SetCurrentPosition(0);
+	se->sound->Play(0, 0, 0);
+
+	playSubSoundList.push_back(se);
+
+}
+
+template<typename CharaType>
+void ChDirectSound9<CharaType>::StopBGM()
+{
+	if (mainSoundName.length() <= 0)return;
+
+	DWORD Flg;
+	mainSoundList[mainSoundName]->sound->GetStatus(&Flg);
+	if ((Flg & DSBSTATUS_PLAYING) != 0)
+	{
+		mainSoundList[mainSoundName]->sound->Stop();
+	}
+	mainSoundName = "";
+}
+
+template<typename CharaType>
+void ChDirectSound9<CharaType>::CreatePrimaryBuffer(HWND _hWnd)
 {
 	DirectSoundCreate8(NULL, &lpDS, NULL);
 
@@ -31,7 +173,6 @@ void ChDirectSound9::CreatePrimaryBuffer(HWND _hWnd)
 	lpDS->CreateSoundBuffer(&dsbdesc, &primary, NULL);
 
 	
-
 	// プライマリ・バッファのWaveフォーマットを設定
 	// 　　　優先協調レベル以上の協調レベルが設定されている必要があります．
 	WAVEFORMATEX pcmwf;
@@ -46,14 +187,14 @@ void ChDirectSound9::CreatePrimaryBuffer(HWND _hWnd)
 
 	CoInitialize(NULL);
 
-
 	primary->QueryInterface(IID_IDirectSound3DListener8, (LPVOID *)&lpSListener);
 
 	lpSListener->SetRolloffFactor(listenerBaseLen, DS3D_IMMEDIATE);
 
 }
 
-void ChDirectSound9::LoadSound(
+template<typename CharaType>
+void ChDirectSound9<CharaType>::LoadSound(
 	LPDIRECTSOUNDBUFFER8 &_LpSound,
 	LPDIRECTSOUND3DBUFFER8 &_Lp3DSound,
 	const char* _soundFileName,
@@ -122,7 +263,8 @@ void ChDirectSound9::LoadSound(
 	_LpSound->QueryInterface(IID_IDirectSound3DBuffer8, (LPVOID*)&_Lp3DSound);
 }
 
-void ChDirectSound9::Init(HWND _hWnd)
+template<typename CharaType>
+void ChDirectSound9<CharaType>::Init(HWND _hWnd)
 {
 	//COM(コンポーネントオブジェクトモデル)の初期化
 	CoInitialize(NULL);
@@ -142,7 +284,8 @@ void ChDirectSound9::Init(HWND _hWnd)
 	SetInitFlg(true);
 }
 
-void ChDirectSound9::Update()
+template<typename CharaType>
+void ChDirectSound9<CharaType>::Update()
 {
 	DWORD Flg;
 	if (GetPlaySubSoundListCount() <= 0)return;
@@ -157,51 +300,56 @@ void ChDirectSound9::Update()
 		}
 	}
 	lpSListener->SetPosition(
-		0.0f
-		, 0.0f
-		, 0.0f
-		, DS3D_IMMEDIATE);
+		0.0f,
+		0.0f,
+		0.0f,
+		DS3D_IMMEDIATE);
 
 
 	if (ChPtr::NullCheck(listenerPos))return;
 
 	lpSListener->SetPosition(
-		listenerPos->x
-		, listenerPos->y
-		, listenerPos->z
-		, DS3D_IMMEDIATE);
+		listenerPos->x,
+		listenerPos->y,
+		listenerPos->z,
+		DS3D_IMMEDIATE);
 
 }
 
-void ChDirectSound9::SetHzForSE(const unsigned short _soundNo, const DWORD _hz)
+template<typename CharaType>
+void ChDirectSound9<CharaType>::SetHzForSE(const unsigned short _soundNo, const DWORD _hz)
 {
 	auto&& subSound = GetSubSound(_soundNo);
 	if (ChPtr::NullCheck(subSound))return;
 	subSound->sound->SetFrequency(_hz);
 }
 
-void ChDirectSound9::SetVolumeForSE(const unsigned short _soundNo, const long _volume)
+template<typename CharaType>
+void ChDirectSound9<CharaType>::SetVolumeForSE(const unsigned short _soundNo, const long _volume)
 {
 	auto&& subSound = GetSubSound(_soundNo);
 	if (ChPtr::NullCheck(subSound))return;
 	subSound->sound->SetVolume(_volume);
 }
 
-void ChDirectSound9::SetBaseHzForSE(const unsigned short _soundNo)
+template<typename CharaType>
+void ChDirectSound9<CharaType>::SetBaseHzForSE(const unsigned short _soundNo)
 {
 	auto&& subSound = GetSubSound(_soundNo);
 	if (ChPtr::NullCheck(subSound))return;
 	subSound->sound->SetFrequency(subSound->hz);
 }
 
-void ChDirectSound9::SetBaseVolumeForSE(const unsigned short _soundNo)
+template<typename CharaType>
+void ChDirectSound9<CharaType>::SetBaseVolumeForSE(const unsigned short _soundNo)
 {
 	auto&& subSound = GetSubSound(_soundNo);
 	if (ChPtr::NullCheck(subSound))return;
 	subSound->sound->SetVolume(subSound->vol);
 }
 
-void ChDirectSound9::PlaySE(const unsigned short _soundNo)
+template<typename CharaType>
+void ChDirectSound9<CharaType>::PlaySE(const unsigned short _soundNo)
 {
 	auto tmpBGM = GetSubSound(_soundNo);
 
@@ -211,7 +359,8 @@ void ChDirectSound9::PlaySE(const unsigned short _soundNo)
 	tmpBGM->sound->Play(0, 0, 0);
 }
 
-void ChDirectSound9::StopSE(const unsigned short _soundNo)
+template<typename CharaType>
+void ChDirectSound9<CharaType>::StopSE(const unsigned short _soundNo)
 {
 	auto tmpBuffer = GetSubSound(_soundNo);
 
@@ -342,10 +491,10 @@ HRESULT CWaveSoundRead9::ReadMMIO(
 //       successful, the error code if not.
 //-----------------------------------------------------------------------------
 HRESULT CWaveSoundRead9::WaveOpenFile(
-	const CHAR* strFileName
-	, HMMIO* phmmioIn
-	, WAVEFORMATEX** ppwfxInfo
-	, MMCKINFO* pckInRIFF)
+	const CHAR* strFileName,
+	HMMIO* phmmioIn,
+	WAVEFORMATEX** ppwfxInfo,
+	MMCKINFO* pckInRIFF)
 {
 	HRESULT hr;
 	HMMIO   hmmioIn = NULL;
@@ -375,7 +524,9 @@ HRESULT CWaveSoundRead9::WaveOpenFile(
 //       moved to a separate routine so there was more control on the chunks
 //       that are before the data chunk, such as 'fact', etc...
 //-----------------------------------------------------------------------------
-HRESULT CWaveSoundRead9::WaveStartDataRead(HMMIO* phmmioIn, MMCKINFO* pckIn,
+HRESULT CWaveSoundRead9::WaveStartDataRead(
+	HMMIO* phmmioIn,
+	MMCKINFO* pckIn,
 	MMCKINFO* pckInRIFF)
 {
 	// Seek to the data
@@ -403,8 +554,12 @@ HRESULT CWaveSoundRead9::WaveStartDataRead(HMMIO* phmmioIn, MMCKINFO* pckIn,
 //          pbDest       - Destination buffer to put bytes.
 //          cbActualRead - # of bytes actually read.
 //-----------------------------------------------------------------------------
-HRESULT CWaveSoundRead9::WaveReadFile(HMMIO hmmioIn, UINT cbRead, BYTE* pbDest,
-	MMCKINFO* pckIn, UINT* cbActualRead)
+HRESULT CWaveSoundRead9::WaveReadFile(
+	HMMIO hmmioIn,
+	UINT cbRead,
+	BYTE* pbDest,
+	MMCKINFO* pckIn,
+	UINT* cbActualRead)
 {
 	MMIOINFO mmioinfoIn;         // current status of <hmmioIn>
 
