@@ -18,8 +18,32 @@ using namespace ChMesh;
 //MeshManager9ÉÅÉ\ÉbÉh
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void MeshManager9::Init(const LPDIRECT3DDEVICE9 _dev)
+template<typename CharaType>
+void MeshManager9<CharaType>::Init(const LPDIRECT3DDEVICE9 _dev)
 {
 	device = _dev;
 	SetInitFlg(true);
+}
+
+template<typename CharaType>
+void ChMesh::MeshManager9<CharaType>::Release()
+{
+	if (!meshList.empty())meshList.clear();
+	if (!pathList.empty())pathList.clear();
+	if (meshList.empty())return;
+	meshList.clear();
+	SetInitFlg(false);
+}
+
+template<typename CharaType>
+size_t ChMesh::MeshManager9<CharaType>::GetPathCnt()
+{
+	return pathList.size();
+}
+
+//åªç›ìoò^Ç≥ÇÍÇƒÇ¢ÇÈMeshÇÃêî//
+template<typename CharaType>
+size_t ChMesh::MeshManager9<CharaType>::GetMeshCnt()
+{
+	return meshList.size();
 }
