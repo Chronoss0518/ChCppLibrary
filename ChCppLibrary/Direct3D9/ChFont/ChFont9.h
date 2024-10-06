@@ -5,7 +5,7 @@ namespace ChD3D9
 {
 
 	//標準機能で描画されるフォントクラス//
-	class DrawFont:public ChCp::Initializer
+	class DrawFontBase:public ChCp::Initializer
 	{
 	public://Init And Release//
 
@@ -33,7 +33,7 @@ namespace ChD3D9
 
 	protected://Constructer Destructer//
 
-		virtual ~DrawFont()
+		virtual ~DrawFontBase()
 		{
 			Release();
 		}
@@ -49,17 +49,16 @@ namespace ChD3D9
 	};
 
 	//標準機能で描画されるフォントクラス//
-	class DrawFontA :public DrawFont
+	class DrawFontA :public DrawFontBase
 	{
 	public:
 
-#ifdef CRT
 		inline void Init(const LPDIRECT3DDEVICE9 _dv, const std::string& _fontType = "MS ゴシック")
 		{
 			fontType = _fontType;
 			Init(_dv, fontType.c_str());
 		}
-#endif
+
 	protected://Init And Release//
 
 		void Init(const LPDIRECT3DDEVICE9 _dv, const char* _fontTypeText);
@@ -73,13 +72,11 @@ namespace ChD3D9
 
 	public://Set Functions//
 
-#ifdef CRT
 		inline void SetFontType(const std::string& _fontType = "MS ゴシック")
 		{
 			fontType = _fontType;
 			Create();
 		}
-#endif
 
 	protected://Get Functions//
 
@@ -88,7 +85,6 @@ namespace ChD3D9
 
 	public://Draw Functions//
 
-#ifdef CRT
 		//フォントの描画//
 		inline void Draw(
 			const std::string& _drawStr,
@@ -98,7 +94,7 @@ namespace ChD3D9
 		{
 			Draw(_drawStr.c_str(), _drawStr.length(), _x, _y, _col);
 		}
-#endif
+
 	protected://Draw Functions//
 
 		//フォントの描画//
@@ -118,9 +114,7 @@ namespace ChD3D9
 
 	private://Member Value//
 
-#ifdef CRT
 		std::string fontType = "";
-#endif
 
 	public:
 
@@ -132,17 +126,16 @@ namespace ChD3D9
 	};
 
 	//標準機能で描画されるフォントクラス//
-	class DrawFontW :public DrawFont
+	class DrawFontW :public DrawFontBase
 	{
 	public:
 
-#ifdef CRT
 		inline void Init(const LPDIRECT3DDEVICE9 _dv, const std::wstring& _fontType = L"MS ゴシック")
 		{
 			fontType = _fontType;
 			Init(_dv, fontType.c_str());
-	}
-#endif
+		}
+
 	protected://Init And Release//
 
 		void Init(const LPDIRECT3DDEVICE9 _dv, const wchar_t* _fontTypeText);
@@ -156,13 +149,11 @@ namespace ChD3D9
 
 	public://Set Functions//
 
-#ifdef CRT
 		inline void SetFontType(const std::wstring& _fontType = L"MS ゴシック")
 		{
 			fontType = _fontType;
 			Create();
 		}
-#endif
 
 	protected://Get Functions//
 
@@ -170,7 +161,6 @@ namespace ChD3D9
 
 	public://Draw Functions//
 
-#ifdef CRT
 		//フォントの描画//
 		inline void Draw(
 			const std::wstring& _drawStr,
@@ -180,7 +170,7 @@ namespace ChD3D9
 		{
 			Draw(_drawStr.c_str(), _drawStr.length(), _x, _y, _col);
 		}
-#endif
+
 	protected://Draw Functions//
 
 		//フォントの描画//
@@ -200,9 +190,7 @@ namespace ChD3D9
 
 	private://Member Value//
 
-#ifdef CRT
 		std::wstring fontType = L"";
-#endif
 
 	public:
 
@@ -218,19 +206,5 @@ namespace ChD3D9
 	inline DrawFontW& FontW() { return DrawFontW::GetIns(); }
 
 }
-
-#ifdef CRT
-
-const char* ChD3D9::DrawFontA::GetFontType()
-{
-	return fontType.c_str();
-}
-
-const wchar_t* ChD3D9::DrawFontW::GetFontType()
-{
-	return fontType.c_str();
-}
-
-#endif
 
 #endif
