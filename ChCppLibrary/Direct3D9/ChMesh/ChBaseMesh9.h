@@ -2,39 +2,34 @@
 #ifndef Ch_D3D9_BMe_h
 #define Ch_D3D9_BMe_h
 
-#ifdef CRT
-
 #include<string>
 #include<vector>
 #include<map>
-#include<memory>
 #include<functional>
 
-#endif
-
+#include"../../BasePack/ChStd.h"
 #include"../../BasePack/ChPtr.h"
 
 #include"../../BaseIncluder/ChD3D9I.h"
 
 #include"../ChTexture/ChBaseTexture9.h"
-#include"../ChTexture/TexIncluder9.h"
 
 namespace ChTex
 {
 	typedef class BaseTexture9 Texture9;
 }
 
-
 class ChObjectController9;
 
 namespace ChMesh
 {
+	CH_NUMBER_FUNCTION_BASE(GetXFileExtension);
 
+	template<typename CharaType>
 	class MeshManager9;
-	class MeshList9;
 
-#ifndef _ChMesh9
-#define _ChMesh9
+	template<typename CharaType>
+	class MeshList9;
 
 	//メッシュの頂点データ//
 	struct MeshVertex9
@@ -51,11 +46,16 @@ namespace ChMesh
 		ChVec3_9 centerPos;
 	};
 
-#endif
-
 	//D3DXMeshを操る基底クラス//
-	typedef class BaseMesh9
+	template<typename CharaType>
+	class BaseMesh9
 	{
+	public:
+
+		friend MeshManager9<CharaType>;
+		friend MeshList9<CharaType>;
+		friend ChObjectController9;
+
 	public:
 
 		virtual ~BaseMesh9()
@@ -70,36 +70,6 @@ namespace ChMesh
 	public://Set Functions//
 
 		virtual void SetSkin(){}
-
-#ifdef CRT
-		void SetMaterialName(const std::string& _fileName)
-		{
-			ChCpp::CharFile file;
-			file.FileOpen(_fileName);
-
-			std::string tmpStr;
-			tmpStr = file.FileReadText();
-
-			std::string tmpMateName = "Material ";
-
-			size_t size = 0;
-
-			unsigned int i = 0;
-
-			while ((size = tmpStr.find(tmpMateName, size)) != std::string::npos)
-			{
-				size += tmpMateName.length();
-				size_t tmpNum = tmpStr.find("{", size);
-				if (tmpNum == std::string::npos)break;
-				tmpNum -= (size + 1);
-				material[i]->name = tmpStr.substr(size, tmpNum);
-				size += tmpNum;
-				i++;
-			}
-
-		}
-
-#endif
 
 		void SetMaterialCol(
 			const unsigned long _Num,
@@ -117,28 +87,26 @@ namespace ChMesh
 
 		const MeshFace9* GetFace(unsigned long _num) const;
 
-#ifdef CRT
 		inline std::vector<ChPtr::Shared<ChVec3_9>> GetVertexList()const
-		{ 
-			return offsetVertexList; 
+		{
+			return offsetVertexList;
 		}
 
-		inline std::vector<ChPtr::Shared<ChMaterialA_9>> GetMaterials() const { return material; }
+		inline std::vector<ChPtr::Shared<ChBaseMaterial_9<CharaType>>> GetMaterials() const { return material; }
 
 		inline std::vector<ChPtr::Shared<ChTex::BaseTexture9>> GetTex() const { return texList; }
 
 		inline std::vector<ChPtr::Shared<ChTex::BaseTexture9>> GetNormalTex() const { return normalTex; }
 
 		inline std::vector<ChPtr::Shared<MeshFace9>> GetFaceList() const { return easyFaceList; }
-		
-		virtual inline ChMat_9 GetBoneMat(const std::string& _str){ return ChMat_9(); }
-#endif
+
+		virtual inline ChMat_9 GetBoneMat(const std::basic_string<CharaType>& _str) { return ChMat_9(); }
 
 		ChVec3_9 GetOffsetVertex(unsigned long _num)const;
 
 		size_t GetMaterialCount()const;
 
-		ChMaterialA_9 GetMaterial(size_t _num)const;
+		ChBaseMaterial_9<CharaType> GetMaterial(size_t _num)const;
 
 		size_t GetTextureCount()const;
 
@@ -152,19 +120,15 @@ namespace ChMesh
 
 		void CreateEasyFaceList();
 
-#ifdef CRT
-
 		void CreateMesh(
-			const std::string& _fileName,
-			const std::string& _pathName,
+			const std::basic_string<CharaType>& _fileName,
+			const std::basic_string<CharaType>& _pathName,
 			const LPDIRECT3DDEVICE9& _dev)
 		{
 			OpenFile(_fileName, _pathName, _dev);
 
 			SetOffsetVertex();
 		}
-
-#endif
 
 	protected:
 
@@ -179,40 +143,28 @@ namespace ChMesh
 
 	public://Static Functions//
 
-#ifdef CRT
-		
-		static ChPtr::Shared<BaseMesh9> MeshType(const std::string& _fileName);
+		static ChPtr::Shared<BaseMesh9> MeshType(const std::basic_string<CharaType>& _fileName);
 
-		static ChPtr::Shared<BaseMesh9> SkinMeshType(const std::string& _fileName);
-
-#endif
-
-		friend MeshManager9;
-		friend MeshList9;
-		friend ChObjectController9;
+		static ChPtr::Shared<BaseMesh9> SkinMeshType(const std::basic_string<CharaType>& _fileName);
 
 	protected:
 
-#ifdef CRT
 		virtual void OpenFile(
-			const std::string& _fileName,
-			const std::string& _pathName,
+			const std::basic_string<CharaType>& _fileName,
+			const std::basic_string<CharaType>& _pathName,
 			const LPDIRECT3DDEVICE9& _dev) {}
-#endif
 
 	public://Ins Functions//
 
 		virtual LPD3DXMESH InsMesh() { return mesh; }
 
-#ifdef CRT
-		std::vector<ChPtr::Shared<ChMaterialA_9>>& InsMaterials() { return material; }
+		std::vector<ChPtr::Shared<ChBaseMaterial_9<CharaType>>>& InsMaterials() { return material; }
 
 		std::vector<ChPtr::Shared<ChTex::BaseTexture9>>& InsTex() { return texList; }
 
 		std::vector<ChPtr::Shared<ChTex::BaseTexture9>>& InsNormalTex() { return normalTex; }
 
 		std::vector<ChPtr::Shared<MeshFace9>>& InsFace() { return easyFaceList; }
-#endif
 
 		virtual void SetOffsetVertex();
 
@@ -222,136 +174,26 @@ namespace ChMesh
 
 		size_t vertexNum = 0;
 
-#ifdef CRT
 		std::vector<ChPtr::Shared<ChTex::BaseTexture9>> texList;//テクスチャーの内容//
-		std::vector<ChPtr::Shared<ChMaterialA_9>> material;//マテリアルの内容//
+		std::vector<ChPtr::Shared<ChBaseMaterial_9<CharaType>>> material;//マテリアルの内容//
 		std::vector<ChPtr::Shared<ChTex::BaseTexture9>> normalTex;//法線マッピング//
 
 		std::vector<ChPtr::Shared<ChVec3_9>>optimalVertexList;//最適化した頂点//
 		std::vector<ChPtr::Shared<MeshFace9>>easyFaceList;//最適化した頂点//
 
 		std::vector<ChPtr::Shared<ChVec3_9>>offsetVertexList;//初期の頂点位置//
-#endif
 
-	}Mesh9;
-}
+	};
 
 
-
-#ifdef CRT
-
-void ChMesh::BaseMesh9::SetOffsetVertex(const ChVec3_9& _vertex)
-{
-	auto&& ver = ChPtr::Make_S<ChVec3_9>();
-	*ver = _vertex;
-	offsetVertexList.push_back(ver);
-}
-
-void ChMesh::BaseMesh9::SetMaterialCol(
-	const unsigned long _Num,
-	const ChVec4& _Dif)
-{
-	if (material.size() <= _Num)return;
-
-	material[_Num]->Diffuse.a = _Dif.a;
-	material[_Num]->Diffuse.r = _Dif.r;
-	material[_Num]->Diffuse.g = _Dif.g;
-	material[_Num]->Diffuse.b = _Dif.b;
-}
-
-void ChMesh::BaseMesh9::SetMaterialMatrix(
-	const unsigned long _Num,
-	const ChLMat& _Mat)
-{
-	if (material.size() <= _Num)return;
-
-	material[_Num]->mat = _Mat;
-}
-
-ChVec3_9 ChMesh::BaseMesh9::GetOffsetVertex(unsigned long _num)const
-{
-	if (offsetVertexList.size() <= _num)return ChVec3_9();
-	return (*offsetVertexList[_num]);
-}
-
-size_t ChMesh::BaseMesh9::GetMaterialCount()const
-{
-	return material.size();
-}
-
-ChMaterialA_9 ChMesh::BaseMesh9::GetMaterial(size_t _num)const
-{
-	if (material.size() <= _num)return ChMaterialA_9();
-	return *material[_num];
-}
-
-size_t ChMesh::BaseMesh9::GetTextureCount()const
-{
-	return texList.size();
-}
-
-ChTex::BaseTexture9* ChMesh::BaseMesh9::GetTexture(size_t _num)const
-{
-	if (texList.size() <= _num)return nullptr;
-	return texList[_num].get();
-}
-
-size_t ChMesh::BaseMesh9::GetNormalTextureCount()const
-{
-	return normalTex.size();
-}
-
-ChTex::BaseTexture9* ChMesh::BaseMesh9::GetNormalTexture(size_t _num)const
-{
-	if (texList.size() <= _num)return nullptr;
-	return normalTex[_num].get();
-}
-
-void ChMesh::BaseMesh9::Release() {
-
-	if (ChPtr::NullCheck(mesh))return;
-
-	if (!material.empty())material.clear();
-
-	if (!texList.empty())texList.clear();
-	if (!normalTex.empty())normalTex.clear();
-	if (!easyFaceList.empty())easyFaceList.clear();
-
-	mesh->Release();
-
-	mesh = nullptr;
-
-}
-const ChMesh::MeshFace9* ChMesh::BaseMesh9::GetFace(unsigned long _num) const
-{
-	if (easyFaceList.size() >= _num)return nullptr;
-	return easyFaceList[_num].get(); 
-}
-
-void ChMesh::BaseMesh9::CreateEasyFaceList()
-{
-	MeshVertex9* meshData = nullptr;
-
-	WORD* p = nullptr;
-
-	mesh->LockIndexBuffer(0, (LPVOID*)&p);
-	mesh->LockVertexBuffer(0, (LPVOID*)&meshData);
-
-	for (unsigned long faceNum = 0; faceNum < mesh->GetNumFaces(); faceNum++)
+	template<typename CharaType>
+	class XFileMeshBase
 	{
+	protected:
 
-		auto meshFace = ChPtr::Make_S<MeshFace9>();
+		void SetMaterialName(const std::basic_string<CharaType>& _fileName);
 
-		CreateEasyFace(*meshFace, faceNum, meshData, p);
-
-		easyFaceList.push_back(meshFace);
-	}
-
-	mesh->UnlockIndexBuffer();
-	mesh->UnlockVertexBuffer();
+	};
 }
-#endif
-
-#include"ChMeshShared9.h"
 
 #endif
