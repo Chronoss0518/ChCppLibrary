@@ -1,13 +1,10 @@
 #ifndef Ch_D3D9_MeLi_h
 #define Ch_D3D9_MeLi_h
 
-#ifdef CRT
-
 #include<string>
 #include<vector>
 #include<map>
 
-#endif
 
 #include"../ChMesh/ChBaseMesh9.h"
 #include"../ChMesh/ChSkinMesh9.h"
@@ -22,34 +19,17 @@ namespace ChTex
 
 namespace ChMesh
 {
-	typedef class BaseMesh9 Mesh9;
+	template<typename CharaType>
+	class BaseMesh9;
 
 
-#ifndef _ChMesh9
-#define _ChMesh9
-
-	//メッシュの頂点データ//
-	struct MeshVertex9
-	{
-		ChVec3_9 pos;
-		ChVec3_9 normal;
-		D3DXVECTOR2 tex;
-	};
-
-	struct MeshFace9
-	{
-		unsigned long vertexNum[3];
-		ChVec3_9 normal;
-		ChVec3_9 centerPos;
-	};
-
-#endif
-
+	template<typename CharaType>
 	class SkinMesh9;
 
 	//SmpXFile専用のenum classを作って、SetSmpXFileの第二引数に入れる。//
 	//以降第二引数に入れた数字を使ってSmpXFileを操作する。//
-	typedef class MeshList9:public ChCp::Initializer
+	template<typename  CharaType>
+	class MeshList9:public ChCp::Initializer
 	{
 	public://Operator Functions//
 
@@ -64,40 +44,37 @@ namespace ChMesh
 
 	public://InitAndRelease//
 
-#ifdef CRT
 		//もし、XFileフォルダーなどを作っていない場合は第二引数に""を入れる。//
 		inline void Init(
 			const LPDIRECT3DDEVICE9 _dv,
-			const std::string& _fileInDirectoryPath)
+			const std::basic_string<CharaType>& _fileInDirectoryPath)
 		{
 			device = _dv;
 			directoryPath = _fileInDirectoryPath;
 			SetInitFlg(true);
 		}
 
-#endif
-
 		virtual void Release();
 
 	public://Set Functions//
 
-#ifdef CRT
 		//Meshの登録(DataNameを使って3Dモデルを選択する)//
 		void SetMesh(
-			const std::string& _meshName,
+			const std::basic_string<CharaType>& _meshName,
 			const unsigned short _dataNum)
 		{
 			if (meshList.find(_dataNum) != meshList.end())return;
 			if (_meshName.length() <= 0)return;
 
-			std::string tmpString = _meshName;
-			std::string tmpPathName = "./";
+			std::basic_string<CharaType> tmpString = _meshName;
+			std::basic_string<CharaType> tmpPathName = ChStd::GetDotChara<CharaType>();
+			tmpPathName = tmpPathName + ChStd::GetSlashChara<CharaType>();
 			if (directoryPath.length() > 0)
 			{
-				tmpPathName = directoryPath + '/';
+				tmpPathName = directoryPath + ChStd::GetSlashChara<CharaType>();
 			}
 
-			auto tmpMesh = Mesh9::MeshType(_meshName);
+			auto tmpMesh = BaseMesh9<CharaType>::MeshType(_meshName);
 
 			tmpMesh->CreateMesh(_meshName, tmpPathName, device);
 
@@ -114,7 +91,7 @@ namespace ChMesh
 		//※登録できるSkinMeshがまだ完成していない//
 		//SkinMeshの登録(DataNameを使って3Dモデルを選択する)//
 		void SetSkinMesh(
-			const std::string& _meshName,
+			const std::basic_string<CharaType>& _meshName,
 			const unsigned short _dataNum)
 		{
 
@@ -122,14 +99,15 @@ namespace ChMesh
 
 			if (_meshName.length() <= 0)return;
 
-			std::string tmpString = _meshName;
-			std::string tmpPathName = "./";
+			std::basic_string<CharaType> tmpString = _meshName;
+			std::basic_string<CharaType> tmpPathName = ChStd::GetDotChara<CharaType>();
+			tmpPathName = tmpPathName + ChStd::GetSlashChara<CharaType>();
 			if (directoryPath.length() > 0)
 			{
-				tmpPathName = directoryPath + '/';
+				tmpPathName = directoryPath + ChStd::GetSlashChara<CharaType>();
 			}
 
-			auto tmpMesh = Mesh9::SkinMeshType(_meshName);
+			auto&& tmpMesh = BaseMesh9<CharaType>::SkinMeshType(_meshName);
 
 			tmpMesh->CreateMesh(_meshName, tmpPathName, device);
 
@@ -139,10 +117,10 @@ namespace ChMesh
 				//ChSystem::ErrerMessage("メッシュが読み込まれませんでした", "警告");
 
 				return;
-	}
+			}
 
 			{
-				auto tmpSkinMesh = ChPtr::SharedSafeCast<ChMesh::SkinMesh9>(tmpMesh);
+				auto tmpSkinMesh = ChPtr::SharedSafeCast<SkinMesh9<CharaType>>(tmpMesh);
 
 				if (tmpSkinMesh->boneList.size() <= 0)
 				{
@@ -154,7 +132,7 @@ namespace ChMesh
 			}
 			meshList[_dataNum] = tmpMesh;
 
-}
+		}
 
 		//登録されているMeshの画像を一部変更//
 		void SetTexture(
@@ -178,8 +156,8 @@ namespace ChMesh
 		//XFileよりアニメーションを取得//
 		void SetAnimation(
 			const unsigned short _dataNum,
-			const std::string& _aniamtionName,
-			const std::string& _xFileName)
+			const std::basic_string<CharaType>& _aniamtionName,
+			const std::basic_string<CharaType>& _xFileName)
 		{
 			if (_dataNum >= meshList.size())
 			{
@@ -187,7 +165,7 @@ namespace ChMesh
 				return;
 			}
 
-			auto skinMesh = ChPtr::SharedSafeCast<SkinMesh9>(meshList[_dataNum]);
+			auto skinMesh = ChPtr::SharedSafeCast<SkinMesh9<CharaType>>(meshList[_dataNum]);
 
 			if (skinMesh == nullptr)
 			{
@@ -202,8 +180,9 @@ namespace ChMesh
 		//外部で作成したアニメーションをセット//
 		void SetAnimation(
 			const unsigned short _dataNum,
-			const std::string& _aniamtionName,
-			const std::map<std::string, ChPtr::Shared<ChAnimationObject9>>& _animes)
+			const std::basic_string<CharaType>& _aniamtionName,
+			const std::map<std::basic_string<CharaType>,
+			ChPtr::Shared<ChAnimationObject9>>& _animes)
 		{
 
 			if (_dataNum >= meshList.size())
@@ -212,7 +191,7 @@ namespace ChMesh
 				return;
 			}
 
-			auto skinMesh = ChPtr::SharedSafeCast<SkinMesh9>(meshList[_dataNum]);
+			auto skinMesh = ChPtr::SharedSafeCast<SkinMesh9<CharaType>>(meshList[_dataNum]);
 
 			if (skinMesh == nullptr)
 			{
@@ -223,11 +202,9 @@ namespace ChMesh
 			skinMesh->SetAnimation(_aniamtionName, _animes);
 
 		}
-#endif
 
 	public://Get Functions//
 
-#ifdef CRT
 		//選択したMeshの選択した面のベースとなる法線//
 		MeshFace9 GetEasyFace(
 			const unsigned short _dataNum,
@@ -244,28 +221,22 @@ namespace ChMesh
 			return face;
 
 		}
-#endif
 
 		//登録されているMeshの数//
 		const unsigned short GetMeshSize();
 
-
-
-#ifdef CRT
 		//登録されているMeshのマテリアルを取得//
-		std::vector<ChPtr::Shared<ChMaterialA_9>>& GetMeshMaterials(const unsigned short _dataNum)
+		std::vector<ChPtr::Shared<ChBaseMaterial_9<CharaType>>>& GetMeshMaterials(const unsigned short _dataNum)
 		{
-			static std::vector<ChPtr::Shared<ChMaterialA_9>> tmpMateList;
+			static std::vector<ChPtr::Shared<ChBaseMaterial_9<CharaType>>> tmpMateList;
 
 			if (meshList.empty())return nMaterial();
 			if (meshList.size() <= _dataNum)return nMaterial();
 			return meshList[_dataNum]->InsMaterials();
 		}
 
-#endif
-
 		//描画時などに利用されるMeshを出力//
-		BaseMesh9* GetMesh(const unsigned short _dataNum);
+		BaseMesh9<CharaType>* GetMesh(const unsigned short _dataNum);
 
 	public://Other Functions//
 
@@ -296,42 +267,21 @@ namespace ChMesh
 			return ins;
 		};
 
-#ifdef CRT
-		std::string directoryPath;
+		std::basic_string<CharaType> directoryPath;
 
-		static std::vector<ChPtr::Shared<ChMaterialA_9>>& nMaterial()
+		static std::vector<ChPtr::Shared<ChBaseMaterial_9<CharaType>>>& nMaterial()
 		{
-			static std::vector<ChPtr::Shared<ChMaterialA_9>> ins;
+			static std::vector<ChPtr::Shared<ChBaseMaterial_9<CharaType>>> ins;
 			return ins;
 		};
 
-		std::map<unsigned short, ChPtr::Shared<BaseMesh9>>meshList;
-#endif
-	}ChMeshList9;
+		std::map<unsigned short, ChPtr::Shared<BaseMesh9<CharaType>>>meshList;
+	};
+
+	using MeshListA9 = MeshList9<char>;
+	using MeshListW9 = MeshList9<wchar_t>;
 
 }
-
-#ifdef CRT
-
-void ChMesh::MeshList9::Release()
-{
-	if (meshList.empty())return;
-	meshList.clear();
-	SetInitFlg(false);
-}
-
-const unsigned short ChMesh::MeshList9::GetMeshSize()
-{
-	return (unsigned short)meshList.size();
-}
-
-ChMesh::BaseMesh9* ChMesh::MeshList9::GetMesh(const unsigned short _dataNum)
-{
-	if (meshList.size() <= _dataNum)return nullptr;
-
-	return meshList[_dataNum].get();
-}
-#endif
 
 #endif
 //CopyRight Chronoss0518 2018/08
