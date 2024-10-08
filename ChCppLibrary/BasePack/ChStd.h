@@ -29,7 +29,7 @@
 #endif
 #endif
 
-#if _MSVC_LANG > 202000L
+#if _MSVC_LANG > 202002L
 #ifndef CPP20
 #define CPP20
 #endif
@@ -59,16 +59,9 @@
 #define CH_TO_CHAR32(Text) U##Text
 #endif
 
-#ifdef CPP17
 #ifndef CH_TO_CHAR8
 #define CH_TO_CHAR8(Text) u8##Text
 #endif
-#else
-#ifndef CH_TO_CHAR8
-#define CH_TO_CHAR8(Text)
-#endif
-#endif
-
 
 #ifndef CH_NUMBER_FUNCTION_BASE
 #define CH_NUMBER_FUNCTION_BASE(Function)\
@@ -81,6 +74,7 @@ const CharaType* Function()
 template<> const Type* Function<##Type##>()
 #endif
 
+#ifdef CPP20
 #ifndef CH_TO_NUMBER_TEXT_FUNCTION
 #define CH_TO_NUMBER_TEXT_FUNCTION(FunctionDefine,ToDefine)\
 FunctionDefine(char) { return ToDefine(""); }\
@@ -112,6 +106,39 @@ template _Class##<wchar_t>;\
 template _Class##<char8_t>;\
 template _Class##<char16_t>;\
 template _Class##<char32_t>
+#endif
+
+#else
+
+#ifndef CH_TO_NUMBER_TEXT_FUNCTION
+#define CH_TO_NUMBER_TEXT_FUNCTION(FunctionDefine,ToDefine)\
+FunctionDefine(char) { return ToDefine(""); }\
+FunctionDefine(wchar_t) { return ToDefine(L); }\
+FunctionDefine(char16_t) { return ToDefine(u); }\
+FunctionDefine(char32_t) { return ToDefine(U); }
+#endif //TO_NUMBER_TEXT_FUNCTION//
+
+#ifndef CH_TO_NUMBER_FUNCTION
+#define CH_TO_NUMBER_FUNCTION(FunctionDefine,Chara)\
+FunctionDefine(char) { return CH_TO_CHAR(Chara); }\
+FunctionDefine(wchar_t) { return CH_TO_WCHAR(Chara); }\
+FunctionDefine(char16_t) { return CH_TO_CHAR16(Chara); }\
+FunctionDefine(char32_t) { return CH_TO_CHAR32(Chara); }
+#endif
+
+#ifndef CH_STRING_TYPE_USE_FILE_EXPLICIT_DECLARATION
+#define CH_STRING_TYPE_USE_FILE_EXPLICIT_DECLARATION(_Class)\
+template _Class##<char>
+#endif
+
+#ifndef CH_STRING_TYPE_EXPLICIT_DECLARATION
+#define CH_STRING_TYPE_EXPLICIT_DECLARATION(_Class)\
+template _Class##<char>;\
+template _Class##<wchar_t>;\
+template _Class##<char16_t>;\
+template _Class##<char32_t>
+#endif
+
 #endif
 
 #ifndef CH_BASE_TYPE_EXPLICIT_DECLARATION
