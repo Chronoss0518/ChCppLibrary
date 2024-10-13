@@ -278,8 +278,12 @@ namespace ChMesh
 		std::map<unsigned short, ChPtr::Shared<BaseMesh9<CharaType>>>meshList;
 	};
 
+#ifdef CPP20
 	using MeshListA9 = MeshList9<char>;
 	using MeshListW9 = MeshList9<wchar_t>;
+#else
+	using MeshListA9 = MeshList9<char>;
+#endif
 
 }
 

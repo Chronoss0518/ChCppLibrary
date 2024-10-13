@@ -222,16 +222,18 @@ namespace ChMesh
 		inline ChPtr::Shared<ChMesh::BaseMesh9<CharaType>> GetMesh(const std::basic_string<CharaType>& _dataName)
 		{
 			if (meshList.empty())return nullptr;
-			if (meshList.find(_dataName) == meshList.end())return nullptr;
-			return meshList[_dataName];
+			auto&& res = meshList.find(_dataName);
+			if (res == meshList.end())return nullptr;
+			return res.second;
 		}
 
 		//Meshに登録されているマテリアルデータすべてを取得//
 		std::vector<ChPtr::Shared<ChMaterialA_9>>& GetMeshMaterials(const std::basic_string<CharaType>& _dataName)
 		{
 			if (meshList.empty())return nMaterial();
-			if (meshList.find(_dataName) == meshList.end())return nMaterial();
-			return meshList[_dataName]->InsMaterials();
+			auto&& res = meshList.find(_dataName);
+			if (res == meshList.end())return nMaterial();
+			return res.second->InsMaterials();
 		}
 
 		//登録されているMeshの選択した面の法線の取得//
@@ -331,10 +333,16 @@ namespace ChMesh
 
 	};
 
-	
+	template<typename CharaType>
+	inline MeshManager9<CharaType>& MeManager9() { return MeshManager9<CharaType>::GetInstance(); };
+
 	inline MeshManager9<char>& MeManagerA9() { return MeshManager9<char>::GetInstance(); };
 
+#ifdef CPP20
 	inline MeshManager9<wchar_t>& MeManagerW9() { return MeshManager9<wchar_t>::GetInstance(); };
+#endif
+
+
 }
 
 #endif
