@@ -9,7 +9,6 @@ void ChCpp::ObjectManager<CharaType>::##_FunctionNameBase##()\
 }
 #endif
 
-
 #ifndef CH_OBJECT_MGR_TAG_METHOD
 #define CH_OBJECT_MGR_TAG_METHOD(_FunctionNameBase) \
 template<typename CharaType>\
