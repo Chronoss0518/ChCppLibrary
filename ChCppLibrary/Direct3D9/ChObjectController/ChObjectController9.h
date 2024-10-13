@@ -5,7 +5,9 @@
 
 namespace ChMesh
 {
-	typedef class BaseMesh9 Mesh9;
+
+	template<typename CharaType>
+	class BaseMesh9;
 
 }
 
@@ -23,23 +25,26 @@ class ChObjectController9
 public:
 
 	//ŠÈˆÕ“IXFile‚ÌƒŒƒC”»’è//
+	template<typename CharaType>
 	bool MeshHitRay(
 		DWORD& _index,
 		float& _len,
-		const ChMesh::BaseMesh9& _mesh,
+		const ChMesh::BaseMesh9<CharaType>& _mesh,
 		const ChMat_9& _obj,
 		const ChVec3_9& _pos,
 		const ChVec3_9& _dir);
 
+	template<typename CharaType>
 	bool MeshHitRay(
 		float& _len,
-		const ChMesh::BaseMesh9& _mesh,
+		const ChMesh::BaseMesh9<CharaType>& _mesh,
 		const ChMat_9& _obj,
 		const ChVec3_9& _pos,
 		const ChVec3_9& _dir);
 
+	template<typename CharaType>
 	bool MeshHitRay(
-		const ChMesh::BaseMesh9& _mesh,
+		const ChMesh::BaseMesh9<CharaType>& _mesh,
 		const ChMat_9& _obj,
 		const ChVec3_9& _pos,
 		const ChVec3_9& _dir);
