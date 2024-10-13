@@ -7,13 +7,13 @@
 
 #ifdef __cplusplus
 
-#if __cplusplus > 201703L
+#if __cplusplus >= 201703L
 #ifndef CPP17
 #define CPP17
 #endif
 #endif
 
-#if __cplusplus > 202002L
+#if __cplusplus >= 202002L
 #ifndef CPP20
 #define CPP20
 #endif
@@ -23,13 +23,13 @@
 
 #ifdef _MSVC_LANG
 
-#if _MSVC_LANG > 201703L 
+#if _MSVC_LANG >= 201703L 
 #ifndef CPP17
 #define CPP17
 #endif
 #endif
 
-#if _MSVC_LANG > 202002L
+#if _MSVC_LANG >= 202002L
 #ifndef CPP20
 #define CPP20
 #endif
@@ -74,6 +74,12 @@ const CharaType* Function()
 template<> const Type* Function<##Type##>()
 #endif
 
+#ifndef CH_STRING_TYPE_USE_FILE_EXPLICIT_DECLARATION
+#define CH_STRING_TYPE_USE_FILE_EXPLICIT_DECLARATION(_Class)\
+template class _Class##<char>;\
+template class _Class##<wchar_t>
+#endif
+
 #ifdef CPP20
 #ifndef CH_TO_NUMBER_TEXT_FUNCTION
 #define CH_TO_NUMBER_TEXT_FUNCTION(FunctionDefine,ToDefine)\
@@ -93,19 +99,13 @@ FunctionDefine(char32_t) { return CH_TO_CHAR32(Chara); }\
 FunctionDefine(char8_t) { return CH_TO_CHAR8(Chara); }
 #endif
 
-#ifndef CH_STRING_TYPE_USE_FILE_EXPLICIT_DECLARATION
-#define CH_STRING_TYPE_USE_FILE_EXPLICIT_DECLARATION(_Class)\
-template _Class##<char>;\
-template _Class##<std::filesystem::path::value_type>
-#endif
-
 #ifndef CH_STRING_TYPE_EXPLICIT_DECLARATION
 #define CH_STRING_TYPE_EXPLICIT_DECLARATION(_Class)\
-template _Class##<char>;\
-template _Class##<wchar_t>;\
-template _Class##<char8_t>;\
-template _Class##<char16_t>;\
-template _Class##<char32_t>
+template class _Class##<char>;\
+template class _Class##<wchar_t>;\
+template class _Class##<char8_t>;\
+template class _Class##<char16_t>;\
+template class _Class##<char32_t>
 #endif
 
 #else
@@ -126,17 +126,12 @@ FunctionDefine(char16_t) { return CH_TO_CHAR16(Chara); }\
 FunctionDefine(char32_t) { return CH_TO_CHAR32(Chara); }
 #endif
 
-#ifndef CH_STRING_TYPE_USE_FILE_EXPLICIT_DECLARATION
-#define CH_STRING_TYPE_USE_FILE_EXPLICIT_DECLARATION(_Class)\
-template _Class##<char>
-#endif
-
 #ifndef CH_STRING_TYPE_EXPLICIT_DECLARATION
 #define CH_STRING_TYPE_EXPLICIT_DECLARATION(_Class)\
-template _Class##<char>;\
-template _Class##<wchar_t>;\
-template _Class##<char16_t>;\
-template _Class##<char32_t>
+template class _Class##<char>;\
+template class _Class##<wchar_t>;\
+template class _Class##<char16_t>;\
+template class _Class##<char32_t>
 #endif
 
 #endif
