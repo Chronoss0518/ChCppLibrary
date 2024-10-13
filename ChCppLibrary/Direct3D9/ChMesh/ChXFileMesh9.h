@@ -16,6 +16,14 @@ namespace ChMesh
 			const std::basic_string<CharaType>& _pathName,
 			const LPDIRECT3DDEVICE9& _dev)override;
 	};
+
+#ifdef CPP20
+	using XFileMeshA9 = XFileMesh9<char>;
+	using XFileMeshW9 = XFileMesh9<wchar_t>;
+#else
+	using XFileMeshA9 = XFileMesh9<char>;
+#endif
+
 }
 
 #endif

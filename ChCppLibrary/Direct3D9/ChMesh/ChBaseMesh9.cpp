@@ -32,7 +32,7 @@ void BaseMesh9<CharaType>::SetOffsetVertex()
 
 	for (unsigned long ver = 0; ver < mesh->GetNumVertices(); ver++)
 	{
-		SetOffsetVertex((tmpVer + ver)->pos);
+		BaseMesh9<CharaType>::SetOffsetVertex((tmpVer + ver)->pos);
 	}
 
 	mesh->UnlockVertexBuffer();
@@ -294,4 +294,4 @@ void ChMesh::SkinMesh9<CharaType>::SetOffsetVertex()
 	return;
 }
 
-CH_STRING_TYPE_USE_FILE_EXPLICIT_DECLARATION(ChMesh::BaseMesh9);
+CH_STRING_TYPE_USE_FILE_EXPLICIT_DECLARATION(BaseMesh9);

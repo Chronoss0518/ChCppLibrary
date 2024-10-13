@@ -12,7 +12,7 @@ template<typename CharaType>
 struct ChBaseMaterial_9 :public D3DMATERIAL9
 {
 
-	ChBaseMaterial_9&operator=(const D3DMATERIAL9 _cm)
+	ChBaseMaterial_9&operator=(const D3DMATERIAL9& _cm)
 	{
 		if (this == &_cm)return *this;
 		D3DMATERIAL9::operator = (_cm);
@@ -34,6 +34,22 @@ struct ChBaseMaterial_9 :public D3DMATERIAL9
 
 	ChBaseMaterial_9(){}
 
+	ChBaseMaterial_9(const ChBaseMaterial_9& _cm) 
+	{
+		if (&_cm == this)return;
+		*this = D3DMATERIAL9(_cm);
+		mat = _cm.mat;
+		name = _cm.name;
+	}
+
+	ChBaseMaterial_9(ChBaseMaterial_9&& _cm)
+	{
+		if (&_cm == this)return;
+		*this = D3DMATERIAL9(_cm);
+		mat = _cm.mat;
+		name = _cm.name;
+	}
+
 	//SubSet描画時に移動させるマテリアルの行列//
 	ChMat_9 mat;
 
@@ -42,15 +58,26 @@ struct ChBaseMaterial_9 :public D3DMATERIAL9
 };
 
 
+
+#ifdef CPP20
+
 using ChMaterialA_9 = ChBaseMaterial_9<char>;
 using ChMaterialW_9 = ChBaseMaterial_9<wchar_t>;
 
-
 using ChMaterial_9 =
 #ifdef UNICODE
-	ChMaterialW_9;
+ChMaterialW_9;
 #else
-	ChMaterialA_9;
+ChMaterialA_9;
 #endif
+
+#else
+
+using ChMaterialA_9 = ChBaseMaterial_9<char>;
+
+using ChMaterial_9 = ChMaterialA_9;
+
+#endif
+
 
 #endif
