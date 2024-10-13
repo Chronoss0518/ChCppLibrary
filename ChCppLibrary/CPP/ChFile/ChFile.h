@@ -274,9 +274,7 @@ namespace ChCpp
 	};
 	
 	using CharFile =  File<char>;
-#ifdef CPP17
-	using WCharFile = File<std::filesystem::path::value_type>;
-#endif
+	using WCharFile = File<wchar_t>;
 }
 
 #endif

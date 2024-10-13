@@ -45,5 +45,3 @@ bool ChCpp::File<CharaType>::IsOpenModeTest(bool _isReadFlg, bool _isBinaryFlg)
 
 	return true;
 }
-
-CH_STRING_TYPE_USE_FILE_EXPLICIT_DECLARATION(ChCpp::File);
