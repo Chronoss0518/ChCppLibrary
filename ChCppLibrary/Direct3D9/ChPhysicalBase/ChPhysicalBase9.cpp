@@ -11,31 +11,53 @@
 
 using namespace ChMesh;
 
+template<typename CharaType>
+ChMesh::BaseMesh9<CharaType>* ChPhysicalBase9<CharaType>::GetMesh(unsigned long _num)
+{
+	if (_num >= wpXList.size())return nullptr;
+	return wpXList[_num].lock().get();
+}
+
+template<typename CharaType>
+unsigned long ChPhysicalBase9<CharaType>::GetMeshCount()
+{
+	return wpXList.size();
+}
+
+template<typename CharaType>
+void ChPhysicalBase9<CharaType>::RemoveMesh(unsigned long _num)
+{
+	if (_num >= wpXList.size())return;
+	wpXList.erase(wpXList.begin() + _num);
+}
+
 ///////////////////////////////////////////////////////////////////////////////////
 //ChGravity9メソッド
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChGravity9::Init(const float _FPS)
+template<typename CharaType>
+void ChGravity9<CharaType>::Init(const float _FPS)
 {
-	FPS = _FPS;
+	ChPhysicalBase9<CharaType>::FPS = _FPS;
 }
 
-bool ChGravity9::UpDate(
-	ChVec3_9* _pos
-	, const ChVec3_9* _moveDir)
+template<typename CharaType>
+bool ChGravity9<CharaType>::UpDate(
+	ChVec3_9* _pos,
+	const ChVec3_9* _moveDir)
 {
-	vec = ChVec3_9(0.0f, 0.0f, 0.0f);
+	ChPhysicalBase9<CharaType>::vec = ChVec3_9(0.0f, 0.0f, 0.0f);
 
 	
-	for (unsigned short i = 0; i < GetMeshCount(); i++)
+	for (unsigned short i = 0; i < ChPhysicalBase9<CharaType>::GetMeshCount(); i++)
 	{
-		if (GetMeshCount() <= 0)return false;
+		if (ChPhysicalBase9<CharaType>::GetMeshCount() <= 0)return false;
 
-		auto tmpX = GetMesh(i);
+		auto tmpX = ChPhysicalBase9<CharaType>::GetMesh(i);
 
 		if (tmpX == nullptr)
 		{
-			RemoveMesh(i);
+			ChPhysicalBase9<CharaType>::RemoveMesh(i);
 			i--;
 			continue;
 		}
@@ -43,11 +65,11 @@ bool ChGravity9::UpDate(
 		float tmpLen;
 		ChVec3_9 tmpVec(0.0f, 0.0f, 0.0f);
 
-		vec = ChVec3_9(0.0f, -1.0f, 0.0f);
+		ChPhysicalBase9<CharaType>::vec = ChVec3_9(0.0f, -1.0f, 0.0f);
 
-		pow += g / FPS;
+		ChPhysicalBase9<CharaType>::pow += g / ChPhysicalBase9<CharaType>::FPS;
 
-		pow -= _moveDir->y;
+		ChPhysicalBase9<CharaType>::pow -= _moveDir->y;
 
 		if (_moveDir->y > 0.0f)
 		{
@@ -55,7 +77,7 @@ bool ChGravity9::UpDate(
 			return true;
 		}
 
-		if (-tmpSpeed >= pow)pow = -tmpSpeed;
+		if (-tmpSpeed >= ChPhysicalBase9<CharaType>::pow)ChPhysicalBase9<CharaType>::pow = -tmpSpeed;
 		tmpSpeed = 0.0f;
 
 		ChVec3_9 tmpPos = *_pos;
@@ -69,19 +91,19 @@ bool ChGravity9::UpDate(
 			*tmpX,
 			ChMat_9(),
 			tmpPos,
-			vec))continue;
+			ChPhysicalBase9<CharaType>::vec))continue;
 
-		if (tmpLen - baseLen - virtualHeight < pow) {
-			vec *= (tmpLen - baseLen - virtualHeight);
-			*_pos = vec + tmpPos;
+		if (tmpLen - ChPhysicalBase9<CharaType>::baseLen - virtualHeight < ChPhysicalBase9<CharaType>::pow) {
+			ChPhysicalBase9<CharaType>::vec *= (tmpLen - ChPhysicalBase9<CharaType>::baseLen - virtualHeight);
+			*_pos = ChPhysicalBase9<CharaType>::vec + tmpPos;
 			_pos->y -= _moveDir->y;
-			pow = 0.0f;
+			ChPhysicalBase9<CharaType>::pow = 0.0f;
 
 			return true;
 		}
 
-		vec *= pow;
-		*_pos += vec;
+		ChPhysicalBase9<CharaType>::vec *= ChPhysicalBase9<CharaType>::pow;
+		*_pos += ChPhysicalBase9<CharaType>::vec;
 		return true;
 	}
 
@@ -92,27 +114,29 @@ bool ChGravity9::UpDate(
 //ChPushBack9メソッド
 ///////////////////////////////////////////////////////////////////////////////////
 
-void ChPushBack9::Init()
+template<typename CharaType>
+void ChPushBack9<CharaType>::Init()
 {
 
 }
 
-bool ChPushBack9::UpDate(ChVec3_9* _pos, const ChVec3_9* _dir)
+template<typename CharaType>
+bool ChPushBack9<CharaType>::UpDate(ChVec3_9* _pos, const ChVec3_9* _dir)
 {
-	vec = ChVec3_9(0.0f, 0.0f, 0.0f);
+	ChPhysicalBase9<CharaType>::vec = ChVec3_9(0.0f, 0.0f, 0.0f);
 	ChVec3_9 tmpVec;
 	ChVec3_9 tmpPos;
 	float len;
 
-	for (unsigned short i = 0; i < GetMeshCount(); i++)
+	for (unsigned short i = 0; i < ChPhysicalBase9<CharaType>::GetMeshCount(); i++)
 	{
-		if (GetMeshCount() <= 0)return false;
+		if (ChPhysicalBase9<CharaType>::GetMeshCount() <= 0)return false;
 
-		auto tmpX = GetMesh(i);
+		auto tmpX = ChPhysicalBase9<CharaType>::GetMesh(i);
 
 		if (tmpX == nullptr)
 		{
-			RemoveMesh(i);
+			ChPhysicalBase9<CharaType>::RemoveMesh(i);
 			i--;
 			continue;
 		}
@@ -127,7 +151,7 @@ bool ChPushBack9::UpDate(ChVec3_9* _pos, const ChVec3_9* _dir)
 		float tmpLen = 0.0f;
 		DWORD faceNum;
 
-		if (!objCon->MeshHitRay(
+		if (!ChPhysicalBase9<CharaType>::objCon->MeshHitRay(
 			faceNum,
 			tmpLen,
 			*tmpX,
