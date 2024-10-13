@@ -7,7 +7,7 @@
 
 #ifndef Ch_ToRelativePath_Function_EXPLICIT_DECLARATION
 #define Ch_ToRelativePath_Function_EXPLICIT_DECLARATION(_CharType, _AorW) \
-std::basic_string<_CharType> ToRelativePath##_AorW##(const std::basic_string<_CharType>& _path);
+std::basic_string<_CharType> ToRelativePath##_AorW##(const std::basic_string<_CharType>& _path)
 #endif
 
 #include"../ChBaseSystem/ChBaseSystem.h"
