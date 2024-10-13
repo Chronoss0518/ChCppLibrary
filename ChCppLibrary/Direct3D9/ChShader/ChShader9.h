@@ -5,7 +5,8 @@
 
 namespace ChMesh
 {
-	typedef class BaseMesh9 Mesh9;
+	template<typename CharaType>
+	class BaseMesh9;
 }
 
 namespace ChTex
@@ -213,13 +214,15 @@ namespace ChD3D9
 		void DrawEnd();
 
 		//Mesh描画用関数//
+		template<typename CharaType>
 		void DrawMesh(
-			const ChMesh::Mesh9& _mesh,
+			const ChMesh::BaseMesh9<CharaType>& _mesh,
 			const ChMat_9& _mat = ChMat_9());
 
 		//Mesh描画用関数//
+		template<typename CharaType>
 		void DrawMeshContour(
-			const ChMesh::Mesh9& _mesh,
+			const ChMesh::BaseMesh9<CharaType>& _mesh,
 			const ChVec4& _color,
 			const ChMat_9& _mat = ChMat_9(),
 			const float _size = 1.0f);
@@ -301,8 +304,6 @@ protected://Member Values//
 		//カリングタイプ//
 		CULL cull = CULL::NONE;
 
-#ifdef CRT
-
 		//モデルの画像がない場合にセットする//
 		ChPtr::Shared<ChTex::BaseTexture9>whiteTex = nullptr;
 
@@ -317,8 +318,6 @@ protected://Member Values//
 
 		//ライトの強さを設定する画像//
 		ChPtr::Shared<ChTex::Texture9>myLightTex = nullptr;
-
-#endif
 
 
 
@@ -343,98 +342,6 @@ protected://Member Values//
 
 	inline ShaderController& Shader() { return ShaderController::GetIns(); }
 }
-
-#ifdef CRT
-
-void ChD3D9::ShaderController::CreateBeforeTex()
-{
-	beforeTex = ChPtr::Make_S<ChTex::Texture9>();
-
-	beforeTex->CreateMinuColTexture<D3DCOLOR>(device, D3DCOLOR_ARGB(255, 255, 255, 255));
-}
-
-void ChD3D9::ShaderController::ReleaseTextures()
-{
-	whiteTex = nullptr;
-	normalTex = nullptr;
-	lightEffectTex = nullptr; 
-	myLightTex = nullptr;
-}
-
-ChTex::BaseTexture9* ChD3D9::ShaderController::GetWhiteTex()
-{
-	return whiteTex.get();
-}
-
-ChTex::BaseTexture9* ChD3D9::ShaderController::GetNormalTex()
-{
-	return normalTex.get();
-}
-
-ChTex::BaseTexture9* ChD3D9::ShaderController::GetLightEffectTex()
-{
-	return lightEffectTex.get();
-}
-
-ChTex::BaseTexture9* ChD3D9::ShaderController::GetBeforeTex()
-{
-	return beforeTex.get();
-}
-
-ChTex::BaseTexture9* ChD3D9::ShaderController::GetMyLightTex()
-{
-	return myLightTex.get();
-}
-
-//白色の画像生成関数//
-void ChD3D9::ShaderController::MakeWhiteTexture()
-{
-	whiteTex = ChPtr::Make_S<ChTex::BaseTexture9>();
-
-	whiteTex->CreateColTexture(device, D3DCOLOR_ARGB(255, 255, 255, 255));
-}
-
-//ライトの強さを表すテクスチャの生成//
-void ChD3D9::ShaderController::MakeLightingPowTexture()
-{
-
-	lightEffectTex = ChPtr::Make_S<ChTex::BaseTexture9>();
-
-	lightEffectTex->CreateColTexture(device, D3DCOLOR_ARGB(255, 255, 255, 255), 255, 1);
-
-	unsigned char Col = 0;
-
-	D3DLOCKED_RECT LockRect;
-	if (lightEffectTex->GetTex()->LockRect(0, &LockRect, nullptr, 0) != D3D_OK)
-	{
-		lightEffectTex = nullptr;
-		return;
-	}
-	UINT* pPitch = (UINT*)LockRect.pBits;
-
-	UINT Pitch = LockRect.Pitch / sizeof(UINT);
-	for (unsigned int h = 0; h < lightEffectTex->GetOriginalHeight(); h++)
-	{
-		for (unsigned int w = 0; w < lightEffectTex->GetOriginalWidth(); w++)
-		{
-			*(pPitch + w) = D3DCOLOR_ARGB(Col, Col, Col, Col);
-			Col++;
-		}
-		pPitch += Pitch;
-	}
-
-	lightEffectTex->GetTex()->UnlockRect(0);
-}
-
-
-//法線マップ生成用関数//
-void ChD3D9::ShaderController::MakeNormalMapTexture()
-{
-	normalTex = ChPtr::Make_S<ChTex::BaseTexture9>();
-
-	normalTex->CreateColTexture(device, D3DCOLOR_ARGB(255, 128, 128, 128));
-}
-#endif
 
 #endif
 //CopyRight Chronoss0518 2018/08
