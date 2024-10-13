@@ -107,7 +107,7 @@ bool ChCpp::PolygonCollider<CharaType>::IsHit(HitTestBox* _target)
 }
 
 template<typename CharaType>
-bool  ChCpp::PolygonCollider<CharaType>::IsInnerHit(HitTestBox* _target)
+bool ChCpp::PolygonCollider<CharaType>::IsInnerHit(HitTestBox* _target)
 {
 	return false;
 }
@@ -115,10 +115,8 @@ bool  ChCpp::PolygonCollider<CharaType>::IsInnerHit(HitTestBox* _target)
 template<typename CharaType>
 bool ChCpp::PolygonCollider<CharaType>::IsHit(HitTestSphere* _target)
 {
-	auto model = GetModel();
-
+	auto&& model = GetModel();
 	if (ChPtr::NullCheck(model))return false;
-
 	return true;
 }
 
@@ -129,7 +127,7 @@ bool ChCpp::PolygonCollider<CharaType>::IsInnerHit(HitTestSphere* _target)
 }
 
 template<typename CharaType>
-bool  ChCpp::PolygonCollider<CharaType>::IsHit(HitTestRay* _target)
+bool ChCpp::PolygonCollider<CharaType>::IsHit(HitTestRay* _target)
 {
 	auto model = GetModel();
 
