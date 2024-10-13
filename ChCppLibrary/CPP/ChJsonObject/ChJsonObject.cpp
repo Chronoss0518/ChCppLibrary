@@ -6,6 +6,24 @@
 #include"ChJsonNumber.h"
 #include"ChJsonString.h"
 
+#ifndef CH_JSON_OBJECT_GET_SHARED_METHOD
+#define CH_JSON_OBJECT_GET_SHARED_METHOD(_CastClass)\
+template<typename CharaType>\
+ChPtr::Shared<ChCpp::##_CastClass##<CharaType>> ChCpp::JsonObject<CharaType>::Get##_CastClass##(const std::basic_string<CharaType>& _parameterName){\
+	auto findObject = values.find(_parameterName);\
+	if (findObject == values.end())return nullptr;\
+	return ChPtr::SharedSafeCast<##_CastClass##<CharaType>>(findObject->second);}
+#endif
+
+#ifndef CH_JSON_OBJECT_GET_RAW_METHOD
+#define CH_JSON_OBJECT_GET_RAW_METHOD(_CastClass)\
+template<typename CharaType>\
+const ChCpp::##_CastClass##<CharaType>* const ChCpp::JsonObject<CharaType>::Get##_CastClass##(const std::basic_string<CharaType>& _parameterName)const{\
+	auto findObject = values.find(_parameterName);\
+	if (findObject == values.end())return nullptr;\
+	return ChPtr::SafeCast<##_CastClass##<CharaType>>(findObject->second.get());}
+#endif
+
 template<typename CharaType>
 bool ChCpp::JsonObject<CharaType>::SetRawData(const std::basic_string<CharaType>& _jsonText)
 {
