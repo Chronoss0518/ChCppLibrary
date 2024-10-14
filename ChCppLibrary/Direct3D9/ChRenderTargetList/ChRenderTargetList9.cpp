@@ -14,10 +14,10 @@ using namespace ChTex;
 ///////////////////////////////////////////////////////////////////////////////////
 
 void RenderTargetList9::Init(
-	const LPDIRECT3DDEVICE9& _dv
-	, const unsigned short _windWidth
-	, const unsigned short _windHeight
-	, const ChD3D9::ShaderController* _shader)
+	const LPDIRECT3DDEVICE9& _dv,
+	const unsigned short _windWidth,
+	const unsigned short _windHeight,
+	const ChD3D9::ShaderController* _shader)
 {
 	CreateDBData();
 
@@ -56,8 +56,8 @@ void RenderTargetList9::Release()
 }
 
 void RenderTargetList9::SetRT(
-	const unsigned short _dataNum
-	,const D3DCOLOR _backCol
+	const unsigned short _dataNum,
+	const D3DCOLOR _backCol
 )
 {
 	auto&& rt = GetRTTexture(_dataNum);
@@ -90,4 +90,45 @@ void RenderTargetList9::ReturnRT()
 	{
 		uShader->SetRTDraw(false);
 	}
+}
+
+
+void ChTex::RenderTargetList9::CreateDBData()
+{
+	dbData = ChPtr::Make_S<Texture9>();
+}
+
+ChTex::BaseTexture9* ChTex::RenderTargetList9::GetDBData()
+{
+	return dbData.get();
+}
+
+void ChTex::RenderTargetList9::ReleaseDBData()
+{
+	dbData = nullptr;
+}
+
+//作成したテクスチャを取得//
+ChTex::BaseTexture9* ChTex::RenderTargetList9::GetRTTexture(const unsigned short _dataNum)
+{
+	auto&& rt = rtList.find(_dataNum);
+	if (rt == rtList.end())return nullptr;
+	return rt->second.get();
+}
+
+//登録されてるテクスチャを選択して消去//
+void ChTex::RenderTargetList9::DeleteRTTexture(const unsigned short _dataNum)
+{
+	if (rtList.empty())return;
+	auto&& rt = rtList.find(_dataNum);
+	if (rt == rtList.end())return;
+
+	rtList.erase(rt);
+}
+
+//登録してあるすべてのレンダーターゲットテクスチャを解放//
+void ChTex::RenderTargetList9::ClearRT()
+{
+	if (rtList.empty())return;
+	rtList.clear();
 }
