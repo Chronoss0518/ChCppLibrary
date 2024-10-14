@@ -264,6 +264,76 @@ void ChDirectSound9<CharaType>::LoadSound(
 }
 
 template<typename CharaType>
+void ChDirectSound9<CharaType>::LoadSound(
+	LPDIRECTSOUNDBUFFER8& _LpSound,
+	LPDIRECTSOUND3DBUFFER8& _Lp3DSound,
+	const wchar_t* _soundFileName,
+	unsigned long _soundFileNameLength)
+{
+	HRESULT hr;
+
+	CWaveSoundRead9 waveFile;
+	// WAVEファイルを開く
+	waveFile.Open(_soundFileName);
+
+	// セカンダリ・バッファを作成する
+	// DSBUFFERDESC構造体を設定
+	DSBUFFERDESC dsbdesc;
+	ChStd::MZero(&dsbdesc);
+	dsbdesc.dwSize = sizeof(DSBUFFERDESC);
+
+	//(DSBCAPS_CTRL3D=３Ｄサウンドを使用)
+	dsbdesc.dwFlags = DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_GLOBALFOCUS | DSBCAPS_CTRL3D |
+		DSBCAPS_CTRLVOLUME | /*DSBCAPS_CTRLPAN |*/ DSBCAPS_CTRLFREQUENCY;
+	dsbdesc.dwBufferBytes = waveFile.m_ckIn.cksize;
+	dsbdesc.lpwfxFormat = waveFile.m_pwfx;
+
+	//3DサウンドのHELアルゴリズムを選択
+	dsbdesc.guid3DAlgorithm = DS3DALG_NO_VIRTUALIZATION;
+
+	//	dsbdesc.guid3DAlgorithm=DS3DALG_DEFAULT;
+
+		// バッファを作る
+	LPDIRECTSOUNDBUFFER pDSTmp;
+	//	lpDSound->CreateSoundBuffer(&dsbdesc, &pDSData, NULL); 
+	lpDS->CreateSoundBuffer(&dsbdesc, &pDSTmp, NULL);
+	pDSTmp->QueryInterface(IID_IDirectSoundBuffer8, reinterpret_cast<LPVOID*>(&_LpSound));
+	pDSTmp->Release();
+
+	// セカンダリ・バッファにWaveデータを書き込む
+	LPVOID lpvPtr1;		// 最初のブロックのポインタ
+	DWORD dwBytes1;		// 最初のブロックのサイズ
+	LPVOID lpvPtr2;		// ２番目のブロックのポインタ
+	DWORD dwBytes2;		// ２番目のブロックのサイズ
+
+	hr = _LpSound->Lock(0, waveFile.m_ckIn.cksize, &lpvPtr1, &dwBytes1, &lpvPtr2, &dwBytes2, 0);
+
+	// DSERR_BUFFERLOSTが返された場合，Restoreメソッドを使ってバッファを復元する
+	if (DSERR_BUFFERLOST == hr)
+	{
+		_LpSound->Restore();
+		hr = _LpSound->Lock(0, waveFile.m_ckIn.cksize, &lpvPtr1, &dwBytes1, &lpvPtr2, &dwBytes2, 0);
+	}
+	if (SUCCEEDED(hr))
+	{
+		// ロック成功
+
+		// ここで，バッファに書き込む
+		// バッファにデータをコピーする
+		UINT rsize;
+		waveFile.Read(dwBytes1, (LPBYTE)lpvPtr1, &rsize);
+		if (0 != dwBytes2)
+			waveFile.Read(dwBytes2, (LPBYTE)lpvPtr2, &rsize);
+
+		// 書き込みが終わったらすぐにUnlockする．
+		hr = _LpSound->Unlock(lpvPtr1, dwBytes1, lpvPtr2, dwBytes2);
+	}
+
+	//3Dのセカンダリバッファを作る
+	_LpSound->QueryInterface(IID_IDirectSound3DBuffer8, (LPVOID*)&_Lp3DSound);
+}
+
+template<typename CharaType>
 void ChDirectSound9<CharaType>::Init(HWND _hWnd)
 {
 	//COM(コンポーネントオブジェクトモデル)の初期化
@@ -513,6 +583,35 @@ HRESULT CWaveSoundRead9::WaveOpenFile(
 	return S_OK;
 }
 
+//-----------------------------------------------------------------------------
+// Name: WaveOpenFile()
+// Desc: This function will open a wave input file and prepare it for reading,
+//       so the data can be easily read with WaveReadFile. Returns 0 if
+//       successful, the error code if not.
+//-----------------------------------------------------------------------------
+HRESULT CWaveSoundRead9::WaveOpenFile(
+	const WCHAR* strFileName,
+	HMMIO* phmmioIn,
+	WAVEFORMATEX** ppwfxInfo,
+	MMCKINFO* pckInRIFF)
+{
+	HRESULT hr;
+	HMMIO   hmmioIn = NULL;
+
+	if (NULL == (hmmioIn = mmioOpenW((wchar_t*)strFileName, NULL, MMIO_ALLOCBUF | MMIO_READ)))
+		return E_FAIL;
+
+	if (FAILED(hr = ReadMMIO(hmmioIn, pckInRIFF, ppwfxInfo)))
+	{
+		mmioClose(hmmioIn, 0);
+		return hr;
+	}
+
+	*phmmioIn = hmmioIn;
+
+	return S_OK;
+}
+
 
 
 
@@ -645,6 +744,25 @@ HRESULT CWaveSoundRead9::Open(const CHAR* strFilename)
 	return hr;
 }
 
+
+//-----------------------------------------------------------------------------
+// Name: Open()
+// Desc: Opens a wave file for reading
+//-----------------------------------------------------------------------------
+HRESULT CWaveSoundRead9::Open(const WCHAR* strFilename)
+{
+	SAFE_DELETE(m_pwfx);
+
+	HRESULT  hr;
+
+	if (FAILED(hr = WaveOpenFile(strFilename, &m_hmmioIn, &m_pwfx, &m_ckInRiff)))
+		return hr;
+
+	if (FAILED(hr = Reset()))
+		return hr;
+
+	return hr;
+}
 
 
 

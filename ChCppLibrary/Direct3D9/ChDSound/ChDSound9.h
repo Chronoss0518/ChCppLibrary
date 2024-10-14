@@ -90,7 +90,7 @@ public://Set Functions//
 	{
 		if (subSoundList.size() >= maxSE)return 0;
 
-		std::basic_string<CharaType>& tmpString = _soundFilePath;
+		std::basic_string<CharaType> tmpString = _soundFilePath;
 
 		if (tmpString.length() <= 0)return 0;
 
@@ -216,6 +216,12 @@ protected://Other Functions//
 		LPDIRECTSOUNDBUFFER8& _lpSound,
 		LPDIRECTSOUND3DBUFFER8& _lp3DSound,
 		const char* _soundFileName,
+		unsigned long _soundFileNameLength);
+
+	void LoadSound(
+		LPDIRECTSOUNDBUFFER8& _lpSound,
+		LPDIRECTSOUND3DBUFFER8& _lp3DSound,
+		const wchar_t* _soundFileName,
 		unsigned long _soundFileNameLength);
 
 	protected://Member Value//

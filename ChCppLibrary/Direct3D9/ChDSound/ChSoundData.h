@@ -23,6 +23,12 @@ public://WAVE Control Functions//
 		WAVEFORMATEX** ppwfxInfo,
 		MMCKINFO* pckInRIFF);
 
+	HRESULT static WaveOpenFile(
+		const WCHAR* strFileName,
+		HMMIO* phmmioIn,
+		WAVEFORMATEX** ppwfxInfo,
+		MMCKINFO* pckInRIFF);
+
 	HRESULT static WaveStartDataRead(
 		HMMIO* phmmioIn,
 		MMCKINFO* pckIn,
@@ -44,6 +50,8 @@ public://Constructer Destructer//
 public://Control Functions//
 
 	HRESULT Open(const CHAR* strFilename);
+
+	HRESULT Open(const WCHAR* strFilename);
 
 	HRESULT Reset();
 
