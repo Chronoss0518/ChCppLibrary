@@ -805,9 +805,6 @@ HRESULT CWaveSoundRead9::WaveReadFile(
 	return S_OK;
 }
 
-
-
-
 //-----------------------------------------------------------------------------
 // Name: CWaveSoundRead()
 // Desc: Constructs the class
@@ -816,9 +813,6 @@ CWaveSoundRead9::CWaveSoundRead9()
 {
 	m_pwfx = NULL;
 }
-
-
-
 
 //-----------------------------------------------------------------------------
 // Name: ~CWaveSoundRead()
@@ -829,9 +823,6 @@ CWaveSoundRead9::~CWaveSoundRead9()
 	Close();
 	SAFE_DELETE(m_pwfx);
 }
-
-
-
 
 //-----------------------------------------------------------------------------
 // Name: Open()
@@ -852,7 +843,6 @@ HRESULT CWaveSoundRead9::Open(const CHAR* strFilename)
 	return hr;
 }
 
-
 //-----------------------------------------------------------------------------
 // Name: Open()
 // Desc: Opens a wave file for reading
@@ -872,8 +862,6 @@ HRESULT CWaveSoundRead9::Open(const WCHAR* strFilename)
 	return hr;
 }
 
-
-
 //-----------------------------------------------------------------------------
 // Name: Reset()
 // Desc: Resets the internal m_ckIn pointer so reading starts from the 
@@ -884,9 +872,6 @@ HRESULT CWaveSoundRead9::Reset()
 	return WaveStartDataRead(&m_hmmioIn, &m_ckIn, &m_ckInRiff);
 }
 
-
-
-
 //-----------------------------------------------------------------------------
 // Name: Read()
 // Desc: Reads a wave file into a pointer and returns how much read
@@ -896,9 +881,6 @@ HRESULT CWaveSoundRead9::Read(UINT nSizeToRead, BYTE* pbData, UINT* pnSizeRead)
 {
 	return WaveReadFile(m_hmmioIn, nSizeToRead, pbData, &m_ckIn, pnSizeRead);
 }
-
-
-
 
 //-----------------------------------------------------------------------------
 // Name: Close()
