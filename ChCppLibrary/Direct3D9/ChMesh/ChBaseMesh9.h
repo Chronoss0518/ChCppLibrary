@@ -65,101 +65,32 @@ namespace ChMesh
 
 	public://Init And Release//
 
-		virtual void Release(){}
+		virtual void Release();
 
 	public://Set Functions//
 
 		virtual void SetSkin(){}
 
-		void SetMaterialDiffuse(
-			const unsigned long _num,
-			const D3DCOLORVALUE& _dif)
-		{
-			if (material.size() <= _num)return;
-			material[_num]->Diffuse = _dif;
-		}
-
-		void SetMaterialDiffuse(
-			const unsigned long _num,
-			const ChVec4& _dif)
-		{
-			SetMaterialDiffuse(_num, ToD3DCOLORVALUE(_dif));
-		}
-
-		void SetMaterialAmbient(
-			const unsigned long _num,
-			const D3DCOLORVALUE& _amb)
-		{
-			if (material.size() <= _num)return;
-			material[_num]->Ambient = _amb;
-		}
-
-		void SetMaterialAmbient(
-			const unsigned long _num,
-			const ChVec4& _amb)
-		{
-			SetMaterialAmbient(_num, ToD3DCOLORVALUE(_amb));
-		}
-
-		void SetMaterialSepcular(
-			const unsigned long _num,
-			const D3DCOLORVALUE& _spe)
-		{
-			if (material.size() <= _num)return;
-			material[_num]->Specular = _spe;
-		}
-
-		void SetMaterialSepcular(
-			const unsigned long _num,
-			const ChVec4& _spe)
-		{
-			SetMaterialSepcular(_num, ToD3DCOLORVALUE(_spe));
-		}
-
-		void SetMaterialEmissive(
-			const unsigned long _num,
-			const D3DCOLORVALUE& _emi)
-		{
-			if (material.size() <= _num)return;
-			material[_num]->Emissive = _emi;
-		}
-
-		void SetMaterialEmissive(
-			const unsigned long _num,
-			const ChVec4& _emi)
-		{
-			SetMaterialSepcular(_num, ToD3DCOLORVALUE(_emi));
-		}
-
-		void SetMaterialEmissive(
-			const unsigned long _num,
-			const float _pow)
-		{
-			if (material.size() <= _num)return;
-			material[_num]->Power = _pow;
-		}
+		void SetMaterialCol(
+			const unsigned long _Num,
+			const ChVec4& _Dif);
 
 		void SetMaterialMatrix(
-			const unsigned long _num,
-			const ChLMat& _mat)
-		{
-			if (material.size() <= _num)return;
-		}
+			const unsigned long _Num,
+			const ChLMat& _Mat);
 
-		void SetOffsetVertex(const ChVec3_9& _vertex)
-		{
-			auto&& ver = ChPtr::Make_S<ChVec3_9>();
-			*ver = _vertex;
-			offsetVertexList.push_back(ver);
-		}
+		void SetOffsetVertex(const ChVec3_9& _vertex);
 
 	public://Get Functions//
 
 		inline const LPD3DXMESH GetMesh() const { return mesh; }
 
-		ChPtr::Shared<MeshFace9> GetFace(size_t _num) const { return easyFaceList.size() <= _num ? nullptr : easyFaceList[_num]; }
+		const MeshFace9* GetFace(unsigned long _num) const;
 
-		inline std::vector<ChPtr::Shared<ChVec3_9>> GetVertexList()const { return offsetVertexList; }
+		inline std::vector<ChPtr::Shared<ChVec3_9>> GetVertexList()const
+		{
+			return offsetVertexList;
+		}
 
 		inline std::vector<ChPtr::Shared<ChBaseMaterial_9<CharaType>>> GetMaterials() const { return material; }
 
@@ -171,33 +102,23 @@ namespace ChMesh
 
 		virtual inline ChMat_9 GetBoneMat(const std::basic_string<CharaType>& _str) { return ChMat_9(); }
 
-		ChVec3_9 GetOffsetVertex(unsigned long _num)const { return offsetVertexList.size() <= _num ? ChVec3_9(0.0f) : *offsetVertexList[_num]; }
+		ChVec3_9 GetOffsetVertex(unsigned long _num)const;
 
-		size_t GetMaterialCount()const { return easyFaceList.size(); }
+		size_t GetMaterialCount()const;
 
-		ChBaseMaterial_9<CharaType> GetMaterial(size_t _num)const { return material.size() <= _num ? ChBaseMaterial_9<CharaType>() : *material[_num]; }
+		ChBaseMaterial_9<CharaType> GetMaterial(size_t _num)const;
 
-		size_t GetTextureCount()const { return texList.size(); }
+		size_t GetTextureCount()const;
 
-		ChPtr::Shared<ChTex::BaseTexture9> GetTexture(size_t _num)const { return texList.size() <= _num ? nullptr : texList[_num]; }
+		ChTex::BaseTexture9* GetTexture(size_t _num)const;
 
-		size_t GetNormalTextureCount()const { return normalTex.size(); }
+		size_t GetNormalTextureCount()const;
 
-		ChPtr::Shared<ChTex::BaseTexture9> GetNormalTexture(size_t _num)const { return normalTex.size() <= _num ? nullptr : normalTex[_num]; }
-
-	private:
-
-		D3DCOLORVALUE ToD3DCOLORVALUE(const ChVec4& _val)
-		{
-			D3DCOLORVALUE res;
-			res.r = _val.r;
-			res.g = _val.g;
-			res.b = _val.b;
-			res.a = _val.a;
-			return res;
-		}
+		ChTex::BaseTexture9* GetNormalTexture(size_t _num)const;
 
 	public://Create Functions//
+
+		void CreateEasyFaceList();
 
 		void CreateMesh(
 			const std::basic_string<CharaType>& _fileName,
@@ -264,6 +185,7 @@ namespace ChMesh
 
 	};
 
+
 	template<typename CharaType>
 	class XFileMeshBase
 	{
@@ -272,10 +194,6 @@ namespace ChMesh
 		void SetMaterialName(const std::basic_string<CharaType>& _fileName);
 
 	};
-
-	using BaseMeshA9 = BaseMesh9<char>;
-	using BaseMeshW9 = BaseMesh9<wchar_t>;
-
 }
 
 #endif

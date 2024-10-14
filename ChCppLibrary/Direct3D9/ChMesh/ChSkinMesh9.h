@@ -148,14 +148,7 @@ namespace ChMesh
 
 			std::vector<std::basic_string<CharaType>> boneNameList;
 		};
-
-#ifdef CPP20
-		using SkinMeshA9 = SkinMesh9<char>;
-		using SkinMeshW9 = SkinMesh9<wchar_t>;
-#else
-		using SkinMeshA9 = SkinMesh9<char>;
-#endif
-
+	
 }
 
 #endif

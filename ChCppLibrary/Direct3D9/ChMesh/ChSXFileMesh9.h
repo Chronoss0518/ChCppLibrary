@@ -35,14 +35,6 @@ namespace ChMesh
 	protected:
 
 	};
-
-#ifdef CPP20
-	using SXFileMeshA9 = SXFileMesh9<char>;
-	using SXFileMeshW9 = SXFileMesh9<wchar_t>;
-#else
-	using SXFileMeshA9 = SXFileMesh9<char>;
-#endif
-
 }
 
 #endif
