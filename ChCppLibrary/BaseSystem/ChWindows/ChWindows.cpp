@@ -224,6 +224,8 @@ void ChSystem::WindowsBase<CharaType>::SetKeyCode()
 	isKeyUpdate = true;
 }
 
+CH_STRING_TYPE_USE_FILE_EXPLICIT_DECLARATION(ChSystem::WindowsBase);
+
 CH_WINDOWS_INIT_FUNCTION(A, char);
 
 bool ChSystem::WindowsA::IsUpdate()
