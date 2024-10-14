@@ -355,8 +355,7 @@ void ShaderController::DrawEnd()
 
 }
 
-template<typename CharaType>
-void ShaderController::DrawMesh(const ChMesh::BaseMesh9<CharaType>& _mesh, const ChMat_9& _mat)
+void ShaderController::DrawMesh(const ChMesh::BaseMesh9& _mesh, const ChMat_9& _mat)
 {
 	if (!*this)return;
 	if (!drawFlg && !rtDrawFlg)return;
@@ -412,9 +411,8 @@ void ShaderController::DrawMesh(const ChMesh::BaseMesh9<CharaType>& _mesh, const
 }
 
 //Meshï`âÊópä÷êî//
-template<typename CharaType>
 void ShaderController::DrawMeshContour(
-	const ChMesh::BaseMesh9<CharaType>& _mesh,
+	const ChMesh::BaseMesh9& _mesh,
 	const ChVec4& _color,
 	const ChMat_9& _mat,
 	const float _Size)

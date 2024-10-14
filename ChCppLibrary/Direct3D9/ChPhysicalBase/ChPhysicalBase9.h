@@ -3,7 +3,6 @@
 
 namespace ChMesh
 {
-template<typename CharaType>
 class BaseMesh9;
 }
 
@@ -12,7 +11,6 @@ class BaseMesh9;
 
 //移動する際にある方向に物理的な力が働くようにするクラス//
 //ベースクラスのため、基本的にこれ自体を使うことはない//
-template<typename CharaType>
 class ChPhysicalBase9:public ChCp::Initializer
 {
 public://Constructer Destructer//
@@ -35,7 +33,7 @@ public://InitAndRelease//
 
 public://SetFunction//
 
-	void SetMesh(const ChPtr::Shared<ChMesh::BaseMesh9<CharaType>> _mesh)
+	void SetMesh(const ChPtr::Shared<ChMesh::BaseMesh9> _mesh)
 	{
 		if (_mesh == nullptr)return;
 		wpXList.push_back(_mesh);
@@ -59,7 +57,7 @@ public://SetFunction//
 
 public://Mesh List Functions//
 
-	ChMesh::BaseMesh9<CharaType>* GetMesh(unsigned long _num);
+	ChMesh::BaseMesh9* GetMesh(unsigned long _num);
 
 	unsigned long GetMeshCount();
 
@@ -82,12 +80,11 @@ protected:
 	float FPS = 60.0f;
 	ChVec3_9 vec;
 
-	std::vector<ChPtr::Weak<ChMesh::BaseMesh9<CharaType>>>wpXList;
+	std::vector<ChPtr::Weak<ChMesh::BaseMesh9>>wpXList;
 };
 
 //重力を発生させるクラス//
-template<typename CharaType>
-class ChGravity9 :public ChPhysicalBase9<CharaType>
+class ChGravity9 :public ChPhysicalBase9
 {
 public://Init And Release//
 	
@@ -114,8 +111,7 @@ private:
 };
 
 //物体への衝突時に押し戻すクラス//
-template<typename CharaType>
-class ChPushBack9 :public ChPhysicalBase9<CharaType>
+class ChPushBack9 :public ChPhysicalBase9
 {
 
 public://Init And Release//
@@ -137,14 +133,6 @@ private:
 
 	float backLine = 1.0f;
 };
-
-
-using ChGravityA9 = ChGravity9<char>;
-using ChPushBackA9 = ChPushBack9<char>;
-#ifdef CPP20
-using ChGravityW9 = ChGravity9<wchar_t>;
-using ChPushBackW9 = ChPushBack9<wchar_t>;
-#endif
 
 
 #endif

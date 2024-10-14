@@ -5,7 +5,6 @@
 
 namespace ChMesh
 {
-	template<typename CharaType>
 	class BaseMesh9;
 
 
@@ -32,8 +31,7 @@ namespace ChMesh
 	public://Set Functions//
 
 		//XFileより生成されるバウンディングボックス//
-		template<typename CharaType>
-		void SetBBox(const ChPtr::Shared<ChMesh::BaseMesh9<CharaType>>& _mesh)
+		void SetBBox(const ChPtr::Shared<ChMesh::BaseMesh9>& _mesh)
 		{
 			if (_mesh == nullptr)return;
 			if (ChPtr::NullCheck(_mesh->GetMesh()))return;
@@ -56,8 +54,7 @@ namespace ChMesh
 		}
 
 		//XFileより生成されるバウンディングスフィア//
-		template<typename CharaType>
-		void SetBSphere(const ChPtr::Shared<ChMesh::BaseMesh9<CharaType>>& _mesh)
+		void SetBSphere(const ChPtr::Shared<ChMesh::BaseMesh9>& _mesh)
 		{
 			if (_mesh == nullptr)return;
 			if (ChPtr::NullCheck(_mesh->GetMesh()))return;

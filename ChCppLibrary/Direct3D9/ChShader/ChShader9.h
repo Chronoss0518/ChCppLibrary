@@ -5,7 +5,6 @@
 
 namespace ChMesh
 {
-	template<typename CharaType>
 	class BaseMesh9;
 }
 
@@ -214,15 +213,13 @@ namespace ChD3D9
 		void DrawEnd();
 
 		//Mesh•`‰æ—pŠÖ”//
-		template<typename CharaType>
 		void DrawMesh(
-			const ChMesh::BaseMesh9<CharaType>& _mesh,
+			const ChMesh::BaseMesh9& _mesh,
 			const ChMat_9& _mat = ChMat_9());
 
 		//Mesh•`‰æ—pŠÖ”//
-		template<typename CharaType>
 		void DrawMeshContour(
-			const ChMesh::BaseMesh9<CharaType>& _mesh,
+			const ChMesh::BaseMesh9& _mesh,
 			const ChVec4& _color,
 			const ChMat_9& _mat = ChMat_9(),
 			const float _size = 1.0f);

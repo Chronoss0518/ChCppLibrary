@@ -36,11 +36,10 @@ template<> bool ChObjectController9::MeshHitRay(\
 //ChObjectControllerÉÅÉ\ÉbÉh
 ///////////////////////////////////////////////////////////////////////////////////////
 
-template<typename CharaType>
 bool ChObjectController9::MeshHitRay(
 	DWORD& _Index,
 	float& _len,
-	const BaseMesh9<CharaType>& _mesh,
+	const BaseMesh9& _mesh,
 	const ChMat_9& _obj,
 	const ChVec3_9& _pos,
 	const ChVec3_9& _dir)
@@ -88,11 +87,9 @@ bool ChObjectController9::MeshHitRay(
 	return true;
 }
 
-
-template<typename CharaType>
 bool ChObjectController9::MeshHitRay(
 	float& _len,
-	const ChMesh::BaseMesh9<CharaType>& _mesh,
+	const ChMesh::BaseMesh9& _mesh,
 	const ChMat_9& _obj,
 	const ChVec3_9& _pos,
 	const ChVec3_9& _dir)
@@ -102,9 +99,8 @@ bool ChObjectController9::MeshHitRay(
 	return MeshHitRay(tmpIndex, _len, _mesh, _obj, _pos, _dir);
 }
 
-template<typename CharaType>
 bool ChObjectController9::MeshHitRay(
-	const ChMesh::BaseMesh9<CharaType>& _mesh,
+	const ChMesh::BaseMesh9& _mesh,
 	const ChMat_9& _obj,
 	const ChVec3_9& _pos,
 	const ChVec3_9& _dir)
@@ -361,7 +357,3 @@ void ChObjectController9::SimpleOffsetAnimation(
 
 	D3DXMatrixRotationQuaternion(&_nowMat, &tmpQua);
 }
-
-
-EXPLICIT_DECLARATION(char);
-EXPLICIT_DECLARATION(wchar_t);
