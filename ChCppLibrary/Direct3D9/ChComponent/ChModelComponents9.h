@@ -2,69 +2,210 @@
 #ifndef Ch_D3D9_ModelCom_h
 #define Ch_D3D9_ModelCom_h
 
-
-template<typename CharaType>
-class ChModelComponent9 :public ChCpp::BaseComponent
+typedef class ChModelComponent9 :public ChCpp::BaseComponent
 {
 public:
+#ifdef CRT
 
-	virtual void SetModel(const std::basic_string<CharaType>& _modelName);
+	virtual void SetModel(const std::string& _modelName)
+	{
+		model = nullptr;
 
+		std::string mName = _modelName;
+		std::string path = "./";
+
+		DIvidePathToName(path, mName, _modelName);
+
+		model = ChMesh::BaseMesh9::MeshType(mName);
+
+		model->CreateMesh(mName, path, ChD3D9::D3D9API().GetDevice());
+
+		if (ChPtr::NullCheck(model->GetMesh()))model = nullptr;
+	}
+
+#endif
 	
-	ChMesh::BaseMesh9<CharaType>* GetModel();
+	ChMesh::BaseMesh9* GetModel();
 	
 	void Draw3D()override;
 
 protected:
 
+#ifdef CRT
+	
 	void DIvidePathToName(
-		std::basic_string<CharaType>& _path,
-		std::basic_string<CharaType>& _name,
-		const std::basic_string<CharaType>& _fullPathName);
+		std::string& _path,
+		std::string& _name,
+		const std::string& _fullPathName)
+	{
+		size_t sPos = 0;
+
+		bool tmpFlg = false;
+
+		size_t slashSize = 1;
+		std::string slash[2]
+		{
+			"/","\\"
+		};
+
+		for (auto&& sla : slash)
+		{
+			if ((sPos = _fullPathName.rfind(sla.c_str(), _fullPathName.size()))
+				== std::string::npos)continue;
+
+			size_t tmpSize = _fullPathName.size() - sPos;
+			slashSize = sla.length();
+			tmpFlg = true;
+			break;
+		}
+
+		if (!tmpFlg)return;
+
+		size_t tmpSize = _fullPathName.size() - sPos;
+
+		_path = _fullPathName.substr(0, sPos);
+		_name = _fullPathName.substr(sPos + slashSize, tmpSize);
+	}
+
+#endif
 
 protected:
 
-	ChPtr::Shared<ChMesh::BaseMesh9<CharaType>>model = nullptr;
+#ifdef CRT
+
+	ChPtr::Shared<ChMesh::BaseMesh9>model = nullptr;
+
+#endif
+
+}ChModelCom9;
 
 
-};
 
-
-template<typename CharaType>
-class ChMModelComponent9 :public ChModelComponent9<CharaType>
+typedef class ChMModelComponent9 :public ChModelCom9
 {
 public:
 
-	void SetModel(const std::basic_string<CharaType>& _modelName)override;
+#ifdef CRT
+
+	void SetModel(const std::string& _modelName)override
+	{
+		std::string mName = _modelName;
+		std::string path = "./";
+
+		model = nullptr;
+
+		DIvidePathToName(path, mName, _modelName);
+
+		auto tmpMesh = ChMesh::MeManager9().GetMesh(mName);
+
+		if (tmpMesh != nullptr)
+		{
+			model = tmpMesh;
+			return;
+		}
+
+		if (!ChMesh::MeManager9().IsPath(path))
+		{
+			ChMesh::MeManager9().SetDirectoryPath(path, path);
+		}
+
+		ChMesh::MeManager9().SetMesh(mName, mName, path);
+
+		model = ChMesh::MeManager9().GetMesh(mName);
+
+	}
+
+#endif
 
 protected:
 
-};
+}ChMModelCom9;
 
-template<typename CharaType>
-class ChSkinMeshModelComponent9 :public ChModelComponent9<CharaType>
+typedef class ChSkinMeshModelComponent9 :public ChModelCom9
 {
 public:
 
-	void SetModel(const std::basic_string<CharaType>& _modelName)override;
+#ifdef CRT
 
-	ChMesh::SkinMesh9<CharaType>* GetSkinModel();
+	void SetModel(const std::string& _modelName)override
+	{
+		model = nullptr;
+
+		std::string mName = _modelName;
+		std::string path = "./";
+
+		DIvidePathToName(path, mName, _modelName);
+
+
+		model = ChMesh::BaseMesh9::SkinMeshType(mName);
+
+		model->CreateMesh(mName, path, ChD3D9::D3D9API().GetDevice());
+
+		if (ChPtr::NullCheck(model->GetMesh()))model = nullptr;
+
+	}
+
+#endif
+
+	ChMesh::SkinMesh9* GetSkinModel();
 
 	void Update()override;
 
 private:
 
-};
+}ChSkModelCom9;
 
-template<typename CharaType>
-class ChMSkinMeshModelComponent9 :public ChSkinMeshModelComponent9<CharaType>
+typedef class ChMSkinMeshModelComponent9 :public ChSkModelCom9
 {
 public:
 
-	void SetModel(const std::basic_string<CharaType>& _modelName)override;
+#ifdef CRT
+
+	void SetModel(const std::string& _modelName)override
+	{
+		std::string mName = _modelName;
+		std::string path = "./";
+
+		model = nullptr;
+
+		DIvidePathToName(path, mName, _modelName);
+
+		auto tmpMesh = ChPtr::SharedSafeCast<ChMesh::SkinMesh9>(ChMesh::MeManager9().GetMesh(mName));
+
+		if (tmpMesh != nullptr)
+		{
+			model = tmpMesh;
+
+			return;
+		}
+
+		if (ChMesh::MeManager9().IsMesh(mName))return;
+
+		if (!ChMesh::MeManager9().IsPath(path))
+		{
+			ChMesh::MeManager9().SetDirectoryPath(path, path);
+		}
+
+		ChMesh::MeManager9().SetSkinMesh(mName, mName, path);
+
+		model = ChMesh::MeManager9().GetMesh(mName);
+	}
+
+#endif
 
 private:
 
-};
+}ChMSkModelCom9;
+
+#ifdef CRT
+
+ChMesh::BaseMesh9* ChModelComponent9::GetModel() { return model.get(); }
+
+ChMesh::SkinMesh9* ChSkinMeshModelComponent9::GetSkinModel()
+{
+	return ChPtr::SafeCast<ChMesh::SkinMesh9>(model.get());
+}
+
+#endif
 
 #endif
