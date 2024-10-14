@@ -41,114 +41,30 @@ public://Set Functions//
 	//使用するディレクトリのパスをセット//
 	void SetUseDirectory(
 		const std::basic_string<CharaType>& _soundDirectoryName,
-		const std::basic_string<CharaType>& _useSoundDirectory)
-	{
-		if (directoryPathList.find(_useSoundDirectory) != directoryPathList.end())return;
-
-		directoryPathList.insert(std::pair<std::basic_string<CharaType>&, std::basic_string<CharaType>&>(_useSoundDirectory, _soundDirectoryName));
-	}
+		const std::basic_string<CharaType>& _useSoundDirectory);
 
 	//先に登録してあるDirectoryを利用してBGMをセット//
 	void SetBGMSound(
 		const std::basic_string<CharaType>& _soundName,
 		const std::basic_string<CharaType>& _soundFilePath,
-		const std::basic_string<CharaType>& _useSoundDirectory)
-	{
-		if (mainSoundList.find(_soundName) != mainSoundList.end())return;
-
-		std::basic_string<CharaType>& tmpString = _soundFilePath;
-
-		if (tmpString.length() <= 0)return;
-
-		if (directoryPathList.find(_useSoundDirectory)
-			!= directoryPathList.end())
-		{
-			tmpString = directoryPathList[_useSoundDirectory] + ChStd::GetSlashChara<CharaType>() + tmpString;
-		}
-
-		auto bgm = ChPtr::Make_S<ChMainSound9>();
-
-		if (bgm == nullptr)return;
-
-		LoadSound(bgm->sound, bgm->dSound, tmpString.c_str(), tmpString.length());
-
-		bgm->dSound->SetMode(DS3DMODE_DISABLE, DS3D_IMMEDIATE);
-
-		bgm->sound->GetFrequency(&bgm->hz);
-
-		bgm->sound->GetVolume(&bgm->vol);
-
-		mainSoundList.insert(std::pair<std::basic_string<CharaType>&, ChPtr::Shared<ChBGM9>>(_soundName, bgm));
-
-	}
-
+		const std::basic_string<CharaType>& _useSoundDirectory);
 
 	//先に登録してあるDirectoryを利用してSEをセット//
 	unsigned short SetSESound(
 		const std::basic_string<CharaType>& _soundFilePath,
-		const std::basic_string<CharaType>& _useSoundDirectory)
-	{
-		if (subSoundList.size() >= maxSE)return 0;
-
-		std::basic_string<CharaType> tmpString = _soundFilePath;
-
-		if (tmpString.length() <= 0)return 0;
-
-		unsigned short tmpData = 0;
-		while (1)
-		{
-			if (subSoundList.find(seNo) == subSoundList.end())break;
-			++seNo %= maxSE;
-			if (seNo == 0)seNo = 1;
-		}
-
-		tmpData = seNo;
-
-		if (directoryPathList.find(_useSoundDirectory)
-			!= directoryPathList.end())
-		{
-			tmpString = directoryPathList[_useSoundDirectory] + ChStd::GetSlashChara<CharaType>() + tmpString;
-		}
-		ChPtr::Shared<ChSubSound9> se = nullptr;
-		se = ChPtr::Make_S<ChSubSound9>();
-		LoadSound(se->sound, se->dSound, tmpString.c_str(), tmpString.length());
-
-		se->sound->GetFrequency(&se->hz);
-
-		se->sound->GetVolume(&se->vol);
-
-		subSoundList.insert(std::pair<unsigned short, ChPtr::Shared<ChSE9>>(tmpData, se));
-
-		return tmpData;
-	}
+		const std::basic_string<CharaType>& _useSoundDirectory);
 
 	//セットされたBGMのHzを変更//
-	inline void SetHzForBGM(const std::basic_string<CharaType>& _soundName, const DWORD _hz)
-	{
-		if (mainSoundList.find(_soundName) == mainSoundList.end())return;
-		mainSoundList[_soundName]->sound->SetFrequency(_hz);
-	}
+	void SetHzForBGM(const std::basic_string<CharaType>& _soundName, const DWORD _hz);
 
 	//セットされたBGMのVolumeを変更//
-	inline void SetVolumeForBGM(const std::basic_string<CharaType>& _soundName, const long _volume)
-	{
-		if (mainSoundList.find(_soundName) == mainSoundList.end())return;
-		mainSoundList[_soundName]->sound->SetVolume(_volume);
-	}
+	void SetVolumeForBGM(const std::basic_string<CharaType>& _soundName, const long _volume);
 
 	//セットされたBGMのHzを読み込んだ際のサイズに戻す//
-	inline void SetBaseHzForBGM(const std::basic_string<CharaType>& _soundName)
-	{
-		if (mainSoundList.find(_soundName) == mainSoundList.end())return;
-		mainSoundList[_soundName]->sound->SetFrequency(mainSoundList[_soundName]->hz);
-	}
+	void SetBaseHzForBGM(const std::basic_string<CharaType>& _soundName);
 
 	//セットされたBGMのVolumeを読み込んだ際のサイズに戻す//
-	inline void SetBaseVolumeForBGM(const std::basic_string<CharaType>& _soundName)
-	{
-		if (mainSoundList.find(_soundName) == mainSoundList.end())return;
-		mainSoundList[_soundName]->sound->SetVolume(mainSoundList[_soundName]->vol);
-	}
+	void SetBaseVolumeForBGM(const std::basic_string<CharaType>& _soundName);
 
 	//セットされたSEのHzを変更//
 	void SetHzForSE(const unsigned short _soundNo, const DWORD _hz);
@@ -265,9 +181,8 @@ public:
 using ChDirectSoundA9 = ChDirectSound9<char>;
 using ChDirectSoundW9 = ChDirectSound9<wchar_t>;
 
-ChDirectSoundA9& ChDSound9A() { return ChDirectSoundA9::GetIns(); }
-ChDirectSoundW9& ChDSound9W() { return ChDirectSoundW9::GetIns(); }
-
+inline ChDirectSoundA9& ChDSound9A() { return ChDirectSoundA9::GetIns(); }
+inline ChDirectSoundW9& ChDSound9W() { return ChDirectSoundW9::GetIns(); }
 
 #ifdef UNICODE
 ChDirectSoundW9

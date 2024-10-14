@@ -109,7 +109,7 @@ void ChDirectSound9<CharaType>::PlaySE(
 	const std::basic_string<CharaType>& _useSoundDirectory,
 	const ChVec3_9* _soundPos)
 {
-	std::basic_string<CharaType>& tmpString = _soundName;
+	std::basic_string<CharaType> tmpString = _soundName;
 
 	if (tmpString.length() <= 0)return;
 
@@ -148,7 +148,7 @@ void ChDirectSound9<CharaType>::StopBGM()
 	{
 		mainSoundList[mainSoundName]->sound->Stop();
 	}
-	mainSoundName = "";
+	mainSoundName = ChStd::GetZeroChara<CharaType>();
 }
 
 template<typename CharaType>
@@ -387,6 +387,117 @@ void ChDirectSound9<CharaType>::Update()
 }
 
 template<typename CharaType>
+void ChDirectSound9<CharaType>::SetUseDirectory(
+	const std::basic_string<CharaType>& _soundDirectoryName,
+	const std::basic_string<CharaType>& _useSoundDirectory)
+{
+	if (directoryPathList.find(_useSoundDirectory) != directoryPathList.end())return;
+
+	directoryPathList[_useSoundDirectory] = _soundDirectoryName;
+}
+
+template<typename CharaType>
+void ChDirectSound9<CharaType>::SetBGMSound(
+	const std::basic_string<CharaType>& _soundName,
+	const std::basic_string<CharaType>& _soundFilePath,
+	const std::basic_string<CharaType>& _useSoundDirectory)
+{
+	if (mainSoundList.find(_soundName) != mainSoundList.end())return;
+
+	std::basic_string<CharaType> tmpString = _soundFilePath;
+
+	if (tmpString.length() <= 0)return;
+
+	if (directoryPathList.find(_useSoundDirectory)
+		!= directoryPathList.end())
+	{
+		tmpString = directoryPathList[_useSoundDirectory] + ChStd::GetSlashChara<CharaType>() + tmpString;
+	}
+
+	auto bgm = ChPtr::Make_S<ChMainSound9>();
+
+	if (bgm == nullptr)return;
+
+	LoadSound(bgm->sound, bgm->dSound, tmpString.c_str(), tmpString.length());
+
+	bgm->dSound->SetMode(DS3DMODE_DISABLE, DS3D_IMMEDIATE);
+
+	bgm->sound->GetFrequency(&bgm->hz);
+
+	bgm->sound->GetVolume(&bgm->vol);
+
+	mainSoundList[_soundName] = bgm;
+}
+
+
+template<typename CharaType>
+unsigned short ChDirectSound9<CharaType>::SetSESound(
+	const std::basic_string<CharaType>& _soundFilePath,
+	const std::basic_string<CharaType>& _useSoundDirectory)
+{
+	if (subSoundList.size() >= maxSE)return 0;
+
+	std::basic_string<CharaType> tmpString = _soundFilePath;
+
+	if (tmpString.length() <= 0)return 0;
+
+	unsigned short tmpData = 0;
+	while (1)
+	{
+		if (subSoundList.find(seNo) == subSoundList.end())break;
+		++seNo %= maxSE;
+		if (seNo == 0)seNo = 1;
+	}
+
+	tmpData = seNo;
+
+	if (directoryPathList.find(_useSoundDirectory)
+		!= directoryPathList.end())
+	{
+		tmpString = directoryPathList[_useSoundDirectory] + ChStd::GetSlashChara<CharaType>() + tmpString;
+	}
+	ChPtr::Shared<ChSubSound9> se = nullptr;
+	se = ChPtr::Make_S<ChSubSound9>();
+	LoadSound(se->sound, se->dSound, tmpString.c_str(), tmpString.length());
+
+	se->sound->GetFrequency(&se->hz);
+
+	se->sound->GetVolume(&se->vol);
+
+	subSoundList.insert(std::pair<unsigned short, ChPtr::Shared<ChSE9>>(tmpData, se));
+
+	return tmpData;
+}
+
+template<typename CharaType>
+void ChDirectSound9<CharaType>::SetHzForBGM(const std::basic_string<CharaType>& _soundName, const DWORD _hz)
+{
+	if (mainSoundList.find(_soundName) == mainSoundList.end())return;
+	mainSoundList[_soundName]->sound->SetFrequency(_hz);
+}
+
+template<typename CharaType>
+void ChDirectSound9<CharaType>::SetVolumeForBGM(const std::basic_string<CharaType>& _soundName, const long _volume)
+{
+	if (mainSoundList.find(_soundName) == mainSoundList.end())return;
+	mainSoundList[_soundName]->sound->SetVolume(_volume);
+}
+
+template<typename CharaType>
+void ChDirectSound9<CharaType>::SetBaseHzForBGM(const std::basic_string<CharaType>& _soundName)
+{
+	if (mainSoundList.find(_soundName) == mainSoundList.end())return;
+	mainSoundList[_soundName]->sound->SetFrequency(mainSoundList[_soundName]->hz);
+}
+
+template<typename CharaType>
+void ChDirectSound9<CharaType>::SetBaseVolumeForBGM(const std::basic_string<CharaType>& _soundName)
+{
+	if (mainSoundList.find(_soundName) == mainSoundList.end())return;
+	mainSoundList[_soundName]->sound->SetVolume(mainSoundList[_soundName]->vol);
+}
+
+template<typename CharaType>
 void ChDirectSound9<CharaType>::SetHzForSE(const unsigned short _soundNo, const DWORD _hz)
 {
 	auto&& subSound = GetSubSound(_soundNo);
@@ -449,7 +560,6 @@ void ChDirectSound9<CharaType>::StopSE(const unsigned short _soundNo)
 //ChSoundDateÉÅÉ\ÉbÉh
 ///////////////////////////////////////////////////////////////////////////////////////
 
-
 //Å¶éÛÇØéÊÇËï®
 //-----------------------------------------------------------------------------
 // File: WavRead.cpp
@@ -466,16 +576,14 @@ void ChDirectSound9<CharaType>::StopSE(const unsigned short _soundNo)
 #define SAFE_RELEASE(p) { if(p) { (p)->Release(); (p)=NULL; } }
 
 
-
-
 //-----------------------------------------------------------------------------
 // Name: ReadMMIO()
 // Desc: Support function for reading from a multimedia I/O stream
 //-----------------------------------------------------------------------------
 HRESULT CWaveSoundRead9::ReadMMIO(
-	HMMIO hmmioIn
-	, MMCKINFO* pckInRIFF
-	, WAVEFORMATEX** ppwfxInfo)
+	HMMIO hmmioIn,
+	MMCKINFO* pckInRIFF,
+	WAVEFORMATEX** ppwfxInfo)
 {
 	MMCKINFO        ckIn;           // chunk info. for general use.
 	PCMWAVEFORMAT   pcmWaveFormat;  // Temp PCM structure to load in.       
@@ -801,3 +909,5 @@ HRESULT CWaveSoundRead9::Close()
 	mmioClose(m_hmmioIn, 0);
 	return S_OK;
 }
+
+CH_STRING_TYPE_USE_FILE_EXPLICIT_DECLARATION(ChDirectSound9);
