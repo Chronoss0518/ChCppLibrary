@@ -3,7 +3,6 @@
 #define Ch_D3D9_SkMe_h
 
 #include"ChBaseMesh9.h"
-#include"../ChAnimationObject/ChAnimationObject9.h"
 typedef class ChAnimationObject9 ChAniObj9;
 
 namespace ChMesh
@@ -58,48 +57,15 @@ namespace ChMesh
 			//外部で作成したアニメーションをセット//
 			void SetAnimation(
 				const std::string& _aniamtionName,
-				const std::map<std::string, ChPtr::Shared<ChAnimationObject9>>& _animes)
-			{
-				animations[_aniamtionName] = _animes;
-
-				if (startPlayAniCheck)return;
-				startPlayAniCheck = true;
-				nowPlayAniName = _aniamtionName;
-			}
+				const std::map<std::string, ChPtr::Shared<ChAnimationObject9>>& _animes);
 
 			//再生するアニメーションを変更//
-			inline void SetPlayAniName(const std::string& _aniName)
-			{
-				if (animations.find(_aniName) == animations.end())return;
-
-
-				for (auto&& anis : animations[nowPlayAniName])
-				{
-					anis.second->Stop();
-				}
-				nowPlayAniName = _aniName;
-				for (auto&& anis : animations[nowPlayAniName])
-				{
-					anis.second->Play();
-				}
-
-			}
+			void SetPlayAniName(const std::string& _aniName);
 
 			//再生するアニメーションの終了フレーム数を変更//
 			inline void SetAniTime(
-				const std::string& _aniName
-				, const float _playMaxTime)
-			{
-				if (animations.find(_aniName) == animations.end())
-				{
-					return;
-				}
-
-				for (auto&& anis : animations[_aniName])
-				{
-					anis.second->SetOneFrameTime(_playMaxTime);
-				}
-			}
+				const std::string& _aniName,
+				const float _playMaxTime);
 
 			void SetSkin()override;
 
@@ -109,25 +75,9 @@ namespace ChMesh
 
 		public://Get Functions//
 
-			inline std::vector<ChPtr::Shared<std::string>> GetAniNameList()
-			{
-				std::vector<ChPtr::Shared<std::string>> tmpStr;
-				for (auto&& anis : animations)
-				{
-					auto str = ChPtr::Make_S<std::string>();
-					*str = anis.first;
-					tmpStr.push_back(str);
+			std::vector<ChPtr::Shared<std::string>> GetAniNameList();
 
-				}
-
-				return tmpStr;
-			}
-
-			ChMat_9 GetBoneMat(const std::string& _str)override
-			{
-				if (boneList.find(_str) == boneList.end())return ChMat_9();
-				return boneList[_str]->baseMat;
-			}
+			ChMat_9 GetBoneMat(const std::string& _str)override;
 
 			friend MeshManager9;
 			friend MeshList9;
