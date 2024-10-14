@@ -13,6 +13,7 @@ namespace ChTex
 	typedef class BaseTexture9 Texture9;
 
 	class RenderTargetList9;
+	template<typename CharaType>
 	class RenderTargetManager9;
 }
 
@@ -74,8 +75,13 @@ namespace ChD3D9
 	public:
 
 		friend ChTex::RenderTargetList9;
-		friend ChTex::RenderTargetManager9;
-
+		friend ChTex::RenderTargetManager9<char>;
+		friend ChTex::RenderTargetManager9<wchar_t>;
+		friend ChTex::RenderTargetManager9<char16_t>;
+		friend ChTex::RenderTargetManager9<char32_t>;
+#ifdef CPP17
+		friend ChTex::RenderTargetManager9<char8_t>;
+#endif
 	public://InitAndRelease//
 
 		//第一引数にChLibraryの入っているDirectoryPathを選択//
@@ -174,29 +180,9 @@ namespace ChD3D9
 
 	public://Create Functions//
 
-#ifdef CRT
+		void CreateLightPowTex(const std::string& _lightPowTexName);
 
-		void CreateLightPowTex(const std::string& _lightPowTexName)
-		{
-			if (_lightPowTexName.length())
-			{
-				//ChSystem::ErrerMessage("使用する画像のファイル名を入力してください", "警告");
-				return;
-			}
-
-			myLightTex = ChTex::BaseTexture9::TextureType(_lightPowTexName.c_str());
-
-			myLightTex->CreateTexture(_lightPowTexName.c_str(), device);
-
-			if (myLightTex->GetTex() == nullptr)
-			{
-				//ChSystem::ErrerMessage("画像の作成に失敗しました", "警告");
-				myLightTex = nullptr;
-				return;
-			}
-}
-
-#endif
+		void CreateLightPowTex(const std::wstring& _lightPowTexName);
 
 		void CreateBeforeTex();
 
@@ -236,6 +222,7 @@ namespace ChD3D9
 			const ChTex::Texture9& _tex,
 			const ChMat_9& _mat = ChMat_9(),
 			const SpriteData& _spData = SpriteData(ChVec2(0.0f, 0.0f), windSize));
+
 	protected://Make Functions//
 
 		void MakeWhiteTexture();

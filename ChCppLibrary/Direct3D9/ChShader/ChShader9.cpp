@@ -58,6 +58,46 @@ ChTex::BaseTexture9* ChD3D9::ShaderController::GetMyLightTex()
 	return myLightTex.get();
 }
 
+void ::ShaderController::CreateLightPowTex(const std::string& _lightPowTexName)
+{
+	if (_lightPowTexName.length())
+	{
+		//ChSystem::ErrerMessage("使用する画像のファイル名を入力してください", "警告");
+		return;
+	}
+
+	myLightTex = ChTex::BaseTexture9::TextureType(_lightPowTexName.c_str());
+
+	myLightTex->CreateTexture(_lightPowTexName.c_str(), device);
+
+	if (myLightTex->GetTex() == nullptr)
+	{
+		//ChSystem::ErrerMessage("画像の作成に失敗しました", "警告");
+		myLightTex = nullptr;
+		return;
+	}
+}
+
+void ::ShaderController::CreateLightPowTex(const std::wstring& _lightPowTexName)
+{
+	if (_lightPowTexName.length())
+	{
+		//ChSystem::ErrerMessage("使用する画像のファイル名を入力してください", "警告");
+		return;
+	}
+
+	myLightTex = ChTex::BaseTexture9::TextureType(_lightPowTexName.c_str());
+
+	myLightTex->CreateTexture(_lightPowTexName.c_str(), device);
+
+	if (myLightTex->GetTex() == nullptr)
+	{
+		//ChSystem::ErrerMessage("画像の作成に失敗しました", "警告");
+		myLightTex = nullptr;
+		return;
+	}
+}
+
 //白色の画像生成関数//
 void ChD3D9::ShaderController::MakeWhiteTexture()
 {
