@@ -19,6 +19,4 @@ namespace ChTex
 
 }
 
-#include"ChTextureShared9.h"
-
 #endif
