@@ -224,17 +224,6 @@ void ChMesh::SkinMesh9::Release()
 	tAni.Release();
 }
 
-void SkinMesh9::SetAnimation(
-	const std::string& _aniamtionName,
-	const std::map<std::string, ChPtr::Shared<ChAnimationObject9>>& _animes)
-{
-	animations[_aniamtionName] = _animes;
-
-	if (startPlayAniCheck)return;
-	startPlayAniCheck = true;
-	nowPlayAniName = _aniamtionName;
-}
-
 void ChMesh::SkinMesh9::SetAnimation(
 	const std::string& _animationName,
 	const std::string& _XFileName)
@@ -275,38 +264,6 @@ void ChMesh::SkinMesh9::SetAnimation(
 	for (auto&& ani : animations[nowPlayAniName])
 	{
 		ani.second->Play();
-	}
-}
-
-void SkinMesh9::SetPlayAniName(const std::string& _aniName)
-{
-	if (animations.find(_aniName) == animations.end())return;
-
-
-	for (auto&& anis : animations[nowPlayAniName])
-	{
-		anis.second->Stop();
-	}
-	nowPlayAniName = _aniName;
-	for (auto&& anis : animations[nowPlayAniName])
-	{
-		anis.second->Play();
-	}
-
-}
-
-void SkinMesh9::SetAniTime(
-	const std::string& _aniName,
-	const float _playMaxTime)
-{
-	if (animations.find(_aniName) == animations.end())
-	{
-		return;
-	}
-
-	for (auto&& anis : animations[_aniName])
-	{
-		anis.second->SetOneFrameTime(_playMaxTime);
 	}
 }
 
@@ -410,28 +367,6 @@ void ChMesh::SkinMesh9::SetOffsetVertex()
 	mesh->UnlockVertexBuffer();
 	return;
 }
-
-std::vector<ChPtr::Shared<std::string>> SkinMesh9::GetAniNameList()
-{
-	std::vector<ChPtr::Shared<std::string>> tmpStr;
-	for (auto&& anis : animations)
-	{
-		auto str = ChPtr::Make_S<std::string>();
-		*str = anis.first;
-		tmpStr.push_back(str);
-
-	}
-
-	return tmpStr;
-}
-
-ChMat_9 SkinMesh9::GetBoneMat(const std::string& _str)
-{
-	if (boneList.find(_str) == boneList.end())return ChMat_9();
-	return boneList[_str]->baseMat;
-}
-
-
 ChPtr::Shared<ChMesh::BaseMesh9> ChMesh::BaseMesh9::MeshType(const std::string& _fileName)
 {
 	std::string tmpStr;
