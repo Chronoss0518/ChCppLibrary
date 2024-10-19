@@ -257,7 +257,7 @@ namespace ChCpp
 		{
 			ChLMat parentDrawMat;
 			{
-				auto parent = ChPtr::SharedSafeCast<FrameObject<CharaType>>(ChCpp::BasicObject::GetParent().lock());
+				auto&& parent = ChPtr::SharedSafeCast<FrameObject<CharaType>>(ChCpp::BasicObject::GetParent());
 
 				if (parent != nullptr)
 				{
