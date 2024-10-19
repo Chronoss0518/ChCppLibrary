@@ -23,6 +23,21 @@ using namespace ChD3D;
 
 #define BASE_LENGTH 1000.0f
 
+ChD3D::AudioObject::~AudioObject()
+{
+	Release();
+}
+
+void ChD3D::AudioObject::SetFileName(const wchar_t* _fileName)
+{
+	fileName = _fileName;
+}
+
+const wchar_t* ChD3D::AudioObject::GetFileName()
+{
+	return fileName.c_str();
+}
+
 void AudioObject::SetVolume(const float _Volume)
 {
 	if (!*this)return;
@@ -187,6 +202,165 @@ void X3DAudioObject::Update()
 
 	XAUDIO2_FILTER_PARAMETERS FilterParameters = { LowPassFilter, 2.0f * sinf(X3DAUDIO_PI / 6.0f * dspSettings.LPFDirectCoefficient), 1.0f };
 	voice->SetFilterParameters(&FilterParameters);
+}
+
+ChD3D::XAudio2Manager::~XAudio2Manager()
+{
+	Release();
+}
+
+size_t ChD3D::XAudio2Manager::GetAudioDataCount(const wchar_t* _key)
+{
+	auto&& data = audioDataMap.find(_key);
+	if (data == audioDataMap.end())return 0;
+	return data->second.size();
+}
+
+bool ChD3D::XAudio2Manager::ContainAudioData(const wchar_t* _key)
+{
+	return  audioDataMap.find(_key) != audioDataMap.end();
+}
+
+ChD3D::XAudio2Manager::MFObject* ChD3D::XAudio2Manager::CreateMFObjectPtr(const wchar_t* _key)
+{
+	auto&& mfObject = ChPtr::Make_S<MFObject>();
+
+	if (!MFObjectInit(_key, *mfObject))
+		return nullptr;
+
+	mfObjectMap[_key] = mfObject;
+
+	return mfObject.get();
+}
+
+bool ChD3D::XAudio2Manager::CreateFileData(const wchar_t* _fileName)
+{
+	if (ContainAudioData(_fileName))return true;
+
+	if (!loadFlg)return false;
+
+
+	std::vector<XAUDIO2_BUFFER*> fileDatas;
+
+	auto&& mfObject = GetMFObject(_fileName);
+
+	ChXAUDIO2_BUFFER* fileData = static_cast<ChXAUDIO2_BUFFER*>(LoadBuffers(mfObject));
+
+	while (ChPtr::NotNullCheck(fileData))
+	{
+		fileDatas.push_back(fileData);
+
+		fileData = static_cast<ChXAUDIO2_BUFFER*>(LoadBuffers(mfObject));
+	}
+
+	audioDataMap[_fileName] = fileDatas;
+	return true;
+}
+
+XAUDIO2_BUFFER* ChD3D::XAudio2Manager::SetBuffer(BYTE* _data, unsigned long _maxStreamLen)
+{
+	auto fileData = new ChXAUDIO2_BUFFER();
+
+	for (DWORD i = 0; i < _maxStreamLen; i++)
+	{
+		unsigned char data = _data[i];
+		fileData->audioDataVector.push_back(data);
+	}
+
+	fileData->AudioBytes = _maxStreamLen;
+	fileData->pAudioData = &fileData->audioDataVector[0];
+	fileData->Flags = XAUDIO2_END_OF_STREAM;
+
+	return fileData;
+}
+
+ChD3D::XAudio2Manager::MFObject* ChD3D::XAudio2Manager::GetMFObject(const wchar_t* _key)
+{
+	auto&& obj = mfObjectMap.find(_key);
+
+	if (obj == mfObjectMap.end())return nullptr;
+	return obj->second.get();
+}
+
+bool ChD3D::XAudio2Manager::ContainMFObject(const wchar_t* _key)
+{
+	return mfObjectMap.find(_key) != mfObjectMap.end();
+}
+
+void ChD3D::XAudio2Manager::SubmitSourceBuffer(IXAudio2SourceVoice* _voice, const wchar_t* _filename, size_t _num)
+{
+	if (ChPtr::NullCheck(_voice))return;
+	if (ChPtr::NullCheck(_filename))return;
+	auto&& audioData = audioDataMap.find(_filename);
+	if (audioData == audioDataMap.end())return;
+	if (audioData->second.size() <= _num)return;
+
+	_voice->SubmitSourceBuffer(audioData->second[_num]);
+}
+
+void ChD3D::XAudio2Manager::AddAudios(AudioObject* _obj)
+{
+	audios.push_back(_obj);
+}
+
+void ChD3D::XAudio2Manager::RemoveAudios(AudioObject* _obj)
+{
+	auto&& thiss = std::find(audios.begin(), audios.end(), _obj);
+
+	audios.erase(thiss);
+}
+
+void ChD3D::XAudio2Manager::UpdateAudios()
+{
+	for (auto&& audio = audios.begin(); audio != audios.end(); audio)
+	{
+		if (ChPtr::NullCheck(*audio))
+		{
+			audio = audios.erase(audio);
+			continue;
+		}
+		(*audio)->Update();
+
+		audio++;
+	}
+}
+
+float* ChD3D::XAudio2Manager::GetMatrix()
+{
+	return &matrix[0];
+}
+
+void ChD3D::XAudio2Manager::ResizeMatrix(size_t _num)
+{
+	matrix.resize(_num);
+}
+
+void ChD3D::XAudio2Manager::CRTRelease()
+{
+	for (auto&& aObject : audios)
+	{
+		aObject->Release();
+	}
+
+	for (auto&& waveFormat : mfObjectMap)
+	{
+		MFObjectRelease(*waveFormat.second);
+	}
+
+	for (auto&& audioDatas : audioDataMap)
+	{
+		for (auto&& audioData : audioDatas.second)
+		{
+			delete audioData;
+		}
+	}
+
+	audioDataMap.clear();
+
+	mfObjectMap.clear();
+
+	audios.clear();
+
 }
 
 void XAudio2Manager::Init()
