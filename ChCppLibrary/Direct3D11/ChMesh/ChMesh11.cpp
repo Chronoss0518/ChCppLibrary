@@ -34,17 +34,17 @@ void ChD3D11::FrameComponent11<CharaType>::CreateAll(ID3D11Device* _device, Mesh
 	{
 		frameCom = frameBase.get();
 
-		for (auto&& material : frameBase->ValueIns().materialList)
+		for (auto&& material : frameBase->materialList)
 		{
 			auto&& primitive11 = ChPtr::Make_S<DrawPrimitiveData11<CharaType>>();
-			primitive11->ValueIns().mate = material;
+			primitive11->mate = material;
 
 			for (unsigned char i = 0; i < ChStd::EnumCast(Ch3D::TextureType::None); i++)
 			{
 				Ch3D::TextureType type = static_cast<Ch3D::TextureType>(i);
 
-				auto&& texPath = material->ValueIns().textures.find(type);
-				if (texPath == material->ValueIns().textures.end())continue;
+				auto&& texPath = material->textures.find(type);
+				if (texPath == material->textures.end())continue;
 				if ((*texPath).second.empty())continue;
 
 				auto texture = ChPtr::Make_S<Texture11>();
@@ -52,24 +52,24 @@ void ChD3D11::FrameComponent11<CharaType>::CreateAll(ID3D11Device* _device, Mesh
 
 				if (!texture->IsTex())texture = nullptr;
 
-				primitive11->ValueIns().textures[type] = texture;
+				primitive11->textures[type] = texture;
 			}
 
 			primitives.push_back(primitive11);
 		}
 
-		for (auto&& primitive : frameBase->ValueIns().primitives)
+		for (auto&& primitive : frameBase->primitives)
 		{
 			auto&& primitive11 = primitives[primitive->mateNo];
 
-			size_t firstIndex = primitive11->ValueIns().vertexArray.size();
+			size_t firstIndex = primitive11->vertexArray.size();
 			size_t indexCount = 0;
 
-			for (auto&& vertex : primitive->ValueIns().vertexData)
+			for (auto&& vertex : primitive->vertexData)
 			{
 				size_t vertexNo = vertex->vertexNo;
 
-				auto&& tmpVertex = *frameBase->ValueIns().vertexList[vertexNo];
+				auto&& tmpVertex = *frameBase->vertexList[vertexNo];
 
 				Ch3D::SkinMeshVertex<16> mVertex;
 				Ch3D::SetPosition(&mVertex, tmpVertex.pos);
@@ -77,47 +77,47 @@ void ChD3D11::FrameComponent11<CharaType>::CreateAll(ID3D11Device* _device, Mesh
 				Ch3D::SetColor(&mVertex, tmpVertex.color);
 				Ch3D::SetNormal(&mVertex, tmpVertex.normal);
 				Ch3D::SetFaceNormal(&mVertex, primitive->faceNormal);
-				mVertex.boneNum = static_cast<unsigned long>(tmpVertex.ValueIns().blendPow.size());
+				mVertex.boneNum = static_cast<unsigned long>(tmpVertex.blendPow.size());
 				for (size_t i = 0; i < mVertex.boneNum; i++)
 				{
-					mVertex.blendPows[i] = tmpVertex.ValueIns().blendPow[i];
+					mVertex.blendPows[i] = tmpVertex.blendPow[i];
 				}
 
-				primitive11->ValueIns().vertexArray.push_back(mVertex);
+				primitive11->vertexArray.push_back(mVertex);
 
 				indexCount++;
 			}
 
 			for (unsigned long i = 1; i < indexCount - 1; i++)
 			{
-				primitive11->ValueIns().indexArray.push_back(static_cast<unsigned long>(firstIndex));
-				primitive11->ValueIns().indexArray.push_back(static_cast<unsigned long>(firstIndex + i));
-				primitive11->ValueIns().indexArray.push_back(static_cast<unsigned long>(firstIndex + i + 1));
+				primitive11->indexArray.push_back(static_cast<unsigned long>(firstIndex));
+				primitive11->indexArray.push_back(static_cast<unsigned long>(firstIndex + i));
+				primitive11->indexArray.push_back(static_cast<unsigned long>(firstIndex + i + 1));
 			}
 		}
 
 		for (auto&& prim : primitives)
 		{
 
-			if (prim->ValueIns().indexArray.empty())continue;
-			if (prim->ValueIns().vertexArray.empty())continue;
+			if (prim->indexArray.empty())continue;
+			if (prim->vertexArray.empty())continue;
 
 			prim->indexBuffer.CreateBuffer(
 				_device,
-				&prim->ValueIns().indexArray[0],
-				static_cast<unsigned long>(prim->ValueIns().indexArray.size()));
+				&prim->indexArray[0],
+				static_cast<unsigned long>(prim->indexArray.size()));
 
 			prim->vertexBuffer.CreateBuffer(
 				_device,
-				&prim->ValueIns().vertexArray[0],
-				static_cast<unsigned long>(prim->ValueIns().vertexArray.size()));
+				&prim->vertexArray[0],
+				static_cast<unsigned long>(prim->vertexArray.size()));
 		}
 
-		for (auto boneData : frameBase->ValueIns().boneDatas)
+		for (auto boneData : frameBase->boneDatas)
 		{
 			auto bone = ChPtr::Make_S<TargetBoneData11<CharaType>>();
 			bone->boneData = boneData;
-			auto&& objectList = _rootObject.GetAllChildlenConstainsName<ChCpp::FrameObject<CharaType>>(boneData->ValueIns().boneObjectName);
+			auto&& objectList = _rootObject.GetAllChildlenConstainsName<ChCpp::FrameObject<CharaType>>(boneData->boneObjectName);
 			bone->targetObject = objectList.empty() ? nullptr : objectList[0].lock();
 			boneList.push_back(bone);
 		}
@@ -196,6 +196,6 @@ void ChD3D11::Mesh11<CharaType>::Create()
 }
 
 
-CH_STRING_TYPE_USE_FILE_EXPLICIT_DECLARATION(ChD3D11::Mesh11);
-CH_STRING_TYPE_USE_FILE_EXPLICIT_DECLARATION(ChD3D11::TargetBoneData11);
-CH_STRING_TYPE_USE_FILE_EXPLICIT_DECLARATION(ChD3D11::FrameComponent11);
+template ChD3D11::Mesh11<wchar_t>;
+template ChD3D11::TargetBoneData11<wchar_t>;
+template ChD3D11::FrameComponent11<wchar_t>;
