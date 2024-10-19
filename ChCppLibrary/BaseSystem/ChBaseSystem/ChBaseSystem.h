@@ -162,11 +162,10 @@ namespace ChSystem
 
 		//ウィンドシステム(BaseSystem継承)を取得する//
 		template<class T>
-		auto GetSystem() ->
-			typename std::enable_if
-			<std::is_base_of<BaseSystem, T>::value, T* const>::type
+		typename std::enable_if
+			<std::is_base_of<BaseSystem, T>::value, T* const>::type GetSystem()
 		{
-			return ChPtr::SafeCast<T>(baseSystems);
+			return ChPtr::SafeCast<T>(baseSystems.get());
 		}
 
 	public://Is Functions//
