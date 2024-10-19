@@ -60,7 +60,23 @@ struct PNTVertex
 #include"Direct3D9/ChComponent/ChTextureComponent9.h"
 #include"Direct3D9/ChComponent/ChModelComponents9.h"
 
-#pragma comment(lib,"ChD3D9Library.lib")
+#ifdef _DEBUG
+
+#ifdef _DLL
+#pragma comment(lib,"ChD3D9Library_MDd.lib")
+#else
+#pragma comment(lib,"ChD3D9Library_MTd.lib")
+#endif
+
+#else
+
+#ifdef _DLL
+#pragma comment(lib,"ChD3D9Library_MD.lib")
+#else
+#pragma comment(lib,"ChD3D9Library_MT.lib")
+#endif
+
+#endif
 
 //CopyRight Chronoss0518 2018/08//
 #endif

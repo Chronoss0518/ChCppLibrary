@@ -13,7 +13,24 @@
 #include"../Direct3DObject/WICBitmapCreator/ChWICBitmapCreator.h"
 #include"../Direct3DObject/DirectFont/ChDirectFont.h"
 
-#pragma comment(lib,"ChD3DObjectLibrary.lib")
+#ifdef _DEBUG
+
+#ifdef _DLL
+#pragma comment(lib,"ChD3DObjectLibrary_MDd.lib")
+#else
+#pragma comment(lib,"ChD3DObjectLibrary_MTd.lib")
+#endif
+
+#else
+
+#ifdef _DLL
+#pragma comment(lib,"ChD3DObjectLibrary_MD.lib")
+#else
+#pragma comment(lib,"ChD3DObjectLibrary_MT.lib")
+#endif
+
+#endif
+
 
 
 #endif

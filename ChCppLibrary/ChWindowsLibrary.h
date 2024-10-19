@@ -41,8 +41,22 @@
 #include"WindowsObject/FileDialog/ChWinFileDialog.h"
 #include"WindowsObject/MsgBox/ChMsgBox.h"
 
-#ifdef _WINDOWS_
-#pragma comment(lib,"ChWinLibrary.lib")
+#ifdef _DEBUG
+
+#ifdef _DLL
+#pragma comment(lib,"ChWinLibrary_MDd.lib")
+#else
+#pragma comment(lib,"ChWinLibrary_MTd.lib")
+#endif
+
+#else
+
+#ifdef _DLL
+#pragma comment(lib,"ChWinLibrary_MD.lib")
+#else
+#pragma comment(lib,"ChWinLibrary_MT.lib")
+#endif
+
 #endif
 
 #endif
