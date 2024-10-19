@@ -196,6 +196,6 @@ void ChD3D11::Mesh11<CharaType>::Create()
 }
 
 
-template ChD3D11::Mesh11<wchar_t>;
-template ChD3D11::TargetBoneData11<wchar_t>;
-template ChD3D11::FrameComponent11<wchar_t>;
+CH_STRING_TYPE_USE_D3D11_MESH_EXPLICIT_DECLARATION(ChD3D11::Mesh11);
+CH_STRING_TYPE_USE_D3D11_MESH_EXPLICIT_DECLARATION(ChD3D11::TargetBoneData11);
+CH_STRING_TYPE_USE_D3D11_MESH_EXPLICIT_DECLARATION(ChD3D11::FrameComponent11);

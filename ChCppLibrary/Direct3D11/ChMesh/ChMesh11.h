@@ -5,6 +5,8 @@
 #include"../../CPP/ChModel/ChModelObject.h"
 #include"../ChShaderStructures11.h"
 
+#include"../ChTexture/ChTexture11.h"
+
 #include"../../CPP/ChBaseObject/ChBaseObject.h"
 #include"../ChCB/ChCBBone/ChCBBone11.h"
 
