@@ -14,17 +14,17 @@ void CBBase11::Init(ID3D11Device* _device)
 	SetInitFlg(true);
 }
 
-void CBBase11::SetShaderTexture(ID3D11DeviceContext* _dc, TextureBase11& _tex, TextureBase11& _defaultTex, const unsigned long _registerNo)
+void CBBase11::SetShaderTexture(ID3D11DeviceContext* _dc, TextureBase11* _tex, TextureBase11& _defaultTex, const unsigned long _registerNo)
 {
 	if (ChPtr::NullCheck(_dc))return;
 
 	TextureBase11* tmpTex = &_defaultTex;
 
-	if (ChPtr::NotNullCheck(&_tex))
+	if (ChPtr::NotNullCheck(_tex))
 	{
-		if (_tex.IsTex())
+		if (_tex->IsTex())
 		{
-			tmpTex = &_tex;
+			tmpTex = _tex;
 		}
 	}
 

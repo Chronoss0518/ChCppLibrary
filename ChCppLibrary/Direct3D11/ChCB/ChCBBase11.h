@@ -15,7 +15,7 @@ namespace ChD3D11
 
 		protected:
 
-			void SetShaderTexture(ID3D11DeviceContext* _dc, TextureBase11&  _tex, TextureBase11& _defaultTex, const unsigned long _registerNo);
+			void SetShaderTexture(ID3D11DeviceContext* _dc, TextureBase11*  _tex, TextureBase11& _defaultTex, const unsigned long _registerNo);
 
 			inline ID3D11Device* GetDevice() { return device; };
 
