@@ -33,8 +33,6 @@ namespace ChD3D
 
 	public:
 
-		AudioObject();
-
 		virtual ~AudioObject();
 
 	public://Init And Release//
