@@ -40,8 +40,6 @@ namespace ChD3D11
 
 	public:
 
-		TextureBase11();
-
 		virtual ~TextureBase11();
 
 	public://Init And Release//
