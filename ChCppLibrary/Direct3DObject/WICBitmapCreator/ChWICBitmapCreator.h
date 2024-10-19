@@ -35,8 +35,6 @@ namespace ChD3D
 
 	public:
 
-		WICBitmapCreator();
-
 		virtual ~WICBitmapCreator();
 
 	public:
