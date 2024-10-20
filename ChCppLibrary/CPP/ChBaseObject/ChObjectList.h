@@ -58,7 +58,7 @@ namespace ChCpp
 				auto&& test = ChPtr::SharedSafeCast<T>(objectList[i]);
 				if (test == nullptr)continue;
 				tmpObjList.push_back(test);
-				for (auto&& childObj : test[i]->GetChildlen<T>())
+				for (auto&& childObj : objectList[i]->GetChildlen<T>())
 				{
 					tmpObjList.push_back(childObj);
 				}
