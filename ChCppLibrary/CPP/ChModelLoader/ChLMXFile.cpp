@@ -90,7 +90,7 @@ namespace ChCpp
 }
 
 template<typename CharaType>
-inline void ChCpp::ModelLoader::XFile<CharaType>::CreateModel(ChPtr::Shared<ModelObject<CharaType>> _model, const std::basic_string<CharaType>& _filePath)
+void ChCpp::ModelLoader::XFile<CharaType>::CreateModel(ChPtr::Shared<ModelObject<CharaType>> _model, const std::basic_string<CharaType>& _filePath)
 {
 	if (_filePath.size() <= 0)return;
 
@@ -165,13 +165,13 @@ inline void ChCpp::ModelLoader::XFile<CharaType>::CreateModel(ChPtr::Shared<Mode
 }
 
 template<typename CharaType>
-inline void ChCpp::ModelLoader::XFile<CharaType>::OutModelFile(const ChPtr::Shared<ModelObject<CharaType>> _model, const std::basic_string<CharaType>& _filePath)
+void ChCpp::ModelLoader::XFile<CharaType>::OutModelFile(const ChPtr::Shared<ModelObject<CharaType>> _model, const std::basic_string<CharaType>& _filePath)
 {
 
 }
 
 template<typename CharaType>
-inline bool ChCpp::ModelLoader::XFile<CharaType>::SetFrame(
+bool ChCpp::ModelLoader::XFile<CharaType>::SetFrame(
 	ChPtr::Shared<XFrame>& _frames,
 	const ChPtr::Shared<TemplateRange>& _targetTemplate,
 	const std::basic_string<CharaType>& _text)
@@ -217,7 +217,7 @@ inline bool ChCpp::ModelLoader::XFile<CharaType>::SetFrame(
 }
 
 template<typename CharaType>
-inline bool ChCpp::ModelLoader::XFile<CharaType>::SetFremeTransformMatrix(
+bool ChCpp::ModelLoader::XFile<CharaType>::SetFremeTransformMatrix(
 	ChPtr::Shared<XFrame>& _frames,
 	const ChPtr::Shared<TemplateRange>& _targetTemplate,
 	const std::basic_string<CharaType>& _text)
@@ -242,7 +242,7 @@ inline bool ChCpp::ModelLoader::XFile<CharaType>::SetFremeTransformMatrix(
 }
 
 template<typename CharaType>
-inline bool ChCpp::ModelLoader::XFile<CharaType>::SetMesh(
+bool ChCpp::ModelLoader::XFile<CharaType>::SetMesh(
 	ChPtr::Shared<XFrame>& _frames,
 	const ChPtr::Shared<TemplateRange>& _targetTemplate,
 	const std::basic_string<CharaType>& _text)
@@ -266,7 +266,7 @@ inline bool ChCpp::ModelLoader::XFile<CharaType>::SetMesh(
 
 	tmpPos += 1;
 
-	auto mesh = ChPtr::Make_S<XMesh>();
+	auto&& mesh = ChPtr::Make_S<XMesh>();
 
 	{
 		auto values = GetArrayValues<XVECTOR>(_text, tmpPos, arrayFirstTag, arraySeccondTag);
@@ -319,7 +319,7 @@ inline bool ChCpp::ModelLoader::XFile<CharaType>::SetMesh(
 }
 
 template<typename CharaType>
-inline bool ChCpp::ModelLoader::XFile<CharaType>::SetMeshNormal(
+bool ChCpp::ModelLoader::XFile<CharaType>::SetMeshNormal(
 	ChPtr::Shared<XFrame>& _frames,
 	const ChPtr::Shared<TemplateRange>& _targetTemplate,
 	const std::basic_string<CharaType>& _text)
@@ -368,7 +368,7 @@ inline bool ChCpp::ModelLoader::XFile<CharaType>::SetMeshNormal(
 }
 
 template<typename CharaType>
-inline bool ChCpp::ModelLoader::XFile<CharaType>::SetMeshTextureCoords(
+bool ChCpp::ModelLoader::XFile<CharaType>::SetMeshTextureCoords(
 	ChPtr::Shared<XFrame>& _frames,
 	const ChPtr::Shared<TemplateRange>& _targetTemplate,
 	const std::basic_string<CharaType>& _text)
@@ -386,7 +386,7 @@ inline bool ChCpp::ModelLoader::XFile<CharaType>::SetMeshTextureCoords(
 
 	tmpPos += 1;
 
-	auto UVs = GetArrayValues<XCOODS2D>(_text, tmpPos, arrayFirstTag, arraySeccondTag);
+	auto&& UVs = GetArrayValues<XCOODS2D>(_text, tmpPos, arrayFirstTag, arraySeccondTag);
 
 	tmpPos = _text.find(arraySeccondTag, tmpPos);
 	tmpPos += 2;
@@ -402,7 +402,7 @@ inline bool ChCpp::ModelLoader::XFile<CharaType>::SetMeshTextureCoords(
 }
 
 template<typename CharaType>
-inline bool ChCpp::ModelLoader::XFile<CharaType>::SetMeshMaterialList(
+bool ChCpp::ModelLoader::XFile<CharaType>::SetMeshMaterialList(
 	ChPtr::Shared<XFrame>& _frames,
 	const ChPtr::Shared<TemplateRange>& _targetTemplate,
 	const std::basic_string<CharaType>& _text)
@@ -419,7 +419,7 @@ inline bool ChCpp::ModelLoader::XFile<CharaType>::SetMeshMaterialList(
 
 	tmpPos += 1;
 
-	auto mateNo = GetArrayValues<XDWORD>(_text, tmpPos, ChStd::GetCommaChara<CharaType>(), ChStd::GetSemiColonChara<CharaType>());
+	auto&& mateNo = GetArrayValues<XDWORD>(_text, tmpPos, ChStd::GetCommaChara<CharaType>(), ChStd::GetSemiColonChara<CharaType>());
 
 	auto& faces = _frames->mesh->faceList;
 
@@ -437,7 +437,7 @@ inline bool ChCpp::ModelLoader::XFile<CharaType>::SetMeshMaterialList(
 }
 
 template<typename CharaType>
-inline bool ChCpp::ModelLoader::XFile<CharaType>::SetMaterial(
+bool ChCpp::ModelLoader::XFile<CharaType>::SetMaterial(
 	ChPtr::Shared<XFrame>& _frames,
 	const ChPtr::Shared<TemplateRange>& _targetTemplate,
 	const std::basic_string<CharaType>& _text)
@@ -557,7 +557,7 @@ inline bool ChCpp::ModelLoader::XFile<CharaType>::SetMaterial(
 }
 
 template<typename CharaType>
-inline bool ChCpp::ModelLoader::XFile<CharaType>::SetSkinWeights(
+bool ChCpp::ModelLoader::XFile<CharaType>::SetSkinWeights(
 	ChPtr::Shared<XFrame>& _frames,
 	const ChPtr::Shared<TemplateRange>& _targetTemplate,
 	const std::basic_string<CharaType>& _text)
@@ -633,7 +633,7 @@ inline bool ChCpp::ModelLoader::XFile<CharaType>::SetSkinWeights(
 }
 
 template<typename CharaType>
-inline bool ChCpp::ModelLoader::XFile<CharaType>::IsTags(
+bool ChCpp::ModelLoader::XFile<CharaType>::IsTags(
 	size_t& _outTagPos,
 	const std::basic_string<CharaType>& _TagName,
 	const ChPtr::Shared<TemplateRange> _LookTemplate,
@@ -664,7 +664,7 @@ inline bool ChCpp::ModelLoader::XFile<CharaType>::IsTags(
 }
 
 template<typename CharaType>
-inline void ChCpp::ModelLoader::XFile<CharaType>::LoadToTemplates(
+void ChCpp::ModelLoader::XFile<CharaType>::LoadToTemplates(
 	ChPtr::Shared<TemplateRange>& _templates,
 	const size_t& _offset,
 	const std::basic_string<CharaType>& _text)
@@ -725,7 +725,7 @@ inline void ChCpp::ModelLoader::XFile<CharaType>::LoadToTemplates(
 }
 
 template<typename CharaType>
-inline void ChCpp::ModelLoader::XFile<CharaType>::SetToTemplate(
+void ChCpp::ModelLoader::XFile<CharaType>::SetToTemplate(
 	ChPtr::Shared<TemplateRange>& _tmp,
 	size_t& _bCnt,
 	size_t& _eCnt,
@@ -776,7 +776,7 @@ inline void ChCpp::ModelLoader::XFile<CharaType>::SetToTemplate(
 }
 
 template<typename CharaType>
-inline void ChCpp::ModelLoader::XFile<CharaType>::XFrameToChFrame(
+void ChCpp::ModelLoader::XFile<CharaType>::XFrameToChFrame(
 	ChPtr::Shared<FrameObject<CharaType>> _chFrame,
 	const ChPtr::Shared<XFrame>& _xFrame)
 {
