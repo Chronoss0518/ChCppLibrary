@@ -170,7 +170,16 @@ namespace ChWin
 
 		private:
 
-			unsigned int CreateUType();
+			inline unsigned int CreateUType()
+			{
+				unsigned int uType = buttonType;
+				uType |= ChStd::EnumCast(mType);
+				uType |= ChStd::EnumCast(diType);
+				uType |= ChStd::EnumCast(tType);
+				uType |= ChStd::EnumCast(type);
+				return uType;
+
+			}
 
 			unsigned int buttonType = 0;
 			ModalType mType = ModalType::None;
@@ -179,21 +188,6 @@ namespace ChWin
 			MsgBoxType type = MsgBoxType::None;
 	};
 }
-
-#ifdef CRT
-
-unsigned int ChWin::MsgBox::CreateUType()
-{
-	unsigned int uType = buttonType;
-	uType |= ChStd::EnumCast(mType);
-	uType |= ChStd::EnumCast(diType);
-	uType |= ChStd::EnumCast(tType);
-	uType |= ChStd::EnumCast(type);
-	return uType;
-
-}
-
-#endif
 
 
 #endif
