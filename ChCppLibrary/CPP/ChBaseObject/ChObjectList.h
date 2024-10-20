@@ -54,7 +54,7 @@ namespace ChCpp
 
 			for (size_t i = 0; i < objectList.size(); i++)
 			{
-				if (ChPtr::NotNullCheck(objectList[i]->GetParent()))continue;
+				if (objectList[i]->GetParent() != nullptr)continue;
 				auto&& test = ChPtr::SharedSafeCast<T>(objectList[i]);
 				if (test == nullptr)continue;
 				tmpObjList.push_back(test);
@@ -64,28 +64,6 @@ namespace ChCpp
 				}
 			}
 
-			return tmpObjList;
-		}
-
-		template<class T = BasicObject>
-		inline std::vector<ChPtr::Weak<
-			typename std::enable_if<std::is_base_of<BasicObject, T>::value, T>::type>>
-			GetObjectListForName(const std::string& _name)
-		{
-			std::vector<ChPtr::Weak<BasicObject>>tmpObjList;
-
-			for (size_t i = 0; i < objectList.size(); i++)
-			{
-				if (ChPtr::NotNullCheck(objectList[i]->GetParent()))continue;
-				auto&& test = ChPtr::SharedSafeCast<T>(objectList[i]);
-				if (test == nullptr)continue;
-				if (test->GetMyName() != _name)continue;
-				tmpObjList.push_back(test);
-				for (auto&& childObj : test->GetChildlenForName<T>(_name))
-				{
-					tmpObjList.push_back(childObj);
-				}
-			}
 			return tmpObjList;
 		}
 
