@@ -1,10 +1,7 @@
 #ifndef Ch_CPP_Math3D_h
 #define Ch_CPP_Math3D_h
 
-#ifdef CRT
-#include<string>
-#endif
-
+#include"ChStr.h"
 #include"ChMath.h"
 
 #ifndef CH_MATH3D_METHOD

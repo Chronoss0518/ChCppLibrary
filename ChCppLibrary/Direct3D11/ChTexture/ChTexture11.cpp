@@ -35,9 +35,40 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //#include"../ChLight/ChLight11.h"
 #include"ChTexture11.h"
 
+
+#include<wincodec.h>
+#include"../../External/DirectXTex/DirectXTex/DirectXTex.h"
+#include"../../External/DirectXTex/WICTextureLoader/WICTextureLoader11.h"
+
+#ifdef _DEBUG
+
+#ifdef _DLL
+#pragma comment(lib, "DirectXTex_MDd.lib")
+#pragma comment(lib, "WICTextureLoader_MDd.lib")
+#else
+#pragma comment(lib, "DirectXTex_MTd.lib")
+#pragma comment(lib, "WICTextureLoader_MTd.lib")
+#endif
+
+#else
+
+#ifdef _DLL
+#pragma comment(lib, "DirectXTex_MD.lib")
+#pragma comment(lib, "WICTextureLoader_MD.lib")
+#else
+#pragma comment(lib, "DirectXTex_MT.lib")
+#pragma comment(lib, "WICTextureLoader_MT.lib")
+#endif
+
+#endif
 #pragma comment(lib,"Windowscodecs.lib")
 
 using namespace ChD3D11;
+
+ChD3D11::TextureBase11::~TextureBase11()
+{
+	Release();
+}
 
 void TextureBase11::Release()
 {
@@ -123,6 +154,28 @@ void TextureBase11::Init(ID3D11Device* _device)
 {
 	InitSampler();
 	device = _device;
+}
+
+void Texture11::CreateTexture(
+	const std::wstring& _texPath,
+	ID3D11Device* _device)
+{
+	if (ChPtr::NullCheck(_device))return;
+	Release();
+
+	device = _device;
+
+	if (FAILED(DirectX::CreateWICTextureFromFile(
+		device,
+		_texPath.c_str(),
+		(ID3D11Resource**)&baseTex,
+		&texView)))
+	{
+		Release();
+		return;
+	}
+
+	Init(_device);
 }
 
 void Texture11::CreateColorTexture(
@@ -240,6 +293,85 @@ void ChD3D11::Texture11::CreateColorTexture(
 	CreateSRV();
 
 	Init(_device);
+}
+
+void ChD3D11::Texture11::CreateColorTexture(
+	ID3D11Device* _device,
+	IWICBitmap* _bitmap,
+	const unsigned int _CPUFlg)
+{
+	if (ChPtr::NullCheck(_device))return;
+	if (ChPtr::NullCheck(_bitmap))return;
+
+	Release();
+
+	unsigned int w, h;
+	_bitmap->GetSize(&w, &h);
+
+	UINT stride = w * sizeof(ChVec4);
+
+	std::vector<unsigned char>testVector;
+	testVector.resize(stride * h);
+
+	auto&& hresult = _bitmap->CopyPixels(nullptr, stride, stride * h, &testVector[0]);
+
+	std::vector<ChVec4>tmpPixelData;
+	tmpPixelData.resize(h * w);
+
+	ChStr::Bytes<ChVec4> byte;
+
+	ChVec4 test;
+	for (unsigned long i = 0; i < h * w; i++)
+	{
+		for (unsigned long j = 0; j < sizeof(ChVec4); j++)
+		{
+			byte.byte[j] = testVector[j + (i * sizeof(ChVec4))];
+		}
+		if (test != byte.val)
+		{
+			test = byte.val;
+		}
+		tmpPixelData[i] = byte.val;
+	}
+	CreateColorTexture(_device, &tmpPixelData[0], w, h, _CPUFlg);
+}
+
+ChVec4* ChD3D11::Texture11::SetPixel(const ChVec4* _colorArray, const unsigned long _textureSize)
+{
+	textureSize = _textureSize;
+	pixelData.resize(textureSize);
+
+	ChVec4 test;
+
+	for (unsigned long i = 0; i < textureSize; i++)
+	{
+		pixelData[i] = _colorArray[i];
+
+		if (test != pixelData[i])
+		{
+			test = pixelData[i];
+		}
+	}
+	return &pixelData[0];
+}
+
+ChVec4* ChD3D11::Texture11::SetPixel(const ChVec4& _color, const unsigned long _textureSize)
+{
+	textureSize = _textureSize;
+	pixelData.resize(textureSize);
+
+	ChVec4 test;
+
+	for (unsigned long i = 0; i < textureSize; i++)
+	{
+		pixelData[i] = _color;
+
+		if (test != pixelData[i])
+		{
+			test = pixelData[i];
+		}
+	}
+	return &pixelData[0];
 }
 
 void RenderTarget11::Release()

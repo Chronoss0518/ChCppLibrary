@@ -16,7 +16,7 @@ using namespace ChD3D9;
 //ChFont9ƒƒ\ƒbƒh
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void DrawFont::Release()
+void DrawFontBase::Release()
 {
 	if (ChPtr::NullCheck(lpFont))return;
 	lpFont->Release();
@@ -54,7 +54,6 @@ void DrawFontA::Draw(
 	const long _y,
 	ChVec4 _col)
 {
-
 	auto col = D3DCOLOR_ARGB(
 		static_cast<unsigned char>(_col.a * 255),
 		static_cast<unsigned char>(_col.r * 255),
@@ -62,8 +61,12 @@ void DrawFontA::Draw(
 		static_cast<unsigned char>(_col.b * 255));
 
 	RECT rc = { _x, _y,_x + fontSize.w, _y + fontSize.h };
-	lpFont->DrawTextA(NULL, _drawStr, _drawStrLen, &rc, DT_LEFT | DT_NOCLIP
-		, col);
+	lpFont->DrawTextA(NULL, _drawStr, _drawStrLen, &rc, DT_LEFT | DT_NOCLIP, col);
+}
+
+const char* ChD3D9::DrawFontA::GetFontType()
+{
+	return fontType.c_str();
 }
 
 void DrawFontW::Init(const LPDIRECT3DDEVICE9 _dv, const wchar_t* _fontTypeText)
@@ -103,6 +106,10 @@ void DrawFontW::Draw(
 		static_cast<unsigned char>(_col.b * 255));
 
 	RECT rc = { _x, _y,_x + fontSize.w, _y + fontSize.h };
-	lpFont->DrawTextW(NULL, _drawStr, _drawStrLen, &rc, DT_LEFT | DT_NOCLIP
-		, col);
+	lpFont->DrawTextW(NULL, _drawStr, _drawStrLen, &rc, DT_LEFT | DT_NOCLIP, col);
+}
+
+const wchar_t* ChD3D9::DrawFontW::GetFontType()
+{
+	return fontType.c_str();
 }

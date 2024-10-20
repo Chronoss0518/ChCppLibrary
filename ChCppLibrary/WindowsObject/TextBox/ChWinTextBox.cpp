@@ -60,3 +60,131 @@ void ChWin::TextBox##_AorW##::UnSelect(){\
 CH_WIN_TEXT_BOX_FUNCTIONS(char, A);
 
 CH_WIN_TEXT_BOX_FUNCTIONS(wchar_t, W);
+
+void ChWin::TextBoxA::Create(
+	HINSTANCE _hIns,
+	const char* _startText,
+	const ChINTPOINT& _pos,
+	const ChINTPOINT& _size,
+	const HWND _parentHandl)
+{
+	Release();
+
+	auto pos = _pos;
+	auto size = _size;
+	pos.val.Abs();
+	size.val.Abs();
+
+	WindCreater creater(_hIns);
+
+	creater.SetEXStyle(WS_EX_CLIENTEDGE);
+
+	creater.SetWindStyle(
+		WS_BORDER |
+		WS_CHILD |
+		WS_VISIBLE |
+		WS_VSCROLL |
+		ES_LEFT |
+		ES_MULTILINE |
+		ES_AUTOVSCROLL |
+		WS_GROUP);
+
+	creater.SetInitPosition(pos.x, pos.y);
+	creater.SetInitSize(size.w, size.h);
+	creater.SetParentWind(_parentHandl);
+
+	hWnd = creater.Create(_startText, "EDIT");
+
+	if (ChPtr::NullCheck(hWnd))return;
+
+	CreateEnd(true);
+
+	if (!IsInit())return;
+
+	SetChildWindProcedure(EN_KILLFOCUS, [&](HWND _hWnd, UINT _msg) {selectFlg = false; });
+	SetChildWindProcedure(EN_SETFOCUS, [&](HWND _hWnd, UINT _msg) {selectFlg = true; });
+	SetChildWindProcedure(EN_CHANGE, [&](HWND _hWnd, UINT _msg) {isChangeFlg = true; });
+}
+
+std::string ChWin::TextBoxA::GetText()
+{
+	std::string Text = "";
+
+	char tmp[1500] = "\0";
+
+	GetWindowTextA(GethWnd(), tmp, 1500);
+
+	Text = tmp;
+
+	isChangeFlg = false;
+	return Text;
+}
+
+void ChWin::TextBoxA::SetText(const std::string& _text)
+{
+	SetText(_text.c_str(), static_cast<unsigned int>(_text.size()));
+}
+
+void ChWin::TextBoxW::Create(
+	HINSTANCE _hIns,
+	const wchar_t* _startText,
+	const ChINTPOINT& _pos,
+	const ChINTPOINT& _size,
+	const HWND _parentHandl)
+{
+	Release();
+
+	auto pos = _pos;
+	auto size = _size;
+	pos.val.Abs();
+	size.val.Abs();
+
+	WindCreater creater(_hIns);
+
+	creater.SetEXStyle(WS_EX_CLIENTEDGE);
+
+	creater.SetWindStyle(
+		WS_BORDER |
+		WS_CHILD |
+		WS_VISIBLE |
+		WS_VSCROLL |
+		ES_LEFT |
+		ES_MULTILINE |
+		ES_AUTOVSCROLL |
+		WS_GROUP);
+
+	creater.SetInitPosition(pos.x, pos.y);
+	creater.SetInitSize(size.w, size.h);
+	creater.SetParentWind(_parentHandl);
+
+	hWnd = creater.Create(_startText, L"EDIT");
+
+	if (ChPtr::NullCheck(hWnd))return;
+
+	CreateEnd(true);
+
+	if (!IsInit())return;
+
+	SetChildWindProcedure(EN_KILLFOCUS, [&](HWND _hWnd, UINT _msg) {selectFlg = false; });
+	SetChildWindProcedure(EN_SETFOCUS, [&](HWND _hWnd, UINT _msg) {selectFlg = true; });
+	SetChildWindProcedure(EN_CHANGE, [&](HWND _hWnd, UINT _msg) {isChangeFlg = true; });
+}
+
+std::wstring ChWin::TextBoxW::GetText()
+{
+	std::wstring Text = L"";
+
+	wchar_t tmp[1500] = L"\0";
+
+	GetWindowTextW(GethWnd(), tmp, 1500);
+
+	Text = tmp;
+
+	isChangeFlg = false;
+	return Text;
+}
+
+void ChWin::TextBoxW::SetText(const std::wstring& _text)
+{
+	SetText(_text.c_str(), static_cast<unsigned int>(_text.size()));
+}

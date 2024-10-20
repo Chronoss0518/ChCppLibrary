@@ -1074,3 +1074,185 @@ bool MaskTexture::CreateMaskTexture(const int _width, const int _height)
 {
 	return CreateMaskTexture(ChINTPOINT(_width, _height), nullptr);
 }
+
+std::vector<ChWin::RGBData> ChWin::Texture::GetTextureByteW()
+{
+	BITMAP tmp = GetTextureDataW();
+
+	return tmp.bmBitsPixel >= 8 ? GetByteColor(tmp) : GetMonoColor(tmp);
+}
+
+std::vector<ChWin::RGBData> ChWin::Texture::GetTextureByteA()
+{
+	BITMAP tmp = GetTextureDataA();
+
+	return tmp.bmBitsPixel > 8 ? GetByteColor(tmp) : GetMonoColor(tmp);
+}
+
+std::vector<ChWin::RGBData> ChWin::Texture::GetMonoColor(BITMAP& _ddb)
+{
+
+	std::vector<RGBData> out;
+
+#if 0
+
+	if (_ddb.bmWidth <= 0 ||
+		_ddb.bmHeight <= 0 ||
+		_ddb.bmBitsPixel <= 0)return out;
+
+	if (_ddb.bmBitsPixel != 1)return out;
+
+	BITMAPINFO info;
+
+	ChStd::MZero(&info);
+
+	info.bmiHeader.biSize = sizeof(BITMAPINFO);
+	info.bmiHeader.biWidth = _ddb.bmWidth;
+	info.bmiHeader.biHeight = _ddb.bmHeight;
+	info.bmiHeader.biPlanes = 1;
+	info.bmiHeader.biBitCount = _ddb.bmBitsPixel;
+	info.bmiHeader.biCompression = BI_RGB;
+
+	const unsigned long createByteNum = (((_ddb.bmWidth * _ddb.bmHeight) / 8) + 1) * 4;
+
+	unsigned char* byte = new unsigned char[createByteNum];
+
+	auto dc = CreateCompatibleDC(nullptr);
+
+	SetTextureToHDC(dc);
+
+	if (GetDIBits(dc, mainTexture, 0, _ddb.bmHeight, byte, &info, DIB_RGB_COLORS) != 0)
+	{
+		ChCpp::BitBool flgs;
+		unsigned char moveCount = 0;
+		unsigned long byteCount = 0;
+
+		flgs.SetValue(byte[byteCount]);
+
+		while (out.size() < _ddb.bmWidth * _ddb.bmHeight)
+		{
+
+			RGBData col;
+			for (unsigned char i = 0; i < 3; i++)
+			{
+				col.byte[3 - i] = flgs.GetBitFlg(moveCount) ? 1 : 0;
+				col.byte[3 - i] *= 255;
+			}
+
+			if (col.r == 255)
+			{
+				int t = 0;
+				t = 1;
+			}
+
+			out.push_back(col);
+
+			moveCount++;
+			if (moveCount < 8)continue;
+			if (byteCount > createByteNum)
+			{
+				int t = 0;
+				t = 1;
+				break;
+			}
+			if (byteCount > 10000)
+			{
+				int t = 0;
+				t = 1;
+				break;
+			}
+			moveCount = 0;
+			flgs.SetValue(byte[byteCount]);
+			byteCount++;
+		}
+
+	}
+
+	delete[] byte;
+
+#endif
+
+	return out;
+}
+
+std::vector<ChWin::RGBData> ChWin::Texture::GetByteColor(BITMAP& _ddb)
+{
+
+	std::vector<RGBData> out;
+
+	if (_ddb.bmWidth <= 0 ||
+		_ddb.bmHeight <= 0 ||
+		_ddb.bmBitsPixel <= 0)return out;
+
+	BITMAPINFO info;
+
+	ChStd::MZero(&info);
+
+	info.bmiHeader.biSize = sizeof(BITMAPINFO);
+	info.bmiHeader.biWidth = _ddb.bmWidth;
+	info.bmiHeader.biHeight = _ddb.bmHeight;
+	info.bmiHeader.biPlanes = 1;
+	info.bmiHeader.biBitCount = _ddb.bmBitsPixel;
+	info.bmiHeader.biCompression = BI_RGB;
+
+	const unsigned char colorTypeCount = (_ddb.bmBitsPixel / 8);
+
+	unsigned long* byte = new unsigned long[_ddb.bmWidth * _ddb.bmHeight];
+
+	auto dc = CreateCompatibleDC(nullptr);
+
+	SetTextureToHDC(dc);
+
+	if (GetDIBits(dc, mainTexture, 0, _ddb.bmHeight, byte, &info, DIB_RGB_COLORS) != 0)
+	{
+		unsigned long count = 0;
+
+		for (long h = 0; h < _ddb.bmHeight; h++)
+		{
+			for (long w = 0; w < _ddb.bmWidth; w++)
+			{
+				RGBData col;
+
+				col.num = byte[w + (h * _ddb.bmWidth)];
+
+				out.push_back(col);
+			}
+			count += 1;
+		}
+	}
+
+	delete[] byte;
+
+	return out;
+}
+
+void ChWin::Texture::DrawMaskMain(HDC _textureHDC, HDC _drawTarget, const ChINTPOINT& _pos, const ChINTPOINT& _size, const ChINTPOINT& _basePos, const UINT _transparent)
+{
+
+	static MaskTexture maskRT;
+
+	{
+		auto texSize = GetTextureSize();
+
+		maskRT.CreateMaskTexture(texSize.w, texSize.h);
+		auto oldBkColor = SetBkColor(_textureHDC, _transparent);
+
+		{
+
+			auto oCode = opeCode;
+
+			opeCode = RasterOpeCode::NotSRCCopy;
+
+			DrawMain(_textureHDC, maskRT.GetRenderTarget(), ChINTPOINT(0, 0), texSize, ChINTPOINT(0, 0));
+
+			opeCode = oCode;
+
+			auto test = maskRT.GetTextureByte();
+		}
+
+		SetBkColor(_textureHDC, oldBkColor);
+
+	}
+
+	DrawMaskMain(_textureHDC, _drawTarget, _pos, _size, _basePos, maskRT.GetTexture());
+}

@@ -14,8 +14,6 @@ typedef class ChTextureComponent9 :public ChCpp::BaseComponent
 {
 public:
 
-#ifdef CRT
-
 	//パスも記述//
 	//コンポーネントに画像データを作成する//
 	void SetTexture(const std::string& _textureName)
@@ -24,20 +22,22 @@ public:
 		texture->CreateTexture(_textureName, ChD3D9::D3D9Device());
 	}
 
-#endif
+	//パスも記述//
+	//コンポーネントに画像データを作成する//
+	void SetTexture(const std::wstring& _textureName)
+	{
+		texture = ChTex::BaseTexture9::TextureType(_textureName);
+		texture->CreateTexture(_textureName, ChD3D9::D3D9Device());
+	}
 
 public://Get Functions//
 
 	//画像データを取得//
-	ChTex::BaseTexture9* GetTex();
+	inline ChTex::BaseTexture9* GetTex() { return texture.get(); }
 
 protected://Member Values//
 
-#ifdef CRT
-	
 	ChPtr::Shared<ChTex::BaseTexture9>texture = nullptr;
-
-#endif
 
 }ChTexCom9;
 
@@ -74,11 +74,5 @@ protected:
 	ChD3D9::VertexData ver;
 
 }ChPoTexCom9;
-
-#ifdef CRT
-
-ChTex::BaseTexture9* ChTextureComponent9::GetTex() { return texture.get(); }
-
-#endif
 
 #endif

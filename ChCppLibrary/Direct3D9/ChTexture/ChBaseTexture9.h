@@ -1,14 +1,11 @@
 #ifndef Ch_D3D9_BTex_h
 #define Ch_D3D9_BTex_h
 
-#ifdef CRT
-
 #include<string>
-#include<memory>
-
-#endif
 
 #include"../../BasePack/ChPtr.h"
+#include"../../BasePack/ChMath3D.h"
+
 
 namespace ChTex
 {
@@ -90,7 +87,6 @@ namespace ChTex
 
 	public://Create Fucntion//
 
-#ifdef CRT
 		//外部ファイルより画像作成//
 		void CreateTexture(
 			const std::string& _fileName,
@@ -100,7 +96,15 @@ namespace ChTex
 			CreateTextureBase(_fileName.c_str(), _dev, _colKey);
 		}
 
-#endif
+		//外部ファイルより画像作成//
+		void CreateTexture(
+			const std::wstring& _fileName,
+			const LPDIRECT3DDEVICE9& _dev,
+			const D3DCOLOR& _colKey = D3DCOLOR_ARGB(0, 0, 0, 0))
+		{
+			CreateTextureBase(_fileName.c_str(), _dev, _colKey);
+		}
+
 
 		//色付き画像作成//
 		void CreateColTexture(
@@ -145,12 +149,17 @@ namespace ChTex
 			const LPDIRECT3DDEVICE9& _dev,
 			const D3DCOLOR& _colKey = D3DCOLOR_ARGB(0, 0, 0, 0));
 
+		//外部ファイルより画像作成//
+		void CreateTextureBase(
+			const wchar_t* _fileName,
+			const LPDIRECT3DDEVICE9& _dev,
+			const D3DCOLOR& _colKey = D3DCOLOR_ARGB(0, 0, 0, 0));
+
 	public://Static Functions//
 
-#ifdef CRT
 		static ChPtr::Shared<BaseTexture9> TextureType(const std::string& _fileName);
 
-#endif
+		static ChPtr::Shared<BaseTexture9> TextureType(const std::wstring& _fileName);
 
 	protected://Member Value//
 
@@ -171,9 +180,9 @@ namespace ChTex
 
 		virtual void OpenFile(const char* _fileName) {};
 
+		virtual void OpenFile(const wchar_t* _fileName) {};
+
 	}Texture9;
 }
-
-#include"ChTextureShared9.h"
 
 #endif

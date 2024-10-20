@@ -5,7 +5,7 @@
 
 namespace ChMesh
 {
-	typedef class BaseMesh9 Mesh9;
+	class BaseMesh9;
 
 }
 

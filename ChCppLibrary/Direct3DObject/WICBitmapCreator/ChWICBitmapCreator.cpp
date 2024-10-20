@@ -20,6 +20,47 @@
 
 using namespace ChD3D;
 
+void ChD3D::WICBitmapObject::Release()
+{
+	auto&& list = WICBitmapCreatorObj().bitmapList;
+
+	auto&& bitmapIterator = std::find(list.begin(), list.end(), bitmap);
+
+	list.erase(bitmapIterator);
+
+	if (ChPtr::NotNullCheck(bitmap))
+	{
+		bitmap->Release();
+		bitmap = nullptr;
+	}
+}
+
+ChD3D::WICBitmapCreator::~WICBitmapCreator()
+{
+	Release();
+}
+
+IWICBitmap* ChD3D::WICBitmapCreator::GetBitmap(size_t _num)
+{
+	return bitmapList[_num];
+}
+
+size_t ChD3D::WICBitmapCreator::GetBitmapCount()
+{
+	return bitmapList.size();
+}
+
+void ChD3D::WICBitmapCreator::AddBitmap(IWICBitmap * _bmp)
+{
+	return bitmapList.push_back(_bmp);
+}
+
+void ChD3D::WICBitmapCreator::ClearBitmapList()
+{
+	if (bitmapList.empty())return;
+	bitmapList.clear();
+}
+
 void WICBitmapCreator::Init()
 {
 	HRESULT result = 0;

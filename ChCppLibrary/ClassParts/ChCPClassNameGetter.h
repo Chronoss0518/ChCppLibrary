@@ -3,10 +3,6 @@
 #ifndef Ch_CPP_CP_CNGet_h
 #define Ch_CPP_CP_CNGet_h
 
-#ifdef CRT
-#include<string>
-#endif
-
 namespace ChCp
 {
 	//Œp³‚µ‚Ä—˜—p‚·‚é//

@@ -2,19 +2,17 @@
 #ifndef Ch_CPP_ModelObject_h
 #define Ch_CPP_ModelObject_h
 
-#ifdef CRT
-
 #include<string>
 #include<map>
 #include<vector>
 
 #include<float.h>
 
-#endif
-
 #include"../../BasePack/ChStd.h"
 #include"../../BasePack/ChPtr.h"
 #include"../../BasePack/Ch3D.h"
+
+#include"../../ClassParts/ChCPInitializer.h"
 
 #include"../ChBaseObject/ChBaseObject.h"
 
@@ -47,56 +45,23 @@ namespace ChCpp
 	template<typename CharaType>
 	struct TargetBoneData
 	{
-		struct TargetBoneDataCRT
-		{
-#ifdef CRT
-			std::basic_string<CharaType> boneObjectName = ChStd::GetZeroChara<CharaType>();
-#endif	
-		};
-
-		TargetBoneData();
-
-		virtual ~TargetBoneData();
-
-		TargetBoneDataCRT& ValueIns() { return *value; }
-
 		ChLMat boneOffset;
-
-	private:
-
-		TargetBoneDataCRT* value = nullptr;
+		std::basic_string<CharaType> boneObjectName = ChStd::GetZeroChara<CharaType>();
 	};
 
 	template<typename CharaType>
 	struct FrameComponent:public ChCpp::BaseComponent
 	{
-
-		struct FrameComponentCRT
-		{
-#ifdef CRT
-			std::vector<ChPtr::Shared<Ch3D::Primitive>> primitives;
-			std::vector<ChPtr::Shared<Ch3D::MaterialData<CharaType>>>materialList;
-			std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>> vertexList;
-			std::vector<ChPtr::Shared<TargetBoneData<CharaType>>>boneDatas;
-			std::map<std::basic_string<CharaType>, size_t>mateNames;
-#endif
-		};
-
-		FrameComponent();
-
-		virtual ~FrameComponent();
-
-		FrameComponentCRT& ValueIns() { return *value; }
+		std::vector<ChPtr::Shared<Ch3D::Primitive>> primitives;
+		std::vector<ChPtr::Shared<Ch3D::MaterialData<CharaType>>>materialList;
+		std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>> vertexList;
+		std::vector<ChPtr::Shared<TargetBoneData<CharaType>>>boneDatas;
+		std::map<std::basic_string<CharaType>, size_t>mateNames;
 
 		ChVec3 maxPos = ChVec3((10e+37f) * -1.0f);
 		ChVec3 minPos = ChVec3(10e+37f);
 		ChVec3 centerPos = ChVec3();
 		ChVec3 boxSize = ChVec3();
-
-	private:
-
-		FrameComponentCRT* value = nullptr;
-
 	};
 
 	template<typename CharaType>
@@ -109,24 +74,8 @@ namespace ChCpp
 			float animationTime = 0;
 		};
 
-		struct AnimationComponentCRT
-		{
-#ifdef CRT
-			std::vector<ChPtr::Shared<AnimationObject>>keyframeAnimation;
-
-			std::basic_string<CharaType> animationName = ChStd::GetZeroChara<CharaType>();
-#endif
-		};
-
-		AnimationComponent();
-		
-		virtual ~AnimationComponent();
-
-		AnimationComponentCRT& ValueIns() { return *value; }
-
-	private:
-		AnimationComponentCRT* value = nullptr;
-
+		std::vector<ChPtr::Shared<AnimationObject>>keyframeAnimation;
+		std::basic_string<CharaType> animationName = ChStd::GetZeroChara<CharaType>();
 	};
 
 	template<typename CharaType>
@@ -134,42 +83,12 @@ namespace ChCpp
 	{
 		ChVec3 toVector = ChVec3();
 
-		struct NearPointDataCRT
-		{
-#ifdef CRT
-			std::basic_string<CharaType> materialName = ChStd::GetZeroChara<CharaType>();
-#endif
-		};
-
-		NearPointData();
-		
-		virtual ~NearPointData();
-
-		NearPointDataCRT& ValueIns() { return *value; }
-
-	private:
-
-		NearPointDataCRT* value = nullptr;
-
+		std::basic_string<CharaType> materialName = ChStd::GetZeroChara<CharaType>();
 	};
 
 	template<typename CharaType>
 	class FrameObject : public ChCpp::BaseObject<CharaType>
 	{
-	public:
-
-		struct FrameObjectCRT
-		{
-#ifdef CRT
-			std::basic_string<CharaType> animationName = ChStd::GetZeroChara<CharaType>();
-#endif
-		};
-
-	public:
-
-		FrameObject();
-
-		virtual ~FrameObject();
 
 	public://Set Functions//
 
@@ -186,33 +105,170 @@ namespace ChCpp
 
 	public:
 
-#ifdef CRT
-		static bool GetLenIsPointToPolyBoard(ChVec3& _outVector, const ChVec3& _point, Ch3D::Primitive& _prim, const std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>>& _vertexList, const float _maxLen = FLT_MAX, const ChLMat& _mat = ChLMat());
+		static bool GetLenIsPointToPolyBoard(ChVec3& _outVector, const ChVec3& _point, Ch3D::Primitive& _prim, const std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>>& _vertexList, const float _maxLen = FLT_MAX, const ChLMat& _mat = ChLMat())
+		{
 
-		static bool GetLenIsPointToPolyBoardFunction(ChVec3& _outVector, const ChVec3& _point, Ch3D::Primitive& _prim, const std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>>& _vertexList, const float _maxLen = FLT_MAX);
+			if (_prim.vertexData.size() <= 2)return false;
+			std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>> vertexList;
+			for (auto&& vertex : _vertexList)
+			{
+				auto ver = ChPtr::Make_S<Ch3D::SavePolyVertex>();
+				*ver = *vertex;
+				ver->pos = _mat.Transform(ver->pos);
+				vertexList.push_back(ver);
+			}
 
-		void GetLenIsPointToPrimitive(std::vector<ChPtr::Shared<NearPointData<CharaType>>>& _res, const ChVec3& _point, const float _maxLen = FLT_MAX, const ChLMat& _mat = ChLMat());
+			return GetLenIsPointToPolyBoardFunction(_outVector, _point, _prim, vertexList, _maxLen);
+		}
 
-		std::vector<ChPtr::Shared<NearPointData<CharaType>>> GetLenToPointAllChildTest(const ChVec3& _point, const float _maxLen = FLT_MAX, const ChLMat& _mat = ChLMat());
-#endif
+		static bool GetLenIsPointToPolyBoardFunction(ChVec3& _outVector, const ChVec3& _point, Ch3D::Primitive& _prim, const std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>>& _vertexList, const float _maxLen = ChMath::GetMaxFloat())
+		{
+			if (_prim.vertexData.size() <= 2)return false;
+
+			auto&& vertexDataList = _prim.vertexData;
+
+			ChVec3 firstPos = _vertexList[vertexDataList[0]->vertexNo]->pos;
+
+			ChVec3 faceNormal = _vertexList[vertexDataList[1]->vertexNo]->pos - firstPos;
+			faceNormal.SetCross(
+				faceNormal,
+				_vertexList[vertexDataList[vertexDataList.size() - 1]->vertexNo]->pos - firstPos);
+
+			{
+				ChVec3 testNormal = _point - firstPos;
+				testNormal.Normalize();
+				if (faceNormal.GetCos(faceNormal, testNormal) == 0.0f)return false;
+			}
+
+			float len = ChVec3::GetDot(faceNormal, _point - firstPos);
+
+			if (len < 0.0f)return false;
+			if (_maxLen < len)return false;
+
+			ChVec3 tmpPoint = _point + (faceNormal * -len);
+
+			bool onFaceFlg = true;
+
+			ChVec3 tmpNormal = ChVec3::GetCross(
+				firstPos - tmpPoint,
+				_vertexList[vertexDataList[1]->vertexNo]->pos - tmpPoint);
+
+			for (unsigned long i = 1; i < vertexDataList.size() - 1; i++)
+			{
+				if (tmpNormal == ChVec3::GetCross(
+					firstPos - tmpPoint,
+					_vertexList[vertexDataList[1]->vertexNo]->pos - tmpPoint))continue;
+
+				onFaceFlg = false;
+				break;
+			}
+
+			if (!onFaceFlg)return false;
+			auto data = ChPtr::Make_S<NearPointData>();
+			_outVector = faceNormal * -len;
+
+			return true;
+		}
+
+		void GetLenIsPointToPrimitive(std::vector<ChPtr::Shared<NearPointData<CharaType>>>& _res, const ChVec3& _point, const float _maxLen = FLT_MAX, const ChLMat& _mat = ChLMat()) {
+			auto&& com = ChCpp::BasicObject::GetComponent<FrameComponent<CharaType>>();
+
+			if (com == nullptr)return;
+			if (com->vertexList.size() <= 2)return;
+
+			std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>> vertexList;
+			{
+				ChLMat tmpMat = _mat;
+				tmpMat = GetDrawLHandMatrix() * tmpMat;
+
+				for (auto&& vertex : com->vertexList)
+				{
+					auto ver = ChPtr::Make_S<Ch3D::SavePolyVertex>();
+					*ver = *vertex;
+					ver->pos = _mat.Transform(ver->pos);
+					vertexList.push_back(ver);
+				}
+			}
+
+			for (auto&& prim : com->primitives)
+			{
+				auto primitive = *prim;
+				ChVec3 res;
+				if (!GetLenIsPointToPolyBoardFunction(res, _point, primitive, vertexList, _maxLen))return;
+				auto data = ChPtr::Make_S<NearPointData<CharaType>>();
+
+				data->toVector = res;
+				data->materialName = com->materialList[primitive.mateNo]->mateName;
+
+				_res.push_back(data);
+			}
+			return;
+		}
+
+		std::vector<ChPtr::Shared<NearPointData<CharaType>>> GetLenToPointAllChildTest(const ChVec3& _point, const float _maxLen = FLT_MAX, const ChLMat& _mat = ChLMat())
+		{
+			std::vector<ChPtr::Shared<NearPointData<CharaType>>> res;
+			GetLenIsPointToPrimitive(res, _point, _maxLen, _mat);
+
+			for (auto&& child : ChCpp::BasicObject::GetChildlen<FrameObject<CharaType>>())
+			{
+				if (child.expired())continue;
+
+				child.lock()->GetLenToPointAllChildTest(res, _point, _maxLen, _mat);
+
+			}
+			return res;
+		}
 
 	private:
 
-#ifdef CRT
-		void GetLenToPointAllChildTest(std::vector<ChPtr::Shared<NearPointData<CharaType>>>& _outData, const ChVec3& _point, const float _maxLen = FLT_MAX, const ChLMat& _mat = ChLMat());
-#endif
+		void GetLenToPointAllChildTest(std::vector<ChPtr::Shared<NearPointData<CharaType>>>& _outData, const ChVec3& _point, const float _maxLen = FLT_MAX, const ChLMat& _mat = ChLMat())
+		{
+			GetLenIsPointToPrimitive(_outData, _point, _maxLen, _mat);
+
+			for (auto&& child : ChCpp::BasicObject::GetChildlen<FrameObject<CharaType>>())
+			{
+				if (child.expired())continue;
+				child.lock()->GetLenToPointAllChildTest(_outData, _point, _maxLen, _mat);
+			}
+			return;
+		}
 
 	public://Update Functions//
 
 		void Update()override { UpdateDrawTransform(); }
 
-		void UpdateDrawTransform();
+		void UpdateDrawTransform()
+		{
+			ChLMat parentDrawMat;
 
-		void UpdateAllDrawTransform();
+			{
+				auto parent = ChPtr::SharedSafeCast<FrameObject>(ChCpp::BasicObject::GetParent());
 
-#ifdef CRT
+				if (parent != nullptr)
+				{
+					parentDrawMat = parent->drawMat;
+				}
+			}
+			drawMat = outSideMat * frameMat * parentDrawMat;
+		}
+
+		void UpdateAllDrawTransform()
+		{
+			ChLMat parentDrawMat;
+			{
+				auto&& parent = ChPtr::SharedSafeCast<FrameObject<CharaType>>(ChCpp::BasicObject::GetParent());
+
+				if (parent != nullptr)
+				{
+					parent->UpdateAllDrawTransform();
+					parentDrawMat = parent->drawMat;
+				}
+			}
+			drawMat = outSideMat * frameMat * parentDrawMat;
+		}
+
 		void SetAnimationName(const std::basic_string<CharaType>& _name);
-#endif
 
 	public://Is Function//
 
@@ -224,7 +280,7 @@ namespace ChCpp
 	private:
 
 		ChLMat drawMat;
-		FrameObjectCRT* value = nullptr;
+		std::basic_string<CharaType> animationName = ChStd::GetZeroChara<CharaType>();
 	};
 
 	template<typename CharaType>
@@ -232,23 +288,11 @@ namespace ChCpp
 	{
 	public:
 
-		struct ModelObjectCRT
-		{
-#ifdef CRT
-			std::vector<std::basic_string<CharaType>>animationNames;
-			std::basic_string<CharaType> modelName = ChStd::GetZeroChara<CharaType>();
-#endif
-		};
-
-	public:
-
 		friend ModelLoaderBase<CharaType>;
 
 	public:
 
-		ModelObject();
-
-		virtual ~ModelObject();
+		virtual ~ModelObject() { Release(); }
 
 	public:
 
@@ -260,9 +304,7 @@ namespace ChCpp
 
 		inline void SetShaderAxisType(const Ch3D::ShaderAxisType _type) { axisType = _type; }
 
-#ifdef CRT
-		void SetModelName(const std::basic_string<CharaType>& _name) { value->modelName = _name; }
-#endif
+		void SetModelName(const std::basic_string<CharaType>& _name) { modelName = _name; }
 
 	private:
 
@@ -276,10 +318,7 @@ namespace ChCpp
 
 	public:
 
-
-#ifdef CRT
-		inline std::basic_string<CharaType> GetModelName() { return value->modelName; }
-#endif
+		inline std::basic_string<CharaType> GetModelName() { return modelName; }
 
 		//初期化時に作成した全フレームの最大地点//
 		inline ChVec3 GetInitAllFrameMaxPos() { return maxPos; }
@@ -296,9 +335,8 @@ namespace ChCpp
 
 	public:
 
-#ifdef CRT
-		void AddAnimationName(const std::basic_string<CharaType>& _name) { value->animationNames.push_back(_name); }
-#endif
+		void AddAnimationName(const std::basic_string<CharaType>& _name) { animationNames.push_back(_name); }
+
 	public:
 
 		virtual void Create(){}
@@ -312,252 +350,10 @@ namespace ChCpp
 
 		Ch3D::ShaderAxisType axisType = Ch3D::ShaderAxisType::LeftHand;
 
-		ModelObjectCRT* value = nullptr;
+		std::vector<std::basic_string<CharaType>>animationNames;
+		std::basic_string<CharaType> modelName = ChStd::GetZeroChara<CharaType>();
 	};
 
 }
-
-#ifdef CRT
-
-template<typename CharaType>
-ChCpp::TargetBoneData<CharaType>::TargetBoneData()
-{
-	value = new TargetBoneDataCRT();
-}
-
-template<typename CharaType>
-ChCpp::TargetBoneData<CharaType>::~TargetBoneData()
-{
-	delete value;
-}
-
-template<typename CharaType>
-ChCpp::FrameComponent<CharaType>::FrameComponent()
-{
-	value = new FrameComponentCRT();
-}
-
-template<typename CharaType>
-ChCpp::FrameComponent<CharaType>::~FrameComponent()
-{
-	delete value;
-}
-
-template<typename CharaType>
-ChCpp::AnimationComponent<CharaType>::AnimationComponent()
-{
-	value = new AnimationComponentCRT();
-}
-
-template<typename CharaType>
-ChCpp::AnimationComponent<CharaType>::~AnimationComponent()
-{
-	delete value;
-}
-
-template<typename CharaType>
-ChCpp::NearPointData<CharaType>::NearPointData()
-{
-	value = new NearPointData();
-}
-
-template<typename CharaType>
-ChCpp::NearPointData<CharaType>::~NearPointData()
-{
-	delete value;
-}
-
-template<typename CharaType>
-ChCpp::FrameObject<CharaType>::FrameObject()
-{
-	value = new FrameObjectCRT();
-}
-
-template<typename CharaType>
-ChCpp::FrameObject<CharaType>::~FrameObject()
-{
-	delete value;
-}
-
-template<typename CharaType>
-bool ChCpp::FrameObject<CharaType>::GetLenIsPointToPolyBoard(ChVec3& _outVector, const ChVec3& _point, Ch3D::Primitive& _prim, const std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>>& _vertexList, const float _maxLen, const ChLMat& _mat)
-{
-
-	if (_prim.ValueIns().vertexData.size() <= 2)return false;
-	std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>> vertexList;
-	for (auto&& vertex : _vertexList)
-	{
-		auto ver = ChPtr::Make_S<Ch3D::SavePolyVertex>();
-		*ver = *vertex;
-		ver->pos = _mat.Transform(ver->pos);
-		vertexList.push_back(ver);
-	}
-
-	return GetLenIsPointToPolyBoardFunction(_outVector, _point, _prim, vertexList, _maxLen);
-}
-
-template<typename CharaType>
-bool ChCpp::FrameObject<CharaType>::GetLenIsPointToPolyBoardFunction(ChVec3& _outVector, const ChVec3& _point, Ch3D::Primitive& _prim, const std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>>& _vertexList, const float _maxLen)
-{
-	if (_prim.ValueIns().vertexData.size() <= 2)return false;
-
-	auto&& vertexDataList = _prim.ValueIns().vertexData;
-
-	ChVec3 firstPos = _vertexList[vertexDataList[0]->vertexNo]->pos;
-
-	ChVec3 faceNormal = _vertexList[vertexDataList[1]->vertexNo]->pos - firstPos;
-	faceNormal.SetCross(
-		faceNormal,
-		_vertexList[vertexDataList[vertexDataList.size() - 1]->vertexNo]->pos - firstPos);
-
-	{
-		ChVec3 testNormal = _point - firstPos;
-		testNormal.Normalize();
-		if (faceNormal.GetCos(faceNormal, testNormal) == 0.0f)return false;
-	}
-
-	float len = ChVec3::GetDot(faceNormal, _point - firstPos);
-
-	if (len < 0.0f)return false;
-	if (_maxLen < len)return false;
-
-	ChVec3 tmpPoint = _point + (faceNormal * -len);
-
-	bool onFaceFlg = true;
-
-	ChVec3 tmpNormal = ChVec3::GetCross(
-		firstPos - tmpPoint,
-		_vertexList[vertexDataList[1]->vertexNo]->pos - tmpPoint);
-
-	for (unsigned long i = 1; i < vertexDataList.size() - 1; i++)
-	{
-		if (tmpNormal == ChVec3::GetCross(
-			firstPos - tmpPoint,
-			_vertexList[vertexDataList[1]->vertexNo]->pos - tmpPoint))continue;
-
-		onFaceFlg = false;
-		break;
-	}
-
-	if (!onFaceFlg)return false;
-	auto data = ChPtr::Make_S<NearPointData>();
-	_outVector = faceNormal * -len;
-
-	return true;
-}
-
-template<typename CharaType>
-void ChCpp::FrameObject<CharaType>::GetLenIsPointToPrimitive(std::vector<ChPtr::Shared<NearPointData<CharaType>>>& _res, const ChVec3& _point, const float _maxLen, const ChLMat& _mat)
-{
-	auto&& com = ChCpp::BasicObject::GetComponent<FrameComponent<CharaType>>();
-
-	if (com == nullptr)return;
-	if (com->ValueIns().vertexList.size() <= 2)return;
-
-	std::vector<ChPtr::Shared<Ch3D::SavePolyVertex>> vertexList;
-	{
-		ChLMat tmpMat = _mat;
-		tmpMat = GetDrawLHandMatrix() * tmpMat;
-
-		for (auto&& vertex : com->ValueIns().vertexList)
-		{
-			auto ver = ChPtr::Make_S<Ch3D::SavePolyVertex>();
-			*ver = *vertex;
-			ver->pos = _mat.Transform(ver->pos);
-			vertexList.push_back(ver);
-		}
-	}
-
-	for (auto&& prim : com->ValueIns().primitives)
-	{
-		auto primitive = *prim;
-		ChVec3 res;
-		if (!GetLenIsPointToPolyBoardFunction(res, _point, primitive, vertexList, _maxLen))return;
-		auto data = ChPtr::Make_S<NearPointData<CharaType>>();
-
-		data->toVector = res;
-		data->materialName = com->ValueIns().materialList[primitive.mateNo]->mateName;
-
-		_res.push_back(data);
-	}
-	return;
-}
-
-template<typename CharaType>
-std::vector<ChPtr::Shared<ChCpp::NearPointData<CharaType>>> ChCpp::FrameObject<CharaType>::GetLenToPointAllChildTest(const ChVec3& _point, const float _maxLen, const ChLMat& _mat)
-{
-	std::vector<ChPtr::Shared<NearPointData<CharaType>>> res;
-	GetLenIsPointToPrimitive(res, _point, _maxLen, _mat);
-
-	for (auto&& child : ChCpp::BasicObject::GetChildlen<FrameObject<CharaType>>())
-	{
-		if (child.expired())continue;
-
-		child.lock()->GetLenToPointAllChildTest(res, _point, _maxLen, _mat);
-
-	}
-	return res;
-}
-
-template<typename CharaType>
-void ChCpp::FrameObject<CharaType>::GetLenToPointAllChildTest(std::vector<ChPtr::Shared<NearPointData<CharaType>>>& _outData, const ChVec3& _point, const float _maxLen, const ChLMat& _mat)
-{
-	GetLenIsPointToPrimitive(_outData, _point, _maxLen, _mat);
-
-	for (auto&& child : ChCpp::BasicObject::GetChildlen<FrameObject<CharaType>>())
-	{
-		if (child.expired())continue;
-		child.lock()->GetLenToPointAllChildTest(_outData, _point, _maxLen, _mat);
-	}
-	return;
-}
-
-template<typename CharaType>
-void ChCpp::FrameObject<CharaType>::UpdateDrawTransform()
-{
-	ChLMat parentDrawMat;
-
-	{
-		auto parent = ChPtr::SharedSafeCast<FrameObject>(ChCpp::BasicObject::GetParent().lock());
-
-		if (parent != nullptr)
-		{
-			parentDrawMat = parent->drawMat;
-		}
-	}
-	drawMat = outSideMat * frameMat * parentDrawMat;
-}
-
-template<typename CharaType>
-void ChCpp::FrameObject<CharaType>::UpdateAllDrawTransform()
-{
-	ChLMat parentDrawMat;
-	{
-		auto parent = ChPtr::SharedSafeCast<FrameObject<CharaType>>(ChCpp::BasicObject::GetParent().lock());
-
-		if (parent != nullptr)
-		{
-			parent->UpdateAllDrawTransform();
-			parentDrawMat = parent->drawMat;
-		}
-	}
-	drawMat = outSideMat * frameMat * parentDrawMat;
-}
-
-template<typename CharaType>
-ChCpp::ModelObject<CharaType>::ModelObject()
-{
-	value = new ModelObjectCRT();
-}
-
-template<typename CharaType>
-ChCpp::ModelObject<CharaType>::~ModelObject()
-{ 
-	Release();
-	delete value;
-}
-
-
-#endif
 
 #endif

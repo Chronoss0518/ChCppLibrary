@@ -51,12 +51,7 @@ namespace ChCpp
 	{
 	public://static Create Function//
 
-#ifdef CRT
-
 		Ch_Json_BaseTypeMethods(CH_Json_Number_Create_Functions);
-
-
-#endif
 
 	public://Operator Functions//
 
@@ -90,12 +85,10 @@ namespace ChCpp
 
 	public://To String Operator Functions//
 
-#ifdef CRT
 		operator std::basic_string<CharaType>()const
 		{
 			return ToString();
 		}
-#endif
 
 	public://Constructor Destructor//
 
@@ -114,46 +107,18 @@ namespace ChCpp
 
 	public:
 
-#ifdef CRT
-		bool SetRawData(const std::basic_string<CharaType>& _jsonText)override
-		{
-			if (!ChStd::IsBaseNumbers<CharaType>(_jsonText, ChStd::DECIMAL_NUMBUR<CharaType>()))return false;
-
-			value = ChStr::GetNumFromText<long double, CharaType>(_jsonText);
-			return true;
-		}
-#endif
+		bool SetRawData(const std::basic_string<CharaType>& _jsonText)override;
 
 	public:
 
-#ifdef CRT
 		std::basic_string<CharaType> GetRawData()const override
 		{
 			return ToString();
 		}
-#endif
 
 	public:
 
-#ifdef CRT
-		std::basic_string<CharaType> ToString()const
-		{
-			std::basic_string<CharaType> tmpStr = ChStr::GetTextFromNum<CharaType>(value);
-			unsigned long endPoint = tmpStr.find(ChStd::GetDotChara<CharaType>());
-			for (unsigned long i = endPoint + 1; i < tmpStr.size(); i++)
-			{
-				if (tmpStr[i] == ChStd::GetZeroChara<CharaType>()[0])continue;
-				endPoint = i + 1;
-			}
-
-			if (endPoint >= tmpStr.size())
-			{
-				return tmpStr;
-			}
-
-			return tmpStr.substr(0, endPoint);
-		}
-#endif
+		std::basic_string<CharaType> ToString()const;
 
 	private:
 
@@ -161,27 +126,5 @@ namespace ChCpp
 	};
 
 }
-
-#ifdef CRT
-
-template<typename CharaType>
-ChPtr::Shared<ChCpp::JsonNumber<CharaType>> ChCpp::JsonBaseType<CharaType>::GetParameterToNumber(const std::basic_string<CharaType>& _json)
-{
-	if (_json.size() <= 0)return nullptr;
-	if (_json.size() <= 1 && (_json[0] > 57 || _json[0] < 48))return nullptr;
-
-	bool floatingPointFlg = false;
-
-	auto&& res = ChPtr::Make_S<JsonNumber<CharaType>>();
-
-	*res = ChStr::GetNumFromText<long double, CharaType>(_json);
-
-	return res;
-}
-
-
-#endif
-
-#include"SharedFunctions/ChJsonSharedArrayBooleanNumberString.h"
 
 #endif

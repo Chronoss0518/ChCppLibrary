@@ -3,11 +3,7 @@
 #ifndef Ch_Win_DWind_h
 #define Ch_Win_DWind_h
 
-#ifdef CRT
-
 #include<string>
-
-#endif
 
 #include"../Texture/ChWinTexture.h"
 #include"../WinGDI/ChWinBrush.h"
@@ -15,7 +11,6 @@
 
 namespace ChWin
 {
-
 	//WindowsAPIÇÃì‡ÅAï`âÊÇéiÇÈÉNÉâÉX//
 	class WindDrawer
 	{
@@ -41,7 +36,6 @@ namespace ChWin
 
 		void DrawStart(HWND _hWind);
 
-#ifdef CRT
 		inline void DrawString(const std::string& _str, const ChINTPOINT& _pos)
 		{
 			DrawString(_str.c_str(), _str.length(), _pos);
@@ -61,8 +55,6 @@ namespace ChWin
 		{
 			DrawString(_str.c_str(), _str.length(), ChINTPOINT(_x, _y));
 		}
-
-#endif
 
 		void DrawLine(const ChINTPOINT& _startPos, const ChINTPOINT& _endPos);
 

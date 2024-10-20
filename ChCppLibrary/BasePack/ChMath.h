@@ -1,13 +1,11 @@
 #ifndef Ch_CPP_BMath_h
 #define Ch_CPP_BMath_h
 
+#include<string>
+
 #include"ChStd.h"
 #include"ChStr.h"
 
-#ifdef CRT
-#include <float.h>
-#include <cmath>
-#endif
 
 #ifndef Ch_FLOAT_TEST_VALUE
 #define Ch_FLOAT_TEST_VALUE 0.0001f
@@ -17,10 +15,22 @@
 #define CH_FLOAT_TEST(val, testSize) ChMath::GetAbs(##val##) <= testSize
 #endif
 
-#ifndef CH_MATH_FUNCTION
-#define CH_MATH_FUNCTION(_Type,_FunctionName,_FunctionArg,_UseFunctionName,_UseFunctionArg) _Type ChMath::##_FunctionName##_FunctionArg { return std::##_UseFunctionName##_UseFunctionArg; }
+#ifndef CH_MATH_LONG_TYPE
+#define CH_MATH_LONG_TYPE(_type) long _type
 #endif
 
+#ifndef CH_MATH_SIGNED_TYPE
+#define CH_MATH_SIGNED_TYPE(_type) signed _type
+#endif
+
+
+#ifndef CH_MATH_METHOD_SIGNED_ABS
+#define CH_MATH_METHOD_SIGNED_ABS(_type) inline _type GetAbs(_type _val){return _val < 0 ? -_val : _val;}
+#endif
+
+#ifndef CH_MATH_METHOD_UNSIGNED_ABS
+#define CH_MATH_METHOD_UNSIGNED_ABS(_type) inline unsigned _type GetAbs(unsigned _type _val){return _val;}
+#endif
 
 #ifndef CH_MATH_VECTOR_OPERATOR_ACT
 #define CH_MATH_VECTOR_OPERATOR_ACT(_Operator,_TargetValue) \
@@ -79,7 +89,6 @@ inline _BaseClass##() { m.Identity(); }\
 inline _BaseClass##(const _BaseClass##<T>& _mat) { m = _mat.m; }
 #endif
 
-
 #ifndef CH_MATH3D_METHOD_SERIALIZE
 #define CH_MATH3D_METHOD_SERIALIZE(_Value) \
 template<typename CharaType>\
@@ -111,6 +120,7 @@ const std::basic_string<CharaType>&_cutTo4Char = ChStd::GetCRLFChara<CharaType>(
 {return m.SerializeUpper(_cutChar, _endChar, _cutTo4Char);}
 #endif
 
+
 #ifndef CH_MATH_METHOD_QUATERNION_GET_EULER_ROTATION
 #define CH_MATH_METHOD_QUATERNION_GET_EULER_ROTATION(_AxisOrder,_ZeroTestAxis,_ZeroTestAxisFunction,_Axiz1,_ZeroAxiz1Function,_NotZeroAxiz1Function,_Axiz2,_ZeroAxiz2Function,_NotZeroAxiz2Function)\
 inline ChEular##_AxisOrder##<T> GetEulerRotation##_AxisOrder(const unsigned long _digit = 6)const\
@@ -129,22 +139,6 @@ inline ChEular##_AxisOrder##<T> GetEulerRotation##_AxisOrder(const unsigned long
 }
 #endif
 
-#ifndef CH_MATH_LONG_TYPE
-#define CH_MATH_LONG_TYPE(_type) long _type
-#endif
-
-#ifndef CH_MATH_SIGNED_TYPE
-#define CH_MATH_SIGNED_TYPE(_type) signed _type
-#endif
-
-
-#ifndef CH_MATH_METHOD_SIGNED_ABS
-#define CH_MATH_METHOD_SIGNED_ABS(_type) inline _type GetAbs(_type _val){return _val < 0 ? -_val : _val;}
-#endif
-
-#ifndef CH_MATH_METHOD_UNSIGNED_ABS
-#define CH_MATH_METHOD_UNSIGNED_ABS(_type) inline unsigned _type GetAbs(unsigned _type _val){return _val;}
-#endif
 
 namespace ChMath
 {
@@ -182,7 +176,7 @@ namespace ChMath
 	double GetFMod(double _valx, double _valy);
 	long double GetFMod(long double _valx, long double _valy);
 
-	static constexpr float GetMaxFloat();
+	float GetMaxFloat();
 
 	CH_MATH_METHOD_SIGNED_ABS(CH_MATH_SIGNED_TYPE(char));
 	CH_MATH_METHOD_SIGNED_ABS(CH_MATH_SIGNED_TYPE(short));
@@ -370,7 +364,6 @@ namespace ChMath
 
 	public://Serialize Deserialize//
 
-#ifdef CRT
 		template<typename CharaType>
 		inline std::basic_string<CharaType> Serialize(
 			const std::basic_string<CharaType>& _cutChar = ChStd::GetCommaChara<CharaType>(),
@@ -405,7 +398,7 @@ namespace ChMath
 			if (EPos == tmpStr.npos)EPos = tmpStr.size();
 
 			tmpStr = tmpStr.substr(tmpFPos, EPos - tmpFPos);
-			
+
 			tmpFPos = 0;
 
 			EPos = tmpStr.length();
@@ -421,7 +414,7 @@ namespace ChMath
 
 					std::basic_string<CharaType> Num = tmpStr.substr(tmp, tmpFPos - tmp);
 
-					val[i] = ChStr::GetNumFromText<T, CharaType>(Num);
+					val[i] = ChStr::GetNumFromText<T>(Num);
 
 					//val[i] = ChMath::Round(val[i], _digit);
 
@@ -432,7 +425,6 @@ namespace ChMath
 				if (Test >= EPos)return;
 			}
 		}
-#endif
 
 	public://Set Functions//
 
@@ -848,7 +840,6 @@ namespace ChMath
 
 	public://Serialize Deserialize//
 
-#ifdef CRT
 		template<typename CharaType>
 		inline std::basic_string<CharaType> Serialize(
 			const std::basic_string<CharaType>& _cutChar = ChStd::GetCommaChara<CharaType>(),
@@ -933,7 +924,7 @@ namespace ChMath
 
 					std::basic_string<CharaType> Num = tmpStr.substr(tmp, tmpFPos - tmp);
 
-					m[i][j] = ChStr::GetNumFromText<T, CharaType>(Num);
+					m[i][j] = ChStr::GetNumFromText<T>(Num);
 
 					tmp = test + 1;
 
@@ -941,7 +932,6 @@ namespace ChMath
 				}
 			}
 		}
-#endif
 
 	public://Set Functions//
 
@@ -950,12 +940,10 @@ namespace ChMath
 			const MatrixBase& _end,
 			const float _pow)
 		{
-
 			for (unsigned long i = 0; i < Row; i++)
 			{
 				m[i].SetLerp(_start.m[i], _end.m[i], _pow);
 			}
-
 		}
 
 	public://Get Functions//
@@ -1155,13 +1143,10 @@ namespace ChMath
 
 	public://Serialize Deserialize//
 
-#ifdef CRT
-
 		CH_MATH3D_METHOD_SERIALIZE(val);
 
 		CH_MATH3D_METHOD_DESERIALIZE(val);
 
-#endif
 
 	};
 
@@ -1187,13 +1172,9 @@ namespace ChMath
 
 	public://Serialize Deserialize//
 
-#ifdef CRT
-
 		CH_MATH3D_METHOD_SERIALIZE(val);
 
 		CH_MATH3D_METHOD_DESERIALIZE(val);
-
-#endif
 
 	};
 
@@ -1316,8 +1297,6 @@ namespace ChMath
 
 	public://Serialize Deserialize//
 
-#ifdef CRT
-
 		CH_MATH3D_METHOD_SERIALIZE(val);
 
 		template<typename CharaType>
@@ -1353,8 +1332,6 @@ namespace ChMath
 				val[i] = tmpVec.val[(i + 1) % 4];
 			}
 		}
-#endif
-
 	};
 
 	template<typename T>
@@ -1410,18 +1387,14 @@ namespace ChMath
 
 	public://Serialize Deserialize//
 
-#ifdef CRT
-
 		CH_MATH3D_METHOD_SERIALIZE(val);
 
 		CH_MATH3D_METHOD_DESERIALIZE(val);
 
-#endif
-
 	public://Set Functions//
 
 
-		inline QuaternionBase<T> SetSum(const QuaternionBase<T>& _qua1, const QuaternionBase<T>& _qua2) { val.Set(_qua1.val + _qua2.val); }
+		inline void SetSum(const QuaternionBase<T>& _qua1, const QuaternionBase<T>& _qua2) { val.Set(_qua1.val + _qua2.val); }
 
 		////
 		//https://qiita.com/drken/items/0639cf34cce14e8d58a5#1-4-%E3%82%AF%E3%82%A9%E3%83%BC%E3%82%BF%E3%83%8B%E3%82%AA%E3%83%B3%E3%81%AE%E3%81%8B%E3%81%91%E7%AE%97
@@ -1570,14 +1543,11 @@ namespace ChMath
 
 	public://Serialize Deserialize//
 
-#ifdef CRT
-
 		CH_MATH3D_METHOD_SERIALIZE(m);
 
 		CH_MATH3D_METHOD_DESERIALIZE(m);
 
 		CH_MATH3D_METHOD_MATRIX_DESERIALIZE_UPPER;
-#endif
 
 	public://Other Functions//
 
@@ -1611,14 +1581,11 @@ namespace ChMath
 
 	public://Serialize Deserialize//
 
-#ifdef CRT
-
 		CH_MATH3D_METHOD_SERIALIZE(m);
 
 		CH_MATH3D_METHOD_DESERIALIZE(m);
 
 		CH_MATH3D_METHOD_MATRIX_DESERIALIZE_UPPER;
-#endif
 
 	public://Other Functions//
 
@@ -1654,14 +1621,12 @@ namespace ChMath
 
 	public://Serialize Deserialize//
 
-#ifdef CRT
 
 		CH_MATH3D_METHOD_SERIALIZE(m);
 
 		CH_MATH3D_METHOD_DESERIALIZE(m);
 
 		CH_MATH3D_METHOD_MATRIX_DESERIALIZE_UPPER;
-#endif
 
 	public://Other Functions//
 
@@ -1699,14 +1664,11 @@ namespace ChMath
 
 	public://Serialize Deserialize//
 
-#ifdef CRT
-
 		CH_MATH3D_METHOD_SERIALIZE(m);
 
 		CH_MATH3D_METHOD_DESERIALIZE(m);
 
 		CH_MATH3D_METHOD_MATRIX_DESERIALIZE_UPPER;
-#endif
 
 	public://Get Functions//
 
@@ -1733,73 +1695,5 @@ namespace ChMath
 
 	};
 }
-
-#ifdef CRT
-
-double ChMath::Round(const double& _val, const unsigned long _digit)
-{
-	if (_val == 0.0)return 0.0;
-
-	double out = _val * std::powl(10, static_cast<double>(_digit - 1));
-	out = std::round(out);
-	out = out * std::powl(0.1, static_cast<double>(_digit - 1));
-
-	return out;
-}
-
-long double ChMath::SqrtEx(const long double& _base, const unsigned long _digit)
-{
-	if (_base == 0.0)return 0.0;
-
-	long double out = std::sqrt(_base);
-	//微分積分自分で使えるようになってから再度考える//
-	return out;
-
-	unsigned long maxCount = _digit > 4931 ? 4931 : _digit;
-
-	//以下を参照//
-	//https://qiita.com/rytaryu/items/e5d760a80f9ce5db860f
-	//
-
-	for (unsigned long i = 0; i < maxCount; i++)
-	{
-		out = ((out * out) + _base) / (2 * out);
-	}
-
-	return out;
-}
-
-CH_MATH_FUNCTION(float, GetSin, (float _val), sin, (_val));
-CH_MATH_FUNCTION(double, GetSin, (double _val), sin, (_val));
-CH_MATH_FUNCTION(long double, GetSin, (long double _val), sin, (_val));
-
-CH_MATH_FUNCTION(float, GetASin, (float _val), asin, (_val));
-CH_MATH_FUNCTION(double, GetASin, (double _val), asin, (_val));
-CH_MATH_FUNCTION(long double, GetASin, (long double _val), asin, (_val));
-
-CH_MATH_FUNCTION(float, GetCos, (float _val), cos, (_val));
-CH_MATH_FUNCTION(double, GetCos, (double _val), cos, (_val));
-CH_MATH_FUNCTION(long double, GetCos, (long double _val), cos, (_val));
-
-CH_MATH_FUNCTION(float, GetACos, (float _val), acos, (_val));
-CH_MATH_FUNCTION(double, GetACos, (double _val), acos, (_val));
-CH_MATH_FUNCTION(long double, GetACos, (long double _val), acos, (_val));
-
-CH_MATH_FUNCTION(float, GetATan, (float _val), atan, (_val));
-CH_MATH_FUNCTION(double, GetATan, (double _val), atan, (_val));
-CH_MATH_FUNCTION(long double, GetATan, (long double _val), atan, (_val));
-
-CH_MATH_FUNCTION(float, GetFMod, (float _valx, float _valy), fmod, (_valx, _valy));
-CH_MATH_FUNCTION(double, GetFMod, (double _valx, double _valy), fmod, (_valx, _valy));
-CH_MATH_FUNCTION(long double, GetFMod, (long double _valx, long double _valy), fmod, (_valx, _valy));
-
-
-static constexpr float ChMath::GetMaxFloat()
-{
-	return FLT_MAX;
-}
-
-#endif
-
 
 #endif

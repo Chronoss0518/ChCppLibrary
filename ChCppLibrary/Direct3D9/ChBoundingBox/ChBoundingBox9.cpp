@@ -16,6 +16,30 @@ using namespace ChMesh;
 //ChBoundingBoxÉÅÉ\ÉbÉh
 ///////////////////////////////////////////////////////////////////////////////////
 
+std::vector<ChPtr::Shared<ChVec3_9>> BoundingBox9::GetPosition()
+{
+	std::vector<ChPtr::Shared<ChVec3_9>> tmpPos;
+	if (main == depth)return tmpPos;
+
+	tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x, main.y, main.z));
+
+	tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x + depth.x, main.y, main.z));
+
+	tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x, main.y + depth.y, main.z));
+
+	tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x, main.y, main.z + depth.z));
+
+	tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x + depth.x, main.y + depth.y, main.z));
+
+	tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x + depth.x, main.y, main.z + depth.z));
+
+	tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x, main.y + depth.y, main.z + depth.z));
+
+	tmpPos.push_back(ChPtr::Make_S<ChVec3_9>(main.x + depth.x, main.y + depth.y, main.z + depth.z));
+
+	return tmpPos;
+}
+
 bool BoundingBox9::IsHitToPos(
 	const ChMat_9* _mat,
 	const ChVec3_9* _pos)
@@ -79,9 +103,9 @@ bool BoundingBox9::IsHitToB_Box(
 }
 
 bool BoundingBox9::IsHitToBull(
-	const ChMat_9* _mat
-	, const ChVec3_9* _pos
-	, const float _r)
+	const ChMat_9* _mat,
+	const ChVec3_9* _pos,
+	const float _r)
 {
 
 	ChMat_9 tmpMat = *_mat;

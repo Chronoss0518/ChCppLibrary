@@ -3,8 +3,7 @@
 
 namespace ChMesh
 {
-
-typedef class BaseMesh9 Mesh9;
+class BaseMesh9;
 }
 
 
@@ -34,15 +33,11 @@ public://InitAndRelease//
 
 public://SetFunction//
 
-#ifdef CRT
-
-	void SetMesh(const ChPtr::Shared<ChMesh::Mesh9> _mesh)
+	void SetMesh(const ChPtr::Shared<ChMesh::BaseMesh9> _mesh)
 	{
 		if (_mesh == nullptr)return;
 		wpXList.push_back(_mesh);
 	}
-
-#endif
 
 	//重力の場合は重力の力を変更可能(通常時は下方向に秒速9.8の速さで落ちる)//
 	inline virtual void SetData(const float) {}
@@ -62,7 +57,7 @@ public://SetFunction//
 
 public://Mesh List Functions//
 
-	ChMesh::Mesh9* GetMesh(unsigned long _num);
+	ChMesh::BaseMesh9* GetMesh(unsigned long _num);
 
 	unsigned long GetMeshCount();
 
@@ -85,11 +80,7 @@ protected:
 	float FPS = 60.0f;
 	ChVec3_9 vec;
 
-#ifdef CRT
-
-	std::vector<ChPtr::Weak<ChMesh::Mesh9>>wpXList;
-
-#endif
+	std::vector<ChPtr::Weak<ChMesh::BaseMesh9>>wpXList;
 };
 
 //重力を発生させるクラス//
@@ -143,25 +134,5 @@ private:
 	float backLine = 1.0f;
 };
 
-#ifdef CRT
-
-ChMesh::Mesh9* ChPhysicalBase9::GetMesh(unsigned long _num)
-{
-	if (_num >= wpXList.size())return nullptr;
-	return wpXList[_num].lock().get();
-}
-
-unsigned long ChPhysicalBase9::GetMeshCount()
-{
-	return wpXList.size();
-}
-
-void ChPhysicalBase9::RemoveMesh(unsigned long _num)
-{
-	if (_num >= wpXList.size())return;
-	wpXList.erase(wpXList.begin() + _num);
-}
-
-#endif
 
 #endif
