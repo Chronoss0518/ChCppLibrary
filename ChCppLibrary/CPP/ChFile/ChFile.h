@@ -27,10 +27,6 @@ namespace ChCpp
 	{
 	public:
 
-		File() {};
-
-	public:
-
 		const enum class OTEAddType :unsigned char
 		{
 			None, 
@@ -62,12 +58,11 @@ namespace ChCpp
 			std::basic_string<CharaType> outData = ChStd::GetZeroChara<CharaType>();
 			std::basic_string<CharaType> outFileName = ChStd::GetZeroChara<CharaType>();
 			outFileName = _errorName + ChStd::GetErrorTextType<CharaType>();
-			outFiles.FileOpen(outFileName);
-			outFiles.SetLocaleName(_localeName);
+			outFiles.FileOpen(outFileName, _localeName);
 
 			if (_addFlg == OTEAddType::All)
 			{
-				outData = outFiles.FileReadText();
+				outData = outFiles.FileRead();
 				outData = outData + ChStd::GetCRLFChara<CharaType>();
 			}
 
@@ -76,7 +71,7 @@ namespace ChCpp
 				static bool flgs = false;
 				if (flgs)
 				{
-					outData = outFiles.FileReadText();
+					outData = outFiles.FileRead();
 					outData = outData + ChStd::GetCRLFChara<CharaType>();
 				}
 				flgs = true;
@@ -85,16 +80,20 @@ namespace ChCpp
 			outData = outData + _errorDitails;
 
 
-			outFiles.FileWriteText(outData);
+			outFiles.FileWrite(outData);
 
 			return;
 		}
 
 	public://Constructor Destructor//
 
-		File(const std::basic_string<CharaType>& _fileName)
+		File() {};
+
+		File(
+			const std::basic_string<CharaType>& _fileName,
+			const std::string _locale = "C")
 		{
-			FileOpen(_fileName);
+			FileOpen(_fileName, _locale);
 		}
 
 		virtual ~File()
@@ -107,170 +106,66 @@ namespace ChCpp
 			FileClose();
 		}
 
-	public://Set Functions//
-
-		void SetLocaleName(const char* _localeName)
-		{
-			localeName = _localeName;
-		}
-
 	public://Get Functions//
 
-		unsigned long GetLength();
+		size_t GetLength();
 
 	public://Control Functions//
 
 		//Fileを開く//
-		inline void FileOpen(
-			const std::basic_string<CharaType>& _fileName,
-			unsigned int _openMode = std::ios::in | std::ios::out)
+		void FileOpen(
+			const std::string& _fileName,
+			const std::string& _locale = "",
+			const bool _IsUpdate = true);
 
+		//Fileを開く//
+		void FileOpen(
+			const std::string& _fileName,
+			const bool _isUpdate)
 		{
-			if (_fileName.length() <= 0)return;
+			FileOpen(_fileName, "", _isUpdate);
+		}
 
-			if (_openMode & std::ios::in)
-			{
-				stream.open(_fileName.c_str(), std::ios::app);
-				stream.close();
-			}
+		//Fileを開く//
+		void FileOpen(
+			const std::wstring& _fileName,
+			const std::string& _locale = "",
+			const bool _IsUpdate = true);
 
-			flg = _openMode;
-			openFileName = _fileName;
-			stream.open(_fileName.c_str(), flg);
+		//Fileを開く//
+		void FileOpen(
+			const std::wstring& _fileName,
+			const bool _isUpdate)
+		{
+			FileOpen(_fileName, "", _isUpdate);
 		}
 
 		//Fileを閉じる(Destructerでも起動する)//
-		inline void FileClose()
-		{
-			if (!stream.is_open())return;
-			stream.close();
-		}
+		void FileClose();
 
 		//Fileから読み出す//
-		inline std::basic_string<CharaType> FileReadText()
-		{
-			std::basic_string<CharaType> res = ChStd::GetZeroChara<CharaType>();
-
-			if (!IsOpenModeTest(false, false))return res;
-
-			std::locale tmpLocale = std::locale::classic();
-
-			if (localeName != "") { tmpLocale = stream.imbue(std::locale(localeName.c_str())); }
-
-			std::basic_ostringstream<CharaType> tmpSS;
-
-			tmpSS << stream.rdbuf();
-
-			res = tmpSS.str();
-
-			stream.clear();
-			stream.seekp(0, std::ios::beg);
-
-			if (localeName != "") { stream.imbue(tmpLocale); }
-
-			return res;
-		}
-
-
-		//Fileから読み出す//
-		inline void FileReadBinary(std::vector<char>& _binary)
-		{
-			if (!IsOpenModeTest(false, true))return;
-
-			std::locale tmpLocale = std::locale::classic();
-
-			if (localeName != "") { tmpLocale = stream.imbue(std::locale(localeName.c_str())); }
-
-			std::basic_string<CharaType>tmp;
-			tmp.resize(GetLength());
-
-			auto&& istream = dynamic_cast<std::basic_istream<CharaType>*>(&stream);
-
-			istream->read(&tmp[0], GetLength());
-
-			ChStr::Bytes<CharaType> tmpByte;
-
-			_binary.resize(GetLength() * sizeof(CharaType));
-
-			for (size_t i = 0; i < tmp.length(); i++)
-			{
-				tmpByte.val = tmp[i];
-				for (size_t j = 0; j < sizeof(CharaType); j++)
-				{
-					_binary[j + (i * sizeof(CharaType))] = tmpByte.byte[j];
-				}
-			}
-
-			istream->seekg(0, std::ios::beg);
-
-			if (localeName != "") { stream.imbue(tmpLocale); }
-
-			return;
-		}
+		std::basic_string<CharaType> FileRead();
 
 		//Fileに書き込む//
-		template<class... _Types>
-		inline std::basic_string<CharaType> FileWriteText(
-			const std::basic_string<CharaType>& _writeStr,
-			_Types&&... _args)
-		{
-			if (!IsOpenModeTest(true, false))return std::basic_string<CharaType>();
+		std::basic_string<CharaType> FileWrite(const std::basic_string<CharaType>& _writeStr);
 
-			return Writer(_writeStr);
-#if 0
-			//C++20以降の文字列型が対応していないため一旦保留//
+	protected:
 
-			std::basic_string<CharaType> tmpStr = _writeStr;
-#ifdef _WINDOWS
-			::swscanf_s(&tmpStr[0], &tmpStr[0], _args...);
-#else
-			std::swscanf(&tmpStr[0], &tmpStr[0], _args...);
-#endif
-			return Writer(tmpStr);
-#endif
-		}
 
-		//Fileに書き込む//
-		inline std::basic_string<CharaType> FileWriteBinary(const std::basic_string<CharaType>& _writeStr)
-		{
-			if (!IsOpenModeTest(true,true))return std::basic_string<CharaType>();
+	protected:
 
-			std::basic_string<CharaType> tmpStr = _writeStr;
-
-			return Writer(tmpStr);
-		}
-
+		void FileCloseCharName();
+		void FileCloseWCharName();
 
 	private:
 
-		std::basic_string<CharaType> Writer(const std::basic_string<CharaType>& _str)
-		{
-
-			std::basic_ofstream<CharaType> tmpStream;
-
-			std::locale tmpLocale = std::locale::classic();
-
-			if (localeName != "") { tmpLocale = stream.imbue(std::locale(localeName.c_str())); }
-
-			tmpStream.set_rdbuf(stream.rdbuf());
-
-			tmpStream << _str.c_str();
-
-			if (localeName != "") { stream.imbue(tmpLocale); }
-
-			return _str;
-		}
-
-	private:
-
-		bool IsOpenModeTest(bool _isReadFlg, bool _isBinaryFlg);
-
-		private:
-
-		std::ios_base::openmode flg{ 0 };
-		std::basic_fstream<CharaType> stream;
-		std::basic_string<CharaType> openFileName = ChStd::GetZeroChara<CharaType>();
 		std::string localeName = "";
+		std::string openFileNameChar = "";
+		std::wstring openFileNameWChar = L"";
+
+		bool isUpdateFlg = true;
+
+		std::basic_string<CharaType> fileText = ChStd::GetZeroChara<CharaType>();
 	};
 	
 	using CharFile =  File<char>;
