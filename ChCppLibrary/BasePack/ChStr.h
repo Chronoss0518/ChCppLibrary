@@ -393,25 +393,9 @@ namespace ChStr
 
 #endif
 
-	inline std::wstring GetShiftJisToUTF16(const std::string& _str)
-	{
-		if (_str == "")return L"";
-		std::wstring res = L"";
-		res.resize(_str.length() + 1);
-		mbstowcs(&res[0], &_str[0], _str.length());
-		res = res.c_str();
-		return res;
-	}
+	std::wstring GetShiftJisToUTF16(const std::string& _str);
 
-	inline std::string GetUTF16ToShiftJis(const std::wstring& _str)
-	{
-		if (_str == L"")return "";
-		std::string res = "";
-		res.resize(_str.length() * 4.0);
-		wcstombs(&res[0], &_str[0], _str.length() * 2);
-		res = res.c_str();
-		return res;
-	}
+	std::string GetUTF16ToShiftJis(const std::wstring& _str);
 
 #ifndef CPP26
 
