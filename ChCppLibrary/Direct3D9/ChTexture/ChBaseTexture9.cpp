@@ -268,7 +268,7 @@ void ChTex::PngTex9::OpenFile(const char* _fileName)
 {
 	ChCpp::BinaryFile file;
 
-	file.FileOpen(_fileName, std::ios::binary | std::ios::in | std::ios::out);
+	file.FileOpen(_fileName, false);
 
 	auto&& tmp = file.FileRead();
 
