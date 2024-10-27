@@ -42,6 +42,7 @@
 #include"CPP/ChJsonObject/ChJsonBoolean.h"
 
 #include"CPP/ChFile/ChFile.h"
+#include"CPP/ChFile/ChBinaryFile.h"
 
 #include"CPP/ChModel/ChModel.h"
 #include"CPP/ChModel/ChModelObject.h"
