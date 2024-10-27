@@ -357,7 +357,7 @@ namespace ChStr
 	}
 
 
-#ifdef CPP17
+#ifdef CPP20
 
 	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
 	template<typename CharaType, typename InType>
