@@ -12,11 +12,12 @@
 #include<wchar.h>
 #include<stddef.h>
 
-#ifndef CPP17
+#ifndef CPP26
 #include <codecvt>
 #include <cassert>
-#include <locale>
 #endif
+
+#include <locale>
 
 #include"ChStd.h"
 #include"ChPtr.h"
@@ -238,11 +239,11 @@ namespace ChStr
 		return static_cast<BaseType>(_wtof(text.c_str()));
 	}
 
-#ifdef CPP17
+#ifdef CPP20
 
 	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
 	template<typename BaseType>
-	static inline typename std::enable_if<std::is_floating_point<BaseType>::value, BaseType>::type
+	inline typename std::enable_if<std::is_floating_point<BaseType>::value, BaseType>::type
 		GetNumFromText(
 			const std::basic_string<char8_t>& _text,
 			const size_t& _startPos = 0,
@@ -255,7 +256,7 @@ namespace ChStr
 
 	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
 	template<typename BaseType>
-	static inline typename std::enable_if<std::is_floating_point<BaseType>::value, BaseType>::type
+	inline typename std::enable_if<std::is_floating_point<BaseType>::value, BaseType>::type
 		GetNumFromText(
 			const std::basic_string<char16_t>& _text,
 			const size_t& _startPos = 0,
@@ -266,7 +267,7 @@ namespace ChStr
 
 	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
 	template<typename BaseType>
-	static inline typename std::enable_if<std::is_floating_point<BaseType>::value, BaseType>::type
+	inline typename std::enable_if<std::is_floating_point<BaseType>::value, BaseType>::type
 		GetNumFromText(
 			const std::basic_string<char32_t>& _text,
 			const size_t& _startPos = 0,
@@ -278,7 +279,7 @@ namespace ChStr
 #else
 
 	template<typename BaseType, typename CharaType>
-	static inline BaseType GetNumFromText(
+	inline BaseType GetNumFromText(
 		const std::basic_string<CharaType>& _text,
 		const size_t& _startPos = 0,
 		const size_t& _endPos = std::basic_string<CharaType>::npos)
@@ -369,14 +370,14 @@ namespace ChStr
 
 	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
 	template<typename CharaType, typename InType>
-	static inline typename std::enable_if<std::is_same<char16_t, CharaType>::value, std::basic_string<CharaType>>::type GetTextFromNum(const InType& _baseNum)
+	inline typename std::enable_if<std::is_same<char16_t, CharaType>::value, std::basic_string<CharaType>>::type GetTextFromNum(const InType& _baseNum)
 	{
 		return u"";
 	}
 
 	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
 	template<typename CharaType, typename InType>
-	static inline typename std::enable_if<std::is_same<char32_t, CharaType>::value, std::basic_string<CharaType>>::type GetTextFromNum(const InType& _baseNum)
+	inline typename std::enable_if<std::is_same<char32_t, CharaType>::value, std::basic_string<CharaType>>::type GetTextFromNum(const InType& _baseNum)
 	{
 		return U"";
 	}
@@ -385,14 +386,34 @@ namespace ChStr
 
 	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
 	template<typename CharaType, typename InType>
-	static inline std::basic_string<CharaType> GetTextFromNum(const InType& _baseNum)
+	inline std::basic_string<CharaType> GetTextFromNum(const InType& _baseNum)
 	{
 		return BaseFunctions::GetTextFromNumBase<CharaType, InType>(_baseNum);
 	}
 
 #endif
 
-#ifndef CPP17
+	inline std::wstring GetShiftJisToUTF16(const std::string& _str)
+	{
+		if (_str == "")return L"";
+		std::wstring res = L"";
+		res.resize(_str.length() + 1);
+		mbstowcs(&res[0], &_str[0], _str.length());
+		res = res.c_str();
+		return res;
+	}
+
+	inline std::string GetUTF16ToShiftJis(const std::wstring& _str)
+	{
+		if (_str == L"")return "";
+		std::string res = "";
+		res.resize(_str.length() * 4.0);
+		wcstombs(&res[0], &_str[0], _str.length() * 2);
+		res = res.c_str();
+		return res;
+	}
+
+#ifndef CPP26
 
 	using ConvertUTF8 = std::codecvt_utf8<wchar_t>;
 	using ConvertUTF16 = std::codecvt_utf16<wchar_t>;
