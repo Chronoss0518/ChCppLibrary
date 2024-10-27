@@ -98,11 +98,13 @@ void ChCpp::ModelLoader::XFile<CharaType>::CreateModel(ChPtr::Shared<ModelObject
 	{
 		loadFileName = _filePath;
 
-		ChCpp::File<CharaType> files;
+		ChCpp::CharFile files;
 
-		files.FileOpen(_filePath);
+		files.FileOpen(_filePath, false);
 
-		text = files.FileReadText();
+		std::string test = files.FileRead();
+
+		text = ChCpp::GetConvertText<CharaType>(test);
 
 		files.FileClose();
 
