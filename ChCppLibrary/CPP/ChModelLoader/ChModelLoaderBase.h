@@ -21,6 +21,12 @@ namespace ChCpp
 	struct ModelFrame;
 
 	template<typename CharaType>
+	std::basic_string<CharaType> GetConvertText(const std::string& _str);
+
+	template<typename CharaType>
+	std::basic_string<CharaType> GetConvertText(const std::wstring& _str);
+
+	template<typename CharaType>
 	class ModelLoaderBase
 	{
 
@@ -64,7 +70,6 @@ namespace ChCpp
 			size_t tmp = tmpPath.rfind(ChStd::GetSlashChara<CharaType>());
 
 			return tmpPath.substr(0, tmp + 1);
-
 		}
 
 	protected:
