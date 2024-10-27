@@ -62,7 +62,7 @@ void SetMaterialName(ChMesh::BaseMesh9& _mesh,const std::string& _fileName)
 	file.FileOpen(_fileName);
 
 	std::string tmpStr;
-	tmpStr = file.FileReadText();
+	tmpStr = file.FileRead();
 
 	std::string tmpMateName = MATERIAL_TAG;
 
@@ -266,7 +266,7 @@ void ChMesh::SXFileMesh9::OpenFile(
 
 			ChCpp::CharFile file;
 			file.FileOpen(_pathName + _fileName);
-			fStr = file.FileReadText();
+			fStr = file.FileRead();
 			file.FileClose();
 
 		}

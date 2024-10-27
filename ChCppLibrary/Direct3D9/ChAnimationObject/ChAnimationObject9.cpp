@@ -116,8 +116,8 @@ void ChAnimationSupporter9::CreateFunction()
 			std::string Datas;
 			{
 				ChCpp::CharFile file;
-				file.FileOpen(_FileName);
-				Datas = file.FileReadText();
+				file.FileOpen(_FileName,"Japanese");
+				Datas = file.FileRead();
 				file.FileClose();
 			}
 

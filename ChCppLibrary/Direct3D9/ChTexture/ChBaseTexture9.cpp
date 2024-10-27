@@ -1,7 +1,7 @@
 #include<Windows.h>
 
 #include"../../BaseIncluder/ChBase.h"
-#include"../../CPP/ChFile/ChFile.h"
+#include"../../CPP/ChFile/ChBinaryFile.h"
 
 #include"../../BaseIncluder/ChD3D9I.h"
 
@@ -266,24 +266,22 @@ ChPtr::Shared<ChTex::BaseTexture9> ChTex::BaseTexture9::TextureType(const std::w
 
 void ChTex::PngTex9::OpenFile(const char* _fileName)
 {
-	ChCpp::File<char> file;
+	ChCpp::BinaryFile file;
 
 	file.FileOpen(_fileName, std::ios::binary | std::ios::in | std::ios::out);
 
-	std::vector<char> tmp;
-
-	file.FileReadBinary(tmp);
+	auto&& tmp = file.FileRead();
 
 	file.FileClose();
 
-	if (static_cast<unsigned char>(tmp[0]) != 0x89)return;
-	if (static_cast<unsigned char>(tmp[1]) != 0x50)return;
-	if (static_cast<unsigned char>(tmp[2]) != 0x4E)return;
-	if (static_cast<unsigned char>(tmp[3]) != 0x47)return;
-	if (static_cast<unsigned char>(tmp[4]) != 0x0D)return;
-	if (static_cast<unsigned char>(tmp[5]) != 0x0A)return;
-	if (static_cast<unsigned char>(tmp[6]) != 0x1A)return;
-	if (static_cast<unsigned char>(tmp[7]) != 0x0A)return;
+	if (tmp[0] != 0x89)return;
+	if (tmp[1] != 0x50)return;
+	if (tmp[2] != 0x4E)return;
+	if (tmp[3] != 0x47)return;
+	if (tmp[4] != 0x0D)return;
+	if (tmp[5] != 0x0A)return;
+	if (tmp[6] != 0x1A)return;
+	if (tmp[7] != 0x0A)return;
 
 	SetChank(tmp);
 
@@ -291,41 +289,39 @@ void ChTex::PngTex9::OpenFile(const char* _fileName)
 
 void ChTex::PngTex9::OpenFile(const wchar_t* _fileName)
 {
-	ChCpp::File<wchar_t> file;
+	ChCpp::BinaryFile file;
 
-	file.FileOpen(_fileName, std::ios::binary | std::ios::in | std::ios::out);
+	file.FileOpen(_fileName, false);
 
-	std::vector<char> tmp;
-
-	file.FileReadBinary(tmp);
+	auto&& tmp = file.FileRead();
 
 	file.FileClose();
 
-	if (static_cast<unsigned char>(tmp[0]) != 0x89)return;
-	if (static_cast<unsigned char>(tmp[1]) != 0x50)return;
-	if (static_cast<unsigned char>(tmp[2]) != 0x4E)return;
-	if (static_cast<unsigned char>(tmp[3]) != 0x47)return;
-	if (static_cast<unsigned char>(tmp[4]) != 0x0D)return;
-	if (static_cast<unsigned char>(tmp[5]) != 0x0A)return;
-	if (static_cast<unsigned char>(tmp[6]) != 0x1A)return;
-	if (static_cast<unsigned char>(tmp[7]) != 0x0A)return;
+	if (tmp[0] != 0x89)return;
+	if (tmp[1] != 0x50)return;
+	if (tmp[2] != 0x4E)return;
+	if (tmp[3] != 0x47)return;
+	if (tmp[4] != 0x0D)return;
+	if (tmp[5] != 0x0A)return;
+	if (tmp[6] != 0x1A)return;
+	if (tmp[7] != 0x0A)return;
 
 	SetChank(tmp);
 
 }
 
-void ChTex::PngTex9::SetChank(const std::vector<char>& _str)
+void ChTex::PngTex9::SetChank(const std::vector<unsigned char>& _str)
 {
 	if (_str.size() <= sizeof(CIHDR))return;
 
 	CIHDR tagTest;
 
-	if (static_cast<unsigned char>(_str[0 + sizeof(tagTest.Length) + 8]) != 'I')return;
-	if (static_cast<unsigned char>(_str[1 + sizeof(tagTest.Length) + 8]) != 'H')return;
-	if (static_cast<unsigned char>(_str[2 + sizeof(tagTest.Length) + 8]) != 'D')return;
-	if (static_cast<unsigned char>(_str[3 + sizeof(tagTest.Length) + 8]) != 'R')return;
+	if (_str[0 + sizeof(tagTest.Length) + 8] != 'I')return;
+	if (_str[1 + sizeof(tagTest.Length) + 8] != 'H')return;
+	if (_str[2 + sizeof(tagTest.Length) + 8] != 'D')return;
+	if (_str[3 + sizeof(tagTest.Length) + 8] != 'R')return;
 
-	auto&& chank =  ChStr::StrBinaryToNum<CIHDR, char>(&_str[0], _str.size(), 8);
+	auto&& chank =  ChStr::StrBinaryToNum<CIHDR, unsigned char>(&_str[0], _str.size(), 8);
 
 	if (chank.Length <= 0)return;
 
@@ -354,13 +350,10 @@ void ChTex::PngTex9::SetChank(const std::vector<char>& _str)
 
 void ChTex::JpegTex9::OpenFile(const char* _fileName)
 {
-	ChCpp::File<char> file;
-	file.FileOpen(_fileName, std::ios::binary | std::ios::in | std::ios::out);
+	ChCpp::BinaryFile file;
+	file.FileOpen(_fileName,false);
 
-	std::vector<char> tmp;
-
-	tmp.resize(file.GetLength());
-	file.FileReadBinary(tmp);
+	auto&& tmp = file.FileRead();
 
 	file.FileClose();
 
@@ -369,20 +362,17 @@ void ChTex::JpegTex9::OpenFile(const char* _fileName)
 
 void ChTex::JpegTex9::OpenFile(const wchar_t* _fileName)
 {
-	ChCpp::File<wchar_t> file;
-	file.FileOpen(_fileName, std::ios::binary | std::ios::in | std::ios::out);
+	ChCpp::BinaryFile file;
+	file.FileOpen(_fileName,false);
 
-	std::vector<char> tmp;
-
-	tmp.resize(file.GetLength());
-	file.FileReadBinary(tmp);
+	auto&& tmp = file.FileRead();
 
 	file.FileClose();
 
 	SetSegment(tmp);
 }
 
-void ChTex::JpegTex9::SetSegment(const std::vector<char>& _str)
+void ChTex::JpegTex9::SetSegment(const std::vector<unsigned char>& _str)
 {
 	if (_str.size() <= sizeof(S_SOF))return;
 
@@ -390,7 +380,7 @@ void ChTex::JpegTex9::SetSegment(const std::vector<char>& _str)
 	if (_str[1] != 0xc0)return;
 	if (_str[2] != 0)return;
 
-	auto&& data =  ChStr::StrBinaryToNum<S_SOF, char>(&_str[0], _str.size(), 0);
+	auto&& data =  ChStr::StrBinaryToNum<S_SOF, unsigned char>(&_str[0], _str.size(), 0);
 
 	if (data.TexWidht <= 0 || data.TexHeight <= 0)return;
 
