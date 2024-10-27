@@ -251,7 +251,7 @@ namespace ChStd
 
 	//指定したアドレス先を値0で初期化する//
 	template<class T>
-	static inline void MZero(T* _val)
+	inline void MZero(T* _val)
 	{
 		void* tmp = static_cast<void*>(_val);
 
@@ -263,7 +263,7 @@ namespace ChStd
 
 	//_baseの情報を_copyへコピーする//
 	template<class T>
-	static inline void MCopy(T* _copy, const T* _base)
+	inline void MCopy(T* _copy, const T* _base)
 	{
 		void* tmpCopy = static_cast<void*>(_copy);
 		const void* tmpBase = static_cast<const void*>(_base);
@@ -275,7 +275,7 @@ namespace ChStd
 	}
 
 	template<typename Type>
-	static inline Type BinaryToNumWithLittleEndian(const std::vector<unsigned char>& _binary, unsigned long _pos = 0)
+	inline Type BinaryToNumWithLittleEndian(const std::vector<unsigned char>& _binary, unsigned long _pos = 0)
 	{
 		if (_pos + sizeof(Type) >= _binary.size())return 0;
 
@@ -295,7 +295,7 @@ namespace ChStd
 	}
 
 	template<typename Type>
-	static inline Type BinaryToNumWithBigEndian(const std::vector<unsigned char>& _binary, unsigned long _pos = 0)
+	inline Type BinaryToNumWithBigEndian(const std::vector<unsigned char>& _binary, unsigned long _pos = 0)
 	{
 		if (_pos + sizeof(Type) >= _binary.size())return 0;
 
@@ -316,7 +316,7 @@ namespace ChStd
 
 	template<typename CharaType>
 	//10進数の数値を入れると指定した配列によって生成された進数表記で出力される//
-	static inline std::basic_string<CharaType> DecimalNumberToBaseNumber(
+	inline std::basic_string<CharaType> DecimalNumberToBaseNumber(
 		const long long _decimal,
 		const std::basic_string<CharaType>& _baseNumber = HEXA_DECIMAL<CharaType>())
 	{
@@ -350,7 +350,7 @@ namespace ChStd
 
 	//指定した進数の配列を入れると10進数の数値が出力される//
 	template<typename CharaType>
-	static inline long long BaseNumberToDecimalNumber(
+	inline long long BaseNumberToDecimalNumber(
 		const std::basic_string<CharaType>& _decimal,
 		const std::basic_string<CharaType>& _baseNumber = HEXA_DECIMAL<CharaType>())
 	{
@@ -371,9 +371,9 @@ namespace ChStd
 
 		for (long long i = 0; static_cast<size_t>(i) < (mFlg ? _decimal.size() - 1 : _decimal.size()); i++)
 		{
-			long long sum = numMap[_decimal[_decimal.size() - i - 1]];
+			long long sum = numMap[_decimal[_decimal.size() - i - 1ULL]];
 
-			for (long long j = 0; j < (!mFlg ? i : i - 1); j++)
+			for (long long j = 0; j < (!mFlg ? i : i - 1ULL); j++)
 			{
 				sum *= static_cast<long long>(size);
 			}
@@ -388,7 +388,7 @@ namespace ChStd
 
 	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
 	template<typename CharaType>
-	static inline std::basic_string<CharaType> ToBaseNumber(
+	inline std::basic_string<CharaType> ToBaseNumber(
 		const std::basic_string<CharaType>& _baseNum,
 		const std::basic_string<CharaType>& _beforeBaseNumber = DECIMAL_NUMBUR<CharaType>(),
 		const std::basic_string<CharaType>& _afterBaseNumber = HEXA_DECIMAL<CharaType>())
@@ -398,7 +398,7 @@ namespace ChStd
 
 	//指定した新数の配列を入れるとその配列によって数値を置換できるかのテストを行う//
 	template<typename CharaType>
-	static inline bool IsBaseNumbers(
+	inline bool IsBaseNumbers(
 		const std::basic_string<CharaType>& _baseNum,
 		const std::basic_string<CharaType>& _beforeBaseNumber = DECIMAL_NUMBUR<CharaType>())
 	{
@@ -450,7 +450,7 @@ namespace ChStd
 	}
 
 	template<typename Type>
-	static inline std::map<Type, unsigned long> CreateHuffmanTree(const std::vector<Type>& _binary)
+	inline std::map<Type, unsigned long> CreateHuffmanTree(const std::vector<Type>& _binary)
 	{
 		std::map<Type, unsigned long>out;
 
