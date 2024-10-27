@@ -1,13 +1,11 @@
 #ifndef Ch_CPP_File_h
 #define Ch_CPP_File_h
 
-#include<string>
-#include<iostream>
-#include<ios>
-#include<fstream>
-#include<sstream>
-#include<locale>
 
+
+#include<string>
+
+#include"ChFileBase.h"
 #include"../../BasePack/ChStd.h"
 #include"../../BasePack/ChStr.h"
 
@@ -23,7 +21,7 @@ namespace ChStd
 namespace ChCpp
 {
 	template<typename CharaType>
-	class File
+	class File : public FileBase
 	{
 	public:
 
@@ -89,23 +87,6 @@ namespace ChCpp
 
 		File() {};
 
-		File(
-			const std::basic_string<CharaType>& _fileName,
-			const std::string _locale = "C")
-		{
-			FileOpen(_fileName, _locale);
-		}
-
-		virtual ~File()
-		{
-			Release();
-		}
-
-		virtual void Release()
-		{
-			FileClose();
-		}
-
 	public://Get Functions//
 
 		size_t GetLength();
@@ -140,9 +121,6 @@ namespace ChCpp
 			FileOpen(_fileName, "", _isUpdate);
 		}
 
-		//FileÇï¬Ç∂ÇÈ(DestructerÇ≈Ç‡ãNìÆÇ∑ÇÈ)//
-		void FileClose();
-
 		//FileÇ©ÇÁì«Ç›èoÇ∑//
 		std::basic_string<CharaType> FileRead();
 
@@ -154,16 +132,11 @@ namespace ChCpp
 
 	protected:
 
-		void FileCloseCharName();
-		void FileCloseWCharName();
+		void FileCloseCharName()override;
+
+		void FileCloseWCharName()override;
 
 	private:
-
-		std::string localeName = "";
-		std::string openFileNameChar = "";
-		std::wstring openFileNameWChar = L"";
-
-		bool isUpdateFlg = true;
 
 		std::basic_string<CharaType> fileText = ChStd::GetZeroChara<CharaType>();
 	};
