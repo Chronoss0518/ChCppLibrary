@@ -20,7 +20,7 @@ template<> void ChCpp::File<##_CharaType##>::FileOpen(\
 	fgetpos(file, &filepos);\
 	fseek(file, 0, SEEK_SET);\
 	fileText = ChStd::GetZeroChara<##_CharaType##>();\
-	for (fpos_t pos = (##_AddValue - 1); pos < filepos; pos += _AddValue##)fileText += FGet<##_CharaType##>(file);\
+	for (fpos_t pos = 0; pos < filepos; pos += _AddValue##)fileText += FGet<##_CharaType##>(file);\
 	fclose(file);\
 \
 	if (localeName != "") setlocale(LC_ALL, tmpLocale.c_str());}\
@@ -40,7 +40,7 @@ template<>	void ChCpp::File<##_CharaType##>::FileOpen(\
 	fgetpos(file, &filepos);\
 	fseek(file, 0, SEEK_SET);\
 	fileText = ChStd::GetZeroChara<##_CharaType##>();\
-	for (fpos_t pos = (##_AddValue - 1); pos < filepos; pos += _AddValue##)fileText += FGet<##_CharaType##>(file);\
+	for (fpos_t pos = 0; pos < filepos; pos += _AddValue##)fileText += FGet<##_CharaType##>(file);\
 	fclose(file);\
 \
 	if (localeName != "") setlocale(LC_ALL, tmpLocale.c_str());}\
