@@ -41,7 +41,7 @@ namespace ChTex
 
 		};
 
-		void SetSegment(const std::vector<char>& _str);
+		void SetSegment(const std::vector<unsigned char>& _str);
 	};
 }
 

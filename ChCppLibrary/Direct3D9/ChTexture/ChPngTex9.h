@@ -52,7 +52,7 @@ namespace ChTex
 			}
 		};
 
-		void SetChank(const std::vector<char>& _str);
+		void SetChank(const std::vector<unsigned char>& _str);
 	};
 }
 
