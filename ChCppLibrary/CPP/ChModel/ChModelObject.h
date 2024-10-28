@@ -164,7 +164,7 @@ namespace ChCpp
 			}
 
 			if (!onFaceFlg)return false;
-			auto data = ChPtr::Make_S<NearPointData>();
+			auto data = ChPtr::Make_S<NearPointData<CharaType>>();
 			_outVector = faceNormal * -len;
 
 			return true;
