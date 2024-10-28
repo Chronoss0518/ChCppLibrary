@@ -11,13 +11,27 @@
 template<typename CharaType>
 bool ChCpp::PolygonCollider<CharaType>::IsHitRayToMesh(FrameObject<CharaType>& _object, const ChVec3& _rayPos, const ChVec3& _rayDir, const float _rayLen, const bool _nowHitFlg)
 {
-	_object.UpdateDrawTransform();
-
-	ChLMat tmpMat = _object.GetDrawLHandMatrix() * GetMat();
-
 	bool hitFlg = _nowHitFlg;
 
 	float minLen = _rayLen;
+
+	hitFlg = IsHitTest(minLen, _object, _rayPos, _rayDir, hitFlg);
+
+	for (auto&& child : _object.GetChildlen<FrameObject<CharaType>>())
+	{
+		hitFlg = IsHitRayToMesh(*child.lock(), _rayPos, _rayDir, minLen, hitFlg) || hitFlg;
+	}
+
+	return hitFlg;
+}
+
+template<typename CharaType>
+bool ChCpp::PolygonCollider<CharaType>::IsHitTest(float& _outLen, FrameObject<CharaType>& _object, const ChVec3& _rayPos, const ChVec3& _rayDir, const bool _nowHitFlg)
+{
+
+	_object.UpdateDrawTransform();
+
+	ChLMat tmpMat = _object.GetDrawLHandMatrix() * GetMat();
 
 	auto&& frameCom = GetFrameComponent(_object);
 
@@ -25,6 +39,7 @@ bool ChCpp::PolygonCollider<CharaType>::IsHitRayToMesh(FrameObject<CharaType>& _
 
 	if (frameCom->vertexList.size() < 3)return false;
 
+	bool hitFlg = _nowHitFlg;
 
 	std::vector<ChPtr::Shared<ChVec3>>posList;
 
@@ -70,22 +85,17 @@ bool ChCpp::PolygonCollider<CharaType>::IsHitRayToMesh(FrameObject<CharaType>& _
 				poss[2]))continue;
 
 			float tmpLen = tmpVec.GetLen();
-			if (tmpLen > _rayLen)continue;
+			if (tmpLen > _outLen)continue;
 			hitFlg = true;
-			if (minLen < tmpLen)continue;
-			minLen = tmpLen;
+			if (_outLen < tmpLen)continue;
+			_outLen = tmpLen;
 			hitMaterialName = frameCom->materialList[primitive->mateNo]->mateName;
 			SetHitVector(tmpVec);
-			break;
+			return true;
 		}
 	}
+	return false;
 
-	for (auto&& child : _object.GetChildlen<FrameObject<CharaType>>())
-	{
-		hitFlg = IsHitRayToMesh(*child.lock(), _rayPos, _rayDir, minLen, hitFlg) || hitFlg;
-	}
-
-	return hitFlg;
 }
 
 template<typename CharaType>
@@ -129,7 +139,7 @@ bool ChCpp::PolygonCollider<CharaType>::IsInnerHit(HitTestSphere* _target)
 template<typename CharaType>
 bool ChCpp::PolygonCollider<CharaType>::IsHit(HitTestRay* _target)
 {
-	auto model = GetModel();
+	auto&& model = GetModel();
 
 	if (ChPtr::NullCheck(model))return false;
 
