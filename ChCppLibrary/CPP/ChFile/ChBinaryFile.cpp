@@ -64,6 +64,7 @@ void ChCpp::BinaryFile::FileCloseCharName()
 	fclose(file);
 
 	if (localeName != "")tmpLocale = setlocale(LC_ALL, tmpLocale.c_str());
+	openFileNameChar = "";
 }
 
 void ChCpp::BinaryFile::FileCloseWCharName()
@@ -79,4 +80,5 @@ void ChCpp::BinaryFile::FileCloseWCharName()
 	fclose(file);
 
 	if (localeName != "")tmpLocale = setlocale(LC_ALL, tmpLocale.c_str());
+	openFileNameWChar = L"";
 }
