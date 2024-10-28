@@ -105,7 +105,7 @@ void ChCpp::ModelLoader::XFile<CharaType>::CreateModel(ChPtr::Shared<ModelObject
 		std::string test = files.FileRead();
 
 		text = ChCpp::GetConvertText<CharaType>(test);
-
+		text = text.c_str();
 		files.FileClose();
 
 		if (text.length() <= 0)
@@ -139,7 +139,7 @@ void ChCpp::ModelLoader::XFile<CharaType>::CreateModel(ChPtr::Shared<ModelObject
 
 	LoadToTemplates(templates, textPos, text);
 
-	auto xModel = ChPtr::Make_S<XFileModelFrame>();
+	auto&& xModel = ChPtr::Make_S<XFileModelFrame>();
 
 	for (auto&& tmp : templates->nest)
 	{

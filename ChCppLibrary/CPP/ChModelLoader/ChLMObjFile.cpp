@@ -263,16 +263,15 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::CreateModel(ChPtr::Shared<ModelObje
 	text.SetCutChar(ChStd::GetLFChara<CharaType>());
 
 	{
-		std::basic_string<CharaType> tmp = ChStd::GetZeroChara<CharaType>();
 
-		ChCpp::File<CharaType> files;
-		files.FileOpen(_filePath, "Japanese");
-		tmp = files.FileRead();
+		ChCpp::CharFile files;
+		files.FileOpen(_filePath, false);
+		std::string tmp = files.FileRead();
 		files.FileClose();
 
 		if (tmp.length() <= 0)return;
 
-		text.SetText(tmp.c_str());
+		text.SetText(ChCpp::GetConvertText<CharaType>(tmp));
 	}
 
 	folderPath = ModelLoaderBase<CharaType>::GetRoutePath(_filePath);
