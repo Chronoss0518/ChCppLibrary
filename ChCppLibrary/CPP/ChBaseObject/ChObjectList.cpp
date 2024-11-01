@@ -41,23 +41,24 @@ CH_OBJECT_LIST_FUNCTION(UpdateBegin);
 
 void ChCpp::ObjectList::ObjectUpdate()
 {
-	for (auto&& it = objectList.begin() ; it != objectList.end(); it)
+	for (size_t itCount = 0; itCount < objectList.size();itCount)
 	{
-		if ((*it)->IsDethFlg())
+		
+		if (objectList[itCount]->IsDethFlg())
 		{
-			it = objectList.erase(it);
+			objectList.erase(objectList.begin() + itCount);
 			continue;
 		}
 		
-		if (!(*it)->parent.expired() ||
-			!(*it)->IsUseFlg())
+		if (!objectList[itCount]->parent.expired() ||
+			!objectList[itCount]->IsUseFlg())
 		{
-			it++;
+			itCount++;
 			continue;
 		}
 
-		(*it)->UpdateFunction();
-		it++;
+		objectList[itCount]->UpdateFunction();
+		itCount++;
 	}
 
 }
