@@ -13,7 +13,7 @@ void ChCpp::ObjectList::Object##_FunctionNameBase##()\
 		if (!obj->IsUseFlg())continue;\
 		if (obj->GetParent() != nullptr)continue;\
 		obj->##_FunctionNameBase##Function();\
-		if (objectList.empty())break;\
+		if (objectList.empty())return;\
 	}\
 }
 
@@ -41,22 +41,25 @@ CH_OBJECT_LIST_FUNCTION(UpdateBegin);
 
 void ChCpp::ObjectList::ObjectUpdate()
 {
-	for (auto&& it = objectList.begin() ; it != objectList.end();it)
+	for (auto&& it = objectList.begin() ; it != objectList.end(); it)
 	{
 		if ((*it)->IsDethFlg())
 		{
-			(*it)->BaseRelease();
 			it = objectList.erase(it);
-			if (objectList.empty())break;
+			continue;
+		}
+		
+		if (!(*it)->parent.expired() ||
+			!(*it)->IsUseFlg())
+		{
+			it++;
+			continue;
 		}
 
-		if ((*it)->IsUseFlg() && (*it)->parent.expired())
-		{
-			(*it)->UpdateFunction();
-			if (objectList.empty())break;
-		}
+		(*it)->UpdateFunction();
 		it++;
 	}
+
 }
 
 CH_OBJECT_LIST_FUNCTION(UpdateEnd);
