@@ -371,9 +371,11 @@ namespace ChStd
 
 		for (long long i = 0; static_cast<size_t>(i) < (mFlg ? _decimal.size() - 1 : _decimal.size()); i++)
 		{
-			long long sum = numMap[_decimal[_decimal.size() - i - 1ULL]];
+			size_t tmp = static_cast<size_t>(i);
 
-			for (long long j = 0; j < (!mFlg ? i : i - 1ULL); j++)
+			long long sum = numMap[_decimal[_decimal.size() - tmp - 1ULL]];
+
+			for (long long j = 0; j < (!mFlg ? tmp : tmp - 1ULL); j++)
 			{
 				sum *= static_cast<long long>(size);
 			}
