@@ -27,7 +27,8 @@ void ChCpp::BinaryFile::FileOpen(const std::wstring& _fileName, const std::strin
 	std::string tmpLocale = "";
 	if (localeName != "")tmpLocale = setlocale(LC_ALL, localeName.c_str());
 
-	FILE* file = Open(openFileNameChar.c_str(), "rb");
+	FILE* file = Open(openFileNameWChar.c_str(), L"rb");
+
 	fseek(file, 0, SEEK_END);
 	fpos_t filepos = 0;
 	fgetpos(file, &filepos);
