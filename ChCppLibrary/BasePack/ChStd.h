@@ -375,7 +375,7 @@ namespace ChStd
 
 			long long sum = numMap[_decimal[_decimal.size() - tmp - 1ULL]];
 
-			for (long long j = 0; j < (!mFlg ? tmp : tmp - 1ULL); j++)
+			for (long long j = 0; j < static_cast<long long>(!mFlg ? tmp : tmp - 1ULL); j++)
 			{
 				sum *= static_cast<long long>(size);
 			}
