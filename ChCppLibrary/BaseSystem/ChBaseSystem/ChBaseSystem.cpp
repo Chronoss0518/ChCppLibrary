@@ -58,3 +58,12 @@ bool ChSystem::BaseSystem::IsPause(const int _Key)
 
 	return pauseFlg;
 }
+
+void ChSystem::SystemManager::Release()
+{
+	if (!*this)return;
+
+	baseSystems = nullptr;
+
+	SetInitFlg(false);
+}

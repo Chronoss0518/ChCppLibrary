@@ -24,6 +24,69 @@
 
 using namespace ChD3D;
 
+IDWriteTextFormat* ChD3D::DirectFontBase::GetTextFormat(size_t _num)
+{
+	return textFormatList[_num];
+}
+
+size_t ChD3D::DirectFontBase::GetTextFormatCount()
+{
+	return textFormatList.size();
+}
+
+void ChD3D::DirectFontBase::AddTextFormat(IDWriteTextFormat * _textFormat)
+{
+	textFormatList.push_back(_textFormat);
+}
+
+void ChD3D::DirectFontBase::ClearTextFormatList()
+{
+	if (textFormatList.empty())return;
+	textFormatList.clear();
+}
+
+ID2D1SolidColorBrush* ChD3D::DirectFontBase::GetBrush(size_t _num)
+{
+	return brushList[_num];
+}
+
+size_t ChD3D::DirectFontBase::GetBrushCount()
+{
+	return brushList.size();
+}
+
+void ChD3D::DirectFontBase::AddBrush(ID2D1SolidColorBrush * _brush)
+{
+	brushList.push_back(_brush);
+}
+
+void ChD3D::DirectFontBase::ClearBrushList()
+{
+	if (brushList.empty())return;
+	brushList.clear();
+}
+
+ChD3D::LayoutObject::LayoutStruct* ChD3D::DirectFontBase::GetLayout(size_t _num)
+{
+	return layoutList[_num];
+}
+
+size_t ChD3D::DirectFontBase::GetLayoutCount()
+{
+	return layoutList.size();
+}
+
+void ChD3D::DirectFontBase::AddLayout(LayoutObject::LayoutStruct * _layout)
+{
+	layoutList.push_back(_layout);
+}
+
+void ChD3D::DirectFontBase::ClearLayoutList()
+{
+	if (layoutList.empty())return;
+	layoutList.clear();
+}
+
 void TextFormatObject::SetTextAlignment(DWRITE_TEXT_ALIGNMENT _alignment)
 {
 	if (ChPtr::NullCheck(textFormat))return;
@@ -423,7 +486,7 @@ void DirectFontBase::DrawTextMethod(
 	const D2D1_RECT_F& _drawRect)
 {
 
-	renderTarget->DrawTextW(
+	renderTarget->DrawText(
 		_text,        // The string to render.
 		_textLength,    // The string's length.
 		_textFormat,    // The text format.

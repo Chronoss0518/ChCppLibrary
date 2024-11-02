@@ -22,6 +22,28 @@ JsonNumber operator _Operator##(const JsonNumber& _val)const{\
 	return res;}
 #endif
 
+#ifndef	CH_Json_Number_Create_Functions
+#define	CH_Json_Number_Create_Functions(_type)\
+static ChPtr::Shared<JsonNumber> CreateObject(const _type& _value){\
+	auto&& res = ChPtr::Make_S<JsonNumber>();\
+	*res = _value;\
+	return res;}
+#endif
+
+#ifndef	CH_Json_Number_Constructor_Functions
+#define	CH_Json_Number_Constructor_Functions(_type) JsonNumber(const _type##& _val){value = static_cast<long double>(_val);}
+#endif
+
+#ifndef	CH_Json_Number_Operator_Functions
+#define	CH_Json_Number_Operator_Functions(_type)\
+operator _type##()const{return static_cast<##_type##>(value);}\
+\
+JsonNumber& operator = (const _type##& _base){\
+	value = static_cast<const long double>(_base);\
+	return *this;}
+#endif
+
+
 namespace ChCpp
 {
 	template<typename CharaType>
@@ -29,15 +51,7 @@ namespace ChCpp
 	{
 	public://static Create Function//
 
-#ifdef CRT
-		template<typename BaseType>
-		static ChPtr::Shared<JsonNumber> CreateObject(const BaseType& _value)
-		{
-			auto&& res = ChPtr::Make_S<JsonNumber>();
-			*res = _value;
-			return res;
-		}
-#endif
+		Ch_Json_BaseTypeMethods(CH_Json_Number_Create_Functions);
 
 	public://Operator Functions//
 
@@ -67,28 +81,14 @@ namespace ChCpp
 
 	public://To BaseClass Operator Functions//
 
-		template<typename BaseType>
-		operator BaseType()const
-		{
-			return static_cast<BaseType>(value);
-		}
-
-		template<typename BaseType>
-		JsonNumber& operator = (const BaseType& _base)
-		{
-			value = static_cast<const long double>(_base);
-			return *this;
-		}
-
+		Ch_Json_BaseTypeMethods(CH_Json_Number_Operator_Functions);
 
 	public://To String Operator Functions//
 
-#ifdef CRT
 		operator std::basic_string<CharaType>()const
 		{
 			return ToString();
 		}
-#endif
 
 	public://Constructor Destructor//
 
@@ -102,54 +102,23 @@ namespace ChCpp
 			value = _val.value;
 		}
 
-		template<typename BaseType>
-		JsonNumber(const BaseType& _val)
-		{
-			value = static_cast<long double>(_val);
-		}
+
+		Ch_Json_BaseTypeMethods(CH_Json_Number_Constructor_Functions);
 
 	public:
 
-#ifdef CRT
-		bool SetRawData(const std::basic_string<CharaType>& _jsonText)override
-		{
-			if (!ChStd::IsBaseNumbers<CharaType>(_jsonText, ChStd::DECIMAL_NUMBUR<CharaType>()))return false;
-
-			value = ChStr::GetNumFromText<long double, CharaType>(_jsonText);
-			return true;
-		}
-#endif
+		bool SetRawData(const std::basic_string<CharaType>& _jsonText)override;
 
 	public:
 
-#ifdef CRT
 		std::basic_string<CharaType> GetRawData()const override
 		{
 			return ToString();
 		}
-#endif
 
 	public:
 
-#ifdef CRT
-		std::basic_string<CharaType> ToString()const
-		{
-			std::basic_string<CharaType> tmpStr = ChStr::GetTextFromNum<CharaType>(value);
-			unsigned long endPoint = tmpStr.find(ChStd::GetDotChara<CharaType>());
-			for (unsigned long i = endPoint + 1; i < tmpStr.size(); i++)
-			{
-				if (tmpStr[i] == ChStd::GetZeroChara<CharaType>()[0])continue;
-				endPoint = i + 1;
-			}
-
-			if (endPoint >= tmpStr.size())
-			{
-				return tmpStr;
-			}
-
-			return tmpStr.substr(0, endPoint);
-		}
-#endif
+		std::basic_string<CharaType> ToString()const;
 
 	private:
 
@@ -157,27 +126,5 @@ namespace ChCpp
 	};
 
 }
-
-#ifdef CRT
-
-template<typename CharaType>
-ChPtr::Shared<ChCpp::JsonNumber<CharaType>> ChCpp::JsonBaseType<CharaType>::GetParameterToNumber(const std::basic_string<CharaType>& _json)
-{
-	if (_json.size() <= 0)return nullptr;
-	if (_json.size() <= 1 && (_json[0] > 57 || _json[0] < 48))return nullptr;
-
-	bool floatingPointFlg = false;
-
-	auto&& res = ChPtr::Make_S<JsonNumber<CharaType>>();
-
-	*res = ChStr::GetNumFromText<long double, CharaType>(_json);
-
-	return res;
-}
-
-
-#endif
-
-#include"SharedFunctions/ChJsonSharedArrayBooleanNumberString.h"
 
 #endif

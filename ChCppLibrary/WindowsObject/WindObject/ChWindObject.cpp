@@ -120,6 +120,98 @@ bool WindObjectBase::IsCursorPosOnWindow()
 	return false;
 }
 
+void ChWin::WindProcedure::Init()
+{
+	value->wndProc[WM_DESTROY] = [&](
+		HWND _hWnd,
+		UINT _uMsg,
+		WPARAM _wParam,
+		LPARAM _lParam)->LRESULT
+		{
+			PostQuitMessage(0);
+			return 0;
+		};
+}
+
+LRESULT ChWin::WindProcedure::UpdateProcedure(HWND _hWnd, UINT _uMsg, WPARAM _wParam, LPARAM _lParam, LONG_PTR(WINAPI* GetWindowLongPtrFunction)(_In_ HWND, _In_ int))
+{
+
+	auto it = value->wndProc.find(_uMsg);
+	if (it != (value->wndProc).end())
+	{
+		LRESULT res;
+		res = (it)->second(_hWnd, _uMsg, _wParam, _lParam);
+		if (_uMsg != WM_COMMAND && _uMsg != WM_SYSCOMMAND)return res;
+	}
+
+	if (_uMsg != WM_COMMAND && _uMsg != WM_SYSCOMMAND)return DefaultWindProc(_hWnd, _uMsg, _wParam, _lParam);
+
+	if (_lParam <= 0)
+	{
+		auto param = LOWORD(_wParam);
+
+		auto it = value->wndProc.find(param);
+		if (it != (value->wndProc).end())
+		{
+			(it)->second(_hWnd, _uMsg, _wParam, _lParam);
+			return 0;
+		}
+
+	}
+	else
+	{
+		auto child = ((ChWin::WindProcedure*)GetWindowLongPtrFunction((HWND)LOWORD(_wParam), GWLP_USERDATA));
+
+		if (ChPtr::NotNullCheck(child))
+		{
+			if (!child->value->childWindProc.empty())
+			{
+				auto cit = child->value->childWindProc.find(HIWORD(_wParam));
+				if (cit != (child->value->childWindProc).end())
+				{
+					(cit)->second((HWND)LOWORD(_wParam), HIWORD(_wParam));
+				}
+			}
+			child->DefaultWindProc(_hWnd, _uMsg, _wParam, _lParam);
+
+			return 0;
+		}
+	}
+
+	return DefaultWindProc(_hWnd, _uMsg, _wParam, _lParam);
+}
+
+void ChWin::WindProcedure::CRTInit()
+{
+	value = new WindProcedureCRT();
+}
+
+void ChWin::WindProcedure::CRTRelease()
+{
+	delete value;
+}
+
+LRESULT ChWin::WindProcedure::DefaultWindProc(HWND _hWnd, UINT _uMsg, WPARAM _wParam, LPARAM _lParam)
+{
+	return value->defaultWindProc(_hWnd, _uMsg, _wParam, _lParam);
+}
+
+void ChWin::WindObjectBase::CreateEnd(const int _nCmdShow)
+{
+	windProcedures = new WindProcedure();
+	windProcedures->Init();
+
+	SetInitFlg(true);
+	SetWindID(reinterpret_cast<LONG_PTR>(hWnd));
+
+	ShowWindow(hWnd, _nCmdShow);
+	UpdateWindow(hWnd);
+}
+
+CH_WIND_OBJECT_INHERITANCE_FUNCTIONS(A, char);
+
+CH_WIND_OBJECT_INHERITANCE_FUNCTIONS(W, wchar_t);
+
 //WindowObjectCreate Method//
 
 void WindCreater::SetWindStyle(const WindStyle* _style)

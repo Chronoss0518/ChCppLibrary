@@ -12,6 +12,58 @@ using namespace ChTex;
 //ChPolygonBord9ÉÅÉ\ÉbÉh
 ///////////////////////////////////////////////////////////////////////////////////
 
+void ChTex::PolygonBoard9::SetRectTex(
+	const ChPtr::Shared<BaseTexture9> _tex,
+	const RECT& _rect,
+	const unsigned char _SPosNo)
+{
+	if (_tex == nullptr)return;
+	if (_SPosNo > vertexMaxCnt)return;
+	D3DXVECTOR2 tmpVec;
+	tmpVec = D3DXVECTOR2((float)(_rect.right / _tex->GetOriginalWidth()), (float)(_rect.top / _tex->GetOriginalHeight()));
+	ver[(_SPosNo + 0) % vertexMaxCnt].tex = tmpVec;
+	tmpVec = D3DXVECTOR2((float)((_rect.right + _rect.left) / _tex->GetOriginalWidth())
+		, (float)(_rect.top / _tex->GetOriginalHeight()));
+	ver[(_SPosNo + 1) % vertexMaxCnt].tex = tmpVec;
+	tmpVec = D3DXVECTOR2((float)((_rect.right + _rect.left) / _tex->GetOriginalWidth())
+		, (float)((_rect.top + _rect.bottom) / _tex->GetOriginalHeight()));
+	ver[(_SPosNo + 2) % vertexMaxCnt].tex = tmpVec;
+	tmpVec = D3DXVECTOR2((float)(_rect.right / _tex->GetOriginalWidth())
+		, (float)((_rect.top + _rect.bottom) / _tex->GetOriginalHeight()));
+	ver[(_SPosNo + 3) % vertexMaxCnt].tex = tmpVec;
+}
+
+void ChTex::PolygonBoard9::Draw(
+	const ChPtr::Shared<BaseTexture9>& _tex,
+	const D3DXMATRIX& _mat)
+{
+	if (!*this)return;
+	if (_tex == nullptr)return;
+
+	DWORD tmpData;
+	device->GetRenderState(D3DRS_CULLMODE, &tmpData);
+	device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+
+
+	if (alphaFlg)device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+
+	device->SetTexture(0, _tex->GetTex());
+
+	device->SetTransform(D3DTS_WORLD, &_mat);
+
+	device->SetFVF((D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1));
+
+	device->SetRenderState(D3DRS_LIGHTING, FALSE);
+	device->SetRenderState(D3DRS_NORMALIZENORMALS, FALSE);
+
+	device->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, ver, sizeof(ChVertex9));
+
+	device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
+
+	device->SetRenderState(D3DRS_NORMALIZENORMALS, true);
+	device->SetRenderState(D3DRS_CULLMODE, tmpData);
+}
+
 void PolygonBoard9::Init(const LPDIRECT3DDEVICE9& _dv)
 {
 	device = _dv;

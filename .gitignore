@@ -7,3 +7,6 @@
 *.vs
 *.pdb
 *.idb
+
+
+/ChCppLibrary/StaticLibrary/*

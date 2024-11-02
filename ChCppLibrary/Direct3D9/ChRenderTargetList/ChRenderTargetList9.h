@@ -61,7 +61,6 @@ namespace ChTex
 		//登録してあるすべてのレンダーターゲットテクスチャを解放//
 		void ClearRT();
 
-#ifdef CRT
 		//レンダーターゲットとなるテクスチャを作成:登録//
 		void CreateRT(
 			const unsigned short _dataNum,
@@ -95,7 +94,6 @@ namespace ChTex
 			if (ChPtr::NullCheck(tmpRT->GetZBu()))return;
 			rtList[_dataNum] = tmpRT;
 		}
-#endif
 
 		//レンダーターゲットをバックバッファに戻す//
 		void ReturnRT();
@@ -105,61 +103,14 @@ namespace ChTex
 		LPDIRECT3DDEVICE9 device;
 
 		ChD3D9::ShaderController* uShader = nullptr;
-#ifdef CRT
 
 		std::map<unsigned short, ChPtr::Shared<BaseTexture9>>rtList;
 
 		ChPtr::Shared<BaseTexture9>dbData = nullptr;
 
-#endif
 
 	}ChRTList9;
 
 }
-
-#ifdef CRT
-
-
-void ChTex::RenderTargetList9::CreateDBData()
-{
-	dbData = ChPtr::Make_S<Texture9>();
-}
-
-ChTex::BaseTexture9* ChTex::RenderTargetList9::GetDBData()
-{
-	return dbData.get();
-}
-
-void ChTex::RenderTargetList9::ReleaseDBData()
-{
-	dbData = nullptr;
-}
-
-//作成したテクスチャを取得//
-ChTex::BaseTexture9* ChTex::RenderTargetList9::GetRTTexture(const unsigned short _dataNum)
-{
-	auto&& rt = rtList.find(_dataNum);
-	if (rt == rtList.end())return nullptr;
-	return rt->second.get();
-}
-
-//登録されてるテクスチャを選択して消去//
-void ChTex::RenderTargetList9::DeleteRTTexture(const unsigned short _dataNum)
-{
-	if (rtList.empty())return;
-	auto&& rt = rtList.find(_dataNum);
-	if (rt == rtList.end())return;
-
-	rtList.erase(rt);
-}
-
-//登録してあるすべてのレンダーターゲットテクスチャを解放//
-void ChTex::RenderTargetList9::ClearRT()
-{
-	if (rtList.empty())return;
-	rtList.clear();
-}
-
-#endif
 
 #endif

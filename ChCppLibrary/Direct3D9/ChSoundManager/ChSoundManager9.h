@@ -4,7 +4,6 @@
 
 namespace ChSound
 {
-
 	typedef class BackGroundMusic8 BGM8;
 	typedef class SoundEffect8 SE8;
 
@@ -40,11 +39,9 @@ namespace ChSound
 		LPDIRECTSOUNDBUFFER8 mainBuffer = nullptr;
 		LPDIRECTSOUND3DLISTENER8 lpSListener = nullptr;//リスナー(聞く人)//
 
-#ifdef CRT
 		std::map<std::string, ChPtr::Shared<BGM8>>musicList;
 
 		std::map<std::string, ChPtr::Shared<SE8>>seList;
-#endif
 
 	};
 

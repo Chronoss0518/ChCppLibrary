@@ -66,16 +66,12 @@ namespace ChTex
 		//対象のVertexのTexture描画地点(スクリーン座標系)の設定を行うことができる。//
 		void SetTex(const D3DXVECTOR2& _tex, const unsigned char _posNo);
 
-#ifdef CRT
-
 		//第二引数には、オリジナルサイズから見たピクセルサイズ。//
 		//第三引数には、画像の左上画像位置。//
 		void SetRectTex(
 			const ChPtr::Shared<BaseTexture9> _tex,
 			const RECT& _rect,
 			const unsigned char _sPosNo);
-
-#endif
 
 		//対象のVerTexの法線をセットできる。//
 		//void SetNormal(const D3DXVECTOR3 _Normal, const char _PosNo);
@@ -90,13 +86,9 @@ namespace ChTex
 
 	public://Other Functions//
 
-#ifdef CRT
-
 		void Draw(
 			const ChPtr::Shared<BaseTexture9>& _Tex,
 			const D3DXMATRIX& _Mat);
-
-#endif
 
 	protected:
 
@@ -136,63 +128,6 @@ namespace ChTex
 	inline PolygonBoard9& PoBo9() { return PolygonBoard9::GetIns(); }
 
 }
-
-#ifdef CRT
-
-void ChTex::PolygonBoard9::SetRectTex(
-	const ChPtr::Shared<BaseTexture9> _tex,
-	const RECT& _rect,
-	const unsigned char _SPosNo)
-{
-	if (_tex == nullptr)return;
-	if (_SPosNo > vertexMaxCnt)return;
-	D3DXVECTOR2 tmpVec;
-	tmpVec = D3DXVECTOR2((float)(_rect.right / _tex->GetOriginalWidth()), (float)(_rect.top / _tex->GetOriginalHeight()));
-	ver[(_SPosNo + 0) % vertexMaxCnt].tex = tmpVec;
-	tmpVec = D3DXVECTOR2((float)((_rect.right + _rect.left) / _tex->GetOriginalWidth())
-		, (float)(_rect.top / _tex->GetOriginalHeight()));
-	ver[(_SPosNo + 1) % vertexMaxCnt].tex = tmpVec;
-	tmpVec = D3DXVECTOR2((float)((_rect.right + _rect.left) / _tex->GetOriginalWidth())
-		, (float)((_rect.top + _rect.bottom) / _tex->GetOriginalHeight()));
-	ver[(_SPosNo + 2) % vertexMaxCnt].tex = tmpVec;
-	tmpVec = D3DXVECTOR2((float)(_rect.right / _tex->GetOriginalWidth())
-		, (float)((_rect.top + _rect.bottom) / _tex->GetOriginalHeight()));
-	ver[(_SPosNo + 3) % vertexMaxCnt].tex = tmpVec;
-}
-
-void ChTex::PolygonBoard9::Draw(
-	const ChPtr::Shared<BaseTexture9>& _tex,
-	const D3DXMATRIX& _mat)
-{
-	if (!*this)return;
-	if (_tex == nullptr)return;
-
-	DWORD tmpData;
-	device->GetRenderState(D3DRS_CULLMODE, &tmpData);
-	device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-
-
-	if (alphaFlg)device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-
-	device->SetTexture(0, _tex->GetTex());
-
-	device->SetTransform(D3DTS_WORLD, &_mat);
-
-	device->SetFVF((D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1));
-
-	device->SetRenderState(D3DRS_LIGHTING, FALSE);
-	device->SetRenderState(D3DRS_NORMALIZENORMALS, FALSE);
-
-	device->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, ver, sizeof(ChVertex9));
-
-	device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
-
-	device->SetRenderState(D3DRS_NORMALIZENORMALS, true);
-	device->SetRenderState(D3DRS_CULLMODE, tmpData);
-}
-
-
-#endif
 
 #endif
 //CopyRight Chronoss0518 2018/08

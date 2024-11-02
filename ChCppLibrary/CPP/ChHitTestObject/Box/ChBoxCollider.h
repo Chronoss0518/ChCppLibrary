@@ -56,6 +56,4 @@ namespace ChCpp
 	};
 }
 
-#include"../Polygon/ChPolygonColliderSharedRayBoxSphere.h"
-
 #endif

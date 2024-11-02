@@ -1,8 +1,9 @@
 
-namespace ChD3D9
-{
 #ifndef _DVer9
 #define _DVer9
+
+namespace ChD3D9
+{
 
 	//Shaderにて板ポリゴンに画像を張り付けて描画を行う際に利用する型//
 	struct VertexData
@@ -157,5 +158,6 @@ namespace ChD3D9
 
 	};
 
-#endif
 }
+
+#endif

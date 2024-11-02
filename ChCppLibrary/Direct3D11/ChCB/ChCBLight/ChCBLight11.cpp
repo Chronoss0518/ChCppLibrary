@@ -217,3 +217,14 @@ void CBLight11::Update(ID3D11DeviceContext* _dc)
 	buf.UpdateResouce(_dc, &lightDatas);
 	updateFlg = false;
 }
+
+ChD3D11::TextureBase11* ChD3D11::CB::CBLight11::GetImportLightPowMap()
+{
+	return importLightPowMap.get();
+}
+
+
+void ChD3D11::CB::CBLight11::ClearImportLightPowMap()
+{
+	importLightPowMap = nullptr;
+}

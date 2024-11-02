@@ -12,6 +12,26 @@
 using namespace ChTex;
 using namespace ChMesh;
 
+#define EXPLICIT_DECLARATION(_CharaType)\
+template<> bool ChObjectController9::MeshHitRay(\
+	DWORD& _Index,\
+	float& _len,\
+	const BaseMesh9<_CharaType>& _mesh,\
+	const ChMat_9& _obj,\
+	const ChVec3_9& _pos,\
+	const ChVec3_9& _dir);\
+template<> bool ChObjectController9::MeshHitRay(\
+	float& _len,\
+	const ChMesh::BaseMesh9<_CharaType>& _mesh,\
+	const ChMat_9& _obj,\
+	const ChVec3_9& _pos,\
+	const ChVec3_9& _dir);\
+template<> bool ChObjectController9::MeshHitRay(\
+	const ChMesh::BaseMesh9<_CharaType>& _mesh,\
+	const ChMat_9& _obj,\
+	const ChVec3_9& _pos,\
+	const ChVec3_9& _dir)
+
 ///////////////////////////////////////////////////////////////////////////////////////
 //ChObjectControllerÉÅÉ\ÉbÉh
 ///////////////////////////////////////////////////////////////////////////////////////

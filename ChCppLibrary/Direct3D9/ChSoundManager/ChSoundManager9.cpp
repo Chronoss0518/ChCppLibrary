@@ -46,7 +46,6 @@ void SoundManager8::Init(const HWND _hWin)
 
 WAVEFORMATEX SoundManager8::SetWaveFormat()
 {
-
 	// プライマリ・バッファのWaveフォーマットを設定
 	WAVEFORMATEX wf;
 	ZeroMemory(&wf, sizeof(WAVEFORMATEX));
@@ -57,6 +56,5 @@ WAVEFORMATEX SoundManager8::SetWaveFormat()
 	wf.wBitsPerSample = 16;		// 16ビット
 	wf.nAvgBytesPerSec = wf.nChannels * wf.wBitsPerSample / 8;
 	return wf;
-
 }
 

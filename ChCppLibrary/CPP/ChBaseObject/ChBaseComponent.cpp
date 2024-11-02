@@ -21,3 +21,10 @@ void BaseComponent::Destroy()
 	dFlg = true;
 	useFlg = false;
 }
+
+void BaseComponent::DestroyObject()
+{
+	if (ChPtr::NullCheck(obj))return;
+	obj->Destroy();
+	obj = nullptr;
+}

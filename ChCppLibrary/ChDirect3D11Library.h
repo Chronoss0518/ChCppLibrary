@@ -50,8 +50,23 @@
 //D3DObject//
 #include"BaseIncluder/ChD3DOI.h"
 
-#pragma comment(lib,"ChD3D11Library.lib")
+#ifdef _DEBUG
 
+#ifdef _DLL
+#pragma comment(lib,"ChD3D11Library_MDd.lib")
+#else
+#pragma comment(lib,"ChD3D11Library_MTd.lib")
+#endif
+
+#else
+
+#ifdef _DLL
+#pragma comment(lib,"ChD3D11Library_MD.lib")
+#else
+#pragma comment(lib,"ChD3D11Library_MT.lib")
+#endif
+
+#endif
 
 #endif
 

@@ -20,22 +20,134 @@ using namespace ChMesh;
 //ChBaseMesh9メソッド
 ///////////////////////////////////////////////////////////////////////////////////////
 
+void ChMesh::BaseMesh9::SetOffsetVertex(const ChVec3_9& _vertex)
+{
+	auto&& ver = ChPtr::Make_S<ChVec3_9>();
+	*ver = _vertex;
+	offsetVertexList.push_back(ver);
+}
+
+
 void BaseMesh9::SetOffsetVertex()
 {
 	if (ChPtr::NullCheck(mesh))return;
-
 	MeshVertex9* tmpVer = nullptr;
+
 	mesh->LockVertexBuffer(NULL, (LPVOID*)&tmpVer);
-
+	
 	if (ChPtr::NullCheck(tmpVer))return;
-
+	
 	for (unsigned long ver = 0; ver < mesh->GetNumVertices(); ver++)
 	{
 		SetOffsetVertex((tmpVer + ver)->pos);
 	}
-
+		
 	mesh->UnlockVertexBuffer();
 	return;
+}
+
+void ChMesh::BaseMesh9::SetMaterialCol(
+	const unsigned long _Num,
+	const ChVec4& _Dif)
+{
+	if (material.size() <= _Num)return;
+
+	material[_Num]->Diffuse.a = _Dif.a;
+	material[_Num]->Diffuse.r = _Dif.r;
+	material[_Num]->Diffuse.g = _Dif.g;
+	material[_Num]->Diffuse.b = _Dif.b;
+}
+
+void ChMesh::BaseMesh9::SetMaterialMatrix(
+	const unsigned long _Num,
+	const ChLMat& _Mat)
+{
+	if (material.size() <= _Num)return;
+
+	material[_Num]->mat = _Mat;
+}
+
+ChVec3_9 ChMesh::BaseMesh9::GetOffsetVertex(unsigned long _num)const
+{
+	if (offsetVertexList.size() <= _num)return ChVec3_9();
+	return (*offsetVertexList[_num]);
+}
+
+size_t ChMesh::BaseMesh9::GetMaterialCount()const
+{
+	return material.size();
+}
+
+ChMaterial9 ChMesh::BaseMesh9::GetMaterial(size_t _num)const
+{
+	if (material.size() <= _num)return ChMaterial9();
+	return *material[_num];
+}
+
+size_t ChMesh::BaseMesh9::GetTextureCount()const
+{
+	return texList.size();
+}
+
+ChTex::BaseTexture9* ChMesh::BaseMesh9::GetTexture(size_t _num)const
+{
+	if (texList.size() <= _num)return nullptr;
+	return texList[_num].get();
+}
+
+size_t ChMesh::BaseMesh9::GetNormalTextureCount()const
+{
+	return normalTex.size();
+}
+
+ChTex::BaseTexture9* ChMesh::BaseMesh9::GetNormalTexture(size_t _num)const
+{
+	if (texList.size() <= _num)return nullptr;
+	return normalTex[_num].get();
+}
+
+void ChMesh::BaseMesh9::Release() {
+
+	if (ChPtr::NullCheck(mesh))return;
+
+	if (!material.empty())material.clear();
+
+	if (!texList.empty())texList.clear();
+	if (!normalTex.empty())normalTex.clear();
+	if (!easyFaceList.empty())easyFaceList.clear();
+
+	mesh->Release();
+
+	mesh = nullptr;
+
+}
+const ChMesh::MeshFace9* ChMesh::BaseMesh9::GetFace(unsigned long _num) const
+{
+	if (easyFaceList.size() >= _num)return nullptr;
+	return easyFaceList[_num].get();
+}
+
+void ChMesh::BaseMesh9::CreateEasyFaceList()
+{
+	MeshVertex9* meshData = nullptr;
+
+	WORD* p = nullptr;
+
+	mesh->LockIndexBuffer(0, (LPVOID*)&p);
+	mesh->LockVertexBuffer(0, (LPVOID*)&meshData);
+
+	for (unsigned long faceNum = 0; faceNum < mesh->GetNumFaces(); faceNum++)
+	{
+
+		auto meshFace = ChPtr::Make_S<MeshFace9>();
+
+		CreateEasyFace(*meshFace, faceNum, meshData, p);
+
+		easyFaceList.push_back(meshFace);
+	}
+
+	mesh->UnlockIndexBuffer();
+	mesh->UnlockVertexBuffer();
 }
 
 void BaseMesh9::CreateEasyFace(MeshFace9& _out, unsigned long _faceNum, MeshVertex9* _meshData, WORD* _p)
@@ -105,6 +217,187 @@ void BaseMesh9::Draw(
 //ChSXFileMesh9メソッド
 ///////////////////////////////////////////////////////////////////////////////////////
 
-const char* SXFileMesh9::frameMat = "FrameTransformMatrix {";
+void ChMesh::SkinMesh9::Release()
+{
+	boneList.clear();
+	boneNameList.clear();
+	tAni.Release();
+}
 
-const char* SXFileMesh9::skinWaights = "SkinWeights {";
+void ChMesh::SkinMesh9::SetAnimation(
+	const std::string& _animationName,
+	const std::string& _XFileName)
+{
+	BoneAnimation tmpAni;
+
+	tmpAni = ChANiSupport().CreateKeyFrame(_XFileName);
+
+	size_t aniNum = 0;
+	for (auto&& bones : boneList)
+	{
+		if (tmpAni.find(bones.first) == tmpAni.end())continue;
+		aniNum = tmpAni[bones.first]->GetAniCnt();
+		break;
+	}
+
+	for (auto&& bones : boneList)
+	{
+		if (tmpAni.find(bones.first) != tmpAni.end())continue;
+		auto ani = ChPtr::Make_S<ChAnimationObject9>();
+
+		for (size_t i = 0; i < aniNum; i++)
+		{
+			ani->SetAniObject(ChMat_9());
+		}
+		tmpAni[bones.first] = ani;
+
+	}
+
+	if (tmpAni.size() < boneList.size())return;
+
+	animations[_animationName] = tmpAni;
+
+	if (startPlayAniCheck)return;
+	startPlayAniCheck = true;
+	nowPlayAniName = _animationName;
+
+	for (auto&& ani : animations[nowPlayAniName])
+	{
+		ani.second->Play();
+	}
+}
+
+void ChMesh::SkinMesh9::SetSkin()
+{
+	if (ChPtr::NullCheck(mesh))return;
+	if (animations.size() <= 0)return;
+	if (boneList.size() <= 0)return;
+
+	MeshVertex9* tmpVer = nullptr;
+	mesh->LockVertexBuffer(NULL, (LPVOID*)&tmpVer);
+
+	if (ChPtr::NullCheck(tmpVer))return;
+
+	//BoneUpdate//
+	for (auto&& boneName : boneNameList)
+	{
+		ChMat_9 tmpMat = boneList[boneName]->offMat;
+
+		boneList[boneName]->updateMat = animations[nowPlayAniName][boneName]->Update();
+	}
+
+	//LastUpdateBone//
+
+	for (unsigned long i = boneNameList.size() - 1; i + 1 > 0; i--)
+	{
+
+		ChMat_9 tmpMat = boneList[boneNameList[i]]->offMat;
+
+		if (boneList[boneNameList[i]]->offsetBone == nullptr)
+		{
+
+			boneList[boneNameList[i]]->updateMat
+				= tmpMat * boneList[boneNameList[i]]->updateMat;
+
+			continue;
+		}
+
+		boneList[boneNameList[i]]->updateMat
+			= tmpMat
+			* boneList[boneNameList[i]]->updateMat
+			* boneList[boneNameList[i]]->offsetBone->updateMat;
+	}
+
+	//UpdateVertex//
+	for (unsigned long ver = 0; ver < mesh->GetNumVertices(); ver++)
+	{
+		ChMat_9 tmpMat;
+		tmpMat.Clear0();
+		ChVec3_9 tmpVec;
+
+		tmpVec = GetOffsetVertex(ver);
+
+		for (auto&& bones : boneVertexList[ver]->updateMat)
+		{
+
+			if (bones->waitPow <= 0.0f)continue;
+
+			ChMat_9 tmp;
+			tmp = (*bones->updateMat
+				* bones->waitPow);
+
+			tmpMat += tmp;
+
+		}
+
+		tmpVec.MatPos(tmpMat, tmpVec);
+
+		(tmpVer + ver)->pos = tmpVec;
+	}
+
+	mesh->UnlockVertexBuffer();
+
+}
+
+
+void ChMesh::SkinMesh9::SetOffsetVertex()
+{
+	if (ChPtr::NullCheck(mesh))return;
+
+	MeshVertex9* tmpVer = nullptr;
+	mesh->LockVertexBuffer(NULL, (LPVOID*)&tmpVer);
+
+	if (ChPtr::NullCheck(tmpVer))return;
+
+	for (unsigned long ver = 0; ver < mesh->GetNumVertices(); ver++)
+	{
+		auto tmpPos = ChPtr::Make_S<ChVec3_9>();
+		auto tmpVertex = ChPtr::Make_S<BoneVertex>();
+
+		*tmpPos = (tmpVer + ver)->pos;
+
+		tmpVertex->pos = (tmpVer + ver)->pos;
+
+		offsetVertexList.push_back(tmpPos);
+
+		boneVertexList.push_back(tmpVertex);
+	}
+
+
+	mesh->UnlockVertexBuffer();
+	return;
+}
+ChPtr::Shared<ChMesh::BaseMesh9> ChMesh::BaseMesh9::MeshType(const std::string& _fileName)
+{
+	std::string tmpStr;
+	{
+		size_t tmpNum = _fileName.rfind(".");
+		if (tmpNum == _fileName.npos)return ChPtr::Make_S<BaseMesh9>();
+		tmpStr = &_fileName[tmpNum];
+	}
+
+	if (tmpStr.find(XFILE_EXTENTION) != tmpStr.npos)
+	{
+		return ChPtr::Make_S<XFileMesh9>();
+	}
+
+	return ChPtr::Make_S<BaseMesh9>();
+
+}
+
+ChPtr::Shared<ChMesh::BaseMesh9> ChMesh::BaseMesh9::SkinMeshType(const std::string& _fileName)
+{
+	std::string tmpStr;
+	{
+		size_t tmpNum = _fileName.rfind(".");
+		if (tmpNum == _fileName.npos)return ChPtr::Make_S<SkinMesh9>();
+		tmpStr = &_fileName[tmpNum];
+	}
+
+	if (tmpStr.find(XFILE_EXTENTION) != tmpStr.npos)
+	{
+		return ChPtr::Make_S<SXFileMesh9>();
+	}
+
+	return ChPtr::Make_S<SkinMesh9>();
+}

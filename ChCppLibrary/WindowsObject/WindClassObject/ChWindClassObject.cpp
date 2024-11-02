@@ -1,9 +1,6 @@
 #include<Windows.h>
 
 #include"../../BaseIncluder/ChBase.h"
-
-#define NULL_CHECK(val) (val == NULL || val == nullptr)
-
 #include"../PackData/ChPoint.h"
 #include"../WindObject/ChWindObject.h"
 #include"ChWindClassObject.h"
@@ -91,19 +88,19 @@ void WindClassObjectA::SetStyle(const unsigned int _style)
 
 void WindClassObjectA::SetStyle(const WindClassStyle* _style)
 {
-	if (NULL_CHECK(_style))return;
+	if (ChPtr::NullCheck(_style))return;
 	SetStyle(_style->GetStyle());
 }
 
 void WindClassObjectA::SetIcon(const HICON _icon)
 {
-	if (NULL_CHECK(_icon))return;
+	if (ChPtr::NullCheck(_icon))return;
 	cls.hIcon = _icon;
 }
 
 void WindClassObjectA::SetCursol(const HCURSOR _cursor)
 {
-	if (NULL_CHECK(_cursor))return;
+	if (ChPtr::NullCheck(_cursor))return;
 	cls.hCursor = _cursor;
 }
 
@@ -123,7 +120,7 @@ void WindClassObjectA::SetWndExtra(const int _byteNum)
 
 void WindClassObjectA::SetBackgroundColor(const HBRUSH _brush)
 {
-	if (NULL_CHECK(_brush))return;
+	if (ChPtr::NullCheck(_brush))return;
 	cls.hbrBackground = _brush;
 }
 
@@ -134,7 +131,7 @@ void WindClassObjectA::SetInstance(const HINSTANCE _hInst)
 
 void WindClassObjectA::SetWindProcedure(WNDPROC _windProc)
 {
-	if (NULL_CHECK(_windProc))return;
+	if (ChPtr::NullCheck(_windProc))return;
 	cls.lpfnWndProc = _windProc;
 }
 
@@ -191,19 +188,19 @@ void WindClassObjectW::SetStyle(const unsigned int _style)
 
 void WindClassObjectW::SetStyle(const WindClassStyle* _style)
 {
-	if (NULL_CHECK(_style))return;
+	if (ChPtr::NullCheck(_style))return;
 	SetStyle(_style->GetStyle());
 }
 
 void WindClassObjectW::SetIcon(const HICON _icon)
 {
-	if (NULL_CHECK(_icon))return;
+	if (ChPtr::NullCheck(_icon))return;
 	cls.hIcon = _icon;
 }
 
 void WindClassObjectW::SetCursol(const HCURSOR _cursor)
 {
-	if (NULL_CHECK(_cursor))return;
+	if (ChPtr::NullCheck(_cursor))return;
 	cls.hCursor = _cursor;
 }
 
@@ -223,7 +220,7 @@ void WindClassObjectW::SetWndExtra(const int _byteNum)
 
 void WindClassObjectW::SetBackgroundColor(const HBRUSH _brush)
 {
-	if (NULL_CHECK(_brush))return;
+	if (ChPtr::NullCheck(_brush))return;
 	cls.hbrBackground = _brush;
 }
 
@@ -234,11 +231,279 @@ void WindClassObjectW::SetInstance(const HINSTANCE _hInst)
 
 void WindClassObjectW::SetWindProcedure(WNDPROC _windProc)
 {
-	if (NULL_CHECK(_windProc))return;
+	if (ChPtr::NullCheck(_windProc))return;
 	cls.lpfnWndProc = _windProc;
 }
 
 void WindClassObjectW::SetMenuName(const wchar_t* _name)
 {
 	cls.lpszMenuName = _name;
+}
+
+const char* ChWin::WindClassObjectA::GetWindClassName() { return className.c_str(); }
+
+bool ChWin::WindClassObjectA::IsSystemRegistClassName(const char* _className)
+{
+	std::string tmpClassName = _className;
+	std::string systemRegistClassName[] =
+	{
+		"BUTTON",
+		"COMBOBOX",
+		"EDIT",
+		"LISTBOX",
+		"MDICLIENT",
+		"RichEdit",
+		"RICHEDIT_CLASS",
+		"SCROLLBAR",
+		"STATIC" };
+
+	switch (tmpClassName.length())
+	{
+	case 4:
+		for (char i = 3; i >= 0; i--)
+		{
+			if (tmpClassName[i] == systemRegistClassName[2][i])continue;
+			return false;
+		}
+		return true;
+	case 6:
+
+		if (tmpClassName[5] == systemRegistClassName[0][5])
+		{
+			for (char i = 4; i >= 0; i--)
+			{
+				if (tmpClassName[i] == systemRegistClassName[0][i])continue;
+				return false;
+			}
+			return true;
+		}
+		else if (tmpClassName[5] == systemRegistClassName[8][5])
+		{
+			for (char i = 4; i >= 0; i--)
+			{
+				if (tmpClassName[i] == systemRegistClassName[8][i])continue;
+				return false;
+			}
+			return true;
+		}
+
+		return false;
+
+	case 7:
+
+		for (char i = 6; i >= 0; i--)
+		{
+			if (tmpClassName[i] == systemRegistClassName[3][i])continue;
+			return false;
+		}
+
+		return true;
+
+	case 8:
+		if (tmpClassName[7] == systemRegistClassName[1][7])
+		{
+			for (char i = 6; i >= 0; i--)
+			{
+				if (tmpClassName[i] == systemRegistClassName[1][i])continue;
+				return false;
+			}
+			return true;
+		}
+		else if (tmpClassName[7] == systemRegistClassName[5][7])
+		{
+			for (char i = 6; i >= 0; i--)
+			{
+				if (tmpClassName[i] == systemRegistClassName[5][i])continue;
+				return false;
+			}
+			return true;
+		}
+
+		return false;
+
+	case 9:
+		if (tmpClassName[8] == systemRegistClassName[4][8])
+		{
+			for (char i = 7; i >= 0; i--)
+			{
+				if (tmpClassName[i] == systemRegistClassName[4][i])continue;
+				return false;
+			}
+			return true;
+		}
+		else if (tmpClassName[8] == systemRegistClassName[7][8])
+		{
+			for (char i = 7; i >= 0; i--)
+			{
+				if (tmpClassName[i] == systemRegistClassName[7][i])continue;
+				return false;
+			}
+			return true;
+		}
+
+		return false;
+	case 15:
+
+		for (char i = 14; i >= 0; i--)
+		{
+			if (tmpClassName[i] == systemRegistClassName[6][i])continue;
+			return false;
+		}
+
+		return true;
+
+	default:
+		return false;
+	}
+
+	return false;
+}
+
+void ChWin::WindClassObjectA::RegistClass(const char* _className)
+{
+	if (IsInit())return;
+	if (ChPtr::NullCheck(cls.lpfnWndProc))return;
+	std::string tmpClassName = _className;
+	if (tmpClassName == "")return;
+	className = tmpClassName;
+	if (IsSystemRegistClassName(className.c_str()))return;
+
+	cls.lpszClassName = className.c_str();
+	RegisterClassA(&cls);
+
+	SetInitFlg(true);
+}
+
+const wchar_t* ChWin::WindClassObjectW::GetWindClassName() { return className.c_str(); }
+
+bool ChWin::WindClassObjectW::IsSystemRegistClassName(const wchar_t* _className)
+{
+	std::wstring tmpClassName = _className;
+	std::wstring systemRegistClassName[] =
+	{
+		L"BUTTON",
+		L"COMBOBOX",
+		L"EDIT",
+		L"LISTBOX",
+		L"MDICLIENT",
+		L"RichEdit",
+		L"RICHEDIT_CLASS",
+		L"SCROLLBAR",
+		L"STATIC" };
+
+	switch (tmpClassName.length())
+	{
+	case 4:
+		for (char i = 3; i >= 0; i--)
+		{
+			if (tmpClassName[i] != systemRegistClassName[2][i])continue;
+			return false;
+		}
+		return true;
+	case 6:
+
+		if (tmpClassName[5] != systemRegistClassName[0][5])
+		{
+			for (char i = 4; i >= 0; i--)
+			{
+				if (tmpClassName[i] != systemRegistClassName[0][i])continue;
+				return false;
+			}
+			return true;
+		}
+		else if (tmpClassName[5] != systemRegistClassName[8][5])
+		{
+			for (char i = 4; i >= 0; i--)
+			{
+				if (tmpClassName[i] != systemRegistClassName[8][i])continue;
+				return false;
+			}
+			return true;
+		}
+
+		return false;
+
+	case 7:
+
+		for (char i = 6; i >= 0; i--)
+		{
+			if (tmpClassName[i] != systemRegistClassName[3][i])continue;
+			return false;
+		}
+
+		return true;
+
+	case 8:
+		if (tmpClassName[7] != systemRegistClassName[1][7])
+		{
+			for (char i = 6; i >= 0; i--)
+			{
+				if (tmpClassName[i] != systemRegistClassName[1][i])continue;
+				return false;
+			}
+			return true;
+		}
+		else if (tmpClassName[7] != systemRegistClassName[5][7])
+		{
+			for (char i = 6; i >= 0; i--)
+			{
+				if (tmpClassName[i] != systemRegistClassName[5][i])continue;
+				return false;
+			}
+			return true;
+		}
+
+		return false;
+
+	case 9:
+		if (tmpClassName[8] != systemRegistClassName[4][8])
+		{
+			for (char i = 7; i >= 0; i--)
+			{
+				if (tmpClassName[i] != systemRegistClassName[4][i])continue;
+				return false;
+			}
+			return true;
+		}
+		else if (tmpClassName[8] != systemRegistClassName[7][8])
+		{
+			for (char i = 7; i >= 0; i--)
+			{
+				if (tmpClassName[i] != systemRegistClassName[7][i])continue;
+				return false;
+			}
+			return true;
+		}
+
+		return false;
+	case 15:
+
+		for (char i = 14; i >= 0; i--)
+		{
+			if (tmpClassName[i] != systemRegistClassName[6][i])continue;
+			return false;
+		}
+
+		return true;
+
+	default:
+		return false;
+	}
+
+	return false;
+}
+
+void ChWin::WindClassObjectW::RegistClass(const wchar_t* _className)
+{
+	if (IsInit())return;
+	if (ChPtr::NullCheck(cls.lpfnWndProc))return;
+	std::wstring tmpClassName = _className;
+	if (tmpClassName == L"")return;
+	className = tmpClassName;
+	if (IsSystemRegistClassName(className.c_str()))return;
+
+	cls.lpszClassName = className.c_str();
+	RegisterClassW(&cls);
+
+	SetInitFlg(true);
 }

@@ -1,10 +1,10 @@
 #ifndef Ch_CPP_3D_h
 #define Ch_CPP_3D_h
 
-#ifdef CRT
-#include<string>
 #include<vector>
-#endif
+#include<string>
+#include<map>
+#include<memory>
 
 #include"ChMath3D.h"
 #include"ChPtr.h"
@@ -90,22 +90,7 @@ namespace Ch3D
 
 	struct BoneData
 	{
-		BoneData();
-		
-		~BoneData();
-
-		struct BoneDataCRT
-		{
-#ifdef CRT
-			std::vector<float> blendPow;
-#endif
-		};
-
-		BoneDataCRT& ValueIns() { return *value; }
-
-	private:
-
-		BoneDataCRT* value = nullptr;
+		std::vector<float> blendPow;
 	};
 
 	struct Vertex:
@@ -163,25 +148,9 @@ namespace Ch3D
 	template<typename CharaType>
 	struct MaterialData
 	{
-		MaterialData();
-
-		~MaterialData();
-
-		struct MaterialDataCRT
-		{
-#ifdef CRT
-			std::basic_string<CharaType> mateName;
-			std::map<TextureType, std::basic_string<CharaType>>textures;
-#endif
-		};
-
 		Material mate;
-
-		MaterialDataCRT& ValueIns() { return *value; }
-
-	private:
-
-		MaterialDataCRT* value = nullptr;
+		std::basic_string<CharaType> mateName;
+		std::map<TextureType, std::basic_string<CharaType>>textures;
 	};
 
 	struct Transform
@@ -207,71 +176,19 @@ namespace Ch3D
 			res.SetScalling(scl);
 			return res;
 		}
-
 	};
 
 	struct SavePolyData :public UV
 	{
-		unsigned long vertexNo;
+		unsigned long vertexNo = 0;
 	};
 
 	//MaterialÇ…ëŒâûÇ∑ÇÈñ Çä«óùÇ∑ÇÈ//
 	struct Primitive:public FaceNormal
 	{
-		Primitive();
-
-		~Primitive();
-
-		struct PrimitiveCRT
-		{
-#ifdef CRT
-			std::vector<ChPtr::Shared<SavePolyData>> vertexData;
-#endif
-		};
-
-		unsigned long mateNo;
-		PrimitiveCRT& ValueIns() { return *value; }
-
-	private:
-
-		PrimitiveCRT* value = nullptr;
+		unsigned long mateNo = 0;
+		std::vector<ChPtr::Shared<SavePolyData>> vertexData;
 	};
 }
-
-#ifdef CRT
-
-Ch3D::BoneData::BoneData()
-{
-	value = new BoneDataCRT();
-}
-
-Ch3D::BoneData::~BoneData()
-{
-	delete value;
-}
-
-template<typename CharaType>
-Ch3D::MaterialData<CharaType>::MaterialData()
-{
-	value = new MaterialDataCRT();
-}
-
-template<typename CharaType>
-Ch3D::MaterialData<CharaType>::~MaterialData()
-{
-	delete value;
-}
-
-Ch3D::Primitive::Primitive()
-{
-	value = new PrimitiveCRT();
-}
-
-Ch3D::Primitive::~Primitive()
-{
-	delete value;
-}
-
-#endif
 
 #endif

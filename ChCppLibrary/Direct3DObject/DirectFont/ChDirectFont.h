@@ -130,28 +130,11 @@ namespace ChD3D
 	{
 	public:
 
-		struct DirectFontBaseCRT
-		{
-#ifdef CRT
-			std::vector<IDWriteTextFormat*>textFormatList;
-			std::vector<ID2D1SolidColorBrush*>brushList;
-			std::vector<LayoutObject::LayoutStruct*>layoutList;
-#endif
-		};
-
-	public:
-
 		enum class LocaleNameId : int
 		{
 			English,
 			Japanese,
 		};
-
-	public:
-
-		DirectFontBase();
-		
-		virtual ~DirectFontBase();
 
 	public:
 
@@ -173,8 +156,6 @@ namespace ChD3D
 		void EndInit(LocaleNameId _localeNameId);
 
 	public:
-
-#ifdef CRT
 
 		TextFormatObject CreateTextFormat(
 			const std::wstring& _familyName,
@@ -209,13 +190,9 @@ namespace ChD3D
 			return CreateTextFormatBase(_familyName.c_str(), _familyName.length(), _collection, _weight, _style, _stretch, _fontSize, _localeName.c_str());
 		}
 
-#endif
-
 		BrushObject CreateBrush(const D2D_COLOR_F& _color);
 
 		BrushObject CreateBrush(const ChVec4& _color);
-
-#ifdef CRT
 
 		//éÀâeç¿ïWånÇ≈óòópÇ∑ÇÈLayoutÇçÏê¨Ç∑ÇÈ//
 		LayoutObject CreateLayoutToProjection(
@@ -321,8 +298,6 @@ namespace ChD3D
 			return CreateLayout(_drawText.c_str(), static_cast<unsigned long>(_drawText.length()), _layoutSize.w, _layoutSize.h, _textFormat.textFormat);
 		}
 
-#endif
-
 	private:
 
 		TextFormatObject CreateTextFormatBase(
@@ -364,8 +339,6 @@ namespace ChD3D
 	public:
 
 		void DrawStart();
-
-#ifdef CRT
 
 		//éÀâeç¿ïWånÇ≈åvéZÇ∑ÇÈÇÊÇ§Ç…èCê≥//
 		inline void DrawToProjection(
@@ -475,8 +448,6 @@ namespace ChD3D
 
 			DrawTextMethod(_text.c_str(), static_cast<unsigned long>(_text.length()), _textFormat, _brushObject, layoutRect);
 		}
-
-#endif
 
 		//_drawPositionÇÃà íuÇÕç∂è„ÇäÓèÄÇ…Ç∑ÇÈ//
 		void DrawLayout(
@@ -613,7 +584,10 @@ namespace ChD3D
 		ID2D1RenderTarget* renderTarget = nullptr;
 
 		D2D1_SIZE_F displaySize = D2D1::SizeF(0.0f,0.0f);
-		DirectFontBaseCRT& ValueIns() { return *value; }
+
+		std::vector<IDWriteTextFormat*>textFormatList;
+		std::vector<ID2D1SolidColorBrush*>brushList;
+		std::vector<LayoutObject::LayoutStruct*>layoutList;
 	private:
 
 		LocaleNameId localeNameId = LocaleNameId::English;
@@ -621,7 +595,6 @@ namespace ChD3D
 
 		bool clearDisplayFlg = false;
 		D2D_COLOR_F clearDisplayColor = D2D1::ColorF(0.0f, 0.0f, 0.0f, 1.0f);
-		DirectFontBaseCRT* value = nullptr;
 	};
 
 	class DirectFontFromHWND : public DirectFontBase
@@ -751,82 +724,5 @@ namespace ChD3D
 	};
 
 }
-
-#ifdef CRT
-
-ChD3D::DirectFontBase::DirectFontBase()
-{
-	value = new DirectFontBaseCRT();
-}
-
-ChD3D::DirectFontBase::~DirectFontBase()
-{
-	delete value;
-}
-
-IDWriteTextFormat* ChD3D::DirectFontBase::GetTextFormat(size_t _num)
-{
-	return ValueIns().textFormatList[_num];
-}
-
-size_t ChD3D::DirectFontBase::GetTextFormatCount()
-{
-	return ValueIns().textFormatList.size();
-}
-
-void ChD3D::DirectFontBase::AddTextFormat(IDWriteTextFormat* _textFormat)
-{
-	ValueIns().textFormatList.push_back(_textFormat);
-}
-
-void ChD3D::DirectFontBase::ClearTextFormatList()
-{
-	if (ValueIns().textFormatList.empty())return;
-	ValueIns().textFormatList.clear();
-}
-
-ID2D1SolidColorBrush* ChD3D::DirectFontBase::GetBrush(size_t _num)
-{
-	return ValueIns().brushList[_num];
-}
-
-size_t ChD3D::DirectFontBase::GetBrushCount()
-{
-	return ValueIns().brushList.size();
-}
-
-void ChD3D::DirectFontBase::AddBrush(ID2D1SolidColorBrush* _brush)
-{
-	ValueIns().brushList.push_back(_brush);
-}
-
-void ChD3D::DirectFontBase::ClearBrushList()
-{
-	if (ValueIns().brushList.empty())return;
-	ValueIns().brushList.clear();
-}
-
-ChD3D::LayoutObject::LayoutStruct* ChD3D::DirectFontBase::GetLayout(size_t _num)
-{
-	return ValueIns().layoutList[_num];
-}
-
-size_t ChD3D::DirectFontBase::GetLayoutCount()
-{
-	return ValueIns().layoutList.size();
-}
-
-void ChD3D::DirectFontBase::AddLayout(LayoutObject::LayoutStruct* _layout)
-{
-	ValueIns().layoutList.push_back(_layout);
-}
-
-void ChD3D::DirectFontBase::ClearLayoutList()
-{
-	if (ValueIns().layoutList.empty())return;
-	ValueIns().layoutList.clear();
-}
-
-#endif
 
 #endif

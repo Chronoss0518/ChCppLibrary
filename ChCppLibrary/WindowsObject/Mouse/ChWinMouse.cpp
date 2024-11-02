@@ -11,6 +11,90 @@
 //MouseControllerƒƒ\ƒbƒh//
 ///////////////////////////////////////////////////////////////////////////////////
 
+void ChWin::MouseController::Init(WindObjectA& _windObject)
+{
+	hWnd = _windObject.GethWnd();
+
+	if (ChPtr::NullCheck(hWnd))return;
+
+	_windObject.SetWindProcedure(
+		WM_MOUSEWHEEL,
+		[&](
+			HWND _hWnd,
+			UINT _uMsg,
+			WPARAM _wParam,
+			LPARAM _lParam)->LRESULT
+		{
+			wheelMoveVal.y = GET_WHEEL_DELTA_WPARAM(_wParam);
+			wheelVMoveFlg = true;
+			return 0;
+		});
+
+	_windObject.SetWindProcedure(
+		WM_MOUSEHWHEEL,
+		[&](
+			HWND _hWnd,
+			UINT _uMsg,
+			WPARAM _wParam,
+			LPARAM _lParam)->LRESULT
+		{
+			wheelMoveVal.x = GET_WHEEL_DELTA_WPARAM(_wParam);
+			wheelHMoveFlg = true;
+			return 0;
+		});
+
+	windSize = _windObject.GetWindSize();
+
+	centerPos.x = windSize.w / 2;
+	centerPos.y = windSize.h / 2;
+
+	ScreenToClient(hWnd, &centerPos.pt);
+
+	SetInitFlg(true);
+}
+
+void ChWin::MouseController::Init(WindObjectW& _windObject)
+{
+	hWnd = _windObject.GethWnd();
+
+	if (ChPtr::NullCheck(hWnd))return;
+
+	_windObject.SetWindProcedure(
+		WM_MOUSEWHEEL,
+		[&](
+			HWND _hWnd,
+			UINT _uMsg,
+			WPARAM _wParam,
+			LPARAM _lParam)->LRESULT
+		{
+			wheelMoveVal.y = GET_WHEEL_DELTA_WPARAM(_wParam);
+			wheelVMoveFlg = true;
+			return 0;
+		});
+
+	_windObject.SetWindProcedure(
+		WM_MOUSEHWHEEL,
+		[&](
+			HWND _hWnd,
+			UINT _uMsg,
+			WPARAM _wParam,
+			LPARAM _lParam)->LRESULT
+		{
+			wheelMoveVal.x = GET_WHEEL_DELTA_WPARAM(_wParam);
+			wheelHMoveFlg = true;
+			return 0;
+		});
+
+	windSize = _windObject.GetWindSize();
+
+	centerPos.x = windSize.w / 2;
+	centerPos.y = windSize.h / 2;
+
+	ScreenToClient(hWnd, &centerPos.pt);
+
+	SetInitFlg(true);
+}
+
 void ChWin::MouseController::Init(ChSystem::WindowsA& _win)
 {
 	Init(_win.GetWindObject());

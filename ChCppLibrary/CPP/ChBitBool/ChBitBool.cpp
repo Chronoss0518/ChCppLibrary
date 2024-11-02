@@ -6,6 +6,30 @@ using namespace ChCpp;
 //ChBitBoolÉÅÉ\ÉbÉh
 ///////////////////////////////////////////////////////////////////////////////////////
 
+ChCpp::BitBool::BitBool()
+{
+	flgs.resize(1);
+}
+
+ChCpp::BitBool::BitBool(const unsigned char _size)
+{
+	flgs.resize(_size);
+}
+
+void ChCpp::BitBool::SetAllDownFlg()
+{
+	for (size_t i = 0; i < flgs.size(); i++)
+	{
+		flgs[i] = 0;
+	}
+}
+
+void ChCpp::BitBool::SetSize(const unsigned char _byteCount)
+{
+	if (_byteCount <= 0)return;
+	flgs.resize(_byteCount);
+}
+
 void BitBool::SetBitFlg(const unsigned char _argsNum, const bool _flg)
 {
 	if (_argsNum >= GetSize())return;
@@ -41,6 +65,22 @@ void BitBool::SetValue(const unsigned char _value, const unsigned char _byteCoun
 	if (_byteCount >= GetSize())return;
 
 	GetFlgs(_byteCount) = _value;
+}
+
+unsigned long  ChCpp::BitBool::GetSize()
+{
+	return static_cast<unsigned long>(flgs.size() * 8);
+}
+
+unsigned char& ChCpp::BitBool::GetFlgs(const unsigned char _argsNum)
+{
+	return flgs[_argsNum];
+}
+
+unsigned char ChCpp::BitBool::GetValue(const unsigned char _num)
+{
+	if (flgs.size() < _num)return 0;
+	return flgs[_num];
 }
 
 bool BitBool::GetBitFlg(const unsigned char _argsNum)

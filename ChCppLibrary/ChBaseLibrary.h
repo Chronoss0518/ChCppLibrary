@@ -42,6 +42,7 @@
 #include"CPP/ChJsonObject/ChJsonBoolean.h"
 
 #include"CPP/ChFile/ChFile.h"
+#include"CPP/ChFile/ChBinaryFile.h"
 
 #include"CPP/ChModel/ChModel.h"
 #include"CPP/ChModel/ChModelObject.h"
@@ -58,7 +59,26 @@
 //#include"CPP/ChScript/ChScript.h"
 
 #ifdef _WINDOWS_
-#pragma comment(lib,"ChCppBaseLibrary.lib")
+
+#ifdef _DEBUG
+
+#ifdef _DLL
+#pragma comment(lib,"ChCppBaseLibrary_MDd.lib")
+#else
+#pragma comment(lib,"ChCppBaseLibrary_MTd.lib")
+#endif
+
+#else
+
+#ifdef _DLL
+#pragma comment(lib,"ChCppBaseLibrary_MD.lib")
+#else
+#pragma comment(lib,"ChCppBaseLibrary_MT.lib")
+#endif
+
+#endif
+
+
 #endif
 
 #endif //Ch_GIF_h//

@@ -69,13 +69,11 @@ namespace ChD3D11
 
 			void SetTexture(ID3D11DeviceContext* _dc);
 
-#ifdef CRT
 			void SetImportLightPowMap(ChPtr::Shared<TextureBase11>& _lightPowMap)
 			{
 				if (!*this)return;
 				importLightPowMap = _lightPowMap;
 			}
-#endif
 		
 		public://Get Functions//
 
@@ -112,29 +110,12 @@ namespace ChD3D11
 			bool updateFlg = true;
 
 			Texture11 lightPow;
-#ifdef CRT
 			ChPtr::Shared<TextureBase11>importLightPowMap;
-#endif
 
 		};
 
 	}
 
 }
-
-#ifdef CRT
-
-ChD3D11::TextureBase11* ChD3D11::CB::CBLight11::GetImportLightPowMap()
-{
-	return importLightPowMap.get();
-}
-
-
-void ChD3D11::CB::CBLight11::ClearImportLightPowMap()
-{
-	importLightPowMap = nullptr;
-}
-
-#endif
 
 #endif

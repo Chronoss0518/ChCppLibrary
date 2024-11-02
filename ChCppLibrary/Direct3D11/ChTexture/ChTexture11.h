@@ -26,34 +26,7 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef Ch_D3D11_Tex_h
 #define Ch_D3D11_Tex_h
 
-#ifdef CRT
-
-#include<wincodec.h>
-#include"../../External/DirectXTex/DirectXTex/DirectXTex.h"
-#include"../../External/DirectXTex/WICTextureLoader/WICTextureLoader11.h"
-
-#ifdef _DEBUG
-
-#ifdef _DLL
-#pragma comment(lib, "DirectXTex_MDd.lib")
-#pragma comment(lib, "WICTextureLoader_MDd.lib")
-#else
-#pragma comment(lib, "DirectXTex_MTd.lib")
-#pragma comment(lib, "WICTextureLoader_MTd.lib")
-#endif
-
-#else
-
-#ifdef _DLL
-#pragma comment(lib, "DirectXTex_MD.lib")
-#pragma comment(lib, "WICTextureLoader_MD.lib")
-#else
-#pragma comment(lib, "DirectXTex_MT.lib")
-#pragma comment(lib, "WICTextureLoader_MT.lib")
-#endif
-
-#endif
-#endif
+#include<D3D11.h>
 
 #include"../../BasePack/ChStr.h"
 
@@ -64,18 +37,8 @@ namespace ChD3D11
 
 	class TextureBase11
 	{
-	public:
-
-		struct TextureBase11CRT
-		{
-#ifdef CRT
-			std::vector<ChVec4> pixelData;
-#endif
-		};
 
 	public:
-
-		TextureBase11();
 
 		virtual ~TextureBase11();
 
@@ -144,11 +107,7 @@ namespace ChD3D11
 
 		ID3D11Device* device = nullptr;
 
-		TextureBase11CRT& ValueIns() { return *value; }
-
-	private:
-
-		TextureBase11CRT* value = nullptr;
+		std::vector<ChVec4> pixelData;
 
 	};
 
@@ -161,7 +120,6 @@ namespace ChD3D11
 	public://Create Functions//
 
 
-#ifdef CRT
 #ifndef CPP20
 
 		void CreateTexture(
@@ -181,34 +139,14 @@ namespace ChD3D11
 #endif
 		void CreateTexture(
 			const std::wstring& _texPath,
-			ID3D11Device* _device)
-		{
-			if (ChPtr::NullCheck(_device))return;
-			Release();
+			ID3D11Device* _device);
 
-			device = _device;
-
-			if (FAILED(DirectX::CreateWICTextureFromFile(
-				device,
-				_texPath.c_str(),
-				(ID3D11Resource**)&baseTex,
-				&texView)))
-			{
-				Release();
-				return;
-			}
-
-			Init(_device);
-		}
-
-		void CreateTexture(const std::wstring& _texPath)
+		inline void CreateTexture(const std::wstring& _texPath)
 		{
 			if (!D3D11API().IsInit())return;
 			ID3D11Device* tmpDevice = (D3D11Device());
 			CreateTexture(_texPath, tmpDevice);
 		}
-
-#endif
 
 		void CreateColorTexture(
 			ID3D11Device* _device,
@@ -327,99 +265,5 @@ namespace ChD3D11
 
 	};
 }
-
-#ifdef CRT
-
-ChD3D11::TextureBase11::TextureBase11()
-{
-	value = new TextureBase11CRT();
-}
-
-ChD3D11::TextureBase11::~TextureBase11()
-{
-	Release();
-	delete value;
-}
-
-void ChD3D11::Texture11::CreateColorTexture(
-	ID3D11Device* _device,
-	IWICBitmap* _bitmap,
-	const unsigned int _CPUFlg)
-{
-	if (ChPtr::NullCheck(_device))return;
-	if (ChPtr::NullCheck(_bitmap))return;
-
-	Release();
-
-	unsigned int w, h;
-	_bitmap->GetSize(&w, &h);
-
-	UINT stride = w * sizeof(ChVec4);
-
-	std::vector<unsigned char>testVector;
-	testVector.resize(stride * h);
-
-	auto&&hresult = _bitmap->CopyPixels(nullptr, stride, stride * h, &testVector[0]);
-
-	std::vector<ChVec4>tmpPixelData;
-	tmpPixelData.resize(h * w);
-
-	ChStr::Bytes<ChVec4> byte;
-
-	ChVec4 test;
-	for (unsigned long i = 0; i < h * w; i++)
-	{
-		for (unsigned long j = 0; j < sizeof(ChVec4); j++)
-		{
-			byte.byte[j] = testVector[j + (i * sizeof(ChVec4))];
-		}
-		if (test != byte.val)
-		{
-			test = byte.val;
-		}
-		tmpPixelData[i] = byte.val;
-	}
-	CreateColorTexture(_device, &tmpPixelData[0], w, h, _CPUFlg);
-}
-
-ChVec4* ChD3D11::Texture11::SetPixel(const ChVec4* _colorArray, const unsigned long _textureSize)
-{
-	textureSize = _textureSize;
-	ValueIns().pixelData.resize(textureSize);
-
-	ChVec4 test;
-
-	for (unsigned long i = 0; i < textureSize; i++)
-	{
-		ValueIns().pixelData[i] = _colorArray[i];
-
-		if (test != ValueIns().pixelData[i])
-		{
-			test = ValueIns().pixelData[i];
-		}
-	}
-	return &ValueIns().pixelData[0];
-}
-
-ChVec4* ChD3D11::Texture11::SetPixel(const ChVec4& _color, const unsigned long _textureSize)
-{
-	textureSize = _textureSize;
-	ValueIns().pixelData.resize(textureSize);
-
-	ChVec4 test;
-
-	for (unsigned long i = 0; i < textureSize; i++)
-	{
-		ValueIns().pixelData[i] = _color;
-
-		if (test != ValueIns().pixelData[i])
-		{
-			test = ValueIns().pixelData[i];
-		}
-	}
-	return &ValueIns().pixelData[0];
-}
-
-#endif
 
 #endif

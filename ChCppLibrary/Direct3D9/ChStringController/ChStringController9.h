@@ -18,7 +18,6 @@ namespace ChTex
 	{
 	public://Constructer Dextructer//
 
-#ifdef CRT
 		StringController9(
 			const LPDIRECT3DDEVICE9 _dv,
 			const std::string& _path,
@@ -34,8 +33,8 @@ namespace ChTex
 			typeName = _type;
 
 			SetInitFlg(true);
-	}
-#endif
+		}
+
 
 		~StringController9() { SetInitFlg(false); };
 
@@ -47,20 +46,17 @@ namespace ChTex
 
 	private://Set Functions//
 
-#ifdef CRT
 		void SetStrTexture(const std::string& _str)
 		{
 			strTex.CreateTexture(strPath + _str + strPath, device);
 		}
-#endif
 
 	public://Draw Functions//
 
-#ifdef CRT
 		void DrawSprightString(
 			const std::string& _str,
 			const ChMat_9& _mat,
-			Sprite9 &_sp)
+			Sprite9& _sp)
 		{
 			if (device == nullptr)return;
 			if (_str.length() <= 0)return;
@@ -81,8 +77,6 @@ namespace ChTex
 
 		}
 
-#endif
-
 	private://Mmember Values//
 		
 		ChMath::Vector2Base<unsigned short>size;
@@ -91,12 +85,8 @@ namespace ChTex
 
 		Texture9 strTex;
 
-#ifdef CRT
-
 		std::string strPath;
 		std::string typeName;
-
-#endif
 
 	}StrCon;
 }
