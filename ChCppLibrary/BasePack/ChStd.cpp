@@ -200,3 +200,167 @@ CH_TO_NUMBER_FUNCTION(CH_SINGLE_QUOTATION_CHARA_FUNCTION, "\'");
 CH_TO_NUMBER_FUNCTION(CH_DOUBLE_QUOTATION_CHARA_FUNCTION, "\"");
 
 CH_TO_NUMBER_FUNCTION(CH_ASTERISK_CHARA_FUNCTION, "*");
+
+
+#define EXPLICIT_DECLATION_METHOD(_CharaType)\
+template std::basic_string<_CharaType> ChStd::DecimalNumberToBaseNumber(\
+	const long long _decimal,\
+	const std::basic_string<_CharaType>& _baseNumber);\
+template \
+long long ChStd::BaseNumberToDecimalNumber(\
+	const std::basic_string<_CharaType>& _decimal,\
+	const std::basic_string<_CharaType>& _baseNumber);\
+template \
+std::basic_string<_CharaType> ChStd::ToBaseNumber(\
+	const std::basic_string<_CharaType>& _baseNum,\
+	const std::basic_string<_CharaType>& _beforeBaseNumber,\
+	const std::basic_string<_CharaType>& _afterBaseNumber);\
+template \
+bool ChStd::IsBaseNumbers(\
+	const std::basic_string<_CharaType>& _baseNum,\
+	const std::basic_string<_CharaType>& _beforeBaseNumber)\
+
+template<typename CharaType>
+std::basic_string<CharaType> ChStd::DecimalNumberToBaseNumber(
+	const long long _decimal,
+	const std::basic_string<CharaType>& _baseNumber)
+{
+	long long decimal = _decimal;
+
+	size_t size = _baseNumber.size();
+
+	std::basic_string<CharaType> testRes = GetZeroChara<CharaType>();
+
+	if (_decimal < 0)
+	{
+		decimal = -_decimal;
+		testRes += GetHyphenChara<CharaType>();
+	}
+
+	long long base = static_cast<long long>(decimal / size);
+
+	testRes += _baseNumber[decimal % size];
+
+	if (base == 0)
+	{
+		return testRes;
+	}
+
+	std::basic_string<CharaType> out = ChStd::DecimalNumberToBaseNumber<CharaType>(base, _baseNumber);
+
+	out = out + testRes[0];
+
+	return out;
+}
+
+
+//指定した進数の配列を入れると10進数の数値が出力される//
+template<typename CharaType>
+long long ChStd::BaseNumberToDecimalNumber(
+	const std::basic_string<CharaType>& _decimal,
+	const std::basic_string<CharaType>& _baseNumber)
+{
+	long long out = 0;
+
+	std::map<CharaType, size_t>numMap;
+
+	size_t size = _baseNumber.size();
+
+	numMap[static_cast<CharaType>('-')] = size;
+
+	for (size_t i = 0; i < size; i++)
+	{
+		numMap[_baseNumber[i]] = i;
+	}
+
+	bool mFlg = numMap[_decimal[0]] == size;
+
+	for (long long i = 0; static_cast<size_t>(i) < (mFlg ? _decimal.size() - 1 : _decimal.size()); i++)
+	{
+		size_t tmp = static_cast<size_t>(i);
+
+		long long sum = numMap[_decimal[_decimal.size() - tmp - 1ULL]];
+
+		for (long long j = 0; j < static_cast<long long>(!mFlg ? tmp : tmp - 1ULL); j++)
+		{
+			sum *= static_cast<long long>(size);
+		}
+
+		out += sum;
+	}
+
+	if (mFlg)out = -out;
+
+	return out;
+}
+
+//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
+template<typename CharaType>
+std::basic_string<CharaType> ChStd::ToBaseNumber(
+	const std::basic_string<CharaType>& _baseNum,
+	const std::basic_string<CharaType>& _beforeBaseNumber,
+	const std::basic_string<CharaType>& _afterBaseNumber)
+{
+	return ChStd::DecimalNumberToBaseNumber<CharaType>(ChStd::BaseNumberToDecimalNumber<CharaType>(_baseNum, _beforeBaseNumber), _afterBaseNumber);
+}
+
+//指定した新数の配列を入れるとその配列によって数値を置換できるかのテストを行う//
+template<typename CharaType>
+bool ChStd::IsBaseNumbers(
+	const std::basic_string<CharaType>& _baseNum,
+	const std::basic_string<CharaType>& _beforeBaseNumber)
+{
+
+	bool isSuccessFlg = false;
+	bool indexFlg = false;
+	bool indexSuccessFlg = false;
+	bool pointFlg = false;
+
+	for (unsigned char i = 0; i < _baseNum.size(); i++)
+	{
+		isSuccessFlg = false;
+
+		for (size_t i = 0; i < _beforeBaseNumber.size(); i++)
+		{
+			if (_baseNum[i] != _beforeBaseNumber[i])continue;
+			if (indexFlg)indexSuccessFlg = true;
+			isSuccessFlg = true;
+		}
+
+
+		if (isSuccessFlg)continue;
+		if (_baseNum[i] == static_cast<CharaType>('.'))
+		{
+			if (!pointFlg)
+			{
+				pointFlg = true;
+				continue;
+			}
+		}
+		if (_baseNum[i] == static_cast<CharaType>('E') || _baseNum[i] == static_cast<CharaType>('e'))
+		{
+			if (!indexFlg)
+			{
+				indexFlg = true;
+				i++;
+				if (_baseNum[i] == static_cast<CharaType>('+') || _baseNum[i] == static_cast<CharaType>('-'))continue;
+				i--;
+				continue;
+			}
+		}
+		return false;
+
+	}
+
+	if (!indexSuccessFlg && indexFlg)return false;
+
+	return true;
+}
+
+
+
+EXPLICIT_DECLATION_METHOD(char);
+EXPLICIT_DECLATION_METHOD(wchar_t);
+EXPLICIT_DECLATION_METHOD(char8_t);
+EXPLICIT_DECLATION_METHOD(char16_t);
+EXPLICIT_DECLATION_METHOD(char32_t);

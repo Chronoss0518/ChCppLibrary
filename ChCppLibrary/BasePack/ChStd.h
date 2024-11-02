@@ -314,142 +314,30 @@ namespace ChStd
 		return num;
 	}
 
-	template<typename CharaType>
 	//10進数の数値を入れると指定した配列によって生成された進数表記で出力される//
-	inline std::basic_string<CharaType> DecimalNumberToBaseNumber(
+	template<typename CharaType>
+	std::basic_string<CharaType> DecimalNumberToBaseNumber(
 		const long long _decimal,
-		const std::basic_string<CharaType>& _baseNumber = HEXA_DECIMAL<CharaType>())
-	{
-		long long decimal = 0;
-
-		size_t size = _baseNumber.size();
-
-		std::basic_string<CharaType> testRes = GetZeroChara<CharaType>();
-
-		if (_decimal < 0)
-		{
-			decimal = -_decimal;
-			testRes += GetHyphenChara<CharaType>();
-		}
-
-		long long base = static_cast<long long>(decimal / size);
-
-		testRes += _baseNumber[decimal % size];
-
-		if (base == 0)
-		{
-			return testRes;
-		}
-
-		std::basic_string<CharaType> out = DecimalNumberToBaseNumber(base, _baseNumber);
-
-		out = out + testRes[0];
-
-		return out;
-	}
+		const std::basic_string<CharaType>& _baseNumber = HEXA_DECIMAL<CharaType>());
 
 	//指定した進数の配列を入れると10進数の数値が出力される//
 	template<typename CharaType>
-	inline long long BaseNumberToDecimalNumber(
+	long long BaseNumberToDecimalNumber(
 		const std::basic_string<CharaType>& _decimal,
-		const std::basic_string<CharaType>& _baseNumber = HEXA_DECIMAL<CharaType>())
-	{
-		long long out = 0;
-
-		std::map<CharaType, size_t>numMap;
-
-		size_t size = _baseNumber.size();
-
-		numMap[static_cast<CharaType>('-')] = size;
-
-		for (size_t i = 0; i < size; i++)
-		{
-			numMap[_baseNumber[i]] = i;
-		}
-
-		bool mFlg = numMap[_decimal[0]] == size;
-
-		for (long long i = 0; static_cast<size_t>(i) < (mFlg ? _decimal.size() - 1 : _decimal.size()); i++)
-		{
-			size_t tmp = static_cast<size_t>(i);
-
-			long long sum = numMap[_decimal[_decimal.size() - tmp - 1ULL]];
-
-			for (long long j = 0; j < static_cast<long long>(!mFlg ? tmp : tmp - 1ULL); j++)
-			{
-				sum *= static_cast<long long>(size);
-			}
-
-			out += sum;
-		}
-
-		if (mFlg)out = -out;
-
-		return out;
-	}
+		const std::basic_string<CharaType>& _baseNumber = HEXA_DECIMAL<CharaType>());
 
 	//指定した進数の配列を入れると指定した配列によって生成された進数表記で出力される//
 	template<typename CharaType>
-	inline std::basic_string<CharaType> ToBaseNumber(
+	std::basic_string<CharaType> ToBaseNumber(
 		const std::basic_string<CharaType>& _baseNum,
 		const std::basic_string<CharaType>& _beforeBaseNumber = DECIMAL_NUMBUR<CharaType>(),
-		const std::basic_string<CharaType>& _afterBaseNumber = HEXA_DECIMAL<CharaType>())
-	{
-		return DecimalNumberToBaseNumber(ChStd::BaseNumberToDecimalNumber(_baseNum, _beforeBaseNumber), _afterBaseNumber);
-	}
+		const std::basic_string<CharaType>& _afterBaseNumber = HEXA_DECIMAL<CharaType>());
 
 	//指定した新数の配列を入れるとその配列によって数値を置換できるかのテストを行う//
 	template<typename CharaType>
-	inline bool IsBaseNumbers(
+	bool IsBaseNumbers(
 		const std::basic_string<CharaType>& _baseNum,
-		const std::basic_string<CharaType>& _beforeBaseNumber = DECIMAL_NUMBUR<CharaType>())
-	{
-
-		bool isSuccessFlg = false;
-		bool indexFlg = false;
-		bool indexSuccessFlg = false;
-		bool pointFlg = false;
-
-		for (unsigned char i = 0; i < _baseNum.size(); i++)
-		{
-			isSuccessFlg = false;
-
-			for (size_t i = 0; i < _beforeBaseNumber.size(); i++)
-			{
-				if (_baseNum[i] != _beforeBaseNumber[i])continue;
-				if (indexFlg)indexSuccessFlg = true;
-				isSuccessFlg = true;
-			}
-
-
-			if (isSuccessFlg)continue;
-			if (_baseNum[i] == static_cast<CharaType>('.'))
-			{
-				if (!pointFlg)
-				{
-					pointFlg = true;
-					continue;
-				}
-			}
-			if (_baseNum[i] == static_cast<CharaType>('E') || _baseNum[i] == static_cast<CharaType>('e'))
-			{
-				if (!indexFlg)
-				{
-					indexFlg = true;
-					i++;
-					if (_baseNum[i] == static_cast<CharaType>('+') || _baseNum[i] == static_cast<CharaType>('-'))continue;
-					i--;
-					continue;
-				}
-			}
-			return false;
-
-		}
-
-		if (!indexSuccessFlg && indexFlg)return false;
-
-		return true;
-	}
+		const std::basic_string<CharaType>& _beforeBaseNumber = DECIMAL_NUMBUR<CharaType>());
 
 	template<typename Type>
 	inline std::map<Type, unsigned long> CreateHuffmanTree(const std::vector<Type>& _binary)
