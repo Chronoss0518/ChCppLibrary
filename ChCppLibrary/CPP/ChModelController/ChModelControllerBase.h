@@ -27,7 +27,7 @@ namespace ChCpp
 	std::basic_string<CharaType> GetConvertText(const std::wstring& _str);
 
 	template<typename CharaType>
-	class ModelLoaderBase
+	class ModelControllerBase
 	{
 
 	protected:
@@ -40,9 +40,13 @@ namespace ChCpp
 
 	public:
 
-		virtual void CreateModel(ChPtr::Shared<ModelObject<CharaType>> _model, const std::basic_string<CharaType>& _filePath) = 0;
+		virtual void LoadModel(const std::basic_string<CharaType>& _filePath) = 0;
 
-		virtual void OutModelFile(const ChPtr::Shared<ModelObject<CharaType>> _model, const std::basic_string<CharaType>& _filePath) = 0;
+		virtual void OutModel(const std::basic_string<CharaType>& _filePath) = 0;
+
+		virtual void CreateModel(ChPtr::Shared<ModelObject<CharaType>> _model) = 0;
+
+		virtual void SetModel(const ChPtr::Shared<ModelObject<CharaType>> _model) = 0;
 
 		friend ModelObject<CharaType>;
 		friend FrameObject<CharaType>;

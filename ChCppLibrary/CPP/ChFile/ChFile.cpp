@@ -3,7 +3,7 @@
 #include<wchar.h>
 #include"ChFile.h"
 
-#define METHOD_EXPLICIT_DECLARATION(_CharaType,_AddType,_ReadType,_WriteType,_AddValue)\
+#define METHOD_EXPLICIT_DECLARATION(_CharaType,_AddType,_ReadType,_WriteType)\
 template<> void ChCpp::File<##_CharaType##>::FileOpen(\
 	const std::string& _fileName,\
 	const std::string& _localeName,\
@@ -20,7 +20,10 @@ template<> void ChCpp::File<##_CharaType##>::FileOpen(\
 	fgetpos(file, &filepos);\
 	fseek(file, 0, SEEK_SET);\
 	fileText = ChStd::GetZeroChara<##_CharaType##>();\
-	for (fpos_t pos = 0; pos < filepos; pos += _AddValue##)fileText += FGet<##_CharaType##>(file);\
+	for (fpos_t pos = 0; pos < filepos; pos += sizeof(_CharaType)){\
+	_CharaType tmp = FGet<##_CharaType##>(file);\
+	if(tmp == EOF)break;\
+	fileText += tmp;}\
 	fclose(file);\
 \
 	if (localeName != "") setlocale(LC_ALL, tmpLocale.c_str());}\
@@ -40,7 +43,10 @@ template<>	void ChCpp::File<##_CharaType##>::FileOpen(\
 	fgetpos(file, &filepos);\
 	fseek(file, 0, SEEK_SET);\
 	fileText = ChStd::GetZeroChara<##_CharaType##>();\
-	for (fpos_t pos = 0; pos < filepos; pos += _AddValue##)fileText += FGet<##_CharaType##>(file);\
+	for (fpos_t pos = 0; pos < filepos; pos += sizeof(_CharaType)){\
+	_CharaType tmp = FGet<##_CharaType##>(file);\
+	if(tmp == EOF)break;\
+	fileText +=tmp;}\
 	fclose(file);\
 \
 	if (localeName != "") setlocale(LC_ALL, tmpLocale.c_str());}\
@@ -95,8 +101,8 @@ std::basic_string<CharaType> ChCpp::File<CharaType>::FileWrite(const std::basic_
 	return fileText;
 }
 
-METHOD_EXPLICIT_DECLARATION(char, "a", "r", "w", 1);
-METHOD_EXPLICIT_DECLARATION(wchar_t, "a", "rb", "wb", 2);
+METHOD_EXPLICIT_DECLARATION(char, "a", "r", "w");
+METHOD_EXPLICIT_DECLARATION(wchar_t, "a", "rb", "wb");
 
 
 

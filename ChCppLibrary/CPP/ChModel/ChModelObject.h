@@ -40,7 +40,7 @@ Ch##_RLType##Mat GetDraw##_RLType##HandMatrix() { UpdateDrawTransform(); return 
 namespace ChCpp
 {
 	template<typename CharaType>
-	class ModelLoaderBase;
+	class ModelControllerBase;
 
 	template<typename CharaType>
 	struct TargetBoneData
@@ -288,7 +288,7 @@ namespace ChCpp
 	{
 	public:
 
-		friend ModelLoaderBase<CharaType>;
+		friend ModelControllerBase<CharaType>;
 
 	public:
 

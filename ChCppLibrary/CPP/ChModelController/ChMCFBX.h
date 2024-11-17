@@ -2,30 +2,26 @@
 #define Ch_CPP_FBXMesh_h
 
 #ifndef Ch_CPP_MLoader_h
-#include"ChModelLoaderBase.h"
+#include"ChModelControllerBase.h"
 #endif
 
 
 namespace ChCpp
 {
-
-	namespace ModelLoader
+	namespace ModelController
 	{
-
-		class FBX :public ModelLoaderBase
+		template<typename CharaType>
+		class FBX :public ModelControllerBase<CharaType>
 		{
 		public:
 
-			///////////////////////////////////////////////////////////////////////////////////////
+			void LoadModel(const std::basic_string<CharaType>& _filePath)override;
 
-			//モデルデータの読み込み口//
-			void CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& _filePath)override;
+			void OutModel(const std::basic_string<CharaType>& _filePath)override;
 
-			///////////////////////////////////////////////////////////////////////////////////////
+			void CreateModel(ChPtr::Shared<ModelObject<CharaType>> _model)override;
 
-			void OutModelFile(const ChPtr::Shared<ModelObject> _model, const std::string& _filePath)override;
-
-			///////////////////////////////////////////////////////////////////////////////////////
+			void SetModel(const ChPtr::Shared<ModelObject<CharaType>> _model)override;
 
 		protected:
 
