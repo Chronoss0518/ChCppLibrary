@@ -27,7 +27,7 @@ namespace ChCpp
 	std::basic_string<CharaType> GetConvertText(const std::wstring& _str);
 
 	template<typename CharaType>
-	class ModelLoaderBase
+	class ModelControllerBase
 	{
 
 	protected:
