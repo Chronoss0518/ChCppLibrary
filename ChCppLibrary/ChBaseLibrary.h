@@ -46,8 +46,8 @@
 
 #include"CPP/ChModel/ChModel.h"
 #include"CPP/ChModel/ChModelObject.h"
-#include"CPP/ChModelLoader/ChLMXFile.h"
-#include"CPP/ChModelLoader/ChLMObjFile.h"
+#include"CPP/ChModelController/ChMCXFile.h"
+#include"CPP/ChModelController/ChMCObjFile.h"
 
 #include"CPP/ChBaseFrame/ChBaseFrame.h"
 #include"CPP/ChTextObject/ChTextObject.h"
