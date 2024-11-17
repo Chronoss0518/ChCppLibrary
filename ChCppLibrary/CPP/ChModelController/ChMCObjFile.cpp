@@ -252,18 +252,14 @@ void ChCpp::ModelController::ObjFile<CharaType>::Release()
 }
 
 template<typename CharaType>
-void ChCpp::ModelController::ObjFile<CharaType>::CreateModel(ChPtr::Shared<ModelObject<CharaType>> _model, const std::basic_string<CharaType>& _filePath)
+void ChCpp::ModelController::ObjFile<CharaType>::LoadModel(const std::basic_string<CharaType>& _filePath)
 {
-
-	if (!_model->IsInit())return;
-
 	if (_filePath.size() <= 0)return;
 
 	ChCpp::TextObject<CharaType> text;
 	text.SetCutChar(ChStd::GetLFChara<CharaType>());
 
 	{
-
 		ChCpp::CharFile files;
 		files.FileOpen(_filePath, false);
 		std::string tmp = files.FileRead();
@@ -295,9 +291,27 @@ void ChCpp::ModelController::ObjFile<CharaType>::CreateModel(ChPtr::Shared<Model
 
 	if (objects.size() <= 0)return;
 
+	filePath = _filePath;
+}
+
+template<typename CharaType>
+void ChCpp::ModelController::ObjFile<CharaType>::OutModel(const std::basic_string<CharaType>& _filePath)
+{
+	if (objects.empty())return;
+	if (_filePath.size() <= 0)return;
+	if (_filePath.rfind(ChStd::GetDotChara<CharaType>()) == std::basic_string<CharaType>::npos)return;
+
+}
+
+template<typename CharaType>
+void ChCpp::ModelController::ObjFile<CharaType>::CreateModel(ChPtr::Shared<ModelObject<CharaType>> _model)
+{
+	if (_model == nullptr)return;
+	if (objects.empty())return;
+
 	ChCpp::ModelControllerBase<CharaType>::Init();
 
-	_model->SetModelName(_filePath);
+	_model->SetModelName(filePath);
 
 	_model->SetMyName(ObjTag::GetNullObjectName<CharaType>());
 
@@ -311,6 +325,12 @@ void ChCpp::ModelController::ObjFile<CharaType>::CreateModel(ChPtr::Shared<Model
 	ChCpp::ModelControllerBase<CharaType>::SetBoxSize(*_model, ChCpp::ModelControllerBase<CharaType>::CreateBoxSize(ChCpp::ModelControllerBase<CharaType>::minPos, ChCpp::ModelControllerBase<CharaType>::maxPos));
 
 	_model->Create();
+}
+
+template<typename CharaType>
+void ChCpp::ModelController::ObjFile<CharaType>::SetModel(const ChPtr::Shared<ModelObject<CharaType>> _model)
+{
+	if (_model == nullptr)return;
 }
 
 template<typename CharaType>
@@ -536,14 +556,6 @@ void ChCpp::ModelController::ObjFile<CharaType>::CreateChFrame(ChPtr::Shared<ChC
 		ChCpp::ModelControllerBase<CharaType>::maxPos = ModelControllerBase<CharaType>::TestMaxPos(primitive->maxPos, ChCpp::ModelControllerBase<CharaType>::maxPos);
 		ChCpp::ModelControllerBase<CharaType>::minPos = ModelControllerBase<CharaType>::TestMinPos(primitive->minPos, ChCpp::ModelControllerBase<CharaType>::minPos);
 	}
-}
-
-template<typename CharaType>
-void ChCpp::ModelController::ObjFile<CharaType>::OutModelFile(const ChPtr::Shared<ModelObject<CharaType>> _model, const std::basic_string<CharaType>& _filePath)
-{
-	if (_filePath.size() <= 0)return;
-	if (_filePath.rfind(ChStd::GetDotChara<CharaType>()) == std::basic_string<CharaType>::npos)return;
-
 }
 
 CH_LM_OBJ_SET_VECTOR_FUNCTION(Vertex, vertex, ChVec3);

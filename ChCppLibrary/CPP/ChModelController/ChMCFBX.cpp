@@ -14,7 +14,7 @@ using namespace ChCpp::ModelController;
 ///////////////////////////////////////////////////////////////////////////////////////
 
 template<typename CharaType>
-void ChCpp::ModelController::FBX<CharaType>::CreateModel(ChPtr::Shared<ModelObject<CharaType>> _model, const std::basic_string<CharaType>& _filePath)
+void ChCpp::ModelController::FBX<CharaType>::LoadModel(const std::basic_string<CharaType>& _filePath)
 {
 	LoadFBXBinary(_filePath);
 
@@ -22,7 +22,19 @@ void ChCpp::ModelController::FBX<CharaType>::CreateModel(ChPtr::Shared<ModelObje
 }
 
 template<typename CharaType>
-void ChCpp::ModelController::FBX<CharaType>::OutModelFile(const ChPtr::Shared<ModelObject<CharaType>> _model, const std::basic_string<CharaType>& _filePath)
+void ChCpp::ModelController::FBX<CharaType>::OutModel(const std::basic_string<CharaType>& _filePath)
+{
+
+}
+
+template<typename CharaType>
+void ChCpp::ModelController::FBX<CharaType>::CreateModel(ChPtr::Shared<ModelObject<CharaType>> _model)
+{
+
+}
+
+template<typename CharaType>
+void ChCpp::ModelController::FBX<CharaType>::SetModel(const ChPtr::Shared<ModelObject<CharaType>> _model)
 {
 
 }

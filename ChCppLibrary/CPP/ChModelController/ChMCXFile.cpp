@@ -90,7 +90,7 @@ namespace ChCpp
 }
 
 template<typename CharaType>
-void ChCpp::ModelController::XFile<CharaType>::CreateModel(ChPtr::Shared<ModelObject<CharaType>> _model, const std::basic_string<CharaType>& _filePath)
+void ChCpp::ModelController::XFile<CharaType>::LoadModel(const std::basic_string<CharaType>& _filePath)
 {
 	if (_filePath.size() <= 0)return;
 
@@ -102,10 +102,7 @@ void ChCpp::ModelController::XFile<CharaType>::CreateModel(ChPtr::Shared<ModelOb
 
 		files.FileOpen(_filePath, false);
 
-		std::string test = files.FileRead();
-
-		text = ChCpp::GetConvertText<CharaType>(test);
-		text = text.c_str();
+		text = ChCpp::GetConvertText<CharaType>(files.FileRead());
 		files.FileClose();
 
 		if (text.length() <= 0)
@@ -139,22 +136,37 @@ void ChCpp::ModelController::XFile<CharaType>::CreateModel(ChPtr::Shared<ModelOb
 
 	LoadToTemplates(templates, textPos, text);
 
-	auto&& xModel = ChPtr::Make_S<XFileModelFrame>();
+	auto&& tmpXModel = ChPtr::Make_S<XFileModelFrame>();
 
 	for (auto&& tmp : templates->nest)
 	{
-		SetFrame(xModel->modelData, tmp, text);
+		SetFrame(tmpXModel->modelData, tmp, text);
 
-		SetMesh(xModel->modelData, tmp, text);
+		SetMesh(tmpXModel->modelData, tmp, text);
 	}
 
 	if (exceptionFlg)return;
+
+	xModel = tmpXModel;
+}
+
+template<typename CharaType>
+void ChCpp::ModelController::XFile<CharaType>::OutModel(const std::basic_string<CharaType>& _filePath)
+{
+
+}
+
+template<typename CharaType>
+void ChCpp::ModelController::XFile<CharaType>::CreateModel(ChPtr::Shared<ModelObject<CharaType>> _model)
+{
+	if (_model == nullptr)return;
+	if (xModel == nullptr)return;
 
 	ChCpp::ModelControllerBase<CharaType>::Init();
 
 	loadFilePath = ChCpp::ModelControllerBase<CharaType>::GetRoutePath(loadFileName);
 
-	_model->SetModelName(_filePath);
+	_model->SetModelName(loadFileName);
 
 	XFrameToChFrame(_model, xModel->modelData);
 
@@ -167,7 +179,7 @@ void ChCpp::ModelController::XFile<CharaType>::CreateModel(ChPtr::Shared<ModelOb
 }
 
 template<typename CharaType>
-void ChCpp::ModelController::XFile<CharaType>::OutModelFile(const ChPtr::Shared<ModelObject<CharaType>> _model, const std::basic_string<CharaType>& _filePath)
+void ChCpp::ModelController::XFile<CharaType>::SetModel(const ChPtr::Shared<ModelObject<CharaType>> _model)
 {
 
 }

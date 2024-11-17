@@ -166,10 +166,13 @@ namespace ChCpp
 
 		public:
 
-			//モデルデータの読み込み口//
-			void CreateModel(ChPtr::Shared<ModelObject<CharaType>> _model, const std::basic_string<CharaType>& _filePath)override;
+			void LoadModel(const std::basic_string<CharaType>& _filePath)override;
 
-			void OutModelFile(const ChPtr::Shared<ModelObject<CharaType>> _model, const std::basic_string<CharaType>& _filePath)override;
+			void OutModel(const std::basic_string<CharaType>& _filePath)override;
+
+			void CreateModel(ChPtr::Shared<ModelObject<CharaType>> _model)override;
+
+			void SetModel(const ChPtr::Shared<ModelObject<CharaType>> _model)override;
 
 		public:
 
@@ -444,6 +447,9 @@ namespace ChCpp
 		
 			std::basic_string<CharaType> loadFileName = ChStd::GetZeroChara<CharaType>();
 			std::basic_string<CharaType> loadFilePath = ChStd::GetZeroChara<CharaType>();
+
+			ChPtr::Shared<XFileModelFrame> xModel = nullptr;
+
 		};
 	}
 }
