@@ -182,7 +182,7 @@
 namespace ChCpp
 {
 
-	namespace ModelLoader
+	namespace ModelController
 	{
 
 		namespace ObjTag
@@ -241,7 +241,7 @@ namespace ChCpp
 }
 
 template<typename CharaType>
-void ChCpp::ModelLoader::ObjFile<CharaType>::Release()
+void ChCpp::ModelController::ObjFile<CharaType>::Release()
 {
 	objects.clear();
 	materialMaps.clear();
@@ -252,7 +252,7 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::Release()
 }
 
 template<typename CharaType>
-void ChCpp::ModelLoader::ObjFile<CharaType>::CreateModel(ChPtr::Shared<ModelObject<CharaType>> _model, const std::basic_string<CharaType>& _filePath)
+void ChCpp::ModelController::ObjFile<CharaType>::CreateModel(ChPtr::Shared<ModelObject<CharaType>> _model, const std::basic_string<CharaType>& _filePath)
 {
 
 	if (!_model->IsInit())return;
@@ -274,7 +274,7 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::CreateModel(ChPtr::Shared<ModelObje
 		text.SetText(ChCpp::GetConvertText<CharaType>(tmp));
 	}
 
-	folderPath = ModelLoaderBase<CharaType>::GetRoutePath(_filePath);
+	folderPath = ModelControllerBase<CharaType>::GetRoutePath(_filePath);
 
 	Release();
 
@@ -295,7 +295,7 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::CreateModel(ChPtr::Shared<ModelObje
 
 	if (objects.size() <= 0)return;
 
-	ChCpp::ModelLoaderBase<CharaType>::Init();
+	ChCpp::ModelControllerBase<CharaType>::Init();
 
 	_model->SetModelName(_filePath);
 
@@ -305,16 +305,16 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::CreateModel(ChPtr::Shared<ModelObje
 
 	CreateChFrame(_model);
 
-	ChCpp::ModelLoaderBase<CharaType>::SetMaxPos(*_model, ChCpp::ModelLoaderBase<CharaType>::maxPos);
-	ChCpp::ModelLoaderBase<CharaType>::SetMinPos(*_model, ChCpp::ModelLoaderBase<CharaType>::minPos);
-	ChCpp::ModelLoaderBase<CharaType>::SetCenterPos(*_model, ChCpp::ModelLoaderBase<CharaType>::CreateCenterPos(ChCpp::ModelLoaderBase<CharaType>::minPos, ChCpp::ModelLoaderBase<CharaType>::maxPos));
-	ChCpp::ModelLoaderBase<CharaType>::SetBoxSize(*_model, ChCpp::ModelLoaderBase<CharaType>::CreateBoxSize(ChCpp::ModelLoaderBase<CharaType>::minPos, ChCpp::ModelLoaderBase<CharaType>::maxPos));
+	ChCpp::ModelControllerBase<CharaType>::SetMaxPos(*_model, ChCpp::ModelControllerBase<CharaType>::maxPos);
+	ChCpp::ModelControllerBase<CharaType>::SetMinPos(*_model, ChCpp::ModelControllerBase<CharaType>::minPos);
+	ChCpp::ModelControllerBase<CharaType>::SetCenterPos(*_model, ChCpp::ModelControllerBase<CharaType>::CreateCenterPos(ChCpp::ModelControllerBase<CharaType>::minPos, ChCpp::ModelControllerBase<CharaType>::maxPos));
+	ChCpp::ModelControllerBase<CharaType>::SetBoxSize(*_model, ChCpp::ModelControllerBase<CharaType>::CreateBoxSize(ChCpp::ModelControllerBase<CharaType>::minPos, ChCpp::ModelControllerBase<CharaType>::maxPos));
 
 	_model->Create();
 }
 
 template<typename CharaType>
-void ChCpp::ModelLoader::ObjFile<CharaType>::CreateObject(const std::basic_string<CharaType>& _objectName)
+void ChCpp::ModelController::ObjFile<CharaType>::CreateObject(const std::basic_string<CharaType>& _objectName)
 {
 	std::basic_string<CharaType>tag = ObjTag::GetObjectBlockTag<CharaType>();
 	if (!IsPrefix(_objectName, tag, tag.length()))return;
@@ -336,7 +336,7 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::CreateObject(const std::basic_strin
 }
 
 template<typename CharaType>
-void ChCpp::ModelLoader::ObjFile<CharaType>::CreateMaterials(const std::basic_string<CharaType>& _fileName)
+void ChCpp::ModelController::ObjFile<CharaType>::CreateMaterials(const std::basic_string<CharaType>& _fileName)
 {
 	std::basic_string<CharaType>tag = ObjTag::GetUseMaterialFileNameTag<CharaType>();
 	if (!IsPrefix(_fileName, tag, tag.length()))return;
@@ -390,7 +390,7 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::CreateMaterials(const std::basic_st
 }
 
 template<typename CharaType>
-void ChCpp::ModelLoader::ObjFile<CharaType>::CreateMaterial(const std::basic_string<CharaType>& _matName)
+void ChCpp::ModelController::ObjFile<CharaType>::CreateMaterial(const std::basic_string<CharaType>& _matName)
 {
 	std::basic_string<CharaType>tag = ObjTag::GetMatMaterialBlockTag<CharaType>();
 	if (!IsPrefix(_matName, tag, tag.length()))return;
@@ -403,7 +403,7 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::CreateMaterial(const std::basic_str
 }
 
 template<typename CharaType>
-void ChCpp::ModelLoader::ObjFile<CharaType>::CreateChFrame(ChPtr::Shared<ChCpp::FrameObject<CharaType>> _frame)
+void ChCpp::ModelController::ObjFile<CharaType>::CreateChFrame(ChPtr::Shared<ChCpp::FrameObject<CharaType>> _frame)
 {
 	//for (auto&& Obj : ObjectMaps)
 	for (auto&& obj : objects)
@@ -423,12 +423,12 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::CreateChFrame(ChPtr::Shared<ChCpp::
 
 			primitive->vertexList.push_back(ver);
 
-			primitive->maxPos = ModelLoaderBase<CharaType>::TestMaxPos(primitive->maxPos, ver->pos);
-			primitive->minPos = ModelLoaderBase<CharaType>::TestMinPos(primitive->minPos, ver->pos);
+			primitive->maxPos = ModelControllerBase<CharaType>::TestMaxPos(primitive->maxPos, ver->pos);
+			primitive->minPos = ModelControllerBase<CharaType>::TestMinPos(primitive->minPos, ver->pos);
 		}
 
-		primitive->centerPos = ModelLoaderBase<CharaType>::CreateCenterPos(primitive->minPos, primitive->maxPos);
-		primitive->boxSize = ModelLoaderBase<CharaType>::CreateBoxSize(primitive->minPos, primitive->maxPos);
+		primitive->centerPos = ModelControllerBase<CharaType>::CreateCenterPos(primitive->minPos, primitive->maxPos);
+		primitive->boxSize = ModelControllerBase<CharaType>::CreateBoxSize(primitive->minPos, primitive->maxPos);
 
 		//for (auto&& Face : Obj.second->MeshDatas)
 		for (auto&& face : obj->meshDatas)
@@ -533,13 +533,13 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::CreateChFrame(ChPtr::Shared<ChCpp::
 
 		_frame->SetChild(mesh);
 
-		ChCpp::ModelLoaderBase<CharaType>::maxPos = ModelLoaderBase<CharaType>::TestMaxPos(primitive->maxPos, ChCpp::ModelLoaderBase<CharaType>::maxPos);
-		ChCpp::ModelLoaderBase<CharaType>::minPos = ModelLoaderBase<CharaType>::TestMinPos(primitive->minPos, ChCpp::ModelLoaderBase<CharaType>::minPos);
+		ChCpp::ModelControllerBase<CharaType>::maxPos = ModelControllerBase<CharaType>::TestMaxPos(primitive->maxPos, ChCpp::ModelControllerBase<CharaType>::maxPos);
+		ChCpp::ModelControllerBase<CharaType>::minPos = ModelControllerBase<CharaType>::TestMinPos(primitive->minPos, ChCpp::ModelControllerBase<CharaType>::minPos);
 	}
 }
 
 template<typename CharaType>
-void ChCpp::ModelLoader::ObjFile<CharaType>::OutModelFile(const ChPtr::Shared<ModelObject<CharaType>> _model, const std::basic_string<CharaType>& _filePath)
+void ChCpp::ModelController::ObjFile<CharaType>::OutModelFile(const ChPtr::Shared<ModelObject<CharaType>> _model, const std::basic_string<CharaType>& _filePath)
 {
 	if (_filePath.size() <= 0)return;
 	if (_filePath.rfind(ChStd::GetDotChara<CharaType>()) == std::basic_string<CharaType>::npos)return;
@@ -553,7 +553,7 @@ CH_LM_OBJ_SET_VECTOR_FUNCTION(UV, uv, ChVec2);
 CH_LM_OBJ_SET_VECTOR_FUNCTION(Normal, normal, ChVec3);
 
 template<typename CharaType>
-void ChCpp::ModelLoader::ObjFile<CharaType>::SetFace(const std::basic_string<CharaType>& _line)
+void ChCpp::ModelController::ObjFile<CharaType>::SetFace(const std::basic_string<CharaType>& _line)
 {
 	std::basic_string<CharaType>tag = ObjTag::GetMeshTag<CharaType>();
 	if (!IsPrefix(_line, tag, tag.length()))return;
@@ -660,7 +660,7 @@ CH_LM_OBJ_SET_METHOD(SetMatMetallicMap2, ObjTag::GetMatMetallicMapTag2<CharaType
 CH_LM_OBJ_SET_METHOD(SetMatNormalMap, ObjTag::GetMatNormalMapTag<CharaType>(), (targetMaterial->normalMap = LoadTextureName(&_line[tag.length() + 1])););
 
 template<typename CharaType>
-bool ChCpp::ModelLoader::ObjFile<CharaType>::IsPrefix(const std::basic_string<CharaType>& _str, const std::basic_string<CharaType>& _prefix, const size_t _prefixSize)
+bool ChCpp::ModelController::ObjFile<CharaType>::IsPrefix(const std::basic_string<CharaType>& _str, const std::basic_string<CharaType>& _prefix, const size_t _prefixSize)
 {
 	if (_str.size() <= (_prefixSize + 1))return false;
 
@@ -676,7 +676,7 @@ bool ChCpp::ModelLoader::ObjFile<CharaType>::IsPrefix(const std::basic_string<Ch
 }
 
 template<typename CharaType>
-std::basic_string<CharaType> ChCpp::ModelLoader::ObjFile<CharaType>::LoadTextureName(const std::basic_string<CharaType>& _line)
+std::basic_string<CharaType> ChCpp::ModelController::ObjFile<CharaType>::LoadTextureName(const std::basic_string<CharaType>& _line)
 {
 	bool loadFlg = false;
 	std::basic_string<CharaType> name = ChStd::GetZeroChara<CharaType>();
@@ -706,7 +706,7 @@ std::basic_string<CharaType> ChCpp::ModelLoader::ObjFile<CharaType>::LoadTexture
 }
 
 template<typename CharaType>
-void ChCpp::ModelLoader::ObjFile<CharaType>::NullModelTest()
+void ChCpp::ModelController::ObjFile<CharaType>::NullModelTest()
 {
 	if (makeObject != nullptr)return;
 
@@ -718,4 +718,4 @@ void ChCpp::ModelLoader::ObjFile<CharaType>::NullModelTest()
 }
 
 
-CH_STRING_TYPE_USE_FILE_EXPLICIT_DECLARATION(ChCpp::ModelLoader::ObjFile);
+CH_STRING_TYPE_USE_FILE_EXPLICIT_DECLARATION(ChCpp::ModelController::ObjFile);

@@ -8,7 +8,7 @@
 #include"../../BasePack/ChPtr.h"
 #include"../../BasePack/ChStr.h"
 
-#include"ChModelLoaderBase.h"
+#include"ChModelControllerBase.h"
 
 #include"../ChFile/ChFile.h"
 #include"../ChTextObject/ChTextObject.h"
@@ -51,7 +51,7 @@ struct _StructName : public BaseType{\
 
 namespace ChCpp
 {
-	namespace ModelLoader
+	namespace ModelController
 	{
 		namespace XFileTag
 		{
@@ -96,7 +96,7 @@ namespace ChCpp
 		}
 
 		template<typename CharaType>
-		class XFile :public ModelLoaderBase<CharaType>
+		class XFile :public ModelControllerBase<CharaType>
 		{
 		protected:
 

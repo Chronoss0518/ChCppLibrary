@@ -56,7 +56,7 @@
 
 namespace ChCpp
 {
-	namespace ModelLoader
+	namespace ModelController
 	{
 		namespace XFileTag
 		{
@@ -90,7 +90,7 @@ namespace ChCpp
 }
 
 template<typename CharaType>
-void ChCpp::ModelLoader::XFile<CharaType>::CreateModel(ChPtr::Shared<ModelObject<CharaType>> _model, const std::basic_string<CharaType>& _filePath)
+void ChCpp::ModelController::XFile<CharaType>::CreateModel(ChPtr::Shared<ModelObject<CharaType>> _model, const std::basic_string<CharaType>& _filePath)
 {
 	if (_filePath.size() <= 0)return;
 
@@ -150,30 +150,30 @@ void ChCpp::ModelLoader::XFile<CharaType>::CreateModel(ChPtr::Shared<ModelObject
 
 	if (exceptionFlg)return;
 
-	ChCpp::ModelLoaderBase<CharaType>::Init();
+	ChCpp::ModelControllerBase<CharaType>::Init();
 
-	loadFilePath = ChCpp::ModelLoaderBase<CharaType>::GetRoutePath(loadFileName);
+	loadFilePath = ChCpp::ModelControllerBase<CharaType>::GetRoutePath(loadFileName);
 
 	_model->SetModelName(_filePath);
 
 	XFrameToChFrame(_model, xModel->modelData);
 
-	ChCpp::ModelLoaderBase<CharaType>::SetMaxPos(*_model, ChCpp::ModelLoaderBase<CharaType>::maxPos);
-	ChCpp::ModelLoaderBase<CharaType>::SetMinPos(*_model, ChCpp::ModelLoaderBase<CharaType>::minPos);
-	ChCpp::ModelLoaderBase<CharaType>::SetCenterPos(*_model, ChCpp::ModelLoaderBase<CharaType>::CreateCenterPos(ChCpp::ModelLoaderBase<CharaType>::minPos, ChCpp::ModelLoaderBase<CharaType>::maxPos));
-	ChCpp::ModelLoaderBase<CharaType>::SetBoxSize(*_model, ChCpp::ModelLoaderBase<CharaType>::CreateBoxSize(ChCpp::ModelLoaderBase<CharaType>::minPos, ChCpp::ModelLoaderBase<CharaType>::maxPos));
+	ChCpp::ModelControllerBase<CharaType>::SetMaxPos(*_model, ChCpp::ModelControllerBase<CharaType>::maxPos);
+	ChCpp::ModelControllerBase<CharaType>::SetMinPos(*_model, ChCpp::ModelControllerBase<CharaType>::minPos);
+	ChCpp::ModelControllerBase<CharaType>::SetCenterPos(*_model, ChCpp::ModelControllerBase<CharaType>::CreateCenterPos(ChCpp::ModelControllerBase<CharaType>::minPos, ChCpp::ModelControllerBase<CharaType>::maxPos));
+	ChCpp::ModelControllerBase<CharaType>::SetBoxSize(*_model, ChCpp::ModelControllerBase<CharaType>::CreateBoxSize(ChCpp::ModelControllerBase<CharaType>::minPos, ChCpp::ModelControllerBase<CharaType>::maxPos));
 
 	_model->Create();
 }
 
 template<typename CharaType>
-void ChCpp::ModelLoader::XFile<CharaType>::OutModelFile(const ChPtr::Shared<ModelObject<CharaType>> _model, const std::basic_string<CharaType>& _filePath)
+void ChCpp::ModelController::XFile<CharaType>::OutModelFile(const ChPtr::Shared<ModelObject<CharaType>> _model, const std::basic_string<CharaType>& _filePath)
 {
 
 }
 
 template<typename CharaType>
-bool ChCpp::ModelLoader::XFile<CharaType>::SetFrame(
+bool ChCpp::ModelController::XFile<CharaType>::SetFrame(
 	ChPtr::Shared<XFrame>& _frames,
 	const ChPtr::Shared<TemplateRange>& _targetTemplate,
 	const std::basic_string<CharaType>& _text)
@@ -219,7 +219,7 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetFrame(
 }
 
 template<typename CharaType>
-bool ChCpp::ModelLoader::XFile<CharaType>::SetFremeTransformMatrix(
+bool ChCpp::ModelController::XFile<CharaType>::SetFremeTransformMatrix(
 	ChPtr::Shared<XFrame>& _frames,
 	const ChPtr::Shared<TemplateRange>& _targetTemplate,
 	const std::basic_string<CharaType>& _text)
@@ -244,7 +244,7 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetFremeTransformMatrix(
 }
 
 template<typename CharaType>
-bool ChCpp::ModelLoader::XFile<CharaType>::SetMesh(
+bool ChCpp::ModelController::XFile<CharaType>::SetMesh(
 	ChPtr::Shared<XFrame>& _frames,
 	const ChPtr::Shared<TemplateRange>& _targetTemplate,
 	const std::basic_string<CharaType>& _text)
@@ -321,7 +321,7 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetMesh(
 }
 
 template<typename CharaType>
-bool ChCpp::ModelLoader::XFile<CharaType>::SetMeshNormal(
+bool ChCpp::ModelController::XFile<CharaType>::SetMeshNormal(
 	ChPtr::Shared<XFrame>& _frames,
 	const ChPtr::Shared<TemplateRange>& _targetTemplate,
 	const std::basic_string<CharaType>& _text)
@@ -370,7 +370,7 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetMeshNormal(
 }
 
 template<typename CharaType>
-bool ChCpp::ModelLoader::XFile<CharaType>::SetMeshTextureCoords(
+bool ChCpp::ModelController::XFile<CharaType>::SetMeshTextureCoords(
 	ChPtr::Shared<XFrame>& _frames,
 	const ChPtr::Shared<TemplateRange>& _targetTemplate,
 	const std::basic_string<CharaType>& _text)
@@ -404,7 +404,7 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetMeshTextureCoords(
 }
 
 template<typename CharaType>
-bool ChCpp::ModelLoader::XFile<CharaType>::SetMeshMaterialList(
+bool ChCpp::ModelController::XFile<CharaType>::SetMeshMaterialList(
 	ChPtr::Shared<XFrame>& _frames,
 	const ChPtr::Shared<TemplateRange>& _targetTemplate,
 	const std::basic_string<CharaType>& _text)
@@ -439,7 +439,7 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetMeshMaterialList(
 }
 
 template<typename CharaType>
-bool ChCpp::ModelLoader::XFile<CharaType>::SetMaterial(
+bool ChCpp::ModelController::XFile<CharaType>::SetMaterial(
 	ChPtr::Shared<XFrame>& _frames,
 	const ChPtr::Shared<TemplateRange>& _targetTemplate,
 	const std::basic_string<CharaType>& _text)
@@ -559,7 +559,7 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetMaterial(
 }
 
 template<typename CharaType>
-bool ChCpp::ModelLoader::XFile<CharaType>::SetSkinWeights(
+bool ChCpp::ModelController::XFile<CharaType>::SetSkinWeights(
 	ChPtr::Shared<XFrame>& _frames,
 	const ChPtr::Shared<TemplateRange>& _targetTemplate,
 	const std::basic_string<CharaType>& _text)
@@ -635,7 +635,7 @@ bool ChCpp::ModelLoader::XFile<CharaType>::SetSkinWeights(
 }
 
 template<typename CharaType>
-bool ChCpp::ModelLoader::XFile<CharaType>::IsTags(
+bool ChCpp::ModelController::XFile<CharaType>::IsTags(
 	size_t& _outTagPos,
 	const std::basic_string<CharaType>& _TagName,
 	const ChPtr::Shared<TemplateRange> _LookTemplate,
@@ -666,7 +666,7 @@ bool ChCpp::ModelLoader::XFile<CharaType>::IsTags(
 }
 
 template<typename CharaType>
-void ChCpp::ModelLoader::XFile<CharaType>::LoadToTemplates(
+void ChCpp::ModelController::XFile<CharaType>::LoadToTemplates(
 	ChPtr::Shared<TemplateRange>& _templates,
 	const size_t& _offset,
 	const std::basic_string<CharaType>& _text)
@@ -727,7 +727,7 @@ void ChCpp::ModelLoader::XFile<CharaType>::LoadToTemplates(
 }
 
 template<typename CharaType>
-void ChCpp::ModelLoader::XFile<CharaType>::SetToTemplate(
+void ChCpp::ModelController::XFile<CharaType>::SetToTemplate(
 	ChPtr::Shared<TemplateRange>& _tmp,
 	size_t& _bCnt,
 	size_t& _eCnt,
@@ -778,7 +778,7 @@ void ChCpp::ModelLoader::XFile<CharaType>::SetToTemplate(
 }
 
 template<typename CharaType>
-void ChCpp::ModelLoader::XFile<CharaType>::XFrameToChFrame(
+void ChCpp::ModelController::XFile<CharaType>::XFrameToChFrame(
 	ChPtr::Shared<FrameObject<CharaType>> _chFrame,
 	const ChPtr::Shared<XFrame>& _xFrame)
 {
@@ -842,8 +842,8 @@ void ChCpp::ModelLoader::XFile<CharaType>::XFrameToChFrame(
 
 			chVertexList.push_back(chVertex);
 
-			mesh->maxPos = ChCpp::ModelLoaderBase<CharaType>::TestMaxPos(mesh->maxPos, chVertex->pos);
-			mesh->minPos = ChCpp::ModelLoaderBase<CharaType>::TestMinPos(mesh->minPos, chVertex->pos);
+			mesh->maxPos = ChCpp::ModelControllerBase<CharaType>::TestMaxPos(mesh->maxPos, chVertex->pos);
+			mesh->minPos = ChCpp::ModelControllerBase<CharaType>::TestMinPos(mesh->minPos, chVertex->pos);
 
 		}
 
@@ -868,8 +868,8 @@ void ChCpp::ModelLoader::XFile<CharaType>::XFrameToChFrame(
 			mesh->boneDatas.push_back(boneData);
 		};
 
-		mesh->centerPos = ChCpp::ModelLoaderBase<CharaType>::CreateCenterPos(mesh->minPos, mesh->maxPos);
-		mesh->boxSize = ChCpp::ModelLoaderBase<CharaType>::CreateBoxSize(mesh->minPos, mesh->maxPos);
+		mesh->centerPos = ChCpp::ModelControllerBase<CharaType>::CreateCenterPos(mesh->minPos, mesh->maxPos);
+		mesh->boxSize = ChCpp::ModelControllerBase<CharaType>::CreateBoxSize(mesh->minPos, mesh->maxPos);
 
 	}
 
@@ -950,19 +950,17 @@ void ChCpp::ModelLoader::XFile<CharaType>::XFrameToChFrame(
 			chMateNos[chMate->mateName] = 0;
 
 			chMateList.push_back(chMate);
-
 		}
-
 	}
 
 	ChVec3 tmpMaxPos = _chFrame->GetDrawLHandMatrix().Transform(mesh->maxPos);
 	ChVec3 tmpMinPos = _chFrame->GetDrawLHandMatrix().Transform(mesh->minPos);
 
-	ChCpp::ModelLoaderBase<CharaType>::maxPos = ChCpp::ModelLoaderBase<CharaType>::TestMaxPos(tmpMaxPos, ChCpp::ModelLoaderBase<CharaType>::maxPos);
-	ChCpp::ModelLoaderBase<CharaType>::minPos = ChCpp::ModelLoaderBase<CharaType>::TestMinPos(tmpMaxPos, ChCpp::ModelLoaderBase<CharaType>::minPos);
+	ChCpp::ModelControllerBase<CharaType>::maxPos = ChCpp::ModelControllerBase<CharaType>::TestMaxPos(tmpMaxPos, ChCpp::ModelControllerBase<CharaType>::maxPos);
+	ChCpp::ModelControllerBase<CharaType>::minPos = ChCpp::ModelControllerBase<CharaType>::TestMinPos(tmpMaxPos, ChCpp::ModelControllerBase<CharaType>::minPos);
 
-	ChCpp::ModelLoaderBase<CharaType>::maxPos = ChCpp::ModelLoaderBase<CharaType>::TestMaxPos(tmpMinPos, ChCpp::ModelLoaderBase<CharaType>::maxPos);
-	ChCpp::ModelLoaderBase<CharaType>::minPos = ChCpp::ModelLoaderBase<CharaType>::TestMinPos(tmpMinPos, ChCpp::ModelLoaderBase<CharaType>::minPos);
+	ChCpp::ModelControllerBase<CharaType>::maxPos = ChCpp::ModelControllerBase<CharaType>::TestMaxPos(tmpMinPos, ChCpp::ModelControllerBase<CharaType>::maxPos);
+	ChCpp::ModelControllerBase<CharaType>::minPos = ChCpp::ModelControllerBase<CharaType>::TestMinPos(tmpMinPos, ChCpp::ModelControllerBase<CharaType>::minPos);
 }
 
-CH_STRING_TYPE_USE_FILE_EXPLICIT_DECLARATION(ChCpp::ModelLoader::XFile);
+CH_STRING_TYPE_USE_FILE_EXPLICIT_DECLARATION(ChCpp::ModelController::XFile);

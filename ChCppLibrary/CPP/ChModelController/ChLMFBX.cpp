@@ -4,32 +4,31 @@
 
 #include"../ChModel/ChModelObject.h"
 
-#include"ChModelLoaderBase.h"
+#include"ChModelControllerBase.h"
 #include"ChLMFBX.h"
 
-using namespace ChCpp::ModelLoader;
+using namespace ChCpp::ModelController;
 
 ///////////////////////////////////////////////////////////////////////////////////////
 //ChFBXMesh Method//
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void FBX::CreateModel(ChPtr::Shared<ModelObject> _model, const std::string& _filePath)
+template<typename CharaType>
+void ChCpp::ModelController::FBX<CharaType>::CreateModel(ChPtr::Shared<ModelObject<CharaType>> _model, const std::basic_string<CharaType>& _filePath)
 {
 	LoadFBXBinary(_filePath);
 
 	LoadFBXText(_filePath);
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
-void FBX::OutModelFile(const ChPtr::Shared<ModelObject> _model, const std::string& _filePath)
+template<typename CharaType>
+void ChCpp::ModelController::FBX<CharaType>::OutModelFile(const ChPtr::Shared<ModelObject<CharaType>> _model, const std::basic_string<CharaType>& _filePath)
 {
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
-void FBX::LoadFBXBinary(const std::string& _filePath)
+template<typename CharaType>
+void ChCpp::ModelController::FBX<CharaType>::LoadFBXBinary(const std::string& _filePath)
 {
 
 	std::vector<char> binarys;
@@ -75,9 +74,8 @@ void FBX::LoadFBXBinary(const std::string& _filePath)
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
-void FBX::BuildBinary(Node& _node, const std::vector<char>& _binarys)
+template<typename CharaType>
+void ChCpp::ModelController::FBX<CharaType>::BuildBinary(Node& _node, const std::vector<char>& _binarys)
 {
 	if (errorFlg)return;
 
@@ -123,9 +121,8 @@ void FBX::BuildBinary(Node& _node, const std::vector<char>& _binarys)
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
-void FBX::CreatePropetyRecord(PropertyRecord& _recode, const std::vector<char>& _binarys)
+template<typename CharaType>
+void ChCpp::ModelController::FBX<CharaType>::CreatePropetyRecord(PropertyRecord& _recode, const std::vector<char>& _binarys)
 {
 
 	if (errorFlg)return;
@@ -185,9 +182,8 @@ void FBX::CreatePropetyRecord(PropertyRecord& _recode, const std::vector<char>& 
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
-void FBX::CreateArrayRecord(ArrayListDataRecord& _recode, const std::vector<char>& _binarys, const char _type)
+template<typename CharaType>
+void ChCpp::ModelController::FBX<CharaType>::CreateArrayRecord(ArrayListDataRecord& _recode, const std::vector<char>& _binarys, const char _type)
 {
 
 	if (errorFlg)return;
@@ -229,9 +225,8 @@ void FBX::CreateArrayRecord(ArrayListDataRecord& _recode, const std::vector<char
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
-void FBX::CreateSpecialTypeRecord(SpecialDataRecode& _recode, const std::vector<char>& _binarys, const char _type)
+template<typename CharaType>
+void ChCpp::ModelController::FBX<CharaType>::CreateSpecialTypeRecord(SpecialDataRecode& _recode, const std::vector<char>& _binarys, const char _type)
 {
 
 	if (errorFlg)return;
@@ -256,9 +251,8 @@ void FBX::CreateSpecialTypeRecord(SpecialDataRecode& _recode, const std::vector<
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
-void FBX::LoadFBXText(const std::string& _filePath)
+template<typename CharaType>
+void ChCpp::ModelController::FBX<CharaType>::LoadFBXText(const std::string& _filePath)
 {
 
 	if (binaryFlg)return;
@@ -280,9 +274,10 @@ void FBX::LoadFBXText(const std::string& _filePath)
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
-void FBX::BuildObjects(Objects& _obj)
+template<typename CharaType>
+void ChCpp::ModelController::FBX<CharaType>::BuildObjects(Objects& _obj)
 {
 
 }
+
+CH_STRING_TYPE_USE_FILE_EXPLICIT_DECLARATION(ChCpp::ModelController::FBX);
