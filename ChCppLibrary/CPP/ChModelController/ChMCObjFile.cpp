@@ -1,4 +1,4 @@
-#include"ChLMObjFile.h"
+#include"ChMCObjFile.h"
 
 #ifndef CH_LM_OBJ_NULL_OBJECT_NAME_FUNCTION
 #define CH_LM_OBJ_NULL_OBJECT_NAME_FUNCTION(type) CH_NUMBER_FUNCTION(GetNullObjectName,type)

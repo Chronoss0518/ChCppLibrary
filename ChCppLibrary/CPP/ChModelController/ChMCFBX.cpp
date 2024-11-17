@@ -5,7 +5,7 @@
 #include"../ChModel/ChModelObject.h"
 
 #include"ChModelControllerBase.h"
-#include"ChLMFBX.h"
+#include"ChMCFBX.h"
 
 using namespace ChCpp::ModelController;
 

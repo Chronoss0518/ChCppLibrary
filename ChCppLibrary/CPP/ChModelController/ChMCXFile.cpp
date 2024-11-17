@@ -1,5 +1,5 @@
 
-#include"ChLMXFile.h"
+#include"ChMCXFile.h"
 
 #ifndef	CH_LM_XFILE_TAG_XFILE_PREFIX_FUNCTION
 #define	CH_LM_XFILE_TAG_XFILE_PREFIX_FUNCTION(type) CH_NUMBER_FUNCTION(GetXFilePrefixTag, type)
