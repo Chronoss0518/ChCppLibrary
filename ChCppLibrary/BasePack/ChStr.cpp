@@ -3,6 +3,8 @@
 #define _CRT_SECURE_NO_WARNINGS 4996
 #endif
 
+#include<locale.h>
+
 #include"../BaseIncluder/ChBase.h"
 #include"ChStr.h"
 
@@ -248,24 +250,70 @@ EXPLICIT_DECLARATION(char16_t);
 EXPLICIT_DECLARATION(char32_t);
 
 
-std::wstring ChStr::GetShiftJisFromUTF16(const std::string& _str)
-{
-	if (_str == "")return L"";
-	std::wstring res = L"";
-	res.resize(_str.length() + 1);
-	size_t createSize = mbstowcs(&res[0], &_str[0], _str.length());
-	if (createSize > _str.length())return L"";
-	res = res.substr(0,createSize).c_str();
-	return res;
-}
-
-std::string ChStr::GetUTF16FromShiftJis(const std::wstring& _str)
+std::string ChStr::GetShiftJisFromUTF16(const std::wstring& _str)
 {
 	if (_str == L"")return "";
 	std::string res = "";
 	res.resize(_str.length() * 3);
+	std::string localeName = setlocale(LC_ALL, "");
+	std::string tmpLocale = localeName;
+	size_t tmpPos = tmpLocale.rfind(".");
+	tmpLocale = tmpLocale.substr(0, tmpPos);
+	setlocale(LC_ALL, (tmpLocale + ".932").c_str());
 	size_t createSize = wcstombs(&res[0], &_str[1], _str.length() * 3);
+	setlocale(LC_ALL, (localeName).c_str());
 	if (createSize > _str.length() * 2)return "";
+	res = res.substr(0, createSize).c_str();
+	return res;
+}
+
+std::wstring ChStr::GetUTF16FromShiftJis(const std::string& _str)
+{
+	if (_str == "")return L"";
+	std::wstring res = L"";
+	res.resize(_str.length() + 1);
+	std::string localeName = setlocale(LC_ALL, "");
+	std::string tmpLocale = localeName;
+	size_t tmpPos = tmpLocale.rfind(".");
+	tmpLocale = tmpLocale.substr(0, tmpPos);
+	setlocale(LC_ALL, (tmpLocale + ".932").c_str());
+	size_t createSize = mbstowcs(&res[0], &_str[0], _str.length());
+	setlocale(LC_ALL, (localeName).c_str());
+	if (createSize > _str.length())return L"";
+	res = res.substr(0, createSize).c_str();
+	return res;
+}
+
+std::string ChStr::GetUTF8FromUTF16(const std::wstring& _str)
+{
+	if (_str == L"")return "";
+	std::string res = "";
+	res.resize(_str.length() * 3);
+	std::string localeName = setlocale(LC_ALL, "");
+	std::string tmpLocale = localeName;
+	size_t tmpPos = tmpLocale.rfind(".");
+	tmpLocale = tmpLocale.substr(0, tmpPos);
+	setlocale(LC_ALL, (tmpLocale + ".UTF8").c_str());
+	size_t createSize = wcstombs(&res[0], &_str[1], _str.length() * 3);
+	setlocale(LC_ALL, (localeName).c_str());
+	if (createSize > _str.length() * 2)return "";
+	res = res.substr(0, createSize).c_str();
+	return res;
+}
+
+std::wstring ChStr::GetUTF16FromUTF8(const std::string& _str)
+{
+	if (_str == "")return L"";
+	std::wstring res = L"";
+	res.resize(_str.length() + 1);
+	std::string localeName = setlocale(LC_ALL, "");
+	std::string tmpLocale = localeName;
+	size_t tmpPos = tmpLocale.rfind(".");
+	tmpLocale = tmpLocale.substr(0, tmpPos);
+	setlocale(LC_ALL, (tmpLocale + ".UTF8").c_str());
+	size_t createSize = mbstowcs(&res[0], &_str[0], _str.length());
+	setlocale(LC_ALL, (localeName).c_str());
+	if (createSize > _str.length())return L"";
 	res = res.substr(0, createSize).c_str();
 	return res;
 }

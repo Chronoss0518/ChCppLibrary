@@ -393,9 +393,13 @@ namespace ChStr
 
 #endif
 
-	std::wstring GetShiftJisFromUTF16(const std::string& _str);
+	std::string GetShiftJisFromUTF16(const std::wstring& _str);
 
-	std::string GetUTF16FromShiftJis(const std::wstring& _str);
+	std::wstring GetUTF16FromShiftJis(const std::string& _str);
+
+	std::string GetUTF8FromUTF16(const std::wstring& _str);
+
+	std::wstring GetUTF16FromUTF8(const std::string& _str);
 
 #ifndef CPP26
 
