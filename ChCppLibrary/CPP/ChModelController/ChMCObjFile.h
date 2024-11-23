@@ -12,34 +12,10 @@
 #include"../ChFile/ChFile.h"
 #include"../ChTextObject/ChTextObject.h"
 
-#ifndef CH_LM_OBJ_SET_VECTOR_FUNCTION
-#define CH_LM_OBJ_SET_VECTOR_FUNCTION(_SetVecPascal, _SetVecCamel,_VectorStruct) \
-template<typename CharaType>\
-inline void ChCpp::ModelController::ObjFile<CharaType>::Set##_SetVecPascal##(const std::basic_string<CharaType>& _line){\
-	std::basic_string<CharaType>tag = ObjTag::Get##_SetVecPascal##Tag<CharaType>();\
-	if (!IsPrefix(_line, tag, tag.length()))return;\
-	NullModelTest();\
-	auto _SetVecCamel = ChPtr::Make_S<##_VectorStruct##>();\
-	_SetVecCamel##->Deserialize<CharaType>(_line, tag.length() + 1, ChStd::GetSpaceChara<CharaType>());\
-	makeObject->vertex##_SetVecPascal##List.push_back(_SetVecCamel);}
-#endif
-
-#ifndef CH_LM_OBJ_SET_METHOD
-#define CH_LM_OBJ_SET_METHOD(_FunctionName, _TagValue,_SetMethod) \
-template<typename CharaType>\
-inline void ChCpp::ModelController::ObjFile<CharaType>::##_FunctionName##(const std::basic_string<CharaType>& _line){\
-	std::basic_string<CharaType>tag = _TagValue;\
-	if (!IsPrefix(_line, tag, tag.length()))return;\
-	_SetMethod }
-
-#endif
-
 namespace ChCpp
 {
-
 	namespace ModelController
 	{
-
 		namespace ObjTag
 		{
 			//"Root"//
@@ -256,6 +232,8 @@ namespace ChCpp
 
 		protected://SetFunction//
 
+			// Load Model Methods //
+
 			void SetVertex(const std::basic_string<CharaType>& _line);
 
 			void SetUV(const std::basic_string<CharaType>& _line);
@@ -295,6 +273,10 @@ namespace ChCpp
 			void SetMatMetallicMap2(const std::basic_string<CharaType>& _line);
 
 			void SetMatNormalMap(const std::basic_string<CharaType>& _line);
+
+			// Set Model Methods //
+			
+
 
 		protected://Is Functions//
 
