@@ -13,20 +13,6 @@
 #include"../ChTextObject/ChTextObject.h"
 #include"../ChCumulative/ChCumulative.h"
 
-#ifndef	CH_JSON_OBJECT_COUNT
-#define	CH_JSON_OBJECT_COUNT \
-ChCpp::Cumulative<CharaType> objectCount = ChCpp::Cumulative<CharaType>(\
-	ChStd::GetStartBraceChara<CharaType>()[0],\
-	ChStd::GetEndBraceChara<CharaType>()[0])
-#endif
-
-#ifndef	CH_JSON_ARRAY_COUNT
-#define	CH_JSON_ARRAY_COUNT \
-ChCpp::Cumulative<CharaType> arrayCount = ChCpp::Cumulative<CharaType>(\
-	ChStd::GetStartBracketChara<CharaType>()[0],\
-	ChStd::GetEndBracketChara<CharaType>()[0])
-#endif
-
 #ifndef Ch_Json_BaseTypeMethods
 #define Ch_Json_BaseTypeMethods(_functionDefine)\
 _functionDefine(signed char)\
