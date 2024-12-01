@@ -98,7 +98,7 @@ namespace ChCpp
 		template<typename CharaType>
 		class XFile :public ModelControllerBase<CharaType>
 		{
-		protected:
+		public:
 
 			struct XVertex :public Ch3D::PolyVertex
 			{};
@@ -177,6 +177,10 @@ namespace ChCpp
 		public:
 
 			inline void SetMaxBoneNum(const unsigned long _boneNum) { maxBoneNum = _boneNum; }
+
+		public:
+
+			inline ChPtr::Weak<XFileModelFrame> GetXModel() { return xModel; }
 
 		protected:
 
@@ -334,6 +338,7 @@ namespace ChCpp
 				return res;
 
 			}
+
 			protected://IsFunction//
 
 				bool IsTags(

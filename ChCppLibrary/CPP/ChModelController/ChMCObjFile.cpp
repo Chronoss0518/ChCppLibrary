@@ -18,6 +18,10 @@ inline void ChCpp::ModelController::ObjFile<CharaType>::##_FunctionName##(const 
 	_SetMethod }
 
 
+#define OBJECT_FILE_NAME_TYPE_FUNCTION(type) CH_NUMBER_FUNCTION(GetNullObjectName,type)
+
+#define OBJECT_MATERIAL_NAME_TYPE_FUNCTION(type) CH_NUMBER_FUNCTION(GetNullObjectName,type)
+
 #define NULL_OBJECT_NAME_FUNCTION(type) CH_NUMBER_FUNCTION(GetNullObjectName,type)
 
 #define TAG_COMMENT_FUNCTION(type) CH_NUMBER_FUNCTION(GetCommentTag,type)
@@ -232,10 +236,18 @@ void ChCpp::ModelController::ObjFile<CharaType>::OutModel(const std::basic_strin
 	if (_filePath.rfind(ChStd::GetDotChara<CharaType>()) == std::basic_string<CharaType>::npos)return;
 
 	std::basic_string<CharaType> tmpFolderPath = ChStd::GetZeroChara<CharaType>();
-	std::basic_string<CharaType> tmpFilePath = ChStd::GetZeroChara<CharaType>();
+	std::basic_string<CharaType> tmpMtlFilePath = ChStd::GetZeroChara<CharaType>();
 
-	tmpFilePath = _filePath.substr(_filePath.rfind("."));
+	size_t slashPos = _filePath.rfind(ChStd::GetSlashChara<CharaType>()) + 1;
+	if (slashPos > _filePath.length())slashPos = 0;
+
+	tmpMtlFilePath = _filePath.substr(slashPos, _filePath.rfind(ChStd::GetDotChara<CharaType>()) - slashPos);
 	tmpFolderPath = ModelControllerBase<CharaType>::GetRoutePath(_filePath);
+
+
+
+
+
 
 }
 
@@ -271,7 +283,7 @@ void ChCpp::ModelController::ObjFile<CharaType>::SetModel(const ChPtr::Shared<Mo
 	materialMaps.clear();
 
 
-	modelName = _model->GetModelName();
+	filePath = _model->GetModelName();
 }
 
 template<typename CharaType>
