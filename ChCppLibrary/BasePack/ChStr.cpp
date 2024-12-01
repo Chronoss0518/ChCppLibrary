@@ -272,7 +272,7 @@ std::string GetWCSFormMBS(const std::wstring& _str, const std::string& _locale)
 	size_t tmpPos = tmpLocale.rfind(".");
 	tmpLocale = tmpLocale.substr(0, tmpPos);
 	setlocale(LC_ALL, (tmpLocale + "." + _locale).c_str());
-	size_t createSize = wcstombs(&res[0], &_str.c_str()[1], _str.capacity() * 3 + 1);
+	size_t createSize = wcstombs(&res[0], &_str.c_str()[0], _str.capacity() * 3 + 1);
 	setlocale(LC_ALL, (localeName).c_str());
 	if (createSize > _str.capacity() * 3)return "";
 	res = res.substr(0, createSize).c_str();
