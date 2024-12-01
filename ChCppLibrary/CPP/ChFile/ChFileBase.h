@@ -23,10 +23,6 @@ namespace ChCpp
 	{
 	public:
 
-		virtual ~FileBase() { FileClose(); }
-
-	public:
-
 		inline void SetIsUpdateFlg(bool _flg) { isUpdateFlg = _flg; }
 
 	protected:

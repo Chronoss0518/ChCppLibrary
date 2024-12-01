@@ -3,6 +3,7 @@
 
 void ChCpp::FileBase::FileOpenInit(const std::string& _fileName, const std::string& _localeName, bool _isUpdate)
 {
+	FileClose();
 
 	localeName = _localeName;
 	openFileNameChar = _fileName;
@@ -15,6 +16,8 @@ void ChCpp::FileBase::FileOpenInit(const std::string& _fileName, const std::stri
 
 void ChCpp::FileBase::FileOpenInit(const std::wstring& _fileName, const std::string& _localeName, bool _isUpdate)
 {
+	FileClose();
+
 	localeName = _localeName;
 	openFileNameWChar = _fileName;
 	openFileNameChar = "";
