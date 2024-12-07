@@ -797,7 +797,23 @@ void ChCpp::ModelController::XFile<CharaType>::XFrameToChFrame(
 
 	_chFrame->SetMyName(_xFrame->fName);
 
-	_chFrame->SetFrameTransform(_xFrame->frameMatrix);
+	bool isNotHaveVertex = _xFrame->mesh == nullptr;
+
+	ChLMat tmp = margeMatrixToOutputFrameMatrix;
+
+
+	if (_xFrame->mesh == nullptr)
+	{
+		tmp = margeMatrixToOutputNVFrameMatrix;
+
+		if (_xFrame->fName == ChCpp::ModelController::XFileTag::GetRootObjectName<CharaType>())
+			tmp = margeMatrixToOutputRootMatrix;
+	}
+
+	tmp = _xFrame->frameMatrix * tmp;
+
+
+	_chFrame->SetFrameTransform(tmp);
 
 	_chFrame->GetDrawLHandMatrix();
 
@@ -808,7 +824,6 @@ void ChCpp::ModelController::XFile<CharaType>::XFrameToChFrame(
 		_chFrame->SetChild(chFrame);
 
 		XFrameToChFrame(chFrame, frame);
-
 	}
 
 	if (_xFrame->mesh == nullptr)return;
@@ -827,10 +842,12 @@ void ChCpp::ModelController::XFile<CharaType>::XFrameToChFrame(
 			bool lookFlg = false;
 			ChPtr::Shared<Ch3D::SavePolyVertex> chVertex = nullptr;
 
+			ChVec3 vertexPos = margeMatrixToOutputVertex.Transform(xVertexList[i]->pos);
+
 			for (size_t j = 0; j < chVertexList.size(); j++)
 			{
 
-				if (chVertexList[j]->pos != xVertexList[i]->pos)continue;
+				if (chVertexList[j]->pos != vertexPos)continue;
 
 				summarizeVertex[i] = j;
 
@@ -849,7 +866,7 @@ void ChCpp::ModelController::XFile<CharaType>::XFrameToChFrame(
 
 			chVertex = ChPtr::Make_S<Ch3D::SavePolyVertex>();
 
-			chVertex->pos = xVertexList[i]->pos;
+			chVertex->pos = vertexPos;
 			chVertex->normal = xVertexList[i]->normal;
 
 			chVertexList.push_back(chVertex);
