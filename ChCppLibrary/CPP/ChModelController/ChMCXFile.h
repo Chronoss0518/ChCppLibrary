@@ -23,8 +23,7 @@ struct _StructName : public BaseType{\
 		size_t tmp = _text.find(_endChar, _start);\
 		value = ChStr::GetNumFromText<_BaseType>(_text, _start, tmp);}\
 \
-	std::basic_string<CharaType> Serialise()override\
-	{\
+	std::basic_string<CharaType> Serialise()override{\
 		return ChStd::GetZeroChara<CharaType>();\
 	}\
 	_BaseType value = _BaseTypeInitialize;\
@@ -41,8 +40,7 @@ struct _StructName : public BaseType{\
 		const std::basic_string<CharaType>& _endChar)override{\
 		value.Deserialize<CharaType>(_text, _start, ChStd::GetSemiColonChara<CharaType>(), _endChar); }\
 \
-	std::basic_string<CharaType> Serialise()override\
-	{\
+	std::basic_string<CharaType> Serialise()override{\
 		return ChStd::GetZeroChara<CharaType>();\
 	}\
 	_BaseType value = _BaseTypeInitialize;\
@@ -370,7 +368,7 @@ namespace ChCpp
 					const std::vector<size_t>& _sTemplateTags,
 					const std::vector<size_t>& _eTemplateTags);
 
-		protected://XFileBaseTypes//
+		public://XFileBaseTypes//
 
 			CH_LM_XFILE_BASE_TYPE_CLASS_CHILD(XDWORD, unsigned long, 0);
 
@@ -438,11 +436,9 @@ namespace ChCpp
 
 			};
 
-
 			CH_LM_XFILE_BASE_TYPE_CLASS_CHILD_VECTOR(ColorRGBA, ChVec4, ChVec4(0.0f));
 
 			CH_LM_XFILE_BASE_TYPE_CLASS_CHILD_VECTOR(ColorRGB, ChVec3, ChVec3(0.0f));
-
 
 		protected://Member Value//
 
