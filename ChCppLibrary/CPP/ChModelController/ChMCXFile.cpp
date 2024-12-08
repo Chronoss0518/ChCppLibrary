@@ -598,7 +598,6 @@ bool ChCpp::ModelController::XFile<CharaType>::SetSkinWeights(
 		if (tmpStart > _targetTemplate->end
 			|| tmpEnd > _targetTemplate->end)return true;
 
-
 		boneName = _text.substr(tmpStart + 1, tmpEnd - tmpStart - 1);
 
 		tmpPos = tmpEnd + 2;
@@ -799,21 +798,7 @@ void ChCpp::ModelController::XFile<CharaType>::XFrameToChFrame(
 
 	bool isNotHaveVertex = _xFrame->mesh == nullptr;
 
-	ChLMat tmp = margeMatrixToOutputFrameMatrix;
-
-
-	if (_xFrame->mesh == nullptr)
-	{
-		tmp = margeMatrixToOutputNVFrameMatrix;
-
-		if (_xFrame->fName == ChCpp::ModelController::XFileTag::GetRootObjectName<CharaType>())
-			tmp = margeMatrixToOutputRootMatrix;
-	}
-
-	tmp = _xFrame->frameMatrix * tmp;
-
-
-	_chFrame->SetFrameTransform(tmp);
+	_chFrame->SetFrameTransform(_xFrame->frameMatrix);
 
 	_chFrame->GetDrawLHandMatrix();
 
@@ -842,22 +827,18 @@ void ChCpp::ModelController::XFile<CharaType>::XFrameToChFrame(
 			bool lookFlg = false;
 			ChPtr::Shared<Ch3D::SavePolyVertex> chVertex = nullptr;
 
-			ChVec3 vertexPos = margeMatrixToOutputVertex.Transform(xVertexList[i]->pos);
-
 			for (size_t j = 0; j < chVertexList.size(); j++)
 			{
-
-				if (chVertexList[j]->pos != vertexPos)continue;
+				if (chVertexList[j]->pos != xVertexList[i]->pos)continue;
 
 				summarizeVertex[i] = j;
 
-				chVertex = chVertexList[summarizeVertex[i]];
+				chVertex = chVertexList[j];
 
 				chVertex->normal += xVertexList[i]->normal;
 				lookFlg = true;
 
 				break;
-
 			}
 
 			if (lookFlg)continue;
@@ -866,7 +847,7 @@ void ChCpp::ModelController::XFile<CharaType>::XFrameToChFrame(
 
 			chVertex = ChPtr::Make_S<Ch3D::SavePolyVertex>();
 
-			chVertex->pos = vertexPos;
+			chVertex->pos = xVertexList[i]->pos;
 			chVertex->normal = xVertexList[i]->normal;
 
 			chVertexList.push_back(chVertex);

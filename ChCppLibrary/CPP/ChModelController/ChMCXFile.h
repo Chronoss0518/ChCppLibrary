@@ -176,14 +176,6 @@ namespace ChCpp
 
 			inline void SetMaxBoneNum(const unsigned long _boneNum) { maxBoneNum = _boneNum; }
 
-			inline void SetMargeMatrixToRootMatrix(const ChLMat& _mat) { margeMatrixToOutputRootMatrix = _mat; }
-
-			inline void SetMargeMatrixToVertex(const ChLMat& _mat) { margeMatrixToOutputVertex = _mat; }
-
-			inline void SetMargeMatrixToFrameMatrix(const ChLMat& _mat) { margeMatrixToOutputFrameMatrix = _mat; }
-
-			inline void SetMargeMatrixToNVFrameMatrix(const ChLMat& _mat) { margeMatrixToOutputNVFrameMatrix = _mat; }
-
 		public:
 
 			inline ChPtr::Weak<XFileModelFrame> GetXModel() { return xModel; }
@@ -353,7 +345,7 @@ namespace ChCpp
 					const ChPtr::Shared<TemplateRange> _lookTemplate,
 					const std::basic_string<CharaType>& _text);
 
-				bool IsTags(
+				inline bool IsTags(
 					const std::basic_string<CharaType>& _tagName,
 					const ChPtr::Shared<TemplateRange> _lookTemplate,
 					const std::basic_string<CharaType>& _text)
@@ -459,17 +451,6 @@ namespace ChCpp
 
 			ChPtr::Shared<XFileModelFrame> xModel = nullptr;
 
-			//Rootの行列に対して作用する行列//
-			ChLMat margeMatrixToOutputRootMatrix;
-
-			//Vertexに対して作用する行列//
-			ChLMat margeMatrixToOutputVertex;
-
-			//Vertexを保持しないFrameの行列に対して作用する行列//
-			ChLMat margeMatrixToOutputFrameMatrix;
-
-			//Vertexを保持しないFrameの行列に対して作用する行列//
-			ChLMat margeMatrixToOutputNVFrameMatrix;
 		};
 	}
 }
