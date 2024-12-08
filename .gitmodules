@@ -7,3 +7,6 @@ url=https://github.com/Chronoss0518/DirectXTex
 [submodule "ChCppLibrary/External/LegacyDirectX"]
 	path = ChCppLibrary/External/LegacyDirectX
 	url = https://github.com/Chronoss0518/DirectX-End-User-Runtime
+[submodule "ChCppLibrary/External/DirectX-Headers"]
+	path = ChCppLibrary/External/DirectX-Headers
+	url = https://github.com/microsoft/DirectX-Headers
