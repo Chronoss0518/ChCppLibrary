@@ -77,33 +77,7 @@ ChD3D9ライブラリやChD3D11ライブラリを呼ぶ際に同時に呼ばれ�
 
 # 予定
 
-- ChWinライブラリを大規模修正※(作業量が大きいためペンディング)
-- TextObjectを修正(動作が少し重いため)
-- Compresser(可逆圧縮)機能の追加(Deflate32,Deflate64を主に作成)
-- FBXモデルのロード機能の追加
-- HitTestObject関連の機能の追加
-- Collider関連の機能の追加
-- JsonObjectクラスの作成(Web関連で必要になったため)
-- NetWork関連の機能の追加
-- ChTextObjectを改修
-- ModelObjectを共通化
-- ChD3D11の大規模修正
-- BaseObjectの継承方法の変更
-- XWindowSystemのパック化ライブラリの追加
-- OpenGLのパック化ライブラリの追加
-- Vulkanのパック化ライブラリの追加
-- mtlppのパック化ライブラリの追加
-- CentOSで利用可能にする
-- CarbonAPIを利用可能にする
-
-# 更新(予定から移動したもの)
-
-- QuickStarterの土台を開発
-- ChBaseライブラリとChCppライブラリを調整する。
-- ClassPertsをChCpライブラリとしてChCppからChBaseへ移行する。
-- 外部ライブラリを容易に追加することができる機能を追加
-
-# 中止(予定から移動したもの)
+- [issues](https://github.com/Chronoss0518/ChCppLibrary/issues)を参考にしてください
 
 # このライブラリのコンセプト
 
