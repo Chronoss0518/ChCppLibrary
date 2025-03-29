@@ -1,180 +1,114 @@
 #include"ChMCObjFile.h"
 
-#ifndef CH_LM_OBJ_NULL_OBJECT_NAME_FUNCTION
-#define CH_LM_OBJ_NULL_OBJECT_NAME_FUNCTION(type) CH_NUMBER_FUNCTION(GetNullObjectName,type)
-#endif
+#define SET_VECTOR_FUNCTION(_SetVecPascal, _SetVecCamel,_VectorStruct) \
+template<typename CharaType>\
+inline void ChCpp::ModelController::ObjFile<CharaType>::Set##_SetVecPascal##(const std::basic_string<CharaType>& _line){\
+	std::basic_string<CharaType>tag = ObjTag::Get##_SetVecPascal##Tag<CharaType>();\
+	if (!IsPrefix(_line, tag, tag.length()))return;\
+	NullModelTest();\
+	auto _SetVecCamel = ChPtr::Make_S<##_VectorStruct##>();\
+	_SetVecCamel##->Deserialize<CharaType>(_line, tag.length() + 1, ChStd::GetSpaceChara<CharaType>());\
+	makeObject->vertex##_SetVecPascal##List.push_back(_SetVecCamel);}
 
-#ifndef CH_LM_OBJ_TAG_COMMENT_FUNCTION
-#define CH_LM_OBJ_TAG_COMMENT_FUNCTION(type) CH_NUMBER_FUNCTION(GetCommentTag,type)
-#endif
+#define SET_METHOD(_FunctionName, _TagValue,_SetMethod) \
+template<typename CharaType>\
+inline void ChCpp::ModelController::ObjFile<CharaType>::##_FunctionName##(const std::basic_string<CharaType>& _line){\
+	std::basic_string<CharaType>tag = _TagValue;\
+	if (!IsPrefix(_line, tag, tag.length()))return;\
+	_SetMethod }
 
-#ifndef CH_LM_OBJ_TAG_USE_MATERIAL_FILE_NAME_FUNCTION
-#define CH_LM_OBJ_TAG_USE_MATERIAL_FILE_NAME_FUNCTION(type) CH_NUMBER_FUNCTION(GetUseMaterialFileNameTag,type)
-#endif
 
-#ifndef CH_LM_OBJ_TAG_MATERIAL_BLOCK_FUNCTION
-#define CH_LM_OBJ_TAG_MATERIAL_BLOCK_FUNCTION(type) CH_NUMBER_FUNCTION(GetMaterialBlockTag,type)
-#endif
+#define OBJECT_FILE_NAME_TYPE_FUNCTION(type) CH_NUMBER_FUNCTION(GetNullObjectName,type)
 
-#ifndef CH_LM_OBJ_TAG_OBJECT_BLOCK_FUNCTION
-#define CH_LM_OBJ_TAG_OBJECT_BLOCK_FUNCTION(type) CH_NUMBER_FUNCTION(GetObjectBlockTag,type)
-#endif
+#define OBJECT_MATERIAL_NAME_TYPE_FUNCTION(type) CH_NUMBER_FUNCTION(GetNullObjectName,type)
 
-#ifndef CH_LM_OBJ_TAG_GROUP_BLOCK_FUNCTION
-#define CH_LM_OBJ_TAG_GROUP_BLOCK_FUNCTION(type) CH_NUMBER_FUNCTION(GetGroupBlockTag,type)
-#endif
+#define NULL_OBJECT_NAME_FUNCTION(type) CH_NUMBER_FUNCTION(GetNullObjectName,type)
 
-#ifndef CH_LM_OBJ_TAG_SMOUTH_SHADING_BLOCK_FUNCTION
-#define CH_LM_OBJ_TAG_SMOUTH_SHADING_BLOCK_FUNCTION(type) CH_NUMBER_FUNCTION(GetSmouthShadingBlockTag,type)
-#endif
+#define TAG_COMMENT_FUNCTION(type) CH_NUMBER_FUNCTION(GetCommentTag,type)
 
-#ifndef CH_LM_OBJ_TAG_VERTEX_FUNCTION
-#define CH_LM_OBJ_TAG_VERTEX_FUNCTION(type) CH_NUMBER_FUNCTION(GetVertexTag,type)
-#endif
+#define TAG_USE_MATERIAL_FILE_NAME_FUNCTION(type) CH_NUMBER_FUNCTION(GetUseMaterialFileNameTag,type)
 
-#ifndef CH_LM_OBJ_TAG_UV_FUNCTION
-#define CH_LM_OBJ_TAG_UV_FUNCTION(type) CH_NUMBER_FUNCTION(GetUVTag,type)
-#endif
+#define TAG_MATERIAL_BLOCK_FUNCTION(type) CH_NUMBER_FUNCTION(GetMaterialBlockTag,type)
 
-#ifndef CH_LM_OBJ_TAG_NORMAL_FUNCTION
-#define CH_LM_OBJ_TAG_NORMAL_FUNCTION(type) CH_NUMBER_FUNCTION(GetNormalTag,type)
-#endif
+#define TAG_OBJECT_BLOCK_FUNCTION(type) CH_NUMBER_FUNCTION(GetObjectBlockTag,type)
 
-#ifndef CH_LM_OBJ_TAG_MESH_FUNCTION
-#define CH_LM_OBJ_TAG_MESH_FUNCTION(type) CH_NUMBER_FUNCTION(GetMeshTag,type)
-#endif
+#define TAG_GROUP_BLOCK_FUNCTION(type) CH_NUMBER_FUNCTION(GetGroupBlockTag,type)
 
-#ifndef CH_LM_OBJ_TAG_LINE_FUNCTION
-#define CH_LM_OBJ_TAG_LINE_FUNCTION(type) CH_NUMBER_FUNCTION(GetLineTag,type)
-#endif
+#define TAG_SMOUTH_SHADING_BLOCK_FUNCTION(type) CH_NUMBER_FUNCTION(GetSmouthShadingBlockTag,type)
 
-#ifndef CH_LM_OBJ_TAG_PARAM_VERTEX_FUNCTION
-#define CH_LM_OBJ_TAG_PARAM_VERTEX_FUNCTION(type) CH_NUMBER_FUNCTION(GetParamVertexTag,type)
-#endif
+#define TAG_VERTEX_FUNCTION(type) CH_NUMBER_FUNCTION(GetVertexTag,type)
 
-#ifndef CH_LM_OBJ_TAG_MAT_MATERIAL_BLOCK_FUNCTION
-#define CH_LM_OBJ_TAG_MAT_MATERIAL_BLOCK_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatMaterialBlockTag,type)
-#endif
+#define TAG_UV_FUNCTION(type) CH_NUMBER_FUNCTION(GetUVTag,type)
 
-#ifndef CH_LM_OBJ_TAG_MAT_AMBIENT_FUNCTION
-#define CH_LM_OBJ_TAG_MAT_AMBIENT_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatAmbientTag,type)
-#endif
+#define TAG_NORMAL_FUNCTION(type) CH_NUMBER_FUNCTION(GetNormalTag,type)
 
-#ifndef CH_LM_OBJ_TAG_MAT_DIFFUSE_FUNCTION
-#define CH_LM_OBJ_TAG_MAT_DIFFUSE_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatDiffuseTag,type)
-#endif
+#define TAG_MESH_FUNCTION(type) CH_NUMBER_FUNCTION(GetMeshTag,type)
 
-#ifndef CH_LM_OBJ_TAG_MAT_SPECULAR_FUNCTION
-#define CH_LM_OBJ_TAG_MAT_SPECULAR_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatSpecularTag,type)
-#endif
+#define TAG_LINE_FUNCTION(type) CH_NUMBER_FUNCTION(GetLineTag,type)
 
-#ifndef CH_LM_OBJ_TAG_MAT_SPECULAR_HIGH_LIGHT_FUNCTION
-#define CH_LM_OBJ_TAG_MAT_SPECULAR_HIGH_LIGHT_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatSpecularHighLightTag,type)
-#endif
+#define TAG_PARAM_VERTEX_FUNCTION(type) CH_NUMBER_FUNCTION(GetParamVertexTag,type)
 
-#ifndef CH_LM_OBJ_TAG_MAT_DISSOLVE_FUNCTION
-#define CH_LM_OBJ_TAG_MAT_DISSOLVE_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatDissolveTag,type)
-#endif
+#define TAG_MAT_MATERIAL_BLOCK_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatMaterialBlockTag,type)
 
-#ifndef CH_LM_OBJ_TAG_MAT_UN_DISSOLVE_FUNCTION
-#define CH_LM_OBJ_TAG_MAT_UN_DISSOLVE_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatUnDissolveTag,type)
-#endif
+#define TAG_MAT_AMBIENT_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatAmbientTag,type)
 
-#ifndef CH_LM_OBJ_TAG_MAT_O_DENSITY_FUNCTION
-#define CH_LM_OBJ_TAG_MAT_O_DENSITY_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatODensityTag,type)
-#endif
+#define TAG_MAT_DIFFUSE_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatDiffuseTag,type)
 
-#ifndef CH_LM_OBJ_TAG_MAT_LIGHT_OBJECT_FUNCTION
-#define CH_LM_OBJ_TAG_MAT_LIGHT_OBJECT_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatLightObjectTag,type)
-#endif
+#define TAG_MAT_SPECULAR_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatSpecularTag,type)
 
-#ifndef CH_LM_OBJ_TAG_MAT_AMBIENT_MAP_FUNCTION
-#define CH_LM_OBJ_TAG_MAT_AMBIENT_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatAmbientMapTag,type)
-#endif
+#define TAG_MAT_SPECULAR_HIGH_LIGHT_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatSpecularHighLightTag,type)
 
-#ifndef CH_LM_OBJ_TAG_MAT_DIFFUSE_MAP_FUNCTION
-#define CH_LM_OBJ_TAG_MAT_DIFFUSE_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatDiffuseMapTag,type)
-#endif
+#define TAG_MAT_DISSOLVE_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatDissolveTag,type)
 
-#ifndef CH_LM_OBJ_TAG_MAT_SPECULAR_MAP_FUNCTION
-#define CH_LM_OBJ_TAG_MAT_SPECULAR_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatSpecularMapTag,type)
-#endif
+#define TAG_MAT_UN_DISSOLVE_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatUnDissolveTag,type)
 
-#ifndef CH_LM_OBJ_TAG_MAT_SPECULAR_HIGH_LIGHT_MAP_FUNCTION
-#define CH_LM_OBJ_TAG_MAT_SPECULAR_HIGH_LIGHT_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatSpecularHighLightMapTag,type)
-#endif
+#define TAG_MAT_O_DENSITY_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatODensityTag,type)
 
-#ifndef CH_LM_OBJ_TAG_MAT_DISSOLVE_MAP_FUNCTION
-#define CH_LM_OBJ_TAG_MAT_DISSOLVE_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatDissolveMapTag,type)
-#endif
+#define TAG_MAT_LIGHT_OBJECT_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatLightObjectTag,type)
 
-#ifndef CH_LM_OBJ_TAG_MAT_BUMP_MAP_FUNCTION
-#define CH_LM_OBJ_TAG_MAT_BUMP_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatBumpMapTag,type)
-#endif
+#define TAG_MAT_AMBIENT_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatAmbientMapTag,type)
 
-#ifndef CH_LM_OBJ_TAG_MAT_BUMP_MAP2_FUNCTION
-#define CH_LM_OBJ_TAG_MAT_BUMP_MAP2_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatBumpMapTag2,type)
-#endif
+#define TAG_MAT_DIFFUSE_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatDiffuseMapTag,type)
 
-#ifndef CH_LM_OBJ_TAG_MAT_DISPLATE_MAP_FUNCTION
-#define CH_LM_OBJ_TAG_MAT_DISPLATE_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatDisplateMapTag,type)
-#endif
+#define TAG_MAT_SPECULAR_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatSpecularMapTag,type)
 
-#ifndef CH_LM_OBJ_TAG_MAT_DECAL_MAP_FUNCTION
-#define CH_LM_OBJ_TAG_MAT_DECAL_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatDecalMapTag,type)
-#endif
+#define TAG_MAT_SPECULAR_HIGH_LIGHT_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatSpecularHighLightMapTag,type)
 
-#ifndef CH_LM_OBJ_TAG_MAT_ROUGHNESS_MAP_FUNCTION
-#define CH_LM_OBJ_TAG_MAT_ROUGHNESS_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatRoughnessMapTag,type)
-#endif
+#define TAG_MAT_DISSOLVE_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatDissolveMapTag,type)
 
-#ifndef CH_LM_OBJ_TAG_MAT_ROUGHNESS_MAP2_FUNCTION
-#define CH_LM_OBJ_TAG_MAT_ROUGHNESS_MAP2_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatRoughnessMapTag2,type)
-#endif
+#define TAG_MAT_BUMP_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatBumpMapTag,type)
 
-#ifndef CH_LM_OBJ_TAG_MAT_METALLIC_MAP_FUNCTION
-#define CH_LM_OBJ_TAG_MAT_METALLIC_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatMetallicMapTag,type)
-#endif
+#define TAG_MAT_BUMP_MAP2_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatBumpMapTag2,type)
 
-#ifndef CH_LM_OBJ_TAG_MAT_METALLIC_MAP2_FUNCTION
-#define CH_LM_OBJ_TAG_MAT_METALLIC_MAP2_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatMetallicMapTag2,type)
-#endif
+#define TAG_MAT_DISPLATE_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatDisplateMapTag,type)
 
-#ifndef CH_LM_OBJ_TAG_MAT_SHEEN_MAP_FUNCTION
-#define CH_LM_OBJ_TAG_MAT_SHEEN_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatSheenMapTag,type)
-#endif
+#define TAG_MAT_DECAL_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatDecalMapTag,type)
 
-#ifndef CH_LM_OBJ_TAG_MAT_SHEEN_MAP2_FUNCTION
-#define CH_LM_OBJ_TAG_MAT_SHEEN_MAP2_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatSheenMapTag2,type)
-#endif
+#define TAG_MAT_ROUGHNESS_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatRoughnessMapTag,type)
 
-#ifndef CH_LM_OBJ_TAG_MAT_CLEARCOAT_THICKNESS_MAP_FUNCTION
-#define CH_LM_OBJ_TAG_MAT_CLEARCOAT_THICKNESS_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatClearcoatThicknessMapTags,type)
-#endif
+#define TAG_MAT_ROUGHNESS_MAP2_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatRoughnessMapTag2,type)
 
-#ifndef CH_LM_OBJ_TAG_MAT_CLEARCOAT_ROUGHNESS_MAP_FUNCTION
-#define CH_LM_OBJ_TAG_MAT_CLEARCOAT_ROUGHNESS_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatClearcoatRoughnessMapTags,type)
-#endif
+#define TAG_MAT_METALLIC_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatMetallicMapTag,type)
 
-#ifndef CH_LM_OBJ_TAG_MAT_RADIATION_MAP_FUNCTION
-#define CH_LM_OBJ_TAG_MAT_RADIATION_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatRadiationMapTag,type)
-#endif
+#define TAG_MAT_METALLIC_MAP2_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatMetallicMapTag2,type)
 
-#ifndef CH_LM_OBJ_TAG_MAT_RADIATION_MAP2_FUNCTION
-#define CH_LM_OBJ_TAG_MAT_RADIATION_MAP2_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatRadiationMapTag2,type)
-#endif
+#define TAG_MAT_SHEEN_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatSheenMapTag,type)
 
-#ifndef CH_LM_OBJ_TAG_MAT_ANISOTROPY_MAP_FUNCTION
-#define CH_LM_OBJ_TAG_MAT_ANISOTROPY_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatAnisotropyMapTag,type)
-#endif
+#define TAG_MAT_SHEEN_MAP2_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatSheenMapTag2,type)
 
-#ifndef CH_LM_OBJ_TAG_MAT_ANISOTROPY_ROTATE_MAP_FUNCTION
-#define CH_LM_OBJ_TAG_MAT_ANISOTROPY_ROTATE_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatAnisotropyRotateMapTag,type)
-#endif
+#define TAG_MAT_CLEARCOAT_THICKNESS_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatClearcoatThicknessMapTags,type)
 
-#ifndef CH_LM_OBJ_TAG_MAT_NORMAL_MAP_FUNCTION
-#define CH_LM_OBJ_TAG_MAT_NORMAL_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatNormalMapTag,type)
-#endif
+#define TAG_MAT_CLEARCOAT_ROUGHNESS_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatClearcoatRoughnessMapTags,type)
+
+#define TAG_MAT_RADIATION_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatRadiationMapTag,type)
+
+#define TAG_MAT_RADIATION_MAP2_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatRadiationMapTag2,type)
+
+#define TAG_MAT_ANISOTROPY_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatAnisotropyMapTag,type)
+
+#define TAG_MAT_ANISOTROPY_ROTATE_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatAnisotropyRotateMapTag,type)
+
+#define TAG_MAT_NORMAL_MAP_FUNCTION(type) CH_NUMBER_FUNCTION(GetMatNormalMapTag,type)
 
 
 
@@ -187,55 +121,55 @@ namespace ChCpp
 
 		namespace ObjTag
 		{
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_NULL_OBJECT_NAME_FUNCTION, "Root");
+			CH_TO_NUMBER_FUNCTION(NULL_OBJECT_NAME_FUNCTION, "Root");
 
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_COMMENT_FUNCTION, "#");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_USE_MATERIAL_FILE_NAME_FUNCTION, "mtllib");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MATERIAL_BLOCK_FUNCTION, "usemtl");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_OBJECT_BLOCK_FUNCTION, "o");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_GROUP_BLOCK_FUNCTION, "g");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_SMOUTH_SHADING_BLOCK_FUNCTION, "s");
+			CH_TO_NUMBER_FUNCTION(TAG_COMMENT_FUNCTION, "#");
+			CH_TO_NUMBER_FUNCTION(TAG_USE_MATERIAL_FILE_NAME_FUNCTION, "mtllib");
+			CH_TO_NUMBER_FUNCTION(TAG_MATERIAL_BLOCK_FUNCTION, "usemtl");
+			CH_TO_NUMBER_FUNCTION(TAG_OBJECT_BLOCK_FUNCTION, "o");
+			CH_TO_NUMBER_FUNCTION(TAG_GROUP_BLOCK_FUNCTION, "g");
+			CH_TO_NUMBER_FUNCTION(TAG_SMOUTH_SHADING_BLOCK_FUNCTION, "s");
 
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_VERTEX_FUNCTION, "v");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_UV_FUNCTION, "vt");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_NORMAL_FUNCTION, "vn");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MESH_FUNCTION, "f");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_LINE_FUNCTION, "l");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_PARAM_VERTEX_FUNCTION, "vp");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MAT_MATERIAL_BLOCK_FUNCTION, "newmtl");
+			CH_TO_NUMBER_FUNCTION(TAG_VERTEX_FUNCTION, "v");
+			CH_TO_NUMBER_FUNCTION(TAG_UV_FUNCTION, "vt");
+			CH_TO_NUMBER_FUNCTION(TAG_NORMAL_FUNCTION, "vn");
+			CH_TO_NUMBER_FUNCTION(TAG_MESH_FUNCTION, "f");
+			CH_TO_NUMBER_FUNCTION(TAG_LINE_FUNCTION, "l");
+			CH_TO_NUMBER_FUNCTION(TAG_PARAM_VERTEX_FUNCTION, "vp");
+			CH_TO_NUMBER_FUNCTION(TAG_MAT_MATERIAL_BLOCK_FUNCTION, "newmtl");
 
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MAT_AMBIENT_FUNCTION, "Ka");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MAT_DIFFUSE_FUNCTION, "Kd");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MAT_SPECULAR_FUNCTION, "Ks");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MAT_SPECULAR_HIGH_LIGHT_FUNCTION, "Ns");
+			CH_TO_NUMBER_FUNCTION(TAG_MAT_AMBIENT_FUNCTION, "Ka");
+			CH_TO_NUMBER_FUNCTION(TAG_MAT_DIFFUSE_FUNCTION, "Kd");
+			CH_TO_NUMBER_FUNCTION(TAG_MAT_SPECULAR_FUNCTION, "Ks");
+			CH_TO_NUMBER_FUNCTION(TAG_MAT_SPECULAR_HIGH_LIGHT_FUNCTION, "Ns");
 
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MAT_DISSOLVE_FUNCTION, "d");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MAT_UN_DISSOLVE_FUNCTION, "Tr");
+			CH_TO_NUMBER_FUNCTION(TAG_MAT_DISSOLVE_FUNCTION, "d");
+			CH_TO_NUMBER_FUNCTION(TAG_MAT_UN_DISSOLVE_FUNCTION, "Tr");
 
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MAT_O_DENSITY_FUNCTION, "Ni");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MAT_LIGHT_OBJECT_FUNCTION, "illum");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MAT_AMBIENT_MAP_FUNCTION, "map_Ka");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MAT_DIFFUSE_MAP_FUNCTION, "map_Kd");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MAT_SPECULAR_MAP_FUNCTION, "map_Ks");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MAT_SPECULAR_HIGH_LIGHT_MAP_FUNCTION, "map_Ns");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MAT_DISSOLVE_MAP_FUNCTION, "map_d");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MAT_BUMP_MAP_FUNCTION, "map_bump");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MAT_BUMP_MAP2_FUNCTION, "bump");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MAT_DISPLATE_MAP_FUNCTION, "disp");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MAT_DECAL_MAP_FUNCTION, "decal");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MAT_ROUGHNESS_MAP_FUNCTION, "map_Pr");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MAT_ROUGHNESS_MAP2_FUNCTION, "Pr");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MAT_METALLIC_MAP_FUNCTION, "map_Pm");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MAT_METALLIC_MAP2_FUNCTION, "Pm");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MAT_SHEEN_MAP_FUNCTION, "map_Ps");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MAT_SHEEN_MAP2_FUNCTION, "Ps");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MAT_CLEARCOAT_THICKNESS_MAP_FUNCTION, "Pc");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MAT_CLEARCOAT_ROUGHNESS_MAP_FUNCTION, "Pcr");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MAT_RADIATION_MAP_FUNCTION, "map_Ke");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MAT_RADIATION_MAP2_FUNCTION, "Ke");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MAT_ANISOTROPY_MAP_FUNCTION, "aniso");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MAT_ANISOTROPY_ROTATE_MAP_FUNCTION, "anisor");
-			CH_TO_NUMBER_FUNCTION(CH_LM_OBJ_TAG_MAT_NORMAL_MAP_FUNCTION, "norm");
+			CH_TO_NUMBER_FUNCTION(TAG_MAT_O_DENSITY_FUNCTION, "Ni");
+			CH_TO_NUMBER_FUNCTION(TAG_MAT_LIGHT_OBJECT_FUNCTION, "illum");
+			CH_TO_NUMBER_FUNCTION(TAG_MAT_AMBIENT_MAP_FUNCTION, "map_Ka");
+			CH_TO_NUMBER_FUNCTION(TAG_MAT_DIFFUSE_MAP_FUNCTION, "map_Kd");
+			CH_TO_NUMBER_FUNCTION(TAG_MAT_SPECULAR_MAP_FUNCTION, "map_Ks");
+			CH_TO_NUMBER_FUNCTION(TAG_MAT_SPECULAR_HIGH_LIGHT_MAP_FUNCTION, "map_Ns");
+			CH_TO_NUMBER_FUNCTION(TAG_MAT_DISSOLVE_MAP_FUNCTION, "map_d");
+			CH_TO_NUMBER_FUNCTION(TAG_MAT_BUMP_MAP_FUNCTION, "map_bump");
+			CH_TO_NUMBER_FUNCTION(TAG_MAT_BUMP_MAP2_FUNCTION, "bump");
+			CH_TO_NUMBER_FUNCTION(TAG_MAT_DISPLATE_MAP_FUNCTION, "disp");
+			CH_TO_NUMBER_FUNCTION(TAG_MAT_DECAL_MAP_FUNCTION, "decal");
+			CH_TO_NUMBER_FUNCTION(TAG_MAT_ROUGHNESS_MAP_FUNCTION, "map_Pr");
+			CH_TO_NUMBER_FUNCTION(TAG_MAT_ROUGHNESS_MAP2_FUNCTION, "Pr");
+			CH_TO_NUMBER_FUNCTION(TAG_MAT_METALLIC_MAP_FUNCTION, "map_Pm");
+			CH_TO_NUMBER_FUNCTION(TAG_MAT_METALLIC_MAP2_FUNCTION, "Pm");
+			CH_TO_NUMBER_FUNCTION(TAG_MAT_SHEEN_MAP_FUNCTION, "map_Ps");
+			CH_TO_NUMBER_FUNCTION(TAG_MAT_SHEEN_MAP2_FUNCTION, "Ps");
+			CH_TO_NUMBER_FUNCTION(TAG_MAT_CLEARCOAT_THICKNESS_MAP_FUNCTION, "Pc");
+			CH_TO_NUMBER_FUNCTION(TAG_MAT_CLEARCOAT_ROUGHNESS_MAP_FUNCTION, "Pcr");
+			CH_TO_NUMBER_FUNCTION(TAG_MAT_RADIATION_MAP_FUNCTION, "map_Ke");
+			CH_TO_NUMBER_FUNCTION(TAG_MAT_RADIATION_MAP2_FUNCTION, "Ke");
+			CH_TO_NUMBER_FUNCTION(TAG_MAT_ANISOTROPY_MAP_FUNCTION, "aniso");
+			CH_TO_NUMBER_FUNCTION(TAG_MAT_ANISOTROPY_ROTATE_MAP_FUNCTION, "anisor");
+			CH_TO_NUMBER_FUNCTION(TAG_MAT_NORMAL_MAP_FUNCTION, "norm");
 		}
 	}
 }
@@ -301,6 +235,20 @@ void ChCpp::ModelController::ObjFile<CharaType>::OutModel(const std::basic_strin
 	if (_filePath.size() <= 0)return;
 	if (_filePath.rfind(ChStd::GetDotChara<CharaType>()) == std::basic_string<CharaType>::npos)return;
 
+	std::basic_string<CharaType> tmpFolderPath = ChStd::GetZeroChara<CharaType>();
+	std::basic_string<CharaType> tmpMtlFilePath = ChStd::GetZeroChara<CharaType>();
+
+	size_t slashPos = _filePath.rfind(ChStd::GetSlashChara<CharaType>()) + 1;
+	if (slashPos > _filePath.length())slashPos = 0;
+
+	tmpMtlFilePath = _filePath.substr(slashPos, _filePath.rfind(ChStd::GetDotChara<CharaType>()) - slashPos);
+	tmpFolderPath = ModelControllerBase<CharaType>::GetRoutePath(_filePath);
+
+
+
+
+
+
 }
 
 template<typename CharaType>
@@ -331,6 +279,11 @@ template<typename CharaType>
 void ChCpp::ModelController::ObjFile<CharaType>::SetModel(const ChPtr::Shared<ModelObject<CharaType>> _model)
 {
 	if (_model == nullptr)return;
+	objects.clear();
+	materialMaps.clear();
+
+
+	filePath = _model->GetModelName();
 }
 
 template<typename CharaType>
@@ -558,11 +511,11 @@ void ChCpp::ModelController::ObjFile<CharaType>::CreateChFrame(ChPtr::Shared<ChC
 	}
 }
 
-CH_LM_OBJ_SET_VECTOR_FUNCTION(Vertex, vertex, ChVec3);
+SET_VECTOR_FUNCTION(Vertex, vertex, ChVec3);
 
-CH_LM_OBJ_SET_VECTOR_FUNCTION(UV, uv, ChVec2);
+SET_VECTOR_FUNCTION(UV, uv, ChVec2);
 
-CH_LM_OBJ_SET_VECTOR_FUNCTION(Normal, normal, ChVec3);
+SET_VECTOR_FUNCTION(Normal, normal, ChVec3);
 
 template<typename CharaType>
 void ChCpp::ModelController::ObjFile<CharaType>::SetFace(const std::basic_string<CharaType>& _line)
@@ -639,37 +592,37 @@ void ChCpp::ModelController::ObjFile<CharaType>::SetFace(const std::basic_string
 	}
 }
 
-CH_LM_OBJ_SET_METHOD(SetMateBlock, ObjTag::GetMaterialBlockTag<CharaType>(), (blockMaterial = &_line[tag.length() + 1]););
+SET_METHOD(SetMateBlock, ObjTag::GetMaterialBlockTag<CharaType>(), (blockMaterial = &_line[tag.length() + 1]););
 
-CH_LM_OBJ_SET_METHOD(SetMatAmbient, ObjTag::GetMatAmbientTag<CharaType>(), (targetMaterial->ambient.Deserialize<CharaType>(&_line[tag.length() + 1], 0, ChStd::GetSpaceChara<CharaType>())););
+SET_METHOD(SetMatAmbient, ObjTag::GetMatAmbientTag<CharaType>(), (targetMaterial->ambient.Deserialize<CharaType>(&_line[tag.length() + 1], 0, ChStd::GetSpaceChara<CharaType>())););
 
-CH_LM_OBJ_SET_METHOD(SetMatDiffuse, ObjTag::GetMatDiffuseTag<CharaType>(), (targetMaterial->diffuse.Deserialize<CharaType>(&_line[tag.length() + 1], 0, ChStd::GetSpaceChara<CharaType>())););
+SET_METHOD(SetMatDiffuse, ObjTag::GetMatDiffuseTag<CharaType>(), (targetMaterial->diffuse.Deserialize<CharaType>(&_line[tag.length() + 1], 0, ChStd::GetSpaceChara<CharaType>())););
 
-CH_LM_OBJ_SET_METHOD(SetMatSpecular, ObjTag::GetMatSpecularTag<CharaType>(), (targetMaterial->specular.Deserialize<CharaType>(&_line[tag.length() + 1], 0, ChStd::GetSpaceChara<CharaType>())););
+SET_METHOD(SetMatSpecular, ObjTag::GetMatSpecularTag<CharaType>(), (targetMaterial->specular.Deserialize<CharaType>(&_line[tag.length() + 1], 0, ChStd::GetSpaceChara<CharaType>())););
 
-CH_LM_OBJ_SET_METHOD(SetMatSpecularHighLight, ObjTag::GetMatSpecularHighLightTag<CharaType>(), (targetMaterial->spePow = ChStr::GetNumFromText<float>(&_line[tag.length() + 1], 0)););
+SET_METHOD(SetMatSpecularHighLight, ObjTag::GetMatSpecularHighLightTag<CharaType>(), (targetMaterial->spePow = ChStr::GetNumFromText<float>(&_line[tag.length() + 1], 0)););
 
-CH_LM_OBJ_SET_METHOD(SetMatDissolve, ObjTag::GetMatDissolveTag<CharaType>(), (targetMaterial->alpha = ChStr::GetNumFromText<float>(&_line[tag.length() + 1], 0)););
+SET_METHOD(SetMatDissolve, ObjTag::GetMatDissolveTag<CharaType>(), (targetMaterial->alpha = ChStr::GetNumFromText<float>(&_line[tag.length() + 1], 0)););
 
-CH_LM_OBJ_SET_METHOD(SetMatODensity, ObjTag::GetMatODensityTag<CharaType>(), (targetMaterial->ODensity = ChStr::GetNumFromText<float>(&_line[tag.length() + 1], 0)););
+SET_METHOD(SetMatODensity, ObjTag::GetMatODensityTag<CharaType>(), (targetMaterial->ODensity = ChStr::GetNumFromText<float>(&_line[tag.length() + 1], 0)););
 
-CH_LM_OBJ_SET_METHOD(SetMatAmbientMap, ObjTag::GetMatAmbientMapTag<CharaType>(), (targetMaterial->ambientMap = LoadTextureName(&_line[tag.length() + 1])););
+SET_METHOD(SetMatAmbientMap, ObjTag::GetMatAmbientMapTag<CharaType>(), (targetMaterial->ambientMap = LoadTextureName(&_line[tag.length() + 1])););
 
-CH_LM_OBJ_SET_METHOD(SetMatDiffuseMap, ObjTag::GetMatDiffuseMapTag<CharaType>(), (targetMaterial->diffuseMap = LoadTextureName(&_line[tag.length() + 1])););
+SET_METHOD(SetMatDiffuseMap, ObjTag::GetMatDiffuseMapTag<CharaType>(), (targetMaterial->diffuseMap = LoadTextureName(&_line[tag.length() + 1])););
 
-CH_LM_OBJ_SET_METHOD(SetMatSpecularMap, ObjTag::GetMatSpecularMapTag<CharaType>(), (targetMaterial->specularMap = LoadTextureName(&_line[tag.length() + 1])););
+SET_METHOD(SetMatSpecularMap, ObjTag::GetMatSpecularMapTag<CharaType>(), (targetMaterial->specularMap = LoadTextureName(&_line[tag.length() + 1])););
 
-CH_LM_OBJ_SET_METHOD(SetMatSpecularHighLightMap, ObjTag::GetMatSpecularHighLightMapTag<CharaType>(), (targetMaterial->specularHighLightMap = LoadTextureName(&_line[tag.length() + 1])););
+SET_METHOD(SetMatSpecularHighLightMap, ObjTag::GetMatSpecularHighLightMapTag<CharaType>(), (targetMaterial->specularHighLightMap = LoadTextureName(&_line[tag.length() + 1])););
 
-CH_LM_OBJ_SET_METHOD(SetMatBumpMap, ObjTag::GetMatBumpMapTag<CharaType>(), (targetMaterial->bumpMap = LoadTextureName(&_line[tag.length() + 1])););
+SET_METHOD(SetMatBumpMap, ObjTag::GetMatBumpMapTag<CharaType>(), (targetMaterial->bumpMap = LoadTextureName(&_line[tag.length() + 1])););
 
-CH_LM_OBJ_SET_METHOD(SetMatBumpMap2, ObjTag::GetMatBumpMapTag2<CharaType>(), (targetMaterial->bumpMap = LoadTextureName(&_line[tag.length() + 1])););
+SET_METHOD(SetMatBumpMap2, ObjTag::GetMatBumpMapTag2<CharaType>(), (targetMaterial->bumpMap = LoadTextureName(&_line[tag.length() + 1])););
 
-CH_LM_OBJ_SET_METHOD(SetMatMetallicMap, ObjTag::GetMatMetallicMapTag<CharaType>(), (targetMaterial->metallicMap = LoadTextureName(&_line[tag.length() + 1])););
+SET_METHOD(SetMatMetallicMap, ObjTag::GetMatMetallicMapTag<CharaType>(), (targetMaterial->metallicMap = LoadTextureName(&_line[tag.length() + 1])););
 
-CH_LM_OBJ_SET_METHOD(SetMatMetallicMap2, ObjTag::GetMatMetallicMapTag2<CharaType>(), (targetMaterial->metallicMap = LoadTextureName(&_line[tag.length() + 1])););
+SET_METHOD(SetMatMetallicMap2, ObjTag::GetMatMetallicMapTag2<CharaType>(), (targetMaterial->metallicMap = LoadTextureName(&_line[tag.length() + 1])););
 
-CH_LM_OBJ_SET_METHOD(SetMatNormalMap, ObjTag::GetMatNormalMapTag<CharaType>(), (targetMaterial->normalMap = LoadTextureName(&_line[tag.length() + 1])););
+SET_METHOD(SetMatNormalMap, ObjTag::GetMatNormalMapTag<CharaType>(), (targetMaterial->normalMap = LoadTextureName(&_line[tag.length() + 1])););
 
 template<typename CharaType>
 bool ChCpp::ModelController::ObjFile<CharaType>::IsPrefix(const std::basic_string<CharaType>& _str, const std::basic_string<CharaType>& _prefix, const size_t _prefixSize)

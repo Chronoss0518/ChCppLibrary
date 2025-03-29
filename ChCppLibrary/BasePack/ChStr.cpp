@@ -8,6 +8,8 @@
 #include"../BaseIncluder/ChBase.h"
 #include"ChStr.h"
 
+#include"../CPP/ChCumulative/ChCumulative.h"
+
 #define LOCALE_TYPE_COUNT 6
 
 using namespace ChStr;
@@ -241,16 +243,26 @@ template std::vector<std::basic_string<##_CharaType##>> ChStr::Split(\
 template std::basic_string<##_CharaType##> ChStr::GetCharsToRangeCode(\
 	const std::basic_string<##_CharaType##>& _str,\
 	const _CharaType _min,\
-	const _CharaType _max);
+	const _CharaType _max)
 
-EXPLICIT_DECLARATION(char);
-EXPLICIT_DECLARATION(wchar_t);
-EXPLICIT_DECLARATION(char8_t);
-EXPLICIT_DECLARATION(char16_t);
-EXPLICIT_DECLARATION(char32_t);
+std::wstring GetMBSFormWCS(const std::string& _str, const std::string& _locale)
+{
+	if (_str == "")return L"";
+	std::wstring res = L"";
+	res.resize(_str.capacity() + 1);
+	std::string localeName = setlocale(LC_ALL, "");
+	std::string tmpLocale = localeName;
+	size_t tmpPos = tmpLocale.rfind(".");
+	tmpLocale = tmpLocale.substr(0, tmpPos);
+	setlocale(LC_ALL, (tmpLocale + "." + _locale).c_str());
+	size_t createSize = mbstowcs(&res[0], _str.c_str(), _str.capacity() + 1);
+	setlocale(LC_ALL, (localeName).c_str());
+	if (createSize > _str.capacity() + 1)return L"";
+	res = res.substr(0, createSize).c_str();
+	return res;
+}
 
-
-std::string ChStr::GetShiftJisFromUTF16(const std::wstring& _str)
+std::string GetWCSFormMBS(const std::wstring& _str, const std::string& _locale)
 {
 	if (_str == L"")return "";
 	std::string res = "";
@@ -259,61 +271,37 @@ std::string ChStr::GetShiftJisFromUTF16(const std::wstring& _str)
 	std::string tmpLocale = localeName;
 	size_t tmpPos = tmpLocale.rfind(".");
 	tmpLocale = tmpLocale.substr(0, tmpPos);
-	setlocale(LC_ALL, (tmpLocale + ".932").c_str());
-	size_t createSize = wcstombs(&res[0], &_str.c_str()[1], _str.capacity() * 3 + 1);
+	setlocale(LC_ALL, (tmpLocale + "." + _locale).c_str());
+	size_t createSize = wcstombs(&res[0], &_str.c_str()[0], _str.capacity() * 3 + 1);
 	setlocale(LC_ALL, (localeName).c_str());
 	if (createSize > _str.capacity() * 3)return "";
 	res = res.substr(0, createSize).c_str();
 	return res;
 }
 
+
+std::string ChStr::GetShiftJisFromUTF16(const std::wstring& _str)
+{
+	return GetWCSFormMBS(_str, "932");
+}
+
 std::wstring ChStr::GetUTF16FromShiftJis(const std::string& _str)
 {
-	if (_str == "")return L"";
-	std::wstring res = L"";
-	res.resize(_str.capacity() + 1);
-	std::string localeName = setlocale(LC_ALL, "");
-	std::string tmpLocale = localeName;
-	size_t tmpPos = tmpLocale.rfind(".");
-	tmpLocale = tmpLocale.substr(0, tmpPos);
-	setlocale(LC_ALL, (tmpLocale + ".932").c_str());
-	size_t createSize = mbstowcs(&res[0], _str.c_str(), _str.capacity() + 1);
-	setlocale(LC_ALL, (localeName).c_str());
-	if (createSize > _str.capacity() + 1)return L"";
-	res = res.substr(0, createSize).c_str();
-	return res;
+	return GetMBSFormWCS(_str, "932");
 }
 
 std::string ChStr::GetUTF8FromUTF16(const std::wstring& _str)
 {
-	if (_str == L"")return "";
-	std::string res = "";
-	res.resize(_str.capacity() * 3 + 1);
-	std::string localeName = setlocale(LC_ALL, "");
-	std::string tmpLocale = localeName;
-	size_t tmpPos = tmpLocale.rfind(".");
-	tmpLocale = tmpLocale.substr(0, tmpPos);
-	setlocale(LC_ALL, (tmpLocale + ".UTF8").c_str());
-	size_t createSize = wcstombs(&res[0], &_str.c_str()[1], _str.capacity() * 3 + 1);
-	setlocale(LC_ALL, (localeName).c_str());
-	if (createSize > _str.capacity() * 3 + 1)return "";
-	res = res.substr(0, createSize).c_str();
-	return res;
+	return GetWCSFormMBS(_str, "UTF8");
 }
 
 std::wstring ChStr::GetUTF16FromUTF8(const std::string& _str)
 {
-	if (_str == "")return L"";
-	std::wstring res = L"";
-	res.resize(_str.capacity() + 1);
-	std::string localeName = setlocale(LC_ALL, "");
-	std::string tmpLocale = localeName;
-	size_t tmpPos = tmpLocale.rfind(".");
-	tmpLocale = tmpLocale.substr(0, tmpPos);
-	setlocale(LC_ALL, (tmpLocale + ".UTF8").c_str());
-	size_t createSize = mbstowcs(&res[0], _str.c_str(), _str.capacity() + 1);
-	setlocale(LC_ALL, (localeName).c_str());
-	if (createSize > _str.capacity() + 1)return L"";
-	res = res.substr(0, createSize).c_str();
-	return res;
+	return GetMBSFormWCS(_str, "UTF8");
 }
+
+EXPLICIT_DECLARATION(char);
+EXPLICIT_DECLARATION(wchar_t);
+EXPLICIT_DECLARATION(char8_t);
+EXPLICIT_DECLARATION(char16_t);
+EXPLICIT_DECLARATION(char32_t);

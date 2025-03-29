@@ -339,13 +339,6 @@ namespace ChStd
 		const std::basic_string<CharaType>& _baseNum,
 		const std::basic_string<CharaType>& _beforeBaseNumber = DECIMAL_NUMBUR<CharaType>());
 
-	template<typename Type>
-	inline std::map<Type, unsigned long> CreateHuffmanTree(const std::vector<Type>& _binary)
-	{
-		std::map<Type, unsigned long>out;
-
-		return out;
-	}
 }
 
 #endif

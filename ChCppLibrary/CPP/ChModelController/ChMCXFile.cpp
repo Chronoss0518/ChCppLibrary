@@ -598,7 +598,6 @@ bool ChCpp::ModelController::XFile<CharaType>::SetSkinWeights(
 		if (tmpStart > _targetTemplate->end
 			|| tmpEnd > _targetTemplate->end)return true;
 
-
 		boneName = _text.substr(tmpStart + 1, tmpEnd - tmpStart - 1);
 
 		tmpPos = tmpEnd + 2;
@@ -797,6 +796,8 @@ void ChCpp::ModelController::XFile<CharaType>::XFrameToChFrame(
 
 	_chFrame->SetMyName(_xFrame->fName);
 
+	bool isNotHaveVertex = _xFrame->mesh == nullptr;
+
 	_chFrame->SetFrameTransform(_xFrame->frameMatrix);
 
 	_chFrame->GetDrawLHandMatrix();
@@ -808,7 +809,6 @@ void ChCpp::ModelController::XFile<CharaType>::XFrameToChFrame(
 		_chFrame->SetChild(chFrame);
 
 		XFrameToChFrame(chFrame, frame);
-
 	}
 
 	if (_xFrame->mesh == nullptr)return;
@@ -829,18 +829,16 @@ void ChCpp::ModelController::XFile<CharaType>::XFrameToChFrame(
 
 			for (size_t j = 0; j < chVertexList.size(); j++)
 			{
-
 				if (chVertexList[j]->pos != xVertexList[i]->pos)continue;
 
 				summarizeVertex[i] = j;
 
-				chVertex = chVertexList[summarizeVertex[i]];
+				chVertex = chVertexList[j];
 
 				chVertex->normal += xVertexList[i]->normal;
 				lookFlg = true;
 
 				break;
-
 			}
 
 			if (lookFlg)continue;

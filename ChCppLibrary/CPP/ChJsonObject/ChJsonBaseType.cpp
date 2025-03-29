@@ -9,10 +9,17 @@
 
 using namespace ChCpp;
 
-
-#ifndef CH_JSON_NULL_TEXT_FUNCTION
 #define CH_JSON_NULL_TEXT_FUNCTION(type) CH_NUMBER_FUNCTION(ChCpp::Json::GetNullText,type)
-#endif
+
+#define	CH_JSON_OBJECT_COUNT \
+ChCpp::Cumulative<CharaType> objectCount = ChCpp::Cumulative<CharaType>(\
+	ChStd::GetStartBraceChara<CharaType>()[0],\
+	ChStd::GetEndBraceChara<CharaType>()[0])
+
+#define	CH_JSON_ARRAY_COUNT \
+ChCpp::Cumulative<CharaType> arrayCount = ChCpp::Cumulative<CharaType>(\
+	ChStd::GetStartBracketChara<CharaType>()[0],\
+	ChStd::GetEndBracketChara<CharaType>()[0])
 
 namespace ChCpp
 {

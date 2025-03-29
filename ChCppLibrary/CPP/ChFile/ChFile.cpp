@@ -15,15 +15,11 @@ template<> void ChCpp::File<##_CharaType##>::FileOpen(\
 	if (localeName != "")tmpLocale = setlocale(LC_ALL, localeName.c_str());\
 \
 	FILE* file = Open(openFileNameChar.c_str(), _ReadType##);\
-	fseek(file, 0, SEEK_END);\
-	fpos_t filepos = 0;\
-	fgetpos(file, &filepos);\
-	fseek(file, 0, SEEK_SET);\
 	fileText = ChStd::GetZeroChara<##_CharaType##>();\
-	for (fpos_t pos = 0; pos < filepos; pos += sizeof(_CharaType)){\
 	_CharaType tmp = FGet<##_CharaType##>(file);\
-	if(tmp == EOF)break;\
-	fileText += tmp;}\
+	while (tmp != static_cast<##_CharaType##>(EOF)){\
+	fileText += tmp;\
+	tmp = FGet<##_CharaType##>(file);}\
 	fclose(file);\
 \
 	if (localeName != "") setlocale(LC_ALL, tmpLocale.c_str());}\
@@ -38,15 +34,11 @@ template<>	void ChCpp::File<##_CharaType##>::FileOpen(\
 	if (localeName != "")tmpLocale = setlocale(LC_ALL, localeName.c_str());\
 \
 	FILE* file = Open(openFileNameWChar.c_str(), L##_ReadType##);\
-	fseek(file, 0, SEEK_END);\
-	fpos_t filepos = 0;\
-	fgetpos(file, &filepos);\
-	fseek(file, 0, SEEK_SET);\
 	fileText = ChStd::GetZeroChara<##_CharaType##>();\
-	for (fpos_t pos = 0; pos < filepos; pos += sizeof(_CharaType)){\
 	_CharaType tmp = FGet<##_CharaType##>(file);\
-	if(tmp == EOF)break;\
-	fileText +=tmp;}\
+	while (tmp != static_cast<##_CharaType##>(EOF)){\
+	fileText += tmp;\
+	tmp = FGet<##_CharaType##>(file);}\
 	fclose(file);\
 \
 	if (localeName != "") setlocale(LC_ALL, tmpLocale.c_str());}\
@@ -59,7 +51,10 @@ template<> void ChCpp::File<##_CharaType##>::FileCloseCharName(){\
 	FILE* file = Open(openFileNameChar.c_str(), _WriteType##);\
 	fileText = fileText.c_str();\
 	for (size_t i = 0; i < fileText.size(); i++)FPut(file, fileText[i]);\
+	FPut(file, static_cast<##_CharaType##>(EOF));\
 	fclose(file);\
+	openFileNameChar = "";\
+	fileText = ChStd::GetZeroChara<##_CharaType##>();\
 \
 	if (localeName != "")tmpLocale = setlocale(LC_ALL, tmpLocale.c_str()); }\
 template<> void ChCpp::File<##_CharaType##>::FileCloseWCharName(){\
@@ -71,10 +66,12 @@ template<> void ChCpp::File<##_CharaType##>::FileCloseWCharName(){\
 	FILE* file = Open(openFileNameWChar.c_str(), L##_WriteType##);\
 	fileText = fileText.c_str();\
 	for (size_t i = 0; i < fileText.size(); i++)FPut(file, fileText[i]);\
+	FPut(file, static_cast<##_CharaType##>(EOF));\
 	fclose(file);\
+	openFileNameWChar = L"";\
+	fileText = ChStd::GetZeroChara<##_CharaType##>();\
 \
 	if (localeName != "")tmpLocale = setlocale(LC_ALL, tmpLocale.c_str());}
-
 
 namespace ChStd
 {

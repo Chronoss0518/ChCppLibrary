@@ -129,9 +129,6 @@ namespace ChCpp
 
 	protected:
 
-
-	protected:
-
 		void FileCloseCharName()override;
 
 		void FileCloseWCharName()override;

@@ -448,6 +448,13 @@ namespace ChStr
 	}
 #endif
 
+	template<typename CharaType>
+	std::basic_string<CharaType> FormatDocument(
+		const std::basic_string<CharaType>& _str,
+		const std::vector<CharaType>& _addCRLF,
+		const std::vector<CharaType>& _addTab,
+		const std::vector<CharaType>& _subTab);
+
 }
 
 
