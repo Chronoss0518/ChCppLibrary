@@ -71,8 +71,6 @@ ChD3D9ライブラリやChD3D11ライブラリを呼ぶ際に同時に呼ばれ�
 
 [ChD3Dライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChCppLibrary/Direct3DObject)
 
-[ChImGuiライブラリ](https://github.com/Chronoss0518/GameLibrary/tree/master/ChCppLibrary/ImGUIAPI)
-
 [ExternalLibrary](https://github.com/Chronoss0518/ChCppLibrary/tree/master/ChCppLibrary/External)
 
 # 予定
