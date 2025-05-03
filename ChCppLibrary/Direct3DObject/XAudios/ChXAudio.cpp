@@ -314,7 +314,7 @@ void ChD3D::XAudio2Manager::UpdateAudios()
 {
 	for (auto&& audio = audios.begin(); audio != audios.end(); audio)
 	{
-		if (ChPtr::NullCheck(*audio))
+		if (*audio == nullptr)
 		{
 			audio = audios.erase(audio);
 			continue;
