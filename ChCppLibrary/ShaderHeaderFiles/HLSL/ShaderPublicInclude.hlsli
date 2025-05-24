@@ -8,7 +8,7 @@
 #ifdef _SM5_0_
 #define CHANGE_CBUFFER(_no) b##_no
 #else
-#define CHANGE_CBUFFER(_no) b[##_no];
+#define CHANGE_CBUFFER(_no) b[##_no]
 #endif
 #endif
 
@@ -16,7 +16,7 @@
 #ifdef _SM5_0_
 #define CHANGE_TBUFFER(_no) t##_no
 #else
-#define CHANGE_TBUFFER(_no) t[##_no];
+#define CHANGE_TBUFFER(_no) t[##_no]
 #endif
 #endif
 
@@ -24,7 +24,7 @@
 #ifdef _SM5_0_
 #define CHANGE_SBUFFER(_no) s##_no
 #else
-#define CHANGE_SBUFFER(_no) s[##_no];
+#define CHANGE_SBUFFER(_no) s[##_no]
 #endif
 #endif
 
