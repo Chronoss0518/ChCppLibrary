@@ -3,11 +3,12 @@
 
 
 #ifdef __SHADER__
+
 #ifndef CHANGE_CBUFFER
 #ifdef _SM5_0_
 #define CHANGE_CBUFFER(_no) b##_no
 #else
-#define CHANGE_CBUFFER(_no) b[NORMAL_TEXTURE_REGISTER];
+#define CHANGE_CBUFFER(_no) b[##_no];
 #endif
 #endif
 
@@ -15,7 +16,7 @@
 #ifdef _SM5_0_
 #define CHANGE_TBUFFER(_no) t##_no
 #else
-#define CHANGE_TBUFFER(_no) t[NORMAL_TEXTURE_REGISTER];
+#define CHANGE_TBUFFER(_no) t[##_no];
 #endif
 #endif
 
@@ -23,9 +24,8 @@
 #ifdef _SM5_0_
 #define CHANGE_SBUFFER(_no) s##_no
 #else
-#define CHANGE_SBUFFER(_no) s[NORMAL_TEXTURE_REGISTER];
+#define CHANGE_SBUFFER(_no) s[##_no];
 #endif
-
 #endif
 
 #else
