@@ -7,7 +7,7 @@
 #ifdef _SM5_0_
 #define CHANGE_BUFFER(_buffer,_no) _buffer##_no
 #else
-#define CHANGE_BUFFER(_buffer,_no) _buffer[##_no]
+#define CHANGE_BUFFER(_buffer,_no) _buffer[_no]
 #endif
 #endif
 

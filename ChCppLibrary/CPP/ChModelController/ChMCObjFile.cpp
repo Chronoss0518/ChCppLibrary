@@ -2,7 +2,7 @@
 
 #define SET_VECTOR_FUNCTION(_SetVecPascal, _SetVecCamel,_VectorStruct) \
 template<typename CharaType>\
-inline void ChCpp::ModelController::ObjFile<CharaType>::Set##_SetVecPascal##(const std::basic_string<CharaType>& _line){\
+inline void ChCpp::ModelController::ObjFile<CharaType>::Set##_SetVecPascal(const std::basic_string<CharaType>& _line){\
 	std::basic_string<CharaType>tag = ObjTag::Get##_SetVecPascal##Tag<CharaType>();\
 	if (!IsPrefix(_line, tag, tag.length()))return;\
 	NullModelTest();\
@@ -12,7 +12,7 @@ inline void ChCpp::ModelController::ObjFile<CharaType>::Set##_SetVecPascal##(con
 
 #define SET_METHOD(_FunctionName, _TagValue,_SetMethod) \
 template<typename CharaType>\
-inline void ChCpp::ModelController::ObjFile<CharaType>::##_FunctionName##(const std::basic_string<CharaType>& _line){\
+inline void ChCpp::ModelController::ObjFile<CharaType>::##_FunctionName(const std::basic_string<CharaType>& _line){\
 	std::basic_string<CharaType>tag = _TagValue;\
 	if (!IsPrefix(_line, tag, tag.length()))return;\
 	_SetMethod }

@@ -6,13 +6,13 @@
 #include"ChObjectList.h"
 
 #define CH_OBJECT_LIST_FUNCTION(_FunctionNameBase) \
-void ChCpp::ObjectList::Object##_FunctionNameBase##()\
+void ChCpp::ObjectList::Object##_FunctionNameBase()\
 {\
 	for (size_t i = 0;i < objectList.size();i++){\
 		auto&& obj = objectList[i];\
 		if (!obj->IsUseFlg())continue;\
 		if (obj->GetParent() != nullptr)continue;\
-		obj->##_FunctionNameBase##Function();\
+		obj->_FunctionNameBase##Function();\
 		if (objectList.empty())return;\
 	}\
 }

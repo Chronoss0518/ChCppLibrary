@@ -8,7 +8,7 @@
 #define CH_MATH3D_METHOD(_OutClass,_InClass, _MemberValue,_Method,_MethodType)\
 inline _OutClass & operator _MethodType (const _InClass& _val)\
 {\
-	_MemberValue##.##_Method (_val.##_MemberValue);\
+	_MemberValue._Method (_val._MemberValue);\
 	return *this;\
 }
 #endif
@@ -18,7 +18,7 @@ inline _OutClass & operator _MethodType (const _InClass& _val)\
 inline _OutClass operator _MethodType(const _InClass& _val)const\
 {\
 	_OutClass res = *this;\
-	res.##_MemberValue##.##_Method(_val._MemberValue);\
+	res._MemberValue._Method(_val._MemberValue);\
 	return res;\
 }
 #endif
@@ -27,7 +27,7 @@ inline _OutClass operator _MethodType(const _InClass& _val)const\
 #define CH_MATH3D_METHOD_BOOL(_InClass,_Operator, _MemberValue)\
 inline bool operator _Operator(const _InClass& _val)const\
 {\
-	return _MemberValue _Operator _val.##_MemberValue;\
+	return _MemberValue _Operator _val._MemberValue;\
 }
 #endif
 
