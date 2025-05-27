@@ -85,14 +85,6 @@ template class _Class<wchar_t>
 #endif
 
 #ifdef CPP20
-#ifndef CH_TO_NUMBER_TEXT_FUNCTION
-#define CH_TO_NUMBER_TEXT_FUNCTION(FunctionDefine,ToDefine)\
-FunctionDefine(char) { return ToDefine(CH_CHAR_VOID); }\
-FunctionDefine(wchar_t) { return ToDefine(L); }\
-FunctionDefine(char16_t) { return ToDefine(u); }\
-FunctionDefine(char32_t) { return ToDefine(U); }\
-FunctionDefine(char8_t) { return ToDefine(u8); }
-#endif //TO_NUMBER_TEXT_FUNCTION//
 
 #ifndef CH_TO_NUMBER_FUNCTION
 #define CH_TO_NUMBER_FUNCTION(FunctionDefine,Chara)\
@@ -113,14 +105,6 @@ template class _Class<char32_t>
 #endif
 
 #else
-
-#ifndef CH_TO_NUMBER_TEXT_FUNCTION
-#define CH_TO_NUMBER_TEXT_FUNCTION(FunctionDefine,ToDefine)\
-FunctionDefine(char) { return ToDefine(""); }\
-FunctionDefine(wchar_t) { return ToDefine(L); }\
-FunctionDefine(char16_t) { return ToDefine(u); }\
-FunctionDefine(char32_t) { return ToDefine(U); }
-#endif //TO_NUMBER_TEXT_FUNCTION//
 
 #ifndef CH_TO_NUMBER_FUNCTION
 #define CH_TO_NUMBER_FUNCTION(FunctionDefine,Chara)\
