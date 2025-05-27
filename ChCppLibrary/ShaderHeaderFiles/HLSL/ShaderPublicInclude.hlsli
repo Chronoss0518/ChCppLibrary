@@ -20,7 +20,7 @@
 #endif
 
 #ifndef CHANGE_SBUFFER
-#define CHANGE_SBUFFER(_no) CHANGE_SUFFER(s,_no)
+#define CHANGE_SBUFFER(_no) CHANGE_BUFFER(s,_no)
 #endif
 
 #else
