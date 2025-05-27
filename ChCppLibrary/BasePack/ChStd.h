@@ -43,6 +43,10 @@
 
 #endif
 
+#ifndef CH_CHAR_VOID 
+#define CH_CHAR_VOID
+#endif
+
 #ifndef CH_TO_CHAR
 #define CH_TO_CHAR(Text) Text
 #endif
@@ -83,7 +87,7 @@ template class _Class<wchar_t>
 #ifdef CPP20
 #ifndef CH_TO_NUMBER_TEXT_FUNCTION
 #define CH_TO_NUMBER_TEXT_FUNCTION(FunctionDefine,ToDefine)\
-FunctionDefine(char) { return ToDefine(""); }\
+FunctionDefine(char) { return ToDefine(CH_CHAR_VOID); }\
 FunctionDefine(wchar_t) { return ToDefine(L); }\
 FunctionDefine(char16_t) { return ToDefine(u); }\
 FunctionDefine(char32_t) { return ToDefine(U); }\
@@ -128,10 +132,10 @@ FunctionDefine(char32_t) { return CH_TO_CHAR32(Chara); }
 
 #ifndef CH_STRING_TYPE_EXPLICIT_DECLARATION
 #define CH_STRING_TYPE_EXPLICIT_DECLARATION(_Class)\
-template class _Class##<char>;\
-template class _Class##<wchar_t>;\
-template class _Class##<char16_t>;\
-template class _Class##<char32_t>
+template class _Class<char>;\
+template class _Class<wchar_t>;\
+template class _Class<char16_t>;\
+template class _Class<char32_t>
 #endif
 
 #endif
