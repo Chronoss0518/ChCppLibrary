@@ -6,7 +6,7 @@ inline void ChCpp::ModelController::ObjFile<CharaType>::Set##_SetVecPascal##(con
 	std::basic_string<CharaType>tag = ObjTag::Get##_SetVecPascal##Tag<CharaType>();\
 	if (!IsPrefix(_line, tag, tag.length()))return;\
 	NullModelTest();\
-	auto _SetVecCamel = ChPtr::Make_S<##_VectorStruct##>();\
+	auto _SetVecCamel = ChPtr::Make_S<_VectorStruct>();\
 	_SetVecCamel##->Deserialize<CharaType>(_line, tag.length() + 1, ChStd::GetSpaceChara<CharaType>());\
 	makeObject->vertex##_SetVecPascal##List.push_back(_SetVecCamel);}
 

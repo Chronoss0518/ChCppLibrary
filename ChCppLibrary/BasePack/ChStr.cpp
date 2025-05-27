@@ -224,24 +224,24 @@ std::basic_string<CharaType> ChStr::GetCharsToRangeCode(
 }
 
 #define EXPLICIT_DECLARATION(_CharaType)\
-template std::basic_string<##_CharaType##> ChStr::StrReplase(\
-	const std::basic_string<##_CharaType##>& _base,\
-	const std::basic_string<##_CharaType##>& _before,\
-	const std::basic_string<##_CharaType##>& _after);\
-template std::basic_string<##_CharaType##> ChStr::RemoveToWhiteSpaceChars(const std::basic_string<##_CharaType##>& _str);\
-template std::basic_string<##_CharaType##> ChStr::RemoveToChars(\
-	const std::basic_string<##_CharaType##>& _str,\
-	const std::basic_string<##_CharaType##>& _removeChars);\
-template std::basic_string<##_CharaType##> ChStr::RemoveToUnNumCharas(const std::basic_string<##_CharaType##>& _str);\
-template std::basic_string<##_CharaType##> ChStr::RemoveToUnFloatingNumCharas(\
-	const std::basic_string<##_CharaType##>& _str,\
+template std::basic_string<_CharaType> ChStr::StrReplase(\
+	const std::basic_string<_CharaType>& _base,\
+	const std::basic_string<_CharaType>& _before,\
+	const std::basic_string<_CharaType>& _after);\
+template std::basic_string<_CharaType> ChStr::RemoveToWhiteSpaceChars(const std::basic_string<_CharaType>& _str);\
+template std::basic_string<_CharaType> ChStr::RemoveToChars(\
+	const std::basic_string<_CharaType>& _str,\
+	const std::basic_string<_CharaType>& _removeChars);\
+template std::basic_string<_CharaType> ChStr::RemoveToUnNumCharas(const std::basic_string<_CharaType>& _str);\
+template std::basic_string<_CharaType> ChStr::RemoveToUnFloatingNumCharas(\
+	const std::basic_string<_CharaType>& _str,\
 	unsigned long* _ePosition,\
 	unsigned long* _colonPoint);\
-template std::vector<std::basic_string<##_CharaType##>> ChStr::Split(\
-	const std::basic_string<##_CharaType##>& _str,\
-	const std::basic_string<##_CharaType##>& _splitChar);\
-template std::basic_string<##_CharaType##> ChStr::GetCharsToRangeCode(\
-	const std::basic_string<##_CharaType##>& _str,\
+template std::vector<std::basic_string<_CharaType>> ChStr::Split(\
+	const std::basic_string<_CharaType>& _str,\
+	const std::basic_string<_CharaType>& _splitChar);\
+template std::basic_string<_CharaType> ChStr::GetCharsToRangeCode(\
+	const std::basic_string<_CharaType>& _str,\
 	const _CharaType _min,\
 	const _CharaType _max)
 

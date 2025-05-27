@@ -36,7 +36,7 @@ static ChPtr::Shared<JsonNumber> CreateObject(const _type& _value){\
 
 #ifndef	CH_Json_Number_Operator_Functions
 #define	CH_Json_Number_Operator_Functions(_type)\
-operator _type##()const{return static_cast<##_type##>(value);}\
+operator _type##()const{return static_cast<_type>(value);}\
 \
 JsonNumber& operator = (const _type##& _base){\
 	value = static_cast<const long double>(_base);\

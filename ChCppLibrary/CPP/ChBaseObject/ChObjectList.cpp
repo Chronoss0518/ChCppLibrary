@@ -18,7 +18,7 @@ void ChCpp::ObjectList::Object##_FunctionNameBase##()\
 }
 
 #define EXPLICIT_DECLARATION(_type)\
-template void ChCpp::ObjectList::ClearObjectForName<##_type##>(const std::basic_string<##_type##>& _Name);
+template void ChCpp::ObjectList::ClearObjectForName<_type>(const std::basic_string<_type>& _Name);
 
 
 void ChCpp::ObjectList::SetObject(ChPtr::Shared<BasicObject> _obj)
