@@ -12,7 +12,7 @@
 
 #ifndef CH_WINDOWS_INIT_FUNCTION
 #define CH_WINDOWS_INIT_FUNCTION(_AorW,_CharaType) \
-void ChSystem::Windows##_AorW##::Init(\
+void ChSystem::Windows##_AorW::Init(\
 	const ChWin::WindCreater& _creater,\
 	const _CharaType##* _appName,\
 	const _CharaType##* _windClassName,\
@@ -26,7 +26,7 @@ void ChSystem::Windows##_AorW##::Init(\
 	isNowPush.SetSize((256 / 8) + 1);\
 	SetInitFlg(true);}\
 \
-void ChSystem::Windows##_AorW##::Init(\
+void ChSystem::Windows##_AorW::Init(\
 	const _CharaType* _appName,\
 	const _CharaType* _windClassName,\
 	const ChINTPOINT& _windSize,\
@@ -43,7 +43,7 @@ void ChSystem::Windows##_AorW##::Init(\
 	creater.SetWindStyle(WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_GROUP);\
 	Init(creater, _appName, _windClassName, _hInst, _nCmdShow);}\
 \
-void ChSystem::Windows##_AorW##::Init(\
+void ChSystem::Windows##_AorW::Init(\
 	const _CharaType* _appName,\
 	const _CharaType* _className,\
 	const unsigned long _dwStyle,\
@@ -69,7 +69,7 @@ void ChSystem::Windows##_AorW##::Init(\
 	creater.SetParam(_param);\
 	Init(creater, _appName, _className, _hInst, _nCmdShow);}\
 \
-void ChSystem::Windows##_AorW##::Init(\
+void ChSystem::Windows##_AorW::Init(\
 	const _CharaType* _appName,\
 	const _CharaType* _windClassName,\
 	const int _windWidth,\
@@ -84,7 +84,7 @@ void ChSystem::Windows##_AorW##::Init(\
 	creater.SetWindStyle(WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_GROUP);\
 	Init(creater, _appName, _windClassName, _hInst, _nCmdShow);}\
 \
-void ChSystem::Windows##_AorW##::Init(\
+void ChSystem::Windows##_AorW::Init(\
 	const _CharaType* _appName,\
 	const _CharaType* _windClassName,\
 	const int _windWidth,\
@@ -103,7 +103,7 @@ void ChSystem::Windows##_AorW##::Init(\
 	creater.SetWindStyle(WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_GROUP);\
 	Init(creater, _appName, _windClassName, _hInst, _nCmdShow);}\
 \
-void ChSystem::Windows##_AorW##::Init(\
+void ChSystem::Windows##_AorW::Init(\
 	const _CharaType* _appName,\
 	const _CharaType* _className,\
 	const unsigned long _dwStyle,\

@@ -4,7 +4,7 @@
 #include <cmath>
 
 #ifndef CH_MATH_FUNCTION
-#define CH_MATH_FUNCTION(_Type,_FunctionName,_FunctionArg,_UseFunctionName,_UseFunctionArg) _Type ChMath::##_FunctionName##_FunctionArg { return std::##_UseFunctionName##_UseFunctionArg; }
+#define CH_MATH_FUNCTION(_Type,_FunctionName,_FunctionArg,_UseFunctionName,_UseFunctionArg) _Type ChMath::_FunctionName##_FunctionArg { return std::_UseFunctionName##_UseFunctionArg; }
 #endif
 
 float ChMath::Round(const float& _val, const unsigned long _digit)

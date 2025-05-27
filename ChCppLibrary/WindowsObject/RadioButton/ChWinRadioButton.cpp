@@ -8,7 +8,7 @@ using namespace ChWin;
 
 #ifndef CH_WIN_RADIO_BUTTON_FUNCTIONS
 #define CH_WIN_RADIO_BUTTON_FUNCTIONS(_CharaType,_AorW)\
-void RadioButton##_AorW##::Create(\
+void RadioButton##_AorW::Create(\
 	HINSTANCE _hIns,\
 	const _CharaType##* _startText,\
 	const int _x,\
@@ -19,7 +19,7 @@ void RadioButton##_AorW##::Create(\
 	const HWND _parentHandl){\
 	Create(_hIns, _startText, ChINTPOINT(_x, _y), ChINTPOINT(_w, _h), _glpFlg, _parentHandl);}\
 \
-void RadioButton##_AorW##::Create(\
+void RadioButton##_AorW::Create(\
 	const _CharaType##* _startText,\
 	const ChINTPOINT& _pos,\
 	const ChINTPOINT& _size,\
@@ -27,7 +27,7 @@ void RadioButton##_AorW##::Create(\
 	const WindObject##_AorW##& _parentWind){\
 	Create(_parentWind.GetInstance(), _startText, _pos, _size, _glpFlg, _parentWind.GethWnd());}\
 \
-void RadioButton##_AorW##::Create(\
+void RadioButton##_AorW::Create(\
 	const _CharaType##* _startText,\
 	const int _x,\
 	const int _y,\

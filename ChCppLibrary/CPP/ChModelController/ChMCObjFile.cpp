@@ -12,7 +12,7 @@ inline void ChCpp::ModelController::ObjFile<CharaType>::Set##_SetVecPascal(const
 
 #define SET_METHOD(_FunctionName, _TagValue,_SetMethod) \
 template<typename CharaType>\
-inline void ChCpp::ModelController::ObjFile<CharaType>::##_FunctionName(const std::basic_string<CharaType>& _line){\
+inline void ChCpp::ModelController::ObjFile<CharaType>::_FunctionName(const std::basic_string<CharaType>& _line){\
 	std::basic_string<CharaType>tag = _TagValue;\
 	if (!IsPrefix(_line, tag, tag.length()))return;\
 	_SetMethod }

@@ -4,7 +4,7 @@
 
 #ifndef CH_WIN_DRAW_TEXTER_FUNCTIONS
 #define CH_WIN_DRAW_TEXTER_FUNCTIONS(_CharaType,_AorW)\
-void ChWin::DrawTexter##_AorW##::Init(const HWND& _baseWindHandl){\
+void ChWin::DrawTexter##_AorW::Init(const HWND& _baseWindHandl){\
 	if (*this)return;\
 	if (ChPtr::NullCheck(_baseWindHandl))return;\
 	SetWind(_baseWindHandl);\
@@ -25,7 +25,7 @@ void ChWin::DrawTexter##_AorW##::Init(const HWND& _baseWindHandl){\
 		NULL);\
 	SetInitFlg(true);}\
 \
-void ChWin::DrawTexter##_AorW##::SetFontData(\
+void ChWin::DrawTexter##_AorW::SetFontData(\
 	const long& _fWidth,\
 	const long& _fHeight,\
 	const long& _fSize,\
@@ -47,7 +47,7 @@ void ChWin::DrawTexter##_AorW##::SetFontData(\
 		FF_DONTCARE,\
 		NULL);}\
 \
-void ChWin::DrawTexter##_AorW##::Draw(\
+void ChWin::DrawTexter##_AorW::Draw(\
 	const _CharaType##* _drawText,\
 	const int _drawTextLength,\
 	const long& _x,\
@@ -57,7 +57,7 @@ void ChWin::DrawTexter##_AorW##::Draw(\
 	Draw(tmpDC, _drawText, _drawTextLength, _x, _y);\
 	DeleteDC(tmpDC);}\
 \
-void ChWin::DrawTexter##_AorW##::Draw(\
+void ChWin::DrawTexter##_AorW::Draw(\
 	HDC _hdc,\
 	const _CharaType##* _drawText,\
 	const int _drawTextLength,\

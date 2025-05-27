@@ -12,7 +12,7 @@
 #endif
 
 #ifndef CH_FLOAT_TEST
-#define CH_FLOAT_TEST(val, testSize) ChMath::GetAbs(val) <= testSize
+#define CH_FLOAT_TEST(val, testSize) ChMath::GetAbs( val ) <= testSize
 #endif
 
 #ifndef CH_MATH_LONG_TYPE
@@ -25,7 +25,7 @@
 
 
 #ifndef CH_MATH_METHOD_SIGNED_ABS
-#define CH_MATH_METHOD_SIGNED_ABS(_type) inline _type GetAbs(_type _val){return _val < 0 ? -_val : _val;}
+#define CH_MATH_METHOD_SIGNED_ABS(_type) inline _type GetAbs( _type _val ){return _val < 0 ? -_val : _val;}
 #endif
 
 #ifndef CH_MATH_METHOD_UNSIGNED_ABS
@@ -34,12 +34,12 @@
 
 #ifndef CH_MATH_VECTOR_OPERATOR_ACT
 #define CH_MATH_VECTOR_OPERATOR_ACT(_Operator,_TargetValue) \
-for (unsigned long i = 0; i < Array; i++){val[i] _Operator _TargetValue;}
+for (unsigned long i = 0; i < Array; i++){val[i] _Operator _TargetValue ;}
 #endif
 
 #ifndef CH_MATH_METHOD
 #define CH_MATH_METHOD(_OutClass,_InClass,_Method,_MethodType)\
-inline _OutClass & operator _MethodType (const _InClass& _val)\
+inline _OutClass & operator _MethodType (const _InClass & _val)\
 {\
 	_Method (_val);\
 	return *this;\
@@ -48,7 +48,7 @@ inline _OutClass & operator _MethodType (const _InClass& _val)\
 
 #ifndef CH_MATH_METHOD_CONST
 #define CH_MATH_METHOD_CONST(_OutClass,_InClass,_MethodType,_Method)\
-inline _OutClass operator _MethodType(const _InClass& _val)const\
+inline _OutClass operator _MethodType(const _InClass & _val)const\
 {\
 	_OutClass res = *this;\
 	res._Method(_val);\
@@ -62,9 +62,9 @@ inline bool operator _Operator(const _InClass& _val)const\
 	for (unsigned long i = 0; i < _Array; i++)\
 	{\
 		if (_val.m[i] _Operator m[i])continue;\
-		return !(_Flg);\
+		return !( _Flg );\
 	}\
-	return (_Flg);\
+	return ( _Flg );\
 }
 #endif
 

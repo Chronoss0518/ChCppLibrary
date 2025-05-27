@@ -3,7 +3,7 @@
 
 #ifndef CH_MATH3D_METHOD_VECTOR2_FROM
 #define CH_MATH3D_METHOD_VECTOR2_FROM(_FunctionName,_X,_Y)\
-ChVector2 ChVector2::##_FunctionName(const float _##_X, const float _##_Y){\
+ChVector2 ChVector2::_FunctionName(const float _##_X, const float _##_Y){\
 	ChVector2 res;\
 	res._X = _##_X;\
 	res._Y = _##_Y;\
@@ -13,7 +13,7 @@ ChVector2 ChVector2::##_FunctionName(const float _##_X, const float _##_Y){\
 
 #ifndef CH_MATH3D_METHOD_VECTOR3_FROM
 #define CH_MATH3D_METHOD_VECTOR3_FROM(_FunctionName,_X,_Y,_Z)\
-ChVector3 ChVector3::##_FunctionName(const float _##_X, const float _##_Y, const float _##_Z){\
+ChVector3 ChVector3::_FunctionName(const float _##_X, const float _##_Y, const float _##_Z){\
 	ChVector3 res;\
 	res._X = _##_X;\
 	res._Y = _##_Y;\
@@ -24,7 +24,7 @@ ChVector3 ChVector3::##_FunctionName(const float _##_X, const float _##_Y, const
 
 #ifndef CH_MATH3D_METHOD_VECTOR4_FROM
 #define CH_MATH3D_METHOD_VECTOR4_FROM(_FunctionName,_X,_Y,_Z,_W)\
-ChVector4 ChVector4::##_FunctionName(const float _##_X, const float _##_Y, const float _##_Z, const float _##_W){\
+ChVector4 ChVector4::_FunctionName(const float _##_X, const float _##_Y, const float _##_Z, const float _##_W){\
 	ChVector4 res;\
 	res._X = _##_X;\
 	res._Y = _##_Y;\
@@ -45,7 +45,7 @@ _BaseClass::operator const _OutClass() const {\
 
 #ifndef CH_MATH_METHOD_MATRIX_GET_EULER_ROTATION
 #define CH_MATH_METHOD_MATRIX_GET_EULER_ROTATION(_MatrixType,_AxisOrder,_ZeroTestAxis,_ZeroTestAxisFunction,_Axiz1,_ZeroAxiz1Function,_NotZeroAxiz1Function,_Axiz2,_ZeroAxiz2Function,_NotZeroAxiz2Function)\
-ChMath::ChEular##_AxisOrder<float> _MatrixType##::GetEulerRotation##_AxisOrder(const unsigned long _digit)const{\
+ChMath::ChEular##_AxisOrder<float> _MatrixType::GetEulerRotation##_AxisOrder(const unsigned long _digit)const{\
 	ChMath::ChEular##_AxisOrder<float> res; \
 	ChMath::BaseMatrix3x3<float> outM;\
 	outM.m.Set(m);\

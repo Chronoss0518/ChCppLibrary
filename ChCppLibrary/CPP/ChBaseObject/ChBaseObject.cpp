@@ -6,7 +6,7 @@
 #include"ChBaseObject.h"
 
 #define CH_OBJECT_FUNCTION(_FunctionNameBase) \
-void ChCpp::BasicObject::##_FunctionNameBase##Function()\
+void ChCpp::BasicObject::_FunctionNameBase##Function()\
 {\
 	##_FunctionNameBase();\
 	for(size_t i = 0; i < comList.size(); i++){\
