@@ -12,7 +12,7 @@
 #endif
 
 #ifndef CH_FLOAT_TEST
-#define CH_FLOAT_TEST(val, testSize) ChMath::GetAbs(##val##) <= testSize
+#define CH_FLOAT_TEST(val, testSize) ChMath::GetAbs( val ) <= testSize
 #endif
 
 #ifndef CH_MATH_LONG_TYPE
@@ -25,7 +25,7 @@
 
 
 #ifndef CH_MATH_METHOD_SIGNED_ABS
-#define CH_MATH_METHOD_SIGNED_ABS(_type) inline _type GetAbs(_type _val){return _val < 0 ? -_val : _val;}
+#define CH_MATH_METHOD_SIGNED_ABS(_type) inline _type GetAbs( _type _val ){return _val < 0 ? -_val : _val;}
 #endif
 
 #ifndef CH_MATH_METHOD_UNSIGNED_ABS
@@ -34,12 +34,12 @@
 
 #ifndef CH_MATH_VECTOR_OPERATOR_ACT
 #define CH_MATH_VECTOR_OPERATOR_ACT(_Operator,_TargetValue) \
-for (unsigned long i = 0; i < Array; i++){val[i] _Operator _TargetValue;}
+for (unsigned long i = 0; i < Array; i++){val[i] _Operator _TargetValue ;}
 #endif
 
 #ifndef CH_MATH_METHOD
 #define CH_MATH_METHOD(_OutClass,_InClass,_Method,_MethodType)\
-inline _OutClass & operator _MethodType (const _InClass& _val)\
+inline _OutClass & operator _MethodType (const _InClass & _val)\
 {\
 	_Method (_val);\
 	return *this;\
@@ -48,7 +48,7 @@ inline _OutClass & operator _MethodType (const _InClass& _val)\
 
 #ifndef CH_MATH_METHOD_CONST
 #define CH_MATH_METHOD_CONST(_OutClass,_InClass,_MethodType,_Method)\
-inline _OutClass operator _MethodType(const _InClass& _val)const\
+inline _OutClass operator _MethodType(const _InClass & _val)const\
 {\
 	_OutClass res = *this;\
 	res._Method(_val);\
@@ -62,31 +62,31 @@ inline bool operator _Operator(const _InClass& _val)const\
 	for (unsigned long i = 0; i < _Array; i++)\
 	{\
 		if (_val.m[i] _Operator m[i])continue;\
-		return !(_Flg);\
+		return !( _Flg );\
 	}\
-	return (_Flg);\
+	return ( _Flg );\
 }
 #endif
 
 #ifndef CH_MATH_METHOD_VECTOR_CONSTRUCTOR
 #define CH_MATH_METHOD_VECTOR_CONSTRUCTOR(_BaseClass)\
-inline _BaseClass##() { val.Identity(); }\
-inline _BaseClass##(const T _num) { val.Set(_num); }\
-inline _BaseClass##(const _BaseClass##<T>&_vec) { val = _vec.val; }
+inline _BaseClass() { val.Identity(); }\
+inline _BaseClass(const T _num) { val.Set(_num); }\
+inline _BaseClass(const _BaseClass<T>&_vec) { val = _vec.val; }
 #endif
 
 #ifndef CH_MATH_METHOD_VECTOR_SET
 #define CH_MATH_METHOD_VECTOR_SET(_MethodName, _ArgType, _ArgName, _DefaultArg)\
-inline void Set##_MethodName##(\
+inline void Set##_MethodName(\
 const VectorBase& _vec1,\
 const VectorBase& _vec2,\
-const _ArgType _ArgName _DefaultArg){Set(Get##_MethodName##(_vec1, _vec2, _ArgName));}
+const _ArgType _ArgName _DefaultArg){Set(Get##_MethodName(_vec1, _vec2, _ArgName));}
 #endif
 
 #ifndef CH_MATH_METHOD_MATRIX_CONSTRUCTOR
 #define CH_MATH_METHOD_MATRIX_CONSTRUCTOR(_BaseClass)\
-inline _BaseClass##() { m.Identity(); }\
-inline _BaseClass##(const _BaseClass##<T>& _mat) { m = _mat.m; }
+inline _BaseClass() { m.Identity(); }\
+inline _BaseClass(const _BaseClass<T>& _mat) { m = _mat.m; }
 #endif
 
 #ifndef CH_MATH3D_METHOD_SERIALIZE
@@ -94,8 +94,8 @@ inline _BaseClass##(const _BaseClass##<T>& _mat) { m = _mat.m; }
 template<typename CharaType>\
 inline std::basic_string<CharaType> Serialize(\
 const std::basic_string<CharaType>& _cutChar = ChStd::GetCommaChara<CharaType>(),\
- const std::basic_string<CharaType>& _endChar =  ChStd::GetSemiColonChara<CharaType>())\
-{return _Value.Serialize<CharaType>(_cutChar, _endChar);}
+const std::basic_string<CharaType>& _endChar =  ChStd::GetSemiColonChara<CharaType>())\
+{return _Value.Serialize(_cutChar, _endChar);}
 #endif
 
 #ifndef CH_MATH3D_METHOD_DESERIALIZE
@@ -123,17 +123,17 @@ const std::basic_string<CharaType>&_cutTo4Char = ChStd::GetCRLFChara<CharaType>(
 
 #ifndef CH_MATH_METHOD_QUATERNION_GET_EULER_ROTATION
 #define CH_MATH_METHOD_QUATERNION_GET_EULER_ROTATION(_AxisOrder,_ZeroTestAxis,_ZeroTestAxisFunction,_Axiz1,_ZeroAxiz1Function,_NotZeroAxiz1Function,_Axiz2,_ZeroAxiz2Function,_NotZeroAxiz2Function)\
-inline ChEular##_AxisOrder##<T> GetEulerRotation##_AxisOrder(const unsigned long _digit = 6)const\
+inline ChEular##_AxisOrder<T> GetEulerRotation##_AxisOrder(const unsigned long _digit = 6)const\
 {\
-	ChEular##_AxisOrder##<T> res;\
-	res.##_ZeroTestAxis = ChMath::GetSin##_ZeroTestAxisFunction;\
+	ChEular##_AxisOrder<T> res;\
+	res._ZeroTestAxis = ChMath::GetSin _ZeroTestAxisFunction;\
 	T ww = w * w * static_cast<T>(2.0f);\
-	if (CH_FLOAT_TEST(ChMath::GetCos(res.##_ZeroTestAxis), Ch_FLOAT_TEST_VALUE)){\
-		res.##_Axiz1 = _ZeroAxiz1Function;\
-		res.##_Axiz2 =_ZeroAxiz2Function;\
+	if (CH_FLOAT_TEST(ChMath::GetCos(res._ZeroTestAxis), Ch_FLOAT_TEST_VALUE)){\
+		res._Axiz1 = _ZeroAxiz1Function;\
+		res._Axiz2 =_ZeroAxiz2Function;\
 	}else{\
-		res.##_Axiz1 = _NotZeroAxiz1Function;\
-		res.##_Axiz2 = _NotZeroAxiz2Function;\
+		res._Axiz1 = _NotZeroAxiz1Function;\
+		res._Axiz2 = _NotZeroAxiz2Function;\
 	}\
 	return res;\
 }

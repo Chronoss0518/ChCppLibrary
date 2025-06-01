@@ -6,16 +6,16 @@
 #include"ChBaseObject.h"
 
 #define CH_OBJECT_FUNCTION(_FunctionNameBase) \
-void ChCpp::BasicObject::##_FunctionNameBase##Function()\
+void ChCpp::BasicObject::_FunctionNameBase##Function()\
 {\
-	##_FunctionNameBase##();\
+	_FunctionNameBase();\
 	for(size_t i = 0; i < comList.size(); i++){\
 		if (!comList[i]->useFlg)continue; \
-		comList[i]->##_FunctionNameBase##(); \
+		comList[i]->_FunctionNameBase(); \
 		if (comList.empty())break;}\
 	for (size_t i = 0; i < childList.size(); i++) {\
 		if (!childList[i]->useFlg)continue; \
-		childList[i]->##_FunctionNameBase##Function(); \
+		childList[i]->_FunctionNameBase##Function(); \
 		if (childList.empty())break;}\
 }
 

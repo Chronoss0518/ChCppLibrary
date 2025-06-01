@@ -6,19 +6,19 @@
 #include"ChObjectList.h"
 
 #define CH_OBJECT_LIST_FUNCTION(_FunctionNameBase) \
-void ChCpp::ObjectList::Object##_FunctionNameBase##()\
+void ChCpp::ObjectList::Object##_FunctionNameBase()\
 {\
 	for (size_t i = 0;i < objectList.size();i++){\
 		auto&& obj = objectList[i];\
 		if (!obj->IsUseFlg())continue;\
 		if (obj->GetParent() != nullptr)continue;\
-		obj->##_FunctionNameBase##Function();\
+		obj->_FunctionNameBase##Function();\
 		if (objectList.empty())return;\
 	}\
 }
 
 #define EXPLICIT_DECLARATION(_type)\
-template void ChCpp::ObjectList::ClearObjectForName<##_type##>(const std::basic_string<##_type##>& _Name);
+template void ChCpp::ObjectList::ClearObjectForName<_type>(const std::basic_string<_type>& _Name);
 
 
 void ChCpp::ObjectList::SetObject(ChPtr::Shared<BasicObject> _obj)

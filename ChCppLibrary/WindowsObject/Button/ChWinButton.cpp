@@ -6,11 +6,11 @@
 
 #ifndef Ch_Win_Button_Set_Functions
 #define Ch_Win_Button_Set_Functions(_AorW) \
-void ChWin::Button##_AorW##::SetClickFunction(const std::function<void(HWND, UINT)>& _callBack){ SetChildWindProcedure(BN_CLICKED, _callBack);}\
+void ChWin::Button##_AorW::SetClickFunction(const std::function<void(HWND, UINT)>& _callBack){ SetChildWindProcedure(BN_CLICKED, _callBack);}\
 \
-void ChWin::Button##_AorW##::SetDblClickFunction(const std::function<void(HWND, UINT)>& _callBack){SetChildWindProcedure(BN_DBLCLK, _callBack);}\
+void ChWin::Button##_AorW::SetDblClickFunction(const std::function<void(HWND, UINT)>& _callBack){SetChildWindProcedure(BN_DBLCLK, _callBack);}\
 \
-void ChWin::Button##_AorW##::SetSelectFunction(const std::function<void(HWND, UINT)>& _callBack){SetChildWindProcedure(BN_HILITE, _callBack);}
+void ChWin::Button##_AorW::SetSelectFunction(const std::function<void(HWND, UINT)>& _callBack){SetChildWindProcedure(BN_HILITE, _callBack);}
 #endif
 
 using namespace ChWin;

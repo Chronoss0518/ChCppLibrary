@@ -176,7 +176,7 @@ namespace ChStr
 			const size_t& _endPos = std::basic_string<wchar_t>::npos)
 	{
 		std::basic_string<wchar_t> text = RemoveToUnFloatingNumCharas<wchar_t>(_text.substr(_startPos, _endPos - _startPos));
-		return static_cast<BaseType>(_wtoll(text.c_str()));
+		return static_cast<BaseType>(wcstoll(text.c_str(),nullptr,10));
 	}
 
 #ifdef CPP20
@@ -236,7 +236,7 @@ namespace ChStr
 			const size_t& _endPos = std::basic_string<wchar_t>::npos)
 	{
 		std::basic_string<wchar_t> text = RemoveToUnFloatingNumCharas<wchar_t>(_text.substr(_startPos, _endPos - _startPos));
-		return static_cast<BaseType>(_wtof(text.c_str()));
+		return static_cast<BaseType>(wcstold(text.c_str(),nullptr));
 	}
 
 #ifdef CPP20

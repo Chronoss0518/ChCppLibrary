@@ -43,6 +43,10 @@
 
 #endif
 
+#ifndef CH_CHAR_VOID 
+#define CH_CHAR_VOID
+#endif
+
 #ifndef CH_TO_CHAR
 #define CH_TO_CHAR(Text) Text
 #endif
@@ -71,24 +75,16 @@ const CharaType* Function()
 
 #ifndef CH_NUMBER_FUNCTION
 #define CH_NUMBER_FUNCTION(Function,Type)\
-template<> const Type* Function<##Type##>()
+template<> const Type* Function<Type>()
 #endif
 
 #ifndef CH_STRING_TYPE_USE_FILE_EXPLICIT_DECLARATION
 #define CH_STRING_TYPE_USE_FILE_EXPLICIT_DECLARATION(_Class)\
-template class _Class##<char>;\
-template class _Class##<wchar_t>
+template class _Class<char>;\
+template class _Class<wchar_t>
 #endif
 
 #ifdef CPP20
-#ifndef CH_TO_NUMBER_TEXT_FUNCTION
-#define CH_TO_NUMBER_TEXT_FUNCTION(FunctionDefine,ToDefine)\
-FunctionDefine(char) { return ToDefine(""); }\
-FunctionDefine(wchar_t) { return ToDefine(L); }\
-FunctionDefine(char16_t) { return ToDefine(u); }\
-FunctionDefine(char32_t) { return ToDefine(U); }\
-FunctionDefine(char8_t) { return ToDefine(u8); }
-#endif //TO_NUMBER_TEXT_FUNCTION//
 
 #ifndef CH_TO_NUMBER_FUNCTION
 #define CH_TO_NUMBER_FUNCTION(FunctionDefine,Chara)\
@@ -101,22 +97,14 @@ FunctionDefine(char8_t) { return CH_TO_CHAR8(Chara); }
 
 #ifndef CH_STRING_TYPE_EXPLICIT_DECLARATION
 #define CH_STRING_TYPE_EXPLICIT_DECLARATION(_Class)\
-template class _Class##<char>;\
-template class _Class##<wchar_t>;\
-template class _Class##<char8_t>;\
-template class _Class##<char16_t>;\
-template class _Class##<char32_t>
+template class _Class<char>;\
+template class _Class<wchar_t>;\
+template class _Class<char8_t>;\
+template class _Class<char16_t>;\
+template class _Class<char32_t>
 #endif
 
 #else
-
-#ifndef CH_TO_NUMBER_TEXT_FUNCTION
-#define CH_TO_NUMBER_TEXT_FUNCTION(FunctionDefine,ToDefine)\
-FunctionDefine(char) { return ToDefine(""); }\
-FunctionDefine(wchar_t) { return ToDefine(L); }\
-FunctionDefine(char16_t) { return ToDefine(u); }\
-FunctionDefine(char32_t) { return ToDefine(U); }
-#endif //TO_NUMBER_TEXT_FUNCTION//
 
 #ifndef CH_TO_NUMBER_FUNCTION
 #define CH_TO_NUMBER_FUNCTION(FunctionDefine,Chara)\
@@ -128,10 +116,10 @@ FunctionDefine(char32_t) { return CH_TO_CHAR32(Chara); }
 
 #ifndef CH_STRING_TYPE_EXPLICIT_DECLARATION
 #define CH_STRING_TYPE_EXPLICIT_DECLARATION(_Class)\
-template class _Class##<char>;\
-template class _Class##<wchar_t>;\
-template class _Class##<char16_t>;\
-template class _Class##<char32_t>
+template class _Class<char>;\
+template class _Class<wchar_t>;\
+template class _Class<char16_t>;\
+template class _Class<char32_t>
 #endif
 
 #endif
@@ -154,12 +142,12 @@ _functionDefine(long double)
 #endif
 
 #ifndef CH_SINGLE_TONE_BASE
-#define	CH_SINGLE_TONE_BASE(_ClassNmae)\
+#define	CH_SINGLE_TONE_BASE(_ClassName)\
 private:\
- _ClassName##(){}\
- ~##_ClassName##(){}\
+ _ClassName(){}\
+ _ClassName(){}\
 public:\
-static inline _ClassName##& GetIns(){ static _ClassName ins; return ins; }
+static inline _ClassName& GetIns(){ static _ClassName ins; return ins; }
 #endif
 
 //ChLibraryのベースとなる関数、変数群のまとまり//

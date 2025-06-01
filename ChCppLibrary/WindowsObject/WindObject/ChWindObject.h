@@ -9,7 +9,7 @@
 
 #ifndef CH_WIND_OBJECT_INHERITANCE_FUNCTIONS
 #define CH_WIND_OBJECT_INHERITANCE_FUNCTIONS(_AorW,_CharaType) \
-void ChWin::WindObject##_AorW##::Release(){\
+void ChWin::WindObject##_AorW::Release(){\
 	if (!IsInit())return;\
 	if (ChPtr::NotNullCheck(windProcedures)){\
 		delete windProcedures;\
@@ -20,17 +20,17 @@ void ChWin::WindObject##_AorW##::Release(){\
 		hWnd = nullptr;}\
 	SetInitFlg(false);}\
 \
-void ChWin::WindObject##_AorW##::SetWindID(LONG_PTR _IDPtr){\
+void ChWin::WindObject##_AorW::SetWindID(LONG_PTR _IDPtr){\
 	if (!IsInit())return;\
 	SetWindowLongPtr##_AorW##(hWnd, GWLP_ID, _IDPtr);}\
 \
-LONG_PTR ChWin::WindObject##_AorW##::GetWindID(){\
+LONG_PTR ChWin::WindObject##_AorW::GetWindID(){\
 	if (!IsInit())return 0;\
 	return GetWindowLongPtr##_AorW##(hWnd, GWLP_ID);}\
 \
-const HINSTANCE ChWin::WindObject##_AorW##::GetInstance()const{ return (HINSTANCE)GetWindowLongPtr##_AorW##(hWnd, GWLP_HINSTANCE); }\
+const HINSTANCE ChWin::WindObject##_AorW::GetInstance()const{ return (HINSTANCE)GetWindowLongPtr##_AorW##(hWnd, GWLP_HINSTANCE); }\
 \
-LPARAM ChWin::WindObject##_AorW##::Send(const unsigned int _msg, WPARAM _wParam, LPARAM _lParam){\
+LPARAM ChWin::WindObject##_AorW::Send(const unsigned int _msg, WPARAM _wParam, LPARAM _lParam){\
 	LPARAM res = _lParam;\
 	if (!*this)return res;\
 	WPARAM wParam = _wParam;\
@@ -57,11 +57,11 @@ HWND ChWin::WindCreater::Create(const _CharaType* _appName, const _CharaType* _w
 			hInst, \
 			param);}\
 \
-void ChWin::WindObject##_AorW##::CreateEnd(const int _nCmdShow){\
+void ChWin::WindObject##_AorW::CreateEnd(const int _nCmdShow){\
 	WindObjectBase::CreateEnd(_nCmdShow);\
 	SetWindowLongPtr##_AorW##(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(windProcedures));}\
 \
-bool ChWin::WindObject##_AorW##::Update() {\
+bool ChWin::WindObject##_AorW::Update() {\
 	if (!IsInit())return false;\
 	UpdateWindow(hWnd);\
 	if (!PeekMessage##_AorW##(&msg, nullptr, 0, 0, PM_NOREMOVE))return true;\

@@ -16,7 +16,7 @@ JsonNumber& operator _Operator (const JsonNumber& _val){\
 
 #ifndef CH_JSON_NUMBER_CONST_MATH_METHOD
 #define CH_JSON_NUMBER_CONST_MATH_METHOD(_Operator)\
-JsonNumber operator _Operator##(const JsonNumber& _val)const{\
+JsonNumber operator _Operator(const JsonNumber& _val)const{\
 	JsonNumber res = *this;\
 	res _Operator##= _val;\
 	return res;}
@@ -31,14 +31,14 @@ static ChPtr::Shared<JsonNumber> CreateObject(const _type& _value){\
 #endif
 
 #ifndef	CH_Json_Number_Constructor_Functions
-#define	CH_Json_Number_Constructor_Functions(_type) JsonNumber(const _type##& _val){value = static_cast<long double>(_val);}
+#define	CH_Json_Number_Constructor_Functions(_type) JsonNumber(const _type & _val){value = static_cast<long double>(_val);}
 #endif
 
 #ifndef	CH_Json_Number_Operator_Functions
 #define	CH_Json_Number_Operator_Functions(_type)\
-operator _type##()const{return static_cast<##_type##>(value);}\
+operator _type()const{return static_cast<_type>(value);}\
 \
-JsonNumber& operator = (const _type##& _base){\
+JsonNumber& operator = (const _type & _base){\
 	value = static_cast<const long double>(_base);\
 	return *this;}
 #endif

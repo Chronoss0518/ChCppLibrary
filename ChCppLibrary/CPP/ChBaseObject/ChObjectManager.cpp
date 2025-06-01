@@ -3,20 +3,20 @@
 #ifndef CH_OBJECT_MGR_METHOD
 #define CH_OBJECT_MGR_METHOD(_FunctionNameBase) \
 template<typename CharaType>\
-void ChCpp::ObjectManager<CharaType>::##_FunctionNameBase##()\
+void ChCpp::ObjectManager<CharaType>::_FunctionNameBase()\
 {\
-	for (auto&& objList : objectList) { objList.second->##_FunctionNameBase##(); }\
+	for (auto&& objList : objectList) { objList.second->_FunctionNameBase(); }\
 }
 #endif
 
 #ifndef CH_OBJECT_MGR_TAG_METHOD
 #define CH_OBJECT_MGR_TAG_METHOD(_FunctionNameBase) \
 template<typename CharaType>\
-void ChCpp::ObjectManager<CharaType>::##_FunctionNameBase##(const std::basic_string<CharaType>& _tag)\
+void ChCpp::ObjectManager<CharaType>::_FunctionNameBase(const std::basic_string<CharaType>& _tag)\
 {\
 	auto&& it = objectList.find(_tag);\
 	if (it == objectList.end())return;\
-	(*it).second->##_FunctionNameBase##();\
+	(*it).second->_FunctionNameBase();\
 }
 #endif
 

@@ -21,20 +21,20 @@
 
 #ifndef CH_FRAME_SET_MATRIX_FUNCTION
 #define CH_FRAME_SET_MATRIX_FUNCTION(_methodName,_matrixType) \
-void _methodName##(const Ch3D::Transform& _trans){\
-	_matrixType##.SetPosition(_trans.pos);\
-	_matrixType##.SetRotation(_trans.rot);\
-	_matrixType##.SetScalling(_trans.scl);\
+void _methodName(const Ch3D::Transform& _trans){\
+	_matrixType.SetPosition(_trans.pos);\
+	_matrixType.SetRotation(_trans.rot);\
+	_matrixType.SetScalling(_trans.scl);\
 }\
-void _methodName##(const ChLMat& _mat) { _matrixType = _mat; }\
-void _methodName##(const ChRMat& _mat) { _matrixType = _mat.GetConvertAxis(); }
+void _methodName(const ChLMat& _mat) { _matrixType = _mat; }\
+void _methodName(const ChRMat& _mat) { _matrixType = _mat.GetConvertAxis(); }
 #endif
 
 #ifndef CH_FRAME_GET_MATRIX_FUNCTION
 #define CH_FRAME_GET_MATRIX_FUNCTION(_RLType,_returnMethod) \
-Ch##_RLType##Mat GetOutSizdTransform##_RLType##Mat() { return outSideMat##_returnMethod##; }\
-Ch##_RLType##Mat GetFrameTransform##_RLType##Mat() { return frameMat##_returnMethod##; }\
-Ch##_RLType##Mat GetDraw##_RLType##HandMatrix() { UpdateDrawTransform(); return drawMat##_returnMethod##; }
+Ch##_RLType##Mat GetOutSizdTransform##_RLType##Mat() { return outSideMat##_returnMethod ; }\
+Ch##_RLType##Mat GetFrameTransform##_RLType##Mat() { return frameMat##_returnMethod ; }\
+Ch##_RLType##Mat GetDraw##_RLType##HandMatrix() { UpdateDrawTransform(); return drawMat##_returnMethod ; }
 #endif
 
 namespace ChCpp
