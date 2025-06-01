@@ -251,7 +251,7 @@ bool ChCpp::ModelController::XFile<CharaType>::SetFremeTransformMatrix(
 		useText = _text.substr(_targetTemplate->begin + 1, textLen);
 	}
 
-	_frames->frameMatrix.Deserialize<CharaType>(useText, 0, ChStd::GetCommaChara<CharaType>(), argText);
+	_frames->frameMatrix.template Deserialize<CharaType>(useText, 0, ChStd::GetCommaChara<CharaType>(), argText);
 	return true;
 }
 
@@ -299,7 +299,7 @@ bool ChCpp::ModelController::XFile<CharaType>::SetMesh(
 	tmpPos += 2;
 
 	{
-		auto values = GetArrayValues<XMESHFACE>(_text, tmpPos, arrayFirstTag, arraySeccondTag);
+		auto&& values = GetArrayValues<XMESHFACE>(_text, tmpPos, arrayFirstTag, arraySeccondTag);
 
 		for (auto&& poss : values)
 		{
@@ -815,7 +815,7 @@ void ChCpp::ModelController::XFile<CharaType>::XFrameToChFrame(
 
 	std::map<size_t, size_t>summarizeVertex;
 
-	auto&& mesh = _chFrame->SetComponent<FrameComponent<CharaType>>();
+	auto&& mesh = _chFrame->template SetComponent<FrameComponent<CharaType>>();
 	auto&& chVertexList = mesh->vertexList;
 	//SetVertexList//
 	{
