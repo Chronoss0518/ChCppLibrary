@@ -18,9 +18,7 @@ namespace ChCpp
 
 	void FPut(FILE* _fp, const char _char);
 
-#ifdef _MSC_BUILD 
 	void FPut(FILE* _fp, const wchar_t _char);
-#endif
 
 	class FileBase
 	{
@@ -44,8 +42,9 @@ namespace ChCpp
 
 		virtual void FileCloseCharName() = 0;
 
+#ifdef _MSC_BUILD 
 		virtual void FileCloseWCharName() = 0;
-
+#endif
 	protected:
 
 		std::string localeName = "";

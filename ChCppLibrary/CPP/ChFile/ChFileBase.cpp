@@ -7,7 +7,10 @@ void ChCpp::FileBase::FileOpenInit(const std::string& _fileName, const std::stri
 
 	localeName = _localeName;
 	openFileNameChar = _fileName;
+
+#ifdef _MSC_BUILD 
 	openFileNameWChar = L"";
+#endif
 	isUpdateFlg = _isUpdate;
 	if (std::filesystem::exists(_fileName))return;
 	FILE* file = fopen(openFileNameChar.c_str(), "a");
