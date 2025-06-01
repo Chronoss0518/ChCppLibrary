@@ -35,7 +35,7 @@ inline bool operator _Operator(const _InClass& _val)const\
 #define CH_MATH3D_METHOD_VECTOR_CONSTRUCTOR(_VectorSize,_Type)\
 inline ChVector##_VectorSize() : Vector##_VectorSize##Base<_Type>() {}\
 inline ChVector##_VectorSize(const _Type _num) : Vector##_VectorSize##Base<_Type>(_num) {}\
-inline ChVector##_VectorSize(const ChVector##_VectorSize##& _vec) : ChMath::Vector##_VectorSize##Base<_Type>(_vec) {}\
+inline ChVector##_VectorSize(const ChVector##_VectorSize& _vec) : ChMath::Vector##_VectorSize##Base<_Type>(_vec) {}\
 inline ChVector##_VectorSize(const ChMath::Vector##_VectorSize##Base<_Type>& _vec) : ChMath::Vector##_VectorSize##Base<_Type>(_vec) {}
 #endif
 
