@@ -10,11 +10,17 @@ void ChCpp::BinaryFile::FileOpen(const std::string& _fileName, const std::string
 
 	FILE* file = Open(openFileNameChar.c_str(), "rb");
 	fseek(file, 0, SEEK_END);
-	fpos_t filepos = 0;
+	fpos_t filepos;
 	fgetpos(file, &filepos);
 	fseek(file, 0, SEEK_SET);
 	if (!datas.empty())datas.clear();
-	for (fpos_t pos = 0; pos < filepos; pos++)datas.push_back(fgetc(file));
+	fpos_t pos;
+	fgetpos(file, &pos);
+	while (pos != filepos)
+	{
+		datas.push_back(fgetc(file));
+		fgetpos(file, &pos);
+	}
 	fclose(file);
 	if (localeName != "")setlocale(LC_ALL, tmpLocale.c_str());
 }
@@ -34,7 +40,13 @@ void ChCpp::BinaryFile::FileOpen(const std::wstring& _fileName, const std::strin
 	fgetpos(file, &filepos);
 	fseek(file, 0, SEEK_SET);
 	if (!datas.empty())datas.clear();
-	for (fpos_t pos = 0; pos < filepos; pos++)datas.push_back(fgetc(file));
+	fpos_t pos;
+	fgetpos(file, &pos);
+	while (pos != filepos)
+	{
+		datas.push_back(fgetc(file));
+		fgetpos(file, &pos);
+	}
 	fclose(file);
 	if (localeName != "")setlocale(LC_ALL, tmpLocale.c_str());
 }
