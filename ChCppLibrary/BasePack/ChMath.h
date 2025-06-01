@@ -94,8 +94,8 @@ inline _BaseClass(const _BaseClass<T>& _mat) { m = _mat.m; }
 template<typename CharaType>\
 inline std::basic_string<CharaType> Serialize(\
 const std::basic_string<CharaType>& _cutChar = ChStd::GetCommaChara<CharaType>(),\
- const std::basic_string<CharaType>& _endChar =  ChStd::GetSemiColonChara<CharaType>())\
-{return _Value.Serialize<CharaType>(_cutChar, _endChar);}
+const std::basic_string<CharaType>& _endChar =  ChStd::GetSemiColonChara<CharaType>())\
+{return _Value.Serialize(_cutChar, _endChar);}
 #endif
 
 #ifndef CH_MATH3D_METHOD_DESERIALIZE
