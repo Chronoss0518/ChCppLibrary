@@ -7,14 +7,14 @@
 
 #ifndef	CH_Json_String_Operator_Functions
 #define	CH_Json_String_Operator_Functions(_type)\
-JsonString& operator =(const _type##& _value){\
+JsonString& operator =(const _type & _value){\
 	value = ChStr::GetTextFromNum<CharaType>(_value);\
 	return *this;}
 #endif
 
 #ifndef	CH_Json_String_Constructor_Functions
 #define	CH_Json_String_Constructor_Functions(_type)\
-JsonString(const _type##& _value){\
+JsonString(const _type & _value){\
 	*this = ChStr::GetTextFromNum<CharaType>(_value);}
 #endif
 

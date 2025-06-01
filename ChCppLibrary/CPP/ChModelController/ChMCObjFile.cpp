@@ -7,7 +7,7 @@ inline void ChCpp::ModelController::ObjFile<CharaType>::Set##_SetVecPascal(const
 	if (!IsPrefix(_line, tag, tag.length()))return;\
 	NullModelTest();\
 	auto _SetVecCamel = ChPtr::Make_S<_VectorStruct>();\
-	_SetVecCamel##->Deserialize<CharaType>(_line, tag.length() + 1, ChStd::GetSpaceChara<CharaType>());\
+	_SetVecCamel->Deserialize<CharaType>(_line, tag.length() + 1, ChStd::GetSpaceChara<CharaType>());\
 	makeObject->vertex##_SetVecPascal##List.push_back(_SetVecCamel);}
 
 #define SET_METHOD(_FunctionName, _TagValue,_SetMethod) \

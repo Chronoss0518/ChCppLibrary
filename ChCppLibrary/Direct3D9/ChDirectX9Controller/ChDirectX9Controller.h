@@ -9,8 +9,8 @@
 
 #ifndef	CH_D3D9CONTROLLER_INIT_TEST
 #define	CH_D3D9CONTROLLER_INIT_TEST(_drawFlg, _defaultResult)\
-if(!IsInit())return _defaultResult##;\
-if(_drawFlg == dFlg)return _defaultResult##;
+if(!IsInit())return _defaultResult ;\
+if(_drawFlg == dFlg)return _defaultResult ;
 #endif
 
 namespace ChD3D9

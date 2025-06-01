@@ -142,7 +142,7 @@ _functionDefine(long double)
 #endif
 
 #ifndef CH_SINGLE_TONE_BASE
-#define	CH_SINGLE_TONE_BASE(_ClassNmae)\
+#define	CH_SINGLE_TONE_BASE(_ClassName)\
 private:\
  _ClassName(){}\
  _ClassName(){}\
