@@ -171,7 +171,6 @@ namespace ChCpp
 			return ChPtr::SharedSafeCast<T, BaseFrame>(FrameList::GetNowFrame());
 		}
 
-		template<typename CharaType>
 		inline std::basic_string<CharaType> GetNowFrameName()
 		{
 			std::map<std::basic_string<CharaType>, unsigned long>tmpFrameNames = frameNames;
@@ -205,7 +204,6 @@ namespace ChCpp
 			return FrameList::GetData();
 		}
 
-		template<typename CharaType>
 		inline void ChangeFrame(const std::basic_string<CharaType>& _frameName)
 		{
 			auto&& frameName = frameNames.find(_frameName);
