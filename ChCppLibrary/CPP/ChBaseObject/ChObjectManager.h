@@ -36,7 +36,7 @@ namespace ChCpp
 				list = objectList.find(_tag);
 			}
 
-			return (*list).second->SetObject<T>();
+			return (*list).second->template SetObject<T>();
 		}
 
 		void SetObject(ChPtr::Shared<BaseObject<CharaType>> _obj, const std::basic_string<CharaType>& _tag = ChStd::GetZeroChara<CharaType>());
@@ -52,7 +52,7 @@ namespace ChCpp
 
 			for (auto&& objlist : objectList)
 			{
-				for (auto&& outObj : objlist.second->GetObjectList<T>())
+				for (auto&& outObj : objlist.second->template GetObjectList<T>())
 				{
 					tmpObjList.push_back(outObj);
 				}
@@ -70,7 +70,7 @@ namespace ChCpp
 
 			for (auto&& objlist : objectList)
 			{
-				for (auto&& outObj : objlist.second->GetObjectListForName<T>(_name))
+				for (auto&& outObj : objlist.second->template GetObjectListForName<T>(_name))
 				{
 					tmpObjList.push_back(outObj);
 				}
@@ -90,7 +90,7 @@ namespace ChCpp
 
 			if (it == objectList.end())return tmpObjList;
 
-			for (auto&& outObj : (*it).second->GetObjectList<T>())
+			for (auto&& outObj : (*it).second->template GetObjectList<T>())
 			{
 				tmpObjList.push_back(outObj);
 			}
@@ -109,7 +109,7 @@ namespace ChCpp
 
 			if (it == objectList.end())return tmpObjList;
 
-			for (auto&& outObj : (*it).second->GetObjectListForName<T>(_name))
+			for (auto&& outObj : (*it).second->template GetObjectListForName<T>(_name))
 			{
 				tmpObjList.push_back(outObj);
 			}
