@@ -5,7 +5,15 @@
 
 #ifndef CH_MATH_FUNCTION
 #define CH_MATH_FUNCTION(_Type,_FunctionName,_FunctionArg,_UseFunctionName,_UseFunctionArg)\
- _Type ChMath::_FunctionName _FunctionArg { return std::_UseFunctionName##_UseFunctionArg; }
+ _Type ChMath::_FunctionName ( _FunctionArg ) { return std::_UseFunctionName ( _UseFunctionArg ); }
+#endif
+
+#ifndef CH_FMOD_ARGUMENT
+#define CH_FMOD_ARGUMENT(_Type) _Type _valx, _Type _valy 
+#endif
+
+#ifndef CH_FMOD_USE_ARGUMENT
+#define CH_FMOD_USE_ARGUMENT  _valx, _valy 
 #endif
 
 float ChMath::Round(const float& _val, const unsigned long _digit)
@@ -72,29 +80,29 @@ long double ChMath::SqrtEx(const long double& _base, const unsigned long _digit)
 	return out;
 }
 
-CH_MATH_FUNCTION(float, GetSin, (float _val), sin, (_val));
-CH_MATH_FUNCTION(double, GetSin, (double _val), sin, (_val));
-CH_MATH_FUNCTION(long double, GetSin, (long double _val), sin, (_val));
+CH_MATH_FUNCTION(float, GetSin, float _val, sin, _val);
+CH_MATH_FUNCTION(double, GetSin, double _val, sin, _val);
+CH_MATH_FUNCTION(long double, GetSin, long double _val, sin, _val);
 
-CH_MATH_FUNCTION(float, GetASin, (float _val), asin, (_val));
-CH_MATH_FUNCTION(double, GetASin, (double _val), asin, (_val));
-CH_MATH_FUNCTION(long double, GetASin, (long double _val), asin, (_val));
+CH_MATH_FUNCTION(float, GetASin, float _val, asin, _val);
+CH_MATH_FUNCTION(double, GetASin, double _val, asin, _val);
+CH_MATH_FUNCTION(long double, GetASin, long double _val, asin, _val);
 
-CH_MATH_FUNCTION(float, GetCos, (float _val), cos, (_val));
-CH_MATH_FUNCTION(double, GetCos, (double _val), cos, (_val));
-CH_MATH_FUNCTION(long double, GetCos, (long double _val), cos, (_val));
+CH_MATH_FUNCTION(float, GetCos, float _val, cos, _val);
+CH_MATH_FUNCTION(double, GetCos, double _val, cos, _val);
+CH_MATH_FUNCTION(long double, GetCos, long double _val, cos, _val);
 
-CH_MATH_FUNCTION(float, GetACos, (float _val), acos, (_val));
-CH_MATH_FUNCTION(double, GetACos, (double _val), acos, (_val));
-CH_MATH_FUNCTION(long double, GetACos, (long double _val), acos, (_val));
+CH_MATH_FUNCTION(float, GetACos, float _val, acos, _val);
+CH_MATH_FUNCTION(double, GetACos, double _val, acos, _val);
+CH_MATH_FUNCTION(long double, GetACos, long double _val, acos, _val);
 
-CH_MATH_FUNCTION(float, GetATan, (float _val), atan, (_val));
-CH_MATH_FUNCTION(double, GetATan, (double _val), atan, (_val));
-CH_MATH_FUNCTION(long double, GetATan, (long double _val), atan, (_val));
+CH_MATH_FUNCTION(float, GetATan, float _val, atan, _val);
+CH_MATH_FUNCTION(double, GetATan, double _val, atan, _val);
+CH_MATH_FUNCTION(long double, GetATan, long double _val, atan, _val);
 
-CH_MATH_FUNCTION(float, GetFMod, (float _valx, float _valy), fmod, (_valx, _valy));
-CH_MATH_FUNCTION(double, GetFMod, (double _valx, double _valy), fmod, (_valx, _valy));
-CH_MATH_FUNCTION(long double, GetFMod, (long double _valx, long double _valy), fmod, (_valx, _valy));
+CH_MATH_FUNCTION(float, GetFMod, CH_FMOD_ARGUMENT(float), fmod, CH_FMOD_USE_ARGUMENT);
+CH_MATH_FUNCTION(double, GetFMod, CH_FMOD_ARGUMENT(double), fmod, CH_FMOD_USE_ARGUMENT);
+CH_MATH_FUNCTION(long double, GetFMod, CH_FMOD_ARGUMENT(long double), fmod, CH_FMOD_USE_ARGUMENT);
 
 
 float ChMath::GetMaxFloat()
