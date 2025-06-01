@@ -25,7 +25,7 @@ namespace ChCpp
 	{
 	public:
 
-		const enum class OTEAddType :unsigned char
+		enum class OTEAddType :unsigned char
 		{
 			None, 
 			//Œã‚ë‚É’Ç‰Á‚µ‚Ä‚¢‚­//
