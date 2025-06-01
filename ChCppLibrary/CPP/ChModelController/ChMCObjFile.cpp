@@ -7,7 +7,7 @@ inline void ChCpp::ModelController::ObjFile<CharaType>::Set##_SetVecPascal(const
 	if (!IsPrefix(_line, tag, tag.length()))return;\
 	NullModelTest();\
 	auto _SetVecCamel = ChPtr::Make_S<_VectorStruct>();\
-	_SetVecCamel->Deserialize<CharaType>(_line, tag.length() + 1, ChStd::GetSpaceChara<CharaType>());\
+	_SetVecCamel->template Deserialize<CharaType>(_line, tag.length() + 1, ChStd::GetSpaceChara<CharaType>());\
 	makeObject->vertex##_SetVecPascal##List.push_back(_SetVecCamel);}
 
 #define SET_METHOD(_FunctionName, _TagValue,_SetMethod) \
@@ -263,7 +263,7 @@ void ChCpp::ModelController::ObjFile<CharaType>::CreateModel(ChPtr::Shared<Model
 
 	_model->SetMyName(ObjTag::GetNullObjectName<CharaType>());
 
-	_model->SetComponent<FrameComponent<CharaType>>();
+	_model->template SetComponent<FrameComponent<CharaType>>();
 
 	CreateChFrame(_model);
 
@@ -385,7 +385,7 @@ void ChCpp::ModelController::ObjFile<CharaType>::CreateChFrame(ChPtr::Shared<ChC
 
 		auto&& mesh = ChPtr::Make_S<ChCpp::FrameObject<CharaType>>();
 
-		auto&& primitive = mesh->SetComponent<ChCpp::FrameComponent<CharaType>>();
+		auto&& primitive = mesh->template SetComponent<ChCpp::FrameComponent<CharaType>>();
 
 		//for (auto&& Vertexs : Obj.second->vertexPosList)
 		for (auto&& vertexs : obj->vertexVertexList)
@@ -410,7 +410,7 @@ void ChCpp::ModelController::ObjFile<CharaType>::CreateChFrame(ChPtr::Shared<ChC
 			{
 				primitive->mateNames[ChStd::GetZeroChara<CharaType>()] = materialNo;
 
-				auto mate = ChPtr::Make_S<Ch3D::MaterialData<CharaType>>();
+				auto&& mate = ChPtr::Make_S<Ch3D::MaterialData<CharaType>>();
 
 				mate->mateName = face->targetMaterialName;
 
@@ -531,7 +531,7 @@ void ChCpp::ModelController::ObjFile<CharaType>::SetFace(const std::basic_string
 
 	size_t end = 0;
 
-	auto data = ChPtr::Make_S<ObjFile<CharaType>::ObjFileModelData::MeshData>();
+	auto data = ChPtr::Make_S<typename ObjFile<CharaType>::ObjFileModelData::MeshData>();
 
 	data->targetMaterialName = blockMaterial;
 
@@ -550,7 +550,7 @@ void ChCpp::ModelController::ObjFile<CharaType>::SetFace(const std::basic_string
 			tmpPos = _line.size();
 		}
 
-		auto&& mdata = ChPtr::Make_S<ObjFile<CharaType>::ObjFileModelData::MeshData::Data>();
+		auto&& mdata = ChPtr::Make_S<typename ObjFile<CharaType>::ObjFileModelData::MeshData::Data>();
 
 
 		std::basic_string<CharaType> tmp = _line.substr(pos, tmpPos - pos);
@@ -594,11 +594,11 @@ void ChCpp::ModelController::ObjFile<CharaType>::SetFace(const std::basic_string
 
 SET_METHOD(SetMateBlock, ObjTag::GetMaterialBlockTag<CharaType>(), (blockMaterial = &_line[tag.length() + 1]););
 
-SET_METHOD(SetMatAmbient, ObjTag::GetMatAmbientTag<CharaType>(), (targetMaterial->ambient.Deserialize<CharaType>(&_line[tag.length() + 1], 0, ChStd::GetSpaceChara<CharaType>())););
+SET_METHOD(SetMatAmbient, ObjTag::GetMatAmbientTag<CharaType>(), (targetMaterial->ambient.template Deserialize<CharaType>(&_line[tag.length() + 1], 0, ChStd::GetSpaceChara<CharaType>())););
 
-SET_METHOD(SetMatDiffuse, ObjTag::GetMatDiffuseTag<CharaType>(), (targetMaterial->diffuse.Deserialize<CharaType>(&_line[tag.length() + 1], 0, ChStd::GetSpaceChara<CharaType>())););
+SET_METHOD(SetMatDiffuse, ObjTag::GetMatDiffuseTag<CharaType>(), (targetMaterial->diffuse.template Deserialize<CharaType>(&_line[tag.length() + 1], 0, ChStd::GetSpaceChara<CharaType>())););
 
-SET_METHOD(SetMatSpecular, ObjTag::GetMatSpecularTag<CharaType>(), (targetMaterial->specular.Deserialize<CharaType>(&_line[tag.length() + 1], 0, ChStd::GetSpaceChara<CharaType>())););
+SET_METHOD(SetMatSpecular, ObjTag::GetMatSpecularTag<CharaType>(), (targetMaterial->specular.template Deserialize<CharaType>(&_line[tag.length() + 1], 0, ChStd::GetSpaceChara<CharaType>())););
 
 SET_METHOD(SetMatSpecularHighLight, ObjTag::GetMatSpecularHighLightTag<CharaType>(), (targetMaterial->spePow = ChStr::GetNumFromText<float>(&_line[tag.length() + 1], 0)););
 

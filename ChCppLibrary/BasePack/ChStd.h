@@ -78,10 +78,17 @@ const CharaType* Function()
 template<> const Type* Function<Type>()
 #endif
 
+#ifdef _MSC_BUILD 
 #ifndef CH_STRING_TYPE_USE_FILE_EXPLICIT_DECLARATION
 #define CH_STRING_TYPE_USE_FILE_EXPLICIT_DECLARATION(_Class)\
 template class _Class<char>;\
 template class _Class<wchar_t>
+#endif
+#else
+#ifndef CH_STRING_TYPE_USE_FILE_EXPLICIT_DECLARATION
+#define CH_STRING_TYPE_USE_FILE_EXPLICIT_DECLARATION(_Class)\
+template class _Class<char>
+#endif
 #endif
 
 #ifdef CPP20

@@ -9,16 +9,16 @@ void ChCpp::BinaryFile::FileOpen(const std::string& _fileName, const std::string
 	if (localeName != "")tmpLocale = setlocale(LC_ALL, localeName.c_str());
 
 	FILE* file = Open(openFileNameChar.c_str(), "rb");
-	fseek(file, 0, SEEK_END);
-	fpos_t filepos = 0;
-	fgetpos(file, &filepos);
-	fseek(file, 0, SEEK_SET);
 	if (!datas.empty())datas.clear();
-	for (fpos_t pos = 0; pos < filepos; pos++)datas.push_back(fgetc(file));
+	while (feof(file) != 1)
+	{
+		datas.push_back(fgetc(file));
+	}
 	fclose(file);
 	if (localeName != "")setlocale(LC_ALL, tmpLocale.c_str());
 }
 
+#ifdef _MSC_BUILD 
 void ChCpp::BinaryFile::FileOpen(const std::wstring& _fileName, const std::string& _localeName, bool _isUpdate)
 {
 	if (_fileName.length() <= 0)return;
@@ -29,16 +29,15 @@ void ChCpp::BinaryFile::FileOpen(const std::wstring& _fileName, const std::strin
 
 	FILE* file = Open(openFileNameWChar.c_str(), L"rb");
 
-	fseek(file, 0, SEEK_END);
-	fpos_t filepos = 0;
-	fgetpos(file, &filepos);
-	fseek(file, 0, SEEK_SET);
 	if (!datas.empty())datas.clear();
-	for (fpos_t pos = 0; pos < filepos; pos++)datas.push_back(fgetc(file));
+	while (feof(file) != 1)
+	{
+		datas.push_back(fgetc(file));
+	}
 	fclose(file);
 	if (localeName != "")setlocale(LC_ALL, tmpLocale.c_str());
 }
-
+#endif
 std::vector<unsigned char> ChCpp::BinaryFile::FileRead()
 {
 	return datas;
@@ -68,6 +67,7 @@ void ChCpp::BinaryFile::FileCloseCharName()
 	openFileNameChar = "";
 }
 
+#ifdef _MSC_BUILD 
 void ChCpp::BinaryFile::FileCloseWCharName()
 {
 	if (openFileNameWChar == L"")return;
@@ -83,3 +83,4 @@ void ChCpp::BinaryFile::FileCloseWCharName()
 	if (localeName != "")tmpLocale = setlocale(LC_ALL, tmpLocale.c_str());
 	openFileNameWChar = L"";
 }
+#endif
