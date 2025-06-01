@@ -51,9 +51,9 @@ double ChMath::Round(const double& _val, const unsigned long _digit)
 {
 	if (_val == 0.0)return 0.0;
 
-	double out = _val * std::powl(10, static_cast<double>(_digit - 1));
+	double out = _val * std::pow(10, static_cast<double>(_digit - 1));
 	out = std::round(out);
-	out = out * std::powl(0.1, static_cast<double>(_digit - 1));
+	out = out * std::pow(0.1, static_cast<double>(_digit - 1));
 
 	return out;
 }
