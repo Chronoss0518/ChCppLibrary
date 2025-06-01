@@ -126,7 +126,7 @@ const std::basic_string<CharaType>&_cutTo4Char = ChStd::GetCRLFChara<CharaType>(
 inline ChEular##_AxisOrder<T> GetEulerRotation##_AxisOrder(const unsigned long _digit = 6)const\
 {\
 	ChEular##_AxisOrder<T> res;\
-	res._ZeroTestAxis = ChMath::GetSin##_ZeroTestAxisFunction;\
+	res._ZeroTestAxis = ChMath::GetSin _ZeroTestAxisFunction;\
 	T ww = w * w * static_cast<T>(2.0f);\
 	if (CH_FLOAT_TEST(ChMath::GetCos(res._ZeroTestAxis), Ch_FLOAT_TEST_VALUE)){\
 		res._Axiz1 = _ZeroAxiz1Function;\
