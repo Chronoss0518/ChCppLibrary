@@ -32,9 +32,9 @@ void _methodName(const ChRMat& _mat) { _matrixType = _mat.GetConvertAxis(); }
 
 #ifndef CH_FRAME_GET_MATRIX_FUNCTION
 #define CH_FRAME_GET_MATRIX_FUNCTION(_RLType,_returnMethod) \
-Ch##_RLType##Mat GetOutSizdTransform##_RLType##Mat() { return outSideMat##_returnMethod ; }\
-Ch##_RLType##Mat GetFrameTransform##_RLType##Mat() { return frameMat##_returnMethod ; }\
-Ch##_RLType##Mat GetDraw##_RLType##HandMatrix() { UpdateDrawTransform(); return drawMat##_returnMethod ; }
+Ch##_RLType##Mat GetOutSizdTransform##_RLType##Mat() { return outSideMat _returnMethod ; }\
+Ch##_RLType##Mat GetFrameTransform##_RLType##Mat() { return frameMat _returnMethod ; }\
+Ch##_RLType##Mat GetDraw##_RLType##HandMatrix() { UpdateDrawTransform(); return drawMat _returnMethod ; }
 #endif
 
 namespace ChCpp
