@@ -297,7 +297,8 @@ namespace ChCpp
 
 			for (auto&& obj : GetChildlen())
 			{
-				auto&& baseObj = ChPtr::SharedSafeCast<BaseObject>(obj);
+				auto&& baseObj = ChPtr::SharedSafeCast<BaseObject<CharaType>>(obj);
+				if (baseObj == nullptr)continue;
 				if (baseObj->GetMyName() != _name)continue;
 
 				auto test = ChPtr::SharedSafeCast<T>(baseObj);
@@ -319,7 +320,8 @@ namespace ChCpp
 
 			for (auto&& obj : GetAllChildlen())
 			{
-				auto&& baseObj = ChPtr::SharedSafeCast<BaseObject>(obj);
+				auto&& baseObj = ChPtr::SharedSafeCast<BaseObject<CharaType>>(obj);
+				if (baseObj == nullptr)continue;
 				if (baseObj->GetMyName().find(_name) == std::basic_string<CharaType>::npos)continue;
 
 				auto test = ChPtr::SharedSafeCast<T>(baseObj);
@@ -341,8 +343,8 @@ namespace ChCpp
 
 			for (auto&& obj : GetAllChildlen())
 			{
-				auto&& baseObj = ChPtr::SharedSafeCast<BaseObject>(obj);
-
+				auto&& baseObj = ChPtr::SharedSafeCast<BaseObject<CharaType>>(obj);
+				if (baseObj == nullptr)continue;
 				if (baseObj->GetMyName() != _name)continue;
 				auto test = ChPtr::SharedSafeCast<T>(baseObj);
 				if (test != nullptr) { res.push_back(test); }
@@ -364,8 +366,8 @@ namespace ChCpp
 
 			for (auto&& obj : GetChildlen())
 			{
-				auto&& baseObj = ChPtr::SharedSafeCast<BaseObject>(obj);
-
+				auto&& baseObj = ChPtr::SharedSafeCast<BaseObject<CharaType>>(obj);
+				if (baseObj == nullptr)continue;
 				if (baseObj->GetMyName().find(_name) != std::basic_string<CharaType>::npos)
 				{
 					auto test = ChPtr::SharedSafeCast<T>(baseObj);
