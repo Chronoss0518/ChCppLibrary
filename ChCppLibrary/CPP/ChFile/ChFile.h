@@ -107,6 +107,7 @@ namespace ChCpp
 			FileOpen(_fileName, "", _isUpdate);
 		}
 
+#ifdef _MSC_BUILD 
 		//FileÇäJÇ≠//
 		void FileOpen(
 			const std::wstring& _fileName,
@@ -120,7 +121,7 @@ namespace ChCpp
 		{
 			FileOpen(_fileName, "", _isUpdate);
 		}
-
+#endif
 		//FileÇ©ÇÁì«Ç›èoÇ∑//
 		std::basic_string<CharaType> FileRead();
 
@@ -139,7 +140,9 @@ namespace ChCpp
 	};
 	
 	using CharFile =  File<char>;
+#ifdef _MSC_BUILD 
 	using WCharFile = File<wchar_t>;
+#endif
 }
 
 #endif

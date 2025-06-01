@@ -9,15 +9,18 @@ namespace ChCpp
 {
 	FILE* Open(const std::string& _fileName, const std::string& _type);
 
+#ifdef _MSC_BUILD 
 	FILE* Open(const std::wstring& _fileName, const std::wstring& _type);
+#endif
 
 	template<typename OutCharaType>
 	OutCharaType FGet(FILE* _fp);
 
 	void FPut(FILE* _fp, const char _char);
 
+#ifdef _MSC_BUILD 
 	void FPut(FILE* _fp, const wchar_t _char);
-
+#endif
 
 	class FileBase
 	{
@@ -28,8 +31,10 @@ namespace ChCpp
 	protected:
 
 		void FileOpenInit(const std::string& _fileName,const std::string& _localeName, bool _isUpdate);
-		
+
+#ifdef _MSC_BUILD 
 		void FileOpenInit(const std::wstring& _fileName,const std::string& _localeName, bool _isUpdate);
+#endif
 
 	public:
 
@@ -45,7 +50,10 @@ namespace ChCpp
 
 		std::string localeName = "";
 		std::string openFileNameChar = "";
+
+#ifdef _MSC_BUILD 
 		std::wstring openFileNameWChar = L"";
+#endif
 
 	private:
 

@@ -99,8 +99,10 @@ std::basic_string<CharaType> ChCpp::File<CharaType>::FileWrite(const std::basic_
 }
 
 METHOD_EXPLICIT_DECLARATION(char, "a", "r", "w");
-METHOD_EXPLICIT_DECLARATION(wchar_t, "a", "rb", "wb");
 
+#ifdef _MSC_BUILD 
+METHOD_EXPLICIT_DECLARATION(wchar_t, "a", "rb", "wb");
+#endif
 
 
 CH_STRING_TYPE_USE_FILE_EXPLICIT_DECLARATION(ChCpp::File);
