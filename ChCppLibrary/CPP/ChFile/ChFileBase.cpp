@@ -34,7 +34,10 @@ void ChCpp::FileBase::FileClose()
 	if (!isUpdateFlg)return;
 
 	FileCloseCharName();
+
+#ifdef _MSC_BUILD 
 	FileCloseWCharName();
+#endif
 }
 
 FILE* ChCpp::Open(const std::string& _fileName, const std::string& _type)

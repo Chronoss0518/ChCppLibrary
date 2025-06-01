@@ -131,8 +131,9 @@ namespace ChCpp
 	protected:
 
 		void FileCloseCharName()override;
-
+#ifdef _MSC_BUILD 
 		void FileCloseWCharName()override;
+#endif
 
 	private:
 
