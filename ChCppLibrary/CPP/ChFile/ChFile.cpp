@@ -105,7 +105,6 @@ template<> void ChCpp::File<_CharaType>::FileCloseCharName(){\
 	FILE* file = Open(openFileNameChar.c_str(), _WriteType );\
 	fileText = fileText.c_str();\
 	for (size_t i = 0; i < fileText.size(); i++)FPut(file, fileText[i]);\
-	FPut(file, static_cast<_CharaType>(EOF));\
 	fclose(file);\
 	openFileNameChar = "";\
 	fileText = ChStd::GetZeroChara<_CharaType>();\
